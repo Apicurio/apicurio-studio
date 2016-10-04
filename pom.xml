@@ -597,6 +597,7 @@
   </distributionManagement>
 
   <modules>
+    <module>front-end</module>
   </modules>
 
   <profiles>

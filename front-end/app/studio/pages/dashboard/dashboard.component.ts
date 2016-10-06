@@ -12,6 +12,8 @@ export class DashboardComponent implements OnInit {
     constructor(private router: Router) { }
 
     ngOnInit(): void {
+        let x: number = 100;
+        console.log(x);
     }
 
 }

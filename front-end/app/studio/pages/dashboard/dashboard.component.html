@@ -1,1 +1,68 @@
-<h1>This is the dashboard!</h1>
+<div class="container-fluid">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-6">
+            <div class="card-pf card-pf-accented">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-comment"></span>
+                        <span>Welcome to the <strong>API Design Studio</strong> Dashboard!</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        Hey <strong>USER</strong>, thanks for logging into the <strong>API Design Studio</strong>.  Hopefully
+                        you're finding it easy to use this tool to design and collaborate on new (and existing) APIs.
+                    </p>
+                    <div>
+                        <ul>
+                            <li><a href="http://studio.apiman.io/#about" target="_blank">More information about the project</a></li>
+                            <li><a href="http://studio.apiman.io/#userguide" target="_blank">API Design Studio - User Guide</a></li>
+                            <li><a href="http://studio.apiman.io/#contact" target="_blank">Contact the API Design Studio development team!</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cards-pf">
+        <!-- Recent APIs (or empty state) -->
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="card-pf">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">Your Recent APIs</h2>
+                </div>
+                <div class="card-pf-body api-recent-apis">
+                    <div class="api-item">
+                        <a href="api-details.html">
+                            <span class="fa fa-fw fa-plane"></span><span>Gateway Configuration API</span>
+                        </a>
+                        <p>
+                            Used to directly configure the API Gateway (bypassing the management layer).
+                        </p>
+                    </div>
+                    <div class="api-item">
+                        <a href="api-details.html">
+                            <span class="fa fa-fw fa-puzzle-piece"></span><span>Manager Configuration API</span>
+                        </a>
+                        <p>
+                            Used to manage lifecycle of, and configure policies on, managed APIs.
+                        </p>
+                    </div>
+                </div>
+                <div style="font-size: 14px" class="card-pf-footer">
+                    <p>
+                        <a href="my-apis.html" class="">
+                            <span class="fa fa-list"></span><span>List All</span>
+                        </a>
+                        <span></span>
+                        <a href="new-api.html" class="pull-right">
+                            <span class="pficon pficon-add-circle-o"></span><span>Create an API</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

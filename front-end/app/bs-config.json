@@ -1,0 +1,10 @@
+{
+  "port": 8080,
+  "https": false,
+  "files": [
+    "./**/*.{html,css,js,png}"
+  ],
+  "watchOptions": {
+    "ignored": "*"
+  }
+}

@@ -1,0 +1,108 @@
+#api-vertical-nav {
+  position: absolute;
+  left:0;
+  width: 120px;
+  top: 30px;
+  bottom:0;
+  background-color: white;
+  overflow: hidden;
+}
+#api-vertical-nav .api-nav-item {
+  color: #666;
+  border-bottom: 1px solid #ddd;
+  padding: 15px 10px 15px 10px;
+  text-align: center;
+  border-right: 1px solid #ddd;
+}
+#api-vertical-nav .api-nav-item-filler {
+  border-right: 1px solid #ddd;
+  height: 100%;
+}
+#api-vertical-nav .api-nav-item:hover {
+  background-color: rgba(0, 0, 55, .05);
+  cursor: pointer;
+}
+#api-vertical-nav .api-nav-item.active {
+  color: #0088ce;
+}
+#api-vertical-nav .api-nav-item.selected {
+  border-right: 1px solid white;
+  color: black;
+  background-color: white;
+}
+#api-vertical-nav .api-nav-item > span {
+  font-size: 22px;
+  display: inline-block;
+}
+#api-vertical-nav .api-nav-item > div {
+  font-size: 14px;
+}
+
+#api-vertical-nav-details {
+  position: absolute;
+  left: 120px;
+  width: 280px;
+  top: 30px;
+  bottom:0;
+  background-color: white;
+  border-right: 1px solid #ddd;
+  z-index: 20;
+  padding: 15px;
+}
+#api-vertical-nav-details .api-nav-detail-item h3 {
+  margin-top:0;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #ddd;
+}
+#api-vertical-nav-details .api-nav-detail-item p.description {
+  line-height: 17px;
+  padding: 3px;
+}
+#api-vertical-nav-details .api-nav-detail-item h4 {
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 20px;
+}
+#api-vertical-nav-details .api-nav-detail-item .action {
+  padding-left: 8px;
+}
+
+#api-nav-menu-shade {
+  position: absolute;
+  left: 120px;
+  right:0;
+  top: 30px;
+  bottom:0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, .2);
+}
+
+#api-nav-menu-container {
+  position: absolute;
+  left: 20px;
+  top: 68px;
+  bottom:0;
+  width: 200px;
+  z-index: 20;
+}
+
+#api-nav-menu-container .api-nav-menu {
+  font-size: 16px;
+  background-color: white;
+}
+#api-nav-menu-container .api-nav-menu > a {
+  text-decoration: none;
+}
+#api-nav-menu-container .api-nav-menu .menu-item {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+}
+#api-nav-menu-container .api-nav-menu .menu-item:hover {
+  background-color: #39a5dc;
+  color: white;
+}
+#api-nav-menu-container .api-nav-menu .menu-item > span.fa {
+  margin-right: 5px;
+}

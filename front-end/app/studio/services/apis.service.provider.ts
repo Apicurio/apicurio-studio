@@ -6,11 +6,7 @@ import {RemoteApisService} from "./apis-remote.service";
 
 
 function ApisServiceFactory(http: Http): IApisService {
-    if (true == true) {
-        return new LocalApisService();
-    } else {
-        return new RemoteApisService(http);
-    }
+    return new LocalApisService();
 };
 
 

@@ -5,7 +5,7 @@ import {Api} from "../models/api.model";
 
 export interface IApisService {
 
-    getRecentApis(): Api[];
+    getRecentApis(): Promise<Api[]>;
 
 }
 

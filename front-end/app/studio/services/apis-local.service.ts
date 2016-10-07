@@ -11,9 +11,9 @@ export class LocalApisService implements IApisService {
         console.log("[local] Creating apis service");
     }
 
-    getRecentApis(): Api[] {
+    getRecentApis(): Promise<Api[]> {
         console.log("[local] Getting the list of recent APIs!");
-        return [];
+        return Promise.resolve([]);
     }
 
 }

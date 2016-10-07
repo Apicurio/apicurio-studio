@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router }            from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router, NavigationStart} from '@angular/router';
 
 /**
  * Models the sub-menus off the main left-hand vertical nav.
@@ -13,16 +13,23 @@ enum VerticalNavSubMenuType {
     moduleId: module.id,
     selector: 'vertical-nav',
     templateUrl: 'vertical-nav.component.html',
-    styleUrls: [ 'vertical-nav.component.css' ]
+    styleUrls: ['vertical-nav.component.css']
 })
 export class VerticalNavComponent implements OnInit {
 
     public subMenuTypes: any = VerticalNavSubMenuType;
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
 
-    constructor(private router: Router) { }
+    constructor(private router: Router) {
+    }
 
     ngOnInit(): void {
+        console.log("Subscribing to router events.");
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationStart) {
+                this.currentSubMenu = VerticalNavSubMenuType.None;
+            }
+        });
     }
 
     /**

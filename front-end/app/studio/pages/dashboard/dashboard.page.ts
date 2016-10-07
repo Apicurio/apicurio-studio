@@ -10,7 +10,7 @@ import {Api} from "../../models/api.model";
     templateUrl: 'dashboard.page.html',
     styleUrls: ['dashboard.page.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardPageComponent implements OnInit {
 
     recentApis: Api[];
 

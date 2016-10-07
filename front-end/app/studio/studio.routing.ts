@@ -1,14 +1,18 @@
 import {ModuleWithProviders} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
-import {DashboardComponent} from './pages/dashboard/dashboard.page';
+import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
+import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 
 
 const studioRoutes: Routes = [
     {
         path: '',
-        component: DashboardComponent
+        component: DashboardPageComponent,
+        resolve: {
+            recentApis: RecentApisResolve
+        }
     },
     {
         path: 'apis',

@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Inject} from '@angular/core';
 import {Router, NavigationStart} from '@angular/router';
+import {IApisService} from "../services/apis.service";
 
 /**
  * Models the sub-menus off the main left-hand vertical nav.
@@ -20,7 +21,7 @@ export class VerticalNavComponent implements OnInit {
     public subMenuTypes: any = VerticalNavSubMenuType;
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
 
-    constructor(private router: Router) {
+    constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
     }
 
     ngOnInit(): void {

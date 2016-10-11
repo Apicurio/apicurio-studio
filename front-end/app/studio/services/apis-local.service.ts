@@ -1,5 +1,9 @@
+import {Observable} from 'rxjs/Observable';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+
 import {IApisService}   from "./apis.service";
 import {Api} from "../models/api.model";
+import {ApiRepositoryType} from "../models/api-repository-type";
 
 /**
  * An implementation of the IApisService that uses local browser storage to track your APIs.  In addition,
@@ -7,13 +11,26 @@ import {Api} from "../models/api.model";
  */
 export class LocalApisService implements IApisService {
 
+    private _recentApis: BehaviorSubject<Api[]> = new BehaviorSubject([]);
+    public recentApis: Observable<Api[]> = this._recentApis.asObservable();
+
     constructor() {
-        console.log("[local] Creating apis service");
+        this._recentApis.next([
+            {
+                id: "1",
+                name: "Gateway Config API",
+                description: null,
+                repositoryResource: null
+            }
+        ]);
     }
 
-    getRecentApis(): Promise<Api[]> {
-        console.log("[local] Getting the list of recent APIs!");
-        return Promise.resolve([]);
+    getSupportedRepositoryTypes(): ApiRepositoryType[] {
+        return [ApiRepositoryType.Github];
+    }
+
+    getRecentApis(): Observable<Api[]> {
+        return this.recentApis;
     }
 
 }

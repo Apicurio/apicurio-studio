@@ -17,6 +17,7 @@ export class ApisPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log("[DashboardPageComponent] onInit")
     }
 
 }

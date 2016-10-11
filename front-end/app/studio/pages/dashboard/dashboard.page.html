@@ -47,30 +47,20 @@
                     <h2 class="card-pf-title">Your Recent APIs</h2>
                 </div>
                 <div class="card-pf-body api-recent-apis">
-                    <div class="api-item">
-                        <a href="api-details.html">
-                            <span class="fa fa-fw fa-plane"></span><span>Gateway Configuration API</span>
+                    <div class="api-item" *ngFor="let api of recentApis">
+                        <a [routerLink]="['apis', api.id]">
+                            <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
                         </a>
-                        <p>
-                            Used to directly configure the API Gateway (bypassing the management layer).
-                        </p>
-                    </div>
-                    <div class="api-item">
-                        <a href="api-details.html">
-                            <span class="fa fa-fw fa-puzzle-piece"></span><span>Manager Configuration API</span>
-                        </a>
-                        <p>
-                            Used to manage lifecycle of, and configure policies on, managed APIs.
-                        </p>
+                        <p>{{api.description}}</p>
                     </div>
                 </div>
                 <div style="font-size: 14px" class="card-pf-footer">
                     <p>
-                        <a href="my-apis.html" class="">
+                        <a routerLink="/apis" class="">
                             <span class="fa fa-list"></span><span>List All</span>
                         </a>
                         <span></span>
-                        <a href="new-api.html" class="pull-right">
+                        <a routerLink="/apis/newapi" class="pull-right">
                             <span class="pficon pficon-add-circle-o"></span><span>Create an API</span>
                         </a>
                     </p>

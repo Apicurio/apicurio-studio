@@ -14,10 +14,11 @@ import {VerticalNavComponent} from "./components/vertical-nav.component";
 
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
+import {NewApiPageComponent} from "./pages/apis/newapi.page";
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
-    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NavHeaderComponent, VerticalNavComponent],
+    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, NavHeaderComponent, VerticalNavComponent],
     providers: [ApisServiceProvider, RecentApisResolve],
     bootstrap: [StudioComponent]
 })

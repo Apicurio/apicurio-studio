@@ -35,31 +35,9 @@
                 <a routerLink="/apis/newapi"><span class="fa fa-fw fa-plus"></span><span>New API</span></a>
             </div>
 
-            <h4 class="heading">Starred APIs</h4>
-            <div>
-                <a aria-disabled="true" href="api-details.html"><span class="fa fa-fw fa-bolt"></span><span>Gateway Configuration API</span></a>
-            </div>
-            <div>
-                <a href="api-details.html"><span class="fa fa-fw fa-bolt"></span><span>Manager API</span></a>
-            </div>
-        </div>
-        <div id="api-nav-detail-mappings" class="api-nav-detail-item" style="display:none">
-            <h3>Mappings</h3>
-            <p class="description">Choose from the actions below or jump directly to one of your starred/favorited Mappings.</p>
-            <h4 class="heading">Mapping Actions</h4>
-            <div class="action">
-                <a href="#"><span class="fa fa-fw fa-search"></span><span>List All Mappings</span></a>
-            </div>
-            <div class="action">
-                <a href="#"><span class="fa fa-fw fa-plus"></span><span>New Mapping</span></a>
-            </div>
-
-            <h4 class="heading">Starred Mappings</h4>
-            <div>
-                <a href="#"><span class="fa fa-fw fa-random"></span><span>Invoice API -> SOAP Invoices</span></a>
-            </div>
-            <div>
-                <a href="#"><span class="fa fa-fw fa-random"></span><span>Manager API -> Manager Camel Routes</span></a>
+            <h4 class="heading">Recent APIs</h4>
+            <div *ngFor="let api of apis.getRecentApis() | async">
+                <a [routerLink]="['apis', api.id]"><span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span></a>
             </div>
         </div>
     </div>

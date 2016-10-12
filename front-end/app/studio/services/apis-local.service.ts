@@ -19,7 +19,7 @@ export class LocalApisService implements IApisService {
             {
                 id: "1",
                 name: "Gateway Config API",
-                description: null,
+                description: "Used to directly configure the API Gateway (bypassing the management layer).",
                 repositoryResource: null
             }
         ]);

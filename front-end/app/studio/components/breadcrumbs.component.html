@@ -1,0 +1,10 @@
+<div class="container-fluid api-breadcrumbs">
+    <div class="row-fluid">
+        <ol class="breadcrumb">
+            <li *ngFor="let bc of breadcrumbs" [class.active]="bc.route == null">
+                <span *ngIf="bc.route == null"><span class="fa fa-fw fa-{{ bc.icon }}"></span><span>{{ bc.label }}</span></span>
+                <a *ngIf="bc.route != null" [routerLink]="bc.route"><span class="fa fa-fw fa-{{ bc.icon }}"></span><span>{{ bc.label }}</span></a>
+            </li>
+        </ol>
+    </div>
+</div>

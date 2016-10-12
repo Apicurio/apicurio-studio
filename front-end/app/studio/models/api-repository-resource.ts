@@ -1,8 +1,12 @@
 
-import {ApiRepositoryType} from "./api-repository-type";
-
 export class ApiRepositoryResource {
-    repositoryType: ApiRepositoryType;
+    repositoryType: string;
     repositoryUrl: string;
     resourceName: string;
+
+    constructor() {
+        this.repositoryType = "";
+        this.repositoryUrl = "";
+        this.resourceName = "";
+    }
 }

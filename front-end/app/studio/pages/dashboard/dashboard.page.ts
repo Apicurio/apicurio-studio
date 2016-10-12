@@ -24,7 +24,6 @@ export class DashboardPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log("[DashboardPageComponent] onInit: " + JSON.stringify(this.route.data));
         this.route.data.subscribe( value => {
             this.recentApis = value["recentApis"];
         })

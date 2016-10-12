@@ -3,7 +3,6 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {IApisService}   from "./apis.service";
 import {Api} from "../models/api.model";
-import {ApiRepositoryType} from "../models/api-repository-type";
 
 /**
  * An implementation of the IApisService that uses local browser storage to track your APIs.  In addition,
@@ -25,8 +24,8 @@ export class LocalApisService implements IApisService {
         ]);
     }
 
-    getSupportedRepositoryTypes(): ApiRepositoryType[] {
-        return [ApiRepositoryType.Github];
+    getSupportedRepositoryTypes(): string[] {
+        return ["Github"];
     }
 
     getRecentApis(): Observable<Api[]> {

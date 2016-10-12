@@ -22,49 +22,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-body" style="padding-top: 25px">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="api-name">Name</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="api-name" class="form-control" placeholder="Enter the API's name">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="api-description">Description</label>
-                            <div class="col-sm-10">
-                                <textarea id="api-description" class="form-control" placeholder="Type a short description of the API"></textarea>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="api-repository-type">Repository Type</label>
-                            <div class="col-sm-10">
-                                <select id="api-repository-type" class="selectpicker">
-                                    <option>Github</option>
-                                    <option>Gitlab</option>
-                                    <option>Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="api-repository">Repository</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="api-repository" class="form-control" placeholder="Specify a URL to a repository">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="api-repository-resource" class="form-control" placeholder="Enter the path to a resource within the repository">
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <a href="api-details.html" class="btn btn-primary">Create API</a>
-                            </div>
-                        </div>
-                    </form>
+                    <newapi-form (onCreateApi)="onCreateApi($event)" #newApiForm></newapi-form>
                 </div>
             </div>
 

@@ -2,7 +2,6 @@ import {OpaqueToken} from "@angular/core";
 import {Observable} from 'rxjs/Observable';
 
 import {Api} from "../models/api.model";
-import {ApiRepositoryType} from "../models/api-repository-type";
 
 
 export interface IApisService {
@@ -10,9 +9,9 @@ export interface IApisService {
     /**
      * Gets an array of the repository types supported by this apis service.
      *
-     * @return ApiRepositoryType[]
+     * @return string[]
      */
-    getSupportedRepositoryTypes(): ApiRepositoryType[];
+    getSupportedRepositoryTypes(): string[];
 
     /**
      * Gets an observable over the recent APIs.  Callers can then subscribe to this

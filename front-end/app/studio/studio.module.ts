@@ -17,9 +17,12 @@ import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {NewApiPageComponent} from "./pages/apis/newapi.page";
 
+import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
+
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
-    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent],
+    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, NavHeaderComponent,
+        VerticalNavComponent, BreadcrumbsComponent, NewApiFormComponent],
     providers: [ApisServiceProvider, RecentApisResolve],
     bootstrap: [StudioComponent]
 })

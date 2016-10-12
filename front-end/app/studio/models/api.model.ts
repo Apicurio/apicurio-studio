@@ -8,4 +8,11 @@ export class Api {
     description: string;
     repositoryResource: ApiRepositoryResource;
 
+    constructor() {
+        this.id = "";
+        this.name = "";
+        this.description = "";
+        this.repositoryResource = new ApiRepositoryResource();
+    }
+
 }

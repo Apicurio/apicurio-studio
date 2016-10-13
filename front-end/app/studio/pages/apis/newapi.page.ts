@@ -32,6 +32,13 @@ export class NewApiPageComponent implements OnInit {
      */
     public onCreateApi(api: Api) {
         console.log("[NewApiPageComponent] onCreateApi(): " + JSON.stringify(api))
+        this.apis.createApi(api).then(updatedApi => {
+            let link: string[] = [ "/apis", updatedApi.id ];
+            console.info("[NewApiPageComponent] Navigating to: %o", link);
+            this.router.navigate(link);
+        }).catch( error => {
+            console.error("[NewApiPageComponent] Error saving API: %o", error);
+        })
     }
 
 }

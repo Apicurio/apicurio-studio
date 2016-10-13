@@ -1,7 +1,6 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
-import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
 
 /**
@@ -17,15 +16,12 @@ export class DashboardPageComponent implements OnInit {
 
     recentApis: Api[];
 
-    constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        @Inject(IApisService) private apis: IApisService) {
+    constructor(private route: ActivatedRoute) {
     }
 
     ngOnInit(): void {
         this.route.data.subscribe( value => {
             this.recentApis = value["recentApis"];
-        })
+        });
     }
 }

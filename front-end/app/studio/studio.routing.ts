@@ -5,9 +5,11 @@ import {Routes, RouterModule} from '@angular/router';
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {NewApiPageComponent} from "./pages/apis/newapi.page";
+import {ApiDetailPageComponent} from "./pages/apis/api-detail.page";
 
 /* Resolvers */
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
+import {ApiResolve} from "./pages/apis/api-detail.resolve";
 
 
 const studioRoutes: Routes = [
@@ -25,7 +27,14 @@ const studioRoutes: Routes = [
     {
         path: 'apis/newapi',
         component: NewApiPageComponent
-    }
+    },
+    {
+        path: 'apis/:apiId',
+        component: ApiDetailPageComponent,
+        resolve: {
+            api: ApiResolve
+        }
+    },
 ];
 
 

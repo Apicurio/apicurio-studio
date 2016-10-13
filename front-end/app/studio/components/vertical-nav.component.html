@@ -35,7 +35,7 @@
                 <a routerLink="/apis/newapi"><span class="fa fa-fw fa-plus"></span><span>New API</span></a>
             </div>
 
-            <h4 class="heading">Recent APIs</h4>
+            <h4 class="heading" *ngIf="(apis.getRecentApis() | async).length > 0">Recent APIs</h4>
             <div *ngFor="let api of apis.getRecentApis() | async">
                 <a [routerLink]="['apis', api.id]"><span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span></a>
             </div>

@@ -3,6 +3,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {IApisService}   from "./apis.service";
 import {Api} from "../models/api.model";
+import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.local-apis.apis";
@@ -96,7 +97,7 @@ export class LocalApisService implements IApisService {
         // Generate a new ID for the Api
         api.id = String(this.apiIdCounter++);
         // Push the new Api onto the list
-        this.allApis.push(api);
+        this.allApis.unshift(api);
         // Save the result in local storage
         this.storeApisInLocalStorage(this.allApis);
         // Publish some events
@@ -113,15 +114,50 @@ export class LocalApisService implements IApisService {
      */
     getApi(apiId: string): Promise<Api> {
         for (var api of this.allApis) {
-            console.info("[LocalApisService] Comparing " + apiId + " to API with id: " + api.id);
             if (api.id === apiId) {
-                console.info("[LocalApisService] Found API with id: " + apiId);
-                console.info("[LocalApisService] %o", api);
                 return Promise.resolve(api);
             }
         }
-        console.info("[LocalApisService] No API found with id: " + apiId);
         return Promise.resolve(null);
+    }
+
+    /**
+     * Gets the list of collaborators for the API with the given id.  This will use the github
+     * API to fetch all of the commits associated with the resource.  It will then create a
+     * summary object (the ApiCollaborators object) from this information and return it.
+     *
+     * The github API call is this:
+     *
+     * ```
+     * curl -u USER:PASS https://api.github.com/repos/ORG/REPO/commits?path=/path/to/file.json
+     * ```
+     *
+     * @param apiId
+     * @return {undefined}
+     */
+    getCollaborators(apiId: string): Promise<ApiCollaborators> {
+        console.info("[LocalApisService] Getting collaborator info.");
+        let rval: ApiCollaborators = new ApiCollaborators();
+        rval.totalChanges = 100;
+
+        let c1 = new ApiCollaborator();
+        c1.userName = "gwashington";
+        c1.numChanges = 25;
+
+        let c2 = new ApiCollaborator();
+        c2.userName = "alincoln";
+        c2.numChanges = 3;
+
+        let c3 = new ApiCollaborator();
+        c3.userName = "bobama";
+        c3.numChanges = 19;
+
+        rval.collaborators.push(c1);
+        rval.collaborators.push(c2);
+        rval.collaborators.push(c3);
+
+        console.info("[LocalApisService] Returning collaborator info: %o", rval);
+        return Promise.resolve(rval);
     }
 
 }

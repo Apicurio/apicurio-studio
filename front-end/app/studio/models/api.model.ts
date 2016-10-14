@@ -7,12 +7,20 @@ export class Api {
     name: string;
     description: string;
     repositoryResource: ApiRepositoryResource;
+    createdOn: Date;
+    createdBy: string;
+    modifiedOn: Date;
+    modifiedBy: string;
 
     constructor() {
         this.id = "";
         this.name = "";
         this.description = "";
         this.repositoryResource = new ApiRepositoryResource();
+        this.createdOn = new Date();
+        this.createdBy = "";
+        this.modifiedOn = new Date();
+        this.modifiedBy = "";
     }
 
 }

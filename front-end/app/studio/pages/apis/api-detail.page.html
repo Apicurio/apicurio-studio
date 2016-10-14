@@ -2,15 +2,18 @@
     {
         label: 'Dashboard',
         icon: 'dashboard',
-        route: [ '' ]
+        route: [ '/' ]
     },
     {
         label: 'APIs',
         icon: 'search',
-        route: [ 'apis' ]
+        route: [ '/apis' ]
+    },
+    {
+        label: api.name,
+        icon: 'bolt'
     }
 ]"></breadcrumbs>
-
 <div class="container-fluid api-details">
     <div class="row-fluid">
         <!-- Left Column -->
@@ -23,21 +26,9 @@
                         <div class="card-pf card-pf-accented">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
-                                    <span class="fa fa-plane api-deployed api-card-icon"></span>
-                                    <span>Gateway Configuration API</span>
+                                    <span class="fa fa-fw fa-bolt api-deployed api-card-icon"></span>
+                                    <span>{{ api.name }}</span>
                                     <div class="pull-right">
-                                        <div class="dropdown" style="display:inline; margin-right: 20px">
-                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-                                                Version: 1.1
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">2.0</a></li>
-                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">1.2</a></li>
-                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">1.1</a></li>
-                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">1.0</a></li>
-                                            </ul>
-                                        </div>
                                         <div class="dropdown dropdown-kebab-pf" style="display:inline;">
                                             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight" data-toggle="dropdown"
                                                     aria-haspopup="true" aria-expanded="true">
@@ -45,7 +36,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
                                                 <li>
-                                                    <a href="api-editor-design.html">
+                                                    <a href="#">
                                                         <span class="fa fa-fw fa-pencil"></span>
                                                         <span>Design</span>
                                                     </a>
@@ -64,26 +55,13 @@
                                                 </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li>
-                                                    <a href="api-editor-design.html">
-                                                        <span class="fa fa-fw fa-file-code-o"></span>
-                                                        <span>Generate Client</span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="api-editor-design.html">
-                                                        <span class="fa fa-fw fa-file-code-o"></span>
-                                                        <span>Bootstrap Impl</span>
-                                                    </a>
-                                                </li>
-                                                <li role="separator" class="divider"></li>
-                                                <li>
-                                                    <a href="api-editor-design.html">
+                                                    <a href="#">
                                                         <span class="fa fa-fw fa-hdd-o"></span>
                                                         <span>Export</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="api-editor-design.html">
+                                                    <a href="#">
                                                         <span class="fa fa-fw fa-trash"></span>
                                                         <span>Delete</span>
                                                     </a>
@@ -94,21 +72,25 @@
                                 </h1>
                             </div>
                             <div class="card-pf-body">
-                                <h3 style="margin-top: 30px; margin-bottom: 25px;">Used to directly configure the API Gateway (bypassing the management layer).</h3>
-                                <div style="margin-left: 15px">
+                                <h3 class="api-description">{{ api.description }}</h3>
+                                <div class="api-created-info">
                                     <div>
                                         <span class="fa fa-clock-o"></span>
-                                        <span>Created on <em>2016-10-13</em></span>
+                                        <span>Created on <em>{{ api.createdOn | date }}</em></span>
+                                    </div>
+                                    <div *ngIf="api.createdBy">
+                                        <span class="fa fa-user"></span>
+                                        <span>Created by <em>{{ api.createdBy }}</em></span>
                                     </div>
                                     <div>
-                                        <span class="fa fa-user"></span>
-                                        <span>Created by <em>tbrady</em></span>
+                                        <span class="fa fa-github"></span>
+                                        <input readonly="readonly" class="api-resource-url-value" id="api-repository-url" type="text" value="{{ api.repositoryResource.repositoryUrl + '/' + api.repositoryResource.resourceName }}">
                                     </div>
                                 </div>
-                                <div style="margin-top: 20px">
-                                    <a href="api-editor-design.html" class="btn btn-primary">Design API</a>
-                                    <a href="#" class="btn btn-default pull-right" style="margin-left: 10px;">View Documentation</a>
-                                    <a href="#" class="btn btn-default pull-right" style="margin-left: 10px;">Manage Tests</a>
+                                <div class="api-action-buttons">
+                                    <a href="#" class="btn btn-primary">Design API</a>
+                                    <a href="#" class="btn btn-default pull-right">View Documentation</a>
+                                    <a href="#" class="btn btn-default pull-right">Manage Tests</a>
                                 </div>
                             </div>
                         </div>
@@ -121,27 +103,16 @@
                                 <h2 style="height: 18px;" class="card-pf-title">Top Collaborators</h2>
                             </div>
                             <div class="card-pf-body">
-                                <div class="progress-container progress-description-left">
-                                    <div class="progress-description">tbrady</div>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 57%;">
-                                            <span><strong>57 of 100</strong> commits</span>
-                                        </div>
-                                    </div>
+                                <div class="api-data-loading" *ngIf="!dataLoaded['collaborators']">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading collaborators data...</p>
                                 </div>
-                                <div class="progress-container progress-description-left">
-                                    <div class="progress-description">jedelman</div>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 27%;">
-                                            <span><strong>27 of 100</strong> commits</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="progress-container progress-description-left">
-                                    <div class="progress-description">rgronkowski</div>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 12%;">
-                                            <span><strong>12 of 100</strong> commits</span>
+                                <div class="api-collaborators" *ngIf="dataLoaded['collaborators']">
+                                    <div class="progress-container progress-description-left" *ngFor="let c of collaborators.collaborators">
+                                        <div class="progress-description">{{ c.userName }}</div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.numChanges / collaborators.totalChanges) * 100) + '%'">
+                                                <span><strong>{{ c.numChanges }} of {{ collaborators.totalChanges }}</strong> commits</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

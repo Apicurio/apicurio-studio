@@ -2,6 +2,7 @@ import {OpaqueToken} from "@angular/core";
 import {Observable} from 'rxjs/Observable';
 
 import {Api} from "../models/api.model";
+import {ApiCollaborators} from "../models/api-collaborators";
 
 
 export interface IApisService {
@@ -42,6 +43,12 @@ export interface IApisService {
      * @param apiId the ID of the api
      */
     getApi(apiId: string): Promise<Api>;
+
+    /**
+     * Gets the list of collaborators for the API with the given id.
+     * @param apiId
+     */
+    getCollaborators(apiId: string): Promise<ApiCollaborators>;
 
 }
 

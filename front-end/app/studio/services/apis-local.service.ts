@@ -113,12 +113,24 @@ export class LocalApisService implements IApisService {
      * @return Promise<Api>
      */
     getApi(apiId: string): Promise<Api> {
-        for (var api of this.allApis) {
+        let rval: Api = null;
+        let idx: number = 0;
+        while (idx < this.allApis.length) {
+            let api: Api = this.allApis[idx];
             if (api.id === apiId) {
-                return Promise.resolve(api);
+                rval = api;
+                break;
             }
+            idx++;
         }
-        return Promise.resolve(null);
+        if (rval != null && idx > 0) {
+            this.allApis.splice(idx, 1);
+            this.allApis.unshift(rval);
+            this._apis.next(this.allApis);
+            let ra: Api[] = this.allApis.slice(0, 4);
+            this._recentApis.next(ra);
+        }
+        return Promise.resolve(rval);
     }
 
     /**

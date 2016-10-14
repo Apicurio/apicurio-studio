@@ -47,4 +47,28 @@ export class ApiDetailPageComponent implements OnInit {
         } );
     }
 
+    /**
+     * Returns a full URL for the repository resource, for display purposes.
+     * @return {string}
+     */
+    public getResourceUrlLabel(): string {
+        let sep: string = "";
+        if (!this.api.repositoryResource.resourceName.startsWith('/')) {
+            sep = "/";
+        }
+        return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
+    }
+
+    /**
+     * Returns a full URL for the repository resource, for link purposes.
+     * @return {string}
+     */
+    public getResourceUrlHref(): string {
+        let sep: string = "/blob/master";
+        if (!this.api.repositoryResource.resourceName.startsWith('/')) {
+            sep += "/";
+        }
+        return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
+    }
+
 }

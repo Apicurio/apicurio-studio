@@ -42,24 +42,18 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">
+                                                    <a href="#" class="disabled" aria-disabled="true">
                                                         <span class="fa fa-fw fa-book"></span>
                                                         <span>Documentation</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#">
+                                                    <a href="#" class="disabled" aria-disabled="true">
                                                         <span class="fa fa-fw fa-check-square-o"></span>
                                                         <span>Tests</span>
                                                     </a>
                                                 </li>
                                                 <li role="separator" class="divider"></li>
-                                                <li>
-                                                    <a href="#">
-                                                        <span class="fa fa-fw fa-hdd-o"></span>
-                                                        <span>Export</span>
-                                                    </a>
-                                                </li>
                                                 <li>
                                                     <a href="#">
                                                         <span class="fa fa-fw fa-trash"></span>
@@ -75,22 +69,26 @@
                                 <h3 class="api-description">{{ api.description }}</h3>
                                 <div class="api-created-info">
                                     <div>
-                                        <span class="fa fa-clock-o"></span>
+                                        <span class="fa fa-fw fa-clock-o"></span>
                                         <span>Created on <em>{{ api.createdOn | date }}</em></span>
                                     </div>
                                     <div *ngIf="api.createdBy">
-                                        <span class="fa fa-user"></span>
+                                        <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
                                     </div>
                                     <div>
-                                        <span class="fa fa-github"></span>
-                                        <input readonly="readonly" class="api-resource-url-value" id="api-repository-url" type="text" value="{{ api.repositoryResource.repositoryUrl + '/' + api.repositoryResource.resourceName }}">
+                                        <span class="fa fa-fw fa-github"></span>
+                                        <a class="api-resource-url-value" target="_blank"
+                                           href="{{ getResourceUrlHref() }}">
+                                            <span>{{ getResourceUrlLabel() }}</span>
+                                            <span class="fa fa-external-link"></span>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="api-action-buttons">
                                     <a href="#" class="btn btn-primary">Design API</a>
-                                    <a href="#" class="btn btn-default pull-right">View Documentation</a>
-                                    <a href="#" class="btn btn-default pull-right">Manage Tests</a>
+                                    <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">View Documentation</a>
+                                    <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">Manage Tests</a>
                                 </div>
                             </div>
                         </div>

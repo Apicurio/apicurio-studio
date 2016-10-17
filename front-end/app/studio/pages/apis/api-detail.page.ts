@@ -64,9 +64,9 @@ export class ApiDetailPageComponent implements OnInit {
      * @return {string}
      */
     public getResourceUrlHref(): string {
-        let sep: string = "/blob/master";
+        let sep: string = "";
         if (!this.api.repositoryResource.resourceName.startsWith('/')) {
-            sep += "/";
+            sep = "/";
         }
         return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
     }

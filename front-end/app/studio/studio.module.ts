@@ -7,10 +7,16 @@ import {HttpModule} from '@angular/http';
 import {StudioComponent} from './studio.component';
 import {StudioRouting} from './studio.routing';
 
-/* Resolves */
+/* Service Providers */
 import {ApisServiceProvider} from "./services/apis.service.provider";
+import {AuthenticationServiceProvider} from "./services/auth.service.provider";
+
+/* Resolves */
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 import {ApiResolve} from "./pages/apis/api-detail.resolve";
+
+/* Guards */
+import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 
 /* Global Components */
 import {NavHeaderComponent} from "./components/nav-header.component";
@@ -18,6 +24,7 @@ import {VerticalNavComponent} from "./components/vertical-nav.component";
 import {BreadcrumbsComponent} from "./components/breadcrumbs.component";
 
 /* Pages */
+import {LoginPageComponent} from "./pages/login/login.page";
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {NewApiPageComponent} from "./pages/apis/newapi.page";
@@ -28,9 +35,12 @@ import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
-    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, NavHeaderComponent,
-        VerticalNavComponent, BreadcrumbsComponent, NewApiFormComponent, ApiDetailPageComponent],
-    providers: [ApisServiceProvider, RecentApisResolve, ApiResolve],
+    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
+        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, NewApiFormComponent, ApiDetailPageComponent],
+    providers: [ApisServiceProvider, AuthenticationServiceProvider,
+        RecentApisResolve, ApiResolve,
+        AuthenticationCanActivateGuard
+    ],
     bootstrap: [StudioComponent]
 })
 export class StudioModule {

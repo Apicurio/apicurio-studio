@@ -1,0 +1,33 @@
+import {OpaqueToken} from "@angular/core";
+import {Observable} from 'rxjs/Observable';
+
+import {User} from "../models/user.model";
+
+
+export interface IAuthenticationService {
+
+    /**
+     * A way for consumers to subscribe to the current authentication status of the user/app.
+     */
+    isAuthenticated(): Observable<boolean>;
+
+    /**
+     * Get the currently authenticated user.  May be null if the user is not currently authenticated.
+     */
+    getAuthenticatedUser(): Observable<User>;
+
+    /**
+     * Called to authenticate a user.
+     * @param user
+     * @param credential
+     */
+    login(user:string, credential:any): Promise<User>;
+
+    /**
+     * Called to log out the current user.
+     */
+    logout(): void;
+
+}
+
+export const IAuthenticationService = new OpaqueToken("IAuthenticationService");

@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-pf-body">
                     <p>
-                        Hey <strong>USER</strong>, thanks for logging into the <strong>API Design Studio</strong>.  Hopefully
+                        Hey <strong>{{ (user() | async).name }}</strong>, thanks for logging into the <strong>API Design Studio</strong>.  Hopefully
                         you're finding it easy to use this tool to design and collaborate on new (and existing) APIs.
                     </p>
                     <div>

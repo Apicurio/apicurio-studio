@@ -2,6 +2,8 @@
 .settings
 .classpath
 target/
+.idea/
+.site-src/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

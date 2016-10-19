@@ -4,7 +4,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {IApisService}   from "./apis.service";
 import {Api} from "../models/api.model";
 import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
-import {Http, Headers, RequestOptions} from "@angular/http";
+import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
 
 
@@ -168,7 +168,7 @@ export class LocalApisService implements IApisService {
     }
 
     /**
-     * Gets the list of collaborators for the API with the given id.  This will use the github
+     * Gets the list of collaborators for the given API.  This will use the github
      * API to fetch all of the commits associated with the resource.  It will then create a
      * summary object (the ApiCollaborators object) from this information and return it.
      *
@@ -178,32 +178,67 @@ export class LocalApisService implements IApisService {
      * curl -u USER:PASS https://api.github.com/repos/ORG/REPO/commits?path=/path/to/file.json
      * ```
      *
-     * @param apiId
+     * @param api
      * @return {undefined}
      */
-    getCollaborators(apiId: string): Promise<ApiCollaborators> {
+    getCollaborators(api: Api): Promise<ApiCollaborators> {
         console.info("[LocalApisService] Getting collaborator info.");
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
+        console.info("[LocalApisService] Parsed GRI: %o", gri);
+        let path: string = api.repositoryResource.resourceName;
+        if (path.startsWith("/")) {
+            path = path.slice(1);
+        }
+        let commitsUrl: string = this.endpoint("/repos/:owner/:repo/commits", {
+            owner: gri.org,
+            repo: gri.repo
+        });
         let rval: ApiCollaborators = new ApiCollaborators();
-        rval.totalChanges = 100;
 
-        let c1 = new ApiCollaborator();
-        c1.userName = "gwashington";
-        c1.numChanges = 25;
+        let headers: Headers = new Headers({ 'Accept': 'application/json' });
+        this.authService.injectAuthHeaders(headers);
+        let searchParams: URLSearchParams = new URLSearchParams();
+        searchParams.set("path", path);
+        let options = new RequestOptions({
+            headers: headers,
+            search: searchParams
+        });
+        let cmap: any = {};
 
-        let c2 = new ApiCollaborator();
-        c2.userName = "alincoln";
-        c2.numChanges = 3;
+        return this.http.get(commitsUrl, options).map( response => {
+            let commits: any[] = response.json();
+            for (let commit of commits) {
+                let user: string = commit.author.login;
+                let collaborator: ApiCollaborator;
+                if (user in cmap) {
+                    collaborator = cmap[user];
+                } else {
+                    collaborator = new ApiCollaborator();
+                    collaborator.userName = user;
+                    collaborator.numChanges = 0;
+                    rval.collaborators.push(collaborator);
+                    cmap[user] = collaborator;
+                }
+                rval.totalChanges++;
+                collaborator.numChanges++;
+            }
+            return this.top5Collaborators(rval);
+        }).toPromise();
+    }
 
-        let c3 = new ApiCollaborator();
-        c3.userName = "bobama";
-        c3.numChanges = 19;
-
-        rval.collaborators.push(c1);
-        rval.collaborators.push(c2);
-        rval.collaborators.push(c3);
-
-        console.info("[LocalApisService] Returning collaborator info: %o", rval);
-        return Promise.resolve(rval);
+    /**
+     * Filter the list of collaborators so that only the top 5 are returned.
+     * @param collaborators
+     */
+    private top5Collaborators(collaborators: ApiCollaborators): ApiCollaborators {
+        collaborators.collaborators = collaborators.collaborators.sort( (a: ApiCollaborator, b: ApiCollaborator) => {
+            if (a.numChanges > b.numChanges) {
+                return -1;
+            } else {
+                1
+            }
+        }).slice(0, 5);
+        return collaborators;
     }
 
     /**
@@ -269,7 +304,6 @@ export class LocalApisService implements IApisService {
      */
     public resolveApiInfo(api: Api): Promise<Api> {
         let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
-        console.info("[LocalApisService] Parsed GRI: %o", gri);
         let path: string = api.repositoryResource.resourceName;
         if (path.startsWith("/")) {
             path = path.slice(1);
@@ -279,7 +313,6 @@ export class LocalApisService implements IApisService {
             repo: gri.repo,
             path: path
         });
-        console.info("[LocalApisService] Resolving API info at URL: %s", contentUrl);
         let headers = new Headers({ 'Accept': 'application/json' });
         this.authService.injectAuthHeaders(headers);
         let options = new RequestOptions({ headers: headers });

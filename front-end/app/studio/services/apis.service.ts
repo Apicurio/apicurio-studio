@@ -53,9 +53,9 @@ export interface IApisService {
 
     /**
      * Gets the list of collaborators for the API with the given id.
-     * @param apiId
+     * @param api
      */
-    getCollaborators(apiId: string): Promise<ApiCollaborators>;
+    getCollaborators(api: Api): Promise<ApiCollaborators>;
 
 }
 

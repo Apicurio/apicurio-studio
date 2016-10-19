@@ -40,7 +40,7 @@ export class ApiDetailPageComponent implements OnInit {
      */
     public loadAsyncPageData(): void {
         console.info("[ApiDetailPageComponent] Loading async page data");
-        this.apis.getCollaborators(this.api.id).then( collaborators => {
+        this.apis.getCollaborators(this.api).then( collaborators => {
             console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
             this.collaborators = collaborators;
             this.dataLoaded["collaborators"] = true;

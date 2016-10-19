@@ -10,8 +10,8 @@
     }
 ]"></breadcrumbs>
 <div class="container-fluid">
-    <div class="row" style="padding: 15px">
-        <div class="col-md-3" style="font-size: 15px; padding-top: 10px">
+    <div class="newapi-form row">
+        <div class="form-instructions col-md-3">
             <ol>
                 <li>Choose a name (<b>Required</b>)</li>
                 <li>Set the description</li>
@@ -19,13 +19,12 @@
             </ol>
         </div>
         <div class="col-md-7">
-
-            <div class="panel panel-default">
-                <div class="panel-body" style="padding-top: 25px">
-                    <newapi-form (onCreateApi)="onCreateApi($event)" #newApiForm></newapi-form>
-                </div>
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>NOTE:</strong>
+                <span>Try to drag and drop the API definition resource URL from your source control site (e.g. github) into the box below!</span>
             </div>
-
+            <newapi-form (onCreateApi)="onCreateApi($event)" #newApiForm></newapi-form>
         </div>
     </div>
 </div>

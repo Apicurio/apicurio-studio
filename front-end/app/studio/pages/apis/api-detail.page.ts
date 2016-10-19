@@ -68,7 +68,7 @@ export class ApiDetailPageComponent implements OnInit {
         if (!this.api.repositoryResource.resourceName.startsWith('/')) {
             sep = "/";
         }
-        return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
+        return this.api.repositoryResource.repositoryUrl + "/blob/master" + sep + this.api.repositoryResource.resourceName;
     }
 
 }

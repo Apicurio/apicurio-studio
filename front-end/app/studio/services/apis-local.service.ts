@@ -4,9 +4,27 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {IApisService}   from "./apis.service";
 import {Api} from "../models/api.model";
 import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
+import {Http, Headers, RequestOptions} from "@angular/http";
+import {IAuthenticationService} from "./auth.service";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.local-apis.apis";
+
+const GITHUB_API_ENDPOINT = "https://api.github.com";
+
+class GithubRepoInfo {
+    org: string;
+    repo: string;
+
+    public static fromUrl(url: string): GithubRepoInfo {
+        let items: string[] = url.split("/");
+        let repoInfo: GithubRepoInfo = new GithubRepoInfo();
+        repoInfo.repo = items.pop();
+        repoInfo.org = items.pop();
+        return repoInfo;
+    }
+
+}
 
 
 /**
@@ -27,14 +45,30 @@ export class LocalApisService implements IApisService {
 
     /**
      * Constructor.
+     * @param http
+     * @param authService
      */
-    constructor() {
+    constructor(private http: Http, private authService: IAuthenticationService) {
         this.allApis = this.loadApisFromLocalStorage();
         console.info("[LocalApisService] Loaded APIs from localStorage: %o", this.allApis);
 
         this._apis.next(this.allApis);
         let ra: Api[] = this.allApis.slice(0, 4);
         this._recentApis.next(ra);
+    }
+
+    /**
+     * Creates a github API endpoint from the api path and params.
+     * @param path
+     * @param params
+     * @return {string}
+     */
+    private endpoint(path: string, params: any): string {
+        for (let key in params) {
+            let value: string = params[key];
+            path = path.replace(":" + key, value);
+        }
+        return GITHUB_API_ENDPOINT + path;
     }
 
     /**
@@ -170,6 +204,97 @@ export class LocalApisService implements IApisService {
 
         console.info("[LocalApisService] Returning collaborator info: %o", rval);
         return Promise.resolve(rval);
+    }
+
+    /**
+     * Discover details about an API by parsing the URL and then querying github (assuming it's a valid
+     * github URL) for the details of the API.  This entails grabbing the full content of the API definition,
+     * parsing it, and extracting the name and description.  If these are not found, name and description
+     * are generated from the URL.
+     * @param apiUrl
+     * @return {undefined}
+     */
+    discoverApi(apiUrl: string): Promise<Api> {
+        if (!apiUrl) {
+            return Promise.reject<Api>("Invalid API url.");
+        }
+        if (!apiUrl.startsWith('http')) {
+            return Promise.reject<Api>("Invalid API url.");
+        }
+
+        var parser = document.createElement('a');
+        parser.href = apiUrl;
+
+        if (parser.hostname != "github.com") {
+            return Promise.reject<Api>("Host not supported: " + parser.hostname);
+        }
+
+        if (!parser.pathname) {
+            return Promise.reject<Api>("Incomplete github URL.");
+        }
+
+        let pathItems: string[] = parser.pathname.split("/");
+
+        if (!pathItems[0]) {
+            pathItems.shift();
+        }
+
+        if (pathItems.length < 2) {
+            return Promise.reject<Api>("Incomplete github URL.");
+        }
+
+        let api: Api = new Api();
+        api.repositoryResource.repositoryType = "Github";
+        api.repositoryResource.repositoryUrl = "http://github.com/" + pathItems.shift() + "/" + pathItems.shift();
+        if (pathItems.length >= 3 && pathItems[0] === "blob") {
+            // Remove the "blob" item
+            pathItems.shift();
+            // Remove the branch item
+            pathItems.shift();
+
+            // Set the resource path/name
+            api.repositoryResource.resourceName = "/" + pathItems.join('/');
+
+            // Resolve the name and description from this (full) repository resource
+            return this.resolveApiInfo(api);
+        } else {
+            return Promise.resolve(api);
+        }
+    }
+
+    /**
+     * Resolves the api info by fetching the content of the api definition from github and extracting
+     * the title and description.
+     * @param api
+     */
+    public resolveApiInfo(api: Api): Promise<Api> {
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
+        console.info("[LocalApisService] Parsed GRI: %o", gri);
+        let path: string = api.repositoryResource.resourceName;
+        if (path.startsWith("/")) {
+            path = path.slice(1);
+        }
+        let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
+            owner: gri.org,
+            repo: gri.repo,
+            path: path
+        });
+        console.info("[LocalApisService] Resolving API info at URL: %s", contentUrl);
+        let headers = new Headers({ 'Accept': 'application/json' });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({ headers: headers });
+        return this.http.get(contentUrl, options).toPromise().then( response => {
+            let data: any = response.json();
+            let b64content: string  = data.content;
+            let content: string = atob(b64content);
+            let pc: any = JSON.parse(content);
+
+            // TODO if the content is greater than 1MB, need to make another call to the "blob" API
+
+            api.name = pc.info.title;
+            api.description = pc.info.description;
+            return api;
+        });
     }
 
 }

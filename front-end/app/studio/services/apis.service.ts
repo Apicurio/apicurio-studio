@@ -8,6 +8,13 @@ import {ApiCollaborators} from "../models/api-collaborators";
 export interface IApisService {
 
     /**
+     * Called to discover the details about an API.  This will typically parse the URL, and then query
+     * the appropriate back-end to divine additional API details (such as its name and description).
+     * @param apiUrl
+     */
+    discoverApi(apiUrl: string): Promise<Api>;
+
+    /**
      * Gets an array of the repository types supported by this apis service.
      *
      * @return string[]

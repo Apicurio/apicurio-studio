@@ -2,6 +2,7 @@ import {OpaqueToken} from "@angular/core";
 import {Observable} from 'rxjs/Observable';
 
 import {User} from "../models/user.model";
+import {Headers} from "@angular/http";
 
 
 export interface IAuthenticationService {
@@ -28,6 +29,11 @@ export interface IAuthenticationService {
      */
     logout(): void;
 
+    /**
+     * Called to inject authentication headers into an API REST call.
+     * @param headers
+     */
+    injectAuthHeaders(headers: Headers): void;
 }
 
 export const IAuthenticationService = new OpaqueToken("IAuthenticationService");

@@ -123,4 +123,13 @@ export class GithubAuthenticationService implements IAuthenticationService {
         location.reload(true);
     }
 
+    /**
+     * Injects the authentication header into the given headers object.
+     * @param headers
+     */
+    injectAuthHeaders(headers: Headers): void {
+        let authHeader: string = "Basic " + btoa(this.githubCredentials.login + ":" + this.githubCredentials.password);
+        headers.set("Authorization", authHeader);
+    }
+
 }

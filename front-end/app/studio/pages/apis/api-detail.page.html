@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="api-collaborators" *ngIf="dataLoaded['collaborators']">
                                     <div class="progress-container progress-description-left" *ngFor="let c of collaborators.collaborators">
-                                        <div class="progress-description">{{ c.userName }}</div>
+                                        <div class="progress-description"><a href="{{ c.userUrl }}" target="_blank">{{ c.userName }}</a></div>
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.numChanges / collaborators.totalChanges) * 100) + '%'">
                                                 <span><strong>{{ c.numChanges }} of {{ collaborators.totalChanges }}</strong> commits</span>

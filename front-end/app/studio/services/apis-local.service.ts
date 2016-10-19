@@ -209,12 +209,14 @@ export class LocalApisService implements IApisService {
             let commits: any[] = response.json();
             for (let commit of commits) {
                 let user: string = commit.author.login;
+                let userUrl: string = commit.author.html_url;
                 let collaborator: ApiCollaborator;
                 if (user in cmap) {
                     collaborator = cmap[user];
                 } else {
                     collaborator = new ApiCollaborator();
                     collaborator.userName = user;
+                    collaborator.userUrl = userUrl;
                     collaborator.numChanges = 0;
                     rval.collaborators.push(collaborator);
                     cmap[user] = collaborator;
@@ -235,7 +237,7 @@ export class LocalApisService implements IApisService {
             if (a.numChanges > b.numChanges) {
                 return -1;
             } else {
-                1
+                return 1;
             }
         }).slice(0, 5);
         return collaborators;

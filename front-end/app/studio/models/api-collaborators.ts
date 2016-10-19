@@ -1,10 +1,12 @@
 
 export class ApiCollaborator {
     userName: string;
+    userUrl: string;
     numChanges: number;
 
     constructor() {
         this.userName = "";
+        this.userUrl = "";
         this.numChanges = 0;
     }
 }

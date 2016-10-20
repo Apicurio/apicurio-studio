@@ -9,4 +9,79 @@
         icon: 'search'
     }
 ]"></breadcrumbs>
-<h1>APIs!</h1>
+<div class="container-fluid api-list-apis">
+    <div class="row toolbar-pf">
+        <div class="col-sm-12">
+            <form class="toolbar-pf-actions" (submit)="filterApis()" #filterForm="ngForm">
+                <div class="form-group toolbar-pf-filter">
+                    <label class="sr-only" for="filter">Name</label>
+                    <div class="input-group" style="width: 100%">
+                        <input name="name-filter" [(ngModel)]="filters.nameFilter" type="text" class="form-control name-filter" id="filter" placeholder="Filter by name...">
+                    </div>
+                    <!-- /input-group -->
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-link" type="button" (click)="toggleSortDirection()">
+                        <span *ngIf="filters.sortDirection === 'ASC'" class="fa fa-sort-alpha-asc"></span>
+                        <span *ngIf="filters.sortDirection === 'DESC'" class="fa fa-sort-alpha-desc"></span>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="onDeleteSelected()">Delete</button>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-primary" [routerLink]="['newapi']">New API</a>
+                </div>
+                <div class="form-group toolbar-pf-view-selector">
+                    <ul class="list-inline">
+                        <li class="active"><a href="#"><i class="fa fa-th-list"></i></a></li>
+                        <li><a href="my-apis-cards.html"><i class="fa fa-th"></i></a></li>
+                    </ul>
+                </div>
+            </form>
+            <div class="row toolbar-pf-results">
+                <div class="col-sm-12">
+                    <h5>{{ filteredApis.length }} APIs found <a *ngIf="allApis.length != filteredApis.length"
+                                                                class="clear-filters" (click)="clearFilters()">(out of {{ allApis.length }} total)</a></h5>
+                </div>
+                <!-- /col -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /col -->
+    </div>
+    <div class="row api-list-items">
+        <div class="col-md-12">
+            <div class="list-group list-view-pf">
+
+                <div class="list-group-item list-view-pf-stacked" *ngFor="let api of filteredApis" [class.active]="isSelected(api)" (click)="toggleApiSelected(api)">
+                    <div class="list-view-pf-actions">
+                        <div class="dropdown pull-right dropdown-kebab-pf">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight2" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true">
+                                <span class="fa fa-ellipsis-v"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight2">
+                                <li><a href="#"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="list-view-pf-main-info">
+                        <div class="list-view-pf-left">
+                            <span class="fa fa-bolt list-view-pf-icon-sm"></span>
+                        </div>
+                        <div class="list-view-pf-body">
+                            <div class="list-view-pf-description">
+                                <div class="list-group-item-heading">
+                                    <a [routerLink]="[api.id]">{{ api.name }}</a>
+                                </div>
+                                <div class="list-group-item-text">{{ api.description }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

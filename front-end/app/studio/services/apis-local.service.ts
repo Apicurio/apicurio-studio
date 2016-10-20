@@ -8,7 +8,7 @@ import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
 
 
-const APIS_LOCAL_STORAGE_KEY = "apiman.studio.local-apis.apis";
+const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
 
 const GITHUB_API_ENDPOINT = "https://api.github.com";
 

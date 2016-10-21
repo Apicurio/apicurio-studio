@@ -11,16 +11,14 @@ const API_FILTERS_KEY = "apiman.studio.pages.apis.filters";
 class Filters {
     nameFilter: string;
     sortDirection: string;
+    layout: string;
 
     constructor(params?: any) {
-        this.nameFilter = "";
-        this.sortDirection = "ASC";
+        this.reset();
         if (params) {
-            if (params.nameFilter) {
-                this.nameFilter = params.nameFilter;
-            }
-            if (params.sortDirection) {
-                this.sortDirection = params.sortDirection;
+            for (let key in params) {
+                let value: string = params[key];
+                this[key] = value;
             }
         }
     }
@@ -29,6 +27,12 @@ class Filters {
         let name: string = api.name.toLocaleLowerCase();
         let namef: string = this.nameFilter.toLocaleLowerCase();
         return name.indexOf(namef) >= 0;
+    }
+
+    public reset(): void {
+        this.nameFilter = "";
+        this.sortDirection = "ASC";
+        this.layout = "card";
     }
 }
 
@@ -46,9 +50,7 @@ export class ApisPageComponent implements OnInit, OnDestroy {
     private selectedApis: Api[];
     private filters: Filters = new Filters();
 
-    constructor(
-        private router: Router,
-        @Inject(IApisService) private apis: IApisService) {
+    constructor(@Inject(IApisService) private apis: IApisService) {
         this.filteredApis = [];
         this.selectedApis = [];
     }
@@ -104,20 +106,26 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         this.filterApis();
     }
 
-    public toggleApiSelected(api: Api): void {
-        if (this.isSelected(api)) {
-            this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
-        } else {
-            this.selectedApis.push(api);
-        }
+    public onSelected(sapis: Api[]): void {
+        console.info("Caught the onApisSelected event!  Data: %o", sapis);
+        this.selectedApis = sapis;
     }
 
-    public isSelected(api: Api): boolean {
-        return this.selectedApis.indexOf(api) != -1;
-    }
-
-    public onDeleteSelected(): void {
+    public onDelete(): void {
         alert("Not yet implemented!");
+        // TODO implement this - NOTE: get the intersection of "filterApis" and "selectedApis" to determine the list of items to operate on
+    }
+
+    public onListLayout(): void {
+        this.filters.layout = 'list';
+    }
+
+    public onCardLayout(): void {
+        this.filters.layout = 'card';
+    }
+
+    public onReset(): void {
+        this.filters.reset();
     }
 
 }

@@ -1,0 +1,17 @@
+<div class="list-group list-view-pf">
+    <div class="list-group-item list-view-pf-stacked" *ngFor="let api of apis" [class.active]="isSelected(api)" (click)="toggleApiSelected(api)">
+        <div class="list-view-pf-main-info">
+            <div class="list-view-pf-left">
+                <span class="fa fa-bolt list-view-pf-icon-sm"></span>
+            </div>
+            <div class="list-view-pf-body">
+                <div class="list-view-pf-description">
+                    <div class="list-group-item-heading">
+                        <a [routerLink]="[api.id]">{{ api.name }}</a>
+                    </div>
+                    <div class="list-group-item-text">{{ api.description }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

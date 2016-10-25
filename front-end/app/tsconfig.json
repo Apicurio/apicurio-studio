@@ -7,6 +7,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "removeComments": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "rootDirs": [
+      "studio"
+    ]
   }
 }

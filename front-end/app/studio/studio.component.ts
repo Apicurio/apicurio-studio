@@ -13,7 +13,7 @@ import 'rxjs/add/operator/toPromise';
     moduleId: module.id,
     selector: 'api-design-studio',
     templateUrl: 'studio.component.html',
-    styleUrls: [ 'studio.component.less' ]
+    styleUrls: [ 'studio.component.css' ]
 })
 export class StudioComponent implements OnInit {
 

@@ -1,4 +1,6 @@
 var gulp = require('gulp');
+var ts = require('gulp-typescript');
+var inlineNg2Template = require('gulp-inline-ng2-template');
 var shell = require('gulp-shell');
 var clean = require('gulp-clean');
 var flatten = require('gulp-flatten');
@@ -17,7 +19,7 @@ var vendorBundleName = bundleHash + '.vendor.bundle.js';
 // This is main task for production use
 ////////////////////////////////////////////////////
 gulp.task('dist', function(done) {
-    runSequence('clean', 'compile_ts', 'compile_less', 'bundle', 'copy_templates', 'copy_assets', function() {
+    runSequence('clean', 'compile_less', 'compile_ts', 'bundle', 'copy_assets', function() {
         done();
     });
 });
@@ -39,19 +41,51 @@ gulp.task('clean:ts', function () {
         .pipe(clean());
 });
 
+gulp.task('clean:css', function () {
+    return gulp.src(['./studio/**/*.css', './assets/**/*.css'], {read: false})
+        .pipe(clean());
+});
+
 
 /**********************************************
  *  Compile typescript and less
  **********************************************/
 
-gulp.task('compile_ts', ['clean:ts'], shell.task([
-    'tsc'
-]));
+gulp.task('compile_less', ['clean:css'], function(done) {
+    runSequence('compile_less:assets', 'compile_less:studio', function() {
+        done();
+    });
+});
 
-gulp.task('compile_less', function () {
-    return gulp.src(['./studio/**/*.less', './assets/**/*.less'])
+gulp.task('compile_less:assets', function () {
+    return gulp.src(['./assets/**/*.less'])
         .pipe(less())
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./assets'));
+});
+
+gulp.task('compile_less:studio', function () {
+    return gulp.src(['./studio/**/*.less'])
+        .pipe(less())
+        .pipe(gulp.dest('./studio'));
+});
+
+gulp.task('compile_ts', function () {
+	return gulp.src(['typings/index.d.ts', 'studio/**/*.ts'], {base: './studio'})
+		.pipe(inlineNg2Template({
+			base: './studio',
+			useRelativePaths: true
+		}))
+		.pipe(ts({
+			"target": "es5",
+			"module": "commonjs",
+			"moduleResolution": "node",
+			"sourceMap": true,
+			"emitDecoratorMetadata": true,
+			"experimentalDecorators": true,
+			"removeComments": false,
+			"noImplicitAny": false
+		}))
+        .pipe(gulp.dest('studio'));
 });
 
 /**********************************************
@@ -83,17 +117,6 @@ gulp.task('bundle:studio', function () {
             console.log('Studio bundle error');
             console.log(err);
         });
-});
-
-
-/**********************************************
- *  Copy component resources to dist
- **********************************************/
-
-gulp.task('copy_templates', function () {
-    return gulp.src(['studio/**/*.html', 'studio/**/*.css', 'studio/**/*.less'])
-        .pipe(flatten())
-        .pipe(gulp.dest('./dist'));
 });
 
 

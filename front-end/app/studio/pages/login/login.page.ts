@@ -57,10 +57,28 @@ export class LoginPageComponent implements OnInit {
                 }
             }
 
-            this.router.navigate([ path ], { "queryParams": queryParams });
+            let rpath: string = this.asRoute(path);
+            console.info("[LoginPageComponent] Login successful, redirecting to: %s", rpath);
+
+            this.router.navigate([ this.asRoute(rpath) ], { "queryParams": queryParams });
         }).catch( reason => {
             this.authenticating = false;
             this.loginError = reason;
         });
+    }
+
+    /**
+     * Converts a path (as taken from the browser location) into a route.  This is done by removing
+     * any possible leading path context like /studio.  Example:
+     *
+     * /studio/apis/newapi  =>  /apis/newapi
+     *
+     * When the UI is deployed to a sub-context, this is necessary.
+     *
+     * @param path
+     */
+    private asRoute(path: string): string {
+        let index: number = location.pathname.indexOf("/login");
+        return path.substring(index);
     }
 }

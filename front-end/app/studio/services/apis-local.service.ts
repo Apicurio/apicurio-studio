@@ -6,11 +6,11 @@ import {Api} from "../models/api.model";
 import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
 import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
+import {AbstractGithubService} from "./github";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
 
-const GITHUB_API_ENDPOINT = "https://api.github.com";
 
 class GithubRepoInfo {
     org: string;
@@ -31,7 +31,7 @@ class GithubRepoInfo {
  * An implementation of the IApisService that uses local browser storage to track your APIs.  In addition,
  * it works directly with github to get and update API content.
  */
-export class LocalApisService implements IApisService {
+export class LocalApisService extends AbstractGithubService implements IApisService {
 
     private apiIdCounter: number = Date.now();
 
@@ -49,26 +49,13 @@ export class LocalApisService implements IApisService {
      * @param authService
      */
     constructor(private http: Http, private authService: IAuthenticationService) {
+        super();
         this.allApis = this.loadApisFromLocalStorage();
         console.info("[LocalApisService] Loaded APIs from localStorage: %o", this.allApis);
 
         this._apis.next(this.allApis);
         let ra: Api[] = this.allApis.slice(0, 4);
         this._recentApis.next(ra);
-    }
-
-    /**
-     * Creates a github API endpoint from the api path and params.
-     * @param path
-     * @param params
-     * @return {string}
-     */
-    private endpoint(path: string, params: any): string {
-        for (let key in params) {
-            let value: string = params[key];
-            path = path.replace(":" + key, value);
-        }
-        return GITHUB_API_ENDPOINT + path;
     }
 
     /**

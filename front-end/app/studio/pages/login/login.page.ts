@@ -1,6 +1,7 @@
 import {Component, OnInit, Inject} from '@angular/core';
 import {IAuthenticationService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {GithubAuthenticationCredentials} from "../../services/auth-github.service";
 
 const REMEMBER_USERNAME_KEY = "apiman.studio.pages.login.remember-username";
 const SAVED_USERNAME_KEY    = "apiman.studio.pages.login.username";
@@ -18,8 +19,11 @@ export class LoginPageComponent implements OnInit {
 
     private username: string;
     private password: string;
+    private twoFactorToken: string;
     private rememberUser: boolean;
     private loginError: string;
+    private twoFactorEnabled: boolean = false;
+    private errorIsTwoFactor: boolean = false;
 
     private authenticating: boolean = false;
 
@@ -42,7 +46,14 @@ export class LoginPageComponent implements OnInit {
         if (this.rememberUser) {
             localStorage.setItem(SAVED_USERNAME_KEY, this.username);
         }
-        this.authService.login(this.username, this.password).then( user => {
+        let credential: any = this.password;
+        if (this.twoFactorEnabled) {
+            credential = new GithubAuthenticationCredentials();
+            credential.login = this.username;
+            credential.password = this.password;
+            credential.twoFactorToken = this.twoFactorToken;
+        }
+        this.authService.login(this.username, credential).then( user => {
             console.info("[LoginPageComponent] User successfully logged in: %o", user);
             this.authenticating = false;
 
@@ -64,6 +75,9 @@ export class LoginPageComponent implements OnInit {
         }).catch( reason => {
             this.authenticating = false;
             this.loginError = reason;
+            let requiresTwoFactor: boolean = reason.indexOf("OTP") != -1;
+            this.twoFactorEnabled = (this.twoFactorEnabled || requiresTwoFactor);
+            this.errorIsTwoFactor = requiresTwoFactor;
         });
     }
 
@@ -79,6 +93,10 @@ export class LoginPageComponent implements OnInit {
      */
     private asRoute(path: string): string {
         let index: number = location.pathname.indexOf("/login");
-        return path.substring(index);
+        let rval:string = path.substring(index);
+        if (rval.startsWith("/login")) {
+            rval = "/";
+        }
+        return rval;
     }
 }

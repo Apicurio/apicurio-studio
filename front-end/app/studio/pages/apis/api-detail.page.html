@@ -1,19 +1,8 @@
-<breadcrumbs [breadcrumbs]="[
-    {
-        label: 'Dashboard',
-        icon: 'dashboard',
-        route: [ '/' ]
-    },
-    {
-        label: 'APIs',
-        icon: 'search',
-        route: [ '/apis' ]
-    },
-    {
-        label: api.name,
-        icon: 'bolt'
-    }
-]"></breadcrumbs>
+<breadcrumbs>
+    <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+    <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+    <li breadcrumb [label]="api.name" icon="bolt" class="active"></li>
+</breadcrumbs>
 <div class="container-fluid api-details">
     <div class="row-fluid">
         <!-- Left Column -->

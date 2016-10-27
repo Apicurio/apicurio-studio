@@ -21,7 +21,8 @@ import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 /* Global Components */
 import {NavHeaderComponent} from "./components/nav-header.component";
 import {VerticalNavComponent} from "./components/vertical-nav.component";
-import {BreadcrumbsComponent} from "./components/breadcrumbs.component";
+import {BreadcrumbsComponent} from "./components/breadcrumbs/breadcrumbs.component";
+import {BreadcrumbComponent} from "./components/breadcrumbs/breadcrumb.component";
 
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
@@ -38,8 +39,8 @@ import {ApisCardsComponent} from "./pages/apis/apis/apis-cards.component";
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
     declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
-        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, NewApiFormComponent, ApiDetailPageComponent,
-        ApisListComponent, ApisCardsComponent],
+        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
+        ApiDetailPageComponent, ApisListComponent, ApisCardsComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve,
         AuthenticationCanActivateGuard

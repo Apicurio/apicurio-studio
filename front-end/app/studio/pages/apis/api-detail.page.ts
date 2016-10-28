@@ -1,5 +1,5 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
@@ -20,10 +20,13 @@ export class ApiDetailPageComponent implements OnInit {
 
     /**
      * Constructor.
+     * @param router
      * @param route
      * @param apis
      */
-    constructor(private route: ActivatedRoute, @Inject(IApisService) private apis: IApisService) {
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                @Inject(IApisService) private apis: IApisService) {
         this.api = new Api();
     }
 
@@ -69,6 +72,18 @@ export class ApiDetailPageComponent implements OnInit {
             sep = "/";
         }
         return this.api.repositoryResource.repositoryUrl + "/blob/master" + sep + this.api.repositoryResource.resourceName;
+    }
+
+    /**
+     * Called to delete the API from the studio (unmanage it).
+     */
+    public onDelete(): void {
+        // TODO need a visual indicator that we're working on the delete
+        this.apis.deleteApi(this.api).then(() => {
+            this.router.navigate([ "" ]);
+        }).catch( reason => {
+            alert("Failed to delete the API!");
+        });
     }
 
 }

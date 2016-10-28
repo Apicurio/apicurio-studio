@@ -12,9 +12,9 @@ import {Api} from "../../../models/api.model";
 export class ApisListComponent {
 
     @Input() apis: Api[];
-    @Output() onApisSelected: EventEmitter<Api[]> = new EventEmitter<Api[]>();
-
-    selectedApis: Api[] = [];
+    @Input() selectedApis: Api[];
+    @Output() onApiSelected: EventEmitter<Api> = new EventEmitter<Api>();
+    @Output() onApiDeselected: EventEmitter<Api> = new EventEmitter<Api>();
 
     /**
      * Constructor.
@@ -23,11 +23,10 @@ export class ApisListComponent {
 
     public toggleApiSelected(api: Api): void {
         if (this.isSelected(api)) {
-            this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
+            this.onApiDeselected.emit(api);
         } else {
-            this.selectedApis.push(api);
+            this.onApiSelected.emit(api);
         }
-        this.onApisSelected.emit(this.selectedApis);
     }
 
     public isSelected(api: Api): boolean {

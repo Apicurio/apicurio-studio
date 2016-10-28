@@ -46,6 +46,12 @@ export interface IApisService {
     createApi(api: Api): Promise<Api>;
 
     /**
+     * Called to delete an API.  This is done asynchronously and thus returns a promise.
+     * @param api
+     */
+    deleteApi(api: Api): Promise<void>;
+
+    /**
      * Gets a single Api by its ID.
      * @param apiId the ID of the api
      */

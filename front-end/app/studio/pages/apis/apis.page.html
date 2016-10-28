@@ -19,7 +19,7 @@
                     </button>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="onDelete()">Delete</button>
+                    <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" data-toggle="modal" data-target="#confirmDeleteModal">Delete</button>
                 </div>
                 <div class="form-group">
                     <a class="btn btn-primary" [routerLink]="['newapi']">New API</a>
@@ -41,8 +41,37 @@
     </div>
     <div class="row api-list-items">
         <div class="col-md-12">
-            <apis-list *ngIf="filters.layout === 'list'" [apis]="filteredApis" (onApisSelected)="onSelected($event)"></apis-list>
-            <apis-cards *ngIf="filters.layout === 'card'" [apis]="filteredApis" (onApisSelected)="onSelected($event)"></apis-cards>
+            <apis-list *ngIf="filters.layout === 'list'" [apis]="filteredApis" [selectedApis]="selectedApis"
+                       (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-list>
+            <apis-cards *ngIf="filters.layout === 'card'" [apis]="filteredApis" [selectedApis]="selectedApis"
+                        (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-cards>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <p *ngIf="selectedApis.length === 1">Do you really want to delete the selected API?</p>
+                <p *ngIf="selectedApis.length > 1">Do you really want to delete the <strong>{{ selectedApis.length }}</strong> selected APIs?</p>
+
+                <div class="alert alert-info">
+                    <span class="pficon pficon-info"></span>
+                    <strong>NOTE:</strong>
+                    <span>This will not delete the API definition file(s) from source control - only from APIMan Studio.</span>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="onDelete()">Delete</button>
+            </div>
         </div>
     </div>
 </div>

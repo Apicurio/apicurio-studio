@@ -129,6 +129,27 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
     }
 
     /**
+     * Deletes an API.  This does not delete the API from the source repository.  It simply removes
+     * the API from the list of APIs "managed" by the studio.
+     * @param api
+     * @return {Promise<void>}
+     */
+    public deleteApi(api: Api): Promise<void> {
+        let idx: number = this.allApis.indexOf(api);
+        if (idx != -1) {
+            this.allApis.splice(idx, 1);
+            this._apis.next(this.allApis);
+            let ra: Api[] = this.allApis.slice(0, 4);
+            this._recentApis.next(ra);
+
+            // Save the result in local storage
+            this.storeApisInLocalStorage(this.allApis);
+        }
+        return Promise.resolve(null);
+    }
+
+
+    /**
      * Gets a single API by its id.  The API id is assigned when the API is created.
      * @param apiId
      * @return Promise<Api>

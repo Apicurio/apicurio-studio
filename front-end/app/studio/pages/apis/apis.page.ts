@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 
 import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
+import {ArrayUtils} from "../../util/common";
 
 
 const API_FILTERS_KEY = "apiman.studio.pages.apis.filters";
@@ -89,6 +90,9 @@ export class ApisPageComponent implements OnInit, OnDestroy {
             }
             return rval;
         });
+
+        this.selectedApis = ArrayUtils.intersect(this.selectedApis, this.filteredApis);
+
         return this.filteredApis;
     }
 
@@ -106,14 +110,26 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         this.filterApis();
     }
 
-    public onSelected(sapis: Api[]): void {
-        console.info("Caught the onApisSelected event!  Data: %o", sapis);
-        this.selectedApis = sapis;
+    public onSelected(api: Api): void {
+        console.info("[ApisPageComponent] Caught the onApiSelected event!  Data: %o", api);
+        this.selectedApis.push(api);
+    }
+
+    public onDeselected(api: Api): void {
+        console.info("[ApisPageComponent] Caught the onApiDeselected event!  Data: %o", api);
+        this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
     }
 
     public onDelete(): void {
-        alert("Not yet implemented!");
-        // TODO implement this - NOTE: get the intersection of "filterApis" and "selectedApis" to determine the list of items to operate on
+        // TODO deleting the APIs is done asynchronously - we need some sort of visual status (spinner) to watch progress, and then close the dialog when it's done
+
+        // Note: we can only delete selected items that we can see in the UI.
+        let itemsToDelete: Api[] = ArrayUtils.intersect(this.selectedApis, this.filteredApis);
+        console.log("[ApisPageComponent] Deleting %s selected APIs.", itemsToDelete.length);
+        for (let api of itemsToDelete) {
+            this.apis.deleteApi(api);
+        }
+        this.selectedApis = [];
     }
 
     public onListLayout(): void {

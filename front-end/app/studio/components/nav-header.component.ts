@@ -11,7 +11,20 @@ import {Observable} from "rxjs";
 })
 export class NavHeaderComponent implements OnInit {
 
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {}
+    version: string = "N/A";
+    builtOn: Date = new Date();
+    projectUrl: string = "http://studio.apiman.io/";
+
+    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
+        if (window['ApimanStudioInfo']) {
+            console.info("[NavHeaderComponent] Found app info: %o", window['ApimanStudioInfo'])
+            this.version = window['ApimanStudioInfo'].version;
+            this.builtOn = new Date(window['ApimanStudioInfo'].builtOn);
+            this.projectUrl = window['ApimanStudioInfo'].url;
+        } else {
+            console.info("[NavHeaderComponent] App info not found.");
+        }
+    }
 
     ngOnInit(): void {
     }

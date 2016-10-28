@@ -19,10 +19,45 @@
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a aria-disabled="true" class="disabled" href="#">Profile</a></li>
+                    <li><a data-toggle="modal" data-target="#about-modal">About</a></li>
                     <li class="divider"></li>
                     <li><a (click)="logout()">Logout</a></li>
                 </ul></li>
         </ul>
     </div>
 </nav>
+<div class="modal fade" id="about-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content about-modal-pf">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h1>APIMan Design Studio</h1>
+                <div class="product-versions-pf">
+                    <table>
+                        <tr>
+                            <td><strong>Version</strong></td>
+                            <td>{{ version }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Built On</strong></td>
+                            <td>{{ builtOn | date }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Project URL</strong></td>
+                            <td><a href="{{ projectUrl }}" target="_blank">{{ projectUrl }} <span class="fa fa-external-link"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="trademark-pf">
+                    &copy; 2016 Red Hat, Inc (JBoss Middleware)
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

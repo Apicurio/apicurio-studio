@@ -1,7 +1,7 @@
 import {Injectable, Inject} from '@angular/core';
 import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
-import {Api} from "../../models/api.model";
-import {IApisService} from "../../services/apis.service";
+import {Api} from "../../../models/api.model";
+import {IApisService} from "../../../services/apis.service";
 
 /**
  * Resolves an API by its id.

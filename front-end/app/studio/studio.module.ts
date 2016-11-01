@@ -13,7 +13,7 @@ import {AuthenticationServiceProvider} from "./services/auth.service.provider";
 
 /* Resolves */
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
-import {ApiResolve} from "./pages/apis/api-detail.resolve";
+import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
 
 /* Guards */
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
@@ -28,13 +28,13 @@ import {BreadcrumbComponent} from "./components/breadcrumbs/breadcrumb.component
 import {LoginPageComponent} from "./pages/login/login.page";
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
-import {NewApiPageComponent} from "./pages/apis/newapi.page";
-import {ApiDetailPageComponent} from "./pages/apis/api-detail.page";
+import {NewApiPageComponent} from "./pages/apis/newapi/newapi.page";
+import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 
 /* Page Components */
 import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
-import {ApisListComponent} from "./pages/apis/apis/apis-list.component";
-import {ApisCardsComponent} from "./pages/apis/apis/apis-cards.component";
+import {ApisListComponent} from "./pages/apis/apis-list.component";
+import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],

@@ -1,8 +1,8 @@
 import {Component, OnInit, Inject} from '@angular/core';
 import {Router} from '@angular/router';
 
-import {IApisService} from "../../services/apis.service";
-import {Api} from "../../models/api.model";
+import {IApisService} from "../../../services/apis.service";
+import {Api} from "../../../models/api.model";
 
 @Component({
     moduleId: module.id,

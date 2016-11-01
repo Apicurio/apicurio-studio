@@ -1,9 +1,9 @@
 import {Component, OnInit, Inject} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
-import {IApisService} from "../../services/apis.service";
-import {Api} from "../../models/api.model";
-import {ApiCollaborators} from "../../models/api-collaborators";
+import {IApisService} from "../../../services/apis.service";
+import {Api} from "../../../models/api.model";
+import {ApiCollaborators} from "../../../models/api-collaborators";
 
 @Component({
     moduleId: module.id,

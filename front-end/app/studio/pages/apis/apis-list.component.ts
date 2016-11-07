@@ -1,5 +1,4 @@
-import {Component, Inject, EventEmitter, Output, Input} from '@angular/core';
-import {IApisService} from "../../services/apis.service";
+import {Component, EventEmitter, Output, Input} from '@angular/core';
 import {Api} from "../../models/api.model";
 
 

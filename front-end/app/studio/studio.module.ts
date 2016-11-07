@@ -14,6 +14,7 @@ import {AuthenticationServiceProvider} from "./services/auth.service.provider";
 /* Resolves */
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
+import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
 
 /* Guards */
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
@@ -30,6 +31,7 @@ import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {NewApiPageComponent} from "./pages/apis/newapi/newapi.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
+import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 /* Page Components */
 import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
@@ -40,9 +42,9 @@ import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
     declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
-        ApiDetailPageComponent, ApisListComponent, ApisCardsComponent],
+        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
-        RecentApisResolve, ApiResolve,
+        RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard
     ],
     bootstrap: [StudioComponent]

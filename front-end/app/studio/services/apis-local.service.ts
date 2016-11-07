@@ -2,7 +2,7 @@ import {Observable} from 'rxjs/Observable';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {IApisService}   from "./apis.service";
-import {Api} from "../models/api.model";
+import {Api, ApiDefinition} from "../models/api.model";
 import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
 import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
@@ -173,6 +173,15 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             this._recentApis.next(ra);
         }
         return Promise.resolve(rval);
+    }
+
+    /**
+     * Gets a single API definition by its ID.
+     * @param apiId
+     */
+    getApiDefinition(apiId: string): Promise<ApiDefinition> {
+        // TODO implement this!
+        return this.getApi(apiId);
     }
 
     /**

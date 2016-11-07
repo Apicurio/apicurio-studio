@@ -24,3 +24,15 @@ export class Api {
     }
 
 }
+
+
+export class ApiDefinition extends Api {
+
+    spec: any;
+
+    constructor() {
+        super();
+        this.spec = {};
+    }
+
+}

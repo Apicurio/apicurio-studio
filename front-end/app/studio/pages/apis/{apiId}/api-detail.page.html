@@ -25,7 +25,7 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
                                                 <li>
-                                                    <a href="#">
+                                                    <a [routerLink]="[ 'editor' ]">
                                                         <span class="fa fa-fw fa-pencil"></span>
                                                         <span>Design</span>
                                                     </a>
@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="api-action-buttons">
-                                    <a href="#" class="btn btn-primary">Design API</a>
+                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Design API</a>
                                     <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">View Documentation</a>
                                     <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">Manage Tests</a>
                                 </div>

@@ -12,6 +12,8 @@ import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
+import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
+import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
 
 const _studioRoutes: any[] = [
     {
@@ -34,6 +36,13 @@ const _studioRoutes: any[] = [
         component: ApiDetailPageComponent,
         resolve: {
             api: ApiResolve
+        }
+    },
+    {
+        path: 'apis/:apiId/editor',
+        component: ApiEditorPageComponent,
+        resolve: {
+            apiDefinition: ApiDefinitionResolve
         }
     },
     {

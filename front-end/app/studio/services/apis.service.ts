@@ -1,7 +1,7 @@
 import {OpaqueToken} from "@angular/core";
 import {Observable} from 'rxjs/Observable';
 
-import {Api} from "../models/api.model";
+import {Api, ApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
 
 
@@ -56,6 +56,12 @@ export interface IApisService {
      * @param apiId the ID of the api
      */
     getApi(apiId: string): Promise<Api>;
+
+    /**
+     * Gets a single API definition by its ID.
+     * @param apiId
+     */
+    getApiDefinition(apiId: string): Promise<ApiDefinition>;
 
     /**
      * Gets the list of collaborators for the API with the given id.

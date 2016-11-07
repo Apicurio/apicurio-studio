@@ -1,0 +1,6 @@
+<breadcrumbs>
+    <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+    <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+    <li breadcrumb [label]="apiDefinition.name" icon="bolt" [route]="[ '/apis', apiDefinition.id ]"></li>
+    <li breadcrumb label="Editor" icon="pencil" class="active"></li>
+</breadcrumbs>

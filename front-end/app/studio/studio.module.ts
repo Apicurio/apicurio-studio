@@ -37,12 +37,13 @@ import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.pag
 import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
 import {ApisListComponent} from "./pages/apis/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
+import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
     declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
-        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent],
+        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

@@ -284,7 +284,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         }
 
         if (!parser.pathname) {
-            return Promise.reject<Api>("Incomplete github URL.");
+            return Promise.reject<Api>("Incomplete GitHub URL.");
         }
 
         let pathItems: string[] = parser.pathname.split("/");
@@ -294,7 +294,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         }
 
         if (pathItems.length < 2) {
-            return Promise.reject<Api>("Incomplete github URL.");
+            return Promise.reject<Api>("Incomplete GitHub URL.");
         }
 
         let api: Api = new Api();

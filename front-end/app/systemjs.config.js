@@ -1,6 +1,5 @@
 /**
- * System configuration for Angular 2 samples
- * Adjust as necessary for your application needs.
+ * Systemjs configuration for API Design Studio
  */
 (function (global) {
     System.config({
@@ -22,7 +21,8 @@
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             // other libraries
-            'rxjs':                       'npm:rxjs',
+            'oai-ts-core': 'npm:oai-ts-core/bundles/OAI.umd.js',
+            'rxjs': 'npm:rxjs',
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             'core-js-shim': 'npm:core-js/client/shim.min.js',
             'zone': 'npm:zone.js/dist/zone.js',

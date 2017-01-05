@@ -8,7 +8,7 @@
     "url": "https://github.com/apiman/apiman-studio"
   },
   "scripts": {
-    "start": "lite-server",
+    "start": "concurrently \"tsc -w\" \"watch-less -d ./studio -e .css\" \"watch-less -d ./assets -e .css\" \"lite-server\"",
     "postinstall": "typings install",
     "typings": "typings"
   },
@@ -42,11 +42,13 @@
     "gulp-shell": "0.5.2",
     "gulp-typescript": "3.0.2",
     "gulp-inline-ng2-template": "^3.0.1",
+    "less": "2.7.2",
     "lite-server": "2.2.2",
     "run-sequence": "1.2.2",
     "systemjs-builder": "0.15.34",
     "typescript": "2.1.4",
-    "typings":"1.5.0"
+    "typings": "1.5.0",
+    "watch-less": "0.0.4"
   }
 }
 

@@ -18,30 +18,30 @@
     "@angular/router": "3.0.0",
     "@angular/upgrade": "2.0.0",
     "oai-ts-core": "0.1.2",
-    "core-js": "^2.4.1",
-    "reflect-metadata": "^0.1.3",
+    "core-js": "2.4.1",
+    "reflect-metadata": "0.1.9",
     "rxjs": "5.0.0-beta.12",
     "systemjs": "0.19.27",
-    "zone.js": "^0.6.23",
+    "zone.js": "0.6.26",
     "angular2-in-memory-web-api": "0.0.20",
-    "bootstrap": "^3.3.6",
-    "patternfly" : "^3.7.0"
+    "bootstrap": "3.3.7",
+    "patternfly" : "3.17.0"
   },
   "devDependencies": {
-    "concurrently": "^2.2.0",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-flatten": "^0.3.1",
-    "gulp-html-replace": "^1.6.1",
-    "gulp-less": "^3.1.0",
-    "gulp-shell": "^0.5.2",
+    "concurrently": "2.2.0",
+    "gulp": "3.9.1",
+    "gulp-clean": "0.3.2",
+    "gulp-flatten": "0.3.1",
+    "gulp-html-replace": "1.6.1",
+    "gulp-less": "3.1.0",
+    "gulp-shell": "0.5.2",
     "gulp-typescript": "3.0.2",
     "gulp-inline-ng2-template": "^3.0.1",
-    "lite-server": "^2.2.2",
-    "run-sequence": "^1.2.2",
-    "systemjs-builder": "^0.15.31",
-    "typescript": "^2.0.2",
-    "typings":"^1.3.2"
+    "lite-server": "2.2.2",
+    "run-sequence": "1.2.2",
+    "systemjs-builder": "0.15.34",
+    "typescript": "2.1.4",
+    "typings":"1.5.0"
   }
 }
 

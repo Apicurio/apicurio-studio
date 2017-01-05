@@ -1,12 +1,17 @@
 {
   "name": "apiman-design-studio",
   "version": "1.0.0",
+  "description": "A web application to help design restful APIs.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apiman/apiman-studio"
+  },
   "scripts": {
     "start": "lite-server",
     "postinstall": "typings install",
     "typings": "typings"
   },
-  "license": "ISC",
   "dependencies": {
     "@angular/common": "2.0.0",
     "@angular/compiler": "2.0.0",

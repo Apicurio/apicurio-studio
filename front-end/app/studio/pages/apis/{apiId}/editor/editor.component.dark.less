@@ -1,0 +1,217 @@
+@themes-dark-api-path-color: #ff6a7c;
+@themes-dark-api-path-color-light: lighten(@themes-dark-api-path-color, 20%);
+@themes-dark-api-border-color: #bbb;
+@themes-dark-api-selected-color: #356c8c;
+@themes-dark-api-selected-color-light: lighten(@themes-dark-api-selected-color, 25%);
+@themes-dark-api-hover-color: darken(@themes-dark-api-selected-color, 10%);
+@themes-dark-api-label-color: #fff;
+@themes-dark-api-bg-color: #1D2225;
+@themes-dark-api-bg-color-light: lighten(@themes-dark-api-bg-color, 15%);
+
+
+.api-editor.dark span.path-param {
+  color: @themes-dark-api-path-color;
+}
+
+.api-editor.dark .api-item-description {
+  border-left: 2px solid @themes-dark-api-selected-color;
+}
+
+.api-editor.dark .api-item-title {
+}
+
+.api-editor.dark {
+  background-color: @themes-dark-api-bg-color;
+  color: #eee;
+}
+.api-editor.dark .editor-master {
+  background-color: @themes-dark-api-bg-color;
+  border-right: 1px solid @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-detail {
+  background-color: @themes-dark-api-bg-color;
+}
+
+.api-editor.dark .editor-master .editor-main {
+  background-color: @themes-dark-api-bg-color-light;
+}
+.api-editor.dark .editor-master .editor-main:hover {
+  background-color: @themes-dark-api-hover-color;
+}
+.api-editor.dark .editor-master .editor-main.selected {
+  background-color: @themes-dark-api-selected-color;
+}
+.api-editor.dark .editor-master .editor-main h2 {
+}
+.api-editor.dark .editor-master .editor-main.selected h2 {
+}
+
+.api-editor.dark .editor-master .editor-search {
+  border-top: 1px solid @themes-dark-api-border-color;
+  border-bottom: 1px solid @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-master .editor-search input {
+  background-color: #333;
+  color: @themes-dark-api-label-color;
+}
+
+.api-editor.dark .editor-master .editor-outline {
+}
+
+
+//  Sections
+.api-editor.dark .section {
+}
+.api-editor.dark .section .section-header {
+  border-bottom: 1px dotted @themes-dark-api-border-color;
+}
+.api-editor.dark .section .section-header a {
+  color: @themes-dark-api-label-color;
+}
+
+.api-editor.dark .section .section-header a.collapsed:before {
+}
+.api-editor.dark .section .section-header a:before {
+}
+.api-editor.dark .section .section-header a span.section-label {
+}
+.api-editor.dark .section .section-header a span.fa {
+}
+.api-editor.dark .section .section-header .btn {
+}
+.api-editor.dark .section .section-body {
+}
+
+
+
+
+.api-editor.dark .editor-master .editor-outline .api-resource {
+}
+.api-editor.dark .editor-master .editor-outline .api-resource:hover {
+  background-color: @themes-dark-api-hover-color;
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected {
+  background-color: @themes-dark-api-selected-color;
+  border-left: 2px solid @themes-dark-api-selected-color-light;
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected span.path-param {
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected .label {
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected .label.empty {
+  background-color: #ccc;
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected .label:hover {
+  border: 1px solid @themes-dark-api-hover-color;
+}
+.api-editor.dark .editor-master .editor-outline .api-resource.selected .label.selected {
+  border: 1px solid white;
+}
+.api-editor.dark .editor-master .editor-outline .api-resource .api-operations {
+}
+
+.api-editor.dark .editor-master .editor-outline .api-definition {
+}
+.api-editor.dark .editor-master .editor-outline .api-definition:hover {
+  background-color: @themes-dark-api-hover-color;
+}
+
+.api-editor.dark .editor-master .editor-outline .api-response {
+}
+.api-editor.dark .editor-master .editor-outline .api-response:hover {
+  background-color: @themes-dark-api-hover-color;
+}
+
+.api-editor.dark .editor-detail .section {
+}
+
+.api-editor.dark .editor-detail .detail-title {
+  border-bottom: 1px solid @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-detail .detail-title .detail-label {
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions {
+  border-left: 1px solid @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions .dropdown-menu {
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions .dropdown .btn {
+  color: @themes-dark-api-label-color;
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions:hover {
+  background-color: @themes-dark-api-hover-color;
+}
+.api-editor.dark .editor-detail .detail-tabs {
+}
+.api-editor.dark .editor-detail .detail-tabs ul {
+  border-bottom-color: @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-detail .detail-content {
+}
+
+.api-editor.dark .editor-detail .detail-content .section .section-body {
+}
+
+.api-editor.dark .editor-detail .detail-content .info-section h1 {
+}
+
+.api-editor.dark .editor-detail .detail-content .info-section .api-title {
+}
+.api-editor.dark .editor-detail .detail-content .info-section .api-version {
+}
+.api-editor.dark .editor-detail .detail-content .info-section .api-description {
+}
+
+.api-editor.dark .editor-detail .detail-content .info-section .api-meta-data {
+}
+.api-editor.dark .editor-detail .detail-content .info-section .api-md-entry {
+}
+.api-editor.dark .editor-detail .detail-content .info-section .api-md-entry .md-label {
+  color: @themes-dark-api-label-color;
+}
+
+.api-editor.dark .editor-detail .detail-title .label {
+}
+
+.api-editor.dark .resource-description {
+}
+
+.api-editor.dark .api-resource-parameters td.parameter {
+  color: @themes-dark-api-path-color;
+}
+.api-editor.dark .api-resource-parameters td.icons, .api-details table td.icons {
+  color: #666;
+}
+.api-editor.dark .api-resource-parameters td.icons i:hover {
+}
+
+.api-editor.dark .api-response .tlabel {
+}
+.api-editor.dark .api-response .tlabel span {
+}
+
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation {
+  border-bottom: 1px solid @themes-dark-api-border-color;
+}
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .type {
+}
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .name {
+}
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .description {
+}
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .actions {
+}
+
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation.empty {
+  color: #888;
+}
+
+.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation.empty .label {
+  color: #888;
+  background-color: #444;
+}
+
+.api-editor.dark .editor-detail .api-resource-detail .request-body-section .request-body-name {
+}
+.api-editor.dark .editor-detail .api-resource-detail .request-body-section .description {
+}

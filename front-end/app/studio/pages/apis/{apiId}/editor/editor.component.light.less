@@ -1,0 +1,212 @@
+@themes-light-api-path-color: #ff6a7c;
+@themes-light-api-path-color-light: lighten(@themes-light-api-path-color, 20%);
+@themes-light-api-border-color: #ddd;
+@themes-light-api-selected-color: #39a5dc;
+@themes-light-api-selected-color-light: lighten(@themes-light-api-selected-color, 25%);
+@themes-light-api-hover-color: lighten(@themes-light-api-selected-color, 35%);
+@themes-light-api-label-color: #333;
+@themes-light-api-bg-color: white;
+
+
+.api-editor.light span.path-param {
+  color: @themes-light-api-path-color;
+}
+
+.api-editor.light .api-item-description {
+  border-left: 2px solid @themes-light-api-selected-color;
+}
+
+.api-editor.light .api-item-title {
+}
+
+.api-editor.light {
+}
+.api-editor.light .editor-master {
+  background-color: @themes-light-api-bg-color;
+  border-right: 1px solid @themes-light-api-border-color;
+}
+.api-editor.light .editor-detail {
+  background-color: @themes-light-api-bg-color;
+}
+
+.api-editor.light .editor-master .editor-main {
+  background-color: #eee;
+}
+.api-editor.light .editor-master .editor-main:hover {
+  background-color: @themes-light-api-hover-color;
+}
+.api-editor.light .editor-master .editor-main.selected {
+  background-color: @themes-light-api-selected-color-light;
+}
+.api-editor.light .editor-master .editor-main h2 {
+}
+.api-editor.light .editor-master .editor-main.selected h2 {
+}
+
+.api-editor.light .editor-master .editor-search {
+  border-top: 1px solid @themes-light-api-border-color;
+  border-bottom: 1px solid @themes-light-api-border-color;
+}
+.api-editor.light .editor-master .editor-search input {
+  background-color: #ddd;
+  color: @themes-light-api-label-color;
+}
+
+.api-editor.light .editor-master .editor-outline {
+}
+
+
+//  Sections
+.api-editor.light .section {
+}
+.api-editor.light .section .section-header {
+  border-bottom: 1px dotted @themes-light-api-border-color;
+}
+.api-editor.light .section .section-header a {
+  color: @themes-light-api-label-color;
+}
+
+.api-editor.light .section .section-header a.collapsed:before {
+}
+.api-editor.light .section .section-header a:before {
+}
+.api-editor.light .section .section-header a span.section-label {
+}
+.api-editor.light .section .section-header a span.fa {
+}
+.api-editor.light .section .section-header .btn {
+}
+.api-editor.light .section .section-body {
+}
+
+
+
+
+.api-editor.light .editor-master .editor-outline .api-resource {
+}
+.api-editor.light .editor-master .editor-outline .api-resource:hover {
+  background-color: @themes-light-api-hover-color;
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected {
+  background-color: @themes-light-api-selected-color-light;
+  border-left: 2px solid @themes-light-api-selected-color;
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected span.path-param {
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected .label {
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected .label.empty {
+  background-color: #ccc;
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected .label:hover {
+  border: 1px solid @themes-light-api-hover-color;
+}
+.api-editor.light .editor-master .editor-outline .api-resource.selected .label.selected {
+  border: 1px solid white;
+}
+.api-editor.light .editor-master .editor-outline .api-resource .api-operations {
+}
+
+.api-editor.light .editor-master .editor-outline .api-definition {
+}
+.api-editor.light .editor-master .editor-outline .api-definition:hover {
+  background-color: @themes-light-api-hover-color;
+}
+
+.api-editor.light .editor-master .editor-outline .api-response {
+}
+.api-editor.light .editor-master .editor-outline .api-response:hover {
+  background-color: @themes-light-api-hover-color;
+}
+
+.api-editor.light .editor-detail .section {
+}
+
+.api-editor.light .editor-detail .detail-title {
+  border-bottom: 1px solid @themes-light-api-border-color;
+}
+.api-editor.light .editor-detail .detail-title .detail-label {
+}
+.api-editor.light .editor-detail .detail-title .detail-actions {
+  border-left: 1px solid @themes-light-api-border-color;
+}
+.api-editor.light .editor-detail .detail-title .detail-actions .dropdown-menu {
+}
+.api-editor.light .editor-detail .detail-title .detail-actions .dropdown .btn {
+  color: @themes-light-api-label-color;
+}
+.api-editor.light .editor-detail .detail-title .detail-actions:hover {
+  background-color: @themes-light-api-hover-color;
+}
+.api-editor.light .editor-detail .detail-tabs {
+}
+.api-editor.light .editor-detail .detail-tabs ul {
+}
+.api-editor.light .editor-detail .detail-content {
+}
+
+.api-editor.light .editor-detail .detail-content .section .section-body {
+}
+
+.api-editor.light .editor-detail .detail-content .info-section h1 {
+}
+
+.api-editor.light .editor-detail .detail-content .info-section .api-title {
+}
+.api-editor.light .editor-detail .detail-content .info-section .api-version {
+}
+.api-editor.light .editor-detail .detail-content .info-section .api-description {
+}
+
+.api-editor.light .editor-detail .detail-content .info-section .api-meta-data {
+}
+.api-editor.light .editor-detail .detail-content .info-section .api-md-entry {
+}
+.api-editor.light .editor-detail .detail-content .info-section .api-md-entry .md-label {
+  color: @themes-light-api-label-color;
+}
+
+.api-editor.light .editor-detail .detail-title .label {
+}
+
+.api-editor.light .resource-description {
+}
+
+.api-editor.light .api-resource-parameters td.parameter {
+  color: @themes-light-api-path-color;
+}
+.api-editor.light .api-resource-parameters td.icons, .api-details table td.icons {
+  color: #666;
+}
+.api-editor.light .api-resource-parameters td.icons i:hover {
+}
+
+.api-editor.light .api-response .tlabel {
+}
+.api-editor.light .api-response .tlabel span {
+}
+
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation {
+  border-bottom: 1px solid @themes-light-api-border-color;
+}
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .type {
+}
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .name {
+}
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .description {
+}
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .actions {
+}
+
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation.empty {
+  color: #999;
+}
+
+.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation.empty .label {
+  background-color: #ccc;
+}
+
+.api-editor.light .editor-detail .api-resource-detail .request-body-section .request-body-name {
+}
+.api-editor.light .editor-detail .api-resource-detail .request-body-section .description {
+}

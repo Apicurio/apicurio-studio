@@ -165,7 +165,6 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         return Promise.resolve(null);
     }
 
-
     /**
      * Gets a single API by its id.  The API id is assigned when the API is created.
      * @param apiId
@@ -197,8 +196,12 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param apiId
      */
     getApiDefinition(apiId: string): Promise<ApiDefinition> {
-        // TODO implement this!
-        return this.getApi(apiId);
+        let api: Api = this.getLocalApi(apiId);
+        if (api === null) {
+            return Promise.resolve(null);
+        }
+        let apiDef: ApiDefinition = ApiDefinition.fromApi(api);
+        return this.resolveApiDefinitionSpec(apiDef);
     }
 
     /**
@@ -285,7 +288,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param apiUrl
      * @return {undefined}
      */
-    discoverApi(apiUrl: string): Promise<Api> {
+    public discoverApi(apiUrl: string): Promise<Api> {
         if (!apiUrl) {
             return Promise.reject<Api>("Invalid API url.");
         }
@@ -338,7 +341,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * the title and description.
      * @param api
      */
-    public resolveApiInfo(api: Api): Promise<Api> {
+    private resolveApiInfo(api: Api): Promise<Api> {
         let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
         let path: string = api.repositoryResource.resourceName;
         if (path.startsWith("/")) {
@@ -364,6 +367,67 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             api.description = pc.info.description;
             return api;
         });
+    }
+
+    /**
+     * Resolves the api info by fetching the content of the api definition from github and extracting
+     * the title and description.
+     * @param api
+     */
+    private resolveApiDefinitionSpec(api: ApiDefinition): Promise<ApiDefinition> {
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
+        let path: string = api.repositoryResource.resourceName;
+        if (path.startsWith("/")) {
+            path = path.slice(1);
+        }
+        let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
+            owner: gri.org,
+            repo: gri.repo,
+            path: path
+        });
+        let headers = new Headers({ 'Accept': 'application/json' });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({ headers: headers });
+        console.info("Loading spec content from github @ URL: %s", contentUrl);
+        return this.http.get(contentUrl, options).toPromise().then( response => {
+            let data: any = response.json();
+            let b64content: string  = data.content;
+            let content: string = atob(b64content);
+            let pc: any = JSON.parse(content);
+
+            // TODO if the content is greater than 1MB, need to make another call to the "blob" API
+
+            console.info("Spec content loaded successfully.");
+
+            api.spec = pc;
+            return api;
+        });
+    }
+
+    /**
+     * Gets an API by id synchronously.
+     * @param apiId
+     * @return {any}
+     */
+    private getLocalApi(apiId: string): Api {
+        let rval: Api = null;
+        let idx: number = 0;
+        while (idx < this.allApis.length) {
+            let api: Api = this.allApis[idx];
+            if (api.id === apiId) {
+                rval = api;
+                break;
+            }
+            idx++;
+        }
+        if (rval != null && idx > 0) {
+            this.allApis.splice(idx, 1);
+            this.allApis.unshift(rval);
+            this._apis.next(this.allApis);
+            let ra: Api[] = this.allApis.slice(0, 4);
+            this._recentApis.next(ra);
+        }
+        return rval;
     }
 
 }

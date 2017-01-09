@@ -52,4 +52,24 @@ export class ApiDefinition extends Api {
         this.spec = {};
     }
 
+    public static fromApi(api: Api): ApiDefinition {
+        let apiDef: ApiDefinition = new ApiDefinition();
+        apiDef.id = api.id;
+        apiDef.name = api.name;
+        apiDef.description = api.description;
+        apiDef.createdOn = api.createdOn;
+        apiDef.createdBy = api.createdBy;
+        apiDef.modifiedOn = api.modifiedOn;
+        apiDef.modifiedBy = api.modifiedBy;
+
+        if (api.repositoryResource) {
+            apiDef.repositoryResource = new ApiRepositoryResource();
+            apiDef.repositoryResource.repositoryType = api.repositoryResource.repositoryType;
+            apiDef.repositoryResource.repositoryUrl = api.repositoryResource.repositoryUrl;
+            apiDef.repositoryResource.resourceName = api.repositoryResource.resourceName;
+        }
+
+        return apiDef;
+    }
+
 }

@@ -53,6 +53,6 @@
     </div>
 
     <div class="editor-detail">
-        <p>DETAIL</p>
+        <main-form [document]="document()" *ngIf="selectedType === 'main'"></main-form>
     </div>
 </div>

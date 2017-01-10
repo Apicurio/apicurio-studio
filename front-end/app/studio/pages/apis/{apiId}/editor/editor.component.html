@@ -1,6 +1,6 @@
 <div class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
     <div class="editor-master">
-        <div class="editor-main selected">
+        <div class="editor-main" [class.selected]="selectedType === 'main'" (click)="selectMain()">
             <h2>{{ document().info.title }}</h2>
         </div>
         <div class="editor-search">

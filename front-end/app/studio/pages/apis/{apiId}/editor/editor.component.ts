@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils, OasNode} from "oai-ts-core";
+import {Oas20Document, OasLibraryUtils, OasNode, Oas20PathItem} from "oai-ts-core";
 
 
 @Component({
@@ -38,7 +38,7 @@ export class ApiEditorComponent {
 
     theme: string = "light";
     selectedItem: string = null;
-    selectedType: string = null;
+    selectedType: string = "main";
 
     /**
      * Constructor.
@@ -89,6 +89,14 @@ export class ApiEditorComponent {
         } else {
             return [];
         }
+    }
+
+    /**
+     * Called when the user selects the main/default element from the master area.
+     */
+    public selectMain(): void {
+        this.selectedItem = null;
+        this.selectedType = "main";
     }
 
     /**

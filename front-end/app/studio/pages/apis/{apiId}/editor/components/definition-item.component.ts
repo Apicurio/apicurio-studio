@@ -20,7 +20,7 @@ import {Component, Input, ViewEncapsulation} from '@angular/core';
 
 @Component({
     moduleId: module.id,
-    selector: 'definition-item',
+    selector: '[definition-item]',
     templateUrl: 'definition-item.component.html',
     encapsulation: ViewEncapsulation.None
 })

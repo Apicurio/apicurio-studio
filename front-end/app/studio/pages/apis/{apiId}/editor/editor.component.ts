@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
+import {Oas20Document, OasLibraryUtils, OasNode} from "oai-ts-core";
 
 
 @Component({
@@ -37,6 +37,8 @@ export class ApiEditorComponent {
     private _document: Oas20Document = null;
 
     theme: string = "light";
+    selectedItem: string = null;
+    selectedType: string = null;
 
     /**
      * Constructor.
@@ -87,6 +89,36 @@ export class ApiEditorComponent {
         } else {
             return [];
         }
+    }
+
+    /**
+     * Called when the user selects a path from the master area.
+     * @param name
+     */
+    public selectPath(name: string): void {
+        this.selectedItem = name;
+        this.selectedType = "path";
+    }
+
+    /**
+     * Called when the user selects a definition from the master area.
+     * @param name
+     */
+    public selectDefinition(name: string): void {
+        this.selectedItem = name;
+        this.selectedType = "definition";
+
+        console.info("Selected item: %s", this.selectedItem);
+        console.info("Selected type: %s", this.selectedType);
+    }
+
+    /**
+     * Called when the user selects a response from the master area.
+     * @param name
+     */
+    public selectResponse(name: string): void {
+        this.selectedItem = name;
+        this.selectedType = "response";
     }
 
 }

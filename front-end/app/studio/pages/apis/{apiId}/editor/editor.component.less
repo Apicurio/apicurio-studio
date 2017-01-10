@@ -1,6 +1,6 @@
-
 @import "editor.component.light.less";
 @import "editor.component.dark.less";
+
 
 .api-editor span.path-param {
   font-weight: 400;
@@ -147,12 +147,16 @@
   padding-bottom: 10px;
 }
 
+
 .api-editor .editor-master .editor-outline .api-definition {
   padding-left: 15px;
   font-size: 14px;
 }
 .api-editor .editor-master .editor-outline .api-definition:hover {
   cursor: pointer;
+}
+.api-editor .editor-master .editor-outline .api-definition.selected {
+  cursor: default;
 }
 
 .api-editor .editor-master .editor-outline .api-response {
@@ -161,6 +165,9 @@
 }
 .api-editor .editor-master .editor-outline .api-response:hover {
   cursor: pointer;
+}
+.api-editor .editor-master .editor-outline .api-response.selected {
+  cursor: default;
 }
 
 .api-editor .editor-detail .section {

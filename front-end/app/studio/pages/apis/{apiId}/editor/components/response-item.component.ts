@@ -20,7 +20,7 @@ import {Component, Input, ViewEncapsulation} from '@angular/core';
 
 @Component({
     moduleId: module.id,
-    selector: 'response-item',
+    selector: '[response-item]',
     templateUrl: 'response-item.component.html',
     encapsulation: ViewEncapsulation.None
 })

@@ -17,7 +17,8 @@
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="path-section-body">
-                    <path-item *ngFor="let pathName of pathNames()" [path]="pathName"></path-item>
+                    <div path-item class="api-path" *ngFor="let pathName of pathNames()" [path]="pathName" (click)="selectPath(pathName)"
+                         [class.selected]="selectedItem === pathName && selectedType === 'path'"></div>
                 </div>
             </div>
             <!-- Definitions Section -->
@@ -29,7 +30,9 @@
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
-                    <definition-item *ngFor="let defName of definitionNames()" [name]="defName"></definition-item>
+                    <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
+                         (click)="selectDefinition(defName)"
+                         [class.selected]="selectedItem === defName && selectedType === 'definition'"></div>
                 </div>
             </div>
             <!-- Responses Section -->
@@ -41,7 +44,9 @@
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse" id="response-section-body">
-                    <response-item *ngFor="let responseName of responseNames()" [name]="responseName"></response-item>
+                    <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"
+                         (click)="selectResponse(responseName)"
+                         [class.selected]="selectedItem === responseName && selectedType === 'response'"></div>
                 </div>
             </div>
         </div>

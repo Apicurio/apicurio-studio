@@ -1,3 +1,4 @@
+@themes-light-text-color: #363636;
 @themes-light-api-path-color: #ff6a7c;
 @themes-light-api-path-color-light: lighten(@themes-light-api-path-color, 20%);
 @themes-light-api-border-color: #ddd;
@@ -10,6 +11,9 @@
 
 .api-editor.light span.path-param {
   color: @themes-light-api-path-color;
+}
+.api-editor.light span.path-segment::before {
+  color: @themes-light-text-color;
 }
 
 .api-editor.light .api-item-description {
@@ -82,29 +86,29 @@
 
 
 
-.api-editor.light .editor-master .editor-outline .api-resource {
+.api-editor.light .editor-master .editor-outline .api-path {
 }
-.api-editor.light .editor-master .editor-outline .api-resource:hover {
+.api-editor.light .editor-master .editor-outline .api-path:hover {
   background-color: @themes-light-api-hover-color;
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected {
+.api-editor.light .editor-master .editor-outline .api-path.selected {
   background-color: @themes-light-api-selected-color-light;
   border-left: 2px solid @themes-light-api-selected-color;
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected span.path-param {
+.api-editor.light .editor-master .editor-outline .api-path.selected span.path-param {
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected .label {
+.api-editor.light .editor-master .editor-outline .api-path.selected .label {
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected .label.empty {
+.api-editor.light .editor-master .editor-outline .api-path.selected .label.empty {
   background-color: #ccc;
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected .label:hover {
+.api-editor.light .editor-master .editor-outline .api-path.selected .label:hover {
   border: 1px solid @themes-light-api-hover-color;
 }
-.api-editor.light .editor-master .editor-outline .api-resource.selected .label.selected {
+.api-editor.light .editor-master .editor-outline .api-path.selected .label.selected {
   border: 1px solid white;
 }
-.api-editor.light .editor-master .editor-outline .api-resource .api-operations {
+.api-editor.light .editor-master .editor-outline .api-path .api-operations {
 }
 
 .api-editor.light .editor-master .editor-outline .api-definition {
@@ -169,16 +173,16 @@
 .api-editor.light .editor-detail .detail-title .label {
 }
 
-.api-editor.light .resource-description {
+.api-editor.light .path-description {
 }
 
-.api-editor.light .api-resource-parameters td.parameter {
+.api-editor.light .api-path-parameters td.parameter {
   color: @themes-light-api-path-color;
 }
-.api-editor.light .api-resource-parameters td.icons, .api-details table td.icons {
+.api-editor.light .api-path-parameters td.icons, .api-details table td.icons {
   color: #666;
 }
-.api-editor.light .api-resource-parameters td.icons i:hover {
+.api-editor.light .api-path-parameters td.icons i:hover {
 }
 
 .api-editor.light .api-response .tlabel {
@@ -186,27 +190,27 @@
 .api-editor.light .api-response .tlabel span {
 }
 
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation {
   border-bottom: 1px solid @themes-light-api-border-color;
 }
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .type {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type {
 }
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .name {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .name {
 }
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .description {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .description {
 }
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation .actions {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .actions {
 }
 
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation.empty {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty {
   color: #999;
 }
 
-.api-editor.light .editor-detail .api-resource-detail .operations-section .api-operation.empty .label {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .label {
   background-color: #ccc;
 }
 
-.api-editor.light .editor-detail .api-resource-detail .request-body-section .request-body-name {
+.api-editor.light .editor-detail .api-path-detail .request-body-section .request-body-name {
 }
-.api-editor.light .editor-detail .api-resource-detail .request-body-section .description {
+.api-editor.light .editor-detail .api-path-detail .request-body-section .description {
 }

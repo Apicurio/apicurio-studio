@@ -1,3 +1,4 @@
+@themes-dark-text-color: white;
 @themes-dark-api-path-color: #ff6a7c;
 @themes-dark-api-path-color-light: lighten(@themes-dark-api-path-color, 20%);
 @themes-dark-api-border-color: #bbb;
@@ -11,6 +12,9 @@
 
 .api-editor.dark span.path-param {
   color: @themes-dark-api-path-color;
+}
+.api-editor.dark span.path-segment::before {
+  color: @themes-dark-text-color;
 }
 
 .api-editor.dark .api-item-description {
@@ -85,29 +89,29 @@
 
 
 
-.api-editor.dark .editor-master .editor-outline .api-resource {
+.api-editor.dark .editor-master .editor-outline .api-path {
 }
-.api-editor.dark .editor-master .editor-outline .api-resource:hover {
+.api-editor.dark .editor-master .editor-outline .api-path:hover {
   background-color: @themes-dark-api-hover-color;
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected {
+.api-editor.dark .editor-master .editor-outline .api-path.selected {
   background-color: @themes-dark-api-selected-color;
   border-left: 2px solid @themes-dark-api-selected-color-light;
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected span.path-param {
+.api-editor.dark .editor-master .editor-outline .api-path.selected span.path-param {
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected .label {
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label {
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected .label.empty {
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label.empty {
   background-color: #ccc;
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected .label:hover {
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label:hover {
   border: 1px solid @themes-dark-api-hover-color;
 }
-.api-editor.dark .editor-master .editor-outline .api-resource.selected .label.selected {
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label.selected {
   border: 1px solid white;
 }
-.api-editor.dark .editor-master .editor-outline .api-resource .api-operations {
+.api-editor.dark .editor-master .editor-outline .api-path .api-operations {
 }
 
 .api-editor.dark .editor-master .editor-outline .api-definition {
@@ -173,16 +177,16 @@
 .api-editor.dark .editor-detail .detail-title .label {
 }
 
-.api-editor.dark .resource-description {
+.api-editor.dark .path-description {
 }
 
-.api-editor.dark .api-resource-parameters td.parameter {
+.api-editor.dark .api-path-parameters td.parameter {
   color: @themes-dark-api-path-color;
 }
-.api-editor.dark .api-resource-parameters td.icons, .api-details table td.icons {
+.api-editor.dark .api-path-parameters td.icons, .api-details table td.icons {
   color: #666;
 }
-.api-editor.dark .api-resource-parameters td.icons i:hover {
+.api-editor.dark .api-path-parameters td.icons i:hover {
 }
 
 .api-editor.dark .api-response .tlabel {
@@ -190,28 +194,28 @@
 .api-editor.dark .api-response .tlabel span {
 }
 
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation {
   border-bottom: 1px solid @themes-dark-api-border-color;
 }
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .type {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation .type {
 }
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .name {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation .name {
 }
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .description {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation .description {
 }
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation .actions {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation .actions {
 }
 
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation.empty {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty {
   color: #888;
 }
 
-.api-editor.dark .editor-detail .api-resource-detail .operations-section .api-operation.empty .label {
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty .label {
   color: #888;
   background-color: #444;
 }
 
-.api-editor.dark .editor-detail .api-resource-detail .request-body-section .request-body-name {
+.api-editor.dark .editor-detail .api-path-detail .request-body-section .request-body-name {
 }
-.api-editor.dark .editor-detail .api-resource-detail .request-body-section .description {
+.api-editor.dark .editor-detail .api-path-detail .request-body-section .description {
 }

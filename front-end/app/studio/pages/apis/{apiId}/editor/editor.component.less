@@ -6,6 +6,10 @@
   font-weight: 400;
 }
 
+.api-editor span.path-segment::before {
+  content: "/";
+}
+
 .api-editor .api-item-description {
   font-size: 16px;
   padding-left: 5px;
@@ -115,30 +119,30 @@
 
 
 
-.api-editor .editor-master .editor-outline .api-resource {
+.api-editor .editor-master .editor-outline .api-path {
   padding-left: 15px;
   font-size: 14px;
 }
-.api-editor .editor-master .editor-outline .api-resource:hover {
+.api-editor .editor-master .editor-outline .api-path:hover {
   cursor: pointer;
 }
-.api-editor .editor-master .editor-outline .api-resource.selected {
+.api-editor .editor-master .editor-outline .api-path.selected {
   cursor: default;
 }
-.api-editor .editor-master .editor-outline .api-resource.selected span.path-param {
+.api-editor .editor-master .editor-outline .api-path.selected span.path-param {
 }
-.api-editor .editor-master .editor-outline .api-resource.selected .label {
+.api-editor .editor-master .editor-outline .api-path.selected .label {
   font-size: 12px;
   cursor: pointer;
   border: 1px solid transparent;
 }
-.api-editor .editor-master .editor-outline .api-resource.selected .label.empty {
+.api-editor .editor-master .editor-outline .api-path.selected .label.empty {
 }
-.api-editor .editor-master .editor-outline .api-resource.selected .label:hover {
+.api-editor .editor-master .editor-outline .api-path.selected .label:hover {
 }
-.api-editor .editor-master .editor-outline .api-resource.selected .label.selected {
+.api-editor .editor-master .editor-outline .api-path.selected .label.selected {
 }
-.api-editor .editor-master .editor-outline .api-resource .api-operations {
+.api-editor .editor-master .editor-outline .api-path .api-operations {
   margin-top: 5px;
   padding-bottom: 10px;
 }
@@ -237,20 +241,20 @@
   font-size: 13px;
 }
 
-.api-editor .resource-description {
+.api-editor .path-description {
   margin-top: 15px;
   margin-bottom: 20px;
 }
 
-.api-editor .api-resource-parameters td.parameter {
+.api-editor .api-path-parameters td.parameter {
   width: 1%;
   white-space: nowrap;
 }
-.api-editor .api-resource-parameters td.icons, .api-details table td.icons {
+.api-editor .api-path-parameters td.icons, .api-details table td.icons {
   width: 1%;
   white-space: nowrap;
 }
-.api-editor .api-resource-parameters td.icons i:hover {
+.api-editor .api-path-parameters td.icons i:hover {
   cursor: pointer;
 }
 
@@ -262,40 +266,40 @@
   font-weight: bold;
 }
 
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation {
   margin-top: 5px;
   margin-bottom: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
 }
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation .type {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type {
   display: inline-table;
 }
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation .name {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .name {
   display: inline-table;
   margin-left: 5px;
   font-size: 15px;
   font-weight: 600;
 }
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation .description {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .description {
   margin-top: 5px;
   font-size: 14px;
 }
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation .actions {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .actions {
   margin-top: 5px;
 }
 
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation.empty {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty {
 }
 
-.api-editor .editor-detail .api-resource-detail .operations-section .api-operation.empty .label {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .label {
 }
 
-.api-editor .editor-detail .api-resource-detail .request-body-section .request-body-name {
+.api-editor .editor-detail .api-path-detail .request-body-section .request-body-name {
   font-size: 15px;
   margin-left: 10px;
 }
-.api-editor .editor-detail .api-resource-detail .request-body-section .description {
+.api-editor .editor-detail .api-path-detail .request-body-section .description {
   margin-top: 8px;
   font-size: 14px;
 }

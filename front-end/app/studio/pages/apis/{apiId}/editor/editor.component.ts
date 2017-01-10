@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input} from '@angular/core';
+import {Component, EventEmitter, Output, Input, ViewEncapsulation} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
 import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
 
@@ -24,7 +24,8 @@ import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
     moduleId: module.id,
     selector: 'api-editor',
     templateUrl: 'editor.component.html',
-    styleUrls: ['editor.component.css']
+    styleUrls: ['editor.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ApiEditorComponent {
 
@@ -50,6 +51,42 @@ export class ApiEditorComponent {
             this._document = <Oas20Document>this._library.createDocument(this.api.spec);
         }
         return this._document;
+    }
+
+    /**
+     * Returns an array of path names.
+     * @return {any}
+     */
+    public pathNames(): string[] {
+        if (this.document().paths) {
+            return this.document().paths.pathItemNames();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Returns an array of definition names.
+     * @return {any}
+     */
+    public definitionNames(): string[] {
+        if (this.document().definitions) {
+            return this.document().definitions.definitionNames();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Returns an array of response names.
+     * @return {any}
+     */
+    public responseNames(): string[] {
+        if (this.document().responses) {
+            return this.document().responses.responseNames();
+        } else {
+            return [];
+        }
     }
 
 }

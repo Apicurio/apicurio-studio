@@ -1,4 +1,4 @@
-<div class="api-editor" [class.light]="theme === 'light'">
+<div class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
     <div class="editor-master">
         <div class="editor-main selected">
             <h2>{{ document().info.title }}</h2>
@@ -8,33 +8,16 @@
             <input type="text" placeholder="Search everything...">
         </div>
         <div class="editor-outline">
-            <!-- Resources Section -->
-            <div class="section resource-section">
+            <!-- Paths Section -->
+            <div class="section path-section">
                 <div class="section-header">
-                    <a data-toggle="collapse" data-target="#resource-section-body">
-                        <span class="section-label">Resources</span>
+                    <a data-toggle="collapse" data-target="#path-section-body">
+                        <span class="section-label">Paths</span>
                     </a>
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
-                <div class="section-body collapse in" id="resource-section-body">
-                    <div class="api-resource">
-                        <span>/apis/</span>
-                    </div>
-                    <div class="api-resource" onclick="window.location = 'editor-resource.html'">
-                        <span>/apis/</span><span class="path-param">organizationId</span><span>/</span><span class="path-param">apiId</span><span>/</span><span class="path-param">version</span>
-                    </div>
-                    <div class="api-resource">
-                        <span>/apis/</span><span class="path-param">organizationId</span><span>/</span><span class="path-param">apiId</span><span>/</span><span class="path-param">version</span><span>/path</span>
-                    </div>
-                    <div class="api-resource">
-                        <span>/clients/</span>
-                    </div>
-                    <div class="api-resource">
-                        <span>/clients/</span><span class="path-param">organizationId</span><span>/</span><span class="path-param">apiId</span><span>/</span><span class="path-param">version</span>
-                    </div>
-                    <div class="api-resource">
-                        <span>/system/status</span>
-                    </div>
+                <div class="section-body collapse in" id="path-section-body">
+                    <path-item *ngFor="let pathName of pathNames()" [path]="pathName"></path-item>
                 </div>
             </div>
             <!-- Definitions Section -->
@@ -46,18 +29,7 @@
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
-                    <div class="api-definition">
-                        <span class="fa fa-fw fa-code"></span>
-                        <span>Api</span>
-                    </div>
-                    <div class="api-definition">
-                        <span class="fa fa-fw fa-code"></span>
-                        <span>NewApi</span>
-                    </div>
-                    <div class="api-definition">
-                        <span class="fa fa-fw fa-code"></span>
-                        <span>Client</span>
-                    </div>
+                    <definition-item *ngFor="let defName of definitionNames()" [name]="defName"></definition-item>
                 </div>
             </div>
             <!-- Responses Section -->
@@ -69,18 +41,7 @@
                     <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse" id="response-section-body">
-                    <div class="api-response">
-                        <span class="fa fa-fw fa-reply"></span>
-                        <span>NotFound</span>
-                    </div>
-                    <div class="api-response">
-                        <span class="fa fa-fw fa-reply"></span>
-                        <span>IllegalInput</span>
-                    </div>
-                    <div class="api-response">
-                        <span class="fa fa-fw fa-reply"></span>
-                        <span>GeneralError</span>
-                    </div>
+                    <response-item *ngFor="let responseName of responseNames()" [name]="responseName"></response-item>
                 </div>
             </div>
         </div>

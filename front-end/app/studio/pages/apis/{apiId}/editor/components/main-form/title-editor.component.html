@@ -1,0 +1,14 @@
+<span *ngIf="editing !== true" class="api-title api-item-title" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ title }}</span>
+<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
+         [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
+         title="Click to edit" (click)="onStartEditing()">
+    <div class="overlay-area"></div>
+    <div class="overlay-actions">
+        <button title="Click to edit the title." class="overlay-action" (click)="onStartEditing()"><span class="fa fa-pencil"></span></button>
+    </div>
+</div>
+<form *ngIf="editing === true" name="api-title-editor-form" class="api-title-editor-form api-inline-editor-form"
+      (submit)="onEdit(newvalue.value)" style="display: inline">
+  <input #newvalue type="text" class="form-control api-title-editor api-title api-item-title" name="title-editor" value="{{ title }}"
+         [style.width]="hoverDims.width" [style.height]="hoverDims.height" (keypress)="onInputKeypress($event)">
+</form>

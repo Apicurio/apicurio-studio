@@ -61,6 +61,7 @@ import {PathItemComponent} from "./pages/apis/{apiId}/editor/components/path-ite
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/components/definition-item.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/components/response-item.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/components/main-form.component";
+import {TitleEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/title-editor.component";
 
 
 @NgModule({
@@ -68,7 +69,7 @@ import {MainFormComponent} from "./pages/apis/{apiId}/editor/components/main-for
     declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
-        PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent],
+        PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

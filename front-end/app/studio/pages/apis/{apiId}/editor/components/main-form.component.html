@@ -32,7 +32,7 @@
         </div>
         <div class="section-body collapse in" id="info-section-body">
             <h1>
-                <span class="api-title api-item-title">{{ title() }}</span>
+                <title-editor [title]="title()" (onChange)="onTitleChange($event)"></title-editor>
                 <span class="api-version">{{ version() }}</span>
             </h1>
             <div class="api-description api-item-description">{{ description() }}</div>

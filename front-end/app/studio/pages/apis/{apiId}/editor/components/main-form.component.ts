@@ -132,4 +132,12 @@ export class MainFormComponent {
         }
     }
 
+    /**
+     * Called when the user changes the title.
+     * @param newTitle
+     */
+    public onTitleChange(newTitle: string): void {
+        console.info("User changed the title to: " + newTitle);
+    }
+
 }

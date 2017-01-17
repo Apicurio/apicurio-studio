@@ -58,6 +58,8 @@ export class TitleEditorComponent implements AfterViewInit {
     public inputHover: boolean = false;
     public inputFocus: boolean = false;
 
+    public value: string;
+
     ngAfterViewInit(): void {
         this.input.changes.subscribe(changes => {
             if (changes.last) {
@@ -119,6 +121,7 @@ export class TitleEditorComponent implements AfterViewInit {
     }
 
     public onStartEditing(): void {
+        this.value = this.title;
         this.hovering = false;
         this._mousein = false;
         this.editingDims = this.hoverDims;
@@ -128,18 +131,22 @@ export class TitleEditorComponent implements AfterViewInit {
         this.editing = true;
     }
 
-    public onEdit(newValue: string): void {
-        this.onChange.emit(newValue);
+    public onSave(): void {
+        console.info("Saving new value: %s", this.value);
+        this.onChange.emit(this.value);
         this.editing = false;
     }
 
-    public onCancelEdit(): void {
+    public onCancel(): void {
         this.editing = false;
+        this.value = "";
+        console.info("Edit canceled!");
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
+        console.info("Keypress: " + event.key);
         if (event.key === 'Escape') {
-            this.onCancelEdit();
+            this.onCancel();
         }
     }
 

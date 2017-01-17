@@ -182,11 +182,21 @@
 
 .api-editor .editor-detail .hover-overlay {
   border: 1px solid;
+  border-radius: 1px;
   background-color: transparent;
   position: fixed;
   padding: 0;
   margin: 0;
   cursor: text;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -ms-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+  opacity: 0;
+}
+.api-editor .editor-detail .hover-overlay:hover {
+  opacity: 100;
 }
 .api-editor .editor-detail .hover-overlay .overlay-actions {
   float: right;
@@ -203,6 +213,28 @@
   padding: 0;
   margin: 0;
   font-size: 13px;
+}
+
+.api-editor .editor-detail .edit-overlay {
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #bbb;
+  border-top: 0px;
+  border-radius: 1px;
+  padding: 3px;
+  -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  -moz-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  -ms-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.api-editor .editor-detail .edit-overlay.focus {
+}
+.api-editor .editor-detail .edit-overlay.hover {
+}
+.api-editor .editor-detail .edit-overlay .overlay-action {
+  margin: 2px;
 }
 
 .api-editor .editor-detail .detail-title {

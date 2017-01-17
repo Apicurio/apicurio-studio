@@ -48,12 +48,30 @@ export class TitleEditorComponent implements AfterViewInit {
         width: 0,
         height: 0
     };
+    public editingDims: any = {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0
+    };
+
+    public inputHover: boolean = false;
+    public inputFocus: boolean = false;
 
     ngAfterViewInit(): void {
         this.input.changes.subscribe(changes => {
             if (changes.last) {
                 changes.last.nativeElement.focus();
                 changes.last.nativeElement.select();
+                let targetRect: any = changes.last.nativeElement.getBoundingClientRect();
+                setTimeout(() => {
+                    this.editingDims = {
+                        left: targetRect.left,
+                        top: targetRect.top,
+                        width: targetRect.right - targetRect.left,
+                        height: targetRect.bottom - targetRect.top
+                    };
+                });
             }
         });
     }
@@ -64,7 +82,7 @@ export class TitleEditorComponent implements AfterViewInit {
         }
         this._mousein = true;
         this._hoverElem = event.currentTarget;
-        this._hoverSub = TimerObservable.create(500).subscribe(() => {
+        this._hoverSub = TimerObservable.create(100).subscribe(() => {
             if (this._mousein) {
                 let target: any = this._hoverElem;
                 let targetRect: any = target.getBoundingClientRect();
@@ -72,7 +90,7 @@ export class TitleEditorComponent implements AfterViewInit {
                     left: targetRect.left - 5,
                     top: targetRect.top,
                     width: targetRect.right - targetRect.left + 10 + 20,
-                    height: targetRect.bottom - targetRect.top + 5
+                    height: targetRect.bottom - targetRect.top + 3
                 };
                 this.hovering = true;
             }
@@ -103,6 +121,10 @@ export class TitleEditorComponent implements AfterViewInit {
     public onStartEditing(): void {
         this.hovering = false;
         this._mousein = false;
+        this.editingDims = this.hoverDims;
+        this.editingDims.height += 2;
+        this.inputFocus = true;
+        this.inputHover = true;
         this.editing = true;
     }
 
@@ -118,6 +140,18 @@ export class TitleEditorComponent implements AfterViewInit {
     public onInputKeypress(event: KeyboardEvent): void {
         if (event.key === 'Escape') {
             this.onCancelEdit();
+        }
+    }
+
+    public onInputFocus(isFocus: boolean): void {
+        if (this.inputFocus !== isFocus) {
+            this.inputFocus = isFocus;
+        }
+    }
+
+    public onInputIn(isIn: boolean): void {
+        if (this.inputHover !== isIn) {
+            this.inputHover = isIn;
         }
     }
 

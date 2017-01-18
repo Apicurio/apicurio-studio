@@ -129,4 +129,15 @@ export class ApiEditorComponent {
         this.selectedType = "response";
     }
 
+    /**
+     * Called whenever the user presses a key.
+     * @param event
+     */
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
+        if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
+            console.info("Undo!!");
+        }
+    }
+
 }

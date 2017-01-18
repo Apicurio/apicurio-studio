@@ -1,4 +1,4 @@
-<div class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
+<div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
     <div class="editor-master">
         <div class="editor-main" [class.selected]="selectedType === 'main'" (click)="selectMain()">
             <h2>{{ document().info.title }}</h2>

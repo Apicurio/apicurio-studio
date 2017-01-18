@@ -132,7 +132,6 @@ export class TitleEditorComponent implements AfterViewInit {
     }
 
     public onSave(): void {
-        console.info("Saving new value: %s", this.value);
         this.onChange.emit(this.value);
         this.editing = false;
     }
@@ -140,11 +139,9 @@ export class TitleEditorComponent implements AfterViewInit {
     public onCancel(): void {
         this.editing = false;
         this.value = "";
-        console.info("Edit canceled!");
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        console.info("Keypress: " + event.key);
         if (event.key === 'Escape') {
             this.onCancel();
         }

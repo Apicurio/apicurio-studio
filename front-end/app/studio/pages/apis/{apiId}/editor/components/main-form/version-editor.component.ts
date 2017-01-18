@@ -24,13 +24,13 @@ import {AbstractInlineEditor} from "../../../../../../components/inline-editor.b
 
 @Component({
     moduleId: module.id,
-    selector: 'title-editor',
-    templateUrl: 'title-editor.component.html',
+    selector: 'version-editor',
+    templateUrl: 'version-editor.component.html',
     encapsulation: ViewEncapsulation.None
 })
-export class TitleEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
+export class VersionEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
 
-    @Input() title: string;
+    @Input() version: string;
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
@@ -53,7 +53,7 @@ export class TitleEditorComponent extends AbstractInlineEditor<string> implement
     }
 
     protected initialValueForEditing(): string {
-        return this.title;
+        return this.version;
     }
 
 }

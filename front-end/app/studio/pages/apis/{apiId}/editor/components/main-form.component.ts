@@ -140,4 +140,12 @@ export class MainFormComponent {
         console.info("User changed the title to: " + newTitle);
     }
 
+    /**
+     * Called when the user changes the title.
+     * @param newVersion
+     */
+    public onVersionChange(newVersion: string): void {
+        console.info("User changed the version to: " + newVersion);
+    }
+
 }

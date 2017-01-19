@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, ViewEncapsulation, Output, EventEmitter} from '@angular/core';
 import {OasDocument, Oas20Document} from "oai-ts-core";
+import {ICommand} from "../commands.manager";
+import {ChangeVersionCommand} from "../commands/change-version.command";
+import {ChangeTitleCommand} from "../commands/change-title.command";
 
 
 @Component({
@@ -28,6 +31,7 @@ import {OasDocument, Oas20Document} from "oai-ts-core";
 export class MainFormComponent {
 
     @Input() document: OasDocument;
+    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     public doc(): Oas20Document {
         return <Oas20Document> this.document;
@@ -137,7 +141,9 @@ export class MainFormComponent {
      * @param newTitle
      */
     public onTitleChange(newTitle: string): void {
-        console.info("User changed the title to: " + newTitle);
+        console.info("[MainFormComponent] User changed the title to: " + newTitle);
+        let command: ICommand = new ChangeTitleCommand(newTitle);
+        this.onCommand.emit(command);
     }
 
     /**
@@ -145,7 +151,9 @@ export class MainFormComponent {
      * @param newVersion
      */
     public onVersionChange(newVersion: string): void {
-        console.info("User changed the version to: " + newVersion);
+        console.info("[MainFormComponent] User changed the version to: " + newVersion);
+        let command: ICommand = new ChangeVersionCommand(newVersion);
+        this.onCommand.emit(command);
     }
 
 }

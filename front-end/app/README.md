@@ -33,13 +33,6 @@ required packages.  This can be done like so:
 $ npm install
 ```
 
-*NOTE*: If the typings folder doesn't show up after running npm install
-(it usually does), you'll need to install it manually with the command:
-
-```
-npm run typings install
-```
-
 ## Run It!
 
 Now that everything is install, you can run the application in development

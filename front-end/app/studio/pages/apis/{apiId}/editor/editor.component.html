@@ -53,6 +53,6 @@
     </div>
 
     <div class="editor-detail">
-        <main-form [document]="document()" *ngIf="selectedType === 'main'"></main-form>
+        <main-form [document]="document()" (onCommand)="onCommand($event)" *ngIf="selectedType === 'main'"></main-form>
     </div>
 </div>

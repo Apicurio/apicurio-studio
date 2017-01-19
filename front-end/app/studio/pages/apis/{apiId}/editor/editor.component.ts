@@ -17,7 +17,8 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils, OasNode, Oas20PathItem} from "oai-ts-core";
+import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
+import {CommandsManager, ICommand} from "./commands.manager";
 
 
 @Component({
@@ -35,6 +36,7 @@ export class ApiEditorComponent {
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: Oas20Document = null;
+    private _commands: CommandsManager = new CommandsManager();
 
     theme: string = "light";
     selectedItem: string = null;
@@ -136,8 +138,22 @@ export class ApiEditorComponent {
     public onGlobalKeyDown(event: KeyboardEvent): void {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
-            console.info("Undo!!");
+            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+            this._commands.undoLastCommand(this.document());
         }
+        if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
+            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+            this._commands.redoLastCommand(this.document());
+        }
+    }
+
+    /**
+     * Called when an editor component creates a command that should be executed.
+     * @param command
+     */
+    public onCommand(command: ICommand): void {
+        console.info("[ApiEditorComponent] Executing a command.");
+        this._commands.executeCommand(command, this.document());
     }
 
 }

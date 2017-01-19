@@ -1,5 +1,15 @@
 
+.list-group-item {
+  -webkit-transition: background-color 300ms;
+  -moz-transition: background-color 300ms;
+  -ms-transition: background-color 300ms;
+  -o-transition: background-color 300ms;
+  transition: background-color 300ms;
+}
 .list-group-item, .list-group-item:first-child {
   margin-bottom: 5px;
   border-top: 1px solid rgb(57, 165, 220);
+}
+.list-group-item.active {
+  background-color: #def3ff;
 }

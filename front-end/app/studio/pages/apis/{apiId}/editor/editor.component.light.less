@@ -7,7 +7,7 @@
 @themes-light-api-hover-color: lighten(@themes-light-api-selected-color, 35%);
 @themes-light-api-label-color: #333;
 @themes-light-api-bg-color: white;
-
+@themes-light-bg-transition: 200ms;
 
 .api-editor.light span.path-param {
   color: @themes-light-api-path-color;
@@ -69,6 +69,11 @@
 
 .api-editor.light .editor-master .editor-main {
   background-color: #eee;
+  -webkit-transition: background-color @themes-light-bg-transition;
+  -moz-transition: background-color @themes-light-bg-transition;
+  -ms-transition: background-color @themes-light-bg-transition;
+  -o-transition: background-color @themes-light-bg-transition;
+  transition: background-color @themes-light-bg-transition;
 }
 .api-editor.light .editor-master .editor-main:hover {
   background-color: @themes-light-api-hover-color;
@@ -88,6 +93,19 @@
 .api-editor.light .editor-master .editor-search input {
   background-color: #ddd;
   color: @themes-light-api-label-color;
+  border: 1px solid transparent;
+  -webkit-transition: border-color 300ms, box-shadow 300ms;
+  -moz-transition: border-color 300ms, box-shadow 300ms;
+  -ms-transition: border-color 300ms, box-shadow 300ms;
+  -o-transition: border-color 300ms, box-shadow 300ms;
+  transition: border-color 300ms, box-shadow 300ms;
+}
+.api-editor.light .editor-master .editor-search input:hover {
+  border-color: #ccc;
+}
+.api-editor.light .editor-master .editor-search input:focus {
+  border-color: #ccd;
+  box-shadow: 0 0 8px #ccd;
 }
 
 .api-editor.light .editor-master .editor-outline {
@@ -121,6 +139,11 @@
 
 
 .api-editor.light .editor-master .editor-outline .api-path {
+  -webkit-transition: background-color @themes-light-bg-transition;
+  -moz-transition: background-color @themes-light-bg-transition;
+  -ms-transition: background-color @themes-light-bg-transition;
+  -o-transition: background-color @themes-light-bg-transition;
+  transition: background-color @themes-light-bg-transition;
 }
 .api-editor.light .editor-master .editor-outline .api-path:hover {
   background-color: @themes-light-api-hover-color;
@@ -146,6 +169,11 @@
 }
 
 .api-editor.light .editor-master .editor-outline .api-definition {
+  -webkit-transition: background-color @themes-light-bg-transition;
+  -moz-transition: background-color @themes-light-bg-transition;
+  -ms-transition: background-color @themes-light-bg-transition;
+  -o-transition: background-color @themes-light-bg-transition;
+  transition: background-color @themes-light-bg-transition;
 }
 .api-editor.light .editor-master .editor-outline .api-definition:hover {
   background-color: @themes-light-api-hover-color;
@@ -156,6 +184,11 @@
 }
 
 .api-editor.light .editor-master .editor-outline .api-response {
+  -webkit-transition: background-color @themes-light-bg-transition;
+  -moz-transition: background-color @themes-light-bg-transition;
+  -ms-transition: background-color @themes-light-bg-transition;
+  -o-transition: background-color @themes-light-bg-transition;
+  transition: background-color @themes-light-bg-transition;
 }
 .api-editor.light .editor-master .editor-outline .api-response:hover {
   background-color: @themes-light-api-hover-color;

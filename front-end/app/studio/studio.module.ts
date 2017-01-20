@@ -20,6 +20,9 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
+/* Bootstrap */
+import { ModalModule } from 'ng2-bootstrap';
+
 /* Top level app stuff */
 import {StudioComponent} from './studio.component';
 import {StudioRouting} from './studio.routing';
@@ -66,7 +69,7 @@ import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/components/mai
 
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting],
+    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot()],
     declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,

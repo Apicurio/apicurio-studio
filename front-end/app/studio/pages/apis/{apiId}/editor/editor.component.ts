@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
 import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./commands.manager";
+import {ModalDirective} from 'ng2-bootstrap';
+import {NewPathCommand} from "./commands/new-path.command";
 
 
 @Component({
@@ -33,6 +35,12 @@ export class ApiEditorComponent {
     @Input() api: ApiDefinition;
     @Output() onDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
+
+    @ViewChild("addPathModal") public addPathModal: ModalDirective;
+
+    public modals: any = {
+        addPath: {}
+    };
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: Oas20Document = null;
@@ -63,7 +71,7 @@ export class ApiEditorComponent {
      */
     public pathNames(): string[] {
         if (this.document().paths) {
-            return this.document().paths.pathItemNames();
+            return this.document().paths.pathItemNames().sort();
         } else {
             return [];
         }
@@ -75,7 +83,7 @@ export class ApiEditorComponent {
      */
     public definitionNames(): string[] {
         if (this.document().definitions) {
-            return this.document().definitions.definitionNames();
+            return this.document().definitions.definitionNames().sort();
         } else {
             return [];
         }
@@ -87,7 +95,7 @@ export class ApiEditorComponent {
      */
     public responseNames(): string[] {
         if (this.document().responses) {
-            return this.document().responses.responseNames();
+            return this.document().responses.responseNames().sort();
         } else {
             return [];
         }
@@ -154,6 +162,28 @@ export class ApiEditorComponent {
     public onCommand(command: ICommand): void {
         console.info("[ApiEditorComponent] Executing a command.");
         this._commands.executeCommand(command, this.document());
+    }
+
+    /**
+     * Called to initialize the model used by the Add Path modal (based on the path selected).
+     */
+    public initAddPath(): string {
+        if (this.selectedType === "path") {
+            this.modals.addPath.path = this.selectedItem;
+        } else {
+            this.modals.addPath.path = "";
+        }
+        return this.modals.addPath.path;
+    }
+
+    /**
+     * Called when the user fills out the Add Path modal dialog and clicks Add.
+     */
+    public addPath(): void {
+        let command: ICommand = new NewPathCommand(this.modals.addPath.path);
+        this.onCommand(command);
+        this.addPathModal.hide();
+        this.selectPath(this.modals.addPath.path);
     }
 
 }

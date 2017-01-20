@@ -22,6 +22,7 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             // other libraries
             'oai-ts-core': 'npm:oai-ts-core/bundles/OAI.umd.js',
+            'ng2-bootstrap': 'node_modules/ng2-bootstrap',
             'rxjs': 'npm:rxjs',
             'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
             'core-js-shim': 'npm:core-js/client/shim.min.js',
@@ -35,6 +36,11 @@
                 defaultExtension: 'js'
             },
             rxjs: {
+                defaultExtension: 'js'
+            },
+            'ng2-bootstrap': {
+                format: 'cjs',
+                main: 'bundles/ng2-bootstrap.umd.js',
                 defaultExtension: 'js'
             },
             'angular2-in-memory-web-api': {

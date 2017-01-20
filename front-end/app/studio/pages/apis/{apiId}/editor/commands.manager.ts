@@ -21,6 +21,15 @@ import {OasDocument} from "oai-ts-core";
  * A base class for all command implementations.
  */
 export abstract class AbstractCommand {
+
+    /**
+     * Returns true of the argument is either null or undefined.
+     * @param obj
+     */
+    protected isNullOrUndefined(obj: any): boolean {
+        return obj === null || obj === undefined;
+    }
+
 }
 
 /**

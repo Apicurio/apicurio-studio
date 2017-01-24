@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
+import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./commands.manager";
 import {ModalDirective} from 'ng2-bootstrap';
 import {NewPathCommand} from "./commands/new-path.command";
@@ -49,6 +49,7 @@ export class ApiEditorComponent {
     theme: string = "light";
     selectedItem: string = null;
     selectedType: string = "main";
+    subselectedItem: string = null;
 
     /**
      * Constructor.
@@ -119,6 +120,23 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Called when the user clicks an operation.
+     * @param pathName
+     * @param opName
+     */
+    public selectOperation(pathName: string, opName: string): void {
+        console.info("Selected operation: %s :: %s", pathName, opName);
+        // Possible de-select the operation if it's clicked on but already selected.
+        if (this.selectedType === 'operation' && this.selectedItem === pathName && this.subselectedItem === opName) {
+            this.selectPath(pathName);
+        } else {
+            this.selectedType = "operation";
+            this.selectedItem = pathName;
+            this.subselectedItem = opName;
+        }
+    }
+
+    /**
      * Called when the user selects a definition from the master area.
      * @param name
      */
@@ -184,6 +202,34 @@ export class ApiEditorComponent {
         this.onCommand(command);
         this.addPathModal.hide();
         this.selectPath(this.modals.addPath.path);
+    }
+
+    /**
+     * Returns the currently selected path item.
+     * @return {any}
+     */
+    public selectedPath(): Oas20PathItem {
+        if (this.selectedType === "path") {
+            return this.document().paths.pathItem(this.selectedItem);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Called to test whether the given resource path has an operation of the given type defined.
+     * @param path
+     * @param operation
+     */
+    public hasOperation(path: string, operation: string): boolean {
+        let pathItem: Oas20PathItem = this.document().paths.pathItem(path);
+        if (pathItem) {
+            let op: Oas20Operation = pathItem[operation];
+            if (op !== null && op !== undefined) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -1,0 +1,123 @@
+<div class="detail-title">
+    <div path-item class="detail-label" [path]="path.path()"></div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li class="active"><a href="#" onclick="return false">Design</a></li>
+        <li class="disabled"><a href="#" onclick="return false" disabled="disabled">Source</a></li>
+    </ul>
+</div>
+<div class="detail-content">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+
+                <div class="alert alert-info">
+                    <span class="pficon pficon-info"></span>
+                    This page shows summary details about the <strong>{{ path.path() }}</strong> resource path.  Below you can
+                    view and modify the operations supported by this path.
+                </div>
+
+                <!-- Operations Section -->
+                <div class="section operations-section">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#operations-section-body">
+                            <span class="section-label">OPERATIONS</span>
+                        </a>
+                    </div>
+                    <div class="section-body collapse in" id="operations-section-body">
+
+                        <div class="api-operation" [class.empty]="!hasGet()">
+                            <div class="">
+                                <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
+                                <div class="name">{{ getSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasGet()" class="description api-item-description">{{ getDescription() }}</div>
+                            <div class="actions" *ngIf="!hasGet()">
+                                <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPut()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
+                                <div class="name">{{ putSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasPut()" class="description api-item-description">{{ putDescription() }}</div>
+                            <div class="actions" *ngIf="!hasPut()">
+                                <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPost()">
+                            <div class="">
+                                <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
+                                <div class="name">{{ postSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasPost()" class="description api-item-description">{{ postDescription() }}</div>
+                            <div class="actions" *ngIf="!hasPost()">
+                                <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasDelete()">
+                            <div class="">
+                                <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
+                                <div class="name">{{ deleteSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasDelete()" class="description api-item-description">{{ deleteDescription() }}</div>
+                            <div class="actions" *ngIf="!hasDelete()">
+                                <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasOptions()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
+                                <div class="name">{{ optionsSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasOptions()" class="description api-item-description">{{ optionsDescription() }}</div>
+                            <div class="actions" *ngIf="!hasOptions()">
+                                <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasHead()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
+                                <div class="name">{{ headSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasHead()" class="description api-item-description">{{ headDescription() }}</div>
+                            <div class="actions" *ngIf="!hasHead()">
+                                <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPatch()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
+                                <div class="name">{{ patchSummary() }}</div>
+                            </div>
+                            <div *ngIf="hasPatch()" class="description api-item-description">{{ patchDescription() }}</div>
+                            <div class="actions" *ngIf="!hasPatch()">
+                                <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

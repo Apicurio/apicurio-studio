@@ -18,8 +18,27 @@
                             (click)="addPathModal.show(); initAddPath()"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="path-section-body">
-                    <div path-item class="api-path" *ngFor="let pathName of pathNames()" [path]="pathName" (click)="selectPath(pathName)"
-                         [class.selected]="selectedItem === pathName && selectedType === 'path'"></div>
+                    <div class="api-path" *ngFor="let pathName of pathNames()"
+                            [class.selected]="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation')">
+                        <div path-item [path]="pathName" (click)="selectPath(pathName)"></div>
+                        <div class="api-operations" *ngIf="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation')">
+                            <span *ngIf="hasOperation(pathName, 'get')" class="label label-success"  (click)="selectOperation(selectedItem, 'get')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'get'">GET</span>
+                            <span *ngIf="hasOperation(pathName, 'put')" class="label label-info" (click)="selectOperation(selectedItem, 'put')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'put'">PUT</span>
+                            <span *ngIf="hasOperation(pathName, 'post')" class="label label-warning" (click)="selectOperation(selectedItem, 'post')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'post'">POST</span>
+                            <span *ngIf="hasOperation(pathName, 'delete')" class="label label-danger" (click)="selectOperation(selectedItem, 'delete')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'delete'">DELETE</span>
+                            <span *ngIf="hasOperation(pathName, 'options')" class="label label-info" (click)="selectOperation(selectedItem, 'options')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'options'">OPTIONS</span>
+                            <span *ngIf="hasOperation(pathName, 'head')" class="label label-info" (click)="selectOperation(selectedItem, 'head')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'head'">HEAD</span>
+                            <span *ngIf="hasOperation(pathName, 'patch')" class="label label-info" (click)="selectOperation(selectedItem, 'patch')"
+                                  [class.selected]="selectedType === 'operation' && subselectedItem === 'patch'">PATCH</span>
+                            <span>&nbsp;</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Definitions Section -->
@@ -55,6 +74,8 @@
 
     <div class="editor-detail">
         <main-form [document]="document()" (onCommand)="onCommand($event)" *ngIf="selectedType === 'main'"></main-form>
+        <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" (onOperationSelected)="selectOperation(selectedItem, $event)"
+                   *ngIf="selectedType === 'path'"></path-form>
     </div>
 </div>
 

@@ -135,6 +135,8 @@
   font-size: 12px;
   cursor: pointer;
   border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 2px 8px 2px 8px;
 }
 .api-editor .editor-master .editor-outline .api-path.selected .label.empty {
 }
@@ -242,7 +244,7 @@
 }
 .api-editor .editor-detail .detail-title .detail-label {
   float: left;
-  line-height: 48px;
+  line-height: 44px;
   font-size: 18px;
   font-weight: 500;
   padding-left: 10px;
@@ -346,6 +348,13 @@
 .api-editor .editor-detail .api-path-detail .operations-section .api-operation .type {
   display: inline-table;
 }
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label {
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 2px 8px 2px 8px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label:hover {
+}
 .api-editor .editor-detail .api-path-detail .operations-section .api-operation .name {
   display: inline-table;
   margin-left: 5px;
@@ -362,8 +371,10 @@
 
 .api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty {
 }
-
-.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .label {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
+  cursor: default;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
 }
 
 .api-editor .editor-detail .api-path-detail .request-body-section .request-body-name {
@@ -373,4 +384,8 @@
 .api-editor .editor-detail .api-path-detail .request-body-section .description {
   margin-top: 8px;
   font-size: 14px;
+}
+
+.api-editor .editor-detail table {
+  font-size: 12px;
 }

@@ -8,6 +8,7 @@
 @themes-light-api-label-color: #333;
 @themes-light-api-bg-color: white;
 @themes-light-bg-transition: 200ms;
+@themes-light-shadow-transition: 350ms;
 
 .api-editor.light span.path-param {
   color: @themes-light-api-path-color;
@@ -94,11 +95,11 @@
   background-color: #ddd;
   color: @themes-light-api-label-color;
   border: 1px solid transparent;
-  -webkit-transition: border-color 300ms, box-shadow 300ms;
-  -moz-transition: border-color 300ms, box-shadow 300ms;
-  -ms-transition: border-color 300ms, box-shadow 300ms;
-  -o-transition: border-color 300ms, box-shadow 300ms;
-  transition: border-color 300ms, box-shadow 300ms;
+  -webkit-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -moz-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -ms-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -o-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
 }
 .api-editor.light .editor-master .editor-search input:hover {
   border-color: #ccc;
@@ -155,15 +156,19 @@
 .api-editor.light .editor-master .editor-outline .api-path.selected span.path-param {
 }
 .api-editor.light .editor-master .editor-outline .api-path.selected .label {
-}
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.empty {
-  background-color: #ccc;
+  -webkit-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -moz-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -ms-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  -o-transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
+  transition: border-color @themes-light-shadow-transition, box-shadow @themes-light-shadow-transition;
 }
 .api-editor.light .editor-master .editor-outline .api-path.selected .label:hover {
-  border: 1px solid @themes-light-api-hover-color;
+  box-shadow: 0 0 3px rgb(100,100,100);
+  border: 1px solid #666;
 }
 .api-editor.light .editor-master .editor-outline .api-path.selected .label.selected {
-  border: 1px solid white;
+  border: 1px solid black;
+  box-shadow: 0 0 3px rgb(20,20,20);
 }
 .api-editor.light .editor-master .editor-outline .api-path .api-operations {
 }
@@ -270,6 +275,19 @@
 }
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type {
 }
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type .label {
+  -webkit-transition: border-color @themes-light-bg-transition, box-shadow @themes-light-bg-transition;
+  -moz-transition: border-color @themes-light-bg-transition, box-shadow @themes-light-bg-transition;
+  -ms-transition: border-color @themes-light-bg-transition, box-shadow @themes-light-bg-transition;
+  -o-transition: border-color @themes-light-bg-transition, box-shadow @themes-light-bg-transition;
+  transition: border-color @themes-light-bg-transition, box-shadow @themes-light-bg-transition;
+  box-shadow: none;
+  border: 1px solid transparent;
+}
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type .label:hover {
+  border-color: #666;
+  box-shadow: 0px 0px 8px #666;
+}
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .name {
 }
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .description {
@@ -280,9 +298,15 @@
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty {
   color: #999;
 }
-
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .label {
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
   background-color: #ccc;
+  border-color: transparent;
+  box-shadow: none;
+}
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
+  background-color: #ccc;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .api-editor.light .editor-detail .api-path-detail .request-body-section .request-body-name {

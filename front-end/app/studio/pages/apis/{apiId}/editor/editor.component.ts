@@ -217,6 +217,17 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Returns the currently selected operation.
+     */
+    public selectedOperation(): Oas20Operation {
+        if (this.selectedType === "operation") {
+            return this.document().paths.pathItem(this.selectedItem)[this.subselectedItem];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Called to test whether the given resource path has an operation of the given type defined.
      * @param path
      * @param operation

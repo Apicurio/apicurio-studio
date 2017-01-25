@@ -1,0 +1,148 @@
+<div class="detail-title">
+    <div path-item class="detail-label" [path]="operation.parent().path()"></div>
+    <div class="detail-icon">
+        <span class="label selected"
+              [class.label-info]="operation.method() !== 'get' && operation.method() !== 'post' && operation.method() !== 'delete'"
+              [class.label-success]="operation.method() === 'get'"
+              [class.label-warning]="operation.method() === 'post'"
+              [class.label-danger]="operation.method() === 'delete'">{{ operation.method() }}</span>
+    </div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li class="active"><a href="#" onclick="return false">Design</a></li>
+        <li class="disabled"><a href="#" onclick="return false" disabled="disabled">Source</a></li>
+    </ul>
+</div>
+<div class="detail-content">
+
+    <div class="api-operation-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+
+                <!-- Info Section -->
+                <div class="section info-section">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#info-section-body">
+                            <span class="section-label">INFO</span>
+                        </a>
+                    </div>
+                    <div class="section-body collapse in" id="info-section-body">
+                        <h1>
+                            <span class="api-item-title">{{ summary() }}</span>
+                        </h1>
+                        <div class="operation-description api-item-description">{{ description() }}</div>
+                    </div>
+                </div>
+
+                <!-- Request Body Section -->
+                <div class="section request-body-section">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#request-body-section-body">
+                            <span class="section-label">REQUEST BODY</span>
+                        </a>
+                    </div>
+                    <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="requestBodyMenu" data-toggle="dropdown">
+                                <span>Api</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="requestBodyMenu">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">string</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">boolean</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">integer</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">double</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">long</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">float</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">short</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">byte</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">timestamp</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="#">Api</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">NewApi</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Client</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Custom Type</a></li>
+                            </ul>
+                        </div>
+                        <div class="request-body-description api-item-description description">{{ bodyDescription() }}</div>
+                    </div>
+                </div>
+
+                <!-- Query Parameters Section -->
+                <div class="section query-parameters-section">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#parameters-section-body">
+                            <span class="section-label">QUERY PARAMETERS</span>
+                        </a>
+                        <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                    </div>
+                    <div class="section-body collapse in" id="parameters-section-body">
+
+                        <div class="alert alert-info" *ngIf="!hasParameters('query')">
+                            <span class="pficon pficon-info"></span>
+                            <strong>None Found</strong>
+                            <span>No query parameters have been declared.</span>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="addQueryParameter()">Add Query Parameter</button>
+                        </div>
+
+                        <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                            <tr *ngFor="let param of queryParameters()">
+                                <td class="parameter">{{ param.name }}</td>
+                                <td class="description">{{ paramDescription(param) }}</td>
+                                <td class="type">{{ paramType(param) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Responses Section -->
+                <div class="section responses-section">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#responses-section-body">
+                            <span class="section-label">RESPONSES</span>
+                        </a>
+                        <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                    </div>
+                    <div class="section-body collapse in" id="responses-section-body">
+                        <table class="table table-striped api-operation-responses">
+                            <tr>
+                                <th>Status Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                            <tr *ngFor="let response of responses()">
+                                <td class="parameter">{{ response.statusCode() }}</td>
+                                <td class="description">{{ responseDescription(response) }}</td>
+                                <td class="type">{{ responseType(response) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

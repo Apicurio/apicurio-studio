@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import {Component, Input, ViewEncapsulation, Output, EventEmitter} from '@angular/core';
+import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
 import {Oas20PathItem, Oas20Operation} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
+import {NewOperationCommand} from "../commands/new-operation.command";
 
 
 @Component({
@@ -140,7 +140,8 @@ export class PathFormComponent {
     }
 
     public createOperation(operationType: string): void {
-
+        let command: ICommand = new NewOperationCommand(this.path.path(), operationType);
+        this.onCommand.emit(command);
     }
 
 }

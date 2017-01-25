@@ -249,6 +249,17 @@
   font-weight: 500;
   padding-left: 10px;
 }
+.api-editor .editor-detail .detail-title .detail-icon {
+  float: left;
+  line-height: 44px;
+  height: 44px;
+  text-transform: uppercase;
+  padding-top: 15px;
+}
+.api-editor .editor-detail .detail-title .detail-icon .label {
+  border-radius: 2px;
+  padding: 2px 8px 2px 8px;
+}
 .api-editor .editor-detail .detail-title .detail-actions {
   float: right;
 }
@@ -319,15 +330,15 @@
   margin-bottom: 20px;
 }
 
-.api-editor .api-path-parameters td.parameter {
+.api-editor .api-operation-parameters td.parameter {
   width: 1%;
   white-space: nowrap;
 }
-.api-editor .api-path-parameters td.icons, .api-details table td.icons {
+.api-editor .api-operation-parameters td.icons, .api-details table td.icons {
   width: 1%;
   white-space: nowrap;
 }
-.api-editor .api-path-parameters td.icons i:hover {
+.api-editor .api-operation-parameters td.icons i:hover {
   cursor: pointer;
 }
 
@@ -377,11 +388,11 @@
 .api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
 }
 
-.api-editor .editor-detail .api-path-detail .request-body-section .request-body-name {
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-name {
   font-size: 15px;
   margin-left: 10px;
 }
-.api-editor .editor-detail .api-path-detail .request-body-section .description {
+.api-editor .editor-detail .api-operation-detail .request-body-section .description {
   margin-top: 8px;
   font-size: 14px;
 }

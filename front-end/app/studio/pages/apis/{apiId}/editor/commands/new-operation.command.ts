@@ -66,22 +66,17 @@ export class NewOperationCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        console.info("[NewOperationCommand] Reverting (2).");
         let doc: Oas20Document = <Oas20Document> document;
         if (this.isNullOrUndefined(doc.paths)) {
             return;
         }
 
-        console.info("[NewOperationCommand] Reverting (3).");
         let path: Oas20PathItem = doc.paths.pathItem(this._path);
         if (this.isNullOrUndefined(path)) {
             return;
         }
 
-        console.info("[NewOperationCommand] Reverting (4).");
         path[this._method] = null;
-
-        console.info("[NewOperationCommand] Reverting (5).");
     }
 
 }

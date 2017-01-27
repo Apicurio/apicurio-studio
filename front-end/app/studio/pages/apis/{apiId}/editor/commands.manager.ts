@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-import {OasDocument} from "oai-ts-core";
+import {OasDocument, OasLibraryUtils} from "oai-ts-core";
 
 /**
  * A base class for all command implementations.
  */
 export abstract class AbstractCommand {
+
+    protected static _oasLibrary: OasLibraryUtils = new OasLibraryUtils();
 
     /**
      * Returns true of the argument is either null or undefined.
@@ -28,6 +30,14 @@ export abstract class AbstractCommand {
      */
     protected isNullOrUndefined(obj: any): boolean {
         return obj === null || obj === undefined;
+    }
+
+    /**
+     * Gets access to the static OAS library.
+     * @return {OasLibraryUtils}
+     */
+    protected oasLibrary(): OasLibraryUtils {
+        return AbstractCommand._oasLibrary;
     }
 
 }

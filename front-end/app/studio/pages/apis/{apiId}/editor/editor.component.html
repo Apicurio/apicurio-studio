@@ -73,10 +73,11 @@
     </div>
 
     <div class="editor-detail">
-        <main-form [document]="document()" (onCommand)="onCommand($event)" *ngIf="selectedType === 'main'"></main-form>
-        <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" (onOperationSelected)="selectOperation(selectedItem, $event)"
-                   *ngIf="selectedType === 'path'"></path-form>
-        <operation-form [operation]="selectedOperation()" (onCommand)="onCommand($event)" *ngIf="selectedType === 'operation'"></operation-form>
+        <main-form [style.height]="'100%'" [document]="document()" (onCommand)="onCommand($event)" *ngIf="selectedType === 'main'"></main-form>
+        <path-form [style.height]="'100%'" [path]="selectedPath()" (onCommand)="onCommand($event)"
+                   (onOperationSelected)="selectOperation(selectedItem, $event)" *ngIf="selectedType === 'path'"></path-form>
+        <operation-form [style.height]="'100%'" [operation]="selectedOperation()" (onCommand)="onCommand($event)"
+                        *ngIf="selectedType === 'operation'"></operation-form>
     </div>
 </div>
 

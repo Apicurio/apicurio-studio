@@ -58,30 +58,42 @@
                         </a>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="requestBodyMenu" data-toggle="dropdown">
-                                <span>Api</span>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="requestBodyMenu">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">string</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">boolean</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">integer</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">double</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">long</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">float</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">short</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">byte</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">timestamp</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="#">Api</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">NewApi</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Client</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Custom Type</a></li>
-                            </ul>
+                        <div class="alert alert-info" *ngIf="!hasBodyParam()">
+                            <span class="pficon pficon-info"></span>
+                            <strong>None Found</strong>
+                            <span>No request body has been declared.</span>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="createRequestBody()">Add Request Body</button>
                         </div>
-                        <div class="request-body-description api-item-description description">{{ bodyDescription() }}</div>
+                        <div *ngIf="hasBodyParam()">
+                            <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
+                                <span class="pficon pficon-info"></span>
+                                <strong>Not Recommended</strong>
+                                <span>It is unusual and not recommended to define a request body for a GET operation.</span>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="requestBodyMenu" data-toggle="dropdown">
+                                    <span>{{ requestBodyType() }}</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="requestBodyMenu">
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('string', true)">string</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('boolean', true)">boolean</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('integer', true)">integer</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('double', true)">double</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('long', true)">long</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('float', true)">float</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('short', true)">short</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('byte', true)">byte</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('timestamp', true)">timestamp</a></li>
+                                    <li role="presentation" class="divider" *ngIf="hasDefinitions()"></li>
+                                    <li role="presentation" *ngFor="let definitionName of definitionNames()"><a
+                                            role="menuitem" (click)="setRequestBodyType(definitionName, false)">{{ definitionName }}</a></li>
+                                    <li role="presentation" class="divider"></li>
+                                    <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1">Custom Type</a></li>
+                                </ul>
+                            </div>
+                            <div class="request-body-description api-item-description description">{{ bodyDescription() }}</div>
+                        </div>
                     </div>
                 </div>
 
@@ -99,7 +111,7 @@
                             <span class="pficon pficon-info"></span>
                             <strong>None Found</strong>
                             <span>No query parameters have been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="addQueryParameter()">Add Query Parameter</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="createQueryParameter()">Add Query Parameter</button>
                         </div>
 
                         <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">

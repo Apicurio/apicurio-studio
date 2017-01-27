@@ -16,8 +16,13 @@
  */
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from '@angular/core';
-import {Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response} from "oai-ts-core";
+import {
+    Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
+    Oas20Document
+} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
+import {NewRequestBodyCommand} from "../commands/new-request-body.command";
+import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
 
 
 @Component({
@@ -73,6 +78,26 @@ export class OperationFormComponent {
             }
         }
         return null;
+    }
+
+    public requestBodyType(): string {
+        let bodyParam: Oas20Parameter = this.bodyParam();
+        if (bodyParam && bodyParam.schema) {
+            if (bodyParam.schema.$ref && bodyParam.schema.$ref.indexOf("#/definitions/") === 0) {
+                return bodyParam.schema.$ref.substr(14);
+            } else {
+                return JsonSchemaType[bodyParam.schema.type];
+            }
+        }
+        return "None Selected";
+    }
+
+    public hasBodyParam(): boolean {
+        if (this.bodyParam() !== null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public bodyDescription(): string {
@@ -172,13 +197,35 @@ export class OperationFormComponent {
         }
     }
 
+    public hasDefinitions(): boolean {
+        if (this.definitionNames()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public definitionNames(): string[] {
+        return (<Oas20Document>this.operation.ownerDocument()).definitions.getItemNames().sort();
+    }
+
     public responseType(response: Oas20Response): string {
         // TODO implement this!
         return "TBD";
     }
 
-    public addQueryParameter(): void {
+    public createQueryParameter(): void {
         // TODO implement this!
         console.info("User wants to add a query param.");
+    }
+
+    public createRequestBody(): void {
+        let command: ICommand = new NewRequestBodyCommand(this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public setRequestBodyType(type: string, isSimpleType: boolean): void {
+        let command: ICommand = new ChangeRequestBodyTypeCommand(this.bodyParam(), type, isSimpleType);
+        this.onCommand.emit(command);
     }
 }

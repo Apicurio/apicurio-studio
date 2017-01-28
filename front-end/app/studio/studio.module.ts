@@ -68,6 +68,7 @@ import {PathFormComponent} from "./pages/apis/{apiId}/editor/components/path-for
 import {TitleEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/title-editor.component";
 import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/version-editor.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/components/operation-form.component";
+import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/summary-editor.component";
 
 
 @NgModule({
@@ -76,7 +77,7 @@ import {OperationFormComponent} from "./pages/apis/{apiId}/editor/components/ope
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
-        VersionEditorComponent, PathFormComponent, OperationFormComponent],
+        VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

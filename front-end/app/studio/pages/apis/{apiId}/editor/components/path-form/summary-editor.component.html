@@ -1,0 +1,24 @@
+<div *ngIf="editing !== true" class="name" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ summary }}</div>
+<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
+         [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
+         title="Click to edit" (click)="onStartEditing()">
+    <div class="overlay-area"></div>
+    <div class="overlay-actions">
+        <button title="Click to edit the summary." class="overlay-action" (click)="onStartEditing()"><span class="fa fa-pencil"></span></button>
+    </div>
+</div>
+<form #editform="ngForm" *ngIf="editing === true" name="api-summary-editor-form" class="api-summary-editor-form api-inline-editor-form"
+      (submit)="onSave()" style="display: inline">
+    <input #newvalue required [(ngModel)]="value" type="text" class="form-control api-item-editor api-summary-editor name"
+           name="summary-editor" [style.width]="hoverDims.width" [style.height]="hoverDims.height + 2"
+           (keypress)="onInputKeypress($event)" (focus)="onInputFocus(true)" (blur)="onInputFocus(false)" (mouseenter)="onInputIn(true)"
+           (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)">
+    <div class="edit-overlay" *ngIf="editing" [style.top]="editingDims.top + editingDims.height - 1" [style.left]="editingDims.left"
+         [class.hover]="inputHover" [class.focus]="inputFocus">
+         <div class="overlay-actions"
+         ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xm btn-primary" type="submit"
+         ><span class="fa fa-check"></span></button
+         ><a title="Cancel changes." class="overlay-action btn btn-sm btn-default" (click)="onCancel()"
+         ><span class="fa fa-close"></span></a></div>
+    </div>
+</form>

@@ -18,6 +18,7 @@ import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angula
 import {Oas20PathItem, Oas20Operation} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewOperationCommand} from "../commands/new-operation.command";
+import {ChangePropertyCommand} from "../commands/change-summary.command";
 
 
 @Component({
@@ -141,6 +142,12 @@ export class PathFormComponent {
 
     public createOperation(operationType: string): void {
         let command: ICommand = new NewOperationCommand(this.path.path(), operationType);
+        this.onCommand.emit(command);
+    }
+
+    public onSummaryChange(newSummary: string, operation: Oas20Operation): void {
+        console.info("on summary change!");
+        let command: ICommand = new ChangePropertyCommand<string>("summary", newSummary, operation);
         this.onCommand.emit(command);
     }
 

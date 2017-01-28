@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Output} from '@angular/core';
+import {EventEmitter, Output, Input} from '@angular/core';
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Subscription} from "rxjs";
 
 
+/**
+ * Base class for all inline editors.
+ */
 export abstract class AbstractInlineEditor<T> {
 
+    @Input() enabled = true;
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
     private _mousein: boolean = false;
@@ -49,7 +53,7 @@ export abstract class AbstractInlineEditor<T> {
     public value: T;
 
     public onMouseIn(event: MouseEvent): void {
-        if (this.editing) {
+        if (this.editing || !this.enabled) {
             return;
         }
         this._mousein = true;

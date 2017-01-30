@@ -176,9 +176,20 @@
   padding-top: 8px;
 }
 
+.api-editor .editor-detail .api-inline-editor-form {
+  display: inline-block;
+  position: relative;
+}
+.api-editor .editor-detail .api-description-editor-form {
+  width: 100%;
+}
 .api-editor .editor-detail .api-inline-editor-form input {
   font-size: inherit;
   display: inline;
+  height: auto;
+}
+.api-editor .editor-detail .api-inline-editor-form textarea {
+  width: 100%;
   height: auto;
 }
 
@@ -218,9 +229,11 @@
 }
 
 .api-editor .editor-detail .edit-overlay {
-  position: fixed;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin: -1px 0 0 0;
   padding: 0;
-  margin: 0;
   border: 1px solid #bbb;
   border-top: 0px;
   border-radius: 1px;
@@ -299,13 +312,15 @@
 
 .api-editor .editor-detail .detail-content .info-section .api-title {
 }
+.api-editor .editor-detail .detail-content .info-section span.api-version {
+}
 .api-editor .editor-detail .detail-content .info-section .api-version {
-  margin-left: 20px;
   font-size: 20px;
 }
-.api-editor .editor-detail .detail-content .info-section .api-description {
+.api-editor .editor-detail .detail-content .info-section div.api-description {
   margin-top: 15px;
   margin-bottom: 15px;
+  margin-right: 30px;
 }
 
 .api-editor .editor-detail .detail-content .info-section .api-meta-data {

@@ -156,4 +156,14 @@ export class MainFormComponent {
         this.onCommand.emit(command);
     }
 
+    /**
+     * Called when the user changes the description.
+     * @param newDescription
+     */
+    public onDescriptionChange(newDescription: string): void {
+        console.info("[MainFormComponent] User changed the description to: " + newDescription);
+        // let command: ICommand = new ChangeDescriptionCommand(newDescription);
+        // this.onCommand.emit(command);
+    }
+
 }

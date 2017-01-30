@@ -33,9 +33,10 @@
         <div class="section-body collapse in" id="info-section-body">
             <h1>
                 <title-editor [value]="title()" [noValueMessage]="'No Title'" (onChange)="onTitleChange($event)"></title-editor>
+                <span class="spacer" style="margin-left: 30px">&nbsp;</span>
                 <version-editor [value]="version()" [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></version-editor>
             </h1>
-            <div class="api-description api-item-description">{{ description() }}</div>
+            <description-editor [value]="description()" [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></description-editor>
             <div class="api-meta-data">
                 <!-- TOS -->
                 <div class="api-md-entry">

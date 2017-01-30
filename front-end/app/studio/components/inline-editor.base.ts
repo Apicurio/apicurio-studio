@@ -40,12 +40,6 @@ export abstract class AbstractInlineEditor<T> {
         width: 0,
         height: 0
     };
-    public editingDims: any = {
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0
-    };
 
     public inputHover: boolean = false;
     public inputFocus: boolean = false;
@@ -62,12 +56,7 @@ export abstract class AbstractInlineEditor<T> {
             if (this._mousein) {
                 let target: any = this._hoverElem;
                 let targetRect: any = target.getBoundingClientRect();
-                this.hoverDims = {
-                    left: targetRect.left - 5,
-                    top: targetRect.top,
-                    width: targetRect.right - targetRect.left + 10 + 20,
-                    height: targetRect.bottom - targetRect.top + 3
-                };
+                this.hoverDims = this.calcHoverDimensions(targetRect);
                 this.hovering = true;
             }
         });
@@ -98,8 +87,6 @@ export abstract class AbstractInlineEditor<T> {
         this.evalue = this.initialValueForEditing();
         this.hovering = false;
         this._mousein = false;
-        this.editingDims = this.hoverDims;
-        this.editingDims.height += 2;
         this.inputFocus = true;
         this.inputHover = true;
         this.editing = true;
@@ -135,6 +122,15 @@ export abstract class AbstractInlineEditor<T> {
         }
     }
 
+    protected calcHoverDimensions(targetRect: any): any {
+        return {
+            left: targetRect.left - 5,
+            top: targetRect.top,
+            width: targetRect.right - targetRect.left + 10 + 20,
+            height: targetRect.bottom - targetRect.top + 3
+        }
+    }
+
 }
 
 
@@ -154,15 +150,6 @@ export abstract class TextInputEditorComponent extends AbstractInlineEditor<stri
             if (changes.last) {
                 changes.last.nativeElement.focus();
                 changes.last.nativeElement.select();
-                let targetRect: any = changes.last.nativeElement.getBoundingClientRect();
-                setTimeout(() => {
-                    this.editingDims = {
-                        left: targetRect.left,
-                        top: targetRect.top,
-                        width: targetRect.right - targetRect.left,
-                        height: targetRect.bottom - targetRect.top
-                    };
-                });
             }
         });
     }
@@ -176,6 +163,47 @@ export abstract class TextInputEditorComponent extends AbstractInlineEditor<stri
 
     protected initialValueForEditing(): string {
         return this.value;
+    }
+
+}
+
+
+/**
+ * Base class for any inline editor that is built on a single textarea element.  The template
+ * must include a 'textarea' element named #newvalue.
+ */
+export abstract class TextAreaEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
+
+    @Input() value: string;
+    @Input() noValueMessage: string;
+
+    @ViewChildren("newvalue") textarea: QueryList<ElementRef>;
+
+    ngAfterViewInit(): void {
+        this.textarea.changes.subscribe(changes => {
+            if (changes.last) {
+                changes.last.nativeElement.focus();
+                changes.last.nativeElement.select();
+            }
+        });
+    }
+
+    protected displayValue(): string {
+        if (!this.value) {
+            return this.noValueMessage;
+        }
+        return this.value;
+    }
+
+    protected initialValueForEditing(): string {
+        return this.value;
+    }
+
+    protected calcHoverDimensions(targetRect: any): any {
+        let dims: any = super.calcHoverDimensions(targetRect);
+        dims.top = dims.top - 2;
+        dims.height += 2;
+        return dims;
     }
 
 }

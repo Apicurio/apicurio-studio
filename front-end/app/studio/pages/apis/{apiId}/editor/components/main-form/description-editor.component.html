@@ -1,18 +1,19 @@
-<span *ngIf="editing !== true" class="api-title api-item-title" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</span>
+<div *ngIf="editing !== true" class="api-description api-item-description"
+     (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</div>
 <div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
          [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">
     <div class="overlay-area"></div>
     <div class="overlay-actions">
-        <button title="Click to edit the title." class="overlay-action" (click)="onStartEditing()"><span class="fa fa-pencil"></span></button>
+        <button title="Click to edit the description." class="overlay-action" (click)="onStartEditing()"><span class="fa fa-pencil"></span></button>
     </div>
 </div>
-<form #editform="ngForm" *ngIf="editing === true" name="api-title-editor-form" class="api-title-editor-form api-inline-editor-form"
+<form #editform="ngForm" *ngIf="editing === true" name="api-description-editor-form" class="api-description-editor-form api-inline-editor-form"
       (submit)="onSave()">
-    <input #newvalue required [(ngModel)]="evalue" type="text" class="form-control api-item-editor api-title-editor api-title api-item-title"
-           name="title-editor" [style.width]="hoverDims.width" [style.height]="hoverDims.height + 2"
+    <textarea #newvalue required [(ngModel)]="evalue" type="text" class="form-control api-item-editor api-description-editor api-description api-item-description"
+           name="description-editor" [style.width]="'100%'" [style.height]="'auto'"
            (keypress)="onInputKeypress($event)" (focus)="onInputFocus(true)" (blur)="onInputFocus(false)" (mouseenter)="onInputIn(true)"
-           (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)">
+           (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)"></textarea>
     <div class="edit-overlay" *ngIf="editing" [class.hover]="inputHover" [class.focus]="inputFocus">
          <div class="overlay-actions"
          ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xm btn-primary" type="submit"

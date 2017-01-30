@@ -16,10 +16,9 @@
  */
 
 import {
-    Component, Input, ViewEncapsulation, ElementRef,
-    ViewChildren, QueryList, AfterViewInit
+    Component, ViewEncapsulation
 } from '@angular/core';
-import {AbstractInlineEditor} from "../../../../../../components/inline-editor.base";
+import {TextInputEditorComponent} from "../../../../../../components/inline-editor.base";
 
 
 @Component({
@@ -28,32 +27,6 @@ import {AbstractInlineEditor} from "../../../../../../components/inline-editor.b
     templateUrl: 'version-editor.component.html',
     encapsulation: ViewEncapsulation.None
 })
-export class VersionEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
-
-    @Input() version: string;
-
-    @ViewChildren("newvalue") input: QueryList<ElementRef>;
-
-    ngAfterViewInit(): void {
-        this.input.changes.subscribe(changes => {
-            if (changes.last) {
-                changes.last.nativeElement.focus();
-                changes.last.nativeElement.select();
-                let targetRect: any = changes.last.nativeElement.getBoundingClientRect();
-                setTimeout(() => {
-                    this.editingDims = {
-                        left: targetRect.left,
-                        top: targetRect.top,
-                        width: targetRect.right - targetRect.left,
-                        height: targetRect.bottom - targetRect.top
-                    };
-                });
-            }
-        });
-    }
-
-    protected initialValueForEditing(): string {
-        return this.version;
-    }
+export class VersionEditorComponent extends TextInputEditorComponent {
 
 }

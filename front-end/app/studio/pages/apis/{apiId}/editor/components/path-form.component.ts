@@ -90,7 +90,7 @@ export class PathFormComponent {
             if (operation.summary) {
                 return operation.summary;
             } else {
-                return "No Summary";
+                return null;
             }
         }
     }

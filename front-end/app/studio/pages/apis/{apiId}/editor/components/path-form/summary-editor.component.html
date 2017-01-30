@@ -1,4 +1,4 @@
-<div *ngIf="editing !== true" class="name" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ summary }}</div>
+<div *ngIf="editing !== true" class="name" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</div>
 <div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
          [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">
@@ -9,7 +9,7 @@
 </div>
 <form #editform="ngForm" *ngIf="editing === true" name="api-summary-editor-form" class="api-summary-editor-form api-inline-editor-form"
       (submit)="onSave()" style="display: inline">
-    <input #newvalue required [(ngModel)]="value" type="text" class="form-control api-item-editor api-summary-editor name"
+    <input #newvalue required [(ngModel)]="evalue" type="text" class="form-control api-item-editor api-summary-editor name"
            name="summary-editor" [style.width]="hoverDims.width" [style.height]="hoverDims.height + 2"
            (keypress)="onInputKeypress($event)" (focus)="onInputFocus(true)" (blur)="onInputFocus(false)" (mouseenter)="onInputIn(true)"
            (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)">

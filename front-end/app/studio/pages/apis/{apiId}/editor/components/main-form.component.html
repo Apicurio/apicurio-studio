@@ -32,8 +32,8 @@
         </div>
         <div class="section-body collapse in" id="info-section-body">
             <h1>
-                <title-editor [title]="title()" (onChange)="onTitleChange($event)"></title-editor>
-                <version-editor [version]="version()" (onChange)="onVersionChange($event)"></version-editor>
+                <title-editor [value]="title()" [noValueMessage]="'No Title'" (onChange)="onTitleChange($event)"></title-editor>
+                <version-editor [value]="version()" [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></version-editor>
             </h1>
             <div class="api-description api-item-description">{{ description() }}</div>
             <div class="api-meta-data">

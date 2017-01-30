@@ -45,7 +45,7 @@
                         <div class="api-operation" [class.empty]="!hasGet()">
                             <div class="">
                                 <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
-                                <summary-editor-pf [summary]="getSummary()" [enabled]="hasGet()"
+                                <summary-editor-pf [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.get)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasGet()" class="description api-item-description">{{ getDescription() }}</div>
@@ -56,7 +56,7 @@
                         <div class="api-operation" [class.empty]="!hasPut()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
-                                <summary-editor-pf [summary]="putSummary()" [enabled]="hasPut()"
+                                <summary-editor-pf [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.put)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasPut()" class="description api-item-description">{{ putDescription() }}</div>
@@ -67,7 +67,7 @@
                         <div class="api-operation" [class.empty]="!hasPost()">
                             <div class="">
                                 <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
-                                <summary-editor-pf [summary]="postSummary()" [enabled]="hasPost()"
+                                <summary-editor-pf [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.post)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasPost()" class="description api-item-description">{{ postDescription() }}</div>
@@ -78,7 +78,7 @@
                         <div class="api-operation" [class.empty]="!hasDelete()">
                             <div class="">
                                 <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
-                                <summary-editor-pf [summary]="deleteSummary()" [enabled]="hasDelete()"
+                                <summary-editor-pf [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.delete)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasDelete()" class="description api-item-description">{{ deleteDescription() }}</div>
@@ -89,7 +89,7 @@
                         <div class="api-operation" [class.empty]="!hasOptions()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
-                                <summary-editor-pf [summary]="optionsSummary()" [enabled]="hasOptions()"
+                                <summary-editor-pf [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.options)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasOptions()" class="description api-item-description">{{ optionsDescription() }}</div>
@@ -100,7 +100,7 @@
                         <div class="api-operation" [class.empty]="!hasHead()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
-                                <summary-editor-pf [summary]="headSummary()" [enabled]="hasHead()"
+                                <summary-editor-pf [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.head)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasHead()" class="description api-item-description">{{ headDescription() }}</div>
@@ -111,7 +111,7 @@
                         <div class="api-operation" [class.empty]="!hasPatch()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
-                                <summary-editor-pf [summary]="patchSummary()" [enabled]="hasPatch()"
+                                <summary-editor-pf [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.patch)"></summary-editor-pf>
                             </div>
                             <div *ngIf="hasPatch()" class="description api-item-description">{{ patchDescription() }}</div>

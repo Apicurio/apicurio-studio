@@ -44,7 +44,7 @@ export class MainFormComponent {
         if (this.doc().info) {
             return this.doc().info.title;
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -55,7 +55,7 @@ export class MainFormComponent {
         if (this.doc().info) {
             return this.doc().info.version;
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -66,7 +66,7 @@ export class MainFormComponent {
         if (this.doc().info) {
             return this.doc().info.description;
         } else {
-            return "";
+            return null;
         }
     }
 

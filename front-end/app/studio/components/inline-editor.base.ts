@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Output, Input} from '@angular/core';
+import {EventEmitter, Output, Input, AfterViewInit, ViewChildren, QueryList, ElementRef} from '@angular/core';
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Subscription} from "rxjs";
 
@@ -50,7 +50,7 @@ export abstract class AbstractInlineEditor<T> {
     public inputHover: boolean = false;
     public inputFocus: boolean = false;
 
-    public value: T;
+    public evalue: T;
 
     public onMouseIn(event: MouseEvent): void {
         if (this.editing || !this.enabled) {
@@ -95,7 +95,7 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onStartEditing(): void {
-        this.value = this.initialValueForEditing();
+        this.evalue = this.initialValueForEditing();
         this.hovering = false;
         this._mousein = false;
         this.editingDims = this.hoverDims;
@@ -108,13 +108,13 @@ export abstract class AbstractInlineEditor<T> {
     protected abstract initialValueForEditing(): T;
 
     public onSave(): void {
-        this.onChange.emit(this.value);
+        this.onChange.emit(this.evalue);
         this.editing = false;
     }
 
     public onCancel(): void {
         this.editing = false;
-        this.value = this.initialValueForEditing();
+        this.evalue = this.initialValueForEditing();
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
@@ -133,6 +133,49 @@ export abstract class AbstractInlineEditor<T> {
         if (this.inputHover !== isIn) {
             this.inputHover = isIn;
         }
+    }
+
+}
+
+
+/**
+ * Base class for any inline editor that is built on a single text input element.  The template
+ * must include an 'input' element named #newvalue.
+ */
+export abstract class TextInputEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
+
+    @Input() value: string;
+    @Input() noValueMessage: string;
+
+    @ViewChildren("newvalue") input: QueryList<ElementRef>;
+
+    ngAfterViewInit(): void {
+        this.input.changes.subscribe(changes => {
+            if (changes.last) {
+                changes.last.nativeElement.focus();
+                changes.last.nativeElement.select();
+                let targetRect: any = changes.last.nativeElement.getBoundingClientRect();
+                setTimeout(() => {
+                    this.editingDims = {
+                        left: targetRect.left,
+                        top: targetRect.top,
+                        width: targetRect.right - targetRect.left,
+                        height: targetRect.bottom - targetRect.top
+                    };
+                });
+            }
+        });
+    }
+
+    protected displayValue(): string {
+        if (!this.value) {
+            return this.noValueMessage;
+        }
+        return this.value;
+    }
+
+    protected initialValueForEditing(): string {
+        return this.value;
     }
 
 }

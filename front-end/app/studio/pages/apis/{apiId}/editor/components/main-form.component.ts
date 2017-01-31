@@ -20,6 +20,7 @@ import {OasDocument, Oas20Document} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
 import {ChangeTitleCommand} from "../commands/change-title.command";
+import {ChangeDescriptionCommand} from "../commands/change-description.command";
 
 
 @Component({
@@ -161,9 +162,9 @@ export class MainFormComponent {
      * @param newDescription
      */
     public onDescriptionChange(newDescription: string): void {
-        console.info("[MainFormComponent] User changed the description to: " + newDescription);
-        // let command: ICommand = new ChangeDescriptionCommand(newDescription);
-        // this.onCommand.emit(command);
+        console.info("[MainFormComponent] User changed the description.");
+        let command: ICommand = new ChangeDescriptionCommand(newDescription);
+        this.onCommand.emit(command);
     }
 
 }

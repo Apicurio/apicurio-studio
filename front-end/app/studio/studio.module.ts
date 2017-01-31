@@ -59,6 +59,9 @@ import {ApisListComponent} from "./pages/apis/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 
+/** Directives **/
+import {TextAreaAutosize} from "./directives/autosize.directive";
+
 /** Editor Components */
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/components/path-item.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/components/definition-item.component";
@@ -79,7 +82,7 @@ import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent,
-        DescriptionEditorComponent],
+        DescriptionEditorComponent, TextAreaAutosize],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

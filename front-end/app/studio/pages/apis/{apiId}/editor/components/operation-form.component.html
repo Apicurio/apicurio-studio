@@ -44,9 +44,11 @@
                     </div>
                     <div class="section-body collapse in" id="info-section-body">
                         <h1>
-                            <span class="api-item-title">{{ summary() }}</span>
+                            <summary-editor-of [value]="summary()" [noValueMessage]="'No Summary'"
+                                               (onChange)="changeSummary($event)"></summary-editor-of>
                         </h1>
-                        <div class="operation-description api-item-description">{{ description() }}</div>
+                        <description-editor-of [value]="description()" [noValueMessage]="'No description.'"
+                                               (onChange)="changeDescription($event)"></description-editor-of>
                     </div>
                 </div>
 

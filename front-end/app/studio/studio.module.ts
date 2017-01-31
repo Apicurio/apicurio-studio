@@ -74,6 +74,8 @@ import {OperationFormComponent} from "./pages/apis/{apiId}/editor/components/ope
 import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/summary-editor.component";
 import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/description-editor.component";
 import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/description-editor.component";
+import {SummaryEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/summary-editor.component";
+import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/description-editor.component";
 
 
 @NgModule({
@@ -82,8 +84,8 @@ import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/componen
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
-        VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent,
-        DescriptionEditorComponent, TextAreaAutosize, DescriptionEditorPFComponent],
+        VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
+        DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

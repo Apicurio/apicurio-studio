@@ -60,7 +60,7 @@
                                 <summary-editor-pf [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.put)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasPut()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.put)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPut()">
                                 <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
@@ -72,7 +72,7 @@
                                 <summary-editor-pf [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.post)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasPost()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.post)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPost()">
                                 <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
@@ -84,7 +84,7 @@
                                 <summary-editor-pf [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.delete)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasDelete()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.delete)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasDelete()">
                                 <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
@@ -96,7 +96,7 @@
                                 <summary-editor-pf [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.options)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasOptions()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.options)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasOptions()">
                                 <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
@@ -108,7 +108,7 @@
                                 <summary-editor-pf [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.head)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasHead()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.head)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasHead()">
                                 <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
@@ -120,7 +120,7 @@
                                 <summary-editor-pf [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.patch)"></summary-editor-pf>
                             </div>
-                            <description-editor-pf *ngIf="hasPatch()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                            <description-editor-pf *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
                                                    (onChange)="onDescriptionChange($event, path.patch)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPatch()">
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>

@@ -195,6 +195,22 @@ export abstract class TextAreaEditorComponent extends AbstractInlineEditor<strin
         return this.value;
     }
 
+    public onInputKeypress(event: KeyboardEvent): void {
+        super.onInputKeypress(event);
+
+        if (event.ctrlKey && event.key === "Enter" && this.isValid()) {
+            this.onSave();
+        }
+    }
+
+    /**
+     * Subclasses can override this to provide validation status of the current value.
+     * @return {boolean}
+     */
+    protected isValid(): boolean {
+        return true;
+    }
+
     protected initialValueForEditing(): string {
         return this.value;
     }

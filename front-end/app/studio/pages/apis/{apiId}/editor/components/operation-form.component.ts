@@ -23,6 +23,7 @@ import {
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
 import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
+import {ChangePropertyCommand} from "../commands/change-summary.command";
 
 
 @Component({
@@ -40,7 +41,7 @@ export class OperationFormComponent {
         if (this.operation.summary) {
             return this.operation.summary;
         } else {
-            return "No summary";
+            return null;
         }
     }
 
@@ -56,7 +57,7 @@ export class OperationFormComponent {
         if (this.operation.description) {
             return this.operation.description;
         } else {
-            return "No description.";
+            return null;
         }
     }
 
@@ -212,6 +213,16 @@ export class OperationFormComponent {
     public responseType(response: Oas20Response): string {
         // TODO implement this!
         return "TBD";
+    }
+
+    public changeSummary(newSummary: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("summary", newSummary, this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public changeDescription(newDescription: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, this.operation);
+        this.onCommand.emit(command);
     }
 
     public createQueryParameter(): void {

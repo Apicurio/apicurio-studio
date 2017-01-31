@@ -48,7 +48,8 @@
                                 <summary-editor-pf [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
                                                    (onChange)="onSummaryChange($event, path.get)"></summary-editor-pf>
                             </div>
-                            <div *ngIf="hasGet()" class="description api-item-description">{{ getDescription() }}</div>
+                            <description-editor-pf *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                                                   (onChange)="onDescriptionChange($event, path.get)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasGet()">
                                 <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
                             </div>

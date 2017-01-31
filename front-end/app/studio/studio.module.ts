@@ -73,6 +73,7 @@ import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/components/mai
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/components/operation-form.component";
 import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/summary-editor.component";
 import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/description-editor.component";
+import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/description-editor.component";
 
 
 @NgModule({
@@ -82,7 +83,7 @@ import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent,
-        DescriptionEditorComponent, TextAreaAutosize],
+        DescriptionEditorComponent, TextAreaAutosize, DescriptionEditorPFComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

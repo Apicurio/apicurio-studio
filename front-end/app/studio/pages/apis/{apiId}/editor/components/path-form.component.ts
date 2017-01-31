@@ -146,8 +146,12 @@ export class PathFormComponent {
     }
 
     public onSummaryChange(newSummary: string, operation: Oas20Operation): void {
-        console.info("on summary change!");
         let command: ICommand = new ChangePropertyCommand<string>("summary", newSummary, operation);
+        this.onCommand.emit(command);
+    }
+
+    public onDescriptionChange(newDescription: string, operation: Oas20Operation): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, operation);
         this.onCommand.emit(command);
     }
 

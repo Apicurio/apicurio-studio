@@ -51,6 +51,10 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
             return;
         }
 
+        if (this.isNullOrUndefined(operation.parameters)) {
+            operation.parameters = [];
+        }
+
         let param: Oas20Parameter = operation.createParameter();
         param.in = "body";
         operation.addParameter(param);
@@ -86,6 +90,10 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
         // If found, remove it from the params.
         if (bodyParam) {
             operation.parameters.splice(operation.parameters.indexOf(bodyParam), 1);
+
+            if (operation.parameters.length === 0) {
+                operation.parameters = null;
+            }
         }
     }
 
@@ -95,7 +103,7 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
      * @return {boolean}
      */
     private hasBodyParameter(operation: Oas20Operation): boolean {
-        return operation.parameters.filter((value) => {
+        return operation.parameters && operation.parameters.filter((value) => {
             return value.in === "body";
         }).length > 0;
     }

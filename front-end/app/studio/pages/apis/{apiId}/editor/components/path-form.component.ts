@@ -125,14 +125,12 @@ export class PathFormComponent {
     }
 
     private description(operation: Oas20Operation): string {
-        console.info("Description for: " + operation.method());
         if (operation === null || operation === undefined) {
             return "Not Supported";
         } else {
             if (operation.description) {
                 return operation.description;
             } else {
-                console.info("NO description!");
                 return null;
             }
         }

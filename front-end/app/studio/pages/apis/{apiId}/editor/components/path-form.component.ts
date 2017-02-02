@@ -18,7 +18,8 @@ import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angula
 import {Oas20PathItem, Oas20Operation} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewOperationCommand} from "../commands/new-operation.command";
-import {ChangePropertyCommand} from "../commands/change-summary.command";
+import {ChangePropertyCommand} from "../commands/change-property.command";
+import {DeleteNodeCommand, DeletePathCommand} from "../commands/delete.command";
 
 
 @Component({
@@ -32,6 +33,7 @@ export class PathFormComponent {
     @Input() path: Oas20PathItem;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onOperationSelected: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public hasGet(): boolean {
         return this.path.get !== undefined && this.path.get !== null;
@@ -145,14 +147,20 @@ export class PathFormComponent {
         this.onCommand.emit(command);
     }
 
-    public onSummaryChange(newSummary: string, operation: Oas20Operation): void {
+    public changeSummary(newSummary: string, operation: Oas20Operation): void {
         let command: ICommand = new ChangePropertyCommand<string>("summary", newSummary, operation);
         this.onCommand.emit(command);
     }
 
-    public onDescriptionChange(newDescription: string, operation: Oas20Operation): void {
+    public changeDescription(newDescription: string, operation: Oas20Operation): void {
         let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, operation);
         this.onCommand.emit(command);
+    }
+
+    public delete(): void {
+        let command: ICommand = new DeletePathCommand(this.path.path());
+        this.onCommand.emit(command);
+        this.onDeselect.emit(true);
     }
 
 }

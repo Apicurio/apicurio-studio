@@ -23,7 +23,8 @@ import {
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
 import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
-import {ChangePropertyCommand} from "../commands/change-summary.command";
+import {ChangePropertyCommand} from "../commands/change-property.command";
+import {DeleteNodeCommand} from "../commands/delete.command";
 
 
 @Component({
@@ -36,6 +37,7 @@ export class OperationFormComponent {
 
     @Input() operation: Oas20Operation;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public summary(): string {
         if (this.operation.summary) {
@@ -244,5 +246,11 @@ export class OperationFormComponent {
     public setRequestBodyType(type: string, isSimpleType: boolean): void {
         let command: ICommand = new ChangeRequestBodyTypeCommand(this.bodyParam(), type, isSimpleType);
         this.onCommand.emit(command);
+    }
+
+    public delete(): void {
+        let command: ICommand = new DeleteNodeCommand(this.operation.method(), this.operation.parent());
+        this.onCommand.emit(command);
+        this.onDeselect.emit(true);
     }
 }

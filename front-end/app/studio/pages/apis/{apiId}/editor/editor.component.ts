@@ -120,6 +120,13 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Called to deselect the currently selected path.
+     */
+    public deselectPath(): void {
+        this.selectMain();
+    }
+
+    /**
      * Called when the user clicks an operation.
      * @param pathName
      * @param opName
@@ -127,13 +134,24 @@ export class ApiEditorComponent {
     public selectOperation(pathName: string, opName: string): void {
         console.info("Selected operation: %s :: %s", pathName, opName);
         // Possible de-select the operation if it's clicked on but already selected.
-        if (this.selectedType === 'operation' && this.selectedItem === pathName && this.subselectedItem === opName) {
+        if (this.selectedType === "operation" && this.selectedItem === pathName && this.subselectedItem === opName) {
             this.selectPath(pathName);
         } else {
             this.selectedType = "operation";
             this.selectedItem = pathName;
             this.subselectedItem = opName;
         }
+    }
+
+    /**
+     * Called to deselect the currently selected operation.
+     */
+    public deselectOperation(): void {
+        if (this.selectedType !== "operation") {
+            return;
+        }
+        this.selectedType = "path";
+        this.subselectedItem = null;
     }
 
     /**
@@ -149,12 +167,26 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Deselects the currently selected definition.
+     */
+    public deselectDefinition(): void {
+        this.selectMain();
+    }
+
+    /**
      * Called when the user selects a response from the master area.
      * @param name
      */
     public selectResponse(name: string): void {
         this.selectedItem = name;
         this.selectedType = "response";
+    }
+
+    /**
+     * Deselects the currently selected response.
+     */
+    public deselectResponse(): void {
+        this.selectMain();
     }
 
     /**

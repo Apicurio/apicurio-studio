@@ -6,11 +6,7 @@
                 <span class="fa fa-ellipsis-v"></span>
             </button>
             <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
+                <li><a href="javascript:return false" (click)="delete()"><span class="pficon pficon-delete"></span> <span>Delete</span></a></li>
             </ul>
         </div>
     </div>
@@ -46,10 +42,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
                                 <summary-editor-pf [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.get)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.get)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.get)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.get)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasGet()">
                                 <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
                             </div>
@@ -58,10 +54,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
                                 <summary-editor-pf [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.put)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.put)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.put)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.put)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPut()">
                                 <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
                             </div>
@@ -70,10 +66,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
                                 <summary-editor-pf [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.post)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.post)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.post)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.post)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPost()">
                                 <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
                             </div>
@@ -82,10 +78,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
                                 <summary-editor-pf [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.delete)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.delete)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.delete)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.delete)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasDelete()">
                                 <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
                             </div>
@@ -94,10 +90,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
                                 <summary-editor-pf [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.options)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.options)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.options)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.options)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasOptions()">
                                 <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
                             </div>
@@ -106,10 +102,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
                                 <summary-editor-pf [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.head)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.head)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.head)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.head)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasHead()">
                                 <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
                             </div>
@@ -118,10 +114,10 @@
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
                                 <summary-editor-pf [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="onSummaryChange($event, path.patch)"></summary-editor-pf>
+                                                   (onChange)="changeSummary($event, path.patch)"></summary-editor-pf>
                             </div>
                             <description-editor-pf *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="onDescriptionChange($event, path.patch)"></description-editor-pf>
+                                                   (onChange)="changeDescription($event, path.patch)"></description-editor-pf>
                             <div class="actions" *ngIf="!hasPatch()">
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
                             </div>

@@ -109,7 +109,7 @@ export class OperationFormComponent {
         if (bodyParam.description) {
             return bodyParam.description;
         } else {
-            return "No request body description.";
+            return null;
         }
     }
 
@@ -222,6 +222,12 @@ export class OperationFormComponent {
 
     public changeDescription(newDescription: string): void {
         let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public changeBodyDescription(newBodyDescription: string): void {
+        let bodyParam: Oas20Parameter = this.bodyParam();
+        let command: ICommand = new ChangePropertyCommand<string>("description", newBodyDescription, bodyParam);
         this.onCommand.emit(command);
     }
 

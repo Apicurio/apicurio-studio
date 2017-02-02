@@ -94,7 +94,8 @@
                                     <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1">Custom Type</a></li>
                                 </ul>
                             </div>
-                            <div class="request-body-description api-item-description description">{{ bodyDescription() }}</div>
+                            <req-description-editor-of [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
+                                                   (onChange)="changeBodyDescription($event)"></req-description-editor-of>
                         </div>
                     </div>
                 </div>

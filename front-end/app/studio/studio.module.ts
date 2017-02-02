@@ -76,6 +76,7 @@ import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components
 import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/description-editor.component";
 import {SummaryEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/summary-editor.component";
 import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/description-editor.component";
+import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/req-description-editor.component";
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/componen
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
-        DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent],
+        DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
+        RequestDescriptionEditorOFComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

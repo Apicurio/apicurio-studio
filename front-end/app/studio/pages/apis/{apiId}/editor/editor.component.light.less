@@ -6,6 +6,7 @@
 @themes-light-api-selected-color-light: lighten(@themes-light-api-selected-color, 25%);
 @themes-light-api-hover-color: lighten(@themes-light-api-selected-color, 35%);
 @themes-light-api-label-color: #333;
+@themes-light-api-empty-label-color: #999;
 @themes-light-api-bg-color: white;
 @themes-light-bg-transition: 200ms;
 @themes-light-shadow-transition: 350ms;
@@ -20,8 +21,15 @@
 .api-editor.light div.api-item-description {
   border-left: 2px solid @themes-light-api-selected-color;
 }
+.api-editor.light div.api-item-description.empty {
+  border-left: 2px solid @themes-light-api-empty-label-color;
+  color: @themes-light-api-empty-label-color;
+}
 
 .api-editor.light .api-item-title {
+}
+.api-editor.light .api-item-title.empty {
+  color: @themes-light-api-empty-label-color;
 }
 
 .api-editor.light {
@@ -289,6 +297,9 @@
   box-shadow: 0px 0px 8px #666;
 }
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .name {
+}
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .name.empty {
+  color: @themes-light-api-empty-label-color;
 }
 .api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .description {
 }

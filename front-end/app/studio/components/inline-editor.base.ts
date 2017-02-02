@@ -161,6 +161,10 @@ export abstract class TextInputEditorComponent extends AbstractInlineEditor<stri
         return this.value;
     }
 
+    protected isEmpty(): boolean {
+        return this.value === undefined || this.value === null;
+    }
+
     protected initialValueForEditing(): string {
         return this.value;
     }
@@ -172,28 +176,7 @@ export abstract class TextInputEditorComponent extends AbstractInlineEditor<stri
  * Base class for any inline editor that is built on a single textarea element.  The template
  * must include a 'textarea' element named #newvalue.
  */
-export abstract class TextAreaEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
-
-    @Input() value: string;
-    @Input() noValueMessage: string;
-
-    @ViewChildren("newvalue") textarea: QueryList<ElementRef>;
-
-    ngAfterViewInit(): void {
-        this.textarea.changes.subscribe(changes => {
-            if (changes.last) {
-                changes.last.nativeElement.focus();
-                changes.last.nativeElement.select();
-            }
-        });
-    }
-
-    protected displayValue(): string {
-        if (!this.value) {
-            return this.noValueMessage;
-        }
-        return this.value;
-    }
+export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
 
     public onInputKeypress(event: KeyboardEvent): void {
         super.onInputKeypress(event);
@@ -209,10 +192,6 @@ export abstract class TextAreaEditorComponent extends AbstractInlineEditor<strin
      */
     protected isValid(): boolean {
         return true;
-    }
-
-    protected initialValueForEditing(): string {
-        return this.value;
     }
 
     protected calcHoverDimensions(targetRect: any): any {

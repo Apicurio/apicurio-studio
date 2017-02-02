@@ -1,4 +1,5 @@
-<span *ngIf="editing !== true" class="api-version" (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</span>
+<span *ngIf="editing !== true" class="api-version" [class.empty]="isEmpty()"
+      (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</span>
 <div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
          [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">

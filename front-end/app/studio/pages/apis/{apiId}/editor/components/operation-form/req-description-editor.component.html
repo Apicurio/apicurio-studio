@@ -1,5 +1,5 @@
-<div *ngIf="editing !== true" class="request-body-description api-item-description description" (mouseenter)="onMouseIn($event)"
-     (mouseleave)="onMouseOut()">{{ displayValue() }}</div>
+<div *ngIf="editing !== true" class="request-body-description api-item-description description" [class.empty]="isEmpty()"
+     (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</div>
 <div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
          [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">

@@ -121,18 +121,22 @@
                         </div>
 
                         <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">
-                            <tr>
-                                <th>Parameter</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                            </tr>
-                            <tr *ngFor="let param of queryParameters()">
-                                <td class="parameter">{{ param.name }}</td>
-                                <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                       (onChange)="changeQueryParamDescription(param, $event)"
-                                       [value]="paramDescription(param)"></description-editor-qp></td>
-                                <td class="type">{{ paramType(param) }}</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let param of queryParameters()">
+                                    <td class="parameter">{{ param.name }}</td>
+                                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                                                                   (onChange)="changeQueryParamDescription(param, $event)"
+                                                                                   [value]="paramDescription(param)"></description-editor-qp></td>
+                                    <td class="type">{{ paramType(param) }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -143,7 +147,8 @@
                         <a data-toggle="collapse" data-target="#responses-section-body">
                             <span class="section-label">RESPONSES</span>
                         </a>
-                        <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="openAddResponseModal()"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllResponses()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
 
@@ -151,20 +156,26 @@
                             <span class="pficon pficon-info"></span>
                             <strong>None Found</strong>
                             <span>No responses have been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="createResponse()">Add Response</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddResponseModal()">Add Response</button>
                         </div>
 
                         <table class="table table-striped api-operation-responses" *ngIf="hasResponses()">
-                            <tr>
-                                <th width="1%" nowrap="nowrap">Status Code</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                            </tr>
-                            <tr *ngFor="let response of responses()">
-                                <td class="parameter">{{ response.statusCode() }}</td>
-                                <td class="description">{{ responseDescription(response) }}</td>
-                                <td class="type">{{ responseType(response) }}</td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th width="1%" nowrap="nowrap">Status Code</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let response of responses()">
+                                    <td class="parameter">{{ response.statusCode() }}</td>
+                                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                                                                   (onChange)="changeResponseDescription(response, $event)"
+                                                                                   [value]="responseDescription(response)"></description-editor-qp></td>
+                                    <td class="type">{{ responseType(response) }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -203,6 +214,50 @@
                 <button type="button" class="btn btn-primary" (click)="addQueryParam()"
                         [disabled]="!addQueryParamForm.form.valid">Add</button>
                 <button type="button" class="btn btn-default" (click)="addQueryParamModal.hide()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Response Dialog -->
+<div bsModal #addResponseModal="bs-modal" class="modal fade" id="addResponseModal" tabindex="-1" role="dialog"
+     aria-labelledby="addResponseModalLabel" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="addResponseModal.hide()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addResponseModalLabel">Add Response</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter information about the new response below and then click Add.</p>
+                <form id="addResponse-form" class="form-horizontal" (submit)="addResponse()" #addResponseForm="ngForm" data-dismiss="modal">
+                    <input type="hidden" name="statusCode" required [(ngModel)]="modals.addResponse.statusCode">
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label" for="statusCodeMenu">Response Status Code</label>
+                        <div class="col-sm-7">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="statusCodeMenu" data-toggle="dropdown">
+                                    <span>{{ modals.addResponse.statusCode }}</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <li role="presentation"><a role="menuitem" (click)="modals.addResponse.statusCode = '200'">200 OK</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="modals.addResponse.statusCode = '204'">204 No Content</a></li>
+                                    <li role="presentation" class="divider"></li>
+                                    <li role="presentation"><a role="menuitem" (click)="modals.addResponse.statusCode = '404'">404 Not Found</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="addResponse()"
+                        [disabled]="!addResponseForm.form.valid">Add</button>
+                <button type="button" class="btn btn-default" (click)="addResponseModal.hide()">Cancel</button>
             </div>
         </div>
     </div>

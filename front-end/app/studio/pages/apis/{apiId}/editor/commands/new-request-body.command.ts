@@ -16,7 +16,7 @@
  */
 
 import {ICommand, AbstractCommand} from "../commands.manager";
-import {OasDocument, Oas20Document, Oas20Operation, OasNodePath, Oas20Parameter} from "oai-ts-core";
+import {OasDocument, Oas20Operation, OasNodePath, Oas20Parameter} from "oai-ts-core";
 
 /**
  * A command used to create a new request body (parameter of an operation).
@@ -40,8 +40,7 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
 
         this._created = false;
 
-        let doc: Oas20Document = <Oas20Document> document;
-        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(doc);
+        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(document);
 
         if (this.isNullOrUndefined(operation)) {
             return;
@@ -72,8 +71,7 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        let doc: Oas20Document = <Oas20Document> document;
-        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(doc);
+        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(document);
 
         if (this.isNullOrUndefined(operation)) {
             return;

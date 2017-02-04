@@ -27,6 +27,7 @@ import {ChangePropertyCommand} from "../commands/change-property.command";
 import {DeleteNodeCommand, DeleteAllParameters} from "../commands/delete.command";
 import {ModalDirective} from "ng2-bootstrap";
 import {NewQueryParamCommand} from "../commands/new-query-param.command";
+import {NewResponseCommand} from "../commands/new-response.command";
 
 
 @Component({
@@ -42,8 +43,10 @@ export class OperationFormComponent {
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild('addQueryParamModal') public addQueryParamModal: ModalDirective;
+    @ViewChild('addResponseModal') public addResponseModal: ModalDirective;
     protected modals: any = {
-        addQueryParam: {}
+        addQueryParam: {},
+        addResponse: {}
     };
 
     public summary(): string {
@@ -216,7 +219,7 @@ export class OperationFormComponent {
         if (response && response.description) {
             return response.description;
         } else {
-            return "No response description.";
+            return null;
         }
     }
 
@@ -258,9 +261,9 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
     }
 
-    public createResponse(): void {
-        // TODO implement this!
-        console.info("User wants to create a new response.");
+    public changeResponseDescription(response: Oas20Response, newDescription: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, response);
+        this.onCommand.emit(command);
     }
 
     public createRequestBody(): void {
@@ -289,6 +292,11 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
     }
 
+    public deleteAllResponses(): void {
+        let command: ICommand = new DeleteNodeCommand("responses", this.operation);
+        this.onCommand.emit(command);
+    }
+
     public openAddQueryParamModal(): void {
         this.modals.addQueryParam = {};
         this.addQueryParamModal.show();
@@ -298,5 +306,19 @@ export class OperationFormComponent {
         let command: ICommand = new NewQueryParamCommand(this.operation, this.modals.addQueryParam.name);
         this.onCommand.emit(command);
         this.addQueryParamModal.hide();
+    }
+
+    public openAddResponseModal(): void {
+        this.modals.addResponse = {
+            statusCode: "200"
+        };
+        this.addResponseModal.show();
+    }
+
+    public addResponse(): void {
+        console.info("Creating response with code %s", this.modals.addResponse.statusCode)
+        let command: ICommand = new NewResponseCommand(this.operation, this.modals.addResponse.statusCode);
+        this.onCommand.emit(command);
+        this.addResponseModal.hide();
     }
 }

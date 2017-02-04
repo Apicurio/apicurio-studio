@@ -193,3 +193,4 @@ export class DeleteAllParameters extends AbstractCommand implements ICommand {
     }
 
 }
+

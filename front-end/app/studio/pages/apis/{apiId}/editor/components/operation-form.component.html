@@ -54,6 +54,9 @@
                         <a data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
                         </a>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
+                                title="Delete the request body."
+                                [disabled]="!hasBodyParam()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
                         <div class="alert alert-info" *ngIf="!hasBodyParam()">
@@ -102,7 +105,11 @@
                         <a data-toggle="collapse" data-target="#parameters-section-body">
                             <span class="section-label">QUERY PARAMETERS</span>
                         </a>
-                        <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
+                                title="Add a new query parameter"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
+                                title="Delete all query parameters."
+                                [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse in" id="parameters-section-body">
 
@@ -110,7 +117,7 @@
                             <span class="pficon pficon-info"></span>
                             <strong>None Found</strong>
                             <span>No query parameters have been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="createQueryParameter()">Add Query Parameter</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddQueryParamModal()">Add Query Parameter</button>
                         </div>
 
                         <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">
@@ -121,7 +128,9 @@
                             </tr>
                             <tr *ngFor="let param of queryParameters()">
                                 <td class="parameter">{{ param.name }}</td>
-                                <td class="description">{{ paramDescription(param) }}</td>
+                                <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                       (onChange)="changeQueryParamDescription(param, $event)"
+                                       [value]="paramDescription(param)"></description-editor-qp></td>
                                 <td class="type">{{ paramType(param) }}</td>
                             </tr>
                         </table>
@@ -137,9 +146,17 @@
                         <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
-                        <table class="table table-striped api-operation-responses">
+
+                        <div class="alert alert-info" *ngIf="!hasResponses()">
+                            <span class="pficon pficon-info"></span>
+                            <strong>None Found</strong>
+                            <span>No responses have been declared.</span>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="createResponse()">Add Response</button>
+                        </div>
+
+                        <table class="table table-striped api-operation-responses" *ngIf="hasResponses()">
                             <tr>
-                                <th>Status Code</th>
+                                <th width="1%" nowrap="nowrap">Status Code</th>
                                 <th>Description</th>
                                 <th>Type</th>
                             </tr>
@@ -156,4 +173,37 @@
         </div>
     </div>
 
+</div>
+
+
+<!-- Add Query Param Dialog -->
+<div bsModal #addQueryParamModal="bs-modal" class="modal fade" id="addQueryParamModal" tabindex="-1" role="dialog"
+     aria-labelledby="addQueryParamModalLabel" role="dialog" aria-hidden="true" (onShown)="queryParamNameInput.focus()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="addQueryParamModal.hide()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addQueryParamModalLabel">Add Query Parameter</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter information about the new query parameter below and then click Add.</p>
+                <form id="addqueryparam-form" class="form-horizontal" (submit)="addQueryParam()" #addQueryParamForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="name">Name</label>
+                        <div class="col-sm-10">
+                            <input #queryParamNameInput name="name" type="text" id="name" class="form-control"
+                                   placeholder="Enter a Parameter Name" required [(ngModel)]="modals.addQueryParam.name">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="addQueryParam()"
+                        [disabled]="!addQueryParamForm.form.valid">Add</button>
+                <button type="button" class="btn btn-default" (click)="addQueryParamModal.hide()">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>

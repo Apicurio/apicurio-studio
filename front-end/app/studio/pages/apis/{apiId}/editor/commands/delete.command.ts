@@ -16,7 +16,10 @@
  */
 
 import {ICommand, AbstractCommand} from "../commands.manager";
-import {OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths} from "oai-ts-core";
+import {
+    OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
+    Oas20Parameter
+} from "oai-ts-core";
 
 /**
  * A command used to delete a child node.
@@ -113,6 +116,80 @@ export class DeletePathCommand extends AbstractCommand implements ICommand {
         this._oldPath._parent = paths;
         this._oldPath._ownerDocument = paths.ownerDocument();
         paths.addPathItem(this._oldPath.path(), this._oldPath);
+    }
+
+}
+
+
+
+/**
+ * A command used to delete all parameters from an operation.
+ */
+export class DeleteAllParameters extends AbstractCommand implements ICommand {
+
+    private _operationPath: OasNodePath;
+    private _paramType: string;
+    private _oldQueryParams: Oas20Parameter[];
+
+    constructor(operation: Oas20Operation, type: string) {
+        super();
+        this._operationPath = this.oasLibrary().createNodePath(operation);
+        this._paramType = type;
+    }
+
+    /**
+     * Deletes the parameters.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteAllParameters] Executing.");
+        this._oldQueryParams = [];
+
+        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(document);
+
+        if (this.isNullOrUndefined(operation) || this.isNullOrUndefined(operation.parameters) || operation.parameters.length === 0) {
+            return;
+        }
+
+        for (let param of operation.parameters) {
+            if (param.in === this._paramType) {
+                this._oldQueryParams.push(param);
+            }
+        }
+
+        if (this._oldQueryParams.length === 0) {
+            return;
+        }
+
+        for (let param of this._oldQueryParams) {
+            operation.parameters.splice(operation.parameters.indexOf(param), 1);
+        }
+    }
+
+    /**
+     * Restore the old (deleted) parameters.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteAllParameters] Reverting.");
+
+        if (this._oldQueryParams.length === 0) {
+            return;
+        }
+
+        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(document);
+        if (this.isNullOrUndefined(operation)) {
+            return;
+        }
+
+        for (let param of this._oldQueryParams) {
+            param._parent = operation;
+            param._ownerDocument = operation.ownerDocument();
+            if (!operation.parameters) {
+                operation.parameters = [];
+            }
+            operation.parameters.push(param);
+        }
     }
 
 }

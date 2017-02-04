@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation, Output, EventEmitter} from '@angular/core';
+import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from '@angular/core';
 import {
     Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
     Oas20Document
@@ -24,7 +24,9 @@ import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
 import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
 import {ChangePropertyCommand} from "../commands/change-property.command";
-import {DeleteNodeCommand} from "../commands/delete.command";
+import {DeleteNodeCommand, DeleteAllParameters} from "../commands/delete.command";
+import {ModalDirective} from "ng2-bootstrap";
+import {NewQueryParamCommand} from "../commands/new-query-param.command";
 
 
 @Component({
@@ -38,6 +40,11 @@ export class OperationFormComponent {
     @Input() operation: Oas20Operation;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    @ViewChild('addQueryParamModal') public addQueryParamModal: ModalDirective;
+    protected modals: any = {
+        addQueryParam: {}
+    };
 
     public summary(): string {
         if (this.operation.summary) {
@@ -133,6 +140,8 @@ export class OperationFormComponent {
         }
         return this.operation.parameters.filter((value) => {
             return value.in === 'query';
+        }).sort((param1, param2) => {
+            return param1.name.localeCompare(param2.name);
         });
     }
 
@@ -158,7 +167,7 @@ export class OperationFormComponent {
         if (param.description) {
             return param.description;
         } else {
-            return "No parameter description.";
+            return null;
         }
     }
 
@@ -166,7 +175,7 @@ export class OperationFormComponent {
         if (param.schema) {
             return JsonSchemaType[param.schema.type];
         } else {
-            return "";
+            return "TBD";
         }
     }
 
@@ -190,6 +199,17 @@ export class OperationFormComponent {
         return rval.sort((a, b) => {
             return a.statusCode().localeCompare(b.statusCode());
         });
+    }
+
+    public hasResponses(): boolean {
+        if (!this.operation.responses) {
+            return false;
+        }
+        if (this.operation.responses.responseStatusCodes().length === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     public responseDescription(response: Oas20Response): string {
@@ -233,9 +253,14 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
     }
 
-    public createQueryParameter(): void {
+    public changeQueryParamDescription(param: Oas20Parameter, newParamDescription: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
+        this.onCommand.emit(command);
+    }
+
+    public createResponse(): void {
         // TODO implement this!
-        console.info("User wants to add a query param.");
+        console.info("User wants to create a new response.");
     }
 
     public createRequestBody(): void {
@@ -252,5 +277,26 @@ export class OperationFormComponent {
         let command: ICommand = new DeleteNodeCommand(this.operation.method(), this.operation.parent());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
+    }
+
+    public deleteRequestBody(): void {
+        let command: ICommand = new DeleteAllParameters(this.operation, "body");
+        this.onCommand.emit(command);
+    }
+
+    public deleteAllQueryParams(): void {
+        let command: ICommand = new DeleteAllParameters(this.operation, "query");
+        this.onCommand.emit(command);
+    }
+
+    public openAddQueryParamModal(): void {
+        this.modals.addQueryParam = {};
+        this.addQueryParamModal.show();
+    }
+
+    public addQueryParam(): void {
+        let command: ICommand = new NewQueryParamCommand(this.operation, this.modals.addQueryParam.name);
+        this.onCommand.emit(command);
+        this.addQueryParamModal.hide();
     }
 }

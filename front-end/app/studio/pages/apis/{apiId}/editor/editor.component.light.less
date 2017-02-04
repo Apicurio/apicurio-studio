@@ -11,6 +11,10 @@
 @themes-light-bg-transition: 200ms;
 @themes-light-shadow-transition: 350ms;
 
+.api-editor.light span.empty, .api-editor.light div.empty {
+  color: @themes-light-api-empty-label-color;
+}
+
 .api-editor.light span.path-param {
   color: @themes-light-api-path-color;
 }
@@ -27,9 +31,6 @@
 }
 
 .api-editor.light .api-item-title {
-}
-.api-editor.light .api-item-title.empty {
-  color: @themes-light-api-empty-label-color;
 }
 
 .api-editor.light {

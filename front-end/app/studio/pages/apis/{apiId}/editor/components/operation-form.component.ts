@@ -24,7 +24,10 @@ import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
 import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
 import {ChangePropertyCommand} from "../commands/change-property.command";
-import {DeleteNodeCommand, DeleteAllParameters} from "../commands/delete.command";
+import {
+    DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
+    DeleteResponseCommand
+} from "../commands/delete.command";
 import {ModalDirective} from "ng2-bootstrap";
 import {NewQueryParamCommand} from "../commands/new-query-param.command";
 import {NewResponseCommand} from "../commands/new-response.command";
@@ -294,6 +297,16 @@ export class OperationFormComponent {
 
     public deleteAllResponses(): void {
         let command: ICommand = new DeleteNodeCommand("responses", this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public deleteQueryParam(parameter: Oas20Parameter): void {
+        let command: ICommand = new DeleteParameterCommand(parameter);
+        this.onCommand.emit(command);
+    }
+
+    public deleteResponse(response: Oas20Response): void {
+        let command: ICommand = new DeleteResponseCommand(response);
         this.onCommand.emit(command);
     }
 

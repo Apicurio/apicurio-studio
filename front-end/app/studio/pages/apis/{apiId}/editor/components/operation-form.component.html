@@ -54,6 +54,8 @@
                         <a data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
                         </a>
+                        <button class="btn btn-sm btn-default pull-right" [style.visibility]="'hidden'"
+                                [disabled]="disabled"><span class="fa fa-plus"></span></button>
                         <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
                                 title="Delete the request body."
                                 [disabled]="!hasBodyParam()"><span class="pficon pficon-delete"></span></button>
@@ -126,6 +128,7 @@
                                     <th>Parameter</th>
                                     <th>Description</th>
                                     <th>Type</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -135,6 +138,12 @@
                                                                                    (onChange)="changeQueryParamDescription(param, $event)"
                                                                                    [value]="paramDescription(param)"></description-editor-qp></td>
                                     <td class="type">{{ paramType(param) }}</td>
+                                    <td class="actions">
+                                        <div>
+                                            <button class="btn btn-sm btn-default pull-right" (click)="deleteQueryParam(param)"
+                                                    title="Delete query parameter."><span class="pficon pficon-delete"></span></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -148,7 +157,8 @@
                             <span class="section-label">RESPONSES</span>
                         </a>
                         <button class="btn btn-sm btn-default pull-right" (click)="openAddResponseModal()"><span class="fa fa-plus"></span></button>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllResponses()"><span class="pficon pficon-delete"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllResponses()"
+                                [disabled]="!hasResponses()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
 
@@ -165,6 +175,7 @@
                                     <th width="1%" nowrap="nowrap">Status Code</th>
                                     <th>Description</th>
                                     <th>Type</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -174,6 +185,12 @@
                                                                                    (onChange)="changeResponseDescription(response, $event)"
                                                                                    [value]="responseDescription(response)"></description-editor-qp></td>
                                     <td class="type">{{ responseType(response) }}</td>
+                                    <td class="actions">
+                                        <div>
+                                            <button class="btn btn-sm btn-default pull-right" (click)="deleteResponse(response)"
+                                                    title="Delete response."><span class="pficon pficon-delete"></span></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

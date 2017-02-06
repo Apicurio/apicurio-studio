@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter
+    Oas20Parameter, Oas20Response, Oas20Responses
 } from "oai-ts-core";
 
 /**
@@ -189,6 +189,134 @@ export class DeleteAllParameters extends AbstractCommand implements ICommand {
                 operation.parameters = [];
             }
             operation.parameters.push(param);
+        }
+    }
+
+}
+
+
+/**
+ * A command used to delete a single parameter from an operation.
+ */
+export class DeleteParameterCommand extends AbstractCommand implements ICommand {
+
+    private _parameterPath: OasNodePath;
+    private _operationPath: OasNodePath;
+    private _oldParameter: Oas20Parameter;
+
+    constructor(parameter: Oas20Parameter) {
+        super();
+        this._parameterPath = this.oasLibrary().createNodePath(parameter);
+        this._operationPath = this.oasLibrary().createNodePath(parameter.parent());
+    }
+
+    /**
+     * Deletes the parameter.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteParameterCommand] Executing.");
+        this._oldParameter = null;
+
+        let param: Oas20Parameter = <Oas20Parameter>this._parameterPath.resolve(document);
+
+        if (this.isNullOrUndefined(param)) {
+            return;
+        }
+
+        let params: Oas20Parameter[] = (<Oas20Operation>param.parent()).parameters;
+        params.splice(params.indexOf(param), 1);
+
+        this._oldParameter = param;
+    }
+
+    /**
+     * Restore the old (deleted) parameter.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteParameterCommand] Reverting.");
+        if (!this._oldParameter) {
+            return;
+        }
+
+        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(document);
+        if (this.isNullOrUndefined(operation)) {
+            return;
+        }
+
+        if (this.isNullOrUndefined(operation.parameters)) {
+            operation.parameters = [];
+        }
+
+        this._oldParameter._parent = operation;
+        this._oldParameter._ownerDocument = operation.ownerDocument();
+        operation.parameters.push(this._oldParameter);
+    }
+
+}
+
+
+/**
+ * A command used to delete a single response from an operation.
+ */
+export class DeleteResponseCommand extends AbstractCommand implements ICommand {
+
+    private _responsePath: OasNodePath;
+    private _responsesPath: OasNodePath;
+    private _oldResponse: Oas20Response;
+
+    constructor(response: Oas20Response) {
+        super();
+        this._responsePath = this.oasLibrary().createNodePath(response);
+        this._responsesPath = this.oasLibrary().createNodePath(response.parent());
+    }
+
+    /**
+     * Deletes the response.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteResponseCommand] Executing.");
+        this._oldResponse = null;
+
+        let response: Oas20Response = <Oas20Response>this._responsePath.resolve(document);
+        if (this.isNullOrUndefined(response)) {
+            return;
+        }
+
+        let responses: Oas20Responses = <Oas20Responses>response.parent();
+        if (response.statusCode() === null) {
+            responses.default = null;
+        } else {
+            responses.removeResponse(response.statusCode());
+        }
+
+        this._oldResponse = response;
+    }
+
+    /**
+     * Restore the old (deleted) parameters.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteResponseCommand] Reverting.");
+        if (!this._oldResponse) {
+            return;
+        }
+
+        let responses: Oas20Responses = <Oas20Responses>this._responsesPath.resolve(document);
+        if (this.isNullOrUndefined(responses)) {
+            return;
+        }
+
+        this._oldResponse._parent = responses;
+        this._oldResponse._ownerDocument = responses.ownerDocument();
+
+        if (this.isNullOrUndefined(this._oldResponse.statusCode()) && this.isNullOrUndefined(responses.default)) {
+            responses.default = this._oldResponse;
+        } else {
+            responses.addResponse(this._oldResponse.statusCode(), this._oldResponse);
         }
     }
 

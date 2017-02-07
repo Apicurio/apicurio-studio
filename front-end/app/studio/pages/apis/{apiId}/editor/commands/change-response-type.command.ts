@@ -17,72 +17,72 @@
 
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20Schema, Oas20Parameter,
+    OasDocument, Oas20Document, Oas20Schema, Oas20Response,
     JsonSchemaType, OasNodePath, Oas20DefinitionSchema
 } from "oai-ts-core";
 
 /**
- * A command used to modify the type of a request body for an operation.
+ * A command used to modify the type of a response.
  */
-export class ChangeRequestBodyTypeCommand extends AbstractCommand implements ICommand {
+export class ChangeResponseTypeCommand extends AbstractCommand implements ICommand {
 
-    private _bodyParamPath: OasNodePath;
+    private _responsePath: OasNodePath;
     private _newType: string;
     private _isSimple: boolean;
     private _oldType: Oas20Schema;
 
-    constructor(bodyParameter: Oas20Parameter, newType: string, isSimple: boolean) {
+    constructor(response: Oas20Response, newType: string, isSimple: boolean) {
         super();
-        this._bodyParamPath = this.oasLibrary().createNodePath(bodyParameter);
+        this._responsePath = this.oasLibrary().createNodePath(response);
         this._newType = newType;
         this._isSimple = isSimple;
     }
 
     /**
-     * Modifies the type of an operation's request body.
+     * Modifies the type of an operation's response.
      * @param document
      */
     public execute(document: OasDocument): void {
-        console.info("[ChangeRequestBodyTypeCommand] Executing.");
+        console.info("[ChangeResponseTypeCommand] Executing.");
         let doc: Oas20Document = <Oas20Document> document;
-        let bodyParam: Oas20Parameter = <Oas20Parameter>this._bodyParamPath.resolve(doc);
-        if (!bodyParam) {
+        let response: Oas20Response = <Oas20Response>this._responsePath.resolve(doc);
+        if (!response) {
             return;
         }
 
         this._oldType = null;
-        if (bodyParam.schema) {
-            this._oldType = bodyParam.schema;
+        if (response.schema) {
+            this._oldType = response.schema;
         }
 
-        bodyParam.schema = bodyParam.createSchema();
+        response.schema = response.createSchema();
 
         if (this._isSimple) {
-            bodyParam.schema.type = JsonSchemaType[this._newType];
+            response.schema.type = JsonSchemaType[this._newType];
         } else {
             let def: Oas20DefinitionSchema = doc.definitions.definition(this._newType);
             if (def) {
-                bodyParam.schema.$ref = "#/definitions/" + this._newType;
+                response.schema.$ref = "#/definitions/" + this._newType;
             }
         }
     }
 
     /**
-     * Resets the param type back to its previous state.
+     * Resets the response type back to its previous state.
      * @param document
      */
     public undo(document: OasDocument): void {
-        console.info("[ChangeRequestBodyTypeCommand] Reverting.");
+        console.info("[ChangeResponseTypeCommand] Reverting.");
         let doc: Oas20Document = <Oas20Document> document;
-        let bodyParam: Oas20Parameter = <Oas20Parameter>this._bodyParamPath.resolve(doc);
-        if (!bodyParam) {
+        let response: Oas20Response = <Oas20Response>this._responsePath.resolve(doc);
+        if (!response) {
             return;
         }
 
-        bodyParam.schema = this._oldType;
-        if (bodyParam.schema) {
-            bodyParam.schema._parent = bodyParam;
-            bodyParam.schema._ownerDocument = bodyParam.ownerDocument();
+        response.schema = this._oldType;
+        if (response.schema) {
+            response.schema._parent = response;
+            response.schema._ownerDocument = response.ownerDocument();
         }
     }
 

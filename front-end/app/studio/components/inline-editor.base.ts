@@ -134,14 +134,39 @@ export abstract class AbstractInlineEditor<T> {
 }
 
 
+
+/**
+ * Base class for any inline editor that edits a single value of an arbitrary type.
+ */
+export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<T> {
+
+    @Input() value: T;
+    @Input() noValueMessage: string;
+
+    protected displayValue(): string {
+        if (this.isEmpty()) {
+            return this.noValueMessage;
+        }
+        return this.formatValue(this.value);
+    }
+
+    protected abstract formatValue(value: T): string;
+
+    protected isEmpty(): boolean {
+        return this.value === undefined || this.value === null;
+    }
+
+    protected initialValueForEditing(): T {
+        return this.value;
+    }
+
+}
+
 /**
  * Base class for any inline editor that is built on a single text input element.  The template
  * must include an 'input' element named #newvalue.
  */
-export abstract class TextInputEditorComponent extends AbstractInlineEditor<string> implements AfterViewInit {
-
-    @Input() value: string;
-    @Input() noValueMessage: string;
+export abstract class TextInputEditorComponent extends AbstractInlineValueEditor<string> implements AfterViewInit {
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
@@ -154,19 +179,8 @@ export abstract class TextInputEditorComponent extends AbstractInlineEditor<stri
         });
     }
 
-    protected displayValue(): string {
-        if (!this.value) {
-            return this.noValueMessage;
-        }
-        return this.value;
-    }
-
-    protected isEmpty(): boolean {
-        return this.value === undefined || this.value === null;
-    }
-
-    protected initialValueForEditing(): string {
-        return this.value;
+    protected formatValue(value: string): string {
+        return value;
     }
 
 }

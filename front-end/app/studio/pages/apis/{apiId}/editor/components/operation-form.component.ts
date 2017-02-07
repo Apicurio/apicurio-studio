@@ -18,11 +18,11 @@
 import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from '@angular/core';
 import {
     Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
-    Oas20Document
+    Oas20Document, Oas20Schema
 } from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
-import {ChangeRequestBodyTypeCommand} from "../commands/change-request-body-type.command";
+import {ChangeParameterTypeCommand} from "../commands/change-parameter-type.command";
 import {ChangePropertyCommand} from "../commands/change-property.command";
 import {
     DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
@@ -31,6 +31,7 @@ import {
 import {ModalDirective} from "ng2-bootstrap";
 import {NewQueryParamCommand} from "../commands/new-query-param.command";
 import {NewResponseCommand} from "../commands/new-response.command";
+import {ChangeResponseTypeCommand} from "../commands/change-response-type.command";
 
 
 @Component({
@@ -177,12 +178,8 @@ export class OperationFormComponent {
         }
     }
 
-    public paramType(param: Oas20Parameter): string {
-        if (param.schema) {
-            return JsonSchemaType[param.schema.type];
-        } else {
-            return "TBD";
-        }
+    public paramType(param: Oas20Parameter): Oas20Schema {
+        return param.schema;
     }
 
     public paramHasDescription(param: Oas20Parameter): boolean {
@@ -238,9 +235,8 @@ export class OperationFormComponent {
         return (<Oas20Document>this.operation.ownerDocument()).definitions.getItemNames().sort();
     }
 
-    public responseType(response: Oas20Response): string {
-        // TODO implement this!
-        return "TBD";
+    public responseType(response: Oas20Response): Oas20Schema {
+        return response.schema;
     }
 
     public changeSummary(newSummary: string): void {
@@ -264,6 +260,30 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
     }
 
+    public changeQueryParamType(param: Oas20Parameter, newParamType: Oas20Schema): void {
+        let type: string = JsonSchemaType[newParamType.type];
+        let isSimpleType: boolean = true;
+        if (!newParamType.type) {
+            isSimpleType = false;
+            type = newParamType.$ref.substr(14);
+        }
+
+        let command: ICommand = new ChangeParameterTypeCommand(param, type, isSimpleType);
+        this.onCommand.emit(command);
+    }
+
+    public changeResponseType(response: Oas20Response, newResponseType: Oas20Schema): void {
+        let type: string = JsonSchemaType[newResponseType.type];
+        let isSimpleType: boolean = true;
+        if (!newResponseType.type) {
+            isSimpleType = false;
+            type = newResponseType.$ref.substr(14);
+        }
+
+        let command: ICommand = new ChangeResponseTypeCommand(response, type, isSimpleType);
+        this.onCommand.emit(command);
+    }
+
     public changeResponseDescription(response: Oas20Response, newDescription: string): void {
         let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, response);
         this.onCommand.emit(command);
@@ -275,7 +295,7 @@ export class OperationFormComponent {
     }
 
     public setRequestBodyType(type: string, isSimpleType: boolean): void {
-        let command: ICommand = new ChangeRequestBodyTypeCommand(this.bodyParam(), type, isSimpleType);
+        let command: ICommand = new ChangeParameterTypeCommand(this.bodyParam(), type, isSimpleType);
         this.onCommand.emit(command);
     }
 

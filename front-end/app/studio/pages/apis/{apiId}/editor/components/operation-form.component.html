@@ -14,7 +14,12 @@
                 <span class="fa fa-ellipsis-v"></span>
             </button>
             <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
-                <li><a href="javascript:return false" (click)="delete()"><span class="pficon pficon-delete"></span> <span>Delete</span></a></li>
+                <li>
+                    <a href="javascript:return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Operation</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -79,15 +84,11 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="requestBodyMenu">
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('string', true)">string</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('null', true)">null</a></li>
                                     <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('boolean', true)">boolean</a></li>
                                     <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('integer', true)">integer</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('double', true)">double</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('long', true)">long</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('float', true)">float</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('short', true)">short</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('byte', true)">byte</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('timestamp', true)">timestamp</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('number', true)">number</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('string', true)">string</a></li>
                                     <li role="presentation" class="divider" *ngIf="hasDefinitions()"></li>
                                     <li role="presentation" *ngFor="let definitionName of definitionNames()"><a
                                             role="menuitem" (click)="setRequestBodyType(definitionName, false)">{{ definitionName }}</a></li>
@@ -126,8 +127,8 @@
                             <thead>
                                 <tr>
                                     <th>Parameter</th>
-                                    <th>Description</th>
-                                    <th>Type</th>
+                                    <th width="60%">Description</th>
+                                    <th width="40%">Type</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -135,9 +136,11 @@
                                 <tr *ngFor="let param of queryParameters()">
                                     <td class="parameter">{{ param.name }}</td>
                                     <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                                                                   (onChange)="changeQueryParamDescription(param, $event)"
-                                                                                   [value]="paramDescription(param)"></description-editor-qp></td>
-                                    <td class="type">{{ paramType(param) }}</td>
+                                           (onChange)="changeQueryParamDescription(param, $event)"
+                                           [value]="paramDescription(param)"></description-editor-qp></td>
+                                    <td class="type"><type-editor-of [document]="param.ownerDocument()"
+                                            [value]="paramType(param)" [noValueMessage]="'No Type'"
+                                            (onChange)="changeQueryParamType(param, $event)"></type-editor-of></td>
                                     <td class="actions">
                                         <div>
                                             <button class="btn btn-sm btn-default pull-right" (click)="deleteQueryParam(param)"
@@ -173,8 +176,8 @@
                             <thead>
                                 <tr>
                                     <th width="1%" nowrap="nowrap">Status Code</th>
-                                    <th>Description</th>
-                                    <th>Type</th>
+                                    <th width="60%">Description</th>
+                                    <th width="40%">Type</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -182,9 +185,11 @@
                                 <tr *ngFor="let response of responses()">
                                     <td class="parameter">{{ response.statusCode() }}</td>
                                     <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                                                                   (onChange)="changeResponseDescription(response, $event)"
-                                                                                   [value]="responseDescription(response)"></description-editor-qp></td>
-                                    <td class="type">{{ responseType(response) }}</td>
+                                             (onChange)="changeResponseDescription(response, $event)"
+                                             [value]="responseDescription(response)"></description-editor-qp></td>
+                                    <td class="type"><type-editor-of [document]="response.ownerDocument()"
+                                             [value]="responseType(response)" [noValueMessage]="'No Type'"
+                                             (onChange)="changeResponseType(response, $event)"></type-editor-of></td>
                                     <td class="actions">
                                         <div>
                                             <button class="btn btn-sm btn-default pull-right" (click)="deleteResponse(response)"

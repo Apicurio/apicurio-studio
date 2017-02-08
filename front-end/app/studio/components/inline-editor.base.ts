@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Output, Input, AfterViewInit, ViewChildren, QueryList, ElementRef} from '@angular/core';
+import {
+    EventEmitter, Output, Input, AfterViewInit, ViewChildren, QueryList, ElementRef,
+    ViewChild, HostListener
+} from '@angular/core';
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Subscription} from "rxjs";
 
@@ -30,12 +33,15 @@ export abstract class AbstractInlineEditor<T> {
     @Input() enabled = true;
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
+    @ViewChildren("clickcontainer") clickcontainer: QueryList<ElementRef>;
+
     private _mousein: boolean = false;
     private _hoverSub: Subscription;
     private _hoverElem: any;
 
     public hovering: boolean = false;
     public editing: boolean = false;
+    public canClose: boolean = false;
     public hoverDims: any = {
         left: 0,
         top: 0,
@@ -47,6 +53,16 @@ export abstract class AbstractInlineEditor<T> {
     public inputFocus: boolean = false;
 
     public evalue: T;
+
+    @HostListener("document:click", ["$event"])
+    public onDocumentClick(event: MouseEvent): void {
+        if (this.clickcontainer && this.clickcontainer.first && this.clickcontainer.first.nativeElement) {
+            if (!this.clickcontainer.first.nativeElement.contains(event.target) && this.canClose) {
+                this.onCancel();
+            } else {
+            }
+        }
+    }
 
     public onMouseIn(event: MouseEvent): void {
         if (this.editing || !this.enabled) {
@@ -86,6 +102,7 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onStartEditing(): void {
+        this.canClose = false;
         this.evalue = this.initialValueForEditing();
         this.hovering = false;
         this._mousein = false;
@@ -97,6 +114,10 @@ export abstract class AbstractInlineEditor<T> {
             AbstractInlineEditor.s_activeEditor.onCancel();
         }
         AbstractInlineEditor.s_activeEditor = this;
+
+        TimerObservable.create(250).subscribe(() => {
+            this.canClose = true;
+        });
     }
 
     protected abstract initialValueForEditing(): T;

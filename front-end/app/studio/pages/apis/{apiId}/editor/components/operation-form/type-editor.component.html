@@ -8,30 +8,32 @@
         <button title="Click to edit the type." class="overlay-action" (click)="onStartEditing()"><span class="fa fa-pencil"></span></button>
     </div>
 </div>
-<form #editform="ngForm" *ngIf="editing === true" name="api-type-editor-form" class="api-type-editor-form api-inline-editor-form"
-      (submit)="onSave()">
-    <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="typeMenu" data-toggle="dropdown"
-                [class.empty]="isTypeEmpty()">
-            <span style="padding-right: 36px">{{ displayType() }}</span>
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="typeMenu">
-            <li role="presentation"><a role="menuitem" (click)="setType('null', true)">null</a></li>
-            <li role="presentation"><a role="menuitem" (click)="setType('boolean', true)">boolean</a></li>
-            <li role="presentation"><a role="menuitem" (click)="setType('integer', true)">integer</a></li>
-            <li role="presentation"><a role="menuitem" (click)="setType('number', true)">number</a></li>
-            <li role="presentation"><a role="menuitem" (click)="setType('string', true)">string</a></li>
-            <li role="presentation" class="divider" *ngIf="hasDefinitions()"></li>
-            <li role="presentation" *ngFor="let definitionName of definitionNames()"><a
-                    role="menuitem" (click)="setType(definitionName, false)">{{ definitionName }}</a></li>
-        </ul>
-    </div>
-    <div class="edit-overlay" *ngIf="editing">
-         <div class="overlay-actions"
-         ><button title="Save changes." class="overlay-action btn btn-xm btn-primary" type="submit"
-         ><span class="fa fa-check"></span></button
-         ><a title="Cancel changes." class="overlay-action btn btn-sm btn-default" (click)="onCancel()"
-         ><span class="fa fa-close"></span></a></div>
-    </div>
-</form>
+<span #clickcontainer>
+    <form #editform="ngForm" *ngIf="editing === true" name="api-type-editor-form" class="api-type-editor-form api-inline-editor-form"
+          (submit)="onSave()">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="typeMenu" data-toggle="dropdown"
+                    [class.empty]="isTypeEmpty()">
+                <span style="padding-right: 36px">{{ displayType() }}</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="typeMenu">
+                <li role="presentation"><a role="menuitem" (click)="setType('null', true)">null</a></li>
+                <li role="presentation"><a role="menuitem" (click)="setType('boolean', true)">boolean</a></li>
+                <li role="presentation"><a role="menuitem" (click)="setType('integer', true)">integer</a></li>
+                <li role="presentation"><a role="menuitem" (click)="setType('number', true)">number</a></li>
+                <li role="presentation"><a role="menuitem" (click)="setType('string', true)">string</a></li>
+                <li role="presentation" class="divider" *ngIf="hasDefinitions()"></li>
+                <li role="presentation" *ngFor="let definitionName of definitionNames()"><a
+                        role="menuitem" (click)="setType(definitionName, false)">{{ definitionName }}</a></li>
+            </ul>
+        </div>
+        <div class="edit-overlay" *ngIf="editing">
+             <div class="overlay-actions"
+             ><button title="Save changes." class="overlay-action btn btn-xm btn-primary" type="submit"
+             ><span class="fa fa-check"></span></button
+             ><a title="Cancel changes." class="overlay-action btn btn-sm btn-default" (click)="onCancel()"
+             ><span class="fa fa-close"></span></a></div>
+        </div>
+    </form>
+</span>

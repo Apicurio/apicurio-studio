@@ -25,6 +25,8 @@ import {Subscription} from "rxjs";
  */
 export abstract class AbstractInlineEditor<T> {
 
+    static s_activeEditor: any = null;
+
     @Input() enabled = true;
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
@@ -90,6 +92,11 @@ export abstract class AbstractInlineEditor<T> {
         this.inputFocus = true;
         this.inputHover = true;
         this.editing = true;
+
+        if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
+            AbstractInlineEditor.s_activeEditor.onCancel();
+        }
+        AbstractInlineEditor.s_activeEditor = this;
     }
 
     protected abstract initialValueForEditing(): T;
@@ -97,10 +104,12 @@ export abstract class AbstractInlineEditor<T> {
     public onSave(): void {
         this.onChange.emit(this.evalue);
         this.editing = false;
+        AbstractInlineEditor.s_activeEditor = this;
     }
 
     public onCancel(): void {
         this.editing = false;
+        AbstractInlineEditor.s_activeEditor = this;
         this.evalue = this.initialValueForEditing();
     }
 

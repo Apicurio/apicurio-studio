@@ -32,7 +32,11 @@
     "patternfly" : "3.17.0",
     "ng2-bootstrap": "1.2.5",
     "ng2-ace-editor": "0.1.5",
-    "buffer": "5.0.5"
+    "buffer": "5.0.5",
+    "brace": "0.9.1",
+    "w3c-blob": "0.0.1",
+    "base64-js": "1.2.0",
+    "ieee754": "1.1.8"
   },
   "devDependencies": {
     "concurrently": "2.2.0",

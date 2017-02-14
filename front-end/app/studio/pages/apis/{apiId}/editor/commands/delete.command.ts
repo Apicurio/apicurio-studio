@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter, Oas20Response, Oas20Responses
+    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema
 } from "oai-ts-core";
 
 /**
@@ -322,3 +322,51 @@ export class DeleteResponseCommand extends AbstractCommand implements ICommand {
 
 }
 
+
+/**
+ * A command used to delete a definition schema.
+ */
+export class DeleteDefinitionSchemaCommand extends AbstractCommand implements ICommand {
+
+    private _definitionName: string;
+    private _oldDefinition: Oas20DefinitionSchema;
+
+    constructor(definitionName: string) {
+        super();
+        this._definitionName = definitionName;
+    }
+
+    /**
+     * Deletes the definition.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteDefinitionSchemaCommand] Executing.");
+        this._oldDefinition = null;
+        let doc: Oas20Document  = <Oas20Document>document;
+        let definitions: Oas20Definitions = doc.definitions;
+        if (this.isNullOrUndefined(definitions)) {
+            return;
+        }
+
+        this._oldDefinition = definitions.removeDefinition(this._definitionName);
+    }
+
+    /**
+     * Restore the old (deleted) definition.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteDefinitionSchemaCommand] Reverting.");
+        let doc: Oas20Document  = <Oas20Document>document;
+        let definitions: Oas20Definitions = doc.definitions;
+        if (this.isNullOrUndefined(definitions) || this.isNullOrUndefined(this._oldDefinition)) {
+            return;
+        }
+
+        this._oldDefinition._parent = definitions;
+        this._oldDefinition._ownerDocument = definitions.ownerDocument();
+        definitions.addDefinition(this._oldDefinition.definitionName(), this._oldDefinition);
+    }
+
+}

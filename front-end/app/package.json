@@ -30,7 +30,9 @@
     "zone.js": "0.7.4",
     "bootstrap": "3.3.7",
     "patternfly" : "3.17.0",
-    "ng2-bootstrap": "1.2.5"
+    "ng2-bootstrap": "1.2.5",
+    "ng2-ace-editor": "0.1.5",
+    "buffer": "5.0.5"
   },
   "devDependencies": {
     "concurrently": "2.2.0",

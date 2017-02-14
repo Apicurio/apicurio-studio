@@ -47,7 +47,8 @@
                     <a data-toggle="collapse" data-target="#definition-section-body">
                         <span class="section-label">Definitions</span>
                     </a>
-                    <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                    <button class="btn btn-sm btn-default pull-right"
+                            (click)="addDefinitionModal.show()"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
                     <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
@@ -73,13 +74,15 @@
     </div>
 
     <div class="editor-detail">
-        <main-form [style.height]="'100%'" [document]="document()" (onCommand)="onCommand($event)"
+        <main-form [document]="document()" (onCommand)="onCommand($event)" class="editor-detail-form"
                    *ngIf="selectedType === 'main'"></main-form>
-        <path-form [style.height]="'100%'" [path]="selectedPath()" (onCommand)="onCommand($event)"
+        <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" class="editor-detail-form"
                    (onOperationSelected)="selectOperation(selectedItem, $event)" (onDeselect)="deselectPath()"
                    *ngIf="selectedType === 'path'"></path-form>
-        <operation-form [style.height]="'100%'" [operation]="selectedOperation()" (onCommand)="onCommand($event)"
+        <operation-form [operation]="selectedOperation()" (onCommand)="onCommand($event)" class="editor-detail-form"
                         (onDeselect)="deselectOperation()" *ngIf="selectedType === 'operation'"></operation-form>
+        <definition-form [definition]="selectedDefinition()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                        (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
     </div>
 </div>
 
@@ -110,6 +113,40 @@
                 <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addPath()"
                         [disabled]="!addPathForm.form.valid">Add</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addPathModal.hide()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Definition Dialog -->
+<div bsModal #addDefinitionModal="bs-modal" class="modal fade" id="addDefinitionModal" tabindex="-1" role="dialog" aria-labelledby="addDefinitionModalLabel"
+     role="dialog" aria-hidden="true" (onShown)="addDefinitionInput.focus(); addDefinitionInput.select()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="addDefinitionModal.hide()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addDefinitionModalLabel">Add Definition</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter a new definition name below and then click Add.</p>
+                <form id="adddef-form" class="form-horizontal" (submit)="addDefinition()" #addDefinitionForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="definitionName">Name</label>
+                        <div class="col-sm-10">
+                            <input #addDefinitionInput name="definitionName" type="text" id="definitionName" class="form-control"
+                                   placeholder="Enter a Definition Name"
+                                   required [(ngModel)]="modals.addDefinition.definitionName">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addDefinition()"
+                        [disabled]="!addDefinitionForm.form.valid">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addDefinitionModal.hide()">Cancel</button>
             </div>
         </div>
     </div>

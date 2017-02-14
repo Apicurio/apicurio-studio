@@ -17,10 +17,11 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from '@angular/core';
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation} from "oai-ts-core";
+import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./commands.manager";
 import {ModalDirective} from 'ng2-bootstrap';
 import {NewPathCommand} from "./commands/new-path.command";
+import {NewDefinitionCommand} from "./commands/new-definition.command";
 
 
 @Component({
@@ -37,9 +38,11 @@ export class ApiEditorComponent {
     @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChild("addPathModal") public addPathModal: ModalDirective;
+    @ViewChild("addDefinitionModal") public addDefinitionModal: ModalDirective;
 
     public modals: any = {
-        addPath: {}
+        addPath: {},
+        addDefinition: {}
     };
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
@@ -260,6 +263,18 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Returns the currently selected definition.
+     * @return {any}
+     */
+    public selectedDefinition(): Oas20DefinitionSchema {
+        if (this.selectedType === "definition") {
+            return this.document().definitions.definition(this.selectedItem);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Called to test whether the given resource path has an operation of the given type defined.
      * @param path
      * @param operation
@@ -273,6 +288,16 @@ export class ApiEditorComponent {
             }
         }
         return false;
+    }
+
+    /**
+     * Called when the user fills out the Add Definition modal dialog and clicks Add.
+     */
+    public addDefinition(): void {
+        let command: ICommand = new NewDefinitionCommand(this.modals.addDefinition.definitionName);
+        this.onCommand(command);
+        this.addDefinitionModal.hide();
+        this.selectDefinition(this.modals.addDefinition.definitionName);
     }
 
 }

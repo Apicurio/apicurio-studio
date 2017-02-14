@@ -23,6 +23,9 @@ import {HttpModule} from '@angular/http';
 /* Bootstrap */
 import { ModalModule } from 'ng2-bootstrap';
 
+/* ACE Editor */
+import { AceEditorComponent } from 'ng2-ace-editor';
+
 /* Top level app stuff */
 import {StudioComponent} from './studio.component';
 import {StudioRouting} from './studio.routing';
@@ -79,6 +82,7 @@ import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/componen
 import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/req-description-editor.component";
 import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/components/operation-form/query-param-description-editor.component";
 import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/type-editor.component";
+import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/definition-form.component";
 
 
 @NgModule({
@@ -89,7 +93,8 @@ import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/oper
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
-        RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent],
+        RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
+        AceEditorComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

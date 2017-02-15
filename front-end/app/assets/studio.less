@@ -1,6 +1,5 @@
 @import "../studio/colors.less";
 
-
 #api-page-body {
   margin-left: 120px;
 }
@@ -61,4 +60,46 @@ form input.ng-invalid.ng-touched {
 
 .dropdown-menu > li > a {
   cursor: pointer;
+}
+
+/* Loading Animations */
+#load-container {
+  padding-top: 60px; // Approx in content area rather than nav-bar.
+  margin: auto;
+  animation: fadein 2s;
+}
+
+#apiman-the-hero {
+  display: block;
+  height: auto;
+  margin: auto;
+  width: 200px;
+  border-radius: 10%;
+}
+
+#ball-holder {
+  width: 200px;
+  margin: auto;
+
+  #ball {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    fill: white;
+    animation: loadball 3s infinite linear;
+  }
+}
+
+@keyframes loadball { // 200px - 30px
+  50% { transform: translate(170px, 0px);  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
 }

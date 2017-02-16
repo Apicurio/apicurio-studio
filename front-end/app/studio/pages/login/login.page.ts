@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from '@angular/core';
+import {Component, OnInit, Inject} from "@angular/core";
 import {IAuthenticationService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {GithubAuthenticationCredentials} from "../../services/auth-github.service";
@@ -28,9 +28,9 @@ const SAVED_USERNAME_KEY    = "apiman.studio.pages.login.username";
  */
 @Component({
     moduleId: module.id,
-    selector: 'login-page',
-    templateUrl: 'login.page.html',
-    styleUrls: ['login.page.css']
+    selector: "login-page",
+    templateUrl: "login.page.html",
+    styleUrls: ["login.page.css"]
 })
 export class LoginPageComponent implements OnInit {
 
@@ -48,7 +48,7 @@ export class LoginPageComponent implements OnInit {
 
     ngOnInit(): void {
         let v: string = localStorage.getItem(REMEMBER_USERNAME_KEY);
-        this.rememberUser = v == 'true';
+        this.rememberUser = v == "true";
         if (this.rememberUser) {
             this.username = localStorage.getItem(SAVED_USERNAME_KEY);
         }
@@ -79,7 +79,7 @@ export class LoginPageComponent implements OnInit {
             let queryParams:any = {};
 
             if (query) {
-                let qitems: string[][] = query.split('&').map(item => item.split("=").map(b => decodeURIComponent(b)));
+                let qitems: string[][] = query.split("&").map(item => item.split("=").map(b => decodeURIComponent(b)));
                 for (let pair of qitems) {
                     queryParams[pair[0]] = pair[1];
                 }
@@ -102,7 +102,7 @@ export class LoginPageComponent implements OnInit {
      * Converts a path (as taken from the browser location) into a route.  This is done by removing
      * any possible leading path context like /studio.  Example:
      *
-     * /studio/apis/newapi  =>  /apis/newapi
+     * /studio/apis/create  =>  /apis/create
      *
      * When the UI is deployed to a sub-context, this is necessary.
      *

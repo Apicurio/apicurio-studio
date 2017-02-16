@@ -1,0 +1,27 @@
+<breadcrumbs>
+    <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+    <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+    <li breadcrumb label="Add API" icon="plus" class="active"></li>
+</breadcrumbs>
+<div class="container-fluid">
+    <div class="createapi-form row">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What does this page do?</strong>
+                <p style="line-height: 18px">
+                    Here you can create a brand new API by telling us the name (and description) of the new API
+                    and indicating where you want us to store it (GitHub repository location).
+                </p>
+            </div>
+            <ol>
+                <li>Choose a name (<b>Required</b>)</li>
+                <li>Set the description</li>
+                <li>Configure GitHub repository details (<b>Required</b>)</li>
+            </ol>
+        </div>
+        <div class="col-md-7">
+            <createapi-form (onCreateApi)="onCreateApi($event)" #createApiForm></createapi-form>
+        </div>
+    </div>
+</div>

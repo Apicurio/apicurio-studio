@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input} from '@angular/core';
+import {Component, ViewEncapsulation, Input} from "@angular/core";
 import {AbstractInlineValueEditor} from "../../../../../../components/inline-editor.base";
 import {Oas20Schema, JsonSchemaType, Oas20Document} from "oai-ts-core";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'type-editor-of',
-    templateUrl: 'type-editor.component.html',
+    selector: "type-editor-of",
+    templateUrl: "type-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema> {

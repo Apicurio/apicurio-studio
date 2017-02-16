@@ -17,14 +17,14 @@
 
 import {
     Component, ViewEncapsulation
-} from '@angular/core';
+} from "@angular/core";
 import {TextInputEditorComponent} from "../../../../../../components/inline-editor.base";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'title-editor',
-    templateUrl: 'title-editor.component.html',
+    selector: "title-editor",
+    templateUrl: "title-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class TitleEditorComponent extends TextInputEditorComponent {

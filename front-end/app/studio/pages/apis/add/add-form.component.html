@@ -1,0 +1,38 @@
+<div class="addapi-form-panel panel panel-default" [class.dragging]="dragging"
+     (dragover)="onDragOver($event)" (drop)="onDrop($event)"
+     (dragend)="onDragEnd()" (dragexit)="onDragEnd()" (dragleave)="onDragEnd()">
+    <div class="panel-body">
+        <form id="addapi-form" class="form-horizontal" (submit)="addApi()" #apiForm="ngForm">
+            <div>&nbsp;</div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-repository-url">GitHub Url</label>
+                <div class="col-sm-10">
+                    <input name="repository.url" type="url" id="api-repository-url" class="form-control"
+                           placeholder="https://github.com/ORG/REPO/blob/master/path/to/open-api-doc.json" required
+                           [(ngModel)]="model"
+                           pattern="https?://.+">
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="">
+                <label class="col-sm-2 control-label" for="api-repository-url-error"></label>
+                <div class="col-sm-10">
+                    <div class="alert alert-danger" id="api-repository-url-error">
+                        <span class="pficon pficon-error-circle-o"></span>
+                        <strong>API Problem Detected!</strong> Yeah this is really messed up and you should <a href="#" class="alert-link">know about it</a>.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || addingApi || discoveringApi">Add API</button>
+                    <p *ngIf="discoveringApi" style="display: inline-block; margin-left: 10px">
+                        <span class="spinner spinner-xs spinner-inline"></span>
+                        <span>Fetching API details...</span>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

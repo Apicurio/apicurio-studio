@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, OnInit, Inject} from "@angular/core";
+import {Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 
 @Component({
     moduleId: module.id,
-    selector: 'newapi-page',
-    templateUrl: 'newapi.page.html',
-    styleUrls: ['newapi.page.css']
+    selector: "addapi-page",
+    templateUrl: "add.page.html",
+    styleUrls: ["add.page.css"]
 })
-export class NewApiPageComponent implements OnInit {
+export class AddApiPageComponent implements OnInit {
 
     /**
      * Constructor.
@@ -43,18 +43,18 @@ export class NewApiPageComponent implements OnInit {
     }
 
     /**
-     * Called when the New API form (component) emits a "new-api" event.  This is bound to
-     * from the newapi.page.html template.
+     * Called when the Add API form (component) emits a "add-api" event.  This is bound to
+     * from the addapi.page.html template.
      * @param api
      */
-    public onCreateApi(api: Api) {
-        console.log("[NewApiPageComponent] onCreateApi(): " + JSON.stringify(api))
-        this.apis.createApi(api).then(updatedApi => {
+    public onAddApi(api: Api) {
+        console.log("[AddApiPageComponent] onAddApi(): " + JSON.stringify(api))
+        this.apis.addApi(api).then(updatedApi => {
             let link: string[] = [ "/apis", updatedApi.id ];
-            console.info("[NewApiPageComponent] Navigating to: %o", link);
+            console.info("[AddApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {
-            console.error("[NewApiPageComponent] Error saving API: %o", error);
+            console.error("[AddApiPageComponent] Error saving API: %o", error);
         })
     }
 

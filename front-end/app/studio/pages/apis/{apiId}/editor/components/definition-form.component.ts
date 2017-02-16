@@ -18,8 +18,8 @@ import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} fr
 import {Oas20DefinitionSchema, OasLibraryUtils, Oas20Document, Oas20Definitions} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 
-import 'brace/theme/eclipse';
-import 'brace/mode/json';
+import "brace/theme/eclipse";
+import "brace/mode/json";
 import {AceEditorDirective} from "ng2-ace-editor";
 import {DeleteDefinitionSchemaCommand} from "../commands/delete.command";
 import {ReplaceDefinitionSchemaCommand} from "../commands/replace.command";
@@ -27,8 +27,8 @@ import {ObjectUtils} from "../../../../../util/common";
 
 @Component({
     moduleId: module.id,
-    selector: 'definition-form',
-    templateUrl: 'definition-form.component.html',
+    selector: "definition-form",
+    templateUrl: "definition-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class DefinitionFormComponent {
@@ -77,7 +77,6 @@ export class DefinitionFormComponent {
     }
 
     public onSourceChanged(newSource: any): void {
-        console.info("Source changed: " + newSource);
         try {
             let newJsObject: any = JSON.parse(newSource);
             let currentJsObj: any = this.definitionJs();

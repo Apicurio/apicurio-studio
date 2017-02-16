@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input} from '@angular/core';
+import {Component, EventEmitter, Output, Input} from "@angular/core";
 import {Api} from "../../models/api.model";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'apis-list',
-    templateUrl: 'apis-list.component.html',
-    styleUrls: ['apis-list.component.css']
+    selector: "apis-list",
+    templateUrl: "apis-list.component.html",
+    styleUrls: ["apis-list.component.css"]
 })
 export class ApisListComponent {
 

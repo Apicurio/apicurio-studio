@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, OnInit, Inject, OnDestroy} from "@angular/core";
+import {Router} from "@angular/router";
 
 import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
@@ -57,9 +57,9 @@ class Filters {
 
 @Component({
     moduleId: module.id,
-    selector: 'apis-page',
-    templateUrl: 'apis.page.html',
-    styleUrls: ['apis.page.css']
+    selector: "apis-page",
+    templateUrl: "apis.page.html",
+    styleUrls: ["apis.page.css"]
 })
 export class ApisPageComponent implements OnInit, OnDestroy {
 
@@ -150,11 +150,11 @@ export class ApisPageComponent implements OnInit, OnDestroy {
     }
 
     public onListLayout(): void {
-        this.filters.layout = 'list';
+        this.filters.layout = "list";
     }
 
     public onCardLayout(): void {
-        this.filters.layout = 'card';
+        this.filters.layout = "card";
     }
 
     public onReset(): void {

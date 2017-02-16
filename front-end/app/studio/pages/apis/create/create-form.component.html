@@ -1,0 +1,72 @@
+<div class="createapi-form-panel panel panel-default">
+    <div class="panel-body">
+        <form id="createapi-form" class="form-horizontal" (submit)="createApi()" #apiForm="ngForm">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-name">Name</label>
+                <div class="col-sm-10">
+                    <input name="name" type="text" id="api-name" class="form-control" placeholder="Enter the new API's name"
+                           required [(ngModel)]="model.name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-description">Description</label>
+                <div class="col-sm-10">
+                    <textarea name="description" id="api-description" class="form-control" placeholder="Type a short description of the API"
+                              [(ngModel)]="model.description"></textarea>
+                </div>
+            </div>
+
+            <hr/>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-organization">Organization</label>
+                <div class="col-sm-10">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="api-organization" data-toggle="dropdown">
+                            <span *ngIf="model.organization !== null">{{ model.organization }}</span>
+                            <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
+                            <span class="disabled" *ngIf="model.organization === null">(select organization)</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
+                            <li *ngFor="let org of organizations()" role="presentation"><a role="menuitem" (click)="setOrganization(org)">{{ org }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-repository">Repository</label>
+                <div class="col-sm-10">
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="api-repository" data-toggle="dropdown"
+                                [disabled]="model.organization === null">
+                            <span *ngIf="model.repository !== null">{{ model.repository }}</span>
+                            <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
+                            <span class="disabled" *ngIf="model.repository === null">(select repository)</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
+                            <li *ngFor="let repo of repositories()" role="presentation"><a role="menuitem" (click)="setRepository(repo)">{{ repo }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
+                <div class="col-sm-10">
+                    <input name="repository.resource" type="text" id="api-repository-resource" class="form-control"
+                           placeholder="/path/to/apis/openapi-doc.json" required
+                           [(ngModel)]="model.resource"
+                           pattern="(/[^/]+)*/?[^/]+\.json">
+                </div>
+            </div>
+            <hr/>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div *ngIf="creatingApi" class="spinner spinner-xs"></div>
+                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || creatingApi || model.repository === null">Create API</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

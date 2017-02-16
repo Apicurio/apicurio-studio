@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./commands.manager";
-import {ModalDirective} from 'ng2-bootstrap';
+import {ModalDirective} from "ng2-bootstrap";
 import {NewPathCommand} from "./commands/new-path.command";
 import {NewDefinitionCommand} from "./commands/new-definition.command";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'api-editor',
-    templateUrl: 'editor.component.html',
-    styleUrls: ['editor.component.css'],
+    selector: "api-editor",
+    templateUrl: "editor.component.html",
+    styleUrls: ["editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
 export class ApiEditorComponent {

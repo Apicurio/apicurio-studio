@@ -15,46 +15,55 @@
  * limitations under the License.
  */
 
-import {Component, Inject, EventEmitter, Output} from '@angular/core';
+import {Component, Inject, EventEmitter, Output} from "@angular/core";
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'newapi-form',
-    templateUrl: 'newapi-form.component.html',
-    styleUrls: ['newapi-form.component.css']
+    selector: "addapi-form",
+    templateUrl: "add-form.component.html",
+    styleUrls: ["add-form.component.css"]
 })
-export class NewApiFormComponent {
+export class AddApiFormComponent {
 
-    @Output() onCreateApi = new EventEmitter<Api>();
+    @Output() onAddApi = new EventEmitter<Api>();
 
-    repositoryTypes: string[];
-    model: Api;
-    creatingApi: boolean;
+    model: string;
     discoveringApi: boolean;
+    addingApi: boolean;
     dragging: boolean;
+    error: string;
 
     /**
      * Constructor.
      * @param apis
      */
     constructor(@Inject(IApisService) private apis: IApisService) {
-        this.repositoryTypes = apis.getSupportedRepositoryTypes();
-        this.model = new Api();
-        this.model.repositoryResource.repositoryType = this.repositoryTypes[0];
-        this.creatingApi = false;
-        this.discoveringApi = false;
+        this.model = null;
+        this.addingApi = false;
         this.dragging = false;
+        this.error = null;
     }
 
     /**
-     * Called when the user clicks the "Create API" submit button on the form.
+     * Called when the user clicks the "Add API" submit button on the form.
      */
-    public createApi(): void {
-        this.creatingApi = true;
-        this.onCreateApi.emit(this.model);
+    public addApi(): void {
+        this.error = null;
+        this.discoveringApi = true;
+        this.apis.discoverApi(this.model).then(api => {
+            if (!api.name) {
+                api.name = "Unknown API";
+            }
+            this.addingApi = true;
+            this.onAddApi.emit(api);
+        }).catch( reason => {
+            this.discoveringApi = false;
+            this.error = reason;
+        });
+        this.addingApi = true;
     }
 
     public onDragOver(event: DragEvent): void {
@@ -70,11 +79,7 @@ export class NewApiFormComponent {
         event.preventDefault();
 
         if (dropData && dropData.startsWith("http")) {
-            this.discoveringApi = true;
-            this.apis.discoverApi(dropData).then(api => {
-                this.model = api;
-                this.discoveringApi = false;
-            }).catch( reason => alert(reason) );
+            this.model = dropData;
         }
     }
 

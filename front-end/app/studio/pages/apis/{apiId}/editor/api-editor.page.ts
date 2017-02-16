@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit, Inject} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";
 
 @Component({
     moduleId: module.id,
-    selector: 'api-editor-page',
-    templateUrl: 'api-editor.page.html',
-    styleUrls: ['api-editor.page.css']
+    selector: "api-editor-page",
+    templateUrl: "api-editor.page.html",
+    styleUrls: ["api-editor.page.css"]
 })
 export class ApiEditorPageComponent implements OnInit {
 

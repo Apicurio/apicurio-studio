@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation, Output, EventEmitter} from '@angular/core';
+import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
 import {OasDocument, Oas20Document} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
@@ -25,8 +25,8 @@ import {ChangeDescriptionCommand} from "../commands/change-description.command";
 
 @Component({
     moduleId: module.id,
-    selector: 'main-form',
-    templateUrl: 'main-form.component.html',
+    selector: "main-form",
+    templateUrl: "main-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class MainFormComponent {

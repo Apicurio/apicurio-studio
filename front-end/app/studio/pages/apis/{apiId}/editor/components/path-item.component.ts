@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 
 
 @Component({
     moduleId: module.id,
-    selector: '[path-item]',
-    templateUrl: 'path-item.component.html',
+    selector: "[path-item]",
+    templateUrl: "path-item.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class PathItemComponent {

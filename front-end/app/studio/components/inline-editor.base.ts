@@ -18,7 +18,7 @@
 import {
     EventEmitter, Output, Input, AfterViewInit, ViewChildren, QueryList, ElementRef,
     ViewChild, HostListener
-} from '@angular/core';
+} from "@angular/core";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Subscription} from "rxjs";
 
@@ -135,7 +135,7 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
             this.onCancel();
         }
     }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from '@angular/core';
+import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
 import {
     Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
     Oas20Document, Oas20Schema
@@ -36,8 +36,8 @@ import {ChangeResponseTypeCommand} from "../commands/change-response-type.comman
 
 @Component({
     moduleId: module.id,
-    selector: 'operation-form',
-    templateUrl: 'operation-form.component.html',
+    selector: "operation-form",
+    templateUrl: "operation-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class OperationFormComponent {
@@ -46,8 +46,8 @@ export class OperationFormComponent {
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild('addQueryParamModal') public addQueryParamModal: ModalDirective;
-    @ViewChild('addResponseModal') public addResponseModal: ModalDirective;
+    @ViewChild("addQueryParamModal") public addQueryParamModal: ModalDirective;
+    @ViewChild("addResponseModal") public addResponseModal: ModalDirective;
     protected modals: any = {
         addQueryParam: {},
         addResponse: {}
@@ -146,7 +146,7 @@ export class OperationFormComponent {
             return [];
         }
         return this.operation.parameters.filter((value) => {
-            return value.in === 'query';
+            return value.in === "query";
         }).sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
@@ -157,7 +157,7 @@ export class OperationFormComponent {
             return [];
         }
         return this.operation.parameters.filter((value) => {
-            return value.in === 'header';
+            return value.in === "header";
         });
     }
 

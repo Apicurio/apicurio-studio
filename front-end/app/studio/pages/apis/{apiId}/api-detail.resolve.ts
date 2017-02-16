@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Injectable, Inject} from '@angular/core';
-import {Resolve, ActivatedRouteSnapshot} from '@angular/router';
+import {Injectable, Inject} from "@angular/core";
+import {Resolve, ActivatedRouteSnapshot} from "@angular/router";
 import {Api} from "../../../models/api.model";
 import {IApisService} from "../../../services/apis.service";
 

@@ -24,8 +24,8 @@ import {DeleteNodeCommand, DeletePathCommand} from "../commands/delete.command";
 
 @Component({
     moduleId: module.id,
-    selector: 'path-form',
-    templateUrl: 'path-form.component.html',
+    selector: "path-form",
+    templateUrl: "path-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class PathFormComponent {

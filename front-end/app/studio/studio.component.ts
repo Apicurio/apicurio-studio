@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from "@angular/core";
 import {IAuthenticationService} from "./services/auth.service";
 
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/toPromise';
+import "rxjs/add/observable/throw";
+import "rxjs/add/operator/catch";
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/distinctUntilChanged";
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/switchMap";
+import "rxjs/add/operator/toPromise";
 
 @Component({
     moduleId: module.id,
-    selector: 'api-design-studio',
-    templateUrl: 'studio.component.html',
-    styleUrls: [ 'studio.component.css' ]
+    selector: "api-design-studio",
+    templateUrl: "studio.component.html",
+    styleUrls: [ "studio.component.css" ]
 })
 export class StudioComponent implements OnInit {
 

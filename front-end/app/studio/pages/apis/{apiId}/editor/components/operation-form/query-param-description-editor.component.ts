@@ -17,14 +17,14 @@
 
 import {
     Component, ViewEncapsulation
-} from '@angular/core';
+} from "@angular/core";
 import {TextInputEditorComponent} from "../../../../../../components/inline-editor.base";
 
 
 @Component({
     moduleId: module.id,
-    selector: 'description-editor-qp',
-    templateUrl: 'query-param-description-editor.component.html',
+    selector: "description-editor-qp",
+    templateUrl: "query-param-description-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class DescriptionEditorQPComponent extends TextInputEditorComponent {

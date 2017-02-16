@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 
 
 @Component({
     moduleId: module.id,
-    selector: '[response-item]',
-    templateUrl: 'response-item.component.html',
+    selector: "[response-item]",
+    templateUrl: "response-item.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class ResponseItemComponent {

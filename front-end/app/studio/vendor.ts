@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 
-import 'core-js-shim';
-import 'zone';
-import 'reflect';
+import "core-js-shim";
+import "zone";
+import "reflect";

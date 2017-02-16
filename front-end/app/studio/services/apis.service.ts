@@ -16,7 +16,7 @@
  */
 
 import {OpaqueToken} from "@angular/core";
-import {Observable} from 'rxjs/Observable';
+import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
@@ -54,13 +54,29 @@ export interface IApisService {
     getRecentApis(): Observable<Api[]>;
 
     /**
-     * Creates a new API with the given information.  This will store the API in whatever
-     * storage is used by this service impl.  It will return a Promise that the caller can
-     * use to be notified when the API has been successfully stored.
+     * Creates a new API with the given information.  The assumption is that no OpenAPI
+     * document yet exists at the indicated repository location, and thus the API Service
+     * must create it.
+     *
+     * This will store the API in whatever storage is used by this service impl.  It will
+     * return a Promise that the caller can use to be notified when the API has been successfully
+     * stored.
      * @param api
      * @return Promise<Api>
      */
     createApi(api: Api): Promise<Api>;
+
+    /**
+     * Adds an existing API to the Studio.  The assumption with this call is that the
+     * API's OpenAPI document already exists in the source repository.  All we're doing
+     * here is verifying that and then tracking it in the studio.
+     *
+     * This will store the API in whatever storage is used by this service impl.  It will
+     * return a Promise that the caller can use to be notified when the API has been successfully
+     * stored.
+     * @param api
+     */
+    addApi(api: Api): Promise<Api>;
 
     /**
      * Called to delete an API.  This is done asynchronously and thus returns a promise.
@@ -86,6 +102,16 @@ export interface IApisService {
      */
     getCollaborators(api: Api): Promise<ApiCollaborators>;
 
+    /**
+     * Gets a list of all organizations the logged in user belongs to.
+     */
+    getOrganizations(): Promise<string[]>;
+
+    /**
+     * Gets all of the repositories found in a given organization.
+     * @param organization
+     */
+    getRepositories(organization: string): Promise<string[]>;
 }
 
 export const IApisService = new OpaqueToken("IApisService");

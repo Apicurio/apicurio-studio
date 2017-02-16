@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Injectable, Inject} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import {Injectable, Inject} from "@angular/core";
+import {CanActivate, Router} from "@angular/router";
 import {IAuthenticationService} from "../services/auth.service";
 import {Subscription} from "rxjs";
 

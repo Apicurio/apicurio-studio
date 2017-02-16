@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 
 
 @Component({
     moduleId: module.id,
-    selector: '[definition-item]',
-    templateUrl: 'definition-item.component.html',
+    selector: "[definition-item]",
+    templateUrl: "definition-item.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class DefinitionItemComponent {

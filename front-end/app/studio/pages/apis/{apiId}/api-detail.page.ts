@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit, Inject} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
@@ -24,9 +24,9 @@ import {ApiCollaborators} from "../../../models/api-collaborators";
 
 @Component({
     moduleId: module.id,
-    selector: 'api-detail-page',
-    templateUrl: 'api-detail.page.html',
-    styleUrls: ['api-detail.page.css']
+    selector: "api-detail-page",
+    templateUrl: "api-detail.page.html",
+    styleUrls: ["api-detail.page.css"]
 })
 export class ApiDetailPageComponent implements OnInit {
 
@@ -73,7 +73,7 @@ export class ApiDetailPageComponent implements OnInit {
      */
     public getResourceUrlLabel(): string {
         let sep: string = "";
-        if (!this.api.repositoryResource.resourceName.startsWith('/')) {
+        if (!this.api.repositoryResource.resourceName.startsWith("/")) {
             sep = "/";
         }
         return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
@@ -85,7 +85,7 @@ export class ApiDetailPageComponent implements OnInit {
      */
     public getResourceUrlHref(): string {
         let sep: string = "";
-        if (!this.api.repositoryResource.resourceName.startsWith('/')) {
+        if (!this.api.repositoryResource.resourceName.startsWith("/")) {
             sep = "/";
         }
         return this.api.repositoryResource.repositoryUrl + "/blob/master" + sep + this.api.repositoryResource.resourceName;

@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import {NgModule} from "@angular/core";
+import {BrowserModule} from "@angular/platform-browser";
+import {FormsModule} from "@angular/forms";
+import {HttpModule} from "@angular/http";
 
 /* Bootstrap */
-import { ModalModule } from 'ng2-bootstrap';
+import { ModalModule } from "ng2-bootstrap";
 
 /* ACE Editor */
-import { AceEditorComponent } from 'ng2-ace-editor';
+import { AceEditorComponent } from "ng2-ace-editor";
 
 /* Top level app stuff */
-import {StudioComponent} from './studio.component';
-import {StudioRouting} from './studio.routing';
+import {StudioComponent} from "./studio.component";
+import {StudioRouting} from "./studio.routing";
 
 /* Service Providers */
 import {ApisServiceProvider} from "./services/apis.service.provider";
@@ -50,14 +50,16 @@ import {BreadcrumbComponent} from "./components/breadcrumbs/breadcrumb.component
 
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
-import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
+import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
 import {ApisPageComponent} from "./pages/apis/apis.page";
-import {NewApiPageComponent} from "./pages/apis/newapi/newapi.page";
+import {CreateApiPageComponent} from "./pages/apis/create/create.page";
+import {AddApiPageComponent} from "./pages/apis/add/add.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 /* Page Components */
-import {NewApiFormComponent} from "./pages/apis/newapi/newapi-form.component";
+import {CreateApiFormComponent} from "./pages/apis/create/create-form.component";
+import {AddApiFormComponent} from "./pages/apis/add/add-form.component";
 import {ApisListComponent} from "./pages/apis/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
@@ -87,8 +89,9 @@ import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/de
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot()],
-    declarations: [StudioComponent, DashboardPageComponent, ApisPageComponent, NewApiPageComponent, LoginPageComponent,
-        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, NewApiFormComponent,
+    declarations: [
+        StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent, LoginPageComponent,
+        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, CreateApiFormComponent, AddApiFormComponent,
         ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,

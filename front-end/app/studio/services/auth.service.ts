@@ -16,7 +16,7 @@
  */
 
 import {OpaqueToken} from "@angular/core";
-import {Observable} from 'rxjs/Observable';
+import {Observable} from "rxjs/Observable";
 
 import {User} from "../models/user.model";
 import {Headers} from "@angular/http";

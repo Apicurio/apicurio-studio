@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import {ElementRef, HostListener, Directive, AfterContentChecked} from '@angular/core';
+import {ElementRef, HostListener, Directive, AfterContentChecked} from "@angular/core";
 
 @Directive({
-    selector: 'textarea[autosize]'
+    selector: "textarea[autosize]"
 })
 export class TextAreaAutosize implements AfterContentChecked {
 
-    @HostListener('input', ['$event.target'])
+    @HostListener("input", ["$event.target"])
     onInput(textArea: HTMLTextAreaElement): void {
         this.adjust();
     }
@@ -34,8 +34,8 @@ export class TextAreaAutosize implements AfterContentChecked {
     }
 
     adjust(): void{
-        this.element.nativeElement.style.overflow = 'hidden';
-        this.element.nativeElement.style.height = 'auto';
+        this.element.nativeElement.style.overflow = "hidden";
+        this.element.nativeElement.style.height = "auto";
         this.element.nativeElement.style.height = this.element.nativeElement.scrollHeight + "px";
     }
 }

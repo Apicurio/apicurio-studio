@@ -35,9 +35,13 @@
                         <span class="pficon pficon pficon-add-circle-o"></span>
                     </div>
                     <h1>No APIs Found</h1>
-                    <p>We couldn't find any APIs for you - it's likely that you have not yet created/added any APIs to the studio.  Not to worry, we can do that now!</p>
+                    <p>
+                        We couldn't find any APIs for you - it's likely that you have not yet created/added any APIs to the studio.
+                        Not to worry, we can do that now!
+                    </p>
                     <div class="blank-slate-pf-main-action">
-                        <a routerLink="/apis/newapi" class="btn btn-primary btn-lg">Create an API</a>
+                        <a routerLink="/apis/create" class="btn btn-primary btn-lg">Create New API</a>
+                        <a routerLink="/apis/add" class="btn btn-primary btn-lg" style="margin-left: 10px">Add Existing API</a>
                     </div>
                 </div>
             </div>
@@ -60,8 +64,11 @@
                             <span class="fa fa-list"></span><span>List All</span>
                         </a>
                         <span></span>
-                        <a routerLink="/apis/newapi" class="pull-right">
-                            <span class="pficon pficon-add-circle-o"></span><span>Create an API</span>
+                        <a routerLink="/apis/create" class="pull-right" style="margin-left: 15px">
+                            <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
+                        </a>
+                        <a routerLink="/apis/add" class="pull-right" style="margin-left: 15px">
+                            <span class="pficon pficon-add-circle-o"></span><span>Add Existing API</span>
                         </a>
                     </p>
                 </div>

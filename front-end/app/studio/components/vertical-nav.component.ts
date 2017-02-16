@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from '@angular/core';
-import {Router, NavigationStart} from '@angular/router';
+import {Component, OnInit, Inject} from "@angular/core";
+import {Router, NavigationStart} from "@angular/router";
 import {IApisService} from "../services/apis.service";
 
 /**
@@ -29,9 +29,9 @@ enum VerticalNavSubMenuType {
 
 @Component({
     moduleId: module.id,
-    selector: 'vertical-nav',
-    templateUrl: 'vertical-nav.component.html',
-    styleUrls: ['vertical-nav.component.css']
+    selector: "vertical-nav",
+    templateUrl: "vertical-nav.component.html",
+    styleUrls: ["vertical-nav.component.css"]
 })
 export class VerticalNavComponent implements OnInit {
 

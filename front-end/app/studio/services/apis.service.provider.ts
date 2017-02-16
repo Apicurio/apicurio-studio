@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Http} from '@angular/http';
+import {Http} from "@angular/http";
 
 import {LocalApisService} from "./apis-local.service";
 import {IApisService} from "./apis.service";

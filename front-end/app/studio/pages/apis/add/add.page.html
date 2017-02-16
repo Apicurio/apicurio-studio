@@ -1,0 +1,35 @@
+<breadcrumbs>
+    <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+    <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+    <li breadcrumb label="Add API" icon="plus" class="active"></li>
+</breadcrumbs>
+<div class="container-fluid">
+    <div class="addapi-form row">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What is this page?</strong>
+                <p style="line-height: 18px">
+                    Here you can add an existing API to the Studio by telling us where the API's OpenAPI document is
+                    located.  Simply provide the GitHub URL of your OpenAPI document and we'll do the rest!
+                </p>
+            </div>
+        </div>
+        <div class="col-md-7">
+
+            <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true" title="OK, I got it!">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <span class="pficon pficon-info"></span>
+                <strong>What do I do?</strong>
+                <p style="line-height: 18px">
+                    Simply copy/paste (<strong>or drag and drop!</strong>) the GitHub URL of your existing OpenAPI document
+                    from your browser into the form and then click "Add API".  Easy peasy, lemon squeezy!
+                </p>
+            </div>
+
+            <addapi-form (onAddApi)="onAddApi($event)" #addApiForm></addapi-form>
+        </div>
+    </div>
+</div>

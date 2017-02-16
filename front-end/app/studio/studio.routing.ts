@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import {ModuleWithProviders} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import {ModuleWithProviders} from "@angular/core";
+import {Routes, RouterModule} from "@angular/router";
 
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
-import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
+import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
 import {ApisPageComponent} from "./pages/apis/apis.page";
-import {NewApiPageComponent} from "./pages/apis/newapi/newapi.page";
+import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 
 /* Resolvers */
@@ -31,39 +31,44 @@ import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
+import {AddApiPageComponent} from "./pages/apis/add/add.page";
 
 const _studioRoutes: any[] = [
     {
-        path: '',
+        path: "",
         component: DashboardPageComponent,
         resolve: {
             recentApis: RecentApisResolve
         }
     },
     {
-        path: 'apis',
+        path: "apis",
         component: ApisPageComponent
     },
     {
-        path: 'apis/newapi',
-        component: NewApiPageComponent
+        path: "apis/create",
+        component: CreateApiPageComponent
     },
     {
-        path: 'apis/:apiId',
+        path: "apis/add",
+        component: AddApiPageComponent
+    },
+    {
+        path: "apis/:apiId",
         component: ApiDetailPageComponent,
         resolve: {
             api: ApiResolve
         }
     },
     {
-        path: 'apis/:apiId/editor',
+        path: "apis/:apiId/editor",
         component: ApiEditorPageComponent,
         resolve: {
             apiDefinition: ApiDefinitionResolve
         }
     },
     {
-        path: 'login',
+        path: "login",
         component: LoginPageComponent
     }
 ];

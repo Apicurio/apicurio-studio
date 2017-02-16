@@ -18,8 +18,8 @@
 import {IAuthenticationService} from "./auth.service";
 import {Http, Headers, RequestOptions} from "@angular/http";
 import {User} from "../models/user.model";
-import {Observable} from 'rxjs/Observable';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractGithubService} from "./github";
 
 const USER_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.user";
@@ -132,7 +132,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
         if (twoFactorToken) {
             let basicAuthHeader: string = "Basic " + btoa(loginName + ":" + password);
             let url: string = this.endpoint("/authorizations");
-            let headers = new Headers({'Content-Type': 'application/json', 'Authorization': basicAuthHeader, 'X-GitHub-OTP': twoFactorToken});
+            let headers = new Headers({"Content-Type": "application/json", "Authorization": basicAuthHeader, "X-GitHub-OTP": twoFactorToken});
             let options = new RequestOptions({headers: headers});
 
             return this.http.post(url, {
@@ -234,7 +234,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      */
     private fetchAuthenticatedUser(authHeader: string): Promise<User> {
         let url: string = this.endpoint("/user");
-        let headers = new Headers({'Content-Type': 'application/json', 'Authorization': authHeader});
+        let headers = new Headers({"Content-Type": "application/json", "Authorization": authHeader});
         let options = new RequestOptions({headers: headers});
 
         console.info("[GithubAuthenticationService] Fetching authenticated user information.");

@@ -22,7 +22,8 @@
                     <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" data-toggle="modal" data-target="#confirmDeleteModal">Delete</button>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-primary" [routerLink]="['newapi']">New API</a>
+                    <a class="btn btn-primary" [routerLink]="['create']">Create New API</a>
+                    <a class="btn btn-primary" [routerLink]="['add']">Add Existing API</a>
                 </div>
                 <div class="form-group toolbar-pf-view-selector">
                     <ul class="list-inline">

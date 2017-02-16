@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Observable} from 'rxjs/Observable';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {IApisService}   from "./apis.service";
 import {Api, ApiDefinition} from "../models/api.model";
@@ -24,6 +24,7 @@ import {ApiCollaborators, ApiCollaborator} from "../models/api-collaborators";
 import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
 import {AbstractGithubService} from "./github";
+import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
@@ -107,7 +108,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @return {string[]}
      */
     public getSupportedRepositoryTypes(): string[] {
-        return ["Github"];
+        return ["GitHub"];
     }
 
     /**
@@ -132,6 +133,55 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @return {Promise<Api>}
      */
     public createApi(api: Api): Promise<Api> {
+        console.info("[LocalApisService] Creating the API in GitHub");
+        let library: OasLibraryUtils = new OasLibraryUtils();
+        let oaiDoc: Oas20Document = <Oas20Document>library.createDocument("2.0");
+        oaiDoc.info = oaiDoc.createInfo();
+        oaiDoc.info.title = api.name;
+        oaiDoc.info.description = api.description;
+        let oaiDocObj: any = library.writeNode(oaiDoc);
+        let oaiContent: string = JSON.stringify(oaiDocObj);
+        let b64Content: string = btoa(oaiContent);
+        let commitMessage: string = "Initial creation of API: " + api.name;
+
+        console.info("\toaiContent: %s", oaiContent);
+
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
+        let resName: string = api.repositoryResource.resourceName;
+        if (resName.startsWith("/")) {
+            resName = resName.substr(1);
+        }
+        let createFileUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
+            owner: gri.org,
+            repo: gri.repo,
+            path: resName
+        });
+        let headers: Headers = new Headers({ "Accept": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+        let body: any = {
+            message: commitMessage,
+            content: b64Content
+        }
+
+        console.info("\tURL: %s", createFileUrl);
+        console.info("\tbody: %o", body);
+
+        return this.http.put(createFileUrl, body, options).map( response => {
+            return api;
+        }).flatMap( api => {
+            return this.addApi(api);
+        }).toPromise();
+    }
+
+    /**
+     * Adds an API based on the provided meta-data.
+     * @param api
+     * @return {Promise<Api>}
+     */
+    public addApi(api: Api): Promise<Api> {
         // Generate a new ID for the Api
         api.id = String(this.apiIdCounter++);
         // Push the new Api onto the list
@@ -232,7 +282,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         });
         let rval: ApiCollaborators = new ApiCollaborators();
 
-        let headers: Headers = new Headers({ 'Accept': 'application/json' });
+        let headers: Headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
         let searchParams: URLSearchParams = new URLSearchParams();
         searchParams.set("path", path);
@@ -281,6 +331,57 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
     }
 
     /**
+     * Retrieves all of the organizations for the logged-in user.
+     * @return {undefined}
+     */
+    public getOrganizations(): Promise<string[]> {
+        console.info("[LocalApisService] Getting organization list.");
+        let orgsUrl: string = this.endpoint("/user/orgs");
+
+        let headers: Headers = new Headers({ "Accept": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+
+        return this.http.get(orgsUrl, options).map( response => {
+            let orgs: any[] = response.json();
+            let orgNames: string[] = [];
+            for (let org of orgs) {
+                orgNames.push(org.login);
+            }
+            return orgNames;
+        }).toPromise();
+    }
+
+    /**
+     * Retrieves all of the repositories within a given organization.
+     * @param organization
+     * @return {undefined}
+     */
+    public getRepositories(organization: string): Promise<string[]> {
+        console.info("[LocalApisService] Getting repository list for org: %s", organization);
+        let reposUrl: string = this.endpoint("/orgs/:org/repos", {
+            org: organization
+        });
+
+        let headers: Headers = new Headers({ "Accept": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+
+        return this.http.get(reposUrl, options).map( response => {
+            let repos: any[] = response.json();
+            let repoNames: string[] = [];
+            for (let repo of repos) {
+                repoNames.push(repo.name);
+            }
+            return repoNames;
+        }).toPromise();
+    }
+
+    /**
      * Discover details about an API by parsing the URL and then querying github (assuming it's a valid
      * github URL) for the details of the API.  This entails grabbing the full content of the API definition,
      * parsing it, and extracting the name and description.  If these are not found, name and description
@@ -292,11 +393,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         if (!apiUrl) {
             return Promise.reject<Api>("Invalid API url.");
         }
-        if (!apiUrl.startsWith('http')) {
+        if (!apiUrl.startsWith("http")) {
             return Promise.reject<Api>("Invalid API url.");
         }
 
-        var parser = document.createElement('a');
+        var parser = document.createElement("a");
         parser.href = apiUrl;
 
         if (parser.hostname != "github.com") {
@@ -318,7 +419,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         }
 
         let api: Api = new Api();
-        api.repositoryResource.repositoryType = "Github";
+        api.repositoryResource.repositoryType = "GitHub";
         api.repositoryResource.repositoryUrl = "http://github.com/" + pathItems.shift() + "/" + pathItems.shift();
         if (pathItems.length >= 3 && pathItems[0] === "blob") {
             // Remove the "blob" item
@@ -327,7 +428,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             pathItems.shift();
 
             // Set the resource path/name
-            api.repositoryResource.resourceName = "/" + pathItems.join('/');
+            api.repositoryResource.resourceName = "/" + pathItems.join("/");
 
             // Resolve the name and description from this (full) repository resource
             return this.resolveApiInfo(api);
@@ -352,7 +453,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             repo: gri.repo,
             path: path
         });
-        let headers = new Headers({ 'Accept': 'application/json' });
+        let headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
         let options = new RequestOptions({ headers: headers });
         return this.http.get(contentUrl, options).toPromise().then( response => {
@@ -385,7 +486,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             repo: gri.repo,
             path: path
         });
-        let headers = new Headers({ 'Accept': 'application/json' });
+        let headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
         let options = new RequestOptions({ headers: headers });
         console.info("Loading spec content from github @ URL: %s", contentUrl);

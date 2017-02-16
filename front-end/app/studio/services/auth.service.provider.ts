@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Http} from '@angular/http';
+import {Http} from "@angular/http";
 
 import {IAuthenticationService} from "./auth.service";
 import {GithubAuthenticationService} from "./auth-github.service";

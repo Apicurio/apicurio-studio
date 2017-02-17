@@ -1,7 +1,7 @@
 <span *ngIf="editing !== true" class="api-item-title" [class.empty]="isEmpty()"
       (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</span>
-<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
-         [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
+<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverTop()" [style.left]="hoverLeft()"
+         [style.width]="hoverWidth()" [style.height]="hoverHeight()" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">
     <div class="overlay-area"></div>
     <div class="overlay-actions">
@@ -12,15 +12,15 @@
     <form #editform="ngForm" *ngIf="editing === true" name="api-summary-editor-form" class="api-summary-editor-form api-inline-editor-form"
           (submit)="onSave()">
         <input #newvalue required [(ngModel)]="evalue" type="text" class="form-control api-item-editor api-summary-editor api-item-title"
-               name="summary-editor" [style.width]="hoverDims.width" [style.height]="hoverDims.height + 2"
+               name="summary-editor" [style.width]="hoverWidth()" [style.height]="hoverDims.height + 2"
                (keypress)="onInputKeypress($event)" (focus)="onInputFocus(true)" (blur)="onInputFocus(false)" (mouseenter)="onInputIn(true)"
                (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)">
         <div class="edit-overlay" *ngIf="editing" [class.hover]="inputHover" [class.focus]="inputFocus">
              <div class="overlay-actions"
-             ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xm btn-primary" type="submit"
-             ><span class="fa fa-check"></span></button
-             ><a title="Cancel changes." class="overlay-action btn btn-sm btn-default" (click)="onCancel()"
-             ><span class="fa fa-close"></span></a></div>
+             ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xs btn-primary" type="submit"
+             ><span class="fa fa-fw fa-check"></span></button
+             ><button title="Cancel changes." class="overlay-action btn btn-xs btn-default" (click)="onCancel()"
+             ><span class="fa fa-fw fa-close"></span></button></div>
         </div>
     </form>
 </span>

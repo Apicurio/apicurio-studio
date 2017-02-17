@@ -80,6 +80,22 @@ export abstract class AbstractInlineEditor<T> {
         });
     }
 
+    public hoverTop(): string {
+        return this.hoverDims.top + "px";
+    }
+
+    public hoverLeft(): string {
+        return this.hoverDims.left + "px";
+    }
+
+    public hoverWidth(): string {
+        return this.hoverDims.width + "px";
+    }
+
+    public hoverHeight(): string {
+        return this.hoverDims.height + "px";
+    }
+
     public onMouseOut(): void {
         if (this.editing) {
             return;

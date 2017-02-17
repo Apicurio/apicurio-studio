@@ -1,7 +1,7 @@
 <div *ngIf="editing !== true" class="api-description api-item-description" [class.empty]="isEmpty()"
      (mouseenter)="onMouseIn($event)" (mouseleave)="onMouseOut()">{{ displayValue() }}</div>
-<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverDims.top" [style.left]="hoverDims.left"
-         [style.width]="hoverDims.width" [style.height]="hoverDims.height" (mouseleave)="onOverlayOut()"
+<div class="hover-overlay" *ngIf="hovering" [style.top]="hoverTop()" [style.left]="hoverLeft()"
+         [style.width]="hoverWidth()" [style.height]="hoverHeight()" (mouseleave)="onOverlayOut()"
          title="Click to edit" (click)="onStartEditing()">
     <div class="overlay-area"></div>
     <div class="overlay-actions">
@@ -18,10 +18,10 @@
                   (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)"></textarea>
         <div class="edit-overlay" *ngIf="editing" [class.hover]="inputHover" [class.focus]="inputFocus">
              <div class="overlay-actions"
-             ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xm btn-primary" type="submit"
-             ><span class="fa fa-check"></span></button
-             ><a title="Cancel changes." class="overlay-action btn btn-sm btn-default" (click)="onCancel()"
-             ><span class="fa fa-close"></span></a></div>
+             ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xs btn-primary" type="submit"
+             ><span class="fa fa-fw fa-check"></span></button
+             ><button title="Cancel changes." class="overlay-action btn btn-xs btn-default" (click)="onCancel()"
+             ><span class="fa fa-fw fa-close"></span></button></div>
         </div>
     </form>
 </span>

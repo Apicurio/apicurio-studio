@@ -55,6 +55,7 @@ export class CreateApiPageComponent implements OnInit {
             this.router.navigate(link);
         }).catch( error => {
             console.error("[CreateApiPageComponent] Error saving API: %o", error);
+            // TODO do something interesting with this error!
         })
     }
 

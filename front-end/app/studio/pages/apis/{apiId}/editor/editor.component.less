@@ -213,6 +213,7 @@
   -o-transition: opacity 500ms;
   transition: opacity 500ms;
   opacity: 0;
+  z-index: 100;
 }
 .api-editor .editor-detail .hover-overlay:hover {
   opacity: 100;
@@ -249,10 +250,13 @@
   -ms-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  z-index: 150;
 }
 .api-editor .editor-detail .edit-overlay.focus {
 }
 .api-editor .editor-detail .edit-overlay.hover {
+}
+.api-editor .editor-detail .edit-overlay .overlay-actions button {
 }
 .api-editor .editor-detail .edit-overlay .overlay-action {
   margin: 2px;
@@ -273,7 +277,6 @@
   line-height: 44px;
   height: 44px;
   text-transform: uppercase;
-  padding-top: 15px;
 }
 .api-editor .editor-detail .detail-title .detail-icon .label {
   border-radius: 2px;
@@ -319,18 +322,21 @@
   padding-right: 15px;
 }
 
-.api-editor .editor-detail .detail-content .info-section h1 {
+.api-editor .editor-detail .detail-content .info-section .api-title-and-version {
   margin-top: 10px;
+  margin-bottom: 5px;
 }
 
-.api-editor .editor-detail .detail-content .info-section .api-title {
+.api-editor .editor-detail .detail-content .info-section .api-title-and-version .api-title {
+  font-size: 26px;
+  font-weight: 300;
 }
-.api-editor .editor-detail .detail-content .info-section span.api-version {
+.api-editor .editor-detail .detail-content .info-section .api-title-and-version span.api-version {
 }
-.api-editor .editor-detail .detail-content .info-section .api-version {
+.api-editor .editor-detail .detail-content .info-section .api-title-and-version .api-version {
   font-size: 20px;
 }
-.api-editor .editor-detail .detail-content .info-section div.api-description {
+.api-editor .editor-detail .detail-content .info-section .api-title-and-version div.api-description {
   margin-top: 15px;
   margin-bottom: 15px;
   margin-right: 30px;

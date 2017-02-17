@@ -134,7 +134,7 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let param of queryParameters()">
-                                    <td class="parameter">{{ param.name }}</td>
+                                    <td class="parameter query-parameter">{{ param.name }}</td>
                                     <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
                                            (onChange)="changeQueryParamDescription(param, $event)"
                                            [value]="paramDescription(param)"></description-editor-qp></td>

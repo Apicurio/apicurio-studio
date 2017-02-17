@@ -354,4 +354,9 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
         this.addResponseModal.hide();
     }
+
+    public isAprilFirst(): boolean {
+        let d: Date = new Date();
+        return d.getMonth() === 3 && d.getDate() === 1;
+    }
 }

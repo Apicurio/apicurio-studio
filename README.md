@@ -11,17 +11,17 @@ new or edit existing API designs (using the OpenAPI specification).
 
 The easiest way to get started with the code is to [create your own fork](http://help.github.com/forking/)
 of this repository, and then clone your fork:
-
+```bash
   $ git clone git@github.com:<you>/apiman-studio.git
   $ cd apiman-studio
   $ git remote add upstream git://github.com/apiman/apiman-studio.git
-
+```
 At any time, you can pull changes from the upstream and merge them onto your master:
-
+```bash
   $ git checkout master               # switches to the 'master' branch
   $ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
   $ git push origin                   # pushes all the updates to your fork, which should be in-sync with 'upstream'
-
+```
 The general idea is to keep your 'master' branch in-sync with the 'upstream/master'.
 
 ## Building apiman-studio
@@ -31,9 +31,9 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 - Java 8+
 
 The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
-
+```bash
   $ mvn clean install
-
+```
 ## Quickstart (i.e. How To Run It)
 
 TBD
@@ -45,28 +45,28 @@ Apiman Studio is open source, and we welcome anybody who wants to participate an
 If you want to fix a bug or make any changes, please log an issue in the [apiman-studio JIRA](http://issues.jboss.org/browse/APISTUDIO) describing the bug
 or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
 a branch for the APISTUDIO-1234 issue:
-
+```bash
   $ git checkout -b apiman-studio-1234
-
+```
 After you're happy with your changes and a full build (with unit tests) runs successfully, commit your
 changes on your topic branch. Then it's time to check for and pull any recent changes that were made in
 the official repository:
-
+```bash
   $ git checkout master               # switches to the 'master' branch
   $ git pull upstream master          # fetches all 'upstream' changes and merges 'upstream/master' onto your 'master' branch
   $ git checkout apiman-studio-1234   # switches to your topic branch
   $ git rebase master                 # reapplies your changes on top of the latest in master
-                                        (i.e., the latest from master will be the new base for your changes)
-
+                                      # (i.e., the latest from master will be the new base for your changes)
+```
 If the pull grabbed a lot of changes, you should rerun your build to make sure your changes are still good.
 You can then either [create patches](http://progit.org/book/ch5-2.html) (one file per commit, saved in `~/apiman-studio-1234`) with
-
+```bash
   $ git format-patch -M -o ~/apiman-studio-1234 orgin/master
-
+```
 and upload them to the JIRA issue, or you can push your topic branch and its changes into your public fork repository
-
+```bash
   $ git push origin apiman-studio-1234         # pushes your topic branch into your public fork of apiman-studio
-
+```
 and [generate a pull-request](http://help.github.com/pull-requests/) for your changes.
 
 We prefer pull-requests, because we can review the proposed changes, comment on them,
@@ -80,8 +80,8 @@ This makes reverting changes easier, and avoids needlessly polluting the reposit
 When you are hacking on some apiman-studio code, we'd really appreciate it if you followed the
 apiman-studio coding standards.  If you're using Eclipse, you can find a code formatter config
 file here:
-
+```
 tools/src/eclipse/apiman-eclipse-formatter.xml
-
+```
 You should be able to import that guy straight into Eclipse by going to
 *Window->Preferences :: Java/Code Style/Formatter*

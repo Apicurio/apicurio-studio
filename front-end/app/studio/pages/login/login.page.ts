@@ -92,9 +92,14 @@ export class LoginPageComponent implements OnInit {
         }).catch( reason => {
             this.authenticating = false;
             this.loginError = reason;
-            let requiresTwoFactor: boolean = reason.indexOf("OTP") != -1;
+            console.info("Reason: %s", reason);
+            let requiresTwoFactor: boolean = reason.indexOf("OTP");
             this.twoFactorEnabled = (this.twoFactorEnabled || requiresTwoFactor);
             this.errorIsTwoFactor = requiresTwoFactor;
+            if (this.errorIsTwoFactor && (this.twoFactorToken ? true : false)) {
+                this.loginError = "Error logging in (invalid two-factor authentication token).";
+                this.errorIsTwoFactor = false;
+            }
         });
     }
 

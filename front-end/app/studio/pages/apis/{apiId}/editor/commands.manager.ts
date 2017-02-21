@@ -16,6 +16,7 @@
  */
 
 import {OasDocument, OasLibraryUtils} from "oai-ts-core";
+import {ObjectUtils} from "../../../../util/common";
 
 /**
  * A base class for all command implementations.
@@ -29,7 +30,7 @@ export abstract class AbstractCommand {
      * @param obj
      */
     protected isNullOrUndefined(obj: any): boolean {
-        return obj === null || obj === undefined;
+        return ObjectUtils.isNullOrUndefined(obj);
     }
 
     /**

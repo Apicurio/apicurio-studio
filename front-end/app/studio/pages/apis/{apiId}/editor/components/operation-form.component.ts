@@ -32,6 +32,7 @@ import {ModalDirective} from "ng2-bootstrap";
 import {NewQueryParamCommand} from "../commands/new-query-param.command";
 import {NewResponseCommand} from "../commands/new-response.command";
 import {ChangeResponseTypeCommand} from "../commands/change-response-type.command";
+import {ObjectUtils} from "../../../../../util/common";
 
 
 @Component({
@@ -232,7 +233,12 @@ export class OperationFormComponent {
     }
 
     public definitionNames(): string[] {
-        return (<Oas20Document>this.operation.ownerDocument()).definitions.getItemNames().sort();
+        let doc: Oas20Document = <Oas20Document>this.operation.ownerDocument();
+        if (ObjectUtils.isNullOrUndefined(doc.definitions)) {
+            return [];
+        } else {
+            return doc.definitions.getItemNames().sort();
+        }
     }
 
     public responseType(response: Oas20Response): Oas20Schema {

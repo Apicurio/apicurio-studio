@@ -18,6 +18,7 @@
 import {Component, ViewEncapsulation, Input} from "@angular/core";
 import {AbstractInlineValueEditor} from "../../../../../../components/inline-editor.base";
 import {Oas20Schema, JsonSchemaType, Oas20Document} from "oai-ts-core";
+import {ObjectUtils} from "../../../../../../util/common";
 
 
 @Component({
@@ -89,6 +90,9 @@ export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema
     }
 
     public definitionNames(): string[] {
+        if (ObjectUtils.isNullOrUndefined(this.document.definitions)) {
+            return [];
+        }
         return this.document.definitions.getItemNames().sort();
     }
 

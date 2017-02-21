@@ -220,13 +220,23 @@ export class ApiEditorComponent {
     /**
      * Called to initialize the model used by the Add Path modal (based on the path selected).
      */
-    public initAddPath(): string {
-        if (this.selectedType === "path") {
-            this.modals.addPath.path = this.selectedItem;
-        } else {
-            this.modals.addPath.path = "";
+    public initAddPath(path?: string): string {
+        if (!path) {
+            if (this.selectedType === "path") {
+                path = this.selectedItem;
+            } else {
+                path = "";
+            }
         }
-        return this.modals.addPath.path;
+        this.modals.addPath.path = path;
+        return path;
+    }
+
+    /**
+     * Called to initialize the definition name (each time the Add Definition dialog is opened).
+     */
+    public initAddDefinition(): void {
+        this.modals.addDefinition.definitionName = "";
     }
 
     /**
@@ -284,6 +294,34 @@ export class ApiEditorComponent {
         if (pathItem) {
             let op: Oas20Operation = pathItem[operation];
             if (op !== null && op !== undefined) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public hasAtLeastOneOperation(path: string): boolean {
+        let pathItem: Oas20PathItem = this.document().paths.pathItem(path);
+        if (pathItem) {
+            if (pathItem.get) {
+                return true;
+            }
+            if (pathItem.put) {
+                return true;
+            }
+            if (pathItem.post) {
+                return true;
+            }
+            if (pathItem.delete) {
+                return true;
+            }
+            if (pathItem.options) {
+                return true;
+            }
+            if (pathItem.head) {
+                return true;
+            }
+            if (pathItem.patch) {
                 return true;
             }
         }

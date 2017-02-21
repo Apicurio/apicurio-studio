@@ -21,7 +21,7 @@
                     <div class="api-path" *ngFor="let pathName of pathNames()"
                             [class.selected]="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation')">
                         <div path-item [path]="pathName" (click)="selectPath(pathName)"></div>
-                        <div class="api-operations" *ngIf="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation')">
+                        <div class="api-operations" *ngIf="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation') && hasAtLeastOneOperation(pathName)">
                             <span *ngIf="hasOperation(pathName, 'get')" class="label label-success"  (click)="selectOperation(selectedItem, 'get')"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'get'">GET</span>
                             <span *ngIf="hasOperation(pathName, 'put')" class="label label-info" (click)="selectOperation(selectedItem, 'put')"
@@ -39,6 +39,13 @@
                             <span>&nbsp;</span>
                         </div>
                     </div>
+                    <div class="alert alert-warning" *ngIf="pathNames().length === 0">
+                        <span class="pficon pficon-warning-triangle-o"></span>
+                        <strong>No Paths Found!</strong>
+                        <span>APIs need at least one path.</span>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addPathModal.show(); initAddPath('/')">Add Now</button>
+                    </div>
                 </div>
             </div>
             <!-- Definitions Section -->
@@ -48,12 +55,20 @@
                         <span class="section-label">Definitions</span>
                     </a>
                     <button class="btn btn-sm btn-default pull-right"
-                            (click)="addDefinitionModal.show()"><span class="fa fa-plus"></span></button>
+                            (click)="addDefinitionModal.show(); initAddDefinition()"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
                     <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
                          (click)="selectDefinition(defName)"
                          [class.selected]="selectedItem === defName && selectedType === 'definition'"></div>
+                    <div class="alert alert-info" *ngIf="definitionNames().length === 0">
+                        <span class="pficon pficon-info"></span>
+                        <strong>None Found</strong>
+                        <span>Reusable types are useful!</span>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px"
+                                (click)="addDefinitionModal.show(); initAddDefinition()">Add Now</button>
+                    </div>
                 </div>
             </div>
             <!-- Responses Section -->
@@ -68,6 +83,13 @@
                     <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"
                          (click)="selectResponse(responseName)"
                          [class.selected]="selectedItem === responseName && selectedType === 'response'"></div>
+                    <div class="alert alert-info" *ngIf="responseNames().length === 0">
+                        <span class="pficon pficon-info"></span>
+                        <strong>None Found</strong>
+                        <span>Share responses across paths.</span>
+                        <span>&nbsp;</span>
+                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px">Add Now</button>
+                    </div>
                 </div>
             </div>
         </div>

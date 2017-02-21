@@ -52,6 +52,10 @@ export class ArrayUtils {
 
 export class ObjectUtils {
 
+    public static isNullOrUndefined(object: any): boolean {
+        return object === undefined || object === null;
+    }
+
     public static objectEquals(x:any, y:any) {
         if (x === null || x === undefined || y === null || y === undefined) { return x === y; }
         // after this just checking type of one would be enough

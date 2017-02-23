@@ -31,6 +31,8 @@ export class ApiEditorPageComponent implements OnInit {
     public apiDefinition: ApiDefinition;
 
     public dataLoaded: Map<string, boolean> = new Map<string, boolean>();
+    protected isDirty: boolean = false;
+    protected isSaving: boolean = false;
 
     /**
      * Constructor.
@@ -49,6 +51,23 @@ export class ApiEditorPageComponent implements OnInit {
             this.apiDefinition = value["apiDefinition"];
             console.info("[ApiEditorPageComponent] API definition resolved successfully.");
         });
+    }
+
+    /**
+     * Called when the API editor indicates a change in "dirtiness".
+     * @param dirty
+     */
+    public onEditorDirty(dirty: boolean): void {
+        this.isDirty = dirty;
+    }
+
+    /**
+     * Called when the user chooses to save the editor changes back to their source repository (e.g. commit
+     * to GitHub).
+     */
+    public saveChange(): void {
+        console.info("[ApiEditorPageComponent] Saving editor changes!");
+        this.isSaving = true;
     }
 
 }

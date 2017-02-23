@@ -22,8 +22,8 @@ import {
 } from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
-import {ChangeParameterTypeCommand} from "../commands/change-parameter-type.command";
-import {ChangePropertyCommand} from "../commands/change-property.command";
+import {ChangeParameterTypeCommand, ChangePathParameterTypeCommand} from "../commands/change-parameter-type.command";
+import {ChangePropertyCommand, ChangePathParameterPropertyCommand} from "../commands/change-property.command";
 import {
     DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
     DeleteResponseCommand
@@ -142,24 +142,27 @@ export class OperationFormComponent {
         }
     }
 
-    public queryParameters(): Oas20Parameter[] {
+    public parameters(paramType: string): Oas20Parameter[] {
         if (!this.operation.parameters) {
             return [];
         }
         return this.operation.parameters.filter((value) => {
-            return value.in === "query";
+            return value.in === paramType;
         }).sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
     }
 
+    public pathParameters(): Oas20Parameter[] {
+        return this.parameters("path");
+    }
+
+    public queryParameters(): Oas20Parameter[] {
+        return this.parameters("query");
+    }
+
     public headerParameters(): Oas20Parameter[] {
-        if (!this.operation.parameters) {
-            return [];
-        }
-        return this.operation.parameters.filter((value) => {
-            return value.in === "header";
-        });
+        return this.parameters("header");
     }
 
     public hasParameters(type: string): boolean {
@@ -180,6 +183,12 @@ export class OperationFormComponent {
     }
 
     public paramType(param: Oas20Parameter): Oas20Schema {
+        if (!ObjectUtils.isNullOrUndefined(param.type)) {
+            let schema: Oas20Schema = new Oas20Schema();
+            schema.type = param.type;
+            schema.format = param.format;
+            return schema;
+        }
         return param.schema;
     }
 
@@ -278,6 +287,23 @@ export class OperationFormComponent {
         this.onCommand.emit(command);
     }
 
+    public changePathParamDescription(param: Oas20Parameter, newParamDescription: string): void {
+        let command: ICommand = new ChangePathParameterPropertyCommand<string>("description", newParamDescription, param);
+        this.onCommand.emit(command);
+    }
+
+    public changePathParamType(param: Oas20Parameter, newParamType: Oas20Schema): void {
+        let type: string = JsonSchemaType[newParamType.type];
+        let isSimpleType: boolean = true;
+        if (!newParamType.type) {
+            isSimpleType = false;
+            type = newParamType.$ref.substr(14);
+        }
+
+        let command: ICommand = new ChangePathParameterTypeCommand(param, type, isSimpleType);
+        this.onCommand.emit(command);
+    }
+
     public changeResponseType(response: Oas20Response, newResponseType: Oas20Schema): void {
         let type: string = JsonSchemaType[newResponseType.type];
         let isSimpleType: boolean = true;
@@ -355,7 +381,6 @@ export class OperationFormComponent {
     }
 
     public addResponse(): void {
-        console.info("Creating response with code %s", this.modals.addResponse.statusCode)
         let command: ICommand = new NewResponseCommand(this.operation, this.modals.addResponse.statusCode);
         this.onCommand.emit(command);
         this.addResponseModal.hide();

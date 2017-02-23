@@ -1,11 +1,12 @@
 #api-vertical-nav {
   position: absolute;
-  left:0;
+  left: 0;
   width: 120px;
   top: 30px;
-  bottom:0;
+  bottom: 0;
   background-color: white;
   overflow: hidden;
+  z-index: 30;
 }
 #api-vertical-nav .api-nav-item {
   color: #666;
@@ -40,17 +41,25 @@
 
 #api-vertical-nav-details {
   position: absolute;
-  left: 120px;
+  left: -160px;
   width: 280px;
   top: 30px;
-  bottom:0;
+  bottom: 0;
   background-color: white;
   border-right: 1px solid #ddd;
   z-index: 20;
   padding: 15px;
+  -webkit-transition: left 200ms;
+  -moz-transition: left 200ms;
+  -ms-transition: left 200ms;
+  -o-transition: left 200ms;
+  transition: left 200ms;
+}
+#api-vertical-nav-details.out {
+  left: 120px;
 }
 #api-vertical-nav-details .api-nav-detail-item h3 {
-  margin-top:0;
+  margin-top: 0;
   padding-bottom: 3px;
   border-bottom: 1px solid #ddd;
 }
@@ -70,9 +79,9 @@
 #api-nav-menu-shade {
   position: absolute;
   left: 120px;
-  right:0;
+  right: 0;
   top: 30px;
-  bottom:0;
+  bottom: 0;
   z-index: 10;
   background-color: rgba(0, 0, 0, .2);
 }
@@ -81,7 +90,7 @@
   position: absolute;
   left: 20px;
   top: 68px;
-  bottom:0;
+  bottom: 0;
   width: 200px;
   z-index: 20;
 }

@@ -35,7 +35,6 @@ export class ApiEditorComponent {
 
     @Input() api: ApiDefinition;
     @Output() onDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChild("addPathModal") public addPathModal: ModalDirective;
     @ViewChild("addDefinitionModal") public addDefinitionModal: ModalDirective;
@@ -201,10 +200,14 @@ export class ApiEditorComponent {
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
             this._commands.undoLastCommand(this.document());
+            if (this._commands.isEmpty()) {
+                this.onDirty.emit(false);
+            }
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
             this._commands.redoLastCommand(this.document());
+            this.onDirty.emit(true);
         }
     }
 
@@ -215,6 +218,7 @@ export class ApiEditorComponent {
     public onCommand(command: ICommand): void {
         console.info("[ApiEditorComponent] Executing a command.");
         this._commands.executeCommand(command, this.document());
+        this.onDirty.emit(true);
     }
 
     /**
@@ -336,6 +340,25 @@ export class ApiEditorComponent {
         this.onCommand(command);
         this.addDefinitionModal.hide();
         this.selectDefinition(this.modals.addDefinition.definitionName);
+    }
+
+    /**
+     * Gets the current API information (content and meta-data) and
+     * @return {ApiDefinition}
+     */
+    public getUpdatedApiDefinition(): ApiDefinition {
+        let updatedApiDef: ApiDefinition = ApiDefinition.fromApi(this.api);
+        if (this.document().info && this.document().info.title) {
+            updatedApiDef.name = this.document().info.title;
+        }
+        if (this.document().info && this.document().info.description) {
+            updatedApiDef.description = this.document().info.description;
+        }
+        updatedApiDef.spec = this._library.writeNode(this.document());
+        updatedApiDef.modifiedOn = new Date();
+        // TODO update the modifiedBy here with the currently logged-in user!
+        //updatedApiDef.modifiedBy = "";
+        return updatedApiDef;
     }
 
 }

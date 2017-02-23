@@ -4,11 +4,13 @@
     </div>
 
     <div id="api-vertical-nav">
-        <div id="api-nav-item-dashboard" class="api-nav-item" [class.active]="isDashboardRoute()" [class.selected]="currentSubMenu === subMenuTypes.Dashboard" (click)="toggleSubMenu(subMenuTypes.Dashboard)">
+        <div id="api-nav-item-dashboard" class="api-nav-item" [class.active]="isDashboardRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Dashboard" (click)="toggleSubMenu(subMenuTypes.Dashboard)">
             <span class="fa fa-fw fa-dashboard"></span>
             <div>Dashboard</div>
         </div>
-        <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()" [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
+        <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
             <span class="fa fa-fw fa-bolt"></span>
             <div>APIs</div>
         </div>
@@ -16,7 +18,7 @@
         </div>
     </div>
 
-    <div id="api-vertical-nav-details" *ngIf="currentSubMenu != subMenuTypes.None">
+    <div id="api-vertical-nav-details" [class.out]="subMenuOut">
         <div id="api-nav-detail-dashboard" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Dashboard">
             <h3>Dashboard</h3>
             <p>Click below to navigate back to the default API Designer dashboard.</p>

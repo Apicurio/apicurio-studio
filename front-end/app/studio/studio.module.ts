@@ -21,7 +21,7 @@ import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 
 /* Bootstrap */
-import { ModalModule } from "ng2-bootstrap";
+import {ModalModule, DropdownModule} from "ng2-bootstrap";
 
 /* ACE Editor */
 import { AceEditorComponent } from "ng2-ace-editor";
@@ -63,6 +63,7 @@ import {AddApiFormComponent} from "./pages/apis/add/add-form.component";
 import {ApisListComponent} from "./pages/apis/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
+import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/api-commit.component";
 
 /** Directives **/
 import {TextAreaAutosize} from "./directives/autosize.directive";
@@ -88,11 +89,11 @@ import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/de
 
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot()],
+    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), DropdownModule.forRoot()],
     declarations: [
         StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent, LoginPageComponent,
         NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, CreateApiFormComponent, AddApiFormComponent,
-        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent,
+        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent, ApiCommitComponent,
         PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,

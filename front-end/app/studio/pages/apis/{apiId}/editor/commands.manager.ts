@@ -114,4 +114,12 @@ export class CommandsManager {
         }
     }
 
+    /**
+     * Returns true if the command stack is empty.
+     * @return {boolean}
+     */
+    public isEmpty(): boolean {
+        return this._commandStack.length === 0;
+    }
+
 }

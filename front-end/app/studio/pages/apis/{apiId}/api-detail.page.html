@@ -1,8 +1,10 @@
-<breadcrumbs>
-    <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
-    <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
-    <li breadcrumb [label]="api.name" icon="bolt" class="active"></li>
-</breadcrumbs>
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+        <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" icon="bolt" class="active"></li>
+    </breadcrumbs>
+</div>
 <div class="container-fluid api-details">
     <div class="row-fluid">
         <!-- Left Column -->

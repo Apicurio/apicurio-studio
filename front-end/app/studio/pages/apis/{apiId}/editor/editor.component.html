@@ -110,7 +110,7 @@
 
 <!-- Add Path Dialog -->
 <div bsModal #addPathModal="bs-modal" class="modal fade" id="addPathModal" tabindex="-1" role="dialog" aria-labelledby="addPathModalLabel"
-     role="dialog" aria-hidden="true" (onShown)="addPathInput.focus(); addPathInput.select()">
+     role="dialog" aria-hidden="true" (onShown)="addPathInput.focus(); addPathInput.selectionStart = addPathInput.selectionEnd = modals.addPath.path.length">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

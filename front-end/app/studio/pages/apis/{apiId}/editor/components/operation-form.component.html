@@ -53,6 +53,37 @@
                     </div>
                 </div>
 
+                <!-- Path Parameters Section -->
+                <div class="section path-parameters-section" *ngIf="hasParameters('path')">
+                    <div class="section-header">
+                        <a data-toggle="collapse" data-target="#path-parameters-section-body">
+                            <span class="section-label">PATH PARAMETERS</span>
+                        </a>
+                    </div>
+                    <div class="section-body collapse in" id="path-parameters-section-body">
+                        <table class="table table-striped api-operation-parameters">
+                            <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th width="60%">Description</th>
+                                <th width="40%">Type</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let param of pathParameters()">
+                                <td class="parameter path-parameter">{{ param.name }}</td>
+                                <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                                                               (onChange)="changePathParamDescription(param, $event)"
+                                                                               [value]="paramDescription(param)"></description-editor-qp></td>
+                                <td class="type"><type-editor-of [document]="param.ownerDocument()"
+                                                                 [value]="paramType(param)" [noValueMessage]="'No Type'"
+                                                                 (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Request Body Section -->
                 <div class="section request-body-section">
                     <div class="section-header">
@@ -66,17 +97,23 @@
                                 [disabled]="!hasBodyParam()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
-                        <div class="alert alert-info" *ngIf="!hasBodyParam()">
-                            <span class="pficon pficon-info"></span>
+
+                        <div class="alert alert-info"
+                             [class.alert-danger]="operation.method() === 'put' || operation.method() === 'post'"
+                             *ngIf="!hasBodyParam()">
+                            <span class="pficon"
+                                  [class.pficon-info]="operation.method() !== 'put' && operation.method() !== 'post'"
+                                  [class.pficon-error-circle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
                             <strong>None Found</strong>
                             <span>No request body has been declared.</span>
                             <button class="btn btn-primary btn-sm pull-right" (click)="createRequestBody()">Add Request Body</button>
                         </div>
+
                         <div *ngIf="hasBodyParam()">
                             <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
-                                <span class="pficon pficon-info"></span>
+                                <span class="pficon pficon-warning-triangle-o"></span>
                                 <strong>Not Recommended</strong>
-                                <span>It is unusual and not recommended to define a request body for a GET operation.</span>
+                                <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
                             </div>
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="requestBodyMenu" data-toggle="dropdown">
@@ -114,7 +151,7 @@
                                 title="Delete all query parameters."
                                 [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
                     </div>
-                    <div class="section-body collapse in" id="parameters-section-body">
+                    <div class="section-body collapse in" id="parameters-section-body" [class.in]="hasParameters('query')">
 
                         <div class="alert alert-info" *ngIf="!hasParameters('query')">
                             <span class="pficon pficon-info"></span>
@@ -165,8 +202,8 @@
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
 
-                        <div class="alert alert-info" *ngIf="!hasResponses()">
-                            <span class="pficon pficon-info"></span>
+                        <div class="alert alert-danger" *ngIf="!hasResponses()">
+                            <span class="pficon pficon-error-circle-o"></span>
                             <strong>None Found</strong>
                             <span>No responses have been declared.</span>
                             <button class="btn btn-primary btn-sm pull-right" (click)="openAddResponseModal()">Add Response</button>

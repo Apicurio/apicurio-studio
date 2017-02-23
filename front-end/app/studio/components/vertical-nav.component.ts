@@ -37,6 +37,7 @@ export class VerticalNavComponent implements OnInit {
 
     public subMenuTypes: any = VerticalNavSubMenuType;
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
+    public subMenuOut: boolean = false;
 
     constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
     }
@@ -45,7 +46,7 @@ export class VerticalNavComponent implements OnInit {
         console.log("Subscribing to router events.");
         this.router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
-                this.currentSubMenu = VerticalNavSubMenuType.None;
+                this.onShadeClick();
             }
         });
     }
@@ -71,7 +72,10 @@ export class VerticalNavComponent implements OnInit {
      * is displayed when a sub-menu is selected).  Clicking the shade makes the sub-menu div go away.
      */
     onShadeClick(): void {
-        this.currentSubMenu = VerticalNavSubMenuType.None;
+        this.subMenuOut = false;
+        setTimeout(() => {
+            this.currentSubMenu = VerticalNavSubMenuType.None;
+        }, 180);
     }
 
     /**
@@ -80,10 +84,11 @@ export class VerticalNavComponent implements OnInit {
      * @param subMenu the sub-menu to toggle
      */
     toggleSubMenu(subMenu: VerticalNavSubMenuType): void {
-        if (this.currentSubMenu === subMenu) {
-            this.currentSubMenu = VerticalNavSubMenuType.None;
+        if (this.subMenuOut && this.currentSubMenu === subMenu) {
+            this.onShadeClick();
         } else {
             this.currentSubMenu = subMenu;
+            this.subMenuOut = true;
         }
     }
 

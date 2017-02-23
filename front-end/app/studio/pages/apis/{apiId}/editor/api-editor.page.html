@@ -6,9 +6,9 @@
         <li breadcrumb label="Editor" icon="pencil" class="active"></li>
     </breadcrumbs>
     <div class="pull-right">
-        <api-commit [disabled]="!isDirty" [saving]="isSaving" (onSave)="saveChange()"></api-commit>
+        <api-commit [disabled]="!isDirty" [saving]="isSaving" (onSave)="saveChange($event)"></api-commit>
     </div>
 </div>
 <div id="api-editor">
-    <api-editor [api]="apiDefinition" (onDirty)="onEditorDirty($event)"></api-editor>
+    <api-editor #apiEditor [api]="apiDefinition" (onDirty)="onEditorDirty($event)"></api-editor>
 </div>

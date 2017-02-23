@@ -97,6 +97,14 @@ export interface IApisService {
     getApiDefinition(apiId: string): Promise<ApiDefinition>;
 
     /**
+     * Updates an api definition by saving a new version back to the source repository.
+     * @param definition
+     * @param saveMessage
+     * @param saveComment
+     */
+    updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition>;
+
+    /**
      * Gets the list of collaborators for the API with the given id.
      * @param api
      */

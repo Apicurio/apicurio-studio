@@ -45,6 +45,7 @@ export class Api {
 
 export class ApiDefinition extends Api {
 
+    version: any;
     spec: any;
 
     constructor() {

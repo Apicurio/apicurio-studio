@@ -122,4 +122,12 @@ export class CommandsManager {
         return this._commandStack.length === 0;
     }
 
+    /**
+     * Resets the command stack.
+     */
+    public reset(): void {
+        this._commandStack = [];
+        this._undoneCommands = [];
+    }
+
 }

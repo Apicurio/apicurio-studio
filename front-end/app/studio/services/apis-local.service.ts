@@ -25,6 +25,7 @@ import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
 import {AbstractGithubService} from "./github";
 import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
+import {ObjectUtils} from "../util/common";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
@@ -164,10 +165,9 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         let body: any = {
             message: commitMessage,
             content: b64Content
-        }
+        };
 
-        console.info("\tURL: %s", createFileUrl);
-        console.info("\tbody: %o", body);
+        console.info("[LocalApisService] Creating an API Definition in github @ URL: %s", createFileUrl);
 
         return this.http.put(createFileUrl, body, options).map( response => {
             return api;
@@ -220,38 +220,70 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param apiId
      * @return Promise<Api>
      */
-    getApi(apiId: string): Promise<Api> {
-        let rval: Api = null;
-        let idx: number = 0;
-        while (idx < this.allApis.length) {
-            let api: Api = this.allApis[idx];
-            if (api.id === apiId) {
-                rval = api;
-                break;
-            }
-            idx++;
+    public getApi(apiId: string): Promise<Api> {
+        let api: Api = this.getLocalApi(apiId);
+        if (!ObjectUtils.isNullOrUndefined(api)) {
+            this.storeApisInLocalStorage(this.allApis);
         }
-        if (rval != null && idx > 0) {
-            this.allApis.splice(idx, 1);
-            this.allApis.unshift(rval);
-            this._apis.next(this.allApis);
-            let ra: Api[] = this.allApis.slice(0, 4);
-            this._recentApis.next(ra);
-        }
-        return Promise.resolve(rval);
+        return Promise.resolve(api);
     }
 
     /**
      * Gets a single API definition by its ID.
      * @param apiId
      */
-    getApiDefinition(apiId: string): Promise<ApiDefinition> {
+    public getApiDefinition(apiId: string): Promise<ApiDefinition> {
         let api: Api = this.getLocalApi(apiId);
         if (api === null) {
             return Promise.resolve(null);
         }
         let apiDef: ApiDefinition = ApiDefinition.fromApi(api);
         return this.resolveApiDefinitionSpec(apiDef);
+    }
+
+    /**
+     * Updates an API definition.
+     * @param definition
+     * @return {undefined}
+     */
+    public updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition> {
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(definition.repositoryResource.repositoryUrl);
+        let path: string = definition.repositoryResource.resourceName;
+        if (path.startsWith("/")) {
+            path = path.slice(1);
+        }
+        let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
+            owner: gri.org,
+            repo: gri.repo,
+            path: path
+        });
+        let headers = new Headers({ "Accept": "application/json", "Content-Type": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({ headers: headers });
+
+        let oaiContent: string = JSON.stringify(definition.spec);
+        let b64Content: string = btoa(oaiContent);
+
+        let body: any = {
+            message: saveMessage,
+            content: b64Content,
+            sha: definition.version
+        };
+
+        console.info("[LocalApisService] Saving API Definition to github @ URL: %s", contentUrl);
+        console.info("                   Message: %s", saveMessage);
+        console.info("                   SHA: %s", definition.version);
+        return this.http.put(contentUrl, body, options).toPromise().then( response => {
+            let data: any = response.json();
+
+            let rval: ApiDefinition = ApiDefinition.fromApi(definition);
+            rval.spec = definition.spec;
+            rval.version = data.content.sha;
+
+            this.updateLocalApi(rval);
+
+            return rval;
+        });
     }
 
     /**
@@ -268,7 +300,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param api
      * @return {undefined}
      */
-    getCollaborators(api: Api): Promise<ApiCollaborators> {
+    public getCollaborators(api: Api): Promise<ApiCollaborators> {
         console.info("[LocalApisService] Getting collaborator info.");
         let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
         console.info("[LocalApisService] Parsed GRI: %o", gri);
@@ -498,9 +530,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
 
             // TODO if the content is greater than 1MB, need to make another call to the "blob" API
 
-            console.info("Spec content loaded successfully.");
+            console.info("[LocalApisService] Spec content loaded successfully.");
+            console.info("                   SHA: %s", data.sha);
 
             api.spec = pc;
+            api.version = data.sha;
             return api;
         });
     }
@@ -529,6 +563,21 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             this._recentApis.next(ra);
         }
         return rval;
+    }
+
+    /**
+     * Updates the meta-data of an API.
+     * @param updatedApi
+     */
+    private updateLocalApi(updatedApi: Api): void {
+        let api: Api = this.getLocalApi(updatedApi.id);
+        if (!ObjectUtils.isNullOrUndefined(api)) {
+            api.modifiedBy = updatedApi.modifiedBy;
+            api.modifiedOn = updatedApi.modifiedOn;
+            api.name = updatedApi.name;
+            api.description = updatedApi.description;
+            this.storeApisInLocalStorage(this.allApis);
+        }
     }
 
 }

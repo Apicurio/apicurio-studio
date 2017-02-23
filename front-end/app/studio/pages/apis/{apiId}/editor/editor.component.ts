@@ -355,10 +355,20 @@ export class ApiEditorComponent {
             updatedApiDef.description = this.document().info.description;
         }
         updatedApiDef.spec = this._library.writeNode(this.document());
+        updatedApiDef.version = this.api.version;
         updatedApiDef.modifiedOn = new Date();
         // TODO update the modifiedBy here with the currently logged-in user!
         //updatedApiDef.modifiedBy = "";
         return updatedApiDef;
+    }
+
+    /**
+     * Called to reset the editor's internal state.
+     */
+    public reset(): void {
+        this._document = null;
+        this._commands.reset();
+        this.onDirty.emit(false);
     }
 
 }

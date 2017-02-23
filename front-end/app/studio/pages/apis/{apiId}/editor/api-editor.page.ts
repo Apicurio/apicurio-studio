@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, OnInit, Inject, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";
+import {ApiEditorComponent} from "./editor.component";
 
 @Component({
     moduleId: module.id,
@@ -30,9 +31,10 @@ export class ApiEditorPageComponent implements OnInit {
 
     public apiDefinition: ApiDefinition;
 
-    public dataLoaded: Map<string, boolean> = new Map<string, boolean>();
     protected isDirty: boolean = false;
     protected isSaving: boolean = false;
+
+    @ViewChild("apiEditor") apiEditor: ApiEditorComponent;
 
     /**
      * Constructor.
@@ -65,9 +67,17 @@ export class ApiEditorPageComponent implements OnInit {
      * Called when the user chooses to save the editor changes back to their source repository (e.g. commit
      * to GitHub).
      */
-    public saveChange(): void {
+    public saveChange(saveInfo: any): void {
         console.info("[ApiEditorPageComponent] Saving editor changes!");
         this.isSaving = true;
+        let apiDef: ApiDefinition = this.apiEditor.getUpdatedApiDefinition();
+        this.apis.updateApiDefinition(apiDef, saveInfo.summary, saveInfo.description).then(definition => {
+            this.apiEditor.reset();
+            this.apiDefinition = definition;
+            this.isSaving = false;
+        }).catch( error => {
+            // TODO do something interesting with this error!
+        });
     }
 
 }

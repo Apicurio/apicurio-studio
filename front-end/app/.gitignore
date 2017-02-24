@@ -3,6 +3,7 @@
 *.css
 .idea
 node_modules
+node
 typings
 npm-debug.log
 dist/

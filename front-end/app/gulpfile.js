@@ -32,7 +32,7 @@ gulp.task('dist', function(done) {
 gulp.task('clean', ['clean:ts', 'clean:dist']);
 
 gulp.task('clean:dist', function () {
-    return gulp.src(['./dist'], {read: false})
+    return gulp.src(['./target/dist'], {read: false})
         .pipe(clean());
 });
 
@@ -98,12 +98,12 @@ gulp.task('bundle', ['bundle:vendor', 'bundle:studio'], function () {
             'studio': mainBundleName,
             'vendor': vendorBundleName
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./target/dist'));
 });
 
 gulp.task('bundle:vendor', function () {
     return builder
-        .buildStatic('studio/vendor.js', './dist/' + vendorBundleName)
+        .buildStatic('studio/vendor.js', './target/dist/' + vendorBundleName)
         .catch(function (err) {
             console.log('Vendor bundle error');
             console.log(err);
@@ -112,7 +112,7 @@ gulp.task('bundle:vendor', function () {
 
 gulp.task('bundle:studio', function () {
     return builder
-        .buildStatic('studio/main.js', './dist/' + mainBundleName)
+        .buildStatic('studio/main.js', './target/dist/' + mainBundleName)
         .catch(function (err) {
             console.log('Studio bundle error');
             console.log(err);
@@ -126,5 +126,5 @@ gulp.task('bundle:studio', function () {
 
 gulp.task('copy_assets', function() {
     return gulp.src(['./assets/**/*'], {base:"."})
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./target/dist'));
 });

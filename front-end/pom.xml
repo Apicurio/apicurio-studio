@@ -11,5 +11,7 @@
   <name>apiman-studio-fe</name>
   <modules>
     <module>app</module>
+    <module>war</module>
+    <module>quickstart</module>
   </modules>
 </project>

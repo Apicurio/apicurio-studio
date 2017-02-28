@@ -1,6 +1,7 @@
 .project
 .settings
 .classpath
+releases
 target/
 .idea/
 .site-src/

@@ -53,6 +53,8 @@ export class ApiEditorComponent {
     selectedType: string = "main";
     subselectedItem: string = null;
 
+    filterCriteria: string = null;
+
     /**
      * Constructor.
      */
@@ -74,7 +76,13 @@ export class ApiEditorComponent {
      */
     public pathNames(): string[] {
         if (this.document().paths) {
-            return this.document().paths.pathItemNames().sort();
+            return this.document().paths.pathItemNames().filter( name => {
+                if (this.acceptThroughFilter(name)) {
+                    return name;
+                } else {
+                    return null;
+                }
+            }).sort();
         } else {
             return [];
         }
@@ -86,7 +94,13 @@ export class ApiEditorComponent {
      */
     public definitionNames(): string[] {
         if (this.document().definitions) {
-            return this.document().definitions.definitionNames().sort();
+            return this.document().definitions.definitionNames().filter( name => {
+                if (this.acceptThroughFilter(name)) {
+                    return name;
+                } else {
+                    return null;
+                }
+            }).sort();
         } else {
             return [];
         }
@@ -98,7 +112,13 @@ export class ApiEditorComponent {
      */
     public responseNames(): string[] {
         if (this.document().responses) {
-            return this.document().responses.responseNames().sort();
+            return this.document().responses.responseNames().filter( name => {
+                if (this.acceptThroughFilter(name)) {
+                    return name;
+                } else {
+                    return null;
+                }
+            }).sort();
         } else {
             return [];
         }
@@ -369,6 +389,30 @@ export class ApiEditorComponent {
         this._document = null;
         this._commands.reset();
         this.onDirty.emit(false);
+    }
+
+    /**
+     * Called when the user searches in the master area.
+     * @param criteria
+     */
+    public filterAll(criteria: string): void {
+        console.info("[ApiEditorComponent] Filtering master items: %s", criteria);
+        this.filterCriteria = criteria;
+        if (this.filterCriteria !== null) {
+            this.filterCriteria = this.filterCriteria.toLowerCase();
+        }
+    }
+
+    /**
+     * Returns true if the given name is accepted by the current filter criteria.
+     * @param name
+     * @return {boolean}
+     */
+    private acceptThroughFilter(name: string): boolean {
+        if (this.filterCriteria === null) {
+            return true;
+        }
+        return name.toLowerCase().indexOf(this.filterCriteria) != -1;
     }
 
 }

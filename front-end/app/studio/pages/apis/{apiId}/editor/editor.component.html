@@ -4,8 +4,7 @@
             <h2>{{ document().info.title }}</h2>
         </div>
         <div class="editor-search">
-            <span class="fa fa-fw fa-search"></span>
-            <input type="text" placeholder="Search everything...">
+            <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
         </div>
         <div class="editor-outline">
             <!-- Paths Section -->

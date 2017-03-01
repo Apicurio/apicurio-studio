@@ -86,6 +86,7 @@ import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/c
 import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/components/operation-form/query-param-description-editor.component";
 import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/type-editor.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/definition-form.component";
+import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.component";
 
 
 @NgModule({
@@ -98,7 +99,7 @@ import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/de
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
-        AceEditorComponent],
+        AceEditorComponent, SearchComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard

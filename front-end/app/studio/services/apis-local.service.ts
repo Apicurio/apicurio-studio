@@ -261,7 +261,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         this.authService.injectAuthHeaders(headers);
         let options = new RequestOptions({ headers: headers });
 
-        let oaiContent: string = JSON.stringify(definition.spec);
+        let oaiContent: string = JSON.stringify(definition.spec, null, 4);
         let b64Content: string = btoa(oaiContent);
 
         let body: any = {

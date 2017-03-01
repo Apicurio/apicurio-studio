@@ -65,7 +65,7 @@ git tag -a -s -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
 git push origin v$RELEASE_VERSION
 
 mkdir releases
-cp front-end/quickstart/target/apiman-studio-fe-quickstart-$RELEASE_VERSION-quickstart.zip releases/.
+cp front-end/quickstart/target/api-design-studio-$RELEASE_VERSION-quickstart.zip releases/.
 
 
 mvn versions:set -DnewVersion=$DEV_VERSION
@@ -86,7 +86,7 @@ echo "  Now connecting to jboss.org - please run these remote commands:"
 echo ""
 echo "mkdir v$RELEASE_VERSION"
 echo "cd v$RELEASE_VERSION"
-echo "put apiman-studio-fe-quickstart-$RELEASE_VERSION-quickstart.zip"
+echo "put api-design-studio-$RELEASE_VERSION-quickstart.zip"
 echo ""
 sftp overlord@filemgmt.jboss.org:downloads_htdocs/overlord/apiman-studio
 popd

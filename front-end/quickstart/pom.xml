@@ -81,6 +81,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -90,6 +91,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <finalName>api-design-studio-${project.version}</finalName>
                             <attach>true</attach>
                             <descriptors>
                                 <descriptor>src/main/assembly/quickstart.xml</descriptor>

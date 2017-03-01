@@ -116,7 +116,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * Gets an observable over all the apis.
      * @return {Observable<Api[]>}
      */
-    getAllApis(): Observable<Api[]> {
+    public getAllApis(): Observable<Api[]> {
         return this.apis;
     }
 

@@ -92,13 +92,20 @@ export class LoginPageComponent implements OnInit {
         }).catch( reason => {
             this.authenticating = false;
             this.loginError = reason;
-            console.info("Reason: %s", reason);
-            let requiresTwoFactor: boolean = reason.indexOf("OTP");
+            console.info("[LoginPageComponent] Login failure reason: %s", reason);
+            let requiresTwoFactor: boolean = reason.indexOf("OTP") >= 0;
+            if (!requiresTwoFactor) {
+                this.password = null;
+                if (this.loginError === "Forbidden") {
+                    this.loginError = "There have been several failed attempts to sign in from this account or IP address. Please wait a while and try again later.";
+                }
+            }
             this.twoFactorEnabled = (this.twoFactorEnabled || requiresTwoFactor);
             this.errorIsTwoFactor = requiresTwoFactor;
             if (this.errorIsTwoFactor && (this.twoFactorToken ? true : false)) {
                 this.loginError = "Error logging in (invalid two-factor authentication token).";
                 this.errorIsTwoFactor = false;
+                this.twoFactorToken = null;
             }
         });
     }

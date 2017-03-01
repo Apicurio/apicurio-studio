@@ -23,7 +23,6 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractGithubService} from "./github";
 
 const USER_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.user";
-const CREDENTIALS_SESSION_STORAGE_KEY = "apiman.studio.services.github-auth.credentials";
 const PAT_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.pat";
 const OLD_PATS_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.old-pats";
 
@@ -71,10 +70,12 @@ export class GithubAuthenticationService extends AbstractGithubService implement
     constructor(private http: Http) {
         super();
         let s_user: string = localStorage.getItem(USER_LOCAL_STORAGE_KEY);
-        let s_creds: string = sessionStorage.getItem(CREDENTIALS_SESSION_STORAGE_KEY);
         let s_pat: string = localStorage.getItem(PAT_LOCAL_STORAGE_KEY);
         if (s_user && s_pat) {
             let user: User = JSON.parse(s_user);
+            if (!user.name) {
+                user.name = user.username;
+            }
             let pat: GithubPersonalAccessToken = JSON.parse(s_pat);
 
             this.personalAccessToken = pat;
@@ -82,11 +83,6 @@ export class GithubAuthenticationService extends AbstractGithubService implement
             this._authenticatedUser.next(user);
 
             this.verifyAuthenticatedUser();
-        } else if (s_user && s_creds) {
-            let user: User = JSON.parse(s_user);
-            this.githubCredentials = JSON.parse(s_creds);
-            this._authenticated.next(true);
-            this._authenticatedUser.next(user);
         }
 
     }
@@ -95,7 +91,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      * Returns the observable for is/isnot authenticated.
      * @return {Observable<boolean>}
      */
-    isAuthenticated(): Observable<boolean> {
+    public isAuthenticated(): Observable<boolean> {
         return this.authenticated;
     }
 
@@ -103,7 +99,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      * Returns an observable over the currently authenticated User (or null if not logged in).
      * @return {any}
      */
-    getAuthenticatedUser(): Observable<User> {
+    public getAuthenticatedUser(): Observable<User> {
         return this.authenticatedUser;
     }
 
@@ -116,7 +112,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      * @param credential
      * @return {undefined}
      */
-    login(username: string, credential: any): Promise<User> {
+    public login(username: string, credential: any): Promise<User> {
         console.info("[GithubAuthenticationService] logging in user %s", username);
         let loginName: string = username;
         let password: string;
@@ -129,69 +125,45 @@ export class GithubAuthenticationService extends AbstractGithubService implement
             password = credential;
         }
 
+        let basicAuthHeader: string = "Basic " + btoa(loginName + ":" + password);
+        let url: string = this.endpoint("/authorizations");
+        let headers: Headers = new Headers({"Content-Type": "application/json", "Authorization": basicAuthHeader});
         if (twoFactorToken) {
-            let basicAuthHeader: string = "Basic " + btoa(loginName + ":" + password);
-            let url: string = this.endpoint("/authorizations");
-            let headers = new Headers({"Content-Type": "application/json", "Authorization": basicAuthHeader, "X-GitHub-OTP": twoFactorToken});
-            let options = new RequestOptions({headers: headers});
+            headers.append("X-GitHub-OTP", twoFactorToken);
+        }
+        let options = new RequestOptions({headers: headers});
 
-            return this.http.post(url, {
-                    "scopes": [
-                        "user:email", "repo", "gist", "read:org"
-                    ],
-                    "note": "APIMan Studio (" + new Date().toLocaleDateString() + "@" + new Date().toLocaleTimeString() + ")"
-                }, options
-            ).map(response => {
-                let pat: GithubPersonalAccessToken = response.json();
-                console.info("[GithubAuthenticationService] Authorization token obtained: %o", pat);
-                return pat;
-            }).toPromise().then( pat => {
-                this.cleanOldPATs(headers);
-                this.personalAccessToken = pat;
-                localStorage.setItem(PAT_LOCAL_STORAGE_KEY, JSON.stringify(pat));
-                let tokenAuthHeader: string = "token " + pat.token;
-                return this.fetchAuthenticatedUser(tokenAuthHeader).then(user => {
-                    console.info("[GithubAuthenticationService] call to /user succeeded with user: %o", user);
-                    this._authenticated.next(true);
-                    this._authenticatedUser.next(user);
-                    localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
-                    return user;
-                });
-            }).catch(reason => {
-                let errorMessage: string = reason.statusText;
-                console.info("[GithubAuthenticationService] call to /user failed with: %o", reason);
-                if (reason.status === 401) {
-                    errorMessage = reason.json().message;
-                }
-                return Promise.reject<User>(errorMessage)
-            });
-
-        } else {
-            let authHeader: string = "Basic " + btoa(loginName + ":" + password);
-            return this.fetchAuthenticatedUser(authHeader).then(user => {
+        return this.http.post(url, {
+                "scopes": [
+                    "user:email", "repo", "gist", "read:org"
+                ],
+                "note": "APIMan Studio (" + new Date().toLocaleDateString() + "@" + new Date().toLocaleTimeString() + ")"
+            }, options
+        ).map(response => {
+            let pat: GithubPersonalAccessToken = response.json();
+            console.info("[GithubAuthenticationService] Authorization token obtained: %o", pat);
+            return pat;
+        }).toPromise().then( pat => {
+            this.cleanOldPATs(headers);
+            this.personalAccessToken = pat;
+            localStorage.setItem(PAT_LOCAL_STORAGE_KEY, JSON.stringify(pat));
+            let tokenAuthHeader: string = "token " + pat.token;
+            return this.fetchAuthenticatedUser(tokenAuthHeader).then(user => {
                 console.info("[GithubAuthenticationService] call to /user succeeded with user: %o", user);
                 this._authenticated.next(true);
                 this._authenticatedUser.next(user);
 
-                // Store the credentials and user in session storage.  If the user reloads the page,
-                // we will pull these out of session storage rather than require the user login again.
-                this.githubCredentials = new GithubAuthenticationCredentials();
-                this.githubCredentials.login = username;
-                this.githubCredentials.password = credential;
                 localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
-                sessionStorage.setItem(CREDENTIALS_SESSION_STORAGE_KEY, JSON.stringify(this.githubCredentials));
-
-                // Return the user.
                 return user;
-            }).catch(reason => {
-                let errorMessage: string = reason.statusText;
-                console.info("[GithubAuthenticationService] call to /user failed with: %o", reason);
-                if (reason.status === 401) {
-                    errorMessage = reason.json().message;
-                }
-                return Promise.reject(errorMessage)
             });
-        }
+        }).catch(reason => {
+            let errorMessage: string = reason.statusText;
+            console.info("[GithubAuthenticationService] call to /user failed with: %o", reason);
+            if (reason.status === 401) {
+                errorMessage = reason.json().message;
+            }
+            return Promise.reject<User>(errorMessage)
+        });
     }
 
     /**
@@ -199,7 +171,6 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      * storage object and also reset the authenticated flag and the authenticatedUser.
      */
     public logout(): void {
-        sessionStorage.removeItem(CREDENTIALS_SESSION_STORAGE_KEY);
         localStorage.removeItem(PAT_LOCAL_STORAGE_KEY);
         localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
         if (this.personalAccessToken) {
@@ -248,6 +219,9 @@ export class GithubAuthenticationService extends AbstractGithubService implement
             user.email = jdata.email;
             user.name = jdata.name;
             user.username = jdata.login;
+            if (!user.name) {
+                user.name = user.username;
+            }
             return user;
         }).toPromise();
     }
@@ -279,10 +253,12 @@ export class GithubAuthenticationService extends AbstractGithubService implement
      */
     private verifyAuthenticatedUser(): void {
         let tokenAuthHeader: string = "token " + this.personalAccessToken.token;
-        this.fetchAuthenticatedUser(tokenAuthHeader).catch( reason => {
+        this.fetchAuthenticatedUser(tokenAuthHeader).then( user => {
+            this._authenticated.next(true);
+            this._authenticatedUser.next(user);
+        }).catch( reason => {
             console.log("[GithubAuthenticationService] Failed to verify PAT authentication: %o", reason);
             if (reason.status === 401) {
-                sessionStorage.removeItem(CREDENTIALS_SESSION_STORAGE_KEY);
                 localStorage.removeItem(PAT_LOCAL_STORAGE_KEY);
                 localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
                 location.reload(true);

@@ -242,7 +242,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
     }
 
     /**
-     * Updates an API definition.
+     * Updates an API definition by storing it in GitHub (creating a new version).
      * @param definition
      * @return {undefined}
      */
@@ -273,7 +273,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         console.info("[LocalApisService] Saving API Definition to github @ URL: %s", contentUrl);
         console.info("                   Message: %s", saveMessage);
         console.info("                   SHA: %s", definition.version);
-        return this.http.put(contentUrl, body, options).toPromise().then( response => {
+        return this.http.put(contentUrl, body, options).map( response => {
             let data: any = response.json();
 
             let rval: ApiDefinition = ApiDefinition.fromApi(definition);
@@ -282,8 +282,13 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
 
             this.updateLocalApi(rval);
 
+            if (saveComment) {
+                let commitSha: string = data.commit.sha;
+                this.addCommitComment(rval, commitSha, saveComment);
+            }
+
             return rval;
-        });
+        }).toPromise();
     }
 
     /**
@@ -578,6 +583,32 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             api.description = updatedApi.description;
             this.storeApisInLocalStorage(this.allApis);
         }
+    }
+
+    /**
+     * Adds a comment to the commit.
+     * @param apiDefinition
+     * @param comment
+     */
+    private addCommitComment(definition: ApiDefinition, commitSha: string, comment: string): void {
+        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(definition.repositoryResource.repositoryUrl);
+        let commentUrl: string = this.endpoint("/repos/:owner/:repo/commits/:sha/comments", {
+            owner: gri.org,
+            repo: gri.repo,
+            sha: commitSha
+        });
+        let headers = new Headers({ "Accept": "application/json", "Content-Type": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({ headers: headers });
+
+        let body: any = {
+            body: comment
+        };
+
+        console.info("[LocalApisService] Adding a commit comment to github @ URL: %s", commentUrl);
+        console.info("                   Comment: %s", comment);
+        console.info("                   Commit SHA: %s", commitSha);
+        this.http.post(commentUrl, body, options).toPromise().then();
     }
 
 }

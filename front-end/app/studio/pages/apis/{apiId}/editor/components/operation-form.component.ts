@@ -279,6 +279,9 @@ export class OperationFormComponent {
         let type: string = JsonSchemaType[newParamType.type];
         let isSimpleType: boolean = true;
         if (!newParamType.type) {
+            if (!newParamType.$ref) {
+                return;
+            }
             isSimpleType = false;
             type = newParamType.$ref.substr(14);
         }
@@ -296,6 +299,9 @@ export class OperationFormComponent {
         let type: string = JsonSchemaType[newParamType.type];
         let isSimpleType: boolean = true;
         if (!newParamType.type) {
+            if (!newParamType.$ref) {
+                return;
+            }
             isSimpleType = false;
             type = newParamType.$ref.substr(14);
         }
@@ -308,6 +314,9 @@ export class OperationFormComponent {
         let type: string = JsonSchemaType[newResponseType.type];
         let isSimpleType: boolean = true;
         if (!newResponseType.type) {
+            if (!newResponseType.$ref) {
+                return;
+            }
             isSimpleType = false;
             type = newResponseType.$ref.substr(14);
         }

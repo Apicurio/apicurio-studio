@@ -63,8 +63,12 @@
             <hr/>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <div *ngIf="creatingApi" class="spinner spinner-xs"></div>
-                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || creatingApi || model.repository === null">Create API</button>
+                    <button type="submit" class="btn btn-primary"
+                            [disabled]="!apiForm.form.valid || creatingApi || model.repository === null">
+                        <span *ngIf="!creatingApi">Create API</span>
+                        <span *ngIf="creatingApi" class="spinner spinner-xs spinner-inline"></span>
+                        <span *ngIf="creatingApi">Creating</span>
+                    </button>
                 </div>
             </div>
         </form>

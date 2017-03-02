@@ -18,6 +18,8 @@
 import {Component, Inject, EventEmitter, Output} from "@angular/core";
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
+import {User} from "../../../models/user.model";
+import {IAuthenticationService} from "../../../services/auth.service";
 
 
 @Component({
@@ -45,16 +47,27 @@ export class CreateApiFormComponent {
 
     private _organizations: string[];
     private _repositories: string[];
+    private user: User;
+
+
+    public ngOnInit(): void {
+    }
 
     /**
      * Constructor.
      * @param apis
      */
-    constructor(@Inject(IApisService) private apis: IApisService) {
+    constructor(@Inject(IApisService) private apis: IApisService, @Inject(IAuthenticationService) private authService: IAuthenticationService) {
         this.creatingApi = false;
         this.fetchingOrgs = true;
+        authService.getAuthenticatedUser().subscribe( user => {
+            this.user = user;
+        });
         apis.getOrganizations().then( orgs => {
-            this._organizations = orgs.sort();
+            orgs.push(this.user.username);
+            this._organizations = orgs.sort( (org1, org2) => {
+                return org1.toLowerCase().localeCompare(org2.toLowerCase());
+            });
             this.fetchingOrgs = false;
         }).catch( reason => {
             this.error = reason;
@@ -71,7 +84,7 @@ export class CreateApiFormComponent {
         this.model.repository = null;
         this.fetchingRepos = true;
         this._repositories = [];
-        this.apis.getRepositories(this.model.organization).then( repos => {
+        this.apis.getRepositories(this.model.organization, org === this.user.username).then( repos => {
             this._repositories = repos.sort();
             this.fetchingRepos = false;
         }).catch( reason => {

@@ -141,7 +141,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         oaiDoc.info.title = api.name;
         oaiDoc.info.description = api.description;
         let oaiDocObj: any = library.writeNode(oaiDoc);
-        let oaiContent: string = JSON.stringify(oaiDocObj);
+        let oaiContent: string = JSON.stringify(oaiDocObj, null, 4);
         let b64Content: string = btoa(oaiContent);
         let commitMessage: string = "Initial creation of API: " + api.name;
 
@@ -396,11 +396,16 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param organization
      * @return {undefined}
      */
-    public getRepositories(organization: string): Promise<string[]> {
+    public getRepositories(organization: string, isUser?: boolean): Promise<string[]> {
         console.info("[LocalApisService] Getting repository list for org: %s", organization);
         let reposUrl: string = this.endpoint("/orgs/:org/repos", {
             org: organization
         });
+        if (isUser) {
+            reposUrl = this.endpoint("/users/:username/repos", {
+                username: organization
+            });
+        }
 
         let headers: Headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);

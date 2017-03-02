@@ -118,8 +118,9 @@ export interface IApisService {
     /**
      * Gets all of the repositories found in a given organization.
      * @param organization
+     * @param isUser
      */
-    getRepositories(organization: string): Promise<string[]>;
+    getRepositories(organization: string, isUser?: boolean): Promise<string[]>;
 }
 
 export const IApisService = new OpaqueToken("IApisService");

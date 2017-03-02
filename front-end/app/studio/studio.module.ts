@@ -41,6 +41,7 @@ import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resol
 
 /* Guards */
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
+import {ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 /* Global Components */
 import {NavHeaderComponent} from "./components/nav-header.component";
@@ -102,7 +103,7 @@ import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.com
         AceEditorComponent, SearchComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
-        AuthenticationCanActivateGuard
+        AuthenticationCanActivateGuard, ApiEditorPageGuard
     ],
     bootstrap: [StudioComponent]
 })

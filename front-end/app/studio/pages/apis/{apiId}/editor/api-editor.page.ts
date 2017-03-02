@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject, ViewChild} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnInit, Inject, ViewChild, Injectable, HostListener} from "@angular/core";
+import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
+import {ModalDirective} from "ng2-bootstrap";
 
 @Component({
     moduleId: module.id,
@@ -35,6 +36,8 @@ export class ApiEditorPageComponent implements OnInit {
     protected isSaving: boolean = false;
 
     @ViewChild("apiEditor") apiEditor: ApiEditorComponent;
+    @ViewChild("discardChangesModal") public discardChangesModal: ModalDirective;
+    private discardResolver: any;
 
     /**
      * Constructor.
@@ -78,6 +81,67 @@ export class ApiEditorPageComponent implements OnInit {
         }).catch( error => {
             // TODO do something interesting with this error!
         });
+    }
+
+    public isEditorDirty(): boolean {
+        return this.isDirty;
+    }
+
+    /**
+     * Called when the user wants to navigate away from a dirty editor.
+     */
+    public askToLeave(): Promise<boolean> {
+        this.discardChangesModal.show();
+        return new Promise<boolean>( resolve => {
+            this.discardResolver = resolve;
+        });
+    }
+
+    /**
+     * Called when the user allows the navigation (discards editor changes).
+     */
+    public allowNavigate(): void {
+        this.discardChangesModal.hide();
+        this.discardResolver(true);
+    }
+
+    /**
+     * Called when the user cancels the navigation.
+     */
+    public cancelNavigate(): void {
+        this.discardChangesModal.hide();
+        this.discardResolver(false);
+    }
+
+    @HostListener("window:beforeunload", ["$event"])
+    public onBeforeUnload($event: any): string {
+        if (this.isEditorDirty()) {
+            var dialogText = "If you leave you may lose unsaved changes.  Do you really want to leave?";
+            $event.returnValue = dialogText;
+            return dialogText;
+        } else {
+            return null;
+        }
+    }
+}
+
+
+/**
+ * Guards against the user losing changes to the editor.
+ */
+@Injectable()
+export class ApiEditorPageGuard implements CanDeactivate<ApiEditorPageComponent> {
+
+    /**
+     * Called by angular 2 to determine whether the user is allowed to navigate away from the
+     * editor.
+     * @param component
+     */
+    public canDeactivate(component: ApiEditorPageComponent): Promise<boolean> | boolean {
+        if (!component.isEditorDirty()) {
+            return true;
+        }
+        return component.askToLeave();
     }
 
 }

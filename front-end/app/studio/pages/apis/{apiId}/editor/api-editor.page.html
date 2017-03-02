@@ -12,3 +12,23 @@
 <div id="api-editor">
     <api-editor #apiEditor [api]="apiDefinition" (onDirty)="onEditorDirty($event)"></api-editor>
 </div>
+
+<!-- Discard Changes Confirmation Dialog -->
+<div bsModal #discardChangesModal="bs-modal" class="modal fade" id="discardChangesModal" tabindex="-1" role="dialog"
+     aria-labelledby="discardChangesModalLabel" role="dialog" aria-hidden="true"
+     [config]="{backdrop: 'static', ignoreBackdropClick: true, keyboard: false}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="discardChangesModalLabel">Discard Changes?</h4>
+            </div>
+            <div class="modal-body">
+                <p>You have unsaved changes, if you navigate away now you will lose them!  Navigate away and lose changes?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="allowNavigate()">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelNavigate()">No</button>
+            </div>
+        </div>
+    </div>
+</div>

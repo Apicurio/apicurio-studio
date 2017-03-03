@@ -11,7 +11,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h3>Commit changes to GitHub</h3>
+                        <h3><span class="fa fa-fw fa-warning"></span><span>Commit changes to GitHub</span></h3>
                     </div>
                 </div>
                 <div class="row">
@@ -28,7 +28,10 @@
                 </div>
                 <div class="row with-padding">
                     <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary" [disabled]="!saveForm.form.valid">Commit</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="!saveForm.form.valid">
+                            <span class="fa fa-fw fa-github"></span>
+                            <span>Commit</span>
+                        </button>
                         <span>&nbsp;</span>
                         <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
                     </div>

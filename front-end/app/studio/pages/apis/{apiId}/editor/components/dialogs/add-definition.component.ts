@@ -45,7 +45,6 @@ export class AddDefinitionDialogComponent {
      * Called to open the dialog.
      */
     public open(): void {
-        console.info("Opening the Add Definition dialog!");
         this._isOpen = true;
         this.addDefinitionModal.changes.subscribe( thing => {
             if (this.addDefinitionModal.first) {

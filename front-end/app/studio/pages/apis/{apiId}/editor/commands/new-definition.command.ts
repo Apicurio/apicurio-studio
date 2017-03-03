@@ -16,7 +16,11 @@
  */
 
 import {ICommand, AbstractCommand} from "../commands.manager";
-import {OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20PropertySchema, JsonSchemaType} from "oai-ts-core";
+import {
+    OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20PropertySchema, JsonSchemaType,
+    Oas20Schema
+} from "oai-ts-core";
+import {isNumber} from "util";
 
 /**
  * A command used to create a new definition in a document.
@@ -50,11 +54,9 @@ export class NewDefinitionCommand extends AbstractCommand implements ICommand {
             let definition: Oas20DefinitionSchema = doc.definitions.createDefinitionSchema(this._newDefinitionName);
             doc.definitions.addDefinition(this._newDefinitionName, definition);
 
-            // TODO replace this with some code that processes the example and generates a schema
-            let pschema: Oas20PropertySchema = definition.createPropertySchema("property-1");
-            definition.addProperty("property-1", pschema);
-            pschema.type = JsonSchemaType.string;
-            pschema.format = "date-time";
+            if (this._newDefinitionExample) {
+                this._initializeFromExample(definition, this._newDefinitionExample);
+            }
 
             this._defExisted = false;
         } else {
@@ -79,4 +81,39 @@ export class NewDefinitionCommand extends AbstractCommand implements ICommand {
         }
     }
 
+    /**
+     * Initializes a newly created definition from a JSON example.
+     * @param schema
+     * @param example
+     */
+    private _initializeFromExample(schema: Oas20Schema, example: string) {
+        try {
+            let exampleObj: any = JSON.parse(example);
+            for (let propName in exampleObj) {
+                console.info("Property name: %s", propName);
+
+                // Create a property schema for this property
+                let pschema: Oas20PropertySchema = schema.createPropertySchema(propName);
+                schema.addProperty(propName, pschema);
+
+                // Now figure out its type
+                let propValue: any = exampleObj[propName];
+                if (typeof propValue === "number") {
+                    pschema.type = JsonSchemaType.number;
+                } else if (typeof propValue === "boolean") {
+                    pschema.type = JsonSchemaType.boolean;
+                } else if (Array.isArray(propValue)) {
+                    pschema.type = JsonSchemaType.array;
+                    // TODO more to figure out here!
+                } else if (typeof propValue === "object") {
+                    pschema.type = JsonSchemaType.object;
+                    // TODO more to figure out here!
+                } else {
+                    pschema.type = JsonSchemaType.string;
+                }
+            }
+        } catch (e) {
+            // if there's an error, do nothing
+        }
+    }
 }

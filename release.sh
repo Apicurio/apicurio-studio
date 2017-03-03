@@ -61,7 +61,7 @@ mvn clean install
 git add .
 git commit -m "Prepare for release v$RELEASE_VERSION"
 git push origin $BRANCH
-git tag -a -s -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
+git tag -a -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
 git push origin v$RELEASE_VERSION
 
 mkdir releases

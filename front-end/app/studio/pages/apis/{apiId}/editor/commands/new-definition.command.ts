@@ -16,7 +16,7 @@
  */
 
 import {ICommand, AbstractCommand} from "../commands.manager";
-import {OasDocument, Oas20Document, Oas20DefinitionSchema} from "oai-ts-core";
+import {OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20PropertySchema, JsonSchemaType} from "oai-ts-core";
 
 /**
  * A command used to create a new definition in a document.
@@ -25,11 +25,13 @@ export class NewDefinitionCommand extends AbstractCommand implements ICommand {
 
     private _defExisted: boolean;
     private _newDefinitionName: string;
+    private _newDefinitionExample: string;
     private _nullDefinitions: boolean;
 
-    constructor(definitionName: string) {
+    constructor(definitionName: string, example: string) {
         super();
         this._newDefinitionName = definitionName;
+        this._newDefinitionExample = example;
     }
 
     /**
@@ -47,6 +49,13 @@ export class NewDefinitionCommand extends AbstractCommand implements ICommand {
         if (this.isNullOrUndefined(doc.definitions.definition(this._newDefinitionName))) {
             let definition: Oas20DefinitionSchema = doc.definitions.createDefinitionSchema(this._newDefinitionName);
             doc.definitions.addDefinition(this._newDefinitionName, definition);
+
+            // TODO replace this with some code that processes the example and generates a schema
+            let pschema: Oas20PropertySchema = definition.createPropertySchema("property-1");
+            definition.addProperty("property-1", pschema);
+            pschema.type = JsonSchemaType.string;
+            pschema.format = "date-time";
+
             this._defExisted = false;
         } else {
             this._defExisted = true;

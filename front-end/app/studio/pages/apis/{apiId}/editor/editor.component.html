@@ -54,7 +54,7 @@
                         <span class="section-label">Definitions</span>
                     </a>
                     <button class="btn btn-sm btn-default pull-right"
-                            (click)="addDefinitionModal.show()"><span class="fa fa-plus"></span></button>
+                            (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
                     <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
@@ -66,7 +66,7 @@
                         <span>Reusable types are useful!</span>
                         <span>&nbsp;</span>
                         <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px"
-                                (click)="addDefinitionModal.show()">Add Now</button>
+                                (click)="addDefinitionDialog.open()">Add Now</button>
                     </div>
                 </div>
             </div>
@@ -106,64 +106,7 @@
                         (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
     </div>
 
-    <!-- Add Definition Dialog -->
-    <div bsModal #addDefinitionModal="bs-modal" class="modal fade" id="addDefinitionModal" tabindex="-1" role="dialog" aria-labelledby="addDefinitionModalLabel"
-         role="dialog" aria-hidden="true" (onShown)="initAddDefinition(); addDefinitionInput.focus(); addDefinitionInput.select()">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="addDefinitionModal.hide()">
-                        <span class="pficon pficon-close"></span>
-                    </button>
-                    <h4 class="modal-title" id="addDefinitionModalLabel">Add Definition</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Enter a new definition name below and then click Add.</p>
-                    <form id="adddef-form" class="form-horizontal" #addDefinitionForm="ngForm" data-dismiss="modal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="definitionName">Name</label>
-                            <div class="col-sm-10">
-                                <input #addDefinitionInput name="definitionName" type="text" id="definitionName" class="form-control"
-                                       placeholder="Enter a Definition Name"
-                                       required [(ngModel)]="modals.addDefinition.definitionName">
-                            </div>
-                        </div>
-                        <div class="section example-section">
-                            <div class="section-header">
-                                <a data-toggle="collapse" data-target="#example-section-body">
-                                    <span class="section-label">FROM EXAMPLE (optional)</span>
-                                </a>
-                            </div>
-                            <div class="section-body collapse in" id="example-section-body">
-                                <div class="explanation">
-                                    Input a JSON formatted sample below and we'll do our best to initialize the Definition's schema
-                                    based on the example.
-                                </div>
-                                <div class="example">
-                                    <ace-editor #exampleEditor
-                                                [theme]="'eclipse'"
-                                                [mode]="'json'"
-                                                [durationBeforeCallback]="350"
-                                                (textChanged)="setExampleDefinition($event)"
-                                                style="position: relative; height: 200px; border: 1px solid #ccc; width: 100%"></ace-editor>
-                                    <button class="btn btn-default btn-xs" style="margin-top: 10px;" type="button"
-                                            [disabled]="!isExampleDefinitionFormattable()" (click)="formatExampleDefinition()">
-                                        <span class="fa fa-fw fa-indent"></span>
-                                        <span>Format</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addDefinition()"
-                            [disabled]="!addDefinitionForm.form.valid || !isExampleDefinitionValid()">Add</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addDefinitionModal.hide()">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>
 
 </div>
 

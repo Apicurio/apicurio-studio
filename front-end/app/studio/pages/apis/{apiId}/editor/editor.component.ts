@@ -22,7 +22,6 @@ import {CommandsManager, ICommand} from "./commands.manager";
 import {ModalDirective} from "ng2-bootstrap";
 import {NewPathCommand} from "./commands/new-path.command";
 import {NewDefinitionCommand} from "./commands/new-definition.command";
-import {AceEditorDirective} from "ng2-ace-editor";
 
 
 @Component({
@@ -37,17 +36,10 @@ export class ApiEditorComponent {
     @Input() api: ApiDefinition;
     @Output() onDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild("addPathModal") public addPathModal: ModalDirective;
-    @ViewChild("addDefinitionModal") public addDefinitionModal: ModalDirective;
-    @ViewChild("exampleEditor") exampleEditor: AceEditorDirective;
+    @ViewChild("addPathModal") addPathModal: ModalDirective;
 
     public modals: any = {
-        addPath: {},
-        addDefinition: {
-            exampleDefinition: "",
-            exampleDefinitionValid: true,
-            exampleDefinitionFormattable: false
-        }
+        addPath: {}
     };
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
@@ -263,15 +255,6 @@ export class ApiEditorComponent {
     }
 
     /**
-     * Called to initialize the definition name (each time the Add Definition dialog is opened).
-     */
-    public initAddDefinition(): void {
-        this.modals.addDefinition.definitionName = "";
-        this.modals.addDefinition.exampleDefinition = "";
-        this.exampleEditor.setText("");
-    }
-
-    /**
      * Called when the user fills out the Add Path modal dialog and clicks Add.
      */
     public addPath(): void {
@@ -363,12 +346,10 @@ export class ApiEditorComponent {
     /**
      * Called when the user fills out the Add Definition modal dialog and clicks Add.
      */
-    public addDefinition(): void {
-        let command: ICommand = new NewDefinitionCommand(this.modals.addDefinition.definitionName,
-            this.modals.addDefinition.exampleDefinition);
+    public addDefinition(modalData: any): void {
+        let command: ICommand = new NewDefinitionCommand(modalData.name, modalData.example);
         this.onCommand(command);
-        this.addDefinitionModal.hide();
-        this.selectDefinition(this.modals.addDefinition.definitionName);
+        this.selectDefinition(modalData.name);
     }
 
     /**
@@ -422,55 +403,6 @@ export class ApiEditorComponent {
             return true;
         }
         return name.toLowerCase().indexOf(this.filterCriteria) != -1;
-    }
-
-    /**
-     * Called when the user changes the example definition in the Add Definition modal dialog.
-     * @param definition
-     */
-    public setExampleDefinition(definition: string): void {
-        console.info("Setting Example Def: %s", definition);
-        this.modals.addDefinition.exampleDefinition = definition;
-        if (this.modals.addDefinition.exampleDefinition === "") {
-            this.modals.addDefinition.exampleDefinitionValid = true;
-            this.modals.addDefinition.exampleDefinitionFormattable = false;
-        } else {
-            try {
-                JSON.parse(this.modals.addDefinition.exampleDefinition);
-                this.modals.addDefinition.exampleDefinitionValid = true;
-                this.modals.addDefinition.exampleDefinitionFormattable = true;
-            } catch (e) {
-                this.modals.addDefinition.exampleDefinitionValid = false;
-                this.modals.addDefinition.exampleDefinitionFormattable = false;
-            }
-        }
-    }
-
-    /**
-     * Returns true if it's possible to format the example definition (it must be non-null and
-     * syntactically valid).
-     * @return {boolean}
-     */
-    public isExampleDefinitionFormattable(): boolean {
-        return this.modals.addDefinition.exampleDefinitionFormattable;
-    }
-
-    /**
-     * Returns true if the example definition added by the user in the Add Definition modal
-     * dialog is valid (syntactically).
-     * @return {boolean}
-     */
-    public isExampleDefinitionValid(): boolean {
-        return this.modals.addDefinition.exampleDefinitionValid;
-    }
-
-    /**
-     * Called to format the example definition.
-     */
-    public formatExampleDefinition(): void {
-        let jsObj: any = JSON.parse(this.modals.addDefinition.exampleDefinition);
-        let nsrcStr: string = JSON.stringify(jsObj, null, 4);
-        this.exampleEditor.setText(nsrcStr);
     }
 
 }

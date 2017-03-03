@@ -64,7 +64,7 @@ import {AddApiFormComponent} from "./pages/apis/add/add-form.component";
 import {ApisListComponent} from "./pages/apis/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
-import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/api-commit.component";
+import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/components/api-commit.component";
 
 /** Directives **/
 import {TextAreaAutosize} from "./directives/autosize.directive";
@@ -88,6 +88,7 @@ import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/componen
 import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/type-editor.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/definition-form.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.component";
+import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-definition.component";
 
 
 @NgModule({
@@ -100,7 +101,7 @@ import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.com
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
-        AceEditorComponent, SearchComponent],
+        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

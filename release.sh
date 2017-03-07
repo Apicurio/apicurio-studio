@@ -96,7 +96,7 @@ git tag -a -s -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
 git push origin v$RELEASE_VERSION
 
 echo "Signing and Archiving the Quickstart ZIP"
-mkdir releases
+mkdir -p releases
 cp front-end/quickstart/target/api-design-studio-$RELEASE_VERSION-quickstart.zip releases/.
 gpg --armor --detach-sign releases/api-design-studio-$RELEASE_VERSION-quickstart.zip.asc
 

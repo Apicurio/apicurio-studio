@@ -133,8 +133,6 @@ public class ReleaseTool {
             e.printStackTrace();
             System.exit(1);
         }
-        
-        System.exit(0);
 
         String assetUploadUrl = null;
         

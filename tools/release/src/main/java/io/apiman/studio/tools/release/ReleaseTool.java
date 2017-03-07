@@ -119,8 +119,7 @@ public class ReleaseTool {
             }
             System.out.println("Release " + oldReleaseTag + " was published on " + publishedDate);
             
-//            List<JSONObject> issues = getIssuesForRelease(publishedDate, githubPAT);
-            List<JSONObject> issues = getIssuesForRelease("2017-02-26T20:04:12Z", githubPAT);
+            List<JSONObject> issues = getIssuesForRelease(publishedDate, githubPAT);
             System.out.println("Found " + issues.size() + " issues closed in release " + releaseTag);
             System.out.println("Generating Release Notes");
             

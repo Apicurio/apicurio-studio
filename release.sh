@@ -9,6 +9,7 @@ echo "---------------------------------------------------"
 echo ""
 echo ""
 
+
 echo "---------------------------------------------------"
 echo " Tell me what version we're releasing!"
 echo "---------------------------------------------------"
@@ -82,6 +83,9 @@ echo "Branch:           $BRANCH"
 echo "######################################"
 echo ""
 
+mkdir -p target
+cp pom.xml target/pom.xml
+gpg -s target/pom.xml
 
 mvn clean package
 

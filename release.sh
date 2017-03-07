@@ -61,11 +61,13 @@ mvn clean install
 git add .
 git commit -m "Prepare for release v$RELEASE_VERSION"
 git push origin $BRANCH
-git tag -a -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
+git tag -a -s -m "Tagging release v$RELEASE_VERSION" v$RELEASE_VERSION
 git push origin v$RELEASE_VERSION
 
+echo "Signing and Archiving the Quickstart ZIP"
 mkdir releases
 cp front-end/quickstart/target/api-design-studio-$RELEASE_VERSION-quickstart.zip releases/.
+gpg --armor --detach-sign releases/api-design-studio-$RELEASE_VERSION-quickstart.zip.asc
 
 
 mvn versions:set -DnewVersion=$DEV_VERSION
@@ -73,8 +75,6 @@ find . -name '*.versionsBackup' -exec rm -f {} \;
 git add .
 git commit -m "Update to next development version: $DEV_VERSION"
 git push origin $BRANCH
-
-
 
 
 echo "---------------------------------------------------"

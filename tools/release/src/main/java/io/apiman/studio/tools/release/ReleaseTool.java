@@ -151,8 +151,8 @@ public class ReleaseTool {
                     .header("Content-Type", "application/json")
                     .header("Authorization", "token " + githubPAT)
                     .body(body).asJson();
-            if (response.getStatus() != 200) {
-                throw new Exception("Failed to get old release info: " + response.getStatusText());
+            if (response.getStatus() != 201) {
+                throw new Exception("Failed to create release in GitHub: " + response.getStatusText());
             }
             
             assetUploadUrl = response.getBody().getObject().getString("upload_url");

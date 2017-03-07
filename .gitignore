@@ -1,4 +1,5 @@
 .project
+.release.env
 .settings
 .classpath
 releases

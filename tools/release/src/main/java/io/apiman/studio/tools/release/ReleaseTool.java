@@ -172,6 +172,7 @@ public class ReleaseTool {
         try {
             String artifactUploadUrl = createUploadUrl(assetUploadUrl, releaseArtifact);
             byte [] artifactData = loadArtifactData(releaseArtifactFile);
+            System.out.println("Uploading artifact asset: " + artifactUploadUrl);
             HttpResponse<JsonNode> response = Unirest.post(artifactUploadUrl)
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/zip")
@@ -184,6 +185,7 @@ public class ReleaseTool {
 
             artifactUploadUrl = createUploadUrl(assetUploadUrl, releaseArtifactSig);
             artifactData = loadArtifactData(releaseArtifactSigFile);
+            System.out.println("Uploading artifact asset: " + artifactUploadUrl);
             response = Unirest.post(artifactUploadUrl)
                     .header("Accept", "application/json")
                     .header("Content-Type", "text/plain")
@@ -290,6 +292,7 @@ public class ReleaseTool {
      * @param releaseArtifactFile
      */
     private static byte[] loadArtifactData(File releaseArtifactFile) throws Exception {
+        System.out.println("Loading artifact content: " + releaseArtifactFile.getName()); 
         byte [] buffer = new byte[(int) releaseArtifactFile.length()];
         InputStream is = null;
         try {

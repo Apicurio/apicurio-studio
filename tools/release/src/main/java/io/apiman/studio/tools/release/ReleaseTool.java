@@ -50,6 +50,7 @@ public class ReleaseTool {
         Options options = new Options();
         options.addOption("n", "release-name", true, "The name of the new release.");
         options.addOption("p", "prerelease", false, "Indicate that this is a pre-release.");
+        options.addOption("d", "draft", false, "Indicate that this is a draft release.");
         options.addOption("t", "release-tag", true, "The tag name of the new release.");
         options.addOption("o", "previous-tag", true, "The tag name of the previous release.");
         options.addOption("g", "github-pat", true, "The GitHub PAT (for authentication/authorization).");
@@ -72,6 +73,7 @@ public class ReleaseTool {
         // Arguments (command line)
         String releaseName = cmd.getOptionValue("n");
         boolean isPrerelease = cmd.hasOption("p");
+        boolean isDraft = cmd.hasOption("d");
         String releaseTag = cmd.getOptionValue("t");
         String oldReleaseTag = cmd.getOptionValue("o");
         String githubPAT = cmd.getOptionValue("g");
@@ -144,6 +146,7 @@ public class ReleaseTool {
             body.put("name", releaseName);
             body.put("body", releaseNotes);
             body.put("prerelease", isPrerelease);
+            body.put("draft", isDraft);
             
             HttpResponse<JsonNode> response = Unirest.post("https://api.github.com/repos/apiman/apiman-studio/releases")
                     .header("Accept", "application/json")

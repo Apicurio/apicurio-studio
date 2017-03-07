@@ -102,7 +102,7 @@ gpg --armor --detach-sign releases/api-design-studio-$RELEASE_VERSION-quickstart
 
 echo ""
 echo "Performing automated GitHub release."
-java -jar tools/release/target/apiman-studio-tools-release-$RELEASE_VERSION.jar --release-name "$RELEASE_NAME" --release-tag $RELEASE_VERSION --previous-tag $PREVIOUS_RELEASE_VERSION --github-pat $GITHUB_AUTH_PAT --artifact ./releases/api-design-studio-$RELEASE_VERSION-quickstart.zip
+java -jar tools/release/target/apiman-studio-tools-release-$RELEASE_VERSION.jar --release-name "$RELEASE_NAME" --release-tag $RELEASE_VERSION --previous-tag $PREVIOUS_RELEASE_VERSION --github-pat $GITHUB_AUTH_PAT --artifact ./releases/api-design-studio-$RELEASE_VERSION-quickstart.zip --draft
 echo ""
 
 mvn versions:set -DnewVersion=$DEV_VERSION

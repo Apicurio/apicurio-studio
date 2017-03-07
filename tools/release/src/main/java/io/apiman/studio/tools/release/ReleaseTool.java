@@ -91,9 +91,6 @@ public class ReleaseTool {
             System.err.println("Missing file: " + releaseArtifactSigFile.getAbsolutePath());
             System.exit(1);
         }
-        
-        // TODO remove this
-        System.exit(1);
 
         System.out.println("=========================================");
         System.out.println("Creating Release: " + releaseTag);

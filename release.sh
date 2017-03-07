@@ -76,22 +76,6 @@ git add .
 git commit -m "Update to next development version: $DEV_VERSION"
 git push origin $BRANCH
 
-
-echo "---------------------------------------------------"
-echo " Upload quickstart to jboss.org"
-echo "---------------------------------------------------"
-pushd .
-cd releases
-echo "  Now connecting to jboss.org - please run these remote commands:"
-echo ""
-echo "mkdir v$RELEASE_VERSION"
-echo "cd v$RELEASE_VERSION"
-echo "put api-design-studio-$RELEASE_VERSION-quickstart.zip"
-echo ""
-sftp overlord@filemgmt.jboss.org:downloads_htdocs/overlord/apiman-studio
-popd
-
-
 echo ""
 echo ""
 echo "---------------------------------------------------"

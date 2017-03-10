@@ -14,7 +14,7 @@
                         <span class="section-label">Paths</span>
                     </a>
                     <button class="btn btn-sm btn-default pull-right"
-                            (click)="addPathModal.show(); initAddPath()"><span class="fa fa-plus"></span></button>
+                            (click)="addPathDialog.open(getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="path-section-body">
                     <div class="api-path" *ngFor="let pathName of pathNames()"
@@ -43,7 +43,7 @@
                         <strong>No Paths Found!</strong>
                         <span>APIs need at least one path.</span>
                         <span>&nbsp;</span>
-                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addPathModal.show(); initAddPath('/')">Add Now</button>
+                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addDefinitionDialog.open('/')">Add Now</button>
                     </div>
                 </div>
             </div>
@@ -106,39 +106,7 @@
                         (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
     </div>
 
+    <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
     <add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>
 
 </div>
-
-<!-- Add Path Dialog -->
-<div bsModal #addPathModal="bs-modal" class="modal fade" id="addPathModal" tabindex="-1" role="dialog" aria-labelledby="addPathModalLabel"
-     role="dialog" aria-hidden="true" (onShown)="addPathInput.focus(); addPathInput.selectionStart = addPathInput.selectionEnd = modals.addPath.path.length">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="addPathModal.hide()">
-                    <span class="pficon pficon-close"></span>
-                </button>
-                <h4 class="modal-title" id="addPathModalLabel">Add Path</h4>
-            </div>
-            <div class="modal-body">
-                <p>Enter a new resource path below and then click Add.</p>
-                <form id="addpath-form" class="form-horizontal" (submit)="addPath()" #addPathForm="ngForm" data-dismiss="modal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" for="path">Path</label>
-                        <div class="col-sm-10">
-                            <input #addPathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
-                                   required [(ngModel)]="modals.addPath.path">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addPath()"
-                        [disabled]="!addPathForm.form.valid">Add</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addPathModal.hide()">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-

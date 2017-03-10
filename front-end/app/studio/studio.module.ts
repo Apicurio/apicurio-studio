@@ -89,6 +89,7 @@ import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/oper
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/definition-form.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.component";
 import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-definition.component";
+import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-path.component";
 
 
 @NgModule({
@@ -101,7 +102,7 @@ import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/componen
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
-        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent],
+        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

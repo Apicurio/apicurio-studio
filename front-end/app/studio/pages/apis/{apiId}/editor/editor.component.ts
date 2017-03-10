@@ -36,12 +36,6 @@ export class ApiEditorComponent {
     @Input() api: ApiDefinition;
     @Output() onDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild("addPathModal") addPathModal: ModalDirective;
-
-    public modals: any = {
-        addPath: {}
-    };
-
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: Oas20Document = null;
     private _commands: CommandsManager = new CommandsManager();
@@ -240,28 +234,22 @@ export class ApiEditorComponent {
     }
 
     /**
-     * Called to initialize the model used by the Add Path modal (based on the path selected).
+     * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
-    public initAddPath(path?: string): string {
-        if (!path) {
-            if (this.selectedType === "path") {
-                path = this.selectedItem;
-            } else {
-                path = "";
-            }
+    public getCurrentPathSelection(): string {
+        if (this.selectedType === "path" || this.selectedType === "operation") {
+            return this.selectedItem;
         }
-        this.modals.addPath.path = path;
-        return path;
+        return "/";
     }
 
     /**
      * Called when the user fills out the Add Path modal dialog and clicks Add.
      */
-    public addPath(): void {
-        let command: ICommand = new NewPathCommand(this.modals.addPath.path);
+    public addPath(path: string): void {
+        let command: ICommand = new NewPathCommand(path);
         this.onCommand(command);
-        this.addPathModal.hide();
-        this.selectPath(this.modals.addPath.path);
+        this.selectPath(path);
     }
 
     /**

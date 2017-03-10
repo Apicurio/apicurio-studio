@@ -1,0 +1,31 @@
+<!-- Add Path Dialog -->
+<div bsModal #addPathModal="bs-modal" class="modal fade" id="addPathModal" tabindex="-1" role="dialog" aria-labelledby="addPathModalLabel"
+     role="dialog" aria-hidden="true" (onShown)="doSelect()"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addPathModalLabel">Add Path</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter a new resource path below and then click Add.</p>
+                <form id="addpath-form" class="form-horizontal" (submit)="add()" #addPathForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="path">Path</label>
+                        <div class="col-sm-10">
+                            <input #addPathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
+                                   required [(ngModel)]="path">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" (click)="add()" [disabled]="!addPathForm.form.valid">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

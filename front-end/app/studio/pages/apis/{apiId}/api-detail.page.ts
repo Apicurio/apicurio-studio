@@ -94,11 +94,12 @@ export class ApiDetailPageComponent implements OnInit {
     /**
      * Called to delete the API from the studio (unmanage it).
      */
-    public onDelete(): void {
+    public deleteApi(): void {
         // TODO need a visual indicator that we're working on the delete
         this.apis.deleteApi(this.api).then(() => {
             this.router.navigate([ "" ]);
         }).catch( reason => {
+            // TODO need to do better than this!
             alert("Failed to delete the API!");
         });
     }

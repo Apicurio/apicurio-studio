@@ -137,7 +137,7 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
     }
 
-    public onDelete(): void {
+    public deleteApis(): void {
         // TODO deleting the APIs is done asynchronously - we need some sort of visual status (spinner) to watch progress, and then close the dialog when it's done
 
         // Note: we can only delete selected items that we can see in the UI.

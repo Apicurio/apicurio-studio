@@ -48,6 +48,7 @@ import {NavHeaderComponent} from "./components/nav-header.component";
 import {VerticalNavComponent} from "./components/vertical-nav.component";
 import {BreadcrumbsComponent} from "./components/breadcrumbs/breadcrumbs.component";
 import {BreadcrumbComponent} from "./components/breadcrumbs/breadcrumb.component";
+import {ConfirmDeleteDialogComponent} from "./components/dialogs/confirm-delete.component";
 
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
@@ -102,7 +103,7 @@ import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/components/dia
         VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
-        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent],
+        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

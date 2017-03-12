@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is the official Git repository for the apiman studio project:  http://studio.apiman.io/
+This is the official Git repository for the apiman studio project:  http://www.apidesigner.org/
 
 The apiman studio project is a standalone API Design Studio that can be used to create
 new or edit existing API designs (using the OpenAPI specification).

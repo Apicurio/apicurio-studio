@@ -60,7 +60,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
     public recentApis: Observable<Api[]> = this._recentApis.asObservable();
 
     private _apis: BehaviorSubject<Api[]> = new BehaviorSubject([]);
-    public apis: Observable<Api[]> = this._recentApis.asObservable();
+    public apis: Observable<Api[]> = this._apis.asObservable();
 
     /**
      * Constructor.
@@ -144,8 +144,6 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         let oaiContent: string = JSON.stringify(oaiDocObj, null, 4);
         let b64Content: string = btoa(oaiContent);
         let commitMessage: string = "Initial creation of API: " + api.name;
-
-        console.info("\toaiContent: %s", oaiContent);
 
         let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
         let resName: string = api.repositoryResource.resourceName;

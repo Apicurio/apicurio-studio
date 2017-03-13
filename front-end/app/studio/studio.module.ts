@@ -92,6 +92,7 @@ import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.com
 import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-definition.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-path.component";
 import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-query-param.component";
+import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-response.component";
 
 
 @NgModule({
@@ -105,7 +106,7 @@ import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/componen
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
         AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
-        AddQueryParamDialogComponent],
+        AddQueryParamDialogComponent, AddResponseDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

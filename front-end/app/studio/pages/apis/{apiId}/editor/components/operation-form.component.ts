@@ -28,12 +28,12 @@ import {
     DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
     DeleteResponseCommand
 } from "../commands/delete.command";
-import {ModalDirective} from "ng2-bootstrap";
 import {NewQueryParamCommand} from "../commands/new-query-param.command";
 import {NewResponseCommand} from "../commands/new-response.command";
 import {ChangeResponseTypeCommand} from "../commands/change-response-type.command";
 import {ObjectUtils} from "../../../../../util/common";
 import {AddQueryParamDialogComponent} from "./dialogs/add-query-param.component";
+import {AddResponseDialogComponent} from "./dialogs/add-response.component";
 
 
 @Component({
@@ -49,10 +49,7 @@ export class OperationFormComponent {
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
-    @ViewChild("addResponseModal") public addResponseModal: ModalDirective;
-    protected modals: any = {
-        addResponse: {}
-    };
+    @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
     public summary(): string {
         if (this.operation.summary) {
@@ -381,20 +378,11 @@ export class OperationFormComponent {
     }
 
     public openAddResponseModal(): void {
-        this.modals.addResponse = {
-            statusCode: "200"
-        };
-        this.addResponseModal.show();
+        this.addResponseDialog.open("200");
     }
 
-    public addResponse(): void {
-        let command: ICommand = new NewResponseCommand(this.operation, this.modals.addResponse.statusCode);
+    public addResponse(statusCode: string): void {
+        let command: ICommand = new NewResponseCommand(this.operation, statusCode);
         this.onCommand.emit(command);
-        this.addResponseModal.hide();
-    }
-
-    public isAprilFirst(): boolean {
-        let d: Date = new Date();
-        return d.getMonth() === 3 && d.getDate() === 1;
     }
 }

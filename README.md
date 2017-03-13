@@ -40,9 +40,9 @@ TBD
 
 ## Contribute fixes and features
 
-Apiman Studio is open source, and we welcome anybody who wants to participate and contribute!
+API Design Studio is open source, and we welcome anybody who wants to participate and contribute!
 
-If you want to fix a bug or make any changes, please log an issue in the [apiman-studio JIRA](http://issues.jboss.org/browse/APISTUDIO) describing the bug
+If you want to fix a bug or make any changes, please [log an issue in GitHub](https://github.com/apiman/apiman-studio/issues) describing the bug
 or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
 a branch for the APISTUDIO-1234 issue:
 ```bash

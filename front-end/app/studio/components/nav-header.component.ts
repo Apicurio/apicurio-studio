@@ -30,7 +30,7 @@ export class NavHeaderComponent implements OnInit {
 
     version: string = "N/A";
     builtOn: Date = new Date();
-    projectUrl: string = "http://studio.apiman.io/";
+    projectUrl: string = "http://www.apidesigner.org/";
 
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
         if (window["ApimanStudioInfo"]) {

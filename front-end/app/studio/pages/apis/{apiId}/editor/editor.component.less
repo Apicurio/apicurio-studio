@@ -86,24 +86,23 @@
   font-size: 15px;
   padding-bottom: 3px;
   margin-bottom: 5px;
+  line-height: inherit;
 }
 .api-editor .section .section-header a {
   cursor: pointer;
   text-decoration: none;
 }
 
-.api-editor .section .section-header a.collapsed:before {
-  content: "\f105";
+.api-editor .section .section-header a.collapsed::before {
 }
-.api-editor .section .section-header a:before {
-  content: "\f107";
-  font-family: FontAwesome;
+.api-editor .section .section-header a::before {
   display: inline-block;
   font-size: 13px;
   margin-left: 5px;
+  margin-right: 0;
   text-align: center;
   vertical-align: 0;
-  width: 8px;
+  font-weight: 300;
 }
 .api-editor .section .section-header a span.section-label {
   font-weight: 600;

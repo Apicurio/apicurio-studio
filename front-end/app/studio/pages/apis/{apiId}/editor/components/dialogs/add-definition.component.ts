@@ -46,6 +46,11 @@ export class AddDefinitionDialogComponent {
      */
     public open(): void {
         this._isOpen = true;
+        this.name = "";
+        this.example = "";
+        this.exampleValid = true;
+        this.exampleFormattable = false;
+
         this.addDefinitionModal.changes.subscribe( thing => {
             if (this.addDefinitionModal.first) {
                 this.addDefinitionModal.first.show();
@@ -58,10 +63,6 @@ export class AddDefinitionDialogComponent {
      */
     public close(): void {
         this._isOpen = false;
-        this.name = "";
-        this.example = "";
-        this.exampleValid = false;
-        this.exampleFormattable = false;
     }
 
     /**

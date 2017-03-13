@@ -33,6 +33,7 @@ import {NewQueryParamCommand} from "../commands/new-query-param.command";
 import {NewResponseCommand} from "../commands/new-response.command";
 import {ChangeResponseTypeCommand} from "../commands/change-response-type.command";
 import {ObjectUtils} from "../../../../../util/common";
+import {AddQueryParamDialogComponent} from "./dialogs/add-query-param.component";
 
 
 @Component({
@@ -47,10 +48,9 @@ export class OperationFormComponent {
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild("addQueryParamModal") public addQueryParamModal: ModalDirective;
+    @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("addResponseModal") public addResponseModal: ModalDirective;
     protected modals: any = {
-        addQueryParam: {},
         addResponse: {}
     };
 
@@ -372,14 +372,12 @@ export class OperationFormComponent {
     }
 
     public openAddQueryParamModal(): void {
-        this.modals.addQueryParam = {};
-        this.addQueryParamModal.show();
+        this.addQueryParamDialog.open();
     }
 
-    public addQueryParam(): void {
-        let command: ICommand = new NewQueryParamCommand(this.operation, this.modals.addQueryParam.name);
+    public addQueryParam(name: string): void {
+        let command: ICommand = new NewQueryParamCommand(this.operation, name);
         this.onCommand.emit(command);
-        this.addQueryParamModal.hide();
     }
 
     public openAddResponseModal(): void {

@@ -177,8 +177,10 @@ public class ReleaseTool {
                     .body(artifactData)
                     .asJson();
             if (response.getStatus() != 201) {
-                throw new Exception("Failed to upload asset: " + releaseArtifact);
+                throw new Exception("Failed to upload asset: " + releaseArtifact, new Exception(response.getStatus() + "::" + response.getStatusText()));
             }
+            
+            Thread.sleep(1000);
 
             artifactUploadUrl = createUploadUrl(assetUploadUrl, releaseArtifactSig);
             artifactData = loadArtifactData(releaseArtifactSigFile);
@@ -190,7 +192,7 @@ public class ReleaseTool {
                     .body(artifactData)
                     .asJson();
             if (response.getStatus() != 201) {
-                throw new Exception("Failed to upload asset: " + releaseArtifactSig);
+                throw new Exception("Failed to upload asset: " + releaseArtifactSig, new Exception(response.getStatus() + "::" + response.getStatusText()));
             }
         } catch (Exception e) {
             e.printStackTrace();

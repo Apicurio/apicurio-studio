@@ -42,9 +42,9 @@
                                 <antversion property="antversion" />
                                 <echo>Ant Version: ${antversion}</echo>
 
-                                <property name="tomcat.version" value="8.5.11" />
+                                <property name="tomcat.version" value="8.5.12" />
                                 <property name="tomcat.download.url"
-                                    value="http://apache.mirrors.hoobly.com/tomcat/tomcat-8/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip" />
+                                    value="http://mirrors.advancedhosters.com/apache/tomcat/tomcat-8/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip" />
                                 <property name="tomcat.download.zip"
                                     location="${project.build.directory}/apache-tomcat-${tomcat.version}.zip" />
                                 <property name="tomcat.install.dir" value="${project.build.directory}" />

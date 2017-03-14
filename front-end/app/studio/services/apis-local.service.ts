@@ -25,7 +25,7 @@ import {Http, Headers, RequestOptions, URLSearchParams} from "@angular/http";
 import {IAuthenticationService} from "./auth.service";
 import {AbstractGithubService} from "./github";
 import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
-import {ObjectUtils} from "../util/common";
+import {ObjectUtils, HttpUtils} from "../util/common";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
@@ -369,7 +369,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * Retrieves all of the organizations for the logged-in user.
      * @return {undefined}
      */
-    public getOrganizations(): Promise<string[]> {
+    public getOrganizations(): Observable<string[]> {
         console.info("[LocalApisService] Getting organization list.");
         let orgsUrl: string = this.endpoint("/user/orgs");
 
@@ -379,14 +379,28 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             headers: headers
         });
 
-        return this.http.get(orgsUrl, options).map( response => {
-            let orgs: any[] = response.json();
-            let orgNames: string[] = [];
-            for (let org of orgs) {
-                orgNames.push(org.login);
-            }
-            return orgNames;
-        }).toPromise();
+        let fetch = function(http: Http, url: string, orgNames: string[], subject: BehaviorSubject<string[]>) {
+            http.get(url, options).map( response => {
+                let orgs: any[] = response.json();
+                for (let org of orgs) {
+                    orgNames.push(org.login);
+                }
+
+                subject.next(orgNames);
+
+                let links: any = HttpUtils.parseLinkHeader(response.headers.get("Link"));
+                let next: string = links["next"];
+                if (next) {
+                    fetch(http, next, orgNames, subject);
+                }
+                return [];
+            }).toPromise().then();
+        };
+
+        let orgNames: string[] = [];
+        let subject: BehaviorSubject<string[]> = new BehaviorSubject([]);
+        fetch(this.http, orgsUrl, orgNames, subject);
+        return subject.asObservable();
     }
 
     /**
@@ -394,7 +408,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param organization
      * @return {undefined}
      */
-    public getRepositories(organization: string, isUser?: boolean): Promise<string[]> {
+    public getRepositories(organization: string, isUser?: boolean): Observable<string[]> {
         console.info("[LocalApisService] Getting repository list for org: %s", organization);
         let reposUrl: string = this.endpoint("/orgs/:org/repos", {
             org: organization
@@ -411,14 +425,28 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
             headers: headers
         });
 
-        return this.http.get(reposUrl, options).map( response => {
-            let repos: any[] = response.json();
-            let repoNames: string[] = [];
-            for (let repo of repos) {
-                repoNames.push(repo.name);
-            }
-            return repoNames;
-        }).toPromise();
+        let fetch = function(http: Http, url: string, repositories: string[], subject: BehaviorSubject<string[]>) {
+            http.get(url, options).map( response => {
+                let repos: any[] = response.json();
+                for (let repo of repos) {
+                    repositories.push(repo.name);
+                }
+
+                subject.next(repositories);
+
+                let links: any = HttpUtils.parseLinkHeader(response.headers.get("Link"));
+                let next: string = links["next"];
+                if (next) {
+                    fetch(http, next, repositories, subject);
+                }
+                return [];
+            }).toPromise().then();
+        };
+
+        let repositories: string[] = [];
+        let repoSubject: BehaviorSubject<string[]> = new BehaviorSubject([]);
+        fetch(this.http, reposUrl, repositories, repoSubject);
+        return repoSubject.asObservable();
     }
 
     /**

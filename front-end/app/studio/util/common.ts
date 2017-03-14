@@ -80,3 +80,32 @@ export class ObjectUtils {
     }
 
 }
+
+export class HttpUtils {
+
+    public static parseLinkHeader(header: string): any {
+        let links: any = new Object();
+        if (ObjectUtils.isNullOrUndefined(header)) {
+            return links;
+        }
+        if (header.length === 0) {
+            return links;
+        }
+
+        // Split parts by comma
+        let parts: string[] = header.split(',');
+
+        // Parse each part into a named link
+        parts.forEach( part => {
+            var section = part.split(';');
+            if (section.length == 2) {
+                var url = section[0].replace(/<(.*)>/, '$1').trim();
+                var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+                links[name] = url;
+            }
+        });
+
+        return links;
+    }
+
+}

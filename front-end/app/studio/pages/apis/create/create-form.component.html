@@ -29,6 +29,8 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
+                            <li role="presentation"><a role="menuitem" (click)="setOrganization(userOrg())">{{ userOrg() }}</a></li>
+                            <li class="divider"></li>
                             <li *ngFor="let org of organizations()" role="presentation"><a role="menuitem" (click)="setOrganization(org)">{{ org }}</a></li>
                         </ul>
                     </div>

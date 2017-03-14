@@ -20,6 +20,7 @@ import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 import {User} from "../../../models/user.model";
 import {IAuthenticationService} from "../../../services/auth.service";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({
@@ -63,16 +64,24 @@ export class CreateApiFormComponent {
         authService.getAuthenticatedUser().subscribe( user => {
             this.user = user;
         });
-        apis.getOrganizations().then( orgs => {
-            orgs.push(this.user.username);
+
+        apis.getOrganizations().subscribe( orgs => {
+            this._organizations = [];
+            for (let org in orgs) {
+                this._organizations.push(org);
+            }
             this._organizations = orgs.sort( (org1, org2) => {
                 return org1.toLowerCase().localeCompare(org2.toLowerCase());
             });
             this.fetchingOrgs = false;
-        }).catch( reason => {
-            this.error = reason;
-            this.fetchingOrgs = false;
+        }, errorReason => {
+            this.error = errorReason;
+            this.fetchingRepos = false;
         });
+    }
+
+    public userOrg(): string {
+        return this.user.username;
     }
 
     public organizations(): string[] {
@@ -84,13 +93,15 @@ export class CreateApiFormComponent {
         this.model.repository = null;
         this.fetchingRepos = true;
         this._repositories = [];
-        this.apis.getRepositories(this.model.organization, org === this.user.username).then( repos => {
-            this._repositories = repos.sort();
+        this.apis.getRepositories(this.model.organization, org === this.user.username).subscribe( repos => {
+            this._repositories = repos.sort( (repo1, repo2) => {
+                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
+            });
             this.fetchingRepos = false;
-        }).catch( reason => {
-            this.error = reason;
+        }, errorReason => {
+            this.error = errorReason;
             this.fetchingRepos = false;
-        })
+        });
     }
 
     public repositories(): string[] {

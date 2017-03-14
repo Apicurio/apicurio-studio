@@ -113,6 +113,10 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         return this.filteredApis;
     }
 
+    public isFiltered(): boolean {
+        return this.allApis.length !== this.filteredApis.length;
+    }
+
     public toggleSortDirection(): void {
         if (this.filters.sortDirection === "ASC") {
             this.filters.sortDirection = "DESC";

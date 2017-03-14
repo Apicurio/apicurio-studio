@@ -24,8 +24,8 @@
                     <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="confirmDeleteDialog.open()">Delete</button>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-primary" [routerLink]="['create']">Create New API</a>
                     <a class="btn btn-primary" [routerLink]="['add']">Add Existing API</a>
+                    <a class="btn btn-default" [routerLink]="['create']">Create New API</a>
                 </div>
                 <div class="form-group toolbar-pf-view-selector">
                     <ul class="list-inline">
@@ -43,6 +43,40 @@
         </div>
     </div>
     <div class="row api-list-items">
+        <div class="col-md-12 empty-state" *ngIf="allApis.length === 0">
+            <div class="blank-slate-pf">
+                <div class="blank-slate-pf-icon">
+                    <span class="pficon pficon pficon-add-circle-o"></span>
+                </div>
+                <h1>No APIs Found</h1>
+                <p>
+                    It seems you have no APIs in the Studio yet.  This is probably the first time you've used it and haven't
+                    created or added any APIs yet!
+                </p>
+                <p>
+                    Click below to either create a new API or add an existing API to the Studio.
+                </p>
+                <div class="blank-slate-pf-main-action">
+                    <div class="btn-group">
+                        <a routerLink="/apis/add" class="btn btn-primary btn-lg">Add Existing API</a>
+                        <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a routerLink="/apis/create">Create New API</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 none-matched-state" *ngIf="filteredApis.length === 0 && isFiltered()">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>No APIs matched the filter!</strong> Try changing your filter criteria - there is definitely at least one API you can work on...
+            </div>
+        </div>
         <div class="col-md-12">
             <apis-list *ngIf="filters.layout === 'list'" [apis]="filteredApis" [selectedApis]="selectedApis"
                        (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-list>

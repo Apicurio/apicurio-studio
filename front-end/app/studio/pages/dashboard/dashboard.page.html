@@ -40,8 +40,17 @@
                         Not to worry, we can do that now!
                     </p>
                     <div class="blank-slate-pf-main-action">
-                        <a routerLink="/apis/create" class="btn btn-primary btn-lg">Create New API</a>
-                        <a routerLink="/apis/add" class="btn btn-primary btn-lg" style="margin-left: 10px">Add Existing API</a>
+                        <div class="btn-group">
+                            <a routerLink="/apis/add" class="btn btn-primary btn-lg">Add Existing API</a>
+                            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a routerLink="/apis/create">Create New API</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

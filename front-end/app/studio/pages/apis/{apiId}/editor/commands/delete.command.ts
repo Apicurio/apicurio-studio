@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema
+    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema, Oas20Tag
 } from "oai-ts-core";
 
 /**
@@ -370,3 +370,51 @@ export class DeleteDefinitionSchemaCommand extends AbstractCommand implements IC
     }
 
 }
+
+
+/**
+ * A command used to delete a single tag definition from the document.
+ */
+export class DeleteTagCommand extends AbstractCommand implements ICommand {
+
+    private _tag: Oas20Tag;
+
+    constructor(tag: Oas20Tag) {
+        super();
+        this._tag = tag;
+    }
+
+    /**
+     * Deletes the tag.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteTagCommand] Executing.");
+
+        let doc: Oas20Document = <Oas20Document>document;
+        let index: number = 0;
+        for (let dt of doc.tags) {
+            if (dt.name === this._tag.name) {
+                break;
+            }
+            index++;
+        }
+
+        doc.tags.splice(index, 1);
+    }
+
+    /**
+     * Restore the old (deleted) tag.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteTagCommand] Reverting.");
+
+        let doc: Oas20Document = <Oas20Document>document;
+        this._tag._parent = doc;
+        this._tag._ownerDocument = doc;
+        doc.tags.push(this._tag);
+    }
+
+}
+

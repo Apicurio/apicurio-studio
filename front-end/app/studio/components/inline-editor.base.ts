@@ -225,6 +225,10 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         });
     }
 
+    protected isEmpty(): boolean {
+        return super.isEmpty() || this.value.length === 0;
+    }
+
     protected formatValue(value: string): string {
         return value;
     }

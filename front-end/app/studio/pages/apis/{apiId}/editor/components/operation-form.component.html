@@ -104,7 +104,7 @@
                 <!-- Request Body Section -->
                 <div class="section request-body-section panel-group">
                     <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#request-body-section-body">
+                        <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
                         </a>
                         <button class="btn btn-sm btn-default pull-right" [style.visibility]="'hidden'"
@@ -116,11 +116,11 @@
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
 
                         <div class="alert alert-info"
-                             [class.alert-danger]="operation.method() === 'put' || operation.method() === 'post'"
+                             [class.alert-warning]="operation.method() === 'put' || operation.method() === 'post'"
                              *ngIf="!hasBodyParam()">
                             <span class="pficon"
                                   [class.pficon-info]="operation.method() !== 'put' && operation.method() !== 'post'"
-                                  [class.pficon-error-circle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
+                                  [class.pficon-warning-triangle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
                             <strong>None Found</strong>
                             <span>No request body has been declared.</span>
                             <button class="btn btn-primary btn-sm pull-right" (click)="createRequestBody()">Add Request Body</button>
@@ -159,7 +159,7 @@
                 <!-- Query Parameters Section -->
                 <div class="section query-parameters-section panel-group">
                     <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#parameters-section-body">
+                        <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
                             <span class="section-label">QUERY PARAMETERS</span>
                         </a>
                         <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
@@ -168,7 +168,7 @@
                                 title="Delete all query parameters."
                                 [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
                     </div>
-                    <div class="section-body collapse in" id="parameters-section-body" [class.in]="hasParameters('query')">
+                    <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
 
                         <div class="alert alert-info" *ngIf="!hasParameters('query')">
                             <span class="pficon pficon-info"></span>
@@ -219,8 +219,8 @@
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
 
-                        <div class="alert alert-danger" *ngIf="!hasResponses()">
-                            <span class="pficon pficon-error-circle-o"></span>
+                        <div class="alert alert-warning" *ngIf="!hasResponses()">
+                            <span class="pficon pficon-warning-triangle-o"></span>
                             <strong>None Found</strong>
                             <span>No responses have been declared.</span>
                             <button class="btn btn-primary btn-sm pull-right" (click)="openAddResponseModal()">Add Response</button>

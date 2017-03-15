@@ -88,13 +88,45 @@
     <!-- Global Tags -->
     <div class="section info-section panel-group">
         <div class="section-header panel-title">
-            <a data-toggle="collapse" data-target="#tags-section-body">
+            <a [class.collapsed]="tags().length === 0" data-toggle="collapse" data-target="#tags-section-body">
                 <span class="section-label">TAGS</span>
             </a>
-            <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+            <button class="btn btn-sm btn-default pull-right" (click)="addTagDialog.open()"><span class="fa fa-plus"></span></button>
         </div>
-        <div class="section-body collapse in" id="tags-section-body">
-            <p>Configure the API's tags here (TBD)</p>
+        <div class="section-body collapse" id="tags-section-body" [class.in]="tags().length > 0">
+
+            <div class="alert alert-info" *ngIf="tags().length === 0">
+                <span class="pficon pficon-info"></span>
+                <strong>None Found</strong>
+                <span>No tags have been configured.</span>
+                <button class="btn btn-primary btn-sm pull-right" (click)="addTagDialog.open()">Add Tag</button>
+            </div>
+
+            <table class="table table-striped api-operation-parameters" *ngIf="tags().length > 0">
+                <thead>
+                <tr>
+                    <th>Tag</th>
+                    <th width="70%">Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let tag of tags()">
+                    <td class="tag-name">{{ tag.name }}</td>
+                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                                                   (onChange)="changeTagDescription(tag, $event)"
+                                                                   [value]="tag.description"></description-editor-qp></td>
+                    <td class="actions">
+                        <div>
+                            <button class="btn btn-sm btn-default pull-right" (click)="deleteTag(tag)"
+                                    title="Delete tag."><span class="pficon pficon-delete"></span></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
         </div>
     </div>
 
@@ -110,5 +142,7 @@
             <p>Configure the API's security definitions here (TBD)</p>
         </div>
     </div>
+
+    <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
 
 </div>

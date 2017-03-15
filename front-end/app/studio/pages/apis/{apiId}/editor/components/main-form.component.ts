@@ -16,11 +16,15 @@
  */
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {OasDocument, Oas20Document} from "oai-ts-core";
+import {OasDocument, Oas20Document, Oas20Tag} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
 import {ChangeTitleCommand} from "../commands/change-title.command";
 import {ChangeDescriptionCommand} from "../commands/change-description.command";
+import {ObjectUtils} from "../../../../../util/common";
+import {ChangePropertyCommand} from "../commands/change-property.command";
+import {DeleteTagCommand} from "../commands/delete.command";
+import {NewTagCommand} from "../commands/new-tag.command";
 
 
 @Component({
@@ -164,6 +168,52 @@ export class MainFormComponent {
     public onDescriptionChange(newDescription: string): void {
         console.info("[MainFormComponent] User changed the description.");
         let command: ICommand = new ChangeDescriptionCommand(newDescription);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Returns the list of tags defined in the document.
+     * @return {Oas20Tag[]}
+     */
+    public tags(): Oas20Tag[] {
+        let tags: Oas20Tag[] = this.doc().tags;
+        if (ObjectUtils.isNullOrUndefined(tags)) {
+            tags = [];
+        }
+        // Clone the array
+        tags = tags.slice(0);
+        // Sort it
+        tags.sort( (obj1, obj2) => {
+            return obj1.name.toLowerCase().localeCompare(obj2.name.toLowerCase());
+        });
+        return tags;
+    }
+
+    /**
+     * Called when the user changes the description of a tag.
+     * @param tag
+     * @param description
+     */
+    public changeTagDescription(tag: Oas20Tag, description: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", description, tag);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user chooses to delete a tag.
+     * @param tag
+     */
+    public deleteTag(tag: Oas20Tag): void {
+        let command: ICommand = new DeleteTagCommand(tag);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user clicks 'Add' on the Add Tag modal dialog.
+     * @param tag
+     */
+    public addTag(tag: any): void {
+        let command: ICommand = new NewTagCommand(tag.name, tag.description);
         this.onCommand.emit(command);
     }
 

@@ -93,6 +93,7 @@ import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/componen
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-path.component";
 import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-response.component";
+import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-tag.component";
 
 
 @NgModule({
@@ -106,7 +107,7 @@ import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/components
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
         AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
-        AddQueryParamDialogComponent, AddResponseDialogComponent],
+        AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

@@ -127,4 +127,8 @@ export class CreateApiFormComponent {
         this.onCreateApi.emit(api);
     }
 
+    public reset(): void {
+        this.creatingApi = false;
+    }
+
 }

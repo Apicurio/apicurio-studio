@@ -23,7 +23,12 @@
             </ol>
         </div>
         <div class="col-md-7">
-            <createapi-form (onCreateApi)="onCreateApi($event)" #createApiForm></createapi-form>
+            <createapi-form #createApiForm (onCreateApi)="onCreateApi($event)" #createApiForm></createapi-form>
+            <div class="alert alert-danger" *ngIf="hasError">
+                <span class="pficon pficon-error-circle-o"></span>
+                <strong>Error Creating API!</strong>
+                <span>{{ errorMessage }}</span>
+            </div>
         </div>
     </div>
 </div>

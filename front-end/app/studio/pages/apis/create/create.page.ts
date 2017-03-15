@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, OnInit, Inject, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
+import {CreateApiFormComponent} from "./create-form.component";
 
 @Component({
     moduleId: module.id,
@@ -29,6 +30,10 @@ import {Api} from "../../../models/api.model";
 })
 export class CreateApiPageComponent implements OnInit {
 
+    protected hasError: boolean = false;
+    protected errorMessage: string = null;
+
+    @ViewChild("createApiForm") form: CreateApiFormComponent;
 
     /**
      * Constructor.
@@ -56,7 +61,9 @@ export class CreateApiPageComponent implements OnInit {
             this.router.navigate(link);
         }).catch( error => {
             console.error("[CreateApiPageComponent] Error saving API: %o", error);
-            // TODO do something interesting with this error!
+            this.hasError = true;
+            this.errorMessage = error;
+            this.form.reset();
         })
     }
 

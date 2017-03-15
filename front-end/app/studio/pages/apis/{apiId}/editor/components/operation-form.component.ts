@@ -18,7 +18,7 @@
 import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
 import {
     Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
-    Oas20Document, Oas20Schema
+    Oas20Document, Oas20Schema, Oas20PathItem
 } from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
@@ -34,6 +34,8 @@ import {ChangeResponseTypeCommand} from "../commands/change-response-type.comman
 import {ObjectUtils} from "../../../../../util/common";
 import {AddQueryParamDialogComponent} from "./dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "./dialogs/add-response.component";
+import {SourceFormComponent} from "./source-form.base";
+import {ReplaceOperationCommand} from "../commands/replace.command";
 
 
 @Component({
@@ -42,14 +44,30 @@ import {AddResponseDialogComponent} from "./dialogs/add-response.component";
     templateUrl: "operation-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class OperationFormComponent {
+export class OperationFormComponent extends SourceFormComponent<Oas20Operation> {
 
-    @Input() operation: Oas20Operation;
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    protected _operation: Oas20Operation;
+    @Input()
+    set operation(operation: Oas20Operation) {
+        this._operation = operation;
+        this.sourceNode = operation;
+    }
+    get operation(): Oas20Operation {
+        return this._operation;
+    }
+
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
+
+    protected createEmptyNodeForSource(): Oas20Operation {
+        return (<Oas20PathItem>this.operation.parent()).createOperation(this.operation.method());
+    }
+
+    protected createReplaceNodeCommand(node: Oas20Operation) {
+        return new ReplaceOperationCommand(this.operation, node);
+    }
 
     public summary(): string {
         if (this.operation.summary) {
@@ -384,5 +402,10 @@ export class OperationFormComponent {
     public addResponse(statusCode: string): void {
         let command: ICommand = new NewResponseCommand(this.operation, statusCode);
         this.onCommand.emit(command);
+    }
+
+    public enableSourceMode(): void {
+        this.sourceNode = this.operation;
+        super.enableSourceMode();
     }
 }

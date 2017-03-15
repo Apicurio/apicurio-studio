@@ -17,39 +17,35 @@
 
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema
+    OasDocument, Oas20Document, Oas20PathItem, OasNode, Oas20Paths, Oas20Operation,
+    Oas20Definitions, Oas20DefinitionSchema
 } from "oai-ts-core";
 
 
 /**
- * A command used to replace a definition schema with a newer version.
+ * A command used to replace a path item with a newer version.
  */
-export class ReplaceDefinitionSchemaCommand extends AbstractCommand implements ICommand {
+abstract class AbstractReplaceNodeCommand<T extends OasNode> extends AbstractCommand implements ICommand {
 
-    private _newDefinition: Oas20DefinitionSchema;
-    private _oldDefinition: Oas20DefinitionSchema;
+    private _newNode: T;
+    private _oldNode: T;
 
-    constructor(definition: Oas20DefinitionSchema) {
+    constructor(old: T, replacement: T) {
         super();
-        this._newDefinition = definition;
+        this._oldNode = old;
+        this._newNode = replacement;
     }
 
     /**
-     * Replaces the definition.
+     * Replaces the node.
      * @param document
      */
     public execute(document: OasDocument): void {
-        console.info("[ReplaceDefinitionSchemaCommand] Executing.");
-        this._oldDefinition = null;
-        let doc: Oas20Document  = <Oas20Document>document;
-        let definitions: Oas20Definitions = doc.definitions;
-        if (this.isNullOrUndefined(definitions)) {
-            return;
-        }
+        console.info("[AbstractReplaceNodeCommand] Executing.");
+        let doc: Oas20Document = <Oas20Document>document;
 
-        this._oldDefinition = definitions.removeDefinition(this._newDefinition.definitionName());
-        definitions.addDefinition(this._newDefinition.definitionName(), this._newDefinition);
+        this.removeNode(doc, this._oldNode);
+        this.addNode(doc, this._newNode);
     }
 
     /**
@@ -57,17 +53,104 @@ export class ReplaceDefinitionSchemaCommand extends AbstractCommand implements I
      * @param document
      */
     public undo(document: OasDocument): void {
-        console.info("[ReplaceDefinitionSchemaCommand] Reverting.");
+        console.info("[AbstractReplaceNodeCommand] Reverting.");
         let doc: Oas20Document  = <Oas20Document>document;
-        let definitions: Oas20Definitions = doc.definitions;
-        if (this.isNullOrUndefined(definitions) || this.isNullOrUndefined(this._oldDefinition)) {
+        if (this.isNullOrUndefined(this._oldNode)) {
             return;
         }
 
-        this._oldDefinition._parent = definitions;
-        this._oldDefinition._ownerDocument = definitions.ownerDocument();
-        definitions.removeDefinition(this._newDefinition.definitionName());
-        definitions.addDefinition(this._oldDefinition.definitionName(), this._oldDefinition);
+        this._oldNode._parent = this._newNode._parent;
+        this._oldNode._ownerDocument = this._newNode._ownerDocument;
+
+        this.removeNode(doc, this._newNode);
+        this.addNode(doc, this._oldNode);
+    }
+
+    protected abstract removeNode(doc: Oas20Document, node: T): void;
+
+    protected abstract addNode(doc: Oas20Document, node: T): void;
+}
+
+
+/**
+ * A command used to replace a definition schema with a newer version.
+ */
+export class ReplaceDefinitionSchemaCommand extends AbstractReplaceNodeCommand<Oas20DefinitionSchema> implements ICommand {
+
+    /**
+     * Remove the given node.
+     * @param doc
+     * @param node
+     */
+    protected removeNode(doc: Oas20Document, node: Oas20DefinitionSchema): void {
+        let definitions: Oas20Definitions = doc.definitions;
+        definitions.removeDefinition(node.definitionName());
+    }
+
+    /**
+     * Adds the node to the document.
+     * @param doc
+     * @param node
+     */
+    protected addNode(doc: Oas20Document, node: Oas20DefinitionSchema): void {
+        let definitions: Oas20Definitions = doc.definitions;
+        definitions.addDefinition(node.definitionName(), node);
+    }
+
+}
+
+
+/**
+ * A command used to replace a path item with a newer version.
+ */
+export class ReplacePathItemCommand extends AbstractReplaceNodeCommand<Oas20PathItem> implements ICommand {
+
+    /**
+     * Remove the given node.
+     * @param doc
+     * @param node
+     */
+    protected removeNode(doc: Oas20Document, node: Oas20PathItem): void {
+        let paths: Oas20Paths = <Oas20Paths>node.parent();
+        paths.removePathItem(node.path());
+    }
+
+    /**
+     * Adds the node to the document.
+     * @param doc
+     * @param node
+     */
+    protected addNode(doc: Oas20Document, node: Oas20PathItem): void {
+        let paths: Oas20Paths = doc.paths;
+        paths.addPathItem(node.path(), node);
+    }
+
+}
+
+
+/**
+ * A command used to replace an operation with a newer version.
+ */
+export class ReplaceOperationCommand extends AbstractReplaceNodeCommand<Oas20Operation> implements ICommand {
+
+    /**
+     * Remove the given node.
+     * @param doc
+     * @param node
+     */
+    protected removeNode(doc: Oas20Document, node: Oas20Operation): void {
+        let path: Oas20PathItem = <Oas20PathItem>node.parent();
+        path[node.method()] = null;
+    }
+
+    /**
+     * Adds the node to the document.
+     * @param doc
+     * @param node
+     */
+    protected addNode(doc: Oas20Document, node: Oas20Operation): void {
+        let path: Oas20PathItem = <Oas20PathItem>node.parent();
+        path[node.method()] = node;
     }
 
 }

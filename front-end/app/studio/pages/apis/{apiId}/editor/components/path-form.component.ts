@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {Oas20PathItem, Oas20Operation} from "oai-ts-core";
+import {Oas20PathItem, Oas20Operation, Oas20PathItems, Oas20Paths} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewOperationCommand} from "../commands/new-operation.command";
 import {ChangePropertyCommand} from "../commands/change-property.command";
 import {DeleteNodeCommand, DeletePathCommand} from "../commands/delete.command";
+import {SourceFormComponent} from "./source-form.base";
+import {ReplacePathItemCommand} from "../commands/replace.command";
 
 
 @Component({
@@ -28,12 +30,28 @@ import {DeleteNodeCommand, DeletePathCommand} from "../commands/delete.command";
     templateUrl: "path-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class PathFormComponent {
+export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
 
-    @Input() path: Oas20PathItem;
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    protected _path: Oas20PathItem;
+    @Input()
+    set path(path: Oas20PathItem) {
+        this._path = path;
+        this.sourceNode = path;
+    }
+    get path(): Oas20PathItem {
+        return this._path;
+    }
+
     @Output() onOperationSelected: EventEmitter<string> = new EventEmitter<string>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    protected createEmptyNodeForSource(): Oas20PathItem {
+        return (<Oas20Paths>this.path.parent()).createPathItem(this.path.path());
+    }
+
+    protected createReplaceNodeCommand(node: Oas20PathItem) {
+        return new ReplacePathItemCommand(this.path, node);
+    }
 
     public hasGet(): boolean {
         return this.path.get !== undefined && this.path.get !== null;
@@ -161,6 +179,11 @@ export class PathFormComponent {
         let command: ICommand = new DeletePathCommand(this.path.path());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
+    }
+
+    public enableSourceMode(): void {
+        this.sourceNode = this.path;
+        super.enableSourceMode();
     }
 
 }

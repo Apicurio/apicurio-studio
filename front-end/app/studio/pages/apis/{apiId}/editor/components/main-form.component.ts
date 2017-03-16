@@ -16,7 +16,7 @@
  */
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {OasDocument, Oas20Document, Oas20Tag} from "oai-ts-core";
+import {OasDocument, Oas20Document, Oas20Tag, Oas20License} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
 import {ChangeTitleCommand} from "../commands/change-title.command";
@@ -25,6 +25,8 @@ import {ObjectUtils} from "../../../../../util/common";
 import {ChangePropertyCommand} from "../commands/change-property.command";
 import {DeleteTagCommand} from "../commands/delete.command";
 import {NewTagCommand} from "../commands/new-tag.command";
+import {ILicense, LicenseService} from "../services/license.service";
+import {ChangeLicenseCommand} from "../commands/change-license.command";
 
 
 @Component({
@@ -34,6 +36,8 @@ import {NewTagCommand} from "../commands/new-tag.command";
     encapsulation: ViewEncapsulation.None
 })
 export class MainFormComponent {
+
+    private static licenseService: LicenseService = new LicenseService();
 
     @Input() document: OasDocument;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
@@ -120,28 +124,6 @@ export class MainFormComponent {
     }
 
     /**
-     * returns the license name.
-     */
-    public licenseName(): string {
-        if (this.doc().info && this.doc().info.license) {
-            return this.doc().info.license.name;
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * returns the license url.
-     */
-    public licenseUrl(): string {
-        if (this.doc().info && this.doc().info.license) {
-            return this.doc().info.license.url;
-        } else {
-            return "";
-        }
-    }
-
-    /**
      * Called when the user changes the title.
      * @param newTitle
      */
@@ -214,6 +196,62 @@ export class MainFormComponent {
      */
     public addTag(tag: any): void {
         let command: ICommand = new NewTagCommand(tag.name, tag.description);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Returns true if a license has been configured for this API.
+     */
+    public hasLicense(): boolean {
+        if (this.doc().info && this.doc().info.license) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the resolved license or null if not found.
+     */
+    public license(): ILicense {
+        return MainFormComponent.licenseService.findLicense(this.licenseUrl());
+    }
+
+    /**
+     * returns the license name.
+     */
+    public licenseName(): string {
+        if (this.doc().info && this.doc().info.license) {
+            return this.doc().info.license.name;
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * returns the license url.
+     */
+    public licenseUrl(): string {
+        if (this.doc().info && this.doc().info.license) {
+            return this.doc().info.license.url;
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Returns the license service.
+     * @return {LicenseService}
+     */
+    public licenseService(): LicenseService {
+        return MainFormComponent.licenseService;
+    }
+
+    /**
+     * Called when the user chooses a new license in the Choose License dialog.
+     * @param licenseInfo
+     */
+    public setLicense(licenseInfo: any): void {
+        let command: ICommand = new ChangeLicenseCommand(licenseInfo.name, licenseInfo.url);
         this.onCommand.emit(command);
     }
 

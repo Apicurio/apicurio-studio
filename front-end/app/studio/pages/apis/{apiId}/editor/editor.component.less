@@ -10,6 +10,44 @@
   content: "/";
 }
 
+.api-editor .context-help a {
+  cursor: pointer;
+}
+.api-editor .context-help a .context-help-icon {
+  -webkit-transition: opacity 300ms;
+  -moz-transition: opacity 300ms;
+  -ms-transition: opacity 300ms;
+  -o-transition: opacity 300ms;
+  transition: opacity 300ms;
+}
+.api-editor .context-help .context-help-panel {
+  position: fixed;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  box-shadow: 3px 3px 3px #aaa;
+  z-index: 150;
+  background: white;
+  font-size: 15px;
+  font-weight: normal;
+  max-width: 450px;
+  cursor: default;
+}
+.api-editor .context-help .context-help-panel p {
+  padding: 0;
+  margin: 0;
+  line-height: 18px;
+}
+.api-editor .context-help .context-help-panel pre {
+  margin-top: 10px;
+}
+.api-editor .context-help .context-help-panel p > a {
+}
+.api-editor .context-help .context-help-panel p > a:hover {
+  text-decoration: underline;
+}
+
 .api-editor .api-item-description {
   font-size: 16px;
   padding-left: 5px;
@@ -107,10 +145,15 @@
 .api-editor .section .section-header a span.section-label {
   font-weight: 600;
 }
-.api-editor .section .section-header a span.fa {
-  display: none;
-  font-size: 11px;
-  float: left;
+.api-editor .section .section-header .context-help a span.fa {
+  opacity: 0;
+  font-size: 14px;
+}
+.api-editor .section .section-header:hover .context-help a span.fa {
+  opacity: 255;
+}
+.api-editor .section .section-header .context-help a:hover span.fa {
+  color: #356c8c;
 }
 .api-editor .section .section-header .btn {
   margin-top: 1px;

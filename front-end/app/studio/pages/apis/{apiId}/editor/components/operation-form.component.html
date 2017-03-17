@@ -59,6 +59,12 @@
                         <a data-toggle="collapse" data-target="#info-section-body">
                             <span class="section-label">INFO</span>
                         </a>
+                        <context-help>
+                            <p>
+                                In this section you can easily edit the <strong>Name</strong> and
+                                <strong>Description</strong> of the Operation.
+                            </p>
+                        </context-help>
                     </div>
                     <div class="section-body collapse in" id="info-section-body">
                         <h1>
@@ -76,6 +82,12 @@
                         <a data-toggle="collapse" data-target="#path-parameters-section-body">
                             <span class="section-label">PATH PARAMETERS</span>
                         </a>
+                        <context-help>
+                            <p>
+                                This section is visible because the path/endpoint this operation belongs to has dynamic parameters.
+                                Configure the parameters' descriptions and types below.
+                            </p>
+                        </context-help>
                     </div>
                     <div class="section-body collapse in" id="path-parameters-section-body">
                         <table class="table table-striped api-operation-parameters">
@@ -107,6 +119,13 @@
                         <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
                         </a>
+                        <context-help>
+                            <p>
+                                Use this section to configure the operation's <strong>Request Body</strong>.  Typically a
+                                request body is used for <strong>PUT</strong> and <strong>POST</strong> only.  Other operation
+                                types usually do not include a body.
+                            </p>
+                        </context-help>
                         <button class="btn btn-sm btn-default pull-right" [style.visibility]="'hidden'"
                                 [disabled]="disabled"><span class="fa fa-plus"></span></button>
                         <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
@@ -162,6 +181,13 @@
                         <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
                             <span class="section-label">QUERY PARAMETERS</span>
                         </a>
+                        <context-help>
+                            <p>
+                                An operation may, optionally, allow additional options to be sent via <strong>URL query
+                                parameters</strong>.  This section allows you to document what query parameters are
+                                accepted/expected by this operation.
+                            </p>
+                        </context-help>
                         <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
                                 title="Add a new query parameter"><span class="fa fa-plus"></span></button>
                         <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
@@ -213,6 +239,21 @@
                         <a data-toggle="collapse" data-target="#responses-section-body">
                             <span class="section-label">RESPONSES</span>
                         </a>
+                        <context-help>
+                            <p>
+                                Every operation must include at least one <strong>Response</strong>.  Multiple responses (with
+                                different HTTP response codes) are possible for each operation - so add as many as you like.
+                                Some common choices for HTTP responses are:
+                            </p>
+                            <br>
+                            <ul>
+                                <li><strong>200 OK</strong> - successful GET (retrieve data) operations</li>
+                                <li><strong>201 Created</strong> - successful POST (create) operations</li>
+                                <li><strong>204 No Content</strong> - successful PUT (update) operations</li>
+                                <li><strong>400 Bad Request</strong> - failed to PUT/POST something due to incorrect input</li>
+                                <li><strong>404 Not Found</strong> - failed to GET something</li>
+                            </ul>
+                        </context-help>
                         <button class="btn btn-sm btn-default pull-right" (click)="openAddResponseModal()"><span class="fa fa-plus"></span></button>
                         <button class="btn btn-sm btn-default pull-right" (click)="deleteAllResponses()"
                                 [disabled]="!hasResponses()"><span class="pficon pficon-delete"></span></button>

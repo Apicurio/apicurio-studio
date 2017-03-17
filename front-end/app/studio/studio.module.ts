@@ -95,6 +95,7 @@ import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/componen
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-response.component";
 import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-tag.component";
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/set-license.component";
+import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/components/context-help.component";
 
 
 @NgModule({
@@ -108,7 +109,7 @@ import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/components/
         DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
         AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
-        AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent],
+        AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent, ContextHelpComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

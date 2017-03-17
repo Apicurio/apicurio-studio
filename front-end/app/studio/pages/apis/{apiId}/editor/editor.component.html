@@ -13,6 +13,21 @@
                     <a data-toggle="collapse" data-target="#path-section-body">
                         <span class="section-label">Paths</span>
                     </a>
+                    <context-help>
+                        <p>
+                            The core of any REST API is the set of resources/paths it exposes.  Each path is of
+                            the form <strong>/path/to/resource</strong> and can support a number of operations such
+                            as <strong>GET</strong>, <strong>POST</strong>, and <strong>DELETE</strong>.
+                        </p>
+                        <br>
+                        <p>
+                            Note that paths can have parameters, which are defined using bracket syntax, like this:
+                        </p>
+                        <pre>/root/resources/<span class="path-param">{{ '{' }}resourceId}</span>/subresource/<span class="path-param">{{ '{' }}subresourceId}</span></pre>
+                        <p>
+                            The result is a path with two dynamic components: <strong>resourceId</strong> and <strong>subresourceId</strong>.
+                        </p>
+                    </context-help>
                     <button class="btn btn-sm btn-default pull-right"
                             (click)="addPathDialog.open(getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
                 </div>
@@ -47,12 +62,22 @@
                     </div>
                 </div>
             </div>
+
             <!-- Definitions Section -->
             <div class="section definition-section panel-group">
                 <div class="section-header panel-title">
                     <a data-toggle="collapse" data-target="#definition-section-body">
                         <span class="section-label">Definitions</span>
                     </a>
+                    <context-help>
+                        <p>
+                            It is often necessary for many operations to return the same type of data
+                            (or a list of that same data type).  Rather than define the same data type
+                            multiple times within each operation, you can create named Definitions
+                            in this section.  These can then be referenced in the <strong>Request Body</strong>
+                            and also <strong>Responses</strong> of any Operation in the API.
+                        </p>
+                    </context-help>
                     <button class="btn btn-sm btn-default pull-right"
                             (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
                 </div>
@@ -70,7 +95,9 @@
                     </div>
                 </div>
             </div>
+
             <!-- Responses Section -->
+            <!--
             <div class="section response-section panel-group">
                 <div class="section-header panel-title">
                     <a class="collapsed" data-toggle="collapse" data-target="#response-section-body">
@@ -91,6 +118,7 @@
                     </div>
                 </div>
             </div>
+            -->
         </div>
     </div>
 

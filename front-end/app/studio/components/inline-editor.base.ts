@@ -131,6 +131,7 @@ export abstract class AbstractInlineEditor<T> {
         }
         AbstractInlineEditor.s_activeEditor = this;
 
+        // TODO watch for changes to children rather than simply wait 250ms??
         TimerObservable.create(250).subscribe(() => {
             this.canClose = true;
         });

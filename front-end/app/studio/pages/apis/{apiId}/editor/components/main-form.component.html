@@ -33,6 +33,9 @@
             <a data-toggle="collapse" data-target="#info-section-body">
                 <span class="section-label">INFO</span>
             </a>
+            <context-help>
+                <p>This section allows you to modify the <strong>Name</strong>, <strong>Version</strong>, and <strong>Description</strong> of the API.</p>
+            </context-help>
         </div>
         <div class="section-body collapse in" id="info-section-body">
             <div class="api-title-and-version">
@@ -91,6 +94,13 @@
             <a [class.collapsed]="!hasLicense()" data-toggle="collapse" data-target="#license-section-body">
                 <span class="section-label">LICENSE</span>
             </a>
+            <context-help>
+                <p>
+                    Is your API <a href="https://en.wikipedia.org/wiki/Comparison_of_free_and_open-source_software_licenses" target="_blank">licensed</a>?
+                    Configure that here!  We'll help by showing you the most common licenses
+                    you can choose from (and even describe each one a little bit!).
+                </p>
+            </context-help>
         </div>
         <div class="section-body collapse" id="license-section-body" [class.in]="hasLicense()">
 
@@ -150,6 +160,12 @@
             <a [class.collapsed]="tags().length === 0" data-toggle="collapse" data-target="#tags-section-body">
                 <span class="section-label">TAGS</span>
             </a>
+            <context-help>
+                <p>
+                    Configure tags for your API in this section.  Once defined, tags can be used to organize
+                    your API's <strong>operations</strong> by arbitrary criteria.
+                </p>
+            </context-help>
             <button class="btn btn-sm btn-default pull-right" (click)="addTagDialog.open()"><span class="fa fa-plus"></span></button>
         </div>
         <div class="section-body collapse" id="tags-section-body" [class.in]="tags().length > 0">
@@ -186,6 +202,7 @@
     </div>
 
     <!-- Security Definitions -->
+    <!--
     <div class="section info-section panel-group">
         <div class="section-header panel-title">
             <a data-toggle="collapse" data-target="#security-section-body">
@@ -197,6 +214,7 @@
             <p>Configure the API's security definitions here (TBD)</p>
         </div>
     </div>
+    -->
 
     <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
 

@@ -10,6 +10,8 @@
 @themes-light-api-bg-color: white;
 @themes-light-bg-transition: 200ms;
 @themes-light-shadow-transition: 350ms;
+@themes-light-api-ctxmenu-color: #E89F3D;
+@themes-light-api-ctxmenu-color-light: #FFCC87;
 
 .api-editor.light span.empty, .api-editor.light div.empty, .api-editor.light button.empty {
   color: @themes-light-api-empty-label-color;
@@ -149,8 +151,6 @@
 }
 
 
-
-
 .api-editor.light .editor-master .editor-outline .api-path {
   -webkit-transition: background-color @themes-light-bg-transition;
   -moz-transition: background-color @themes-light-bg-transition;
@@ -161,9 +161,14 @@
 .api-editor.light .editor-master .editor-outline .api-path:hover {
   background-color: @themes-light-api-hover-color;
 }
+
 .api-editor.light .editor-master .editor-outline .api-path.selected {
   background-color: @themes-light-api-selected-color-light;
   border-left: 2px solid @themes-light-api-selected-color;
+}
+.api-editor.light .editor-master .editor-outline .api-path.contexted, .api-editor .editor-master .editor-outline .api-path.contexted:hover {
+  background-color: @themes-light-api-ctxmenu-color-light;
+  border-left: 2px dotted @themes-light-api-ctxmenu-color;
 }
 .api-editor.light .editor-master .editor-outline .api-path.selected span.path-param {
 }
@@ -182,6 +187,7 @@
   border: 1px solid black;
   box-shadow: 0 0 3px rgb(20,20,20);
 }
+
 .api-editor.light .editor-master .editor-outline .api-path .api-operations {
 }
 
@@ -198,6 +204,10 @@
 .api-editor.light .editor-master .editor-outline .api-definition.selected {
   background-color: @themes-light-api-selected-color-light;
   border-left: 2px solid @themes-light-api-selected-color;
+}
+.api-editor.light .editor-master .editor-outline .api-definition.contexted, .api-editor .editor-master .editor-outline .api-definition.contexted:hover {
+  background-color: @themes-light-api-ctxmenu-color-light;
+  border-left: 2px dotted @themes-light-api-ctxmenu-color;
 }
 
 .api-editor.light .editor-master .editor-outline .api-response {

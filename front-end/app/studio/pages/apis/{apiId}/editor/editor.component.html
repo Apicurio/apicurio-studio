@@ -1,11 +1,45 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
     <div class="editor-master">
+        <!-- Path Context Menu -->
+        <ul id="path-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'path'"
+            [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+            <li>
+                <a href="#" onclick="return false" (click)="newPath()">
+                    <span class="pficon pficon-add-circle-o"></span>
+                    <span>New Sub-Path</span>
+                </a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a href="#" onclick="return false" (click)="deletePath()">
+                    <span class="pficon pficon-delete"></span>
+                    <span>Delete Path</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Definition Context Menu -->
+        <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
+            [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+            <li>
+                <a href="#" onclick="return false" (click)="deleteDefinition()">
+                    <span class="pficon pficon-delete"></span>
+                    <span>Delete Definition</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Main Editor Selector (name of API, select to show Main Form -->
         <div class="editor-main" [class.selected]="selectedType === 'main'" (click)="selectMain()">
             <h2>{{ document().info.title }}</h2>
         </div>
+
+        <!-- Search - Used to Filter Paths and Definitions -->
         <div class="editor-search">
             <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
         </div>
+
+        <!-- Outline - Paths, Defintions, Responses -->
         <div class="editor-outline">
             <!-- Paths Section -->
             <div class="section path-section panel-group">
@@ -33,8 +67,9 @@
                 </div>
                 <div class="section-body collapse in" id="path-section-body">
                     <div class="api-path" *ngFor="let pathName of pathNames()"
+                            [class.contexted]="contextMenuType === 'path' && contextMenuItem === pathName"
                             [class.selected]="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation')">
-                        <div path-item [path]="pathName" (click)="selectPath(pathName)"></div>
+                        <div path-item [path]="pathName" (click)="selectPath(pathName)" (contextmenu)="showPathContextMenu($event, pathName)"></div>
                         <div class="api-operations" *ngIf="selectedItem === pathName && (selectedType === 'path' || selectedType === 'operation') && hasAtLeastOneOperation(pathName)">
                             <span *ngIf="hasOperation(pathName, 'get')" class="label label-success"  (click)="selectOperation(selectedItem, 'get')"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'get'">GET</span>
@@ -83,7 +118,8 @@
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
                     <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
-                         (click)="selectDefinition(defName)"
+                         (click)="selectDefinition(defName)" (contextmenu)="showDefinitionContextMenu($event, defName)"
+                         [class.contexted]="contextMenuType === 'definition' && contextMenuItem === defName"
                          [class.selected]="selectedItem === defName && selectedType === 'definition'"></div>
                     <div class="alert alert-info" *ngIf="definitionNames().length === 0">
                         <span class="pficon pficon-info"></span>

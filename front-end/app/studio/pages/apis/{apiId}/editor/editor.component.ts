@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild, HostListener} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./commands.manager";
-import {ModalDirective} from "ng2-bootstrap";
 import {NewPathCommand} from "./commands/new-path.command";
 import {NewDefinitionCommand} from "./commands/new-definition.command";
+import {AddPathDialogComponent} from "./components/dialogs/add-path.component";
+import {DeletePathCommand, DeleteDefinitionSchemaCommand} from "./commands/delete.command";
 
 
 @Component({
@@ -44,6 +45,15 @@ export class ApiEditorComponent {
     selectedItem: string = null;
     selectedType: string = "main";
     subselectedItem: string = null;
+
+    contextMenuItem: string = null;
+    contextMenuType: string = null;
+    contextMenuPos: any = {
+        left: "0px",
+        top: "0px"
+    };
+
+    @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
 
     filterCriteria: string = null;
 
@@ -221,6 +231,9 @@ export class ApiEditorComponent {
             this._commands.redoLastCommand(this.document());
             this.onDirty.emit(true);
         }
+        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+            this.closeContextMenu();
+        }
     }
 
     /**
@@ -391,6 +404,79 @@ export class ApiEditorComponent {
             return true;
         }
         return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+    }
+
+    /**
+     * Called when the user right-clicks on a path.
+     * @param event
+     * @param pathName
+     */
+    public showPathContextMenu(event: MouseEvent, pathName: string): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuType = "path";
+        this.contextMenuItem = pathName;
+    }
+
+    @HostListener("document:click", ["$event"])
+    public onDocumentClick(event: MouseEvent): void {
+        this.closeContextMenu();
+    }
+
+    /**
+     * Closes the context menu.
+     */
+    private closeContextMenu(): void {
+        this.contextMenuItem = null;
+        this.contextMenuType = null;
+    }
+
+    /**
+     * Called when the user clicks "New Path" in the context-menu for a path.
+     */
+    public newPath(): void {
+        this.addPathDialog.open(this.contextMenuItem);
+        this.closeContextMenu();
+    }
+
+    /**
+     * Called when the user clicks "Delete Path" in the context-menu for a path.
+     */
+    public deletePath(): void {
+        let command: ICommand = new DeletePathCommand(this.contextMenuItem);
+        this.onCommand(command);
+        if (this.contextMenuItem === this.selectedItem) {
+            this.selectMain();
+        }
+        this.closeContextMenu();
+    }
+
+    /**
+     * Called when the user right-clicks on a path.
+     * @param event
+     * @param pathName
+     */
+    public showDefinitionContextMenu(event: MouseEvent, definitionName: string): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuType = "definition";
+        this.contextMenuItem = definitionName;
+    }
+
+    /**
+     * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
+     */
+    public deleteDefinition(): void {
+        let command: ICommand = new DeleteDefinitionSchemaCommand(this.contextMenuItem);
+        this.onCommand(command);
+        if (this.contextMenuItem === this.selectedItem) {
+            this.selectMain();
+        }
+        this.closeContextMenu();
     }
 
 }

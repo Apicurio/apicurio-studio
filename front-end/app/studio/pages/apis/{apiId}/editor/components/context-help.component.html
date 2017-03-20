@@ -1,4 +1,4 @@
-<span class="context-help">
+<span class="context-help" (window:keydown)="onGlobalKeyDown($event)">
     <a (click)="open($event)"><span class="context-help-icon fa fa-fw fa-info-circle"></span></a>
     <div #helppanel *ngIf="isOpen()" class="context-help-panel" [style.left]="left" [style.top]="top">
         <ng-content></ng-content>

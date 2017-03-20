@@ -26,7 +26,7 @@
   padding: 10px;
   border: 1px solid #bbb;
   border-radius: 3px;
-  box-shadow: 3px 3px 3px #aaa;
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
   z-index: 150;
   background: white;
   font-size: 15px;
@@ -187,11 +187,15 @@
 }
 .api-editor .editor-master .editor-outline .api-path.selected .label.selected {
 }
+
 .api-editor .editor-master .editor-outline .api-path .api-operations {
   margin-top: 5px;
   padding-bottom: 10px;
 }
 
+.api-editor .editor-master .editor-outline .api-path.contexted {
+  cursor: default;
+}
 
 .api-editor .editor-master .editor-outline .api-definition {
   padding-left: 15px;
@@ -202,6 +206,8 @@
 }
 .api-editor .editor-master .editor-outline .api-definition.selected {
   cursor: default;
+}
+.api-editor .editor-master .editor-outline .api-definition.contexted {
 }
 
 .api-editor .editor-master .editor-outline .api-response {
@@ -534,3 +540,9 @@
 .api-editor .editor-detail table tbody tr:hover td.actions > div {
   visibility: visible;
 }
+
+#path-context-menu, #definition-context-menu {
+  display: block;
+  position: fixed;
+}
+

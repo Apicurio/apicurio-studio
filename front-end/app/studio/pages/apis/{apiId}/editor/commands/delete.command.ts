@@ -90,7 +90,7 @@ export class DeletePathCommand extends AbstractCommand implements ICommand {
      * @param document
      */
     public execute(document: OasDocument): void {
-        console.info("[DeletePathCommand] Executing.");
+        console.info("[DeletePathCommand] Executing for path: %s", this._path);
         this._oldPath = null;
         let doc: Oas20Document  = <Oas20Document>document;
         let paths: Oas20Paths = doc.paths;

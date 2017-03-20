@@ -54,4 +54,14 @@ export class ContextHelpComponent {
         return this._open;
     }
 
+    /**
+     * Called whenever the user presses a key.
+     * @param event
+     */
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+            this.close();
+        }
+    }
+
 }

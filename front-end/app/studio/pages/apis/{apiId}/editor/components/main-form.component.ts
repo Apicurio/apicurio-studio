@@ -23,7 +23,7 @@ import {ChangeTitleCommand} from "../commands/change-title.command";
 import {ChangeDescriptionCommand} from "../commands/change-description.command";
 import {ObjectUtils} from "../../../../../util/common";
 import {ChangePropertyCommand} from "../commands/change-property.command";
-import {DeleteTagCommand} from "../commands/delete.command";
+import {DeleteTagCommand, DeleteNodeCommand} from "../commands/delete.command";
 import {NewTagCommand} from "../commands/new-tag.command";
 import {ILicense, LicenseService} from "../services/license.service";
 import {ChangeLicenseCommand} from "../commands/change-license.command";
@@ -287,6 +287,22 @@ export class MainFormComponent {
      */
     public setContactInfo(contactInfo: Oas20Contact): void {
         let command: ICommand = new ChangeContactCommand(contactInfo);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user chooses to remove the contact info.
+     */
+    public deleteContact(): void {
+        let command: ICommand = new DeleteNodeCommand("contact", this.doc().info);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user chooses to remove the license.
+     */
+    public deleteLicense(): void {
+        let command: ICommand = new DeleteNodeCommand("license", this.doc().info);
         this.onCommand.emit(command);
     }
 

@@ -88,6 +88,7 @@
                     about how to contact you should they need help.
                 </p>
             </context-help>
+            <button class="btn btn-sm btn-default pull-right" [disabled]="!hasContact()" (click)="deleteContact()"><span class="fa fa-trash"></span></button>
         </div>
         <div class="section-body collapse" id="contact-section-body" [class.in]="hasContact()">
 
@@ -120,6 +121,7 @@
                     you can choose from (and even describe each one a little bit!).
                 </p>
             </context-help>
+            <button class="btn btn-sm btn-default pull-right" [disabled]="!hasLicense()" (click)="deleteLicense()"><span class="fa fa-trash"></span></button>
         </div>
         <div class="section-body collapse" id="license-section-body" [class.in]="hasLicense()">
 

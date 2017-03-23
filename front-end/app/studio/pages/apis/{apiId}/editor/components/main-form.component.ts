@@ -16,7 +16,7 @@
  */
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {OasDocument, Oas20Document, Oas20Tag, Oas20License} from "oai-ts-core";
+import {OasDocument, Oas20Document, Oas20Tag, Oas20License, Oas20Contact} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
 import {ChangeTitleCommand} from "../commands/change-title.command";
@@ -27,6 +27,7 @@ import {DeleteTagCommand} from "../commands/delete.command";
 import {NewTagCommand} from "../commands/new-tag.command";
 import {ILicense, LicenseService} from "../services/license.service";
 import {ChangeLicenseCommand} from "../commands/change-license.command";
+import {ChangeContactCommand} from "../commands/change-contact-info.command";
 
 
 @Component({
@@ -91,13 +92,25 @@ export class MainFormComponent {
     }
 
     /**
+     * Returns the current contact object.
+     * @return {Oas20Contact}
+     */
+    public contact(): Oas20Contact {
+        if (this.hasContact()) {
+            return this.doc().info.contact;
+        } else {
+            return new Oas20Contact();
+        }
+    }
+
+    /**
      * returns the contact name.
      */
     public contactName(): string {
-        if (this.doc().info && this.doc().info.contact) {
+        if (this.doc().info && this.doc().info.contact && this.doc().info.contact.name) {
             return this.doc().info.contact.name;
         } else {
-            return "";
+            return this.contactEmail();
         }
     }
 
@@ -105,7 +118,7 @@ export class MainFormComponent {
      * returns the contact email.
      */
     public contactEmail(): string {
-        if (this.doc().info && this.doc().info.contact) {
+        if (this.doc().info && this.doc().info.contact && this.doc().info.contact.email) {
             return this.doc().info.contact.email;
         } else {
             return "";
@@ -252,6 +265,28 @@ export class MainFormComponent {
      */
     public setLicense(licenseInfo: any): void {
         let command: ICommand = new ChangeLicenseCommand(licenseInfo.name, licenseInfo.url);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Returns true if the API has Contact Info defined.
+     * @return {boolean}
+     */
+    public hasContact(): boolean {
+        if (this.doc().info && this.doc().info.contact) {
+            if (this.doc().info.contact.email || this.doc().info.contact.url) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Called to change the document's contact information.
+     * @param contactInfo
+     */
+    public setContactInfo(contactInfo: Oas20Contact): void {
+        let command: ICommand = new ChangeContactCommand(contactInfo);
         this.onCommand.emit(command);
     }
 

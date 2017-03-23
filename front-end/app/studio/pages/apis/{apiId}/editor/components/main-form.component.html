@@ -71,20 +71,39 @@
                     </div>
                 </div>
                 -->
-                <!-- License -->
-                <!--
-                <div class="api-md-entry">
-                    <div class="md-label">License</div>
-                    <div class="md-value">
-                        <span>{{ licenseName() }}</span>
-                        <a href="{{ licenseUrl() }}">{{ licenseUrl() }}</a>
-                        <span class="fa fa-fw fa-external-link"></span>
-                    </div>
-                </div>
-                -->
-
             </div>
 
+        </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="section contact-section panel-group">
+        <div class="section-header panel-title">
+            <a [class.collapsed]="!hasContact()" data-toggle="collapse" data-target="#contact-section-body">
+                <span class="section-label">CONTACT</span>
+            </a>
+            <context-help>
+                <p>
+                    Update the information contained in this section to provide users of the API details
+                    about how to contact you should they need help.
+                </p>
+            </context-help>
+        </div>
+        <div class="section-body collapse" id="contact-section-body" [class.in]="hasContact()">
+
+            <div class="alert alert-info" *ngIf="!hasContact()">
+                <span class="pficon pficon-info"></span>
+                <strong>None Found</strong>
+                <span>No contact info has been configured for this API.</span>
+                <button class="btn btn-primary btn-sm pull-right" (click)="setContactDialog.open()">Add Contact Info</button>
+            </div>
+
+            <div *ngIf="hasContact()">
+                <p>
+                    <span>For more information about this API, users can </span><span *ngIf="contactEmail()">contact <a href="mailto:{{ contactEmail() }}" target="_blank">{{ contactName() }}</a></span><span *ngIf="contactUrl() && contactEmail()"> or </span><span *ngIf="contactUrl()">visit <a href="{{ contactUrl() }}" target="_blank">{{ contactUrl() }}</a></span><span>.</span>
+                </p>
+                <button class="btn btn-default btn-sm" (click)="setContactDialog.open(contact())">Change Contact Info</button>
+            </div>
         </div>
     </div>
 
@@ -152,6 +171,7 @@
 
         </div>
         <set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>
+        <set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>
     </div>
 
     <!-- Global Tags -->

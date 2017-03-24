@@ -22,8 +22,8 @@ import {
 } from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewRequestBodyCommand} from "../commands/new-request-body.command";
-import {ChangeParameterTypeCommand, ChangePathParameterTypeCommand} from "../commands/change-parameter-type.command";
-import {ChangePropertyCommand, ChangePathParameterPropertyCommand} from "../commands/change-property.command";
+import {ChangeParameterTypeCommand} from "../commands/change-parameter-type.command";
+import {ChangePropertyCommand} from "../commands/change-property.command";
 import {
     DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
     DeleteResponseCommand
@@ -306,7 +306,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changePathParamDescription(param: Oas20Parameter, newParamDescription: string): void {
-        let command: ICommand = new ChangePathParameterPropertyCommand<string>("description", newParamDescription, param);
+        let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
         this.onCommand.emit(command);
     }
 
@@ -321,7 +321,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
             type = newParamType.$ref.substr(14);
         }
 
-        let command: ICommand = new ChangePathParameterTypeCommand(param, type, isSimpleType);
+        let command: ICommand = new ChangeParameterTypeCommand(param, type, isSimpleType);
         this.onCommand.emit(command);
     }
 

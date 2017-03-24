@@ -104,7 +104,7 @@
                                 <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
                                                                                (onChange)="changePathParamDescription(param, $event)"
                                                                                [value]="paramDescription(param)"></description-editor-qp></td>
-                                <td class="type"><type-editor-of [document]="param.ownerDocument()"
+                                <td class="type"><type-editor-of [document]="param.ownerDocument()" [paramIn]="'path'"
                                                                  [value]="paramType(param)" [noValueMessage]="'No Type'"
                                                                  (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
                             </tr>
@@ -219,7 +219,7 @@
                                            (onChange)="changeQueryParamDescription(param, $event)"
                                            [value]="paramDescription(param)"></description-editor-qp></td>
                                     <td class="type"><type-editor-of [document]="param.ownerDocument()"
-                                            [value]="paramType(param)" [noValueMessage]="'No Type'"
+                                            [value]="paramType(param)" [noValueMessage]="'No Type'" [paramIn]="'query'"
                                             (onChange)="changeQueryParamType(param, $event)"></type-editor-of></td>
                                     <td class="actions">
                                         <div>
@@ -283,7 +283,7 @@
                                              (onChange)="changeResponseDescription(response, $event)"
                                              [value]="responseDescription(response)"></description-editor-qp></td>
                                     <td class="type"><type-editor-of [document]="response.ownerDocument()"
-                                             [value]="responseType(response)" [noValueMessage]="'No Type'"
+                                             [value]="responseType(response)" [noValueMessage]="'No Type'" [paramIn]="'body'"
                                              (onChange)="changeResponseType(response, $event)"></type-editor-of></td>
                                     <td class="actions">
                                         <div>

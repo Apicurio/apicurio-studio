@@ -46,10 +46,47 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
 
-                <div class="alert alert-info">
-                    <span class="pficon pficon-info"></span>
-                    This page shows summary details about the <strong>{{ path.path() }}</strong> resource path.  Below you can
-                    view and modify the operations supported by this path.
+                <!-- Path Parameters Section -->
+                <div class="section path-parameters-section panel-group" *ngIf="hasPathParameters() && hasAtLeastOneOperation()">
+                    <div class="section-header panel-title">
+                        <a data-toggle="collapse" data-target="#path-parameters-section-body">
+                            <span class="section-label">PATH PARAMETERS</span>
+                        </a>
+                        <context-help>
+                            <p>
+                                This section is visible because this path/endpoint has dynamic parameters.  Use the table of parameters
+                                below to set the description and/or type for <strong>all operations</strong> in this path.
+                            </p>
+                            <br/>
+                            <p>
+                                Alternatively, you can set the description and/or type for the path parameters for each individual
+                                operation, which can be useful if you would like that information to be different.  This is typically
+                                only useful for descriptions.
+                            </p>
+                        </context-help>
+                    </div>
+                    <div class="section-body collapse in" id="path-parameters-section-body">
+                        <table class="table table-striped api-path-parameters">
+                            <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th width="60%">Description</th>
+                                <th width="40%">Type</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let param of pathParameterNames()">
+                                <td class="parameter path-parameter">{{ param }}</td>
+                                <td class="description"><description-editor-qp [noValueMessage]="'No (common) description.'"
+                                                                               (onChange)="changePathParamDescription(param, $event)"
+                                                                               [value]="pathParamDescription(param)"></description-editor-qp></td>
+                                <td class="type"><type-editor-of [document]="document()" [paramIn]="'path'"
+                                                                 [value]="pathParamType(param)" [noValueMessage]="'No (common) Type'"
+                                                                 (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Operations Section -->

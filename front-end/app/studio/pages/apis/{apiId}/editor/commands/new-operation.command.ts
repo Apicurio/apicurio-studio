@@ -18,6 +18,7 @@
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {OasDocument, Oas20Document, Oas20PathItem, Oas20Operation, Oas20Parameter} from "oai-ts-core";
 import {ObjectUtils} from "../../../../../util/common";
+import {ModelUtils} from "../util/model.util";
 
 /**
  * A command used to create a new operation in a path.
@@ -56,7 +57,7 @@ export class NewOperationCommand extends AbstractCommand implements ICommand {
         let operation: Oas20Operation = path.createOperation(this._method);
 
         // Create the path parameters
-        let pathParamNames: string[] = this.detectPathParamNames(path.path());
+        let pathParamNames: string[] = ModelUtils.detectPathParamNames(path.path());
         pathParamNames.forEach( paramName => {
             let param: Oas20Parameter = operation.createParameter();
             param.in = "path";
@@ -112,16 +113,6 @@ export class NewOperationCommand extends AbstractCommand implements ICommand {
         }
 
         path[this._method] = null;
-    }
-
-    private detectPathParamNames(path: string): string[] {
-        let segments: string[] = path.split("/");
-        let pnames: string[] = segments.filter( segment => {
-            return segment.startsWith("{") && segment.endsWith("}");
-        }).map( segment => {
-            return segment.substring(1, segment.length - 1);
-        });
-        return pnames;
     }
 
     private detectSiblingParameter(path: Oas20PathItem, paramName: string): Oas20Parameter {

@@ -30,6 +30,7 @@ import {ObjectUtils} from "../../../../../../util/common";
 export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema> {
 
     @Input() document: Oas20Document;
+    @Input() paramIn: string;
 
     protected formatValue(value: Oas20Schema): string {
         if (value.$ref && value.$ref.indexOf("#/definitions/") === 0) {
@@ -82,7 +83,7 @@ export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema
     }
 
     public hasDefinitions(): boolean {
-        if (this.definitionNames()) {
+        if (this.definitionNames().length > 0) {
             return true;
         } else {
             return false;
@@ -90,7 +91,7 @@ export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema
     }
 
     public definitionNames(): string[] {
-        if (ObjectUtils.isNullOrUndefined(this.document.definitions)) {
+        if (this.paramIn !== "body" || ObjectUtils.isNullOrUndefined(this.document.definitions)) {
             return [];
         }
         return this.document.definitions.getItemNames().sort();

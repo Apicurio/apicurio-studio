@@ -15,13 +15,21 @@
  * limitations under the License.
  */
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {Oas20PathItem, Oas20Operation, Oas20PathItems, Oas20Paths} from "oai-ts-core";
+import {
+    Oas20PathItem, Oas20Operation, Oas20PathItems, Oas20Paths, Oas20Document, Oas20Schema,
+    Oas20Parameter
+} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {NewOperationCommand} from "../commands/new-operation.command";
 import {ChangePropertyCommand} from "../commands/change-property.command";
 import {DeleteNodeCommand, DeletePathCommand} from "../commands/delete.command";
 import {SourceFormComponent} from "./source-form.base";
 import {ReplacePathItemCommand} from "../commands/replace.command";
+import {ModelUtils} from "../util/model.util";
+import {
+    ChangePathParametersDescriptionCommand,
+    ChangePathParametersTypeCommand
+} from "../commands/change-path-parameters.command";
 
 
 @Component({
@@ -51,6 +59,10 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
 
     protected createReplaceNodeCommand(node: Oas20PathItem) {
         return new ReplacePathItemCommand(this.path, node);
+    }
+
+    public document(): Oas20Document {
+        return <Oas20Document>this.path.ownerDocument();
     }
 
     public hasGet(): boolean {
@@ -115,7 +127,6 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         }
     }
 
-
     public getDescription(): string {
         return this.description(this.path.get);
     }
@@ -179,6 +190,63 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         let command: ICommand = new DeletePathCommand(this.path.path());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
+    }
+
+    public hasAtLeastOneOperation(): boolean {
+        return this.hasGet() || this.hasPut() || this.hasPost() || this.hasDelete() || this.hasOptions() ||
+            this.hasHead() || this.hasPatch();
+    }
+
+    public hasPathParameters(): boolean {
+        return this.pathParameterNames().length > 0;
+    }
+
+    public pathParameterNames(): string[] {
+        return ModelUtils.detectPathParamNames(this.path.path());
+    }
+
+    public pathParamDescription(paramName): string {
+        let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
+        let description: string = null;
+        for (let param of params) {
+            if (param && param.description) {
+                if (description === null) {
+                    description = param.description;
+                } else if (description !== param.description) {
+                    description = null;
+                    break;
+                }
+            }
+        };
+        return description;
+    }
+
+    public changePathParamDescription(paramName: string, newDescription: string): void {
+        let command: ICommand = new ChangePathParametersDescriptionCommand(this.path, paramName, newDescription);
+        this.onCommand.emit(command);
+    }
+
+    public pathParamType(paramName: string): Oas20Schema {
+        let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
+        let type: Oas20Schema = null;
+        for (let param of params) {
+            if (param && param.type) {
+                if (type === null) {
+                    type = new Oas20Schema();
+                    type.type = param.type;
+                    type.format = param.format;
+                } else if (type.type !== param.type || type.format !== param.format) {
+                    type = null;
+                    break;
+                }
+            }
+        };
+        return type;
+    }
+
+    public changePathParamType(paramName: string, newParamType: Oas20Schema): void {
+        let command: ICommand = new ChangePathParametersTypeCommand(this.path, paramName, newParamType);
+        this.onCommand.emit(command);
     }
 
     public enableSourceMode(): void {

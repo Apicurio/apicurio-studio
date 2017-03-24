@@ -63,7 +63,7 @@ export class ChangeContactCommand extends AbstractCommand implements ICommand {
         let doc: Oas20Document = <Oas20Document> document;
         if (this._nullInfo) {
             doc.info = null;
-        } else {
+        } else if (this._oldContact) {
             this._oldContact._parent = doc.info;
             this._oldContact._ownerDocument = doc;
             doc.info.contact = this._oldContact;

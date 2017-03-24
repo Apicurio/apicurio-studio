@@ -65,7 +65,7 @@ export class ChangeLicenseCommand extends AbstractCommand implements ICommand {
         let doc: Oas20Document = <Oas20Document> document;
         if (this._nullInfo) {
             doc.info = null;
-        } else {
+        } else if (this._oldLicense) {
             this._oldLicense._parent = doc.info;
             this._oldLicense._ownerDocument = doc;
             doc.info.license = this._oldLicense;

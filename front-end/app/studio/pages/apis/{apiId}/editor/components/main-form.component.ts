@@ -358,6 +358,13 @@ export class MainFormComponent {
         scheme.flow = event.flow;
         scheme.authorizationUrl = event.authorizationUrl;
         scheme.tokenUrl = event.tokenUrl;
+        if (event.scopes) {
+            scheme.scopes = scheme.createScopes();
+            for (let s of event.scopes) {
+                scheme.scopes.addScope(s.name, s.description);
+            }
+        }
+
 
         let command: ICommand = new NewSecuritySchemeCommand(scheme);
         this.onCommand.emit(command);
@@ -377,6 +384,12 @@ export class MainFormComponent {
         scheme.flow = event.flow;
         scheme.authorizationUrl = event.authorizationUrl;
         scheme.tokenUrl = event.tokenUrl;
+        if (event.scopes) {
+            scheme.scopes = scheme.createScopes();
+            for (let s of event.scopes) {
+                scheme.scopes.addScope(s.name, s.description);
+            }
+        }
 
         let command: ICommand = new ChangeSecuritySchemeCommand(scheme);
         this.onCommand.emit(command);

@@ -68,7 +68,12 @@ export class ChangeSecuritySchemeCommand extends AbstractCommand implements ICom
         scheme.authorizationUrl = this._scheme.authorizationUrl;
         scheme.flow = this._scheme.flow;
         scheme.in = this._scheme.in;
-        scheme.scopes = this._scheme.scopes;
+        scheme.scopes = scheme.createScopes();
+        if (this._scheme.scopes) {
+            this._scheme.scopes.scopes().forEach( name => {
+                scheme.scopes.addScope(name, this._scheme.scopes.getScopeDescription(name));
+            });
+        }
     }
 
     /**
@@ -94,7 +99,12 @@ export class ChangeSecuritySchemeCommand extends AbstractCommand implements ICom
         scheme.authorizationUrl = this._oldScheme.authorizationUrl;
         scheme.flow = this._oldScheme.flow;
         scheme.in = this._oldScheme.in;
-        scheme.scopes = this._oldScheme.scopes;
+        scheme.scopes = scheme.createScopes();
+        if (this._oldScheme.scopes) {
+            this._oldScheme.scopes.scopes().forEach( name => {
+                scheme.scopes.addScope(name, this._oldScheme.scopes.getScopeDescription(name));
+            });
+        }
     }
 
 }

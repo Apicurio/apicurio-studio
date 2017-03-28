@@ -17,7 +17,7 @@
             <div class="modal-body">
                 <p>Configure the <strong *ngIf="mode === 'edit'">{{ model.schemeName }}</strong> security scheme below and then click <strong>OK</strong> when done.</p>
                 <hr />
-                <form id="securityscheme-form" class="form-horizontal" (submit)="add()" #securitySchemeForm="ngForm">
+                <form id="securityscheme-form" class="form-horizontal" #securitySchemeForm="ngForm">
                     <div class="form-group" *ngIf="mode === 'create'">
                         <label class="col-sm-3 control-label" for="schemeName">Name</label>
                         <div class="col-sm-9">
@@ -116,11 +116,49 @@
                                        placeholder="" [(ngModel)]="model.tokenUrl">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="scopes">Scopes</label>
+                            <div class="col-sm-9">
+                                <table class="table table-striped table-scopes" id="scopes">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th width="60%">Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let scope of scopes()">
+                                            <td nowrap="nowrap" class="scope-name">
+                                                <description-editor-qp [noValueMessage]="'No Name'"
+                                                                       (onChange)="scope.name = $event"
+                                                                       [value]="scope.name"></description-editor-qp>
+                                            </td>
+                                            <td class="description">
+                                                <description-editor-qp [noValueMessage]="'No description.'"
+                                                                       (onChange)="scope.description = $event"
+                                                                       [value]="scope.description"></description-editor-qp>
+                                            </td>
+                                            <td class="actions">
+                                                <div>
+                                                    <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope)"
+                                                            type="button"
+                                                            title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <button type="button" class="btn btn-default btn-sm" (click)="addScope()">Add Scope</button>
+
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid">OK</button>
+                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid || !scopesAreValid()">OK</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

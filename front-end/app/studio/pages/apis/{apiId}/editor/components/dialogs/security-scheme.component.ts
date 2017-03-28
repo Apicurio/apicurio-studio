@@ -17,7 +17,14 @@
 
 import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
-import {Oas20SecurityScheme} from "oai-ts-core";
+import {Oas20Scopes, Oas20SecurityScheme} from "oai-ts-core";
+import {ObjectUtils} from "../../../../../../util/common";
+
+
+export interface Scope {
+    name: string;
+    description: string;
+}
 
 
 export interface SecuritySchemeEventData {
@@ -29,7 +36,9 @@ export interface SecuritySchemeEventData {
     flow: string;
     authorizationUrl: string;
     tokenUrl: string;
+    scopes: Scope[]
 }
+
 
 
 @Component({
@@ -62,7 +71,8 @@ export class SecuritySchemeDialogComponent {
             in: null,
             flow: null,
             authorizationUrl: null,
-            tokenUrl: null
+            tokenUrl: null,
+            scopes: []
         };
         this.mode = "create";
         if (scheme) {
@@ -74,6 +84,7 @@ export class SecuritySchemeDialogComponent {
             this.model.flow = scheme.flow;
             this.model.authorizationUrl = scheme.authorizationUrl;
             this.model.tokenUrl = scheme.tokenUrl;
+            this.model.scopes = this.toScopesArray(scheme.scopes);
             this.mode = "edit";
         }
 
@@ -124,26 +135,21 @@ export class SecuritySchemeDialogComponent {
      */
     public setType(type: string): void {
         this.model.type = type;
+
+        this.model.name = null;
+        this.model.in = null;
+        this.model.flow = null;
+        this.model.authorizationUrl = null;
+        this.model.tokenUrl = null;
+        this.model.scopes = [];
+
         if (type === "basic") {
-            this.model.name = null;
-            this.model.in = null;
-            this.model.flow = null;
-            this.model.authorizationUrl = null;
-            this.model.tokenUrl = null;
         }
         if (type === "apiKey") {
-            this.model.name = null;
             this.model.in = "header";
-            this.model.flow = null;
-            this.model.authorizationUrl = null;
-            this.model.tokenUrl = null;
         }
         if (type === "oauth2") {
-            this.model.name = null;
-            this.model.in = null;
             this.model.flow = "implicit";
-            this.model.authorizationUrl = null;
-            this.model.tokenUrl = null;
         }
     }
 
@@ -164,5 +170,64 @@ export class SecuritySchemeDialogComponent {
         if (flow === "application") {
             this.model.authorizationUrl = null;
         }
+    }
+
+    /**
+     * Gets the array of scopes.
+     */
+    public scopes(): Scope[] {
+        return this.model.scopes;
+    }
+
+    /**
+     * Called when the user clicks the "Add Scope" button.
+     */
+    public addScope(): void {
+        this.model.scopes.push({
+            name: "",
+            description: ""
+        });
+    }
+
+    /**
+     * Called to delete a scope.
+     * @param scope
+     */
+    public deleteScope(scope: Scope): void {
+        this.model.scopes.splice(this.model.scopes.indexOf(scope), 1);
+    }
+
+    /**
+     * Converts from OAS20 scopes to an array of scope objects.
+     * @param scopes
+     * @return {Scope[]}
+     */
+    private toScopesArray(scopes: Oas20Scopes): Scope[] {
+        let rval: Scope[] = [];
+        if (scopes) {
+            for (let sk of scopes.scopes()) {
+                let sd: string = scopes.getScopeDescription(sk);
+                rval.push({
+                    name: sk,
+                    description: sd
+                });
+            }
+        }
+        return rval;
+    }
+
+    /**
+     * Returns true only if all the defined scopes are valid (have names).
+     * @return {boolean}
+     */
+    public scopesAreValid(): boolean {
+        if (this.model.type === "oauth2") {
+            for (let scope of this.model.scopes) {
+                if (ObjectUtils.isNullOrUndefined(scope.name) || scope.name.length === 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

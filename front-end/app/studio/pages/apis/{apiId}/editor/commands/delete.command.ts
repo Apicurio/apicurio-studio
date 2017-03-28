@@ -18,7 +18,8 @@
 import {ICommand, AbstractCommand} from "../commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema, Oas20Tag
+    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema, Oas20Tag,
+    Oas20SecurityScheme, Oas20SecurityDefinitions
 } from "oai-ts-core";
 
 /**
@@ -319,7 +320,6 @@ export class DeleteResponseCommand extends AbstractCommand implements ICommand {
             responses.addResponse(this._oldResponse.statusCode(), this._oldResponse);
         }
     }
-
 }
 
 
@@ -418,3 +418,51 @@ export class DeleteTagCommand extends AbstractCommand implements ICommand {
 
 }
 
+
+/**
+ * A command used to delete a security scheme.
+ */
+export class DeleteSecuritySchemeCommand extends AbstractCommand implements ICommand {
+
+    private _schemeName: string;
+    private _oldScheme: Oas20SecurityScheme;
+
+    constructor(schemeName: string) {
+        super();
+        this._schemeName = schemeName;
+    }
+
+    /**
+     * Deletes the security scheme.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteSecuritySchemeCommand] Executing.");
+        this._oldScheme = null;
+        let doc: Oas20Document  = <Oas20Document>document;
+        let definitions: Oas20SecurityDefinitions = doc.securityDefinitions;
+        if (this.isNullOrUndefined(definitions)) {
+            return;
+        }
+
+        this._oldScheme = definitions.removeSecurityScheme(this._schemeName);
+    }
+
+    /**
+     * Restore the old (deleted) security scheme.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteSecuritySchemeCommand] Reverting.");
+        let doc: Oas20Document  = <Oas20Document>document;
+        let definitions: Oas20SecurityDefinitions = doc.securityDefinitions;
+        if (this.isNullOrUndefined(definitions) || this.isNullOrUndefined(this._oldScheme)) {
+            return;
+        }
+
+        this._oldScheme._parent = definitions;
+        this._oldScheme._ownerDocument = definitions.ownerDocument();
+        definitions.addSecurityScheme(this._oldScheme.schemeName(), this._oldScheme);
+    }
+
+}

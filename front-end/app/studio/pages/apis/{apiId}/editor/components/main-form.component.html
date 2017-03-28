@@ -223,21 +223,66 @@
         </div>
     </div>
 
-    <!-- Security Definitions -->
-    <!--
-    <div class="section info-section panel-group">
+    <!-- Security -->
+    <div class="section security-section panel-group">
         <div class="section-header panel-title">
-            <a data-toggle="collapse" data-target="#security-section-body">
+            <a [class.collapsed]="!hasContact()" data-toggle="collapse" data-target="#security-section-body">
                 <span class="section-label">SECURITY</span>
             </a>
-            <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+            <context-help>
+                <p>
+                    Use this section to configure your API's security options.  There are three types of
+                    security you may choose from (each with its own specific configuration details):
+                </p>
+                <ul>
+                    <li><a href="https://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">BASIC</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/Application_programming_interface_key" target="_blank">API Key</a></li>
+                    <li><a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a></li>
+                </ul>
+            </context-help>
+            <button class="btn btn-sm btn-default pull-right" (click)="securitySchemeDialog.open()"><span class="fa fa-plus"></span></button>
         </div>
-        <div class="section-body collapse in" id="security-section-body">
-            <p>Configure the API's security definitions here (TBD)</p>
+        <div class="section-body collapse" id="security-section-body" [class.in]="hasSecurity()">
+
+            <div class="alert alert-info" *ngIf="!hasSecurity()">
+                <span class="pficon pficon-info"></span>
+                <strong>None Found</strong>
+                <span>No security options have been configured for this API.</span>
+                <button class="btn btn-primary btn-sm pull-right" (click)="securitySchemeDialog.open()">Add Security</button>
+            </div>
+
+            <table class="table table-striped api-operation-parameters" *ngIf="hasSecurity()">
+                <thead>
+                <tr>
+                    <th width="20%">Name</th>
+                    <th width="20%" nowrap>Security Type</th>
+                    <th width="60%">Description</th>
+                    <th width="1%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let scheme of securitySchemes()">
+                    <td class="scheme-name">{{ scheme.schemeName() }}</td>
+                    <td class="scheme-type">{{ scheme.type }}</td>
+                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                                                   (onChange)="changeSecuritySchemeDescription(scheme, $event)"
+                                                                   [value]="scheme.description"></description-editor-qp></td>
+                    <td class="actions" nowrap>
+                        <div>
+                            <button class="btn btn-sm btn-default" (click)="securitySchemeDialog.open(scheme)"
+                                    title="Edit security scheme."><span class="pficon pficon-edit"></span></button>
+                            <button class="btn btn-sm btn-default" (click)="deleteSecurityScheme(scheme)"
+                                    title="Delete security scheme."><span class="pficon pficon-delete"></span></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    -->
 
     <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
+    <security-scheme-dialog #securitySchemeDialog (onSchemeAdded)="addSecurityScheme($event)"
+                            (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-dialog>
 
 </div>

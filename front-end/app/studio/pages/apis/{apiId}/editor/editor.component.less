@@ -2,6 +2,22 @@
 @import "editor.component.dark.less";
 
 
+.modal.in .modal-dialog {
+  -ms-transform: none;
+  transform: none;
+  margin-top: 50px;
+}
+.modal.fade .modal-dialog {
+  -ms-transform: none;
+  transform: none;
+  transition: margin-top .3s ease-out;
+}
+.modal-dialog {
+  width: 650px;
+  margin-top: 0px;
+  margin-left: auto;
+}
+
 .api-editor span.path-param {
   font-weight: 400;
 }

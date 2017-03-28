@@ -97,6 +97,7 @@ import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/components/dial
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/set-license.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/components/context-help.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/set-contact.component";
+import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/security-scheme.component";
 
 
 @NgModule({
@@ -111,7 +112,7 @@ import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/components/
         RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
         AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent, ContextHelpComponent,
-        SetContactDialogComponent],
+        SetContactDialogComponent, SecuritySchemeDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

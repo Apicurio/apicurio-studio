@@ -17,7 +17,6 @@
 
 import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
-import {AceEditorDirective} from "ng2-ace-editor";
 import {Oas20Contact} from "oai-ts-core";
 
 

@@ -16,18 +16,24 @@
  */
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
-import {OasDocument, Oas20Document, Oas20Tag, Oas20License, Oas20Contact} from "oai-ts-core";
+import {
+    OasDocument, Oas20Document, Oas20Tag, Oas20Contact, Oas20SecurityScheme,
+    Oas20SecurityDefinitions
+} from "oai-ts-core";
 import {ICommand} from "../commands.manager";
 import {ChangeVersionCommand} from "../commands/change-version.command";
 import {ChangeTitleCommand} from "../commands/change-title.command";
 import {ChangeDescriptionCommand} from "../commands/change-description.command";
 import {ObjectUtils} from "../../../../../util/common";
 import {ChangePropertyCommand} from "../commands/change-property.command";
-import {DeleteTagCommand, DeleteNodeCommand} from "../commands/delete.command";
+import {DeleteTagCommand, DeleteNodeCommand, DeleteSecuritySchemeCommand} from "../commands/delete.command";
 import {NewTagCommand} from "../commands/new-tag.command";
 import {ILicense, LicenseService} from "../services/license.service";
 import {ChangeLicenseCommand} from "../commands/change-license.command";
 import {ChangeContactCommand} from "../commands/change-contact-info.command";
+import {SecuritySchemeEventData} from "./dialogs/security-scheme.component";
+import {NewSecuritySchemeCommand} from "../commands/new-security-scheme.command";
+import {ChangeSecuritySchemeCommand} from "../commands/change-security-scheme.command";
 
 
 @Component({
@@ -303,6 +309,85 @@ export class MainFormComponent {
      */
     public deleteLicense(): void {
         let command: ICommand = new DeleteNodeCommand("license", this.doc().info);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Returns true if there is at least one security scheme defined.
+     * @return {boolean}
+     */
+    public hasSecurity(): boolean {
+        return this.securitySchemes().length > 0;
+    }
+
+    /**
+     * Returns all defined security schemes.
+     * @return {any}
+     */
+    public securitySchemes(): Oas20SecurityScheme[] {
+        let secdefs: Oas20SecurityDefinitions = this.doc().securityDefinitions;
+        if (secdefs) {
+            return secdefs.securitySchemes().sort( (scheme1, scheme2) => {
+                return scheme1.schemeName().localeCompare(scheme2.schemeName());
+            });
+        }
+        return [];
+    }
+
+    /**
+     * Called when the user changes the description of a security scheme in the table of schemes.
+     * @param scheme
+     * @param description
+     */
+    public changeSecuritySchemeDescription(scheme: Oas20SecurityScheme, description: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", description, scheme);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user adds a new security scheme.
+     * @param event
+     */
+    public addSecurityScheme(event: SecuritySchemeEventData): void {
+        console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
+        let scheme: Oas20SecurityScheme = new Oas20SecurityScheme(event.schemeName);
+        scheme.description = event.description;
+        scheme.type = event.type;
+        scheme.name = event.name;
+        scheme.in = event.in;
+        scheme.flow = event.flow;
+        scheme.authorizationUrl = event.authorizationUrl;
+        scheme.tokenUrl = event.tokenUrl;
+
+        let command: ICommand = new NewSecuritySchemeCommand(scheme);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user changes an existing security scheme.
+     * @param event
+     */
+    public changeSecurityScheme(event: SecuritySchemeEventData): void {
+        console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
+        let scheme: Oas20SecurityScheme = new Oas20SecurityScheme(event.schemeName);
+        scheme.description = event.description;
+        scheme.type = event.type;
+        scheme.name = event.name;
+        scheme.in = event.in;
+        scheme.flow = event.flow;
+        scheme.authorizationUrl = event.authorizationUrl;
+        scheme.tokenUrl = event.tokenUrl;
+
+        let command: ICommand = new ChangeSecuritySchemeCommand(scheme);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Deletes a security scheme.
+     * @param scheme
+     */
+    public deleteSecurityScheme(scheme: Oas20SecurityScheme): void {
+        let command: ICommand = new DeleteSecuritySchemeCommand(scheme.schemeName());
         this.onCommand.emit(command);
     }
 

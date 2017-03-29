@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 
 NAME = apiman-studio
-NAMESPACE = maneta
+NAMESPACE = apiman
 RELEASE_VERSION ?= 0.0.5
 LOCAL_RELEASE ?= 'false'
 LOCAL_IMAGE := $(NAME):$(RELEASE_VERSION)

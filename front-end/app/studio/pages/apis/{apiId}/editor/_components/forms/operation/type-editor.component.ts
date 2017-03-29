@@ -16,9 +16,9 @@
  */
 
 import {Component, ViewEncapsulation, Input} from "@angular/core";
-import {AbstractInlineValueEditor} from "../common/inline-editor.base";
 import {Oas20Schema, JsonSchemaType, Oas20Document} from "oai-ts-core";
-import {ObjectUtils} from "../../_util/object.util";
+import {AbstractInlineValueEditor} from "../../common/inline-editor.base";
+import {ObjectUtils} from "../../../_util/object.util";
 
 
 @Component({

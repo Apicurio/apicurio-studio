@@ -18,15 +18,22 @@
 import {
     Component, ViewEncapsulation
 } from "@angular/core";
-import {TextInputEditorComponent} from "../common/inline-editor.base";
+import {TextInputEditorComponent} from "../../common/inline-editor.base";
 
 
 @Component({
     moduleId: module.id,
-    selector: "summary-editor-of",
-    templateUrl: "summary-editor.component.html",
+    selector: "description-editor-qp",
+    templateUrl: "query-param-description-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class SummaryEditorOFComponent extends TextInputEditorComponent {
+export class DescriptionEditorQPComponent extends TextInputEditorComponent {
+
+    protected calcHoverDimensions(targetRect: any): any {
+        let rval: any = super.calcHoverDimensions(targetRect);
+        rval.top -= 2;
+        rval.height += 2;
+        return rval;
+    }
 
 }

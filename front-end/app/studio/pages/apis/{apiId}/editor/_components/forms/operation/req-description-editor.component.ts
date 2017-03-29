@@ -18,15 +18,15 @@
 import {
     Component, ViewEncapsulation
 } from "@angular/core";
-import {TextAreaEditorComponent} from "../common/inline-editor.base";
+import {TextAreaEditorComponent} from "../../common/inline-editor.base";
 
 
 @Component({
     moduleId: module.id,
-    selector: "description-editor",
-    templateUrl: "description-editor.component.html",
+    selector: "req-description-editor-of",
+    templateUrl: "req-description-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class DescriptionEditorComponent extends TextAreaEditorComponent {
+export class RequestDescriptionEditorOFComponent extends TextAreaEditorComponent {
 
 }

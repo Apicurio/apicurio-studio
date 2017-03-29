@@ -18,15 +18,15 @@
 import {
     Component, ViewEncapsulation
 } from "@angular/core";
-import {TextInputEditorComponent} from "../common/inline-editor.base";
+import {TextInputEditorComponent} from "../../common/inline-editor.base";
 
 
 @Component({
     moduleId: module.id,
-    selector: "summary-editor-pf",
+    selector: "summary-editor-of",
     templateUrl: "summary-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class SummaryEditorPFComponent extends TextInputEditorComponent {
+export class SummaryEditorOFComponent extends TextInputEditorComponent {
 
 }

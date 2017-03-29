@@ -1,7 +1,7 @@
 FROM centos:7
 LABEL authors="Daniel Cesario <dcesario@redhat.com>"
 ARG RELEASE_VERSION
-
+ARG RELEASE_PATH
 RUN yum install -y \
     java-1.8.0-openjdk-headless \
     unzip \
@@ -9,7 +9,7 @@ RUN yum install -y \
 
 WORKDIR /opt/apiman-studio
 
-COPY ./front-end/quickstart/target/api-design-studio-${RELEASE_VERSION}-quickstart.zip /opt/apiman-studio
+ADD ${RELEASE_PATH} /opt/apiman-studio
 
 RUN groupadd -r apiman -g 1001 \
     && useradd -u 1001 -r -g apiman -d /opt/apiman-studio/ -s /sbin/nologin -c "Docker image user" apiman \

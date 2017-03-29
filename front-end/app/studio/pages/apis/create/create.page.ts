@@ -20,7 +20,7 @@ import {Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
-import {CreateApiFormComponent} from "./create-form.component";
+import {CreateApiFormComponent} from "./_components/create-form.component";
 
 @Component({
     moduleId: module.id,

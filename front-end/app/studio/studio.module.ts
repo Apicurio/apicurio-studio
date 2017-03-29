@@ -60,44 +60,44 @@ import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 /* Page Components */
-import {CreateApiFormComponent} from "./pages/apis/create/create-form.component";
-import {AddApiFormComponent} from "./pages/apis/add/add-form.component";
-import {ApisListComponent} from "./pages/apis/apis-list.component";
-import {ApisCardsComponent} from "./pages/apis/apis-cards.component";
+import {CreateApiFormComponent} from "./pages/apis/create/_components/create-form.component";
+import {AddApiFormComponent} from "./pages/apis/add/_components/add-form.component";
+import {ApisListComponent} from "./pages/apis/_components/apis-list.component";
+import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
-import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/components/api-commit.component";
+import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.component";
 
 /** Directives **/
 import {TextAreaAutosize} from "./directives/autosize.directive";
 
 /** Editor Components */
-import {PathItemComponent} from "./pages/apis/{apiId}/editor/components/path-item.component";
-import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/components/definition-item.component";
-import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/components/response-item.component";
-import {MainFormComponent} from "./pages/apis/{apiId}/editor/components/main-form.component";
-import {PathFormComponent} from "./pages/apis/{apiId}/editor/components/path-form.component";
-import {TitleEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/title-editor.component";
-import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/version-editor.component";
-import {OperationFormComponent} from "./pages/apis/{apiId}/editor/components/operation-form.component";
-import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/summary-editor.component";
-import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/components/main-form/description-editor.component";
-import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/components/path-form/description-editor.component";
-import {SummaryEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/summary-editor.component";
-import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/description-editor.component";
-import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/req-description-editor.component";
-import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/components/operation-form/query-param-description-editor.component";
-import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/components/operation-form/type-editor.component";
-import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/components/definition-form.component";
-import {SearchComponent} from "./pages/apis/{apiId}/editor/components/search.component";
-import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-definition.component";
-import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-path.component";
-import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-query-param.component";
-import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-response.component";
-import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/add-tag.component";
-import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/set-license.component";
-import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/components/context-help.component";
-import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/set-contact.component";
-import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/components/dialogs/security-scheme.component";
+import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-item.component";
+import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
+import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
+import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
+import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
+import {TitleEditorComponent} from "./pages/apis/{apiId}/editor/_components/main-form/title-editor.component";
+import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/_components/main-form/version-editor.component";
+import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
+import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/_components/path-form/summary-editor.component";
+import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/_components/main-form/description-editor.component";
+import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/_components/path-form/description-editor.component";
+import {SummaryEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/operation-form/summary-editor.component";
+import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/operation-form/description-editor.component";
+import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/operation-form/req-description-editor.component";
+import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/_components/operation-form/query-param-description-editor.component";
+import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/operation-form/type-editor.component";
+import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
+import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
+import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-definition.component";
+import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
+import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-query-param.component";
+import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
+import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-tag.component";
+import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
+import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
+import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
+import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme.component";
 
 
 @NgModule({

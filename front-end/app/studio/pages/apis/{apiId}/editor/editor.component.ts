@@ -18,11 +18,11 @@
 import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild, HostListener} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema} from "oai-ts-core";
-import {CommandsManager, ICommand} from "./commands.manager";
-import {NewPathCommand} from "./commands/new-path.command";
-import {NewDefinitionCommand} from "./commands/new-definition.command";
-import {AddPathDialogComponent} from "./components/dialogs/add-path.component";
-import {DeletePathCommand, DeleteDefinitionSchemaCommand} from "./commands/delete.command";
+import {CommandsManager, ICommand} from "./_services/commands.manager";
+import {NewPathCommand} from "./_commands/new-path.command";
+import {NewDefinitionCommand} from "./_commands/new-definition.command";
+import {AddPathDialogComponent} from "./_components/dialogs/add-path.component";
+import {DeletePathCommand, DeleteDefinitionSchemaCommand} from "./_commands/delete.command";
 
 
 @Component({

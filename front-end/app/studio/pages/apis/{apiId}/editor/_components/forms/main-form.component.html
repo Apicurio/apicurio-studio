@@ -39,40 +39,23 @@
         </div>
         <div class="section-body collapse in" id="info-section-body">
             <div class="api-title-and-version">
-                <title-editor [value]="title()" [noValueMessage]="'No Title'" (onChange)="onTitleChange($event)"></title-editor>
+                <inline-text-editor [value]="title()"
+                                    [labelClass]="'api-title api-item-title'"
+                                    [formClass]="'api-title-editor-form'"
+                                    [inputClass]="'api-item-editor api-title-editor api-title api-item-title'"
+                                    [noValueMessage]="'No Title'" (onChange)="onTitleChange($event)"></inline-text-editor>
                 <span class="spacer" style="margin-left: 30px">&nbsp;</span>
-                <version-editor [value]="version()" [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></version-editor>
+                <inline-text-editor [value]="version()"
+                                    [labelClass]="'api-version'"
+                                    [formClass]="'api-title-editor-form'"
+                                    [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
+                                    [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></inline-text-editor>
             </div>
-            <description-editor [value]="description()" [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></description-editor>
-            <div class="api-meta-data">
-                <!-- TOS -->
-                <!--
-                <div class="api-md-entry">
-                    <div class="md-label">Terms of Service</div>
-                    <div class="md-value">
-                        <a href="{{ tos() }}">{{ tos() }}</a>
-                        <span class="fa fa-fw fa-external-link"></span>
-                    </div>
-                </div>
-                -->
-                <!-- Contact Info -->
-                <!--
-                <div class="api-md-entry">
-                    <div class="md-label">Contact</div>
-                    <div class="md-value">
-                        <div>
-                            <span>{{ contactName() }}</span>
-                            <span>(</span><a href="mailto:{{ contactEmail() }}"><span>{{ contactEmail() }}</span></a><span>)</span>
-                        </div>
-                        <div>
-                            <a href="{{ contactUrl() }}">{{ contactUrl() }}</a>
-                            <span class="fa fa-fw fa-external-link"></span>
-                        </div>
-                    </div>
-                </div>
-                -->
-            </div>
-
+            <inline-textarea-editor [value]="description()"
+                                    [labelClass]="'api-description api-item-description'"
+                                    [formClass]="'api-description-editor-form'"
+                                    [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
+                                    [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-textarea-editor>
         </div>
     </div>
 
@@ -208,9 +191,10 @@
                 <tbody>
                 <tr *ngFor="let tag of tags()">
                     <td class="tag-name">{{ tag.name }}</td>
-                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                                                   (onChange)="changeTagDescription(tag, $event)"
-                                                                   [value]="tag.description"></description-editor-qp></td>
+                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                                                                [topIncrement]="2"
+                                                                (onChange)="changeTagDescription(tag, $event)"
+                                                                [value]="tag.description"></inline-text-editor></td>
                     <td class="actions">
                         <div>
                             <button class="btn btn-sm btn-default pull-right" (click)="deleteTag(tag)"
@@ -264,9 +248,10 @@
                 <tr *ngFor="let scheme of securitySchemes()">
                     <td class="scheme-name">{{ scheme.schemeName() }}</td>
                     <td class="scheme-type">{{ scheme.type }}</td>
-                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                                                   (onChange)="changeSecuritySchemeDescription(scheme, $event)"
-                                                                   [value]="scheme.description"></description-editor-qp></td>
+                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                                                                [topIncrement]="2"
+                                                                (onChange)="changeSecuritySchemeDescription(scheme, $event)"
+                                                                [value]="scheme.description"></inline-text-editor></td>
                     <td class="actions" nowrap>
                         <div>
                             <button class="btn btn-sm btn-default" (click)="securitySchemeDialog.open(scheme)"

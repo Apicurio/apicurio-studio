@@ -68,11 +68,16 @@
                     </div>
                     <div class="section-body collapse in" id="info-section-body">
                         <h1>
-                            <summary-editor-of [value]="summary()" [noValueMessage]="'No Summary'"
-                                               (onChange)="changeSummary($event)"></summary-editor-of>
+                            <inline-text-editor [value]="summary()" [noValueMessage]="'No Summary'"
+                                                [labelClass]="'api-item-title'"
+                                                [inputClass]="'api-item-editor api-summary-editor api-item-title'"
+                                                (onChange)="changeSummary($event)"></inline-text-editor>
                         </h1>
-                        <description-editor-of [value]="description()" [noValueMessage]="'No description.'"
-                                               (onChange)="changeDescription($event)"></description-editor-of>
+                        <inline-textarea-editor [value]="description()" [noValueMessage]="'No description.'"
+                                                [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                                [inputClass]="'api-item-description'"
+                                                [formClass]="'api-description-editor-form'"
+                                                (onChange)="changeDescription($event)"></inline-textarea-editor>
                     </div>
                 </div>
 
@@ -101,9 +106,9 @@
                             <tbody>
                             <tr *ngFor="let param of pathParameters()">
                                 <td class="parameter path-parameter">{{ param.name }}</td>
-                                <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
-                                                                               (onChange)="changePathParamDescription(param, $event)"
-                                                                               [value]="paramDescription(param)"></description-editor-qp></td>
+                                <td class="description"><inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                            (onChange)="changePathParamDescription(param, $event)"
+                                                                            [value]="paramDescription(param)"></inline-text-editor></td>
                                 <td class="type"><type-editor-of [document]="param.ownerDocument()" [paramIn]="'path'"
                                                                  [value]="paramType(param)" [noValueMessage]="'No Type'"
                                                                  (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
@@ -169,8 +174,11 @@
                                     <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1">Custom Type</a></li>
                                 </ul>
                             </div>
-                            <req-description-editor-of [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
-                                                   (onChange)="changeBodyDescription($event)"></req-description-editor-of>
+                            <inline-textarea-editor [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
+                                                    [labelClass]="'request-body-description api-item-description description'"
+                                                    [inputClass]="'api-description-editor api-item-description request-body-description api-item-description description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
                         </div>
                     </div>
                 </div>
@@ -215,9 +223,10 @@
                             <tbody>
                                 <tr *ngFor="let param of queryParameters()">
                                     <td class="parameter query-parameter">{{ param.name }}</td>
-                                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                                           [topIncrement]="2"
                                            (onChange)="changeQueryParamDescription(param, $event)"
-                                           [value]="paramDescription(param)"></description-editor-qp></td>
+                                           [value]="paramDescription(param)"></inline-text-editor></td>
                                     <td class="type"><type-editor-of [document]="param.ownerDocument()"
                                             [value]="paramType(param)" [noValueMessage]="'No Type'" [paramIn]="'query'"
                                             (onChange)="changeQueryParamType(param, $event)"></type-editor-of></td>
@@ -279,9 +288,10 @@
                             <tbody>
                                 <tr *ngFor="let response of responses()">
                                     <td class="parameter">{{ response.statusCode() }}</td>
-                                    <td class="description"><description-editor-qp [noValueMessage]="'No description.'"
+                                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                                             [topIncrement]="2"
                                              (onChange)="changeResponseDescription(response, $event)"
-                                             [value]="responseDescription(response)"></description-editor-qp></td>
+                                             [value]="responseDescription(response)"></inline-text-editor></td>
                                     <td class="type"><type-editor-of [document]="response.ownerDocument()"
                                              [value]="responseType(response)" [noValueMessage]="'No Type'" [paramIn]="'body'"
                                              (onChange)="changeResponseType(response, $event)"></type-editor-of></td>

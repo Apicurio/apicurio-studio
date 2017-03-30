@@ -130,20 +130,19 @@
                                     <tbody>
                                         <tr *ngFor="let scope of scopes()">
                                             <td nowrap="nowrap" class="scope-name">
-                                                <description-editor-qp [noValueMessage]="'No Name'"
-                                                                       (onChange)="scope.name = $event"
-                                                                       [value]="scope.name"></description-editor-qp>
+                                                <inline-text-editor [noValueMessage]="'No Name'" [topIncrement]="2"
+                                                                    (onChange)="scope.name = $event"
+                                                                    [value]="scope.name"></inline-text-editor>
                                             </td>
                                             <td class="description">
-                                                <description-editor-qp [noValueMessage]="'No description.'"
-                                                                       (onChange)="scope.description = $event"
-                                                                       [value]="scope.description"></description-editor-qp>
+                                                <inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                    (onChange)="scope.description = $event"
+                                                                    [value]="scope.description"></inline-text-editor>
                                             </td>
                                             <td class="actions">
                                                 <div>
                                                     <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope)"
-                                                            type="button"
-                                                            title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                            type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
                                                 </div>
                                             </td>
                                         </tr>

@@ -77,9 +77,10 @@
                             <tbody>
                             <tr *ngFor="let param of pathParameterNames()">
                                 <td class="parameter path-parameter">{{ param }}</td>
-                                <td class="description"><description-editor-qp [noValueMessage]="'No (common) description.'"
-                                                                               (onChange)="changePathParamDescription(param, $event)"
-                                                                               [value]="pathParamDescription(param)"></description-editor-qp></td>
+                                <td class="description"><inline-text-editor [noValueMessage]="'No (common) description.'"
+                                                                            [topIncrement]="2"
+                                                                            (onChange)="changePathParamDescription(param, $event)"
+                                                                            [value]="pathParamDescription(param)"></inline-text-editor></td>
                                 <td class="type"><type-editor-of [document]="document()" [paramIn]="'path'"
                                                                  [value]="pathParamType(param)" [noValueMessage]="'No (common) Type'"
                                                                  (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
@@ -115,11 +116,17 @@
                         <div class="api-operation" [class.empty]="!hasGet()">
                             <div class="">
                                 <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
-                                <summary-editor-pf [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.get)"></summary-editor-pf>
+                                <inline-text-editor [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.get)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.get)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.get)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasGet()">
                                 <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
                             </div>
@@ -127,11 +134,17 @@
                         <div class="api-operation" [class.empty]="!hasPut()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
-                                <summary-editor-pf [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.put)"></summary-editor-pf>
+                                <inline-text-editor [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.put)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.put)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.put)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasPut()">
                                 <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
                             </div>
@@ -139,11 +152,17 @@
                         <div class="api-operation" [class.empty]="!hasPost()">
                             <div class="">
                                 <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
-                                <summary-editor-pf [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.post)"></summary-editor-pf>
+                                <inline-text-editor [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.post)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.post)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.post)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasPost()">
                                 <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
                             </div>
@@ -151,11 +170,17 @@
                         <div class="api-operation" [class.empty]="!hasDelete()">
                             <div class="">
                                 <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
-                                <summary-editor-pf [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.delete)"></summary-editor-pf>
+                                <inline-text-editor [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.delete)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.delete)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.delete)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasDelete()">
                                 <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
                             </div>
@@ -163,11 +188,17 @@
                         <div class="api-operation" [class.empty]="!hasOptions()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
-                                <summary-editor-pf [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.options)"></summary-editor-pf>
+                                <inline-text-editor [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.options)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.options)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.options)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasOptions()">
                                 <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
                             </div>
@@ -175,11 +206,17 @@
                         <div class="api-operation" [class.empty]="!hasHead()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
-                                <summary-editor-pf [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.head)"></summary-editor-pf>
+                                <inline-text-editor [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.head)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.head)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.head)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasHead()">
                                 <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
                             </div>
@@ -187,11 +224,17 @@
                         <div class="api-operation" [class.empty]="!hasPatch()">
                             <div class="">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
-                                <summary-editor-pf [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
-                                                   (onChange)="changeSummary($event, path.patch)"></summary-editor-pf>
+                                <inline-text-editor [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.patch)"></inline-text-editor>
                             </div>
-                            <description-editor-pf *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
-                                                   (onChange)="changeDescription($event, path.patch)"></description-editor-pf>
+                            <inline-textarea-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.patch)"></inline-textarea-editor>
                             <div class="actions" *ngIf="!hasPatch()">
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
                             </div>

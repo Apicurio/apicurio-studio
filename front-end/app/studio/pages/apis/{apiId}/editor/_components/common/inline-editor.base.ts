@@ -31,6 +31,14 @@ export abstract class AbstractInlineEditor<T> {
     static s_activeEditor: any = null;
 
     @Input() enabled = true;
+    @Input() labelClass = "";
+    @Input() inputClass = "";
+    @Input() formClass = "";
+    @Input() topIncrement: number = 0;
+    @Input() leftIncrement: number = 0;
+    @Input() rightIncrement: number = 0;
+    @Input() bottomIncrement: number = 0;
+
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
     @ViewChildren("clickcontainer") clickcontainer: QueryList<ElementRef>;
@@ -171,10 +179,10 @@ export abstract class AbstractInlineEditor<T> {
 
     protected calcHoverDimensions(targetRect: any): any {
         return {
-            left: targetRect.left - 5,
-            top: targetRect.top,
-            width: targetRect.right - targetRect.left + 10 + 20,
-            height: targetRect.bottom - targetRect.top + 3
+            left: targetRect.left - 5 - this.leftIncrement,
+            top: targetRect.top - this.topIncrement,
+            width: targetRect.right - targetRect.left + 10 + 20 + this.leftIncrement + this.rightIncrement,
+            height: targetRect.bottom - targetRect.top + 3 + this.topIncrement + this.bottomIncrement
         }
     }
 

@@ -71,21 +71,12 @@ import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-co
 import {TextAreaAutosize} from "./directives/autosize.directive";
 
 /** Editor Components */
-import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-item.component";
+import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
-import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
+import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
-import {TitleEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/title-editor.component";
-import {VersionEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/version-editor.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
-import {SummaryEditorPFComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/summary-editor.component";
-import {DescriptionEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/description-editor.component";
-import {DescriptionEditorPFComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/description-editor.component";
-import {SummaryEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/summary-editor.component";
-import {DescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/description-editor.component";
-import {RequestDescriptionEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/req-description-editor.component";
-import {DescriptionEditorQPComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/query-param-description-editor.component";
 import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/type-editor.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
@@ -98,21 +89,22 @@ import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
 import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme.component";
+import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
+import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
 
 
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), DropdownModule.forRoot()],
     declarations: [
-        StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent, LoginPageComponent,
-        NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent, CreateApiFormComponent, AddApiFormComponent,
-        ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent, ApisCardsComponent, ApiEditorComponent, ApiCommitComponent,
-        PathItemComponent, DefinitionItemComponent, ResponseItemComponent, MainFormComponent, TitleEditorComponent,
-        VersionEditorComponent, PathFormComponent, OperationFormComponent, SummaryEditorPFComponent, DescriptionEditorPFComponent,
-        DescriptionEditorComponent, TextAreaAutosize, SummaryEditorOFComponent, DescriptionEditorOFComponent,
-        RequestDescriptionEditorOFComponent, DescriptionEditorQPComponent, TypeEditorOFComponent, DefinitionFormComponent,
-        AceEditorComponent, SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
-        AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent, ContextHelpComponent,
-        SetContactDialogComponent, SecuritySchemeDialogComponent],
+        StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent,
+        LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
+        CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
+        ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
+        ResponseItemComponent, MainFormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
+        TextAreaAutosize, InlineTextEditorComponent, TypeEditorOFComponent, DefinitionFormComponent, AceEditorComponent,
+        SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
+        AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
+        ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

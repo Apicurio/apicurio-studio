@@ -61,6 +61,10 @@
                                 <!-- Delete the ROOT folder -->
                                 <delete dir="${tomcat.appserver.dir}/webapps/ROOT"></delete>
 
+                                <!-- Delete the docs and examples -->
+                                <delete dir="${tomcat.appserver.dir}/webapps/examples"></delete>
+                                <delete dir="${tomcat.appserver.dir}/webapps/docs"></delete>
+
                                 <!-- Make sure to chmod 755 the shell scripts -->
                                 <chmod perm="a+x" dir="${tomcat.appserver.dir}/bin">
                                     <include name="*.sh" />

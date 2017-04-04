@@ -18,6 +18,9 @@
   margin-left: auto;
 }
 
+.api-editor .dropdown.empty > button.btn > span {
+}
+
 .api-editor span.path-param {
   font-weight: 400;
 }
@@ -557,8 +560,111 @@
   visibility: visible;
 }
 
+.api-editor .editor-detail .type-editor-dropdown-menu {
+  right: 0;
+  left: auto;
+  min-width: 400px;
+}
+
+.api-editor .editor-detail table .inline-type-editor-label {
+  margin-right: 36px;
+}
+
+.api-editor .editor-detail .type-editor-dropdown-menu {
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .dropdown {
+  display: inline;
+  margin-left: 2px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .dropdown-menu {
+  top: inherit;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .typeinfo {
+  padding: 15px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .actions {
+  border-top: 1px solid #bbb;
+  text-align: right;
+  padding: 5px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .actions .overlay-action-save {
+  margin-right: 3px;
+}
+
 #path-context-menu, #definition-context-menu {
   display: block;
   position: fixed;
 }
 
+
+.api-editor .editor-detail .responses-section {
+}
+.api-editor .editor-detail .responses-section .responses {
+}
+.api-editor .editor-detail .responses-section .responses .response {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  vertical-align: middle;
+  margin-top: 3px;
+}
+.api-editor .editor-detail .responses-section .responses .response.editing {
+  border-bottom: none;
+  border-right: 3px solid #39a5dc;
+  background-color: #cde6fa;
+}
+.api-editor .editor-detail .responses-section .responses .response-type {
+  padding-top: 12px;
+  padding-bottom: 10px;
+  border: 1px solid #39a5dc;
+  border-right-width: 3px;
+}
+.api-editor .editor-detail .responses-section .responses .response .metainfo {
+  padding-left: 0px;
+}
+.api-editor .editor-detail .responses-section .responses .response .actions {
+  padding-right: 0px;
+}
+.api-editor .editor-detail .responses-section .responses .response .actions button {
+  opacity: .25;
+}
+.api-editor .editor-detail .responses-section .responses .response:hover {
+  background-color: #eee;
+  box-shadow: 1px 1px 4px #ddd;
+}
+.api-editor .editor-detail .responses-section .responses .response.editing:hover {
+  box-shadow: none;
+  background-color: #cde6fa;
+}
+.api-editor .editor-detail .responses-section .responses .response:hover .actions button {
+  opacity: 1.0;
+}
+.api-editor .editor-detail .responses-section .responses .response.editing .actions button {
+  display: none;
+}
+.api-editor .editor-detail .responses-section .responses .response.editing .type {
+  visibility: hidden;
+}
+.api-editor .editor-detail .responses-section .responses .response .statusCode {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+}
+.api-editor .editor-detail .responses-section .responses .response .description {
+  font-size: 14px;
+}
+.api-editor .editor-detail .responses-section .responses .response .type {
+  line-height: 40px;
+}
+.api-editor .editor-detail .responses-section .responses .response .type .empty {
+  color: #999;
+}
+.api-editor .editor-detail .responses-section .responses .response .actions {
+  line-height: 40px;
+}
+.api-editor .editor-detail .responses-section .responses .response-type .form-group {
+  margin: 5px;
+}
+.api-editor .editor-detail .responses-section .responses .response-type .form-group-actions {
+  padding-top: 5px;
+}

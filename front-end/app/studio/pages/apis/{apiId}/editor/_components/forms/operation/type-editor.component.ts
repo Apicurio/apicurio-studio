@@ -16,10 +16,11 @@
  */
 
 import {Component, ViewEncapsulation, Input} from "@angular/core";
-import {Oas20Schema, JsonSchemaType, Oas20Document} from "oai-ts-core";
+import {JsonSchemaType, Oas20Document, Oas20Items, Oas20ItemsSchema, Oas20Schema} from "oai-ts-core";
 import {AbstractInlineValueEditor} from "../../common/inline-editor.base";
 import {ObjectUtils} from "../../../_util/object.util";
-
+import {DropDownOption} from "../../common/drop-down.component";
+import {SimplifiedType} from "../../../_models/simplified-type.model";
 
 @Component({
     moduleId: module.id,
@@ -27,32 +28,46 @@ import {ObjectUtils} from "../../../_util/object.util";
     templateUrl: "type-editor.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema> {
+export class TypeEditorOFComponent extends AbstractInlineValueEditor<SimplifiedType> {
 
     @Input() document: Oas20Document;
     @Input() paramIn: string;
 
-    protected formatValue(value: Oas20Schema): string {
-        if (value.$ref && value.$ref.indexOf("#/definitions/") === 0) {
-            return value.$ref.substr(14);
-        } else if (value.type) {
-            return JsonSchemaType[value.type];
-        } else {
-            return this.noValueMessage;
-        }
+    protected isOpen: boolean = false;
+
+    public onStartEditing(): void {
+        this.isOpen = true;
+        super.onStartEditing();
     }
 
-    protected initialValueForEditing(): Oas20Schema {
-        let schema: Oas20Schema = new Oas20Schema();
-        if (!this.isEmpty()) {
-            schema.type = this.value.type;
-            schema.$ref = this.value.$ref;
-        }
-        return schema;
+    public toggled(value: boolean): void {
+        this.isOpen = value;
+    }
+
+    protected formatValue(value: SimplifiedType): string {
+        // if (value.simpleType) {
+        //     return value.simpleType;
+        // }
+        // if (value.complexType) {
+        //     return value.complexType;
+        // }
+        // if (value.arrayOf) {
+        //     return "List of " + this.formatValue(value.arrayOf);
+        // }
+
+        return this.noValueMessage;
+    }
+
+    protected initialValueForEditing(): SimplifiedType {
+        let initialValue: SimplifiedType = new SimplifiedType();
+        initialValue.type = this.value.type;
+        initialValue.of = this.value.of;
+        initialValue.as = this.value.as;
+        return this.value;
     }
 
     protected displayType(): string {
-        if (this.evalue !== undefined && this.evalue !== null) {
+        if (!ObjectUtils.isNullOrUndefined(this.evalue)) {
             return this.formatValue(this.evalue);
         } else {
             return this.noValueMessage;
@@ -61,25 +76,8 @@ export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema
 
     protected isTypeEmpty(): boolean {
         return (
-            (this.evalue.$ref === undefined || this.evalue.$ref === null) &&
-            (this.evalue.type === undefined || this.evalue.type === null) );
-    }
-
-    protected setType(type: string, isSimple: boolean): void {
-        if (isSimple) {
-            this.evalue.type = JsonSchemaType[type];
-            this.evalue.$ref = null;
-        } else {
-            this.evalue.type = null;
-            this.evalue.$ref = "#/definitions/" + type;
-        }
-    }
-
-    protected calcHoverDimensions(targetRect: any): any {
-        let rval: any = super.calcHoverDimensions(targetRect);
-        rval.top -= 2;
-        rval.height += 2;
-        return rval;
+            ObjectUtils.isNullOrUndefined(this.evalue.type)
+        );
     }
 
     public hasDefinitions(): boolean {
@@ -95,6 +93,14 @@ export class TypeEditorOFComponent extends AbstractInlineValueEditor<Oas20Schema
             return [];
         }
         return this.document.definitions.getItemNames().sort();
+    }
+
+    public setType(value: string, simpleType: boolean): void {
+        console.info("TYPE: " + value);
+    }
+
+    public setTypeListCardinality(isList: boolean): void {
+        console.info("IS LIST: " + isList);
     }
 
 }

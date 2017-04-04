@@ -98,19 +98,19 @@
                         <table class="table table-striped api-operation-parameters">
                             <thead>
                             <tr>
-                                <th>Parameter</th>
-                                <th width="60%">Description</th>
-                                <th width="40%">Type</th>
+                                <th nowrap="nowrap">Parameter</th>
+                                <th width="100%">Description</th>
+                                <th width="1%" nowrap="nowrap">Type</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let param of pathParameters()">
-                                <td class="parameter path-parameter">{{ param.name }}</td>
+                                <td class="parameter path-parameter" nowrap="nowrap">{{ param.name }}</td>
                                 <td class="description"><inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
                                                                             (onChange)="changePathParamDescription(param, $event)"
                                                                             [value]="paramDescription(param)"></inline-text-editor></td>
-                                <td class="type"><type-editor-of [document]="param.ownerDocument()" [paramIn]="'path'"
-                                                                 [value]="paramType(param)" [noValueMessage]="'No Type'"
+                                <td class="type" nowrap="nowrap"><type-editor-of [document]="param.ownerDocument()" [paramIn]="'path'"
+                                                                 [value]="paramType(param)" [noValueMessage]="'No Type'" [topIncrement]="2"
                                                                  (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
                             </tr>
                             </tbody>
@@ -214,23 +214,23 @@
                         <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">
                             <thead>
                                 <tr>
-                                    <th>Parameter</th>
-                                    <th width="60%">Description</th>
-                                    <th width="40%">Type</th>
+                                    <th nowrap="nowrap">Parameter</th>
+                                    <th width="100%">Description</th>
+                                    <th width="1%" nowrap="nowrap">Type</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let param of queryParameters()">
-                                    <td class="parameter query-parameter">{{ param.name }}</td>
+                                    <td class="parameter query-parameter" nowrap="nowrap">{{ param.name }}</td>
                                     <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
                                            [topIncrement]="2"
                                            (onChange)="changeQueryParamDescription(param, $event)"
                                            [value]="paramDescription(param)"></inline-text-editor></td>
-                                    <td class="type"><type-editor-of [document]="param.ownerDocument()"
+                                    <td class="type" nowrap="nowrap"><type-editor-of [document]="param.ownerDocument()" [topIncrement]="2"
                                             [value]="paramType(param)" [noValueMessage]="'No Type'" [paramIn]="'query'"
                                             (onChange)="changeQueryParamType(param, $event)"></type-editor-of></td>
-                                    <td class="actions">
+                                    <td class="actions" nowrap="nowrap">
                                         <div>
                                             <button class="btn btn-sm btn-default pull-right" (click)="deleteQueryParam(param)"
                                                     title="Delete query parameter."><span class="pficon pficon-delete"></span></button>
@@ -276,34 +276,14 @@
                             <button class="btn btn-primary btn-sm pull-right" (click)="openAddResponseModal()">Add Response</button>
                         </div>
 
-                        <table class="table table-striped api-operation-responses" *ngIf="hasResponses()">
-                            <thead>
-                                <tr>
-                                    <th width="1%" nowrap="nowrap">Status Code</th>
-                                    <th width="60%">Description</th>
-                                    <th width="40%">Type</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let response of responses()">
-                                    <td class="parameter">{{ response.statusCode() }}</td>
-                                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
-                                             [topIncrement]="2"
-                                             (onChange)="changeResponseDescription(response, $event)"
-                                             [value]="responseDescription(response)"></inline-text-editor></td>
-                                    <td class="type"><type-editor-of [document]="response.ownerDocument()"
-                                             [value]="responseType(response)" [noValueMessage]="'No Type'" [paramIn]="'body'"
-                                             (onChange)="changeResponseType(response, $event)"></type-editor-of></td>
-                                    <td class="actions">
-                                        <div>
-                                            <button class="btn btn-sm btn-default pull-right" (click)="deleteResponse(response)"
-                                                    title="Delete response."><span class="pficon pficon-delete"></span></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- The list of responses -->
+                        <div class="container-fluid responses">
+                            <response-row *ngFor="let response of responses()" [response]="response"
+                                          (onDelete)="deleteResponse(response)"
+                                          (onDescriptionChange)="changeResponseDescription(response, $event)"
+                                          (onTypeChange)="changeResponseType(response, $event)"
+                                          [document]="response.ownerDocument()"></response-row>
+                        </div>
                     </div>
                 </div>
             </div>

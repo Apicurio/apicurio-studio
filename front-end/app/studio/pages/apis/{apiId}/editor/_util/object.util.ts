@@ -1,3 +1,4 @@
+import {ElementRef} from "@angular/core";
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -56,7 +57,7 @@ export class ObjectUtils {
         return object === undefined || object === null;
     }
 
-    public static objectEquals(x:any, y:any) {
+    public static objectEquals(x:any, y:any): boolean {
         if (x === null || x === undefined || y === null || y === undefined) { return x === y; }
         // after this just checking type of one would be enough
         if (x.constructor !== y.constructor) { return false; }
@@ -77,6 +78,38 @@ export class ObjectUtils {
         var p = Object.keys(x);
         return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) &&
             p.every(function (i) { return ObjectUtils.objectEquals(x[i], y[i]); });
+    }
+
+}
+
+
+export class DomUtils {
+
+    public static elementBounds(element: ElementRef, x: number, y: number): boolean {
+        if (element && element.nativeElement) {
+            let rect: any = element.nativeElement.getBoundingClientRect();
+            return (x >= rect.left) &&
+                (x <= rect.right) &&
+                (y >= rect.top) &&
+                (y <= rect.bottom);
+        }
+        return false;
+    }
+
+    public static elementContains(parent: any, descendant: any): boolean {
+        let done: boolean = false;
+        let node: any = descendant;
+        while (!done) {
+            if (parent === node) {
+                return true;
+            }
+            node = node["parentNode"];
+            if (!node) {
+                done = true;
+            }
+        }
+        return false;
+
     }
 
 }

@@ -91,6 +91,9 @@ import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components
 import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme.component";
 import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
 import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
+import {DropDownComponent} from "./pages/apis/{apiId}/editor/_components/common/drop-down.component";
+import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row.component";
+import {SchemaTypeComponent} from "./pages/apis/{apiId}/editor/_components/common/schema-type.component";
 
 
 @NgModule({
@@ -104,7 +107,9 @@ import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/c
         TextAreaAutosize, InlineTextEditorComponent, TypeEditorOFComponent, DefinitionFormComponent, AceEditorComponent,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
-        ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent],
+        ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
+        ResponseRowComponent, SchemaTypeComponent
+    ],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

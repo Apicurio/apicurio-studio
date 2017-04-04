@@ -1,0 +1,10 @@
+<div class="dropdown" [class.empty]="!hasValue()" [class.open]="isOpen()">
+    <button class="btn btn-default dropdown-toggle" type="button" (click)="toggle()" #ddButton>
+        <span *ngIf="hasValue()">{{ displayValue() }}</span>
+        <span *ngIf="!hasValue()">{{ noSelectionLabel }}</span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" *ngIf="isOpen()" #ddMenu>
+        <li role="presentation" *ngFor="let option of options" [class.divider]="option.divider"><a *ngIf="!option.divider" role="menuitem" tabindex="-1" (click)="setValue(option.value, $event)">{{ option.name }}</a></li>
+    </ul>
+</div>

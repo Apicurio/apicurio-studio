@@ -20,6 +20,7 @@ import {
     OasDocument, Oas20Document, Oas20Schema, Oas20Response,
     JsonSchemaType, OasNodePath, Oas20DefinitionSchema
 } from "oai-ts-core";
+import {SimplifiedType} from "../_models/simplified-type.model";
 
 /**
  * A command used to modify the type of a response.
@@ -27,15 +28,13 @@ import {
 export class ChangeResponseTypeCommand extends AbstractCommand implements ICommand {
 
     private _responsePath: OasNodePath;
-    private _newType: string;
-    private _isSimple: boolean;
+    private _newType: SimplifiedType;
     private _oldType: Oas20Schema;
 
-    constructor(response: Oas20Response, newType: string, isSimple: boolean) {
+    constructor(response: Oas20Response, newType: SimplifiedType) {
         super();
         this._responsePath = this.oasLibrary().createNodePath(response);
         this._newType = newType;
-        this._isSimple = isSimple;
     }
 
     /**
@@ -57,13 +56,18 @@ export class ChangeResponseTypeCommand extends AbstractCommand implements IComma
 
         response.schema = response.createSchema();
 
-        if (this._isSimple) {
-            response.schema.type = JsonSchemaType[this._newType];
-        } else {
-            let def: Oas20DefinitionSchema = doc.definitions.definition(this._newType);
-            if (def) {
-                response.schema.$ref = "#/definitions/" + this._newType;
-            }
+        if (this._newType.isSimpleType()) {
+            response.schema.type = JsonSchemaType[this._newType.type];
+            response.schema.format = this._newType.as;
+        }
+        if (this._newType.isRef()) {
+            response.schema.$ref = this._newType.type;
+        }
+        if (this._newType.isArray()) {
+            response.schema.type = JsonSchemaType.array;
+            response.schema.items = response.schema.createItemsSchema();
+            response.schema.items.type = JsonSchemaType[this._newType.of.type];
+            response.schema.items.format = this._newType.of.as;
         }
     }
 

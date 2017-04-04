@@ -18,7 +18,7 @@
 import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
 import {
     Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
-    Oas20Document, Oas20Schema, Oas20PathItem
+    Oas20Document, Oas20PathItem
 } from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";
 import {NewRequestBodyCommand} from "../../_commands/new-request-body.command";
@@ -30,12 +30,13 @@ import {
 } from "../../_commands/delete.command";
 import {NewQueryParamCommand} from "../../_commands/new-query-param.command";
 import {NewResponseCommand} from "../../_commands/new-response.command";
-import {ChangeResponseTypeCommand} from "../../_commands/change-response-type.command";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ReplaceOperationCommand} from "../../_commands/replace.command";
 import {ObjectUtils} from "../../_util/object.util";
+import {SimplifiedType} from "../../_models/simplified-type.model";
+import {ChangeResponseTypeCommand} from "../../_commands/change-response-type.command";
 
 
 @Component({
@@ -197,14 +198,8 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         }
     }
 
-    public paramType(param: Oas20Parameter): Oas20Schema {
-        if (!ObjectUtils.isNullOrUndefined(param.type)) {
-            let schema: Oas20Schema = new Oas20Schema();
-            schema.type = param.type;
-            schema.format = param.format;
-            return schema;
-        }
-        return param.schema;
+    public paramType(param: Oas20Parameter): SimplifiedType {
+        return SimplifiedType.fromItems(param);
     }
 
     public paramHasDescription(param: Oas20Parameter): boolean {
@@ -265,8 +260,8 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         }
     }
 
-    public responseType(response: Oas20Response): Oas20Schema {
-        return response.schema;
+    public responseType(response: Oas20Response): SimplifiedType {
+        return SimplifiedType.fromSchema(response.schema);
     }
 
     public changeSummary(newSummary: string): void {
@@ -290,19 +285,19 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public changeQueryParamType(param: Oas20Parameter, newParamType: Oas20Schema): void {
-        let type: string = JsonSchemaType[newParamType.type];
-        let isSimpleType: boolean = true;
-        if (!newParamType.type) {
-            if (!newParamType.$ref) {
-                return;
-            }
-            isSimpleType = false;
-            type = newParamType.$ref.substr(14);
-        }
-
-        let command: ICommand = new ChangeParameterTypeCommand(param, type, isSimpleType);
-        this.onCommand.emit(command);
+    public changeParamType(param: Oas20Parameter, newParamType: SimplifiedType): void {
+        // let type: string = JsonSchemaType[newParamType.type];
+        // let isSimpleType: boolean = true;
+        // if (!newParamType.type) {
+        //     if (!newParamType.$ref) {
+        //         return;
+        //     }
+        //     isSimpleType = false;
+        //     type = newParamType.$ref.substr(14);
+        // }
+        //
+        // let command: ICommand = new ChangeParameterTypeCommand(param, type, isSimpleType);
+        // this.onCommand.emit(command);
     }
 
     public changePathParamDescription(param: Oas20Parameter, newParamDescription: string): void {
@@ -310,34 +305,22 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public changePathParamType(param: Oas20Parameter, newParamType: Oas20Schema): void {
-        let type: string = JsonSchemaType[newParamType.type];
-        let isSimpleType: boolean = true;
-        if (!newParamType.type) {
-            if (!newParamType.$ref) {
-                return;
-            }
-            isSimpleType = false;
-            type = newParamType.$ref.substr(14);
-        }
-
-        let command: ICommand = new ChangeParameterTypeCommand(param, type, isSimpleType);
+    public changeResponseType(response: Oas20Response, newType: SimplifiedType): void {
+        let command: ICommand = new ChangeResponseTypeCommand(response, newType);
         this.onCommand.emit(command);
-    }
 
-    public changeResponseType(response: Oas20Response, newResponseType: Oas20Schema): void {
-        let type: string = JsonSchemaType[newResponseType.type];
-        let isSimpleType: boolean = true;
-        if (!newResponseType.type) {
-            if (!newResponseType.$ref) {
-                return;
-            }
-            isSimpleType = false;
-            type = newResponseType.$ref.substr(14);
-        }
-
-        let command: ICommand = new ChangeResponseTypeCommand(response, type, isSimpleType);
-        this.onCommand.emit(command);
+        // let type: string = JsonSchemaType[newResponseType.type];
+        // let isSimpleType: boolean = true;
+        // if (!newResponseType.type) {
+        //     if (!newResponseType.$ref) {
+        //         return;
+        //     }
+        //     isSimpleType = false;
+        //     type = newResponseType.$ref.substr(14);
+        // }
+        //
+        // let command: ICommand = new ChangeResponseTypeCommand(response, type, isSimpleType);
+        // this.onCommand.emit(command);
     }
 
     public changeResponseDescription(response: Oas20Response, newDescription: string): void {

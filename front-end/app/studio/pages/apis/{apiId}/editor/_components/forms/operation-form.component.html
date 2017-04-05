@@ -95,26 +95,13 @@
                         </context-help>
                     </div>
                     <div class="section-body collapse in" id="path-parameters-section-body">
-                        <table class="table table-striped api-operation-parameters">
-                            <thead>
-                            <tr>
-                                <th nowrap="nowrap">Parameter</th>
-                                <th width="100%">Description</th>
-                                <th width="1%" nowrap="nowrap">Type</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let param of pathParameters()">
-                                <td class="parameter path-parameter" nowrap="nowrap">{{ param.name }}</td>
-                                <td class="description"><inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
-                                                                            (onChange)="changePathParamDescription(param, $event)"
-                                                                            [value]="paramDescription(param)"></inline-text-editor></td>
-                                <td class="type" nowrap="nowrap"><type-editor-of [document]="param.ownerDocument()" [paramIn]="'path'"
-                                                                 [value]="paramType(param)" [noValueMessage]="'No Type'" [topIncrement]="2"
-                                                                 (onChange)="changePathParamType(param, $event)"></type-editor-of></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <!-- The list of path parameters -->
+                        <div class="container-fluid path-parameters typed-item-list">
+                            <path-param-row *ngFor="let param of pathParameters()"
+                                            [param]="param"
+                                            (onDescriptionChange)="changePathParamDescription(param, $event)"
+                                            (onTypeChange)="changeParamType(param, $event)"></path-param-row>
+                        </div>
                     </div>
                 </div>
 
@@ -156,29 +143,30 @@
                                 <strong>Not Recommended</strong>
                                 <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
                             </div>
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="requestBodyMenu" data-toggle="dropdown">
-                                    <span>{{ requestBodyType() }}</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="requestBodyMenu">
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('null', true)">null</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('boolean', true)">boolean</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('integer', true)">integer</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('number', true)">number</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="setRequestBodyType('string', true)">string</a></li>
-                                    <li role="presentation" class="divider" *ngIf="hasDefinitions()"></li>
-                                    <li role="presentation" *ngFor="let definitionName of definitionNames()"><a
-                                            role="menuitem" (click)="setRequestBodyType(definitionName, false)">{{ definitionName }}</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1">Custom Type</a></li>
-                                </ul>
-                            </div>
                             <inline-textarea-editor [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
                                                     [labelClass]="'request-body-description api-item-description description'"
                                                     [inputClass]="'api-description-editor api-item-description request-body-description api-item-description description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
+                            <div class="request-body-type">
+                                <span class="strong">Requesty Body Type:</span>
+                                <drop-down [value]="requestBodyType()"
+                                           [options]="requestBodyTypeOptions()"
+                                           (onValueChange)="changeRequestBodyType($event)"
+                                           [noSelectionLabel]="'Choose Type'"></drop-down>
+                                <span *ngIf="shouldShowRequestBodyTypeOf()">of</span>
+                                <drop-down *ngIf="shouldShowRequestBodyTypeOf()"
+                                           [value]="requestBodyTypeOf()"
+                                           [options]="requestBodyTypeOfOptions()"
+                                           (onValueChange)="changeRequestBodyTypeOf($event)"
+                                           [noSelectionLabel]="'Choose Type'"></drop-down>
+                                <span *ngIf="shouldShowRequestBodyTypeAs()">as</span>
+                                <drop-down *ngIf="shouldShowRequestBodyTypeAs()"
+                                           [value]="requestBodyTypeAs()"
+                                           [options]="requestBodyTypeAsOptions()"
+                                           (onValueChange)="changeRequestBodyTypeAs($event)"
+                                           [noSelectionLabel]="'(optional) Format'"></drop-down>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -211,34 +199,13 @@
                             <button class="btn btn-primary btn-sm pull-right" (click)="openAddQueryParamModal()">Add Query Parameter</button>
                         </div>
 
-                        <table class="table table-striped api-operation-parameters" *ngIf="hasParameters('query')">
-                            <thead>
-                                <tr>
-                                    <th nowrap="nowrap">Parameter</th>
-                                    <th width="100%">Description</th>
-                                    <th width="1%" nowrap="nowrap">Type</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let param of queryParameters()">
-                                    <td class="parameter query-parameter" nowrap="nowrap">{{ param.name }}</td>
-                                    <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
-                                           [topIncrement]="2"
-                                           (onChange)="changeQueryParamDescription(param, $event)"
-                                           [value]="paramDescription(param)"></inline-text-editor></td>
-                                    <td class="type" nowrap="nowrap"><type-editor-of [document]="param.ownerDocument()" [topIncrement]="2"
-                                            [value]="paramType(param)" [noValueMessage]="'No Type'" [paramIn]="'query'"
-                                            (onChange)="changeQueryParamType(param, $event)"></type-editor-of></td>
-                                    <td class="actions" nowrap="nowrap">
-                                        <div>
-                                            <button class="btn btn-sm btn-default pull-right" (click)="deleteQueryParam(param)"
-                                                    title="Delete query parameter."><span class="pficon pficon-delete"></span></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <!-- The list of query parameters -->
+                        <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">
+                            <query-param-row *ngFor="let param of queryParameters()"
+                                             [param]="param"
+                                             (onDescriptionChange)="changeQueryParamDescription(param, $event)"
+                                             (onTypeChange)="changeParamType(param, $event)"></query-param-row>
+                        </div>
                     </div>
                 </div>
 
@@ -277,7 +244,7 @@
                         </div>
 
                         <!-- The list of responses -->
-                        <div class="container-fluid responses">
+                        <div class="container-fluid responses typed-item-list">
                             <response-row *ngFor="let response of responses()" [response]="response"
                                           (onDelete)="deleteResponse(response)"
                                           (onDescriptionChange)="changeResponseDescription(response, $event)"

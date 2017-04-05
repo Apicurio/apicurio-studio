@@ -30,6 +30,7 @@ import {
     ChangePathParametersDescriptionCommand,
     ChangePathParametersTypeCommand
 } from "../../_commands/change-path-parameters.command";
+import {SimplifiedType} from "../../_models/simplified-type.model";
 
 
 @Component({
@@ -191,63 +192,51 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
     }
-
-    public hasAtLeastOneOperation(): boolean {
-        return this.hasGet() || this.hasPut() || this.hasPost() || this.hasDelete() || this.hasOptions() ||
-            this.hasHead() || this.hasPatch();
-    }
-
-    public hasPathParameters(): boolean {
-        return this.pathParameterNames().length > 0;
-    }
-
-    public pathParameterNames(): string[] {
-        return ModelUtils.detectPathParamNames(this.path.path());
-    }
-
-    public pathParamDescription(paramName): string {
-        let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
-        let description: string = null;
-        for (let param of params) {
-            if (param && param.description) {
-                if (description === null) {
-                    description = param.description;
-                } else if (description !== param.description) {
-                    description = null;
-                    break;
-                }
-            }
-        };
-        return description;
-    }
-
-    public changePathParamDescription(paramName: string, newDescription: string): void {
-        let command: ICommand = new ChangePathParametersDescriptionCommand(this.path, paramName, newDescription);
-        this.onCommand.emit(command);
-    }
-
-    public pathParamType(paramName: string): Oas20Schema {
-        let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
-        let type: Oas20Schema = null;
-        for (let param of params) {
-            if (param && param.type) {
-                if (type === null) {
-                    type = new Oas20Schema();
-                    type.type = param.type;
-                    type.format = param.format;
-                } else if (type.type !== param.type || type.format !== param.format) {
-                    type = null;
-                    break;
-                }
-            }
-        };
-        return type;
-    }
-
-    public changePathParamType(paramName: string, newParamType: Oas20Schema): void {
-        let command: ICommand = new ChangePathParametersTypeCommand(this.path, paramName, newParamType);
-        this.onCommand.emit(command);
-    }
+    //
+    // public hasAtLeastOneOperation(): boolean {
+    //     return this.hasGet() || this.hasPut() || this.hasPost() || this.hasDelete() || this.hasOptions() ||
+    //         this.hasHead() || this.hasPatch();
+    // }
+    //
+    // public hasPathParameters(): boolean {
+    //     return this.pathParameterNames().length > 0;
+    // }
+    //
+    // public pathParameterNames(): string[] {
+    //     return ModelUtils.detectPathParamNames(this.path.path());
+    // }
+    //
+    // public pathParamDescription(paramName): string {
+    //     let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
+    //     let description: string = null;
+    //     for (let param of params) {
+    //         if (param && param.description) {
+    //             if (description === null) {
+    //                 description = param.description;
+    //             } else if (description !== param.description) {
+    //                 description = null;
+    //                 break;
+    //             }
+    //         }
+    //     };
+    //     return description;
+    // }
+    //
+    // public changePathParamDescription(paramName: string, newDescription: string): void {
+    //     let command: ICommand = new ChangePathParametersDescriptionCommand(this.path, paramName, newDescription);
+    //     this.onCommand.emit(command);
+    // }
+    //
+    // public param(paramName: string): Oas20Parameter {
+    //     let rval: Oas20Parameter = new Oas20Parameter();
+    //     rval.description = this.pathParamDescription(paramName);
+    //     return rval;
+    // }
+    //
+    // public changePathParamType(paramName: string, newType: SimplifiedType): void {
+    //     let command: ICommand = new ChangePathParametersTypeCommand(this.path, paramName, newType);
+    //     this.onCommand.emit(command);
+    // }
 
     public enableSourceMode(): void {
         this.sourceNode = this.path;

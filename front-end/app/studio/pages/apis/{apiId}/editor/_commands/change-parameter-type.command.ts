@@ -18,8 +18,9 @@
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20Schema, Oas20Parameter,
-    JsonSchemaType, OasNodePath, Oas20DefinitionSchema
+    JsonSchemaType, OasNodePath, Oas20DefinitionSchema, Oas20Items
 } from "oai-ts-core";
+import {SimplifiedType} from "../_models/simplified-type.model";
 
 /**
  * A command used to modify the type of a parameter of an operation.
@@ -27,17 +28,16 @@ import {
 export class ChangeParameterTypeCommand extends AbstractCommand implements ICommand {
 
     private _paramPath: OasNodePath;
-    private _newType: string;
-    private _isSimple: boolean;
-
+    private _newType: SimplifiedType;
     private _oldType: JsonSchemaType;
+    private _oldFormat: string;
+    private _oldItems: Oas20Items;
     private _oldSchema: Oas20Schema;
 
-    constructor(parameter: Oas20Parameter, newType: string, isSimple: boolean) {
+    constructor(parameter: Oas20Parameter, newType: SimplifiedType) {
         super();
         this._paramPath = this.oasLibrary().createNodePath(parameter);
         this._newType = newType;
-        this._isSimple = isSimple;
     }
 
     /**
@@ -45,27 +45,57 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
      * @param document
      */
     public execute(document: OasDocument): void {
-        console.info("[ChangeParameterTypeCommand] Executing.");
+        console.info("[ChangeParameterTypeCommand] Executing: ");
         let doc: Oas20Document = <Oas20Document> document;
         let param: Oas20Parameter = <Oas20Parameter>this._paramPath.resolve(doc);
         if (!param) {
             return;
         }
 
-        this._oldType = null;
-        this._oldSchema = null;
-
+        // Save the old info (for later undo operation)
         this._oldType = param.type;
+        this._oldFormat = param.format;
+        this._oldItems = param.items;
         this._oldSchema = param.schema;
-        if (this._isSimple) {
-            param.type = JsonSchemaType[this._newType];
-            param.schema = null;
-        } else {
-            param.type = null;
+
+        // If it's a body param, change the schema child.  Otherwise change the param itself.
+        if (param.in === "body") {
             param.schema = param.createSchema();
-            let def: Oas20DefinitionSchema = doc.definitions.definition(this._newType);
-            if (def) {
-                param.schema.$ref = "#/definitions/" + this._newType;
+
+            if (this._newType.isSimpleType()) {
+                param.schema.type = JsonSchemaType[this._newType.type];
+                param.schema.format = this._newType.as;
+            }
+            if (this._newType.isRef()) {
+                param.schema.$ref = this._newType.type;
+            }
+            if (this._newType.isArray()) {
+                param.schema.type = JsonSchemaType.array;
+                param.schema.format = null;
+                param.schema.items = param.schema.createItemsSchema();
+                if (this._newType.of) {
+                    if (this._newType.of.isSimpleType()) {
+                        param.schema.items.type = JsonSchemaType[this._newType.of.type];
+                        param.schema.items.format = this._newType.of.as;
+                    }
+                    if (this._newType.of.isRef()) {
+                        param.schema.items.$ref = this._newType.of.type;
+                    }
+                }
+            }
+        } else {
+            if (this._newType.isSimpleType()) {
+                param.type = JsonSchemaType[this._newType.type];
+                param.format = this._newType.as;
+                param.items = null;
+            }
+            if (this._newType.isArray()) {
+                param.type = JsonSchemaType.array;
+                param.items = param.createItems();
+                if (this._newType.of) {
+                    param.items.type = JsonSchemaType[this._newType.of.type];
+                    param.items.format = this._newType.of.as;
+                }
             }
         }
     }
@@ -83,6 +113,12 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
         }
 
         param.type = this._oldType;
+        param.format = this._oldFormat;
+        param.items = this._oldItems;
+        if (param.items) {
+            param.items._parent = param;
+            param.items._ownerDocument = param.ownerDocument();
+        }
         param.schema = this._oldSchema;
         if (param.schema) {
             param.schema._parent = param;

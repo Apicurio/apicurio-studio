@@ -1,9 +1,10 @@
-<div class="row response typed-item" [class.editing]="isEditing()">
+<div class="row parameter typed-item" [class.editing]="isEditing()">
     <div class="col-md-6 metainfo">
-        <div class="statusCode name">{{ response.statusCode() }} {{ statusCodeLine(response.statusCode()) }}</div>
+        <div class="parameter path-parameter name">{{ param.name }}</div>
         <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
                                                      (onChange)="setDescription($event)"
-                                                     [value]="response.description"></inline-text-editor></div>
+                                                     [topIncrement]="2"
+                                                     [value]="param.description"></inline-text-editor></div>
     </div>
     <div class="col-md-4 type">
         <schema-type [type]="displayType()"></schema-type>
@@ -13,25 +14,25 @@
         <button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
     </div>
 </div>
-<div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
+<div class="row parameter-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
     <form  class="form-horizontal">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="col-sm-4 control-label" for="responseType">Type</label>
+                <label class="col-sm-4 control-label" for="parameterType">Type</label>
                 <div class="col-sm-8">
-                    <drop-down id="responseType" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                    <drop-down id="parameterType" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="model.type === 'array'">
-                <label class="col-sm-4 control-label" for="responseTypeOf">of</label>
+                <label class="col-sm-4 control-label" for="parameterTypeOf">of</label>
                 <div class="col-sm-8">
-                    <drop-down id="responseTypeOf" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                    <drop-down id="parameterTypeOf" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="shouldShowFormattedAs()">
-                <label class="col-sm-4 control-label" for="responseTypeFormat">formatted as</label>
+                <label class="col-sm-4 control-label" for="parameterTypeFormat">formatted as</label>
                 <div class="col-sm-8">
-                    <drop-down id="responseTypeFormat" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
+                    <drop-down id="parameterTypeFormat" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
                 </div>
             </div>
             <div class="form-group form-group-actions">

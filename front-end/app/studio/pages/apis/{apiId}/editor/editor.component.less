@@ -548,6 +548,17 @@
   margin-top: 8px;
   font-size: 14px;
 }
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-type {
+  margin-top: 20px;
+}
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-type .strong {
+  font-weight: 600;
+}
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
 
 .api-editor .editor-detail table {
   font-size: 13px;
@@ -597,74 +608,75 @@
 }
 
 
-.api-editor .editor-detail .responses-section {
+.api-editor .editor-detail .section {
 }
-.api-editor .editor-detail .responses-section .responses {
+.api-editor .editor-detail .section .typed-item-list {
 }
-.api-editor .editor-detail .responses-section .responses .response {
+.api-editor .editor-detail .section .typed-item-list .typed-item {
   padding: 5px;
   border-bottom: 1px solid #ddd;
   border-right: 1px solid #ddd;
   vertical-align: middle;
   margin-top: 3px;
 }
-.api-editor .editor-detail .responses-section .responses .response.editing {
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing {
   border-bottom: none;
   border-right: 3px solid #39a5dc;
   background-color: #cde6fa;
 }
-.api-editor .editor-detail .responses-section .responses .response-type {
+.api-editor .editor-detail .section .typed-item-list .type-row {
   padding-top: 12px;
   padding-bottom: 10px;
   border: 1px solid #39a5dc;
   border-right-width: 3px;
 }
-.api-editor .editor-detail .responses-section .responses .response .metainfo {
+.api-editor .editor-detail .section .typed-item-list .typed-item .metainfo {
   padding-left: 0px;
 }
-.api-editor .editor-detail .responses-section .responses .response .actions {
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions {
   padding-right: 0px;
 }
-.api-editor .editor-detail .responses-section .responses .response .actions button {
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions button {
   opacity: .25;
 }
-.api-editor .editor-detail .responses-section .responses .response:hover {
+.api-editor .editor-detail .section .typed-item-list .typed-item:hover {
   background-color: #eee;
   box-shadow: 1px 1px 4px #ddd;
 }
-.api-editor .editor-detail .responses-section .responses .response.editing:hover {
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing:hover {
   box-shadow: none;
   background-color: #cde6fa;
 }
-.api-editor .editor-detail .responses-section .responses .response:hover .actions button {
+.api-editor .editor-detail .section .typed-item-list .typed-item:hover .actions button {
   opacity: 1.0;
 }
-.api-editor .editor-detail .responses-section .responses .response.editing .actions button {
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing .actions button {
   display: none;
 }
-.api-editor .editor-detail .responses-section .responses .response.editing .type {
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing .type {
   visibility: hidden;
 }
-.api-editor .editor-detail .responses-section .responses .response .statusCode {
+.api-editor .editor-detail .section .typed-item-list .typed-item .name {
   font-weight: 600;
   font-size: 15px;
   line-height: 18px;
 }
-.api-editor .editor-detail .responses-section .responses .response .description {
+.api-editor .editor-detail .section .typed-item-list .typed-item .description {
   font-size: 14px;
 }
-.api-editor .editor-detail .responses-section .responses .response .type {
+.api-editor .editor-detail .section .typed-item-list .typed-item .type {
   line-height: 40px;
 }
-.api-editor .editor-detail .responses-section .responses .response .type .empty {
+.api-editor .editor-detail .section .typed-item-list .typed-item .type .empty {
   color: #999;
 }
-.api-editor .editor-detail .responses-section .responses .response .actions {
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions {
   line-height: 40px;
 }
-.api-editor .editor-detail .responses-section .responses .response-type .form-group {
+.api-editor .editor-detail .section .typed-item-list .type-row .form-group {
   margin: 5px;
 }
-.api-editor .editor-detail .responses-section .responses .response-type .form-group-actions {
+.api-editor .editor-detail .section .typed-item-list .type-row .form-group-actions {
   padding-top: 5px;
 }
+

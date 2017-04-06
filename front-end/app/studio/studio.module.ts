@@ -77,7 +77,6 @@ import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/com
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
-import {TypeEditorOFComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/type-editor.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
 import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-definition.component";
@@ -106,7 +105,7 @@ import {QueryParamRowRowComponent} from "./pages/apis/{apiId}/editor/_components
         CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
         ResponseItemComponent, MainFormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
-        TextAreaAutosize, InlineTextEditorComponent, TypeEditorOFComponent, DefinitionFormComponent, AceEditorComponent,
+        TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,

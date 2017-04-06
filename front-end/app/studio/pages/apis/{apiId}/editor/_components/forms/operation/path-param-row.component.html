@@ -11,7 +11,6 @@
     </div>
     <div class="col-md-2 actions">
         <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
-        <button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
     </div>
 </div>
 <div class="row parameter-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">

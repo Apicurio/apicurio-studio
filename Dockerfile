@@ -21,5 +21,5 @@ RUN unzip  /opt/apiman-studio/api-design-studio-${RELEASE_VERSION}-quickstart.zi
 
 EXPOSE 8080
 
-ENTRYPOINT ["/opt/apiman-studio/apache-tomcat-8.5.12/bin/catalina.sh"]
+ENTRYPOINT ["/opt/apiman-studio/apache-tomcat-8.5.13/bin/catalina.sh"]
 CMD ["run"]

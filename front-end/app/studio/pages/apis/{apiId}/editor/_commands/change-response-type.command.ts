@@ -17,8 +17,7 @@
 
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20Schema, Oas20Response,
-    JsonSchemaType, OasNodePath, Oas20DefinitionSchema
+    OasDocument, Oas20Document, Oas20Schema, Oas20Response, OasNodePath
 } from "oai-ts-core";
 import {SimplifiedType} from "../_models/simplified-type.model";
 
@@ -57,16 +56,16 @@ export class ChangeResponseTypeCommand extends AbstractCommand implements IComma
         response.schema = response.createSchema();
 
         if (this._newType.isSimpleType()) {
-            response.schema.type = JsonSchemaType[this._newType.type];
+            response.schema.type = this._newType.type;
             response.schema.format = this._newType.as;
         }
         if (this._newType.isRef()) {
             response.schema.$ref = this._newType.type;
         }
         if (this._newType.isArray()) {
-            response.schema.type = JsonSchemaType.array;
+            response.schema.type = "array";
             response.schema.items = response.schema.createItemsSchema();
-            response.schema.items.type = JsonSchemaType[this._newType.of.type];
+            response.schema.items.type = this._newType.of.type;
             response.schema.items.format = this._newType.of.as;
         }
     }

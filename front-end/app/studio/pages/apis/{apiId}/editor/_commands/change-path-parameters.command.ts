@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20Schema, Oas20Parameter,
-    JsonSchemaType, OasNodePath, Oas20PathItem
+    OasNodePath, Oas20PathItem
 } from "oai-ts-core";
 import {ModelUtils} from "../_util/model.util";
 
@@ -101,7 +101,7 @@ export class ChangePathParametersTypeCommand extends AbstractCommand implements 
 
     private _oldTypes: {
         path: OasNodePath,
-        type: JsonSchemaType,
+        type: string,
         format: string
     }[];
 

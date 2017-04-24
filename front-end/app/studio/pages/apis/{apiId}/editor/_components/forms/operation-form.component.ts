@@ -17,7 +17,7 @@
 
 import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
 import {
-    Oas20Operation, Oas20Parameter, JsonSchemaType, Oas20Response,
+    Oas20Operation, Oas20Parameter, Oas20Response,
     Oas20Document, Oas20PathItem
 } from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";

@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20Schema, Oas20Parameter,
-    JsonSchemaType, OasNodePath, Oas20DefinitionSchema, Oas20Items
+    OasNodePath, Oas20Items
 } from "oai-ts-core";
 import {SimplifiedType} from "../_models/simplified-type.model";
 
@@ -29,7 +29,7 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
 
     private _paramPath: OasNodePath;
     private _newType: SimplifiedType;
-    private _oldType: JsonSchemaType;
+    private _oldType: string;
     private _oldFormat: string;
     private _oldItems: Oas20Items;
     private _oldSchema: Oas20Schema;
@@ -63,19 +63,19 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
             param.schema = param.createSchema();
 
             if (this._newType.isSimpleType()) {
-                param.schema.type = JsonSchemaType[this._newType.type];
+                param.schema.type = this._newType.type;
                 param.schema.format = this._newType.as;
             }
             if (this._newType.isRef()) {
                 param.schema.$ref = this._newType.type;
             }
             if (this._newType.isArray()) {
-                param.schema.type = JsonSchemaType.array;
+                param.schema.type = "array";
                 param.schema.format = null;
                 param.schema.items = param.schema.createItemsSchema();
                 if (this._newType.of) {
                     if (this._newType.of.isSimpleType()) {
-                        param.schema.items.type = JsonSchemaType[this._newType.of.type];
+                        param.schema.items.type = this._newType.of.type;
                         param.schema.items.format = this._newType.of.as;
                     }
                     if (this._newType.of.isRef()) {
@@ -85,15 +85,15 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
             }
         } else {
             if (this._newType.isSimpleType()) {
-                param.type = JsonSchemaType[this._newType.type];
+                param.type = this._newType.type;
                 param.format = this._newType.as;
                 param.items = null;
             }
             if (this._newType.isArray()) {
-                param.type = JsonSchemaType.array;
+                param.type = "array";
                 param.items = param.createItems();
                 if (this._newType.of) {
-                    param.items.type = JsonSchemaType[this._newType.of.type];
+                    param.items.type = this._newType.of.type;
                     param.items.format = this._newType.of.as;
                 }
             }

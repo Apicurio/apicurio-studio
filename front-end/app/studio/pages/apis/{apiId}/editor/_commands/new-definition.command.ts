@@ -17,10 +17,8 @@
 
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20PropertySchema, JsonSchemaType,
-    Oas20Schema, Oas20SchemaFactory
+    OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20SchemaFactory
 } from "oai-ts-core";
-import {isNumber} from "util";
 
 /**
  * A command used to create a new definition in a document.

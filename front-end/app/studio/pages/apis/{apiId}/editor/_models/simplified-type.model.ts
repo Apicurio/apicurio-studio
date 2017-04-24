@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {JsonSchemaType, Oas20Items, Oas20ItemsSchema, Oas20Schema} from "oai-ts-core";
+import {Oas20Items, Oas20ItemsSchema, Oas20Schema} from "oai-ts-core";
 import {ObjectUtils} from "../_util/object.util";
 
 
@@ -39,13 +39,13 @@ export class SimplifiedType {
 
     public static fromItems(items: Oas20Items): SimplifiedType {
         let rval: SimplifiedType = new SimplifiedType();
-        if (items && items.type && items.type !== JsonSchemaType.array && items.type !== JsonSchemaType.object && items.type !== JsonSchemaType.file) {
-            rval.type = JsonSchemaType[items.type];
+        if (items && items.type && items.type !== "array" && items.type !== "object" && items.type !== "file") {
+            rval.type = items.type;
             if (items.format) {
                 rval.as = items.format;
             }
         }
-        if (items && items.type === JsonSchemaType.array && items.items && !Array.isArray(items.items)) {
+        if (items && items.type === "array" && items.items && !Array.isArray(items.items)) {
             rval.type = "array";
             rval.of = SimplifiedType.fromItems(items.items);
         }
@@ -57,15 +57,15 @@ export class SimplifiedType {
         if (schema && schema.$ref) {
             rval.type = schema.$ref;
         }
-        if (schema && schema.type && schema.type !== JsonSchemaType.array &&
-            schema.type !== JsonSchemaType.object && schema.type !== JsonSchemaType.file)
+        if (schema && schema.type && schema.type !== "array" &&
+            schema.type !== "object" && schema.type !== "file")
         {
-            rval.type = JsonSchemaType[schema.type];
+            rval.type = schema.type;
             if (schema.format) {
                 rval.as = schema.format;
             }
         }
-        if (schema && schema.type === JsonSchemaType.array && schema.items && !Array.isArray(schema.items)) {
+        if (schema && schema.type === "array" && schema.items && !Array.isArray(schema.items)) {
             rval.type = "array";
             rval.of = SimplifiedType.fromSchema(<Oas20ItemsSchema>schema.items);
         }

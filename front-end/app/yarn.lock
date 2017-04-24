@@ -2,41 +2,41 @@
 # yarn lockfile v1
 
 
-"@angular/common@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.3.tgz#78d96bd2f8a1a105f635cd25e362ba5704b47f56"
+"@angular/common@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.10.tgz#a3a682d2228fa30ec23dd0eb57c8e887fba26997"
 
-"@angular/compiler@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.4.3.tgz#76a41916f90eda66643107740c4a9ae45cb7a6c1"
+"@angular/compiler@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.4.10.tgz#f51fd34820b2a02c7cb61fbcf49873c58056fb0c"
 
-"@angular/core@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.4.3.tgz#a72a13bb9f01659b8388558cd6e3a570a8434b1c"
+"@angular/core@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.4.10.tgz#0b8320a65065965d998645b1f5cd3cf769b441ea"
 
-"@angular/forms@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-2.4.3.tgz#0b4f59b8074e3d0fe987781e0f2af1ca1eec212b"
+"@angular/forms@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-2.4.10.tgz#062133aaade1f3b3c962f1593208c541b622fd06"
 
-"@angular/http@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/http/-/http-2.4.3.tgz#d8afca7362efb010600fde02360e01e848579be6"
+"@angular/http@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/http/-/http-2.4.10.tgz#ff6beade5b39c989ebf2393c49b34eebd43e9555"
 
-"@angular/platform-browser-dynamic@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-2.4.3.tgz#d65cc9bc4487e2a86e2c6f6641c711fccfa90c5a"
+"@angular/platform-browser-dynamic@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-2.4.10.tgz#8df25dec2b06adc690cc9bc26448deccaebcd8ec"
 
-"@angular/platform-browser@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-2.4.3.tgz#eba8588d2fffc39d0b85a9180c297d9ca2f1f3a4"
+"@angular/platform-browser@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-2.4.10.tgz#cbf25608148fb4ffef96cc5005ba5d7b3e093906"
 
 "@angular/router@3.4.3":
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-3.4.3.tgz#19846caa1f87d9b83f005f45a2be15b6744db8fd"
 
-"@angular/upgrade@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/upgrade/-/upgrade-2.4.3.tgz#6c172e2ee287be49939ea64d4fcfe44265d8f0c2"
+"@angular/upgrade@2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@angular/upgrade/-/upgrade-2.4.10.tgz#b69a3ee324d4450eb1696ddc9bded1a6ec06ca52"
 
 "@types/core-js@0.9.35":
   version "0.9.35"
@@ -2628,9 +2628,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-oai-ts-core@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.1.6.tgz#cd413a3b61d0f8d23e140a9de87901fde3d0bb55"
+oai-ts-core@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.1.7.tgz#7eb99f580c52464e406b1c19a8284a6407f7a708"
   dependencies:
     core-js "2.4.1"
 

@@ -28,7 +28,6 @@ import {
     DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
     DeleteResponseCommand
 } from "../../_commands/delete.command";
-import {NewQueryParamCommand} from "../../_commands/new-query-param.command";
 import {NewResponseCommand} from "../../_commands/new-response.command";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
@@ -38,6 +37,8 @@ import {ObjectUtils} from "../../_util/object.util";
 import {SimplifiedType} from "../../_models/simplified-type.model";
 import {ChangeResponseTypeCommand} from "../../_commands/change-response-type.command";
 import {DropDownOption} from "../common/drop-down.component";
+import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
+import {NewParamCommand} from "../../_commands/new-param.command";
 
 
 @Component({
@@ -60,6 +61,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
@@ -159,6 +161,8 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     public requestBodyTypeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
             { value: "array", name: "Array" },
+            { divider: true },
+            { value: "formData", name: "Form Data" },
             { divider: true },
             { value: "string", name: "String" },
             { value: "integer", name: "Integer" },
@@ -270,11 +274,17 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changeRequestBodyType(newType: string): void {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        let nt: SimplifiedType = new SimplifiedType();
-        nt.type = newType;
-        let command: ICommand = new ChangeParameterTypeCommand(bodyParam, nt);
-        this.onCommand.emit(command);
+        this.operation.n_attribute("x-apidesigner-formDataBody", false);
+        if (newType === "formData") {
+            this.deleteRequestBody();
+            this.operation.n_attribute("x-apidesigner-formDataBody", true);
+        } else {
+            let bodyParam: Oas20Parameter = this.bodyParam();
+            let nt: SimplifiedType = new SimplifiedType();
+            nt.type = newType;
+            let command: ICommand = new ChangeParameterTypeCommand(bodyParam, nt);
+            this.onCommand.emit(command);
+        }
     }
 
     public changeRequestBodyTypeOf(newOf: string): void {
@@ -318,7 +328,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         if (!this.operation.parameters) {
             return [];
         }
-        return this.operation.parameters.filter((value) => {
+        return this.operation.parameters.filter( value => {
             return value.in === paramType;
         }).sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
@@ -335,6 +345,17 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public headerParameters(): Oas20Parameter[] {
         return this.parameters("header");
+    }
+
+    public formDataParameters(): Oas20Parameter[] {
+        return this.parameters("formData");
+    }
+
+    public hasFormDataParams(): boolean {
+        if (this.operation.n_attribute("x-apidesigner-formDataBody") === true) {
+            return true;
+        }
+        return this.hasParameters("formData");
     }
 
     public hasParameters(type: string): boolean {
@@ -436,7 +457,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public changeQueryParamDescription(param: Oas20Parameter, newParamDescription: string): void {
+    public changeParamDescription(param: Oas20Parameter, newParamDescription: string): void {
         let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
         this.onCommand.emit(command);
     }
@@ -466,6 +487,10 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
+    public createRequestFormData(): void {
+        this.operation.n_attribute("x-apidesigner-formDataBody", true);
+    }
+
     public setRequestBodyType(type: string, isSimpleType: boolean): void {
         // let command: ICommand = new ChangeParameterTypeCommand(this.bodyParam(), type, isSimpleType);
         // this.onCommand.emit(command);
@@ -478,8 +503,14 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public deleteRequestBody(): void {
-        let command: ICommand = new DeleteAllParameters(this.operation, "body");
-        this.onCommand.emit(command);
+        if (this.hasBodyParam()) {
+            let command: ICommand = new DeleteAllParameters(this.operation, "body");
+            this.onCommand.emit(command);
+        } else {
+            this.operation.n_attribute("x-apidesigner-formDataBody", false);
+            let command: ICommand = new DeleteAllParameters(this.operation, "formData");
+            this.onCommand.emit(command);
+        }
     }
 
     public deleteAllQueryParams(): void {
@@ -492,7 +523,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public deleteQueryParam(parameter: Oas20Parameter): void {
+    public deleteParam(parameter: Oas20Parameter): void {
         let command: ICommand = new DeleteParameterCommand(parameter);
         this.onCommand.emit(command);
     }
@@ -506,8 +537,17 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.addQueryParamDialog.open();
     }
 
+    public openAddFormDataParamModal(): void {
+        this.addFormDataParamDialog.open();
+    }
+
     public addQueryParam(name: string): void {
-        let command: ICommand = new NewQueryParamCommand(this.operation, name);
+        let command: ICommand = new NewParamCommand(this.operation, name, "query");
+        this.onCommand.emit(command);
+    }
+
+    public addFormDataParam(name: string): void {
+        let command: ICommand = new NewParamCommand(this.operation, name, "formData");
         this.onCommand.emit(command);
     }
 

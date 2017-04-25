@@ -19,11 +19,12 @@ import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {OasDocument, Oas20Document, Oas20Operation, OasNodePath, Oas20Parameter} from "oai-ts-core";
 
 /**
- * A command used to create a new query parameter.
+ * A command used to create a new parameter.
  */
-export class NewQueryParamCommand extends AbstractCommand implements ICommand {
+export class NewParamCommand extends AbstractCommand implements ICommand {
 
     private _paramName: string;
+    private _paramType: string;
     private _operationPath: OasNodePath;
     private _created: boolean;
 
@@ -31,11 +32,13 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
      * Constructor.
      * @param operation
      * @param paramName
+     * @param paramType
      */
-    constructor(operation: Oas20Operation, paramName: string) {
+    constructor(operation: Oas20Operation, paramName: string, paramType: string) {
         super();
         this._operationPath = this.oasLibrary().createNodePath(operation);
         this._paramName = paramName;
+        this._paramType = paramType;
     }
 
     /**
@@ -43,7 +46,7 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
      * @param document
      */
     public execute(document: OasDocument): void {
-        console.info("[NewQueryParamCommand] Executing.");
+        console.info("[NewParamCommand] Executing.");
 
         this._created = false;
 
@@ -51,10 +54,12 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
         let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(doc);
 
         if (this.isNullOrUndefined(operation)) {
+            console.info("[NewParamCommand] Operation is null.");
             return;
         }
 
-        if (this.hasQueryParam(this._paramName, operation)) {
+        if (this.hasParam(this._paramName, this._paramType, operation)) {
+            console.info("[NewParamCommand] Param %s of type %s already exists.", this._paramName, this._paramType);
             return;
         }
 
@@ -63,19 +68,20 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
         }
 
         let param: Oas20Parameter = operation.createParameter();
-        param.in = "query";
+        param.in = this._paramType;
         param.name = this._paramName;
         operation.addParameter(param);
+        console.info("[NewParamCommand] Param %s of type %s created successfully.", param.name, param.in);
 
         this._created = true;
     }
 
     /**
-     * Removes the previously created query param.
+     * Removes the previously created param.
      * @param document
      */
     public undo(document: OasDocument): void {
-        console.info("[NewQueryParamCommand] Reverting.");
+        console.info("[NewParamCommand] Reverting.");
         if (!this._created) {
             return;
         }
@@ -87,17 +93,17 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        let queryParam: Oas20Parameter = null;
+        let theParam: Oas20Parameter = null;
         for (let param of operation.parameters) {
-            if (param.in === "query" && param.name === this._paramName) {
-                queryParam = param;
+            if (param.in === this._paramType && param.name === this._paramName) {
+                theParam = param;
                 break;
             }
         }
 
         // If found, remove it from the params.
-        if (queryParam) {
-            operation.parameters.splice(operation.parameters.indexOf(queryParam), 1);
+        if (theParam) {
+            operation.parameters.splice(operation.parameters.indexOf(theParam), 1);
 
             if (operation.parameters.length === 0) {
                 operation.parameters = null;
@@ -106,14 +112,15 @@ export class NewQueryParamCommand extends AbstractCommand implements ICommand {
     }
 
     /**
-     * Returns true if the given query param already exists in the operation.
+     * Returns true if the given param already exists in the operation.
      * @param paramName
+     * @param paramType
      * @param operation
      * @returns {boolean}
      */
-    private hasQueryParam(paramName: string, operation: Oas20Operation): boolean {
+    private hasParam(paramName: string, paramType: string, operation: Oas20Operation): boolean {
         return operation.parameters && operation.parameters.filter((value) => {
-            return value.in === "query" && value.name === paramName;
+            return value.in === paramType && value.name === paramName;
         }).length > 0;
     }
 

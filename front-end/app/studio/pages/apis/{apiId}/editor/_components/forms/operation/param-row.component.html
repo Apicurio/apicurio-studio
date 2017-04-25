@@ -1,6 +1,6 @@
 <div class="row parameter typed-item" [class.editing]="isEditing()">
     <div class="col-md-6 metainfo">
-        <div class="parameter query-parameter name">{{ param.name }}</div>
+        <div class="parameter {{ parameterClass }} name">{{ param.name }}</div>
         <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
                                                      (onChange)="setDescription($event)"
                                                      [topIncrement]="2"
@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-2 actions">
         <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
-        <button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
+        <button type="button" class="btn btn-xs btn-default" (click)="delete()" *ngIf="canDelete"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
     </div>
 </div>
 <div class="row parameter-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">

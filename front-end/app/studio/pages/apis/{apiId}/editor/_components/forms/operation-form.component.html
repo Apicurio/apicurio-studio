@@ -97,10 +97,10 @@
                     <div class="section-body collapse in" id="path-parameters-section-body">
                         <!-- The list of path parameters -->
                         <div class="container-fluid path-parameters typed-item-list">
-                            <path-param-row *ngFor="let param of pathParameters()"
-                                            [param]="param"
-                                            (onDescriptionChange)="changePathParamDescription(param, $event)"
-                                            (onTypeChange)="changeParamType(param, $event)"></path-param-row>
+                            <param-row *ngFor="let param of pathParameters()" [canDelete]="false"
+                                       [param]="param" [parameterClass]="'path-parameter'"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="section request-body-section panel-group">
                     <div class="section-header panel-title">
                         <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
-                            <span class="section-label">REQUEST BODY</span>
+                            <span class="section-label">REQUEST BODY <span *ngIf="hasFormDataParams()">PARAMS</span></span>
                         </a>
                         <context-help>
                             <p>
@@ -118,25 +118,27 @@
                                 types usually do not include a body.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" [style.visibility]="'hidden'"
-                                [disabled]="disabled"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="openAddFormDataParamModal()"
+                                [style.visibility]="hasFormDataParams() ? 'visible' : 'hidden'"><span class="fa fa-plus"></span></button>
                         <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
                                 title="Delete the request body."
-                                [disabled]="!hasBodyParam()"><span class="pficon pficon-delete"></span></button>
+                                [disabled]="!hasBodyParam() && !hasFormDataParams()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
 
                         <div class="alert alert-info"
                              [class.alert-warning]="operation.method() === 'put' || operation.method() === 'post'"
-                             *ngIf="!hasBodyParam()">
+                             *ngIf="!hasBodyParam() && !hasFormDataParams()">
                             <span class="pficon"
                                   [class.pficon-info]="operation.method() !== 'put' && operation.method() !== 'post'"
                                   [class.pficon-warning-triangle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
                             <strong>None Found</strong>
                             <span>No request body has been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="createRequestBody()">Add Request Body</button>
+                            <button class="btn btn-default btn-sm pull-right" (click)="createRequestBody()" style="margin-right: 8px">Add Body</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="createRequestFormData()">Add Form Data</button>
                         </div>
 
+                        <!-- If we're using a 'body' param -->
                         <div *ngIf="hasBodyParam()">
                             <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
                                 <span class="pficon pficon-warning-triangle-o"></span>
@@ -149,7 +151,7 @@
                                                     [formClass]="'api-description-editor-form'"
                                                     (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
                             <div class="request-body-type">
-                                <span class="strong">Requesty Body Type:</span>
+                                <span class="strong">Request Body Type:</span>
                                 <drop-down [value]="requestBodyType()"
                                            [options]="requestBodyTypeOptions()"
                                            (onValueChange)="changeRequestBodyType($event)"
@@ -166,6 +168,24 @@
                                            [options]="requestBodyTypeAsOptions()"
                                            (onValueChange)="changeRequestBodyTypeAs($event)"
                                            [noSelectionLabel]="'(optional) Format'"></drop-down>
+                            </div>
+                        </div>
+
+                        <!-- If we're using 'formData' params -->
+                        <div *ngIf="hasFormDataParams()">
+                            <div class="alert alert-info" *ngIf="!hasParameters('formData')">
+                                <span class="pficon pficon-info"></span>
+                                <strong>Form Data Parameters Needed</strong>
+                                <span>You have indicated a desire to pass data via Form Data parameters but none have been defined.</span>
+                                <button class="btn btn-primary btn-sm pull-right" (click)="openAddFormDataParamModal()">Add Parameter</button>
+                            </div>
+                            <!-- The list of formData parameters -->
+                            <div class="container-fluid formData-parameters typed-item-list" *ngIf="hasParameters('formData')">
+                                <param-row *ngFor="let param of formDataParameters()"
+                                           [param]="param" [parameterClass]="'formData-parameter'"
+                                           (onDelete)="deleteParam(param)"
+                                           (onDescriptionChange)="changeParamDescription(param, $event)"
+                                           (onTypeChange)="changeParamType(param, $event)"></param-row>
                             </div>
                         </div>
                     </div>
@@ -201,11 +221,11 @@
 
                         <!-- The list of query parameters -->
                         <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">
-                            <query-param-row *ngFor="let param of queryParameters()"
-                                             [param]="param"
-                                             (onDelete)="deleteQueryParam(param)"
-                                             (onDescriptionChange)="changeQueryParamDescription(param, $event)"
-                                             (onTypeChange)="changeParamType(param, $event)"></query-param-row>
+                            <param-row *ngFor="let param of queryParameters()"
+                                       [param]="param" [parameterClass]="'query-parameter'"
+                                       (onDelete)="deleteParam(param)"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
                         </div>
                     </div>
                 </div>
@@ -260,4 +280,5 @@
 </div>
 
 <add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>
+<add-formData-param-dialog #addFormDataParamDialog (onAdd)="addFormDataParam($event)"></add-formData-param-dialog>
 <add-response-dialog #addResponseDialog (onAdd)="addResponse($event)"></add-response-dialog>

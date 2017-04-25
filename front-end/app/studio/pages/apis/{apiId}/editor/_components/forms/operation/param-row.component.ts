@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
-import {DropDownOption} from "../../common/drop-down.component";
+import {Component, ViewEncapsulation, Input} from "@angular/core";
 import {SimplifiedType} from "../../../_models/simplified-type.model";
-import {ObjectUtils} from "../../../_util/object.util";
 import {Oas20Parameter} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "./typed-item.component";
 
 
 @Component({
     moduleId: module.id,
-    selector: "query-param-row",
-    templateUrl: "query-param-row.component.html",
+    selector: "param-row",
+    templateUrl: "param-row.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParamRowRowComponent extends AbstractTypedItemComponent {
+export class ParamRowRowComponent extends AbstractTypedItemComponent {
 
     @Input() param: Oas20Parameter;
+    @Input() parameterClass: string = "";
+    @Input() canDelete: boolean = true;
 
     protected modelForEditing(): SimplifiedType {
         return SimplifiedType.fromItems(this.param);

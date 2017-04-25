@@ -75,6 +75,9 @@
 
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        
+        <!-- Tomcat Version -->
+        <version.tomcat>8.5.14</version.tomcat>
 
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>

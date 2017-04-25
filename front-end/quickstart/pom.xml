@@ -42,7 +42,7 @@
                                 <antversion property="antversion" />
                                 <echo>Ant Version: ${antversion}</echo>
 
-                                <property name="tomcat.version" value="8.5.13" />
+                                <property name="tomcat.version" value="${version.tomcat}" />
                                 <property name="tomcat.download.url"
                                     value="http://mirrors.advancedhosters.com/apache/tomcat/tomcat-8/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip" />
                                 <property name="tomcat.download.zip"
@@ -69,6 +69,9 @@
                                 <chmod perm="a+x" dir="${tomcat.appserver.dir}/bin">
                                     <include name="*.sh" />
                                 </chmod>
+                                
+                                <!-- Rename to 'apiman-studio-$version' -->
+                                <move file="${tomcat.appserver.dir}" tofile="${project.build.directory}/apiman-studio-${project.version}" />
                             </tasks>
                         </configuration>
                         <goals>

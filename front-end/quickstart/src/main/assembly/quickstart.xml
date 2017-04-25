@@ -6,9 +6,9 @@
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
-    <!-- apiman-manager -->
+    <!-- Studio WAR -->
     <dependencySet>
-      <outputDirectory>apache-tomcat-8.5.13/webapps</outputDirectory>
+      <outputDirectory>apiman-studio-${project.version}/webapps</outputDirectory>
       <includes>
         <include>*:apiman-studio-fe-war:war</include>
       </includes>
@@ -23,8 +23,8 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>target/apache-tomcat-8.5.13</directory>
-      <outputDirectory>apache-tomcat-8.5.13</outputDirectory>
+      <directory>target/apiman-studio-${project.version}</directory>
+      <outputDirectory>apiman-studio-${project.version}</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>

@@ -69,7 +69,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return (<Oas20PathItem>this.operation.parent()).createOperation(this.operation.method());
     }
 
-    protected createReplaceNodeCommand(node: Oas20Operation) {
+    protected createReplaceNodeCommand(node: Oas20Operation): ICommand {
         return new ReplaceOperationCommand(this.operation, node);
     }
 
@@ -464,11 +464,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public changeParamType(param: Oas20Parameter, newType: SimplifiedType): void {
         let command: ICommand = new ChangeParameterTypeCommand(param, newType);
-        this.onCommand.emit(command);
-    }
-
-    public changePathParamDescription(param: Oas20Parameter, newParamDescription: string): void {
-        let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
         this.onCommand.emit(command);
     }
 

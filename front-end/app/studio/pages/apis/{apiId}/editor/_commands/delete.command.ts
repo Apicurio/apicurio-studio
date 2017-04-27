@@ -19,7 +19,7 @@ import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
     Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema, Oas20Tag,
-    Oas20SecurityScheme, Oas20SecurityDefinitions
+    Oas20SecurityScheme, Oas20SecurityDefinitions, Oas20PropertySchema, Oas20Schema
 } from "oai-ts-core";
 
 /**
@@ -463,6 +463,118 @@ export class DeleteSecuritySchemeCommand extends AbstractCommand implements ICom
         this._oldScheme._parent = definitions;
         this._oldScheme._ownerDocument = definitions.ownerDocument();
         definitions.addSecurityScheme(this._oldScheme.schemeName(), this._oldScheme);
+    }
+
+}
+
+
+/**
+ * A command used to delete a single property from a schema.
+ */
+export class DeletePropertyCommand extends AbstractCommand implements ICommand {
+
+    private _propertyPath: OasNodePath;
+    private _schemaPath: OasNodePath;
+    private _oldProperty: Oas20PropertySchema;
+
+    constructor(property: Oas20PropertySchema) {
+        super();
+        this._propertyPath = this.oasLibrary().createNodePath(property);
+        this._schemaPath = this.oasLibrary().createNodePath(property.parent());
+    }
+
+    /**
+     * Deletes the property.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeletePropertyCommand] Executing.");
+        this._oldProperty = null;
+
+        let property: Oas20PropertySchema = <Oas20PropertySchema>this._propertyPath.resolve(document);
+
+        if (this.isNullOrUndefined(property)) {
+            return;
+        }
+
+        this._oldProperty = (<Oas20Schema>property.parent()).removeProperty(property.propertyName());
+    }
+
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeletePropertyCommand] Reverting.");
+        if (!this._oldProperty) {
+            return;
+        }
+
+        let schema: Oas20Schema = <Oas20Schema>this._schemaPath.resolve(document);
+        if (this.isNullOrUndefined(schema)) {
+            return;
+        }
+
+        this._oldProperty._parent = schema;
+        this._oldProperty._ownerDocument = schema.ownerDocument();
+        schema.addProperty(this._oldProperty.propertyName(), this._oldProperty);
+    }
+
+}
+
+
+/**
+ * A command used to delete all properties from a schema.
+ */
+export class DeleteAllPropertiesCommand extends AbstractCommand implements ICommand {
+
+    private _schemaPath: OasNodePath;
+    private _oldProperties: Oas20PropertySchema[];
+
+    constructor(schema: Oas20Schema) {
+        super();
+        this._schemaPath = this.oasLibrary().createNodePath(schema);
+    }
+
+    /**
+     * Deletes the properties.
+     * @param document
+     */
+    public execute(document: OasDocument): void {
+        console.info("[DeleteAllPropertiesCommand] Executing.");
+        this._oldProperties = [];
+
+        let schema: Oas20Schema = <Oas20Schema>this._schemaPath.resolve(document);
+
+        if (this.isNullOrUndefined(schema)) {
+            return;
+        }
+
+        schema.propertyNames().forEach( pname => {
+            this._oldProperties.push(schema.removeProperty(pname));
+        });
+    }
+
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    public undo(document: OasDocument): void {
+        console.info("[DeleteAllPropertiesCommand] Reverting.");
+        if (this._oldProperties.length === 0) {
+            return;
+        }
+
+        let schema: Oas20Schema = <Oas20Schema>this._schemaPath.resolve(document);
+        if (this.isNullOrUndefined(schema)) {
+            return;
+        }
+
+        this._oldProperties.forEach( prop => {
+            prop._parent = schema;
+            prop._ownerDocument = schema.ownerDocument();
+            schema.addProperty(prop.propertyName(), prop);
+        });
     }
 
 }

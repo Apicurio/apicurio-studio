@@ -27,7 +27,7 @@ import {AbstractTypedItemComponent} from "./typed-item.component";
     templateUrl: "param-row.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class ParamRowRowComponent extends AbstractTypedItemComponent {
+export class ParamRowComponent extends AbstractTypedItemComponent {
 
     @Input() param: Oas20Parameter;
     @Input() parameterClass: string = "";

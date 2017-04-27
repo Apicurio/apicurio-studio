@@ -1,0 +1,51 @@
+<div class="row property typed-item" [class.editing]="isEditing()">
+    <div class="col-md-6 metainfo">
+        <div class="property {{ propertyClass }} name">{{ property.propertyName() }}</div>
+        <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                                                     (onChange)="setDescription($event)"
+                                                     [topIncrement]="2"
+                                                     [value]="property.description"></inline-text-editor></div>
+    </div>
+    <div class="col-md-4 type">
+        <schema-type [type]="displayType()"></schema-type>
+    </div>
+    <div class="col-md-2 actions">
+        <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
+        <button type="button" class="btn btn-xs btn-default" (click)="delete()" *ngIf="canDelete"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
+    </div>
+</div>
+<div class="row property-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
+    <form  class="form-horizontal">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="propertyType">Type</label>
+                <div class="col-sm-8">
+                    <drop-down id="propertyType" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                </div>
+            </div>
+            <div class="form-group" *ngIf="model.type === 'array'">
+                <label class="col-sm-4 control-label" for="propertyTypeOf">of</label>
+                <div class="col-sm-8">
+                    <drop-down id="propertyTypeOf" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                </div>
+            </div>
+            <div class="form-group" *ngIf="shouldShowFormattedAs()">
+                <label class="col-sm-4 control-label" for="propertyTypeFormat">formatted as</label>
+                <div class="col-sm-8">
+                    <drop-down id="propertyTypeFormat" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
+                </div>
+            </div>
+            <div class="form-group form-group-actions">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>
+                    <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </form>
+</div>
+<div class="type-editor-shade" *ngIf="isEditing()" (click)="cancel()">
+</div>

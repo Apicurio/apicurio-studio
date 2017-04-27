@@ -94,7 +94,9 @@ import {DropDownComponent} from "./pages/apis/{apiId}/editor/_components/common/
 import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row.component";
 import {SchemaTypeComponent} from "./pages/apis/{apiId}/editor/_components/common/schema-type.component";
 import {AddFormDataParamDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component";
-import {ParamRowRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/param-row.component";
+import {ParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/param-row.component";
+import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
+import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
 
 
 @NgModule({
@@ -109,7 +111,8 @@ import {ParamRowRowComponent} from "./pages/apis/{apiId}/editor/_components/form
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
-        ResponseRowComponent, SchemaTypeComponent, ParamRowRowComponent, AddFormDataParamDialogComponent
+        ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
+        PropertyRowComponent, AddSchemaPropertyDialogComponent
     ],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,

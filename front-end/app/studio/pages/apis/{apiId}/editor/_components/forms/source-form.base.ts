@@ -113,7 +113,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
         this.sourceEditor.setText(nsrcStr);
     }
 
-    protected abstract createReplaceNodeCommand(node: T);
+    protected abstract createReplaceNodeCommand(node: T): ICommand;
 
     public isDesignMode(): boolean {
         return this._mode === "design";

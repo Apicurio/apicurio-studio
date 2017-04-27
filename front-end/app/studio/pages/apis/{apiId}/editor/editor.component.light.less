@@ -12,6 +12,10 @@
 @themes-light-shadow-transition: 350ms;
 @themes-light-api-ctxmenu-color: #E89F3D;
 @themes-light-api-ctxmenu-color-light: #FFCC87;
+@themes-light-response-statusCode-success: #3f9c35;
+@themes-light-response-statusCode-redirect: #39a5dc;
+@themes-light-response-statusCode-problem: #ec7a08;
+@themes-light-response-statusCode-error: #c00;
 
 .api-editor .dropdown.empty > button.btn > span {
   color: @themes-light-api-empty-label-color;
@@ -288,6 +292,19 @@
 
 .api-editor.light td.query-parameter, .api-editor.light div.query-parameter, .api-editor.light span.query-parameter {
   color: @themes-light-api-selected-color;
+}
+
+.api-editor.light div.statusCode.success {
+  color: green;
+}
+.api-editor.light div.statusCode.redirect {
+  color: blue;
+}
+.api-editor.light div.statusCode.problem {
+  color: orange;
+}
+.api-editor.light div.statusCode.error {
+  color: red;
 }
 
 .api-editor.light .api-operation-parameters td.icons, .api-details table td.icons {

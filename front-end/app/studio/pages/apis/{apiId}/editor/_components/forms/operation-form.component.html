@@ -134,8 +134,8 @@
                                   [class.pficon-warning-triangle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
                             <strong>None Found</strong>
                             <span>No request body has been declared.</span>
-                            <button class="btn btn-default btn-sm pull-right" (click)="createRequestBody()" style="margin-right: 8px">Add Body</button>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="createRequestFormData()">Add Form Data</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="createRequestBody()">Add Body</button>
+                            <button class="btn btn-default btn-sm pull-right" (click)="createRequestFormData()" style="margin-right: 8px">Add Form Data</button>
                         </div>
 
                         <!-- If we're using a 'body' param -->

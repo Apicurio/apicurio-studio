@@ -46,6 +46,31 @@ export class ResponseRowComponent extends AbstractTypedItemComponent {
         return "";
     }
 
+    public statusCodeType(code: string): string {
+        if (code === "default") {
+            return "";
+        }
+
+        var icode: number = parseInt(code);
+        if (icode >= 200 && icode < 300) {
+            return "success";
+        }
+
+        if (icode >= 300 && icode < 400) {
+            return "redirect";
+        }
+
+        if (icode >= 400 && icode < 500) {
+            return "problem";
+        }
+
+        if (icode >= 500 && icode < 600) {
+            return "error";
+        }
+
+        return "";
+    }
+
     protected modelForEditing(): SimplifiedType {
         return SimplifiedType.fromSchema(this.response.schema);
     }

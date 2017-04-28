@@ -23,7 +23,7 @@ import {Api} from "../../models/api.model";
 import {ArrayUtils} from "../../util/common";
 
 
-const API_FILTERS_KEY = "apiman.studio.pages.apis.filters";
+const API_FILTERS_KEY = "apicurio.studio.pages.apis.filters";
 
 
 class Filters {

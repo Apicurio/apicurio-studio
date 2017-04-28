@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.studio.tools.release;
+package io.apicurio.studio.tools.release;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ import com.mashape.unirest.http.Unirest;
  * @author eric.wittmann@gmail.com
  */
 public class ReleaseTool {
-    
+
     /**
      * Main method.
      * @param args
@@ -55,21 +55,21 @@ public class ReleaseTool {
         options.addOption("o", "previous-tag", true, "The tag name of the previous release.");
         options.addOption("g", "github-pat", true, "The GitHub PAT (for authentication/authorization).");
         options.addOption("a", "artifact", true, "The binary release artifact (full path).");
-        
+
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
-        
-        if (    !cmd.hasOption("n") || 
-                !cmd.hasOption("t") || 
-                !cmd.hasOption("o") || 
-                !cmd.hasOption("g") || 
+
+        if (    !cmd.hasOption("n") ||
+                !cmd.hasOption("t") ||
+                !cmd.hasOption("o") ||
+                !cmd.hasOption("g") ||
                 !cmd.hasOption("a")    )
         {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp( "release-studio", options );
             System.exit(1);
         }
-        
+
         // Arguments (command line)
         String releaseName = cmd.getOptionValue("n");
         boolean isPrerelease = cmd.hasOption("p");
@@ -78,10 +78,10 @@ public class ReleaseTool {
         String oldReleaseTag = cmd.getOptionValue("o");
         String githubPAT = cmd.getOptionValue("g");
         String artifact = cmd.getOptionValue("a");
-        
+
         File releaseArtifactFile = new File(artifact);
         File releaseArtifactSigFile = new File(artifact + ".asc");
-        
+
         String releaseArtifact = releaseArtifactFile.getName();
         String releaseArtifactSig = releaseArtifactSigFile.getName();
 
@@ -100,16 +100,16 @@ public class ReleaseTool {
         System.out.println("            Name: " + releaseName);
         System.out.println("        Artifact: " + releaseArtifact);
         System.out.println("=========================================");
-        
+
         String releaseNotes = "";
-        
+
         // Step #1 - Generate Release Notes
         //   * Grab info about the previous release (extract publish date)
         //   * Query all Issues for ones closed since that date
         //   * Generate Release Notes from the resulting Issues
         try {
             System.out.println("Getting info about release " + oldReleaseTag);
-            HttpResponse<JsonNode> response = Unirest.get("https://api.github.com/repos/apiman/apiman-studio/releases/tags/v" + oldReleaseTag)
+            HttpResponse<JsonNode> response = Unirest.get("https://api.github.com/repos/apicurio/apicurio-studio/releases/tags/v" + oldReleaseTag)
                     .header("Accept", "application/json").header("Authorization", "token " + githubPAT).asJson();
             if (response.getStatus() != 200) {
                 throw new Exception("Failed to get old release info: " + response.getStatusText());
@@ -120,11 +120,11 @@ public class ReleaseTool {
                 throw new Exception("Could not find Published Date for previous release " + oldReleaseTag);
             }
             System.out.println("Release " + oldReleaseTag + " was published on " + publishedDate);
-            
+
             List<JSONObject> issues = getIssuesForRelease(publishedDate, githubPAT);
             System.out.println("Found " + issues.size() + " issues closed in release " + releaseTag);
             System.out.println("Generating Release Notes");
-            
+
             releaseNotes = generateReleaseNotes(releaseName, releaseTag, issues);
             System.out.println("------------ Release Notes --------------");
             System.out.println(releaseNotes);
@@ -135,7 +135,7 @@ public class ReleaseTool {
         }
 
         String assetUploadUrl = null;
-        
+
         // Step #2 - Create a GitHub Release
         try {
             System.out.println("\nCreating GitHub Release " + releaseTag);
@@ -145,8 +145,8 @@ public class ReleaseTool {
             body.put("body", releaseNotes);
             body.put("prerelease", isPrerelease);
             body.put("draft", isDraft);
-            
-            HttpResponse<JsonNode> response = Unirest.post("https://api.github.com/repos/apiman/apiman-studio/releases")
+
+            HttpResponse<JsonNode> response = Unirest.post("https://api.github.com/repos/apicurio/apicurio-studio/releases")
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "token " + githubPAT)
@@ -154,7 +154,7 @@ public class ReleaseTool {
             if (response.getStatus() != 201) {
                 throw new Exception("Failed to create release in GitHub: " + response.getStatusText());
             }
-            
+
             assetUploadUrl = response.getBody().getObject().getString("upload_url");
             if (assetUploadUrl == null || assetUploadUrl.trim().isEmpty()) {
                 throw new Exception("Failed to get Asset Upload URL for newly created release!");
@@ -179,7 +179,7 @@ public class ReleaseTool {
             if (response.getStatus() != 201) {
                 throw new Exception("Failed to upload asset: " + releaseArtifact, new Exception(response.getStatus() + "::" + response.getStatusText()));
             }
-            
+
             Thread.sleep(1000);
 
             artifactUploadUrl = createUploadUrl(assetUploadUrl, releaseArtifactSig);
@@ -198,7 +198,7 @@ public class ReleaseTool {
             e.printStackTrace();
             System.exit(1);
         }
-        
+
         System.out.println("=========================================");
         System.out.println("All Done!");
         System.out.println("=========================================");
@@ -214,23 +214,23 @@ public class ReleaseTool {
             List<JSONObject> issues) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("This represents the official release of the API Design Studio, version ");
+        builder.append("This represents the official release of Apicurio Studio, version ");
         builder.append(releaseTag);
         builder.append(".\n\n");
         builder.append("The following issues have been resolved in this release:\n\n");
-        
+
         issues.forEach(issue -> {
             builder.append(String.format("* [#%d](%s) %s", issue.getInt("number"), issue.getString("url"), issue.getString("title")));
             builder.append("\n");
         });
-        
+
         builder.append("\n\n");
-        
-        builder.append("For more information, please see the API Design Studio's official project site:\n\n");
+
+        builder.append("For more information, please see the Apicurio Studio's official project site:\n\n");
         builder.append("* [General Information](http://www.apidesigner.org/)\n");
         builder.append("* [Download/Quickstart](http://www.apidesigner.org/download)\n");
         builder.append("* [Blog](http://www.apidesigner.org/blog)\n");
-        
+
         return builder.toString();
     }
 
@@ -241,8 +241,8 @@ public class ReleaseTool {
      */
     private static List<JSONObject> getIssuesForRelease(String since, String githubPAT) throws Exception {
         List<JSONObject> rval = new ArrayList<>();
-        
-        String currentPageUrl = "https://api.github.com/repos/apiman/apiman-studio/issues?state=closed";
+
+        String currentPageUrl = "https://api.github.com/repos/apicurio/apicurio-studio/issues?state=closed";
         int pageNum = 1;
         while (currentPageUrl != null) {
             System.out.println("Querying page " + pageNum + " of issues.");
@@ -259,7 +259,7 @@ public class ReleaseTool {
                     rval.add(issue);
                 }
             });
-            
+
             System.out.println("Processing page " + pageNum + " of issues.");
             System.out.println("    Found " + issueNodes.length() + " issues on page.");
             String allLinks = response.getHeaders().getFirst("Link");
@@ -291,7 +291,7 @@ public class ReleaseTool {
      * @param releaseArtifactFile
      */
     private static byte[] loadArtifactData(File releaseArtifactFile) throws Exception {
-        System.out.println("Loading artifact content: " + releaseArtifactFile.getName()); 
+        System.out.println("Loading artifact content: " + releaseArtifactFile.getName());
         byte [] buffer = new byte[(int) releaseArtifactFile.length()];
         InputStream is = null;
         try {

@@ -7,19 +7,19 @@ RUN yum install -y \
     unzip \
   && yum clean all
 
-WORKDIR /opt/apiman-studio
+WORKDIR /opt/apicurio-studio
 
-ADD ${RELEASE_PATH} /opt/apiman-studio
+ADD ${RELEASE_PATH} /opt/apicurio-studio
 
-RUN groupadd -r apiman -g 1001 \
-    && useradd -u 1001 -r -g apiman -d /opt/apiman-studio/ -s /sbin/nologin -c "Docker image user" apiman \
-    && chown -R apiman:apiman /opt/apiman-studio/
+RUN groupadd -r apicurio -g 1001 \
+    && useradd -u 1001 -r -g apicurio -d /opt/apicurio-studio/ -s /sbin/nologin -c "Docker image user" apicurio \
+    && chown -R apicurio:apicurio /opt/apicurio-studio/
 
 USER 1001
-RUN unzip  /opt/apiman-studio/api-design-studio-${RELEASE_VERSION}-quickstart.zip \
-    && rm /opt/apiman-studio/api-design-studio-${RELEASE_VERSION}-quickstart.zip
+RUN unzip  /opt/apicurio-studio/apicurio-studio-${RELEASE_VERSION}-quickstart.zip \
+    && rm /opt/apicurio-studio/apicurio-studio-${RELEASE_VERSION}-quickstart.zip
 
 EXPOSE 8080
 
-ENTRYPOINT ["/opt/apiman-studio/apiman-studio-${RELEASE_VERSION}/bin/catalina.sh"]
+ENTRYPOINT ["/opt/apicurio-studio/apicurio-studio-${RELEASE_VERSION}/bin/catalina.sh"]
 CMD ["run"]

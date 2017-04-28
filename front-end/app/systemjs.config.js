@@ -1,5 +1,5 @@
 /**
- * Systemjs configuration for API Design Studio
+ * Systemjs configuration for Apicurio Studio
  */
 (function (global) {
     System.config({

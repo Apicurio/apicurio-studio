@@ -2,14 +2,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.apiman</groupId>
-        <artifactId>apiman-studio-tools</artifactId>
+        <groupId>io.apicurio</groupId>
+        <artifactId>apicurio-studio-tools</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>apiman-studio-tools-release</artifactId>
+    <artifactId>apicurio-studio-tools-release</artifactId>
     <packaging>jar</packaging>
-    <name>apiman-studio-tools-release</name>
+    <name>apicurio-studio-tools-release</name>
 
     <dependencies>
         <dependency>
@@ -49,7 +49,7 @@
                             <transformers>
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.apiman.studio.tools.release.ReleaseTool</mainClass>
+                                    <mainClass>io.apicurio.studio.tools.release.ReleaseTool</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

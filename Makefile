@@ -1,9 +1,9 @@
 .PHONY: all build test run bash tag push pull help kill clean
 .DEFAULT_GOAL := help
 
-NAME = apiman-studio
-NAMESPACE = apiman
-RELEASE_VERSION ?= 0.0.5
+NAME = apicurio-studio
+NAMESPACE = apicurio
+RELEASE_VERSION ?= 0.0.6
 LOCAL_RELEASE ?= 'false'
 LOCAL_IMAGE := $(NAME):$(RELEASE_VERSION)
 REMOTE_IMAGE := $(NAMESPACE)/$(LOCAL_IMAGE)
@@ -17,14 +17,14 @@ all: build
 update: build push
 
 build: ## Build docker image with name LOCAL_IMAGE (NAME:RELEASE_VERSION).
-	@if [ -f "./front-end/quickstart/target/api-design-studio-${RELEASE_VERSION}-quickstart.zip" ] || [ ${LOCAL_RELEASE} == "true" ]; then \
+	@if [ -f "./front-end/quickstart/target/apicurio-studio-${RELEASE_VERSION}-quickstart.zip" ] || [ ${LOCAL_RELEASE} == "true" ]; then \
 		docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH) \
 			--build-arg RELEASE_VERSION=$(RELEASE_VERSION) \
-			--build-arg RELEASE_PATH='./front-end/quickstart/target/api-design-studio-${RELEASE_VERSION}-quickstart.zip'; \
+			--build-arg RELEASE_PATH='./front-end/quickstart/target/apicurio-studio-${RELEASE_VERSION}-quickstart.zip'; \
 	else \
 		docker build -f $(THISDIR_PATH)/Dockerfile -t $(LOCAL_IMAGE) $(PROJECT_PATH) \
 			--build-arg RELEASE_VERSION=$(RELEASE_VERSION) \
-			--build-arg RELEASE_PATH='https://github.com/apiman/apiman-studio/releases/download/v${RELEASE_VERSION}/api-design-studio-${RELEASE_VERSION}-quickstart.zip'; \
+			--build-arg RELEASE_PATH='https://github.com/apicurio/apicurio-studio/releases/download/v${RELEASE_VERSION}/apicurio-studio-${RELEASE_VERSION}-quickstart.zip'; \
 	fi
 
 test: ## Test built LOCAL_IMAGE (NAME:RELEASE_VERSION).

@@ -20,8 +20,8 @@ import {IAuthenticationService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {GithubAuthenticationCredentials} from "../../services/auth-github.service";
 
-const REMEMBER_USERNAME_KEY = "apiman.studio.pages.login.remember-username";
-const SAVED_USERNAME_KEY    = "apiman.studio.pages.login.username";
+const REMEMBER_USERNAME_KEY = "apicurio.studio.pages.login.remember-username";
+const SAVED_USERNAME_KEY    = "apicurio.studio.pages.login.username";
 
 /**
  * The Login Page component - shown to the user when login is required.
@@ -74,8 +74,8 @@ export class LoginPageComponent implements OnInit {
             console.info("[LoginPageComponent] User successfully logged in: %o", user);
             this.authenticating = false;
 
-            let path:string = sessionStorage.getItem("apiman.studio.pages.login.redirect-to.path");
-            let query:string = sessionStorage.getItem("apiman.studio.pages.login.redirect-to.query");
+            let path:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.path");
+            let query:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.query");
             let queryParams:any = {};
 
             if (query) {

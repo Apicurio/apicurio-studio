@@ -28,7 +28,7 @@ import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
 import {ObjectUtils, HttpUtils} from "../util/common";
 
 
-const APIS_LOCAL_STORAGE_KEY = "apiman.studio.services.local-apis.apis";
+const APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.local-apis.apis";
 
 
 class GithubRepoInfo {

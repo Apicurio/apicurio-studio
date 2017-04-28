@@ -1,11 +1,11 @@
 {
-  "name": "apiman-design-studio",
+  "name": "apicurio-design-studio",
   "version": "1.0.0",
   "description": "A web application to help design restful APIs.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apiman/apiman-studio"
+    "url": "https://github.com/apicurio/apicurio-studio"
   },
   "scripts": {
     "start": "concurrently \"tsc -w\" \"watch-less -d ./studio -e .css\" \"watch-less -d ./assets -e .css\" \"lite-server\""

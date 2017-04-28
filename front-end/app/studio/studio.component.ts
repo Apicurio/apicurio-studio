@@ -28,7 +28,7 @@ import "rxjs/add/operator/toPromise";
 
 @Component({
     moduleId: module.id,
-    selector: "api-design-studio",
+    selector: "apicurio-studio",
     templateUrl: "studio.component.html",
     styleUrls: [ "studio.component.css" ]
 })

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "---------------------------------------------------"
-echo " Building apiman-studio."
+echo " Building apicurio-studio."
 echo "---------------------------------------------------"
 echo ""
 echo ""

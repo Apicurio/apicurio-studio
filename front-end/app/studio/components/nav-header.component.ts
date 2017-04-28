@@ -33,11 +33,11 @@ export class NavHeaderComponent implements OnInit {
     projectUrl: string = "http://www.apidesigner.org/";
 
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
-        if (window["ApimanStudioInfo"]) {
-            console.info("[NavHeaderComponent] Found app info: %o", window["ApimanStudioInfo"])
-            this.version = window["ApimanStudioInfo"].version;
-            this.builtOn = new Date(window["ApimanStudioInfo"].builtOn);
-            this.projectUrl = window["ApimanStudioInfo"].url;
+        if (window["ApicurioStudioInfo"]) {
+            console.info("[NavHeaderComponent] Found app info: %o", window["ApicurioStudioInfo"])
+            this.version = window["ApicurioStudioInfo"].version;
+            this.builtOn = new Date(window["ApicurioStudioInfo"].builtOn);
+            this.projectUrl = window["ApicurioStudioInfo"].url;
         } else {
             console.info("[NavHeaderComponent] App info not found.");
         }

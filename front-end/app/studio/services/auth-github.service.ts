@@ -22,9 +22,9 @@ import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractGithubService} from "./github";
 
-const USER_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.user";
-const PAT_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.pat";
-const OLD_PATS_LOCAL_STORAGE_KEY = "apiman.studio.services.github-auth.old-pats";
+const USER_LOCAL_STORAGE_KEY = "apicurio.studio.services.github-auth.user";
+const PAT_LOCAL_STORAGE_KEY = "apicurio.studio.services.github-auth.pat";
+const OLD_PATS_LOCAL_STORAGE_KEY = "apicurio.studio.services.github-auth.old-pats";
 
 
 class GithubPersonalAccessToken {
@@ -137,7 +137,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
                 "scopes": [
                     "user:email", "repo", "gist", "read:org"
                 ],
-                "note": "APIMan Studio (" + new Date().toLocaleDateString() + "@" + new Date().toLocaleTimeString() + ")"
+                "note": "Apicurio Studio (" + new Date().toLocaleDateString() + "@" + new Date().toLocaleTimeString() + ")"
             }, options
         ).map(response => {
             let pat: GithubPersonalAccessToken = response.json();

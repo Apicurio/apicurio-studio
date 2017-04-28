@@ -37,8 +37,8 @@ export class AuthenticationCanActivateGuard implements CanActivate {
             let path: string = location.pathname;
             let query: string = location.search.substring(1);
 
-            sessionStorage.setItem("apiman.studio.pages.login.redirect-to.path", path);
-            sessionStorage.setItem("apiman.studio.pages.login.redirect-to.query", query);
+            sessionStorage.setItem("apicurio.studio.pages.login.redirect-to.path", path);
+            sessionStorage.setItem("apicurio.studio.pages.login.redirect-to.query", query);
 
             this.router.navigate(["/login"]);
         }

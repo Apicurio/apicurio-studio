@@ -274,10 +274,10 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changeRequestBodyType(newType: string): void {
-        this.operation.n_attribute("x-apidesigner-formDataBody", false);
+        this.operation.n_attribute("x-apicurio-formDataBody", false);
         if (newType === "formData") {
             this.deleteRequestBody();
-            this.operation.n_attribute("x-apidesigner-formDataBody", true);
+            this.operation.n_attribute("x-apicurio-formDataBody", true);
         } else {
             let bodyParam: Oas20Parameter = this.bodyParam();
             let nt: SimplifiedType = new SimplifiedType();
@@ -352,7 +352,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public hasFormDataParams(): boolean {
-        if (this.operation.n_attribute("x-apidesigner-formDataBody") === true) {
+        if (this.operation.n_attribute("x-apicurio-formDataBody") === true) {
             return true;
         }
         return this.hasParameters("formData");
@@ -483,7 +483,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public createRequestFormData(): void {
-        this.operation.n_attribute("x-apidesigner-formDataBody", true);
+        this.operation.n_attribute("x-apicurio-formDataBody", true);
     }
 
     public setRequestBodyType(type: string, isSimpleType: boolean): void {
@@ -502,7 +502,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
             let command: ICommand = new DeleteAllParameters(this.operation, "body");
             this.onCommand.emit(command);
         } else {
-            this.operation.n_attribute("x-apidesigner-formDataBody", false);
+            this.operation.n_attribute("x-apicurio-formDataBody", false);
             let command: ICommand = new DeleteAllParameters(this.operation, "formData");
             this.onCommand.emit(command);
         }

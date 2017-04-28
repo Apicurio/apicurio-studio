@@ -5,7 +5,7 @@
 
   <servlet>
     <servlet-name>AngularServlet</servlet-name>
-    <servlet-class>io.apiman.studio.fe.war.servlets.AngularServlet</servlet-class>
+    <servlet-class>io.apicurio.studio.fe.war.servlets.AngularServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>AngularServlet</servlet-name>

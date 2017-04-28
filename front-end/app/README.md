@@ -1,4 +1,4 @@
-# Apiman Design Studio Front-End App
+# Apicurio Studio Front-End App
 
 ## Summary
 

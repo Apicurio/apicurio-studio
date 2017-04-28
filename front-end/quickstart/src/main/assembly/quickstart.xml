@@ -8,9 +8,9 @@
   <dependencySets>
     <!-- Studio WAR -->
     <dependencySet>
-      <outputDirectory>apiman-studio-${project.version}/webapps</outputDirectory>
+      <outputDirectory>apicurio-studio-${project.version}/webapps</outputDirectory>
       <includes>
-        <include>*:apiman-studio-fe-war:war</include>
+        <include>*:apicurio-studio-fe-war:war</include>
       </includes>
       <outputFileNameMapping>ROOT.war</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -23,8 +23,8 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>target/apiman-studio-${project.version}</directory>
-      <outputDirectory>apiman-studio-${project.version}</outputDirectory>
+      <directory>target/apicurio-studio-${project.version}</directory>
+      <outputDirectory>apicurio-studio-${project.version}</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>

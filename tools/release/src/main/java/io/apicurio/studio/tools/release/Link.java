@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apiman.studio.tools.release;
+package io.apicurio.studio.tools.release;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @author eric.wittmann@gmail.com
  */
 public class Link {
-    
+
     public static Map<String, Link> parseAll(String allLinks) {
         Map<String, Link> rval = new HashMap<>();
         String[] split = allLinks.split(",");
@@ -33,7 +33,7 @@ public class Link {
         }
         return rval;
     }
-    
+
     public static Link parse(String singleLink) {
         String[] split = singleLink.split("[<>;]");
         String url = split[1];
@@ -41,10 +41,10 @@ public class Link {
         type = type.substring(0, type.length() - 1);
         return new Link(url, type);
     }
-    
+
     private final String url;
     private final String type;
-    
+
     /**
      * Constructor.
      * @param url

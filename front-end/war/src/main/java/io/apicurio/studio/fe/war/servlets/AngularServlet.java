@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apiman.studio.fe.war.servlets;
+package io.apicurio.studio.fe.war.servlets;
 
 import java.io.IOException;
 
@@ -30,7 +30,7 @@ import javax.servlet.ServletResponse;
 public class AngularServlet extends GenericServlet {
 
     private static final long serialVersionUID = 4259630009438256847L;
-    
+
     /**
      * @see javax.servlet.GenericServlet#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */

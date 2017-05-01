@@ -162,8 +162,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         let options: DropDownOption[] = [
             { value: "array", name: "Array" },
             { divider: true },
-            { value: "formData", name: "Form Data" },
-            { divider: true },
             { value: "string", name: "String" },
             { value: "integer", name: "Integer" },
             { value: "boolean", name: "Boolean" },
@@ -274,17 +272,11 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changeRequestBodyType(newType: string): void {
-        this.operation.n_attribute("x-apicurio-formDataBody", false);
-        if (newType === "formData") {
-            this.deleteRequestBody();
-            this.operation.n_attribute("x-apicurio-formDataBody", true);
-        } else {
-            let bodyParam: Oas20Parameter = this.bodyParam();
-            let nt: SimplifiedType = new SimplifiedType();
-            nt.type = newType;
-            let command: ICommand = new ChangeParameterTypeCommand(bodyParam, nt);
-            this.onCommand.emit(command);
-        }
+        let bodyParam: Oas20Parameter = this.bodyParam();
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = newType;
+        let command: ICommand = new ChangeParameterTypeCommand(bodyParam, nt);
+        this.onCommand.emit(command);
     }
 
     public changeRequestBodyTypeOf(newOf: string): void {
@@ -352,9 +344,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public hasFormDataParams(): boolean {
-        if (this.operation.n_attribute("x-apicurio-formDataBody") === true) {
-            return true;
-        }
         return this.hasParameters("formData");
     }
 
@@ -482,15 +471,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public createRequestFormData(): void {
-        this.operation.n_attribute("x-apicurio-formDataBody", true);
-    }
-
-    public setRequestBodyType(type: string, isSimpleType: boolean): void {
-        // let command: ICommand = new ChangeParameterTypeCommand(this.bodyParam(), type, isSimpleType);
-        // this.onCommand.emit(command);
-    }
-
     public delete(): void {
         let command: ICommand = new DeleteNodeCommand(this.operation.method(), this.operation.parent());
         this.onCommand.emit(command);
@@ -502,7 +482,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
             let command: ICommand = new DeleteAllParameters(this.operation, "body");
             this.onCommand.emit(command);
         } else {
-            this.operation.n_attribute("x-apicurio-formDataBody", false);
             let command: ICommand = new DeleteAllParameters(this.operation, "formData");
             this.onCommand.emit(command);
         }

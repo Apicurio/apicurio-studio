@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is the official Git repository for the apicurio studio project:  http://www.apidesigner.org/
+This is the official Git repository for the apicurio studio project:  http://www.apicur.io/
 
 The apicurio studio project is a standalone API design studio that can be used to create
 new or edit existing API designs (using the OpenAPI specification).

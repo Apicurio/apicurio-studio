@@ -30,7 +30,7 @@ export class NavHeaderComponent implements OnInit {
 
     version: string = "N/A";
     builtOn: Date = new Date();
-    projectUrl: string = "http://www.apidesigner.org/";
+    projectUrl: string = "http://www.apicur.io/";
 
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
         if (window["ApicurioStudioInfo"]) {

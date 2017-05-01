@@ -227,9 +227,9 @@ public class ReleaseTool {
         builder.append("\n\n");
 
         builder.append("For more information, please see the Apicurio Studio's official project site:\n\n");
-        builder.append("* [General Information](http://www.apidesigner.org/)\n");
-        builder.append("* [Download/Quickstart](http://www.apidesigner.org/download)\n");
-        builder.append("* [Blog](http://www.apidesigner.org/blog)\n");
+        builder.append("* [General Information](http://www.apicur.io/)\n");
+        builder.append("* [Download/Quickstart](http://www.apicur.io/download)\n");
+        builder.append("* [Blog](http://www.apicur.io/blog)\n");
 
         return builder.toString();
     }

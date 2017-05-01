@@ -1,12 +1,34 @@
+@import "dimensions.less";
 
+.navbar {
+  height: @navbar-height;
+}
+.navbar .navbar-header {
+  height: @navbar-height - 3;
+}
+
+.navbar .navbar-brand {
+  padding: 0;
+}
 .navbar .navbar-brand .navbar-brand-logo {
-  font-size: 12px;
+  line-height: @navbar-height - 3;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: @navbar-logo-size;
   font-weight: bold;
-  line-height: 10px;
   color: white;
 }
 .navbar .navbar-brand .navbar-brand-logo:hover {
   color: gold;
+}
+
+.navbar a.dropdown-toggle {
+  height: @navbar-height - 3;
+  line-height: 34px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+.navbar a.dropdown-toggle .pficon {
+  position: initial;
 }
 
 .navbar .dropdown-menu a {
@@ -15,14 +37,6 @@
 .navbar .dropdown-menu a.disabled {
   cursor: not-allowed;
   color: #999;
-}
-
-#navbar-logo {
-  background-image: url('assets/api-designer-logo.png');
-  height: 20px;
-  width: 261px;
-  color: transparent;
-  text-indent: -5000px;
 }
 
 .product-versions-pf table tr td {

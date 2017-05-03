@@ -1,17 +1,31 @@
-<div class="row parameter typed-item" [class.editing]="isEditing()">
+<div class="row parameter typed-item" [class.editing]="isEditing()" [class.missing]="isMissing()"
+     [class.override]="isOverride()" [class.overridable]="isOverridable()">
+
     <div class="col-md-6 metainfo">
-        <div class="parameter {{ parameterClass }} name">{{ param.name }}</div>
-        <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
-                                                     (onChange)="setDescription($event)"
-                                                     [topIncrement]="2"
-                                                     [value]="param.description"></inline-text-editor></div>
+        <div class="parameter {{ parameterClass }} name">
+            <a class="typed-item-icon" *ngIf="isOverride()" title="Overrides a parameter defined at the Path level."><span class="fa fa-arrow-circle-up"></span></a>
+            <span>{{ param.name }}</span>
+        </div>
+        <div class="description" *ngIf="isExists()"><inline-text-editor
+                                                          [noValueMessage]="'No description.'"
+                                                          (onChange)="setDescription($event)"
+                                                          [topIncrement]="2"
+                                                          [value]="paramDescription()"></inline-text-editor></div>
+        <div class="description" *ngIf="isOverridable()">{{ paramDescription() }}</div>
+        <div class="description" *ngIf="isMissing()">(Parameter not defined)</div>
     </div>
     <div class="col-md-4 type">
-        <schema-type [type]="displayType()"></schema-type>
+        <schema-type *ngIf="!isMissing()" [type]="displayType()"></schema-type>
     </div>
     <div class="col-md-2 actions">
-        <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
-        <button type="button" class="btn btn-xs btn-default" (click)="delete()" *ngIf="canDelete"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
+        <button *ngIf="isMissing()" type="button" class="btn btn-xs btn-primary"
+                title="The 'path' parameter is required but not declared.  Create it now."
+                (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Create</span></button>
+        <button *ngIf="isOverridable()" type="button" class="btn btn-xs btn-default"
+                title="Parameter defined at the Path level, override it to provide operation-specific details."
+                (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Override</span></button>
+        <button *ngIf="isExists()" type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
+        <button *ngIf="isExists()" type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
     </div>
 </div>
 <div class="row parameter-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">

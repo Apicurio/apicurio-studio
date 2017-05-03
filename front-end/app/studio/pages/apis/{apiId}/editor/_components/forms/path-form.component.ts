@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
+import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
 import {
     Oas20PathItem, Oas20Operation, Oas20PathItems, Oas20Paths, Oas20Document, Oas20Schema,
     Oas20Parameter
@@ -22,7 +22,10 @@ import {
 import {ICommand} from "../../_services/commands.manager";
 import {NewOperationCommand} from "../../_commands/new-operation.command";
 import {ChangePropertyCommand} from "../../_commands/change-property.command";
-import {DeleteNodeCommand, DeletePathCommand} from "../../_commands/delete.command";
+import {
+    DeleteAllParameters, DeleteNodeCommand, DeleteParameterCommand,
+    DeletePathCommand
+} from "../../_commands/delete.command";
 import {SourceFormComponent} from "./source-form.base";
 import {ReplacePathItemCommand} from "../../_commands/replace.command";
 import {ModelUtils} from "../../_util/model.util";
@@ -31,6 +34,10 @@ import {
     ChangePathParametersTypeCommand
 } from "../../_commands/change-path-parameters.command";
 import {SimplifiedType} from "../../_models/simplified-type.model";
+import {ChangeParameterTypeCommand} from "../../_commands/change-parameter-type.command";
+import {ObjectUtils} from "../../_util/object.util";
+import {NewParamCommand} from "../../_commands/new-param.command";
+import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 
 
 @Component({
@@ -53,6 +60,8 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
 
     @Output() onOperationSelected: EventEmitter<string> = new EventEmitter<string>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
 
     protected createEmptyNodeForSource(): Oas20PathItem {
         return (<Oas20Paths>this.path.parent()).createPathItem(this.path.path());
@@ -192,51 +201,89 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
     }
-    //
-    // public hasAtLeastOneOperation(): boolean {
-    //     return this.hasGet() || this.hasPut() || this.hasPost() || this.hasDelete() || this.hasOptions() ||
-    //         this.hasHead() || this.hasPatch();
-    // }
-    //
-    // public hasPathParameters(): boolean {
-    //     return this.pathParameterNames().length > 0;
-    // }
-    //
-    // public pathParameterNames(): string[] {
-    //     return ModelUtils.detectPathParamNames(this.path.path());
-    // }
-    //
-    // public pathParamDescription(paramName): string {
-    //     let params: Oas20Parameter[] = ModelUtils.getAllPathParams(this.path, paramName);
-    //     let description: string = null;
-    //     for (let param of params) {
-    //         if (param && param.description) {
-    //             if (description === null) {
-    //                 description = param.description;
-    //             } else if (description !== param.description) {
-    //                 description = null;
-    //                 break;
-    //             }
-    //         }
-    //     };
-    //     return description;
-    // }
-    //
-    // public changePathParamDescription(paramName: string, newDescription: string): void {
-    //     let command: ICommand = new ChangePathParametersDescriptionCommand(this.path, paramName, newDescription);
-    //     this.onCommand.emit(command);
-    // }
-    //
-    // public param(paramName: string): Oas20Parameter {
-    //     let rval: Oas20Parameter = new Oas20Parameter();
-    //     rval.description = this.pathParamDescription(paramName);
-    //     return rval;
-    // }
-    //
-    // public changePathParamType(paramName: string, newType: SimplifiedType): void {
-    //     let command: ICommand = new ChangePathParametersTypeCommand(this.path, paramName, newType);
-    //     this.onCommand.emit(command);
-    // }
+
+    public canHavePathParams(): boolean {
+        return this.path.path().indexOf('{') != -1;
+    }
+
+    public pathParam(paramName: string): Oas20Parameter {
+        let param: Oas20Parameter = this.path.parameter("path", paramName);
+
+        if (param === null) {
+            param = this.path.createParameter();
+            param.in = "path";
+            param.name = paramName;
+            param.required = true;
+            param.n_attribute("missing", true);
+        }
+
+        return param;
+    }
+
+    public pathParameters(): Oas20Parameter[] {
+        let pathParamNames: string[] = ModelUtils.detectPathParamNames(this.path.path());
+        return pathParamNames.map( pname => {
+            return this.pathParam(pname);
+        });
+    }
+
+    public hasParameters(type: string): boolean {
+        if (!this.path.parameters) {
+            return false;
+        }
+        return this.path.parameters.filter((value) => {
+                return value.in === type;
+            }).length > 0;
+    }
+
+    public parameters(paramType: string): Oas20Parameter[] {
+        if (!this.path.parameters) {
+            return [];
+        }
+        return this.path.parameters.filter( value => {
+            return value.in === paramType;
+        }).sort((param1, param2) => {
+            return param1.name.localeCompare(param2.name);
+        });
+    }
+
+    public createPathParam(paramName: string): void {
+        let command: ICommand = new NewParamCommand(this.path, paramName, "path");
+        this.onCommand.emit(command);
+    }
+
+    public changeParamDescription(param: Oas20Parameter, newParamDescription: string): void {
+        let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
+        this.onCommand.emit(command);
+    }
+
+    public changeParamType(param: Oas20Parameter, newType: SimplifiedType): void {
+        let command: ICommand = new ChangeParameterTypeCommand(param, newType);
+        this.onCommand.emit(command);
+    }
+
+    public queryParameters(): Oas20Parameter[] {
+        return this.parameters("query");
+    }
+
+    public deleteParam(parameter: Oas20Parameter): void {
+        let command: ICommand = new DeleteParameterCommand(parameter);
+        this.onCommand.emit(command);
+    }
+
+    public openAddQueryParamModal(): void {
+        this.addQueryParamDialog.open();
+    }
+
+    public addQueryParam(name: string): void {
+        let command: ICommand = new NewParamCommand(this.path, name, "query");
+        this.onCommand.emit(command);
+    }
+
+    public deleteAllQueryParams(): void {
+        let command: ICommand = new DeleteAllParameters(this.path, "query");
+        this.onCommand.emit(command);
+    }
 
     public enableSourceMode(): void {
         this.sourceNode = this.path;

@@ -47,36 +47,71 @@
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
 
                 <!-- Path Parameters Section -->
-                <!--
-                <div class="section path-parameters-section panel-group" *ngIf="hasPathParameters() && hasAtLeastOneOperation()">
+                <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#path-parameters-section-body">
                             <span class="section-label">PATH PARAMETERS</span>
                         </a>
                         <context-help>
                             <p>
-                                This section is visible because this path/endpoint has dynamic parameters.  Use the table of parameters
-                                below to set the description and/or type for <strong>all operations</strong> in this path.
-                            </p>
-                            <br/>
-                            <p>
-                                Alternatively, you can set the description and/or type for the path parameters for each individual
-                                operation, which can be useful if you would like that information to be different.  This is typically
-                                only useful for descriptions.
+                                This section is visible because this path has at least one dynamic path parameter.
+                                Here you can configure information about the path parameter, such as its description
+                                and type.  This information will be inherited by all operations in the path (but can
+                                optionally be overridden by each respective operation).
                             </p>
                         </context-help>
                     </div>
                     <div class="section-body collapse in" id="path-parameters-section-body">
-                        <!-- The list of path parameters ->
+                        <!-- The list of path parameters -->
                         <div class="container-fluid path-parameters typed-item-list">
-                            <path-param-row *ngFor="let paramName of pathParameterNames()"
-                                            [param]="param(paramName)"
-                                            (onDescriptionChange)="changePathParamDescription(paramName, $event)"
-                                            (onTypeChange)="changePathParamType(paramName, $event)"></path-param-row>
+                            <param-row *ngFor="let param of pathParameters()"
+                                       [param]="param" [parameterClass]="'path-parameter'"
+                                       (onCreate)="createPathParam(param.name)"
+                                       (onDelete)="deleteParam(param)"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
                         </div>
                     </div>
                 </div>
-                -->
+
+                <!-- Query Parameters Section -->
+                <div class="section query-parameters-section panel-group">
+                    <div class="section-header panel-title">
+                        <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
+                            <span class="section-label">QUERY PARAMETERS</span>
+                        </a>
+                        <context-help>
+                            <p>
+                                Use this section to define <strong>HTTP Query Parameters</strong> for all of the
+                                Operations in this path.  These query parameters will apply to all operations and
+                                can be overridden (though not removed) at the operation level.
+                            </p>
+                        </context-help>
+                        <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
+                                title="Add a new query parameter"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
+                                title="Delete all query parameters."
+                                [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
+                    </div>
+                    <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
+
+                        <div class="alert alert-info" *ngIf="!hasParameters('query')">
+                            <span class="pficon pficon-info"></span>
+                            <strong>None Found</strong>
+                            <span>No query parameters have been declared.</span>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddQueryParamModal()">Add Query Parameter</button>
+                        </div>
+
+                        <!-- The list of query parameters -->
+                        <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">
+                            <param-row *ngFor="let param of queryParameters()"
+                                       [param]="param" [parameterClass]="'query-parameter'"
+                                       (onDelete)="deleteParam(param)"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Operations Section -->
                 <div class="section operations-section panel-group">
@@ -230,9 +265,9 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-
 </div>
+
+<add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>

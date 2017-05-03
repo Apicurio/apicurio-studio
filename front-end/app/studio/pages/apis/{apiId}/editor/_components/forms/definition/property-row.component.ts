@@ -64,4 +64,26 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
         return options;
     }
 
+    public typeOfOptions(): DropDownOption[] {
+        let options: DropDownOption[] = super.typeOfOptions();
+        let doc: Oas20Document = <Oas20Document>this.property.ownerDocument();
+
+        if (doc.definitions) {
+            let co: DropDownOption[] = doc.definitions.definitions().sort( (def1, def2) => {
+                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
+            }).map( def => {
+                return {
+                    value: "#/definitions/" + def.definitionName(),
+                    name: def.definitionName()
+                };
+            });
+            if (co && co.length > 0) {
+                options.push({ divider: true });
+                co.forEach( o => options.push(o) );
+            }
+        }
+
+        return options;
+    }
+
 }

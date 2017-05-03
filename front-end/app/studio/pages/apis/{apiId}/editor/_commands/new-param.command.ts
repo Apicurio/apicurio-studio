@@ -16,7 +16,10 @@
  */
 
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
-import {OasDocument, Oas20Document, Oas20Operation, OasNodePath, Oas20Parameter} from "oai-ts-core";
+import {
+    OasDocument, Oas20Document, Oas20Operation, OasNodePath, Oas20Parameter, Oas20PathItem,
+    IOas20ParameterParent
+} from "oai-ts-core";
 
 /**
  * A command used to create a new parameter.
@@ -25,7 +28,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
 
     private _paramName: string;
     private _paramType: string;
-    private _operationPath: OasNodePath;
+    private _parentPath: OasNodePath;
     private _created: boolean;
 
     /**
@@ -34,9 +37,9 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
      * @param paramName
      * @param paramType
      */
-    constructor(operation: Oas20Operation, paramName: string, paramType: string) {
+    constructor(operation: Oas20Operation|Oas20PathItem, paramName: string, paramType: string) {
         super();
-        this._operationPath = this.oasLibrary().createNodePath(operation);
+        this._parentPath = this.oasLibrary().createNodePath(operation);
         this._paramName = paramName;
         this._paramType = paramType;
     }
@@ -51,26 +54,26 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         this._created = false;
 
         let doc: Oas20Document = <Oas20Document> document;
-        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(doc);
+        let parent: IOas20ParameterParent = <any>this._parentPath.resolve(doc) as IOas20ParameterParent;
 
-        if (this.isNullOrUndefined(operation)) {
+        if (this.isNullOrUndefined(parent)) {
             console.info("[NewParamCommand] Operation is null.");
             return;
         }
 
-        if (this.hasParam(this._paramName, this._paramType, operation)) {
+        if (this.hasParam(this._paramName, this._paramType, parent)) {
             console.info("[NewParamCommand] Param %s of type %s already exists.", this._paramName, this._paramType);
             return;
         }
 
-        if (this.isNullOrUndefined(operation.parameters)) {
-            operation.parameters = [];
+        if (this.isNullOrUndefined(parent.parameters)) {
+            parent.parameters = [];
         }
 
-        let param: Oas20Parameter = operation.createParameter();
+        let param: Oas20Parameter = parent.createParameter();
         param.in = this._paramType;
         param.name = this._paramName;
-        operation.addParameter(param);
+        parent.addParameter(param);
         console.info("[NewParamCommand] Param %s of type %s created successfully.", param.name, param.in);
 
         this._created = true;
@@ -87,14 +90,14 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         }
 
         let doc: Oas20Document = <Oas20Document> document;
-        let operation: Oas20Operation = <Oas20Operation>this._operationPath.resolve(doc);
+        let parent: IOas20ParameterParent = <any>this._parentPath.resolve(doc) as IOas20ParameterParent;
 
-        if (this.isNullOrUndefined(operation)) {
+        if (this.isNullOrUndefined(parent)) {
             return;
         }
 
         let theParam: Oas20Parameter = null;
-        for (let param of operation.parameters) {
+        for (let param of parent.parameters) {
             if (param.in === this._paramType && param.name === this._paramName) {
                 theParam = param;
                 break;
@@ -103,23 +106,23 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
 
         // If found, remove it from the params.
         if (theParam) {
-            operation.parameters.splice(operation.parameters.indexOf(theParam), 1);
+            parent.parameters.splice(parent.parameters.indexOf(theParam), 1);
 
-            if (operation.parameters.length === 0) {
-                operation.parameters = null;
+            if (parent.parameters.length === 0) {
+                parent.parameters = null;
             }
         }
     }
 
     /**
-     * Returns true if the given param already exists in the operation.
+     * Returns true if the given param already exists in the parent.
      * @param paramName
      * @param paramType
-     * @param operation
+     * @param parent
      * @returns {boolean}
      */
-    private hasParam(paramName: string, paramType: string, operation: Oas20Operation): boolean {
-        return operation.parameters && operation.parameters.filter((value) => {
+    private hasParam(paramName: string, paramType: string, parent: IOas20ParameterParent): boolean {
+        return parent.parameters && parent.parameters.filter((value) => {
             return value.in === paramType && value.name === paramName;
         }).length > 0;
     }

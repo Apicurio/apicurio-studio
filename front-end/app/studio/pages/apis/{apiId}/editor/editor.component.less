@@ -618,6 +618,19 @@
   border-right: 1px solid #ddd;
   vertical-align: middle;
   margin-top: 3px;
+  position: relative;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.missing {
+  opacity: .4;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.missing .description {
+  font-size: 12px;
+  line-height: 20px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.override {
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.overridable {
+  background-color: #eeeeef;
 }
 .api-editor .editor-detail .section .typed-item-list .typed-item.editing {
   border-bottom: none;
@@ -627,6 +640,16 @@
   position: relative;
   z-index: 50;
 }
+
+.api-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon {
+  cursor: help;
+  color: inherit;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon:hover {
+  color: inherit;
+  filter: brightness(80%);
+}
+
 .api-editor .editor-detail .section .typed-item-list .type-row {
   padding-top: 12px;
   padding-bottom: 10px;

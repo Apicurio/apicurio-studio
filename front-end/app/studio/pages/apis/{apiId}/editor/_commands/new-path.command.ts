@@ -16,7 +16,8 @@
  */
 
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
-import {OasDocument, Oas20Document, Oas20PathItem} from "oai-ts-core";
+import {OasDocument, Oas20Document, Oas20PathItem, Oas20Parameter} from "oai-ts-core";
+import {ModelUtils} from "../_util/model.util";
 
 /**
  * A command used to create a new path item in a document.

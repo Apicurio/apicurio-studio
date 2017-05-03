@@ -39,6 +39,7 @@ import {ChangeResponseTypeCommand} from "../../_commands/change-response-type.co
 import {DropDownOption} from "../common/drop-down.component";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {NewParamCommand} from "../../_commands/new-param.command";
+import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
@@ -317,22 +318,57 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public parameters(paramType: string): Oas20Parameter[] {
-        if (!this.operation.parameters) {
-            return [];
-        }
-        return this.operation.parameters.filter( value => {
-            return value.in === paramType;
-        }).sort((param1, param2) => {
+        return this.operation.getParameters(paramType).sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
     }
 
+    public pathParam(paramName: string): Oas20Parameter {
+        let param: Oas20Parameter = this.operation.parameter("path", paramName);
+
+        if (param === null) {
+            param = this.operation.createParameter();
+            param.in = "path";
+            param.name = paramName;
+            param.required = true;
+            param.n_attribute("missing", true);
+        }
+
+        return param;
+    }
+
     public pathParameters(): Oas20Parameter[] {
-        return this.parameters("path");
+        let pathParamNames: string[] = ModelUtils.detectPathParamNames((<Oas20PathItem>this.operation.parent()).path());
+        return pathParamNames.map( pname => {
+            return this.pathParam(pname);
+        });
     }
 
     public queryParameters(): Oas20Parameter[] {
-        return this.parameters("query");
+        let opParams: Oas20Parameter[] = this.parameters("query");
+        let piParams: Oas20Parameter[] = (<Oas20PathItem>this.operation.parent()).getParameters("query");
+        let hasOpParam = function(param: Oas20Parameter): boolean {
+            var found: boolean = false;
+            opParams.forEach( opParam => {
+                if (opParam.name === param.name) {
+                    found = true;
+                }
+            });
+            return found;
+        };
+        piParams.forEach( param => {
+            if (!hasOpParam(param)) {
+                let missingParam: Oas20Parameter = this.operation.createParameter();
+                missingParam.in = "query";
+                missingParam.name = param.name;
+                missingParam.required = true;
+                missingParam.n_attribute("missing", true);
+                opParams.push(missingParam);
+            }
+        });
+        return opParams.sort((param1, param2) => {
+            return param1.name.localeCompare(param2.name);
+        });
     }
 
     public headerParameters(): Oas20Parameter[] {
@@ -347,6 +383,15 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return this.hasParameters("formData");
     }
 
+    public hasQueryParameters(): boolean {
+        return this.operation.getParameters("query").length > 0 ||
+            (<Oas20PathItem>this.operation.parent()).getParameters("query").length > 0;
+    }
+
+    public canHavePathParams(): boolean {
+        return (<Oas20PathItem>this.operation.parent()).path().indexOf("{") !== -1;
+    }
+
     public hasParameters(type: string): boolean {
         if (!this.operation.parameters) {
             return false;
@@ -354,26 +399,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return this.operation.parameters.filter((value) => {
             return value.in === type;
         }).length > 0;
-    }
-
-    public paramDescription(param: Oas20Parameter): string {
-        if (param.description) {
-            return param.description;
-        } else {
-            return null;
-        }
-    }
-
-    public paramType(param: Oas20Parameter): SimplifiedType {
-        return SimplifiedType.fromItems(param);
-    }
-
-    public paramHasDescription(param: Oas20Parameter): boolean {
-        if (param.description) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public responses(): Oas20Response[] {
@@ -401,14 +426,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return true;
     }
 
-    public responseDescription(response: Oas20Response): string {
-        if (response && response.description) {
-            return response.description;
-        } else {
-            return null;
-        }
-    }
-
     public hasDefinitions(): boolean {
         if (this.definitionNames()) {
             return true;
@@ -424,10 +441,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         } else {
             return doc.definitions.getItemNames().sort();
         }
-    }
-
-    public responseType(response: Oas20Response): SimplifiedType {
-        return SimplifiedType.fromSchema(response.schema);
     }
 
     public changeSummary(newSummary: string): void {
@@ -531,6 +544,11 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public addResponse(statusCode: string): void {
         let command: ICommand = new NewResponseCommand(this.operation, statusCode);
+        this.onCommand.emit(command);
+    }
+
+    public createPathParam(paramName: string): void {
+        let command: ICommand = new NewParamCommand(this.operation, paramName, "path");
         this.onCommand.emit(command);
     }
 

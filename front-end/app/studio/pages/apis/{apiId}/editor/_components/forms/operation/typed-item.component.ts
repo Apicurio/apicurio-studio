@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
+import {Output, EventEmitter} from "@angular/core";
 import {DropDownOption} from "../../common/drop-down.component";
 import {SimplifiedType} from "../../../_models/simplified-type.model";
 import {ObjectUtils} from "../../../_util/object.util";
-import {Oas20Parameter} from "oai-ts-core";
 
 
 export abstract class AbstractTypedItemComponent {

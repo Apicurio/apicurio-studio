@@ -18,6 +18,7 @@ package io.apicurio.studio.tools.release;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class ReleaseTool {
         options.addOption("o", "previous-tag", true, "The tag name of the previous release.");
         options.addOption("g", "github-pat", true, "The GitHub PAT (for authentication/authorization).");
         options.addOption("a", "artifact", true, "The binary release artifact (full path).");
+        options.addOption("d", "output-directory", true, "Where to store output file(s).");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
@@ -78,6 +80,13 @@ public class ReleaseTool {
         String oldReleaseTag = cmd.getOptionValue("o");
         String githubPAT = cmd.getOptionValue("g");
         String artifact = cmd.getOptionValue("a");
+        File outputDir = new File("");
+        if (cmd.hasOption("d")) {
+            outputDir = new File(cmd.getOptionValue("d"));
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+        }
 
         File releaseArtifactFile = new File(artifact);
         File releaseArtifactSigFile = new File(artifact + ".asc");
@@ -198,7 +207,39 @@ public class ReleaseTool {
             e.printStackTrace();
             System.exit(1);
         }
+        
+        Thread.sleep(1000);
 
+        // Step #4 - Download Latest Release JSON for inclusion in the project web site
+        try {
+            System.out.println("Getting info about the release.");
+            HttpResponse<JsonNode> response = Unirest.get("https://api.github.com/repos/apicurio/apicurio-studio/releases/latest")
+                    .header("Accept", "application/json").asJson();
+            if (response.getStatus() != 200) {
+                throw new Exception("Failed to get release info: " + response.getStatusText());
+            }
+            JsonNode body = response.getBody();
+            String publishedDate = body.getObject().getString("published_at");
+            if (publishedDate == null) {
+                throw new Exception("Could not find Published Date for release.");
+            }
+            String fname = publishedDate.replace(':', '-');
+            File outFile = new File(outputDir, fname);
+            
+            System.out.println("Writing latest release info to: " + outFile.getAbsolutePath());
+            
+            String output = body.getObject().toString(4);
+            try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                fos.write(output.getBytes("UTF-8"));
+                fos.flush();
+            }
+
+            System.out.println("Release info successfully written.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
         System.out.println("=========================================");
         System.out.println("All Done!");
         System.out.println("=========================================");

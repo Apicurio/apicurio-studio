@@ -73,6 +73,9 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         let param: Oas20Parameter = parent.createParameter();
         param.in = this._paramType;
         param.name = this._paramName;
+        if (param.in === "path") {
+            param.required = true;
+        }
         parent.addParameter(param);
         console.info("[NewParamCommand] Param %s of type %s created successfully.", param.name, param.in);
 

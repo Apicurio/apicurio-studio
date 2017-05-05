@@ -1,0 +1,3 @@
+<a title="{{ message() }}" class="validation-icon" [class.has-errors]="hasErrors()" (click)="onClick.emit(true)"
+   [class.clean]="!hasErrors()"><span class="fa" [class.fa-warning]="hasErrors()"
+                                      [class.fa-check-circle-o]="!hasErrors()">&nbsp;({{ numErrors() }})</span></a>

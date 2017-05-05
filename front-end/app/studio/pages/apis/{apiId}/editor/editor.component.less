@@ -125,6 +125,75 @@
 
 .api-editor .editor-master .editor-search {
   padding: 10px;
+  display: table;
+  width: 100%;
+}
+.api-editor .editor-master .editor-search > search {
+  display: table-cell;
+  width: 100%;
+  padding-right: 8px;
+}
+.api-editor .editor-master .editor-search .validation-icon {
+  font-size: 15px;
+  float: right;
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-search .validation-icon.has-errors {
+  color: #c00;
+}
+.api-editor .editor-master .editor-search .validation-icon.warnings-only {
+}
+.api-editor .editor-master .editor-search .validation-icon.clean {
+  color: #3f9c35;
+}
+
+.api-editor .editor-master .editor-validation {
+  min-height: 0px;
+  max-height: 300px;
+  overflow: auto;
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity .25s,
+              min-height .5s .25s,
+              font-size .5s .25s,
+              margin .5s .25s,
+              padding .5s .25s;
+}
+.api-editor .editor-master .editor-validation.expanded {
+  line-height: 18px;
+  font-size: 14px;
+  opacity: 1;
+  padding: 5px;
+  min-height: 150px;
+  transition: font-size .25s,
+              margin .25s,
+              padding .25s,
+              min-height .25s,
+              opacity .5s .25s;
+}
+.api-editor .editor-master .editor-validation.expanded .validation-problem {
+  padding: 5px;
+}
+.api-editor .editor-master .editor-validation.expanded .validation-problem:hover {
+  background-color: #eee;
+}
+.api-editor .editor-master .editor-validation .validation-problem .icon {
+  color: #c00;
+}
+.api-editor .editor-master .editor-validation .validation-problem .code {
+  font-weight: bold;
+  color: #666;
+}
+.api-editor .editor-master .editor-validation .validation-problem .message {
+}
+
+.api-editor .editor-master .editor-validation.expanded .validation-no-problem {
+  padding: 5px;
+}
+.api-editor .editor-master .editor-validation .validation-no-problem .icon {
+  color: #3f9c35;
 }
 
 .api-editor .editor-master .editor-outline {

@@ -97,6 +97,7 @@ import {AddFormDataParamDialogComponent} from "./pages/apis/{apiId}/editor/_comp
 import {ParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/param-row.component";
 import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
 import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
+import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-icon.component";
 
 
 @NgModule({
@@ -112,7 +113,7 @@ import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_com
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
         ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
-        PropertyRowComponent, AddSchemaPropertyDialogComponent
+        PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent
     ],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,

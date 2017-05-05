@@ -37,9 +37,25 @@
         <!-- Search - Used to Filter Paths and Definitions -->
         <div class="editor-search">
             <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
+            <validation-icon [validationErrors]="validationErrors" (onClick)="toggleValidationPanel()"></validation-icon>
         </div>
 
-        <!-- Outline - Paths, Defintions, Responses -->
+        <!-- Validation Problems -->
+        <div class="editor-validation" [class.expanded]="validationPanelOpen">
+
+            <div class="validation-no-problem" *ngIf="validationErrors.length === 0">
+                <span class="icon fa fa-fw fa-info-circle"></span>
+                <span class="message">No validation problems found!</span>
+            </div>
+
+            <div class="validation-problem" *ngFor="let problem of validationErrors">
+                <span class="icon fa fa-fw fa-exclamation-circle"></span>
+                <span class="code">{{ problem.errorCode }}</span>
+                <span class="message">{{ problem.message }}</span>
+            </div>
+        </div>
+
+        <!-- Outline - Paths, Definitions, Responses -->
         <div class="editor-outline">
             <!-- Paths Section -->
             <div class="section path-section panel-group">

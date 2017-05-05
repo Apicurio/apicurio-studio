@@ -17,7 +17,10 @@
 
 import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild, HostListener} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
-import {Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema} from "oai-ts-core";
+import {
+    Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema,
+    OasValidationError
+} from "oai-ts-core";
 import {CommandsManager, ICommand} from "./_services/commands.manager";
 import {NewPathCommand} from "./_commands/new-path.command";
 import {NewDefinitionCommand} from "./_commands/new-definition.command";
@@ -57,6 +60,9 @@ export class ApiEditorComponent {
 
     filterCriteria: string = null;
 
+    validationErrors: OasValidationError[] = [];
+    validationPanelOpen = false;
+
     /**
      * Constructor.
      */
@@ -68,6 +74,7 @@ export class ApiEditorComponent {
     public document(): Oas20Document {
         if (this._document === null) {
             this._document = <Oas20Document>this._library.createDocument(this.api.spec);
+            this.validateModel();
         }
         return this._document;
     }
@@ -225,11 +232,13 @@ export class ApiEditorComponent {
             if (this._commands.isEmpty()) {
                 this.onDirty.emit(false);
             }
+            this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+            console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
             this._commands.redoLastCommand(this.document());
             this.onDirty.emit(true);
+            this.validateModel();
         }
         if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
             this.closeContextMenu();
@@ -244,6 +253,9 @@ export class ApiEditorComponent {
         console.info("[ApiEditorComponent] Executing a command.");
         this._commands.executeCommand(command, this.document());
         this.onDirty.emit(true);
+
+        // After changing the model, we should re-validate it
+        this.validateModel();
     }
 
     /**
@@ -477,6 +489,25 @@ export class ApiEditorComponent {
             this.selectMain();
         }
         this.closeContextMenu();
+    }
+
+    /**
+     * Called to validate the model.
+     */
+    public validateModel(): void {
+        console.info("[ApiEditorComponent] Validating the current model.");
+        let doc: Oas20Document = this.document();
+        this.validationErrors = this._library.validate(doc, true);
+        console.info(this.validationErrors);
+        console.info("[ApiEditorComponent] Validation complete.");
+    }
+
+    /**
+     * Called to toggle the visibility of the validation panel (the section that
+     * displays validation errors).
+     */
+    public toggleValidationPanel(): void {
+        this.validationPanelOpen = !this.validationPanelOpen;
     }
 
 }

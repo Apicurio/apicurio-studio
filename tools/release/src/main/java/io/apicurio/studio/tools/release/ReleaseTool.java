@@ -108,6 +108,8 @@ public class ReleaseTool {
         System.out.println("Previous Release: " + oldReleaseTag);
         System.out.println("            Name: " + releaseName);
         System.out.println("        Artifact: " + releaseArtifact);
+        System.out.println("     Pre-Release: " + isPrerelease);
+        System.out.println("           Draft: " + isDraft);
         System.out.println("=========================================");
 
         String releaseNotes = "";

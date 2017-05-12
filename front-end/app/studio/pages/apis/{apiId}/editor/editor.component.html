@@ -41,14 +41,16 @@
         </div>
 
         <!-- Validation Problems -->
-        <div class="editor-validation" [class.expanded]="validationPanelOpen">
+        <div class="editor-validation" [class.expanded]="validationPanelOpen" autoheight maxHeight="200">
 
             <div class="validation-no-problem" *ngIf="validationErrors.length === 0">
                 <span class="icon fa fa-fw fa-info-circle"></span>
                 <span class="message">No validation problems found!</span>
             </div>
 
-            <div class="validation-problem" *ngFor="let problem of validationErrors">
+            <div class="validation-problem" *ngFor="let problem of validationErrors"
+                 [class.selected]="selectedItem === problem && selectedType === 'problem'"
+                 (click)="selectProblem(problem)">
                 <span class="icon fa fa-fw fa-exclamation-circle"></span>
                 <span class="code">{{ problem.errorCode }}</span>
                 <span class="message">{{ problem.message }}</span>
@@ -184,6 +186,8 @@
                         (onDeselect)="deselectOperation()" *ngIf="selectedType === 'operation'"></operation-form>
         <definition-form [definition]="selectedDefinition()" (onCommand)="onCommand($event)" class="editor-detail-form"
                         (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
+        <problem-form [problem]="selectedProblem()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                         *ngIf="selectedType === 'problem'"></problem-form>
     </div>
 
     <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>

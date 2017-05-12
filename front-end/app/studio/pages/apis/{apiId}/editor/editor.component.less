@@ -148,36 +148,22 @@
 }
 
 .api-editor .editor-master .editor-validation {
-  min-height: 0px;
-  max-height: 300px;
-  overflow: auto;
-  font-size: 0;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
-  transition: opacity .25s,
-              min-height .5s .25s,
-              font-size .5s .25s,
-              margin .5s .25s,
-              padding .5s .25s;
-}
-.api-editor .editor-master .editor-validation.expanded {
   line-height: 18px;
   font-size: 14px;
-  opacity: 1;
-  padding: 5px;
-  min-height: 150px;
-  transition: font-size .25s,
-              margin .25s,
-              padding .25s,
-              min-height .25s,
-              opacity .5s .25s;
+  display: none;
+}
+.api-editor .editor-master .editor-validation.expanded {
+   display: block;
 }
 .api-editor .editor-master .editor-validation.expanded .validation-problem {
   padding: 5px;
 }
 .api-editor .editor-master .editor-validation.expanded .validation-problem:hover {
   background-color: #eee;
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-validation.expanded .validation-problem.selected {
+  cursor: default;
 }
 .api-editor .editor-master .editor-validation .validation-problem .icon {
   color: #c00;
@@ -491,6 +477,9 @@
   margin-bottom: -5px;
 }
 
+.api-editor .editor-detail .detail-content .info-section .explanation {
+  font-size: 15px;
+}
 
 .api-editor .editor-detail .detail-content .license-section .set-license-modal {
 }

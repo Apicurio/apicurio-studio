@@ -45,7 +45,7 @@ export class ApiEditorComponent {
     private _commands: CommandsManager = new CommandsManager();
 
     theme: string = "light";
-    selectedItem: string = null;
+    selectedItem: any = null;
     selectedType: string = "main";
     subselectedItem: string = null;
 
@@ -192,9 +192,16 @@ export class ApiEditorComponent {
     public selectDefinition(name: string): void {
         this.selectedItem = name;
         this.selectedType = "definition";
+    }
 
-        console.info("Selected item: %s", this.selectedItem);
-        console.info("Selected type: %s", this.selectedType);
+    /**
+     * Called when the user selects a validation problem from the master
+     * area.
+     * @param problem
+     */
+    public selectProblem(problem: OasValidationError): void {
+        this.selectedItem = problem;
+        this.selectedType = "problem";
     }
 
     /**
@@ -307,6 +314,18 @@ export class ApiEditorComponent {
     public selectedDefinition(): Oas20DefinitionSchema {
         if (this.selectedType === "definition") {
             return this.document().definitions.definition(this.selectedItem);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the currently selected definition.
+     * @return {any}
+     */
+    public selectedProblem(): OasValidationError {
+        if (this.selectedType === "problem") {
+            return <OasValidationError>this.selectedItem;
         } else {
             return null;
         }
@@ -495,11 +514,8 @@ export class ApiEditorComponent {
      * Called to validate the model.
      */
     public validateModel(): void {
-        console.info("[ApiEditorComponent] Validating the current model.");
         let doc: Oas20Document = this.document();
         this.validationErrors = this._library.validate(doc, true);
-        console.info(this.validationErrors);
-        console.info("[ApiEditorComponent] Validation complete.");
     }
 
     /**

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ElementRef, HostListener, Directive, AfterContentChecked} from "@angular/core";
+import {ElementRef, HostListener, Directive, AfterContentChecked, AfterViewChecked, Input} from "@angular/core";
 
 @Directive({
     selector: "textarea[autosize]"
@@ -29,13 +29,47 @@ export class TextAreaAutosize implements AfterContentChecked {
 
     constructor(public element: ElementRef) {}
 
-    ngAfterContentChecked(): void{
+    ngAfterContentChecked(): void {
         this.adjust();
     }
 
-    adjust(): void{
+    adjust(): void {
         this.element.nativeElement.style.overflow = "hidden";
         this.element.nativeElement.style.height = "auto";
         this.element.nativeElement.style.height = this.element.nativeElement.scrollHeight + "px";
     }
 }
+
+
+@Directive({
+    selector: "div[autoheight]"
+})
+export class DivAutoHeight implements AfterViewChecked {
+
+    lastHeight: number = -1;
+
+    @Input() maxHeight: number;
+
+    constructor(public element: ElementRef) {}
+
+    ngAfterViewChecked(): void {
+        this.adjust();
+    }
+
+    adjust(): void {
+        let height: number = this.element.nativeElement.scrollHeight;
+        if (this.maxHeight && height > this.maxHeight) {
+            height = this.maxHeight;
+        }
+        if (Math.abs(height - this.lastHeight) > 5) {
+            this.element.nativeElement.style.height = height + "px";
+            this.lastHeight = height;
+            if (height == this.maxHeight) {
+                this.element.nativeElement.style.overflowY = "auto";
+            } else {
+                this.element.nativeElement.style.overflowY = "visible";
+            }
+        }
+    }
+}
+

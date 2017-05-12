@@ -68,7 +68,7 @@ import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.component";
 
 /** Directives **/
-import {TextAreaAutosize} from "./directives/autosize.directive";
+import {DivAutoHeight, TextAreaAutosize} from "./directives/autosize.directive";
 
 /** Editor Components */
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
@@ -98,6 +98,7 @@ import {ParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/o
 import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
 import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
 import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-icon.component";
+import {ProblemFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/problem-form.component";
 
 
 @NgModule({
@@ -108,12 +109,12 @@ import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/c
         CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
         ResponseItemComponent, MainFormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
-        TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent,
+        TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
         ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
-        PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent
+        PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent
     ],
     providers: [ApisServiceProvider, AuthenticationServiceProvider,
         RecentApisResolve, ApiResolve, ApiDefinitionResolve,

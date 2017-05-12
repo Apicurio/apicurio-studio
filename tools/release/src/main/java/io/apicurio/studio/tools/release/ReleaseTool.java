@@ -226,7 +226,7 @@ public class ReleaseTool {
                 throw new Exception("Could not find Published Date for release.");
             }
             String fname = publishedDate.replace(':', '-');
-            File outFile = new File(outputDir, fname);
+            File outFile = new File(outputDir, fname + ".json");
             
             System.out.println("Writing latest release info to: " + outFile.getAbsolutePath());
             

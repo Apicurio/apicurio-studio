@@ -301,6 +301,8 @@
 .api-editor .editor-master .editor-outline .api-definition {
   padding-left: 15px;
   font-size: 14px;
+  border-left: 2px solid transparent;
+  position: relative;
 }
 .api-editor .editor-master .editor-outline .api-definition:hover {
   cursor: pointer;
@@ -309,6 +311,16 @@
   cursor: default;
 }
 .api-editor .editor-master .editor-outline .api-definition.contexted {
+}
+.api-editor .editor-master .editor-outline .api-definition.problem:before {
+  content: "\f071";
+  font: normal normal normal 14px/1 FontAwesome;
+  text-rendering: auto;
+  color: #c00;
+  position: absolute;
+  top: 4px;
+  left: 1px;
+  font-size: 12px;
 }
 
 .api-editor .editor-master .editor-outline .api-response {

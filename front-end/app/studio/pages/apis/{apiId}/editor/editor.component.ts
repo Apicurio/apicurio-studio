@@ -87,24 +87,6 @@ export class ApiEditorComponent {
     }
 
     /**
-     * Returns an array of path names.
-     * @return {any}
-     */
-    public pathNames(): string[] {
-        if (this.document().paths) {
-            return this.document().paths.pathItemNames().filter( name => {
-                if (this.acceptThroughFilter(name)) {
-                    return name;
-                } else {
-                    return null;
-                }
-            }).sort();
-        } else {
-            return [];
-        }
-    }
-
-    /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
      * @return {any}
      */
@@ -125,36 +107,40 @@ export class ApiEditorComponent {
     }
 
     /**
-     * Returns an array of definition names.
+     * Returns the array of definitions, filtered by search criteria and sorted.
      * @return {any}
      */
-    public definitionNames(): string[] {
+    public definitions(): Oas20DefinitionSchema[] {
         if (this.document().definitions) {
-            return this.document().definitions.definitionNames().filter( name => {
-                if (this.acceptThroughFilter(name)) {
-                    return name;
+            return this.document().definitions.definitions().filter( def => {
+                if (this.acceptThroughFilter(def.definitionName())) {
+                    return def;
                 } else {
                     return null;
                 }
-            }).sort();
+            }).sort( (def1, def2) => {
+                return def1.definitionName().localeCompare(def2.definitionName());
+            });
         } else {
             return [];
         }
     }
 
     /**
-     * Returns an array of response names.
+     * Returns an array of responses filtered by the search criteria and sorted.
      * @return {any}
      */
-    public responseNames(): string[] {
+    public responses(): Oas20ResponseDefinition[] {
         if (this.document().responses) {
-            return this.document().responses.responseNames().filter( name => {
-                if (this.acceptThroughFilter(name)) {
-                    return name;
+            return this.document().responses.responses().filter( response => {
+                if (this.acceptThroughFilter(response.name())) {
+                    return response;
                 } else {
                     return null;
                 }
-            }).sort();
+            }).sort( (response1, response2) => {
+                return response1.name().localeCompare(response2.name());
+            });
         } else {
             return [];
         }
@@ -214,10 +200,10 @@ export class ApiEditorComponent {
 
     /**
      * Called when the user selects a definition from the master area.
-     * @param name
+     * @param def
      */
-    public selectDefinition(name: string): void {
-        this.selectedItem = name;
+    public selectDefinition(def: Oas20DefinitionSchema): void {
+        this.selectedItem = def.definitionName();
         this.selectedType = "definition";
     }
 
@@ -433,7 +419,7 @@ export class ApiEditorComponent {
     public addDefinition(modalData: any): void {
         let command: ICommand = new NewDefinitionCommand(modalData.name, modalData.example);
         this.onCommand(command);
-        this.selectDefinition(modalData.name);
+        this.selectDefinition(this.document().definitions.definition(modalData.name));
     }
 
     /**
@@ -539,15 +525,15 @@ export class ApiEditorComponent {
     /**
      * Called when the user right-clicks on a path.
      * @param event
-     * @param pathName
+     * @param definition
      */
-    public showDefinitionContextMenu(event: MouseEvent, definitionName: string): void {
+    public showDefinitionContextMenu(event: MouseEvent, definition: Oas20DefinitionSchema): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
         this.contextMenuType = "definition";
-        this.contextMenuItem = definitionName;
+        this.contextMenuItem = definition.definitionName();
     }
 
     /**

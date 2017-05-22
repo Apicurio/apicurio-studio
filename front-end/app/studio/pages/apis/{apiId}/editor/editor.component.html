@@ -143,11 +143,12 @@
                             (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
                 </div>
                 <div class="section-body collapse in" id="definition-section-body">
-                    <div definition-item class="api-definition" *ngFor="let defName of definitionNames()" [name]="defName"
-                         (click)="selectDefinition(defName)" (contextmenu)="showDefinitionContextMenu($event, defName)"
-                         [class.contexted]="contextMenuType === 'definition' && contextMenuItem === defName"
-                         [class.selected]="selectedItem === defName && selectedType === 'definition'"></div>
-                    <div class="alert alert-info" *ngIf="definitionNames().length === 0">
+                    <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="def.definitionName()"
+                         (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"
+                         [class.problem]="hasValidationProblem(def)"
+                         [class.contexted]="contextMenuType === 'definition' && contextMenuItem === def.definitionName()"
+                         [class.selected]="selectedItem === def.definitionName() && selectedType === 'definition'"></div>
+                    <div class="alert alert-info" *ngIf="definitions().length === 0">
                         <span class="pficon pficon-info"></span>
                         <strong>None Found</strong>
                         <span>Reusable types are useful!</span>

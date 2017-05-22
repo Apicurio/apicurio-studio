@@ -237,8 +237,10 @@
 }
 
 .api-editor .editor-master .editor-outline .api-path {
+  position: relative;
   padding-left: 15px;
   font-size: 14px;
+  border-left: 2px solid transparent;
 }
 .api-editor .editor-master .editor-outline .api-path:hover {
   cursor: pointer;
@@ -262,9 +264,34 @@
 .api-editor .editor-master .editor-outline .api-path.selected .label.selected {
 }
 
+.api-editor .editor-master .editor-outline .api-path.problem:before {
+  content: "\f071";
+  font: normal normal normal 14px/1 FontAwesome;
+  text-rendering: auto;
+  color: #c00;
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  font-size: 12px;
+}
+
 .api-editor .editor-master .editor-outline .api-path .api-operations {
   margin-top: 5px;
   padding-bottom: 10px;
+}
+
+.api-editor .editor-master .editor-outline .api-path .api-operations .label {
+  position: relative;
+}
+.api-editor .editor-master .editor-outline .api-path .api-operations .label.problem:before {
+  content: "\f071";
+  font: normal normal normal 14px/1 FontAwesome;
+  text-rendering: auto;
+  color: yellow;
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  font-size: 11px;
 }
 
 .api-editor .editor-master .editor-outline .api-path.contexted {
@@ -778,3 +805,6 @@
   bottom: 0;
 }
 
+.api-editor .editor-detail .problem-form .actions {
+  margin-top: 15px;
+}

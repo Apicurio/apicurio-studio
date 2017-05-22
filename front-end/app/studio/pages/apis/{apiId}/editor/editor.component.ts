@@ -15,17 +15,24 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input, ViewEncapsulation, ViewChild, HostListener} from "@angular/core";
+import {Component, EventEmitter, HostListener, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    Oas20Document, OasLibraryUtils, Oas20PathItem, Oas20Operation, Oas20DefinitionSchema,
-    OasValidationError
+    Oas20DefinitionSchema,
+    Oas20Document, Oas20NodeVisitorAdapter,
+    Oas20Operation,
+    Oas20PathItem, Oas20ResponseDefinition,
+    OasLibraryUtils,
+    OasNode, OasTraverserDirection,
+    OasValidationError, OasVisitorUtil
 } from "oai-ts-core";
 import {CommandsManager, ICommand} from "./_services/commands.manager";
 import {NewPathCommand} from "./_commands/new-path.command";
 import {NewDefinitionCommand} from "./_commands/new-definition.command";
 import {AddPathDialogComponent} from "./_components/dialogs/add-path.component";
-import {DeletePathCommand, DeleteDefinitionSchemaCommand} from "./_commands/delete.command";
+import {DeleteDefinitionSchemaCommand, DeletePathCommand} from "./_commands/delete.command";
+import {AllNodeVisitor, ModelUtils} from "./_util/model.util";
+import {ObjectUtils} from "./_util/object.util";
 
 
 @Component({
@@ -98,6 +105,26 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Returns an array of paths that match the filter criteria and are sorted alphabetically.
+     * @return {any}
+     */
+    public paths(): Oas20PathItem[] {
+        if (this.document().paths) {
+            return this.document().paths.pathItems().filter( pathItem => {
+                if (this.acceptThroughFilter(pathItem.path())) {
+                    return pathItem;
+                } else {
+                    return null;
+                }
+            }).sort( (pathItem1, pathItem2) => {
+                return pathItem1.path().localeCompare(pathItem2.path());
+            });
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Returns an array of definition names.
      * @return {any}
      */
@@ -145,8 +172,8 @@ export class ApiEditorComponent {
      * Called when the user selects a path from the master area.
      * @param name
      */
-    public selectPath(name: string): void {
-        this.selectedItem = name;
+    public selectPath(path: Oas20PathItem): void {
+        this.selectedItem = path.path();
         this.selectedType = "path";
     }
 
@@ -162,14 +189,14 @@ export class ApiEditorComponent {
      * @param pathName
      * @param opName
      */
-    public selectOperation(pathName: string, opName: string): void {
-        console.info("Selected operation: %s :: %s", pathName, opName);
+    public selectOperation(path: Oas20PathItem, opName: string): void {
+        console.info("Selected operation: %s :: %s", path.path(), opName);
         // Possible de-select the operation if it's clicked on but already selected.
-        if (this.selectedType === "operation" && this.selectedItem === pathName && this.subselectedItem === opName) {
-            this.selectPath(pathName);
+        if (this.selectedType === "operation" && this.selectedItem === path.path() && this.subselectedItem === opName) {
+            this.selectPath(path);
         } else {
             this.selectedType = "operation";
-            this.selectedItem = pathName;
+            this.selectedItem = path.path();
             this.subselectedItem = opName;
         }
     }
@@ -281,7 +308,7 @@ export class ApiEditorComponent {
     public addPath(path: string): void {
         let command: ICommand = new NewPathCommand(path);
         this.onCommand(command);
-        this.selectPath(path);
+        this.selectPath(this.document().paths.pathItem(path));
     }
 
     /**
@@ -332,23 +359,48 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Called when the user clicks the "Go To Problem" button for a particular problem.
+     */
+    public goToProblem(): void {
+        // 1. get the node path from the problem
+        // 2. resolve to a node
+        // 3. use a visitor to reverse-traverse until one of the following is found:
+        //   3a. Path Item
+        //   3b. Operation
+        //   3c. Definition
+        //   3d. Response (tbd)
+
+        let problem: OasValidationError = this.selectedItem as OasValidationError;
+        let node: OasNode = problem.nodePath.resolve(this.document());
+        if (node === null) {
+            return;
+        }
+        let selectionVisitor: SelectedItemVisitor = new SelectedItemVisitor();
+        OasVisitorUtil.visitTree(node, selectionVisitor, OasTraverserDirection.up);
+        this.selectedItem = selectionVisitor.selectedItem;
+        this.selectedType = selectionVisitor.selectedType;
+        this.subselectedItem = selectionVisitor.subselectedItem;
+    }
+
+    /**
      * Called to test whether the given resource path has an operation of the given type defined.
      * @param path
      * @param operation
      */
-    public hasOperation(path: string, operation: string): boolean {
-        let pathItem: Oas20PathItem = this.document().paths.pathItem(path);
-        if (pathItem) {
-            let op: Oas20Operation = pathItem[operation];
-            if (op !== null && op !== undefined) {
-                return true;
-            }
+    public hasOperation(pathItem: Oas20PathItem, operation: string): boolean {
+        let op: Oas20Operation = pathItem[operation];
+        if (op !== null && op !== undefined) {
+            return true;
         }
         return false;
     }
 
-    public hasAtLeastOneOperation(path: string): boolean {
-        let pathItem: Oas20PathItem = this.document().paths.pathItem(path);
+    /**
+     * Returns true if the given path item has at least one operation.
+     * @param pathItem
+     * @return {boolean}
+     */
+    public hasAtLeastOneOperation(pathItem: Oas20PathItem): boolean {
         if (pathItem) {
             if (pathItem.get) {
                 return true;
@@ -515,6 +567,8 @@ export class ApiEditorComponent {
      */
     public validateModel(): void {
         let doc: Oas20Document = this.document();
+        let resetVisitor: ResetProblemsVisitor = new ResetProblemsVisitor();
+        OasVisitorUtil.visitTree(doc, resetVisitor);
         this.validationErrors = this._library.validate(doc, true);
     }
 
@@ -524,6 +578,69 @@ export class ApiEditorComponent {
      */
     public toggleValidationPanel(): void {
         this.validationPanelOpen = !this.validationPanelOpen;
+    }
+
+    /**
+     * Called to determine whether there is a validation problem associated with the given
+     * node (either directly on the node or any descendant node).
+     * @param node
+     */
+    public hasValidationProblem(node: OasNode): boolean {
+        let viz: HasProblemVisitor = new HasProblemVisitor();
+        OasVisitorUtil.visitTree(node, viz);
+        return viz.problemsFound;
+    }
+
+}
+
+class HasProblemVisitor extends AllNodeVisitor {
+
+    public problemsFound: boolean = false;
+
+    protected doVisitNode(node: OasNode): void {
+        let errors: OasValidationError[] = node.n_attribute("validation-errors");
+        if (!ObjectUtils.isNullOrUndefined(errors)) {
+            if (errors.length > 0) {
+                this.problemsFound = true;
+            }
+        }
+    }
+
+}
+
+class ResetProblemsVisitor extends AllNodeVisitor {
+
+    protected doVisitNode(node: OasNode): void {
+        node.n_attribute("validation-errors", null);
+    }
+
+}
+
+class SelectedItemVisitor extends Oas20NodeVisitorAdapter {
+    public selectedItem: any = null;
+    public selectedType: string = null;
+    public subselectedItem: string = null;
+
+    visitPathItem(node: Oas20PathItem): void {
+        this.selectedItem = node.path();
+        if (this.selectedType === null) {
+            this.selectedType = "path";
+        }
+    }
+
+    visitOperation(node: Oas20Operation): void {
+        this.selectedType = "operation";
+        this.subselectedItem = node.method();
+    }
+
+    visitResponseDefinition(node: Oas20ResponseDefinition): void {
+        this.selectedType = "response";
+        this.selectedItem = node.name();
+    }
+
+    visitDefinitionSchema(node: Oas20DefinitionSchema): void {
+        this.selectedType = "definition";
+        this.selectedItem = node.definitionName();
     }
 
 }

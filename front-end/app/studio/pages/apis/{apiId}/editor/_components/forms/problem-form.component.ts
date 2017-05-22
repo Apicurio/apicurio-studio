@@ -32,8 +32,14 @@ export class ProblemFormComponent  {
 
     @Input() problem: OasValidationError;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    @Output() onGoToProblem: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     explanation(): string {
         return ProblemFormComponent.problems.explanation(this.problem);
     }
+
+    goToProblem(): void {
+        this.onGoToProblem.emit(true);
+    }
+
 }

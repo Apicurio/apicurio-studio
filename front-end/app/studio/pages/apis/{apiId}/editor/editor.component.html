@@ -189,7 +189,7 @@
         <main-form [document]="document()" (onCommand)="onCommand($event)" class="editor-detail-form"
                    *ngIf="selectedType === 'main'"></main-form>
         <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" class="editor-detail-form"
-                   (onOperationSelected)="selectOperation(selectedItem, $event)" (onDeselect)="deselectPath()"
+                   (onOperationSelected)="selectOperation(selectedPath(), $event)" (onDeselect)="deselectPath()"
                    *ngIf="selectedType === 'path'"></path-form>
         <operation-form [operation]="selectedOperation()" (onCommand)="onCommand($event)" class="editor-detail-form"
                         (onDeselect)="deselectOperation()" *ngIf="selectedType === 'operation'"></operation-form>

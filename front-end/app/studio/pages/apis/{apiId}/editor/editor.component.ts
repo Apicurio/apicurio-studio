@@ -147,6 +147,40 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Validates the current selected item.  If it does not exist, we'll force-select
+     * 'main' instead.
+     */
+    protected validateSelection(): void {
+        if (this.selectedType === "path") {
+            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(this.selectedItem))) {
+                this.selectMain();
+            } else {
+            }
+        } else if (this.selectedType === "operation") {
+            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(this.selectedItem))) {
+                this.selectMain();
+            } else {
+                let pathItem: Oas20PathItem = this.document().paths.pathItem(this.selectedItem);
+                if (!pathItem[this.subselectedItem]) {
+                    this.selectPath(pathItem);
+                }
+            }
+        } else if (this.selectedType === "definition") {
+            if (!(this.selectedItem && this.document().definitions && this.document().definitions.definition(this.selectedItem))) {
+                this.selectMain();
+            }
+        } else if (this.selectedType === "response") {
+            if (!(this.selectedItem && this.document().responses && this.document().responses.response(this.selectedItem))) {
+                this.selectMain();
+            }
+        } else if (this.selectedType === "problem") {
+            if (!(this.validationErrors && this.validationErrors.indexOf(this.selectedItem) !== -1)) {
+                this.selectMain();
+            }
+        }
+    }
+
+    /**
      * Called when the user selects the main/default element from the master area.
      */
     public selectMain(): void {
@@ -252,12 +286,14 @@ export class ApiEditorComponent {
             if (this._commands.isEmpty()) {
                 this.onDirty.emit(false);
             }
+            this.validateSelection();
             this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
             this._commands.redoLastCommand(this.document());
             this.onDirty.emit(true);
+            this.validateSelection();
             this.validateModel();
         }
         if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {

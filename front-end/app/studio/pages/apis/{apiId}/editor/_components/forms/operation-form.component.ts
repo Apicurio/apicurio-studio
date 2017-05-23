@@ -281,13 +281,11 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changeRequestBodyTypeOf(newOf: string): void {
-        console.info("newOf: " + newOf);
         let bodyParam: Oas20Parameter = this.bodyParam();
         let newType: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
         newType.of = new SimplifiedType();
         newType.of.type = newOf;
         newType.as = null;
-        console.info(newType);
         let command: ICommand = new ChangeParameterTypeCommand(bodyParam, newType);
         this.onCommand.emit(command);
     }

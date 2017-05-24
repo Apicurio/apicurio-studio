@@ -30,7 +30,7 @@ import {CommandsManager, ICommand} from "./_services/commands.manager";
 import {NewPathCommand} from "./_commands/new-path.command";
 import {NewDefinitionCommand} from "./_commands/new-definition.command";
 import {AddPathDialogComponent} from "./_components/dialogs/add-path.component";
-import {DeleteDefinitionSchemaCommand, DeletePathCommand} from "./_commands/delete.command";
+import {DeleteDefinitionSchemaCommand, DeleteNodeCommand, DeletePathCommand} from "./_commands/delete.command";
 import {AllNodeVisitor, ModelUtils} from "./_util/model.util";
 import {ObjectUtils} from "./_util/object.util";
 
@@ -54,9 +54,8 @@ export class ApiEditorComponent {
     theme: string = "light";
     selectedItem: any = null;
     selectedType: string = "main";
-    subselectedItem: string = null;
 
-    contextMenuItem: string = null;
+    contextMenuItem: any = null;
     contextMenuType: string = null;
     contextMenuPos: any = {
         left: "0px",
@@ -152,25 +151,30 @@ export class ApiEditorComponent {
      */
     protected validateSelection(): void {
         if (this.selectedType === "path") {
-            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(this.selectedItem))) {
+            let pathItem: Oas20PathItem = this.selectedItem as Oas20PathItem;
+            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(pathItem.path()))) {
                 this.selectMain();
             } else {
             }
         } else if (this.selectedType === "operation") {
-            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(this.selectedItem))) {
+            let operation: Oas20Operation = this.selectedItem as Oas20Operation;
+            let pathItem: Oas20PathItem = operation.parent() as Oas20PathItem;
+            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(pathItem.path()))) {
                 this.selectMain();
             } else {
                 let pathItem: Oas20PathItem = this.document().paths.pathItem(this.selectedItem);
-                if (!pathItem[this.subselectedItem]) {
+                if (!pathItem[operation.method()]) {
                     this.selectPath(pathItem);
                 }
             }
         } else if (this.selectedType === "definition") {
-            if (!(this.selectedItem && this.document().definitions && this.document().definitions.definition(this.selectedItem))) {
+            let definition: Oas20DefinitionSchema = this.selectedItem as Oas20DefinitionSchema;
+            if (!(this.selectedItem && this.document().definitions && this.document().definitions.definition(definition.definitionName()))) {
                 this.selectMain();
             }
         } else if (this.selectedType === "response") {
-            if (!(this.selectedItem && this.document().responses && this.document().responses.response(this.selectedItem))) {
+            let response: Oas20ResponseDefinition = this.selectedItem as Oas20ResponseDefinition;
+            if (!(this.selectedItem && this.document().responses && this.document().responses.response(response.name()))) {
                 this.selectMain();
             }
         } else if (this.selectedType === "problem") {
@@ -193,7 +197,7 @@ export class ApiEditorComponent {
      * @param name
      */
     public selectPath(path: Oas20PathItem): void {
-        this.selectedItem = path.path();
+        this.selectedItem = path;
         this.selectedType = "path";
     }
 
@@ -206,18 +210,15 @@ export class ApiEditorComponent {
 
     /**
      * Called when the user clicks an operation.
-     * @param pathName
-     * @param opName
+     * @param operation
      */
-    public selectOperation(path: Oas20PathItem, opName: string): void {
-        console.info("Selected operation: %s :: %s", path.path(), opName);
+    public selectOperation(operation: Oas20Operation): void {
         // Possible de-select the operation if it's clicked on but already selected.
-        if (this.selectedType === "operation" && this.selectedItem === path.path() && this.subselectedItem === opName) {
-            this.selectPath(path);
+        if (this.selectedType === "operation" && this.selectedItem === operation) {
+            this.selectPath(operation.parent() as Oas20PathItem);
         } else {
             this.selectedType = "operation";
-            this.selectedItem = path.path();
-            this.subselectedItem = opName;
+            this.selectedItem = operation;
         }
     }
 
@@ -229,7 +230,7 @@ export class ApiEditorComponent {
             return;
         }
         this.selectedType = "path";
-        this.subselectedItem = null;
+        this.selectedItem = this.selectedItem.parent();
     }
 
     /**
@@ -237,7 +238,7 @@ export class ApiEditorComponent {
      * @param def
      */
     public selectDefinition(def: Oas20DefinitionSchema): void {
-        this.selectedItem = def.definitionName();
+        this.selectedItem = def;
         this.selectedType = "definition";
     }
 
@@ -260,10 +261,10 @@ export class ApiEditorComponent {
 
     /**
      * Called when the user selects a response from the master area.
-     * @param name
+     * @param response
      */
-    public selectResponse(name: string): void {
-        this.selectedItem = name;
+    public selectResponse(response: Oas20ResponseDefinition): void {
+        this.selectedItem = response;
         this.selectedType = "response";
     }
 
@@ -319,7 +320,7 @@ export class ApiEditorComponent {
      */
     public getCurrentPathSelection(): string {
         if (this.selectedType === "path" || this.selectedType === "operation") {
-            return this.selectedItem;
+            return (this.selectedItem as Oas20PathItem).path();
         }
         return "/";
     }
@@ -339,7 +340,7 @@ export class ApiEditorComponent {
      */
     public selectedPath(): Oas20PathItem {
         if (this.selectedType === "path") {
-            return this.document().paths.pathItem(this.selectedItem);
+            return this.selectedItem as Oas20PathItem;
         } else {
             return null;
         }
@@ -350,7 +351,7 @@ export class ApiEditorComponent {
      */
     public selectedOperation(): Oas20Operation {
         if (this.selectedType === "operation") {
-            return this.document().paths.pathItem(this.selectedItem)[this.subselectedItem];
+            return this.selectedItem as Oas20Operation;
         } else {
             return null;
         }
@@ -362,7 +363,7 @@ export class ApiEditorComponent {
      */
     public selectedDefinition(): Oas20DefinitionSchema {
         if (this.selectedType === "definition") {
-            return this.document().definitions.definition(this.selectedItem);
+            return this.selectedItem as Oas20DefinitionSchema;
         } else {
             return null;
         }
@@ -374,7 +375,7 @@ export class ApiEditorComponent {
      */
     public selectedProblem(): OasValidationError {
         if (this.selectedType === "problem") {
-            return <OasValidationError>this.selectedItem;
+            return this.selectedItem as OasValidationError;
         } else {
             return null;
         }
@@ -401,7 +402,6 @@ export class ApiEditorComponent {
         OasVisitorUtil.visitTree(node, selectionVisitor, OasTraverserDirection.up);
         this.selectedItem = selectionVisitor.selectedItem;
         this.selectedType = selectionVisitor.selectedType;
-        this.subselectedItem = selectionVisitor.subselectedItem;
     }
 
     /**
@@ -416,6 +416,26 @@ export class ApiEditorComponent {
         }
         return false;
     }
+
+    /**
+     * Returns true if the given path is the currently selected item *or* is the parent
+     * of the currently selected item.
+     * @param pathItem
+     */
+    public isPathSelected(pathItem: Oas20PathItem): boolean {
+        return this.selectedItem && (this.selectedItem === pathItem || this.selectedItem.parent() === pathItem);
+    }
+
+    /**
+     * Returns true if the given path is the current context menu item *or* is the parent
+     * of the current context menu item.
+     * @param pathItem
+     * @return {any|boolean}
+     */
+    public isPathContexted(pathItem: Oas20PathItem): boolean {
+        return this.contextMenuItem && (this.contextMenuItem === pathItem || this.contextMenuItem.parent() === pathItem);
+    }
+
 
     /**
      * Returns true if the given path item has at least one operation.
@@ -514,15 +534,30 @@ export class ApiEditorComponent {
     /**
      * Called when the user right-clicks on a path.
      * @param event
-     * @param pathName
+     * @param pathItem
      */
-    public showPathContextMenu(event: MouseEvent, pathName: string): void {
+    public showPathContextMenu(event: MouseEvent, pathItem: Oas20PathItem): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
         this.contextMenuType = "path";
-        this.contextMenuItem = pathName;
+        this.contextMenuItem = pathItem;
+    }
+
+    /**
+     * Called when the user right-clicks on an operation.
+     * @param event
+     * @param pathName
+     */
+    public showOperationContextMenu(event: MouseEvent, operation: Oas20Operation): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuType = "operation";
+        this.contextMenuItem = operation;
+        this.document().paths
     }
 
     @HostListener("document:click", ["$event"])
@@ -542,7 +577,7 @@ export class ApiEditorComponent {
      * Called when the user clicks "New Path" in the context-menu for a path.
      */
     public newPath(): void {
-        this.addPathDialog.open(this.contextMenuItem);
+        this.addPathDialog.open((this.contextMenuItem as Oas20PathItem).path());
         this.closeContextMenu();
     }
 
@@ -550,10 +585,23 @@ export class ApiEditorComponent {
      * Called when the user clicks "Delete Path" in the context-menu for a path.
      */
     public deletePath(): void {
-        let command: ICommand = new DeletePathCommand(this.contextMenuItem);
+        let command: ICommand = new DeletePathCommand((this.contextMenuItem as Oas20PathItem).path());
         this.onCommand(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
+        }
+        this.closeContextMenu();
+    }
+
+    /**
+     * Called when the user clicks "Delete Operation" in the context-menu for a operation.
+     */
+    public deleteOperation(): void {
+        let operation: Oas20Operation = this.contextMenuItem as Oas20Operation;
+        let command: ICommand = new DeleteNodeCommand(operation.method(), operation.parent());
+        this.onCommand(command);
+        if (this.contextMenuItem === this.selectedItem) {
+            this.selectPath((this.selectedItem as Oas20Operation).parent() as Oas20PathItem);
         }
         this.closeContextMenu();
     }
@@ -569,14 +617,14 @@ export class ApiEditorComponent {
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
         this.contextMenuType = "definition";
-        this.contextMenuItem = definition.definitionName();
+        this.contextMenuItem = definition;
     }
 
     /**
      * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
      */
     public deleteDefinition(): void {
-        let command: ICommand = new DeleteDefinitionSchemaCommand(this.contextMenuItem);
+        let command: ICommand = new DeleteDefinitionSchemaCommand((this.contextMenuItem as Oas20DefinitionSchema).definitionName());
         this.onCommand(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -641,28 +689,27 @@ class ResetProblemsVisitor extends AllNodeVisitor {
 class SelectedItemVisitor extends Oas20NodeVisitorAdapter {
     public selectedItem: any = null;
     public selectedType: string = null;
-    public subselectedItem: string = null;
 
     visitPathItem(node: Oas20PathItem): void {
-        this.selectedItem = node.path();
         if (this.selectedType === null) {
+            this.selectedItem = node;
             this.selectedType = "path";
         }
     }
 
     visitOperation(node: Oas20Operation): void {
         this.selectedType = "operation";
-        this.subselectedItem = node.method();
+        this.selectedItem = node;
     }
 
     visitResponseDefinition(node: Oas20ResponseDefinition): void {
         this.selectedType = "response";
-        this.selectedItem = node.name();
+        this.selectedItem = node;
     }
 
     visitDefinitionSchema(node: Oas20DefinitionSchema): void {
         this.selectedType = "definition";
-        this.selectedItem = node.definitionName();
+        this.selectedItem = node;
     }
 
 }

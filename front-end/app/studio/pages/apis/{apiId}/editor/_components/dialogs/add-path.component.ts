@@ -43,6 +43,9 @@ export class AddPathDialogComponent {
         if (!path) {
             this.path = "";
         }
+        if (!this.path.endsWith("/")) {
+            this.path = this.path + "/";
+        }
         this._isOpen = true;
         this.addPathModal.changes.subscribe( thing => {
             if (this.addPathModal.first) {

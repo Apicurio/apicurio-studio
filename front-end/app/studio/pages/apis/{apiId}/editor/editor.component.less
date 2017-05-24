@@ -25,7 +25,7 @@
   font-weight: 400;
 }
 
-.api-editor span.path-segment::before {
+.api-editor span.path-segment:before {
   content: "/";
 }
 
@@ -188,6 +188,15 @@
   overflow-y: auto;
 }
 
+.api-editor .problem-marker:before {
+  content: "⚠";
+  text-rendering: auto;
+  color: #c00;
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  font-size: 13px;
+}
 
 //  Sections
 .api-editor .section {
@@ -205,9 +214,9 @@
   text-decoration: none;
 }
 
-.api-editor .section .section-header a.collapsed::before {
+.api-editor .section .section-header a.collapsed:before {
 }
-.api-editor .section .section-header a::before {
+.api-editor .section .section-header a:before {
   display: inline-block;
   font-size: 13px;
   margin-left: 5px;
@@ -264,12 +273,7 @@
 .api-editor .editor-master .editor-outline .api-path.selected .label.selected {
 }
 
-.api-editor .editor-master .editor-outline .api-path.problem::before {
-  content: "\f071";
-  font: normal normal normal 14px/1 FontAwesome;
-  text-rendering: auto;
-  color: #c00;
-  position: absolute;
+.api-editor .editor-master .editor-outline .api-path.problem-marker:before {
   top: 2px;
   left: 1px;
   font-size: 12px;
@@ -283,15 +287,11 @@
 .api-editor .editor-master .editor-outline .api-path .api-operations .label {
   position: relative;
 }
-.api-editor .editor-master .editor-outline .api-path .api-operations .label.problem::before {
-  content: "\f071";
-  font: normal normal normal 14px/1 FontAwesome;
-  text-rendering: auto;
+.api-editor .editor-master .editor-outline .api-path .api-operations .label.problem-marker:before {
   color: yellow;
-  position: absolute;
   top: -4px;
   left: -2px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .api-editor .editor-master .editor-outline .api-path.contexted {
@@ -312,15 +312,9 @@
 }
 .api-editor .editor-master .editor-outline .api-definition.contexted {
 }
-.api-editor .editor-master .editor-outline .api-definition.problem::before {
-  content: "\f071";
-  font: normal normal normal 14px/1 FontAwesome;
-  text-rendering: auto;
-  color: #c00;
-  position: absolute;
+.api-editor .editor-master .editor-outline .api-definition.problem:before {
   top: 4px;
   left: 1px;
-  font-size: 12px;
 }
 
 .api-editor .editor-master .editor-outline .api-response {

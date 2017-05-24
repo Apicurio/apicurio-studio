@@ -85,31 +85,31 @@
                 </div>
                 <div class="section-body collapse in" id="path-section-body">
                     <div class="api-path" *ngFor="let path of paths()"
-                            [class.problem]="hasValidationProblem(path)"
+                            [class.problem-marker]="hasValidationProblem(path)"
                             [class.contexted]="contextMenuType === 'path' && contextMenuItem === path.path()"
                             [class.selected]="selectedItem === path.path() && (selectedType === 'path' || selectedType === 'operation')">
                         <div path-item [path]="path.path()" (click)="selectPath(path)" (contextmenu)="showPathContextMenu($event, path.path())"></div>
                         <div class="api-operations" *ngIf="selectedItem === path.path() && (selectedType === 'path' || selectedType === 'operation') && hasAtLeastOneOperation(path)">
                             <span *ngIf="hasOperation(path, 'get')" class="label label-success"  (click)="selectOperation(path, 'get')"
-                                  [class.problem]="hasValidationProblem(path.get)"
+                                  [class.problem-marker]="hasValidationProblem(path.get)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'get'">GET</span>
                             <span *ngIf="hasOperation(path, 'put')" class="label label-info" (click)="selectOperation(path, 'put')"
-                                  [class.problem]="hasValidationProblem(path.put)"
+                                  [class.problem-marker]="hasValidationProblem(path.put)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'put'">PUT</span>
                             <span *ngIf="hasOperation(path, 'post')" class="label label-warning" (click)="selectOperation(path, 'post')"
-                                  [class.problem]="hasValidationProblem(path.post)"
+                                  [class.problem-marker]="hasValidationProblem(path.post)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'post'">POST</span>
                             <span *ngIf="hasOperation(path, 'delete')" class="label label-danger" (click)="selectOperation(path, 'delete')"
-                                  [class.problem]="hasValidationProblem(path.delete)"
+                                  [class.problem-marker]="hasValidationProblem(path.delete)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'delete'">DELETE</span>
                             <span *ngIf="hasOperation(path, 'options')" class="label label-info" (click)="selectOperation(path, 'options')"
-                                  [class.problem]="hasValidationProblem(path.options)"
+                                  [class.problem-marker]="hasValidationProblem(path.options)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'options'">OPTIONS</span>
                             <span *ngIf="hasOperation(path, 'head')" class="label label-info" (click)="selectOperation(path, 'head')"
-                                  [class.problem]="hasValidationProblem(path.head)"
+                                  [class.problem-marker]="hasValidationProblem(path.head)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'head'">HEAD</span>
                             <span *ngIf="hasOperation(path, 'patch')" class="label label-info" (click)="selectOperation(path, 'patch')"
-                                  [class.problem]="hasValidationProblem(path.patch)"
+                                  [class.problem-marker]="hasValidationProblem(path.patch)"
                                   [class.selected]="selectedType === 'operation' && subselectedItem === 'patch'">PATCH</span>
                             <span>&nbsp;</span>
                         </div>
@@ -145,7 +145,7 @@
                 <div class="section-body collapse in" id="definition-section-body">
                     <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="def.definitionName()"
                          (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"
-                         [class.problem]="hasValidationProblem(def)"
+                         [class.problem-marker]="hasValidationProblem(def)"
                          [class.contexted]="contextMenuType === 'definition' && contextMenuItem === def.definitionName()"
                          [class.selected]="selectedItem === def.definitionName() && selectedType === 'definition'"></div>
                     <div class="alert alert-info" *ngIf="definitions().length === 0">

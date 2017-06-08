@@ -1,0 +1,7 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Apicurio Studio API",
+        "description": "The REST API used by the Apicurio Studio UI to add and update the API Designs for a given user."
+    }
+}

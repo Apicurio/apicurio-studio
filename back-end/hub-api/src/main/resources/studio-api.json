@@ -2,6 +2,16 @@
     "swagger": "2.0",
     "info": {
         "title": "Apicurio Studio API",
-        "description": "The REST API used by the Apicurio Studio UI to add and update the API Designs for a given user."
+        "description": "The REST API used by the Apicurio Studio UI to add and update the API Designs for a given user.",
+        "contact": {
+            "name": "Apicurio",
+            "url": "http://www.apicur.io/",
+            "email": "apicurio@lists.jboss.org"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        "version": "1.0.0"
     }
 }

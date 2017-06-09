@@ -423,7 +423,7 @@ export class ApiEditorComponent {
      * @param pathItem
      */
     public isPathSelected(pathItem: Oas20PathItem): boolean {
-        return this.selectedItem && (this.selectedItem === pathItem || this.selectedItem.parent() === pathItem);
+        return this.selectedItem && (this.selectedItem === pathItem || (this.selectedItem.parent && this.selectedItem.parent() === pathItem));
     }
 
     /**
@@ -433,7 +433,7 @@ export class ApiEditorComponent {
      * @return {any|boolean}
      */
     public isPathContexted(pathItem: Oas20PathItem): boolean {
-        return this.contextMenuItem && (this.contextMenuItem === pathItem || this.contextMenuItem.parent() === pathItem);
+        return this.contextMenuItem && (this.contextMenuItem === pathItem || (this.contextMenuItem.parent && this.contextMenuItem.parent() === pathItem));
     }
 
 

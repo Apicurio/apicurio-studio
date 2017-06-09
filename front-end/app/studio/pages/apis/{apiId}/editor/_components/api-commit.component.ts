@@ -31,22 +31,13 @@ export class ApiCommitComponent {
     @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
 
     protected isOpen: boolean = false;
-    protected model: any = {
-        summary: null,
-        description: null
-    };
 
     public toggled(value: boolean): void {
         this.isOpen = value;
-        this.model.summary = null;
-        this.model.description = null;
     }
 
-    public commit(): void {
-        this.onSave.emit({
-            summary:  this.model.summary,
-            description: this.model.description
-        });
+    public save(data: any): void {
+        this.onSave.emit(data);
         this.isOpen = false;
     }
 

@@ -7,36 +7,6 @@
         <span class="caret"></span>
     </button>
     <div class="dropdown-menu" role="menu" aria-labelledby="commitMessageMenu" dropdownMenu>
-        <form id="api-editor-save-form" class="form-horizontal" (submit)="commit()" #saveForm="ngForm">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h3><span class="fa fa-fw fa-warning"></span><span>Commit changes to GitHub</span></h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <input #saveSummaryInput name="summary" type="text" id="save-summary" class="form-control" placeholder="Commit Summary"
-                               required [(ngModel)]="model.summary">
-                    </div>
-                </div>
-                <div class="row with-padding">
-                    <div class="col-sm-12">
-                        <textarea name="description" id="save-description" class="form-control" autosize
-                                  placeholder="Extended description (optional)" [(ngModel)]="model.description"></textarea>
-                    </div>
-                </div>
-                <div class="row with-padding">
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary" [disabled]="!saveForm.form.valid">
-                            <span class="fa fa-fw fa-github"></span>
-                            <span>Commit</span>
-                        </button>
-                        <span>&nbsp;</span>
-                        <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+        <api-commit-form *ngIf="isOpen" (onCommit)="save($event)" (onCancel)="cancel()"></api-commit-form>
     </div>
 </div>

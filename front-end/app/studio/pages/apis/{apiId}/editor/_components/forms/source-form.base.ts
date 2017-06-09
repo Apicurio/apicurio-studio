@@ -21,8 +21,10 @@ import {ICommand} from "../../_services/commands.manager";
 
 import "brace/theme/eclipse";
 import "brace/mode/json";
+import "brace/mode/yaml";
 import {AceEditorDirective} from "ng2-ace-editor";
 import {ObjectUtils} from "../../_util/object.util";
+import * as YAML from "yamljs";
 
 /**
  * Base class for all forms that support a "Source" tab.
@@ -34,6 +36,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     private _mode: string = "design";
+    private _sourceFormat: string = "yaml";
     private _sourceNode: T;
     private _sourceJsObj: any = null;
     set sourceNode(node: T) {
@@ -60,12 +63,16 @@ export abstract class SourceFormComponent<T extends OasNode> {
     }
 
     public source(): string {
-        return JSON.stringify(this.sourceJs(), null, 4);
+        if (this._sourceFormat === "yaml") {
+            return YAML.stringify(this.sourceJs(), 100, 2);
+        } else {
+            return JSON.stringify(this.sourceJs(), null, 4);
+        }
     }
 
     public updateSource(newSource: any): void {
         try {
-            let newJsObject: any = JSON.parse(newSource);
+            let newJsObject: any = YAML.parse(newSource);
             let currentJsObj: any = this.sourceJs();
             this._source.dirty = !ObjectUtils.objectEquals(currentJsObj, newJsObject);
             this._source.value = SourceFormComponent.library.readNode(newJsObject, this.createEmptyNodeForSource());
@@ -107,9 +114,25 @@ export abstract class SourceFormComponent<T extends OasNode> {
         this._source.valid = true;
     }
 
+    public sourceFormat(): string {
+        return this._sourceFormat;
+    }
+
+    public toggleSourceFormat(): void {
+        if (this._sourceFormat === "yaml") {
+            this.setSourceFormat("json");
+        } else {
+            this.setSourceFormat("yaml");
+        }
+    }
+
+    public setSourceFormat(sourceFormat: string): void {
+        this._sourceFormat = sourceFormat;
+    }
+
     public formatSource(): void {
         let nsrc: any = SourceFormComponent.library.writeNode(this._source.value);
-        let nsrcStr: string = JSON.stringify(nsrc, null, 4);
+        let nsrcStr: string = YAML.stringify(nsrc);
         this.sourceEditor.setText(nsrcStr);
     }
 

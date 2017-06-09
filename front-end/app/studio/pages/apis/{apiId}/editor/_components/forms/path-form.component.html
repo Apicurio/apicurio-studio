@@ -33,7 +33,7 @@
     <ace-editor #sourceEditor
                 [text]="source()"
                 [theme]="'eclipse'"
-                [mode]="'json'"
+                [mode]="sourceFormat()"
                 [durationBeforeCallback]="350"
                 (textChanged)="updateSource($event)"
                 style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin-top: 1px"></ace-editor>

@@ -22,6 +22,8 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             // OAI library
             'oai-ts-core': 'npm:oai-ts-core/bundles/OAI.umd.js',
+            // YAMLjs library
+            'yamljs': 'npm:yamljs',
             // NG2 Bootstrap
             'ng2-bootstrap': 'node_modules/ng2-bootstrap',
             // NG2 ACE Editor
@@ -42,6 +44,10 @@
         packages: {
             studio: {
                 main: './main.js',
+                defaultExtension: 'js'
+            },
+            yamljs: {
+                main: 'dist/yaml.min.js',
                 defaultExtension: 'js'
             },
             rxjs: {

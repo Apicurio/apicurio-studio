@@ -13,5 +13,60 @@
             "url": "https://www.apache.org/licenses/LICENSE-2.0"
         },
         "version": "1.0.0"
+    },
+    "paths": {
+        "/designs": {
+            "get": {
+                "summary": "List All API Designs",
+                "description": "Returns a list of all API Designs for the authenticated user."
+            },
+            "put": {
+                "summary": "Add an API Design",
+                "description": "Adds an existing API Design to the studio."
+            },
+            "post": {
+                "summary": "Create an API Design",
+                "description": "Creates a new, empty API Design for the authenticated user."
+            }
+        },
+        "/designs/{designId}": {
+            "get": {},
+            "put": {},
+            "delete": {},
+            "parameters": [
+                {
+                    "name": "designId",
+                    "in": "path",
+                    "description": "The unique ID of an API Design.",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/designs/{designId}/content": {
+            "get": {},
+            "post": {},
+            "parameters": [
+                {
+                    "name": "designId",
+                    "in": "path",
+                    "description": "The unique ID of an API Design.",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }
+    },
+    "definitions": {
+        "ApiDesign": {
+            "properties": {
+                "id": {
+                    "description": "The unique ID of the API Design",
+                    "type": "string"
+                }
+            }
+        },
+        "NewApiDesign": {},
+        "AddApiDesign": {}
     }
 }

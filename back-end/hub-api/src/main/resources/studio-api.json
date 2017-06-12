@@ -87,13 +87,44 @@
         },
         "/designs/{designId}": {
             "get": {
-                "summary": "Get an API Design"
+                "summary": "Get an API Design",
+                "description": "Gets the meta-data for a single API design, referenced by its unique identifier.  Note that this does not include the *content* of the design - that must be fetched separately via the /content sub-resource.",
+                "responses": {
+                    "200": {
+                        "description": "The full meta-data for an API design.",
+                        "schema": {
+                            "$ref": "#/definitions/ApiDesign"
+                        }
+                    }
+                }
             },
             "put": {
-                "summary": "Update an API Design"
+                "summary": "Update an API Design",
+                "description": "Updates the meta-data for a single API design, referenced by its unique identifier.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Updated API design meta-data.",
+                        "schema": {
+                            "$ref": "#/definitions/ApiDesign"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Indicates that the update was successful."
+                    }
+                }
             },
             "delete": {
-                "summary": "Remove an API Design"
+                "summary": "Remove an API Design",
+                "description": "Removes an API design from the studio.  Note that this does not delete the content for the design (which typically resides in a source control repository like GitHub).",
+                "responses": {
+                    "204": {
+                        "description": "Indicates that the API design was removed successfully."
+                    }
+                }
             },
             "parameters": [
                 {

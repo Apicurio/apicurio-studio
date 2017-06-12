@@ -153,29 +153,22 @@ export class ApiEditorComponent {
     protected validateSelection(): void {
         if (this.selectedType === "path") {
             let pathItem: Oas20PathItem = this.selectedItem as Oas20PathItem;
-            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(pathItem.path()))) {
+            if (!this.isValidPathItem(pathItem)) {
                 this.selectMain();
-            } else {
             }
         } else if (this.selectedType === "operation") {
             let operation: Oas20Operation = this.selectedItem as Oas20Operation;
-            let pathItem: Oas20PathItem = operation.parent() as Oas20PathItem;
-            if (!(this.selectedItem && this.document().paths && this.document().paths.pathItem(pathItem.path()))) {
+            if (!this.isValidOperation(operation)) {
                 this.selectMain();
-            } else {
-                let pathItem: Oas20PathItem = this.document().paths.pathItem(this.selectedItem);
-                if (!pathItem[operation.method()]) {
-                    this.selectPath(pathItem);
-                }
             }
         } else if (this.selectedType === "definition") {
             let definition: Oas20DefinitionSchema = this.selectedItem as Oas20DefinitionSchema;
-            if (!(this.selectedItem && this.document().definitions && this.document().definitions.definition(definition.definitionName()))) {
+            if (!this.isValidDefinition(definition)) {
                 this.selectMain();
             }
         } else if (this.selectedType === "response") {
             let response: Oas20ResponseDefinition = this.selectedItem as Oas20ResponseDefinition;
-            if (!(this.selectedItem && this.document().responses && this.document().responses.response(response.name()))) {
+            if (!this.isValidResponse(response)) {
                 this.selectMain();
             }
         } else if (this.selectedType === "problem") {
@@ -183,6 +176,56 @@ export class ApiEditorComponent {
                 this.selectMain();
             }
         }
+    }
+
+    protected isValidPathItem(pathItem: Oas20PathItem): boolean {
+        if (ObjectUtils.isNullOrUndefined(pathItem)) {
+            return false;
+        }
+        if (ObjectUtils.isNullOrUndefined(this.document().paths)) {
+            return false;
+        }
+        let pi: any = this.document().paths.pathItem(pathItem.path());
+        return pi === pathItem;
+    }
+
+    protected isValidOperation(operation: Oas20Operation): boolean {
+        let pathItem: Oas20PathItem = operation.parent() as Oas20PathItem;
+
+        if (ObjectUtils.isNullOrUndefined(operation)) {
+            return false;
+        }
+
+        if (!this.isValidPathItem(pathItem)) {
+            return false;
+        }
+
+        let pi: any = this.document().paths.pathItem(pathItem.path());
+        let op: any = pi[operation.method()];
+
+        return op === operation;
+    }
+
+    protected isValidDefinition(definition: Oas20DefinitionSchema): boolean {
+        if (ObjectUtils.isNullOrUndefined(definition)) {
+            return false;
+        }
+        if (ObjectUtils.isNullOrUndefined(this.document().definitions)) {
+            return false;
+        }
+        let def: any = this.document().definitions.definition(definition.definitionName());
+        return def === definition;
+    }
+
+    protected isValidResponse(response: Oas20ResponseDefinition): boolean {
+        if (ObjectUtils.isNullOrUndefined(response)) {
+            return false;
+        }
+        if (ObjectUtils.isNullOrUndefined(this.document().responses)) {
+            return false;
+        }
+        let resp: any = this.document().responses.response(response.name());
+        return resp === response;
     }
 
     /**

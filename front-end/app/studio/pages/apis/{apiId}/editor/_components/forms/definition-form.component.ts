@@ -113,6 +113,10 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20Definition
         this.onDeselect.emit(true);
     }
 
+    public formType(): string {
+        return "definition";
+    }
+
     public enableSourceMode(): void {
         this.sourceNode = this.definition;
         super.enableSourceMode();

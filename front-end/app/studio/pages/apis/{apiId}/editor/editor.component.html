@@ -214,11 +214,13 @@
         <main-form [document]="document()" (onCommand)="onCommand($event)" class="editor-detail-form"
                    *ngIf="selectedType === 'main'"></main-form>
         <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" class="editor-detail-form"
-                   (onOperationSelected)="selectOperation(selectedPath(), $event)" (onDeselect)="deselectPath()"
+                   (onNodeSelected)="selectNode($event)" (onDeselect)="deselectPath()"
                    *ngIf="selectedType === 'path'"></path-form>
         <operation-form [operation]="selectedOperation()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                        (onNodeSelected)="selectNode($event)"
                         (onDeselect)="deselectOperation()" *ngIf="selectedType === 'operation'"></operation-form>
         <definition-form [definition]="selectedDefinition()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                         (onNodeSelected)="selectNode($event)"
                          (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
         <problem-form [problem]="selectedProblem()" (onCommand)="onCommand($event)" class="editor-detail-form"
                       (onGoToProblem)="goToProblem()"

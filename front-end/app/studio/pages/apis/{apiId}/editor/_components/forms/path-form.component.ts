@@ -26,7 +26,7 @@ import {
     DeleteAllParameters, DeleteNodeCommand, DeleteParameterCommand,
     DeletePathCommand
 } from "../../_commands/delete.command";
-import {SourceFormComponent} from "./source-form.base";
+import {NodeSelectionEvent, SourceFormComponent} from "./source-form.base";
 import {ReplacePathItemCommand} from "../../_commands/replace.command";
 import {ModelUtils} from "../../_util/model.util";
 import {
@@ -58,7 +58,6 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         return this._path;
     }
 
-    @Output() onOperationSelected: EventEmitter<string> = new EventEmitter<string>();
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
@@ -178,7 +177,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     }
 
     public selectOperation(operation: Oas20Operation): void {
-        this.onOperationSelected.emit(operation.method());
+        this.onNodeSelected.emit(new NodeSelectionEvent(operation, "operation"));
     }
 
     public createOperation(operationType: string): void {
@@ -283,6 +282,10 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     public deleteAllQueryParams(): void {
         let command: ICommand = new DeleteAllParameters(this.path, "query");
         this.onCommand.emit(command);
+    }
+
+    public formType(): string {
+        return "path";
     }
 
     public enableSourceMode(): void {

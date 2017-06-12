@@ -36,6 +36,11 @@
     <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
     <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
     <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="sourceFormat() === 'yaml'">As JSON</span>
+        <span *ngIf="sourceFormat() === 'json'">As YAML</span>
+    </button>
 </div>
 <div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
     <ace-editor #sourceEditor

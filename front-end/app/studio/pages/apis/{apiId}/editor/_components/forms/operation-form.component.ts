@@ -550,6 +550,10 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
+    public formType(): string {
+        return "operation";
+    }
+
     public enableSourceMode(): void {
         this.sourceNode = this.operation;
         super.enableSourceMode();

@@ -33,6 +33,7 @@ import {AddPathDialogComponent} from "./_components/dialogs/add-path.component";
 import {DeleteDefinitionSchemaCommand, DeleteNodeCommand, DeletePathCommand} from "./_commands/delete.command";
 import {AllNodeVisitor, ModelUtils} from "./_util/model.util";
 import {ObjectUtils} from "./_util/object.util";
+import {NodeSelectionEvent} from "./_components/forms/source-form.base";
 
 
 @Component({
@@ -217,8 +218,8 @@ export class ApiEditorComponent {
         if (this.selectedType === "operation" && this.selectedItem === operation) {
             this.selectPath(operation.parent() as Oas20PathItem);
         } else {
-            this.selectedType = "operation";
             this.selectedItem = operation;
+            this.selectedType = "operation";
         }
     }
 
@@ -229,8 +230,17 @@ export class ApiEditorComponent {
         if (this.selectedType !== "operation") {
             return;
         }
-        this.selectedType = "path";
         this.selectedItem = this.selectedItem.parent();
+        this.selectedType = "path";
+    }
+
+    /**
+     * Called when the user does something to cause the selection to change.
+     * @param event
+     */
+    public selectNode(event: NodeSelectionEvent): void {
+        this.selectedItem = event.node;
+        this.selectedType = event.type;
     }
 
     /**

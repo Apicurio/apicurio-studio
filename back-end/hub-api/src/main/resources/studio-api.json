@@ -221,6 +221,20 @@
                 "repositoryUrl": {
                     "description": "Source code repository containing the API design content.",
                     "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "createdOn": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "modifiedBy": {
+                    "type": "string"
+                },
+                "modifiedOn": {
+                    "format": "date-time",
+                    "type": "string"
                 }
             }
         },

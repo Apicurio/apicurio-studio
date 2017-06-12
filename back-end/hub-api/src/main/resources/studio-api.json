@@ -17,8 +17,28 @@
     "paths": {
         "/designs": {
             "get": {
-                "summary": "List All API Designs",
-                "description": "Returns a list of all API Designs for the authenticated user."
+                "summary": "List API Designs",
+                "description": "Returns a list of all API Designs for the authenticated user.",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit the results to the most recent N designs.",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of API Designs.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "#/definitions/ApiDesign"
+                            }
+                        }
+                    }
+                }
             },
             "put": {
                 "summary": "Add an API Design",
@@ -61,12 +81,43 @@
         "ApiDesign": {
             "properties": {
                 "id": {
-                    "description": "The unique ID of the API Design",
+                    "description": "The unique ID of the API design.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the API design.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Short description of the API design.",
+                    "type": "string"
+                },
+                "repositoryUrl": {
+                    "description": "Source code repository containing the API design content.",
                     "type": "string"
                 }
             }
         },
-        "NewApiDesign": {},
-        "AddApiDesign": {}
+        "NewApiDesign": {
+            "properties": {
+                "name": {
+                    "description": "Name of the new API design.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Description of the new API design.",
+                    "type": "string"
+                },
+                "repositoryUrl": {
+                    "description": "Full source code repository URL (where to store the API design).",
+                    "type": "string"
+                }
+            }
+        },
+        "AddApiDesign": {
+            "properties": {
+                "repositoryUrl": {}
+            }
+        }
     }
 }

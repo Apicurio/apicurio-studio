@@ -42,17 +42,59 @@
             },
             "put": {
                 "summary": "Add an API Design",
-                "description": "Adds an existing API Design to the studio."
+                "description": "Adds an existing API Design to the studio.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Information necessary to add a single API design to the studio.",
+                        "schema": {
+                            "$ref": "#/definitions/AddApiDesign"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Information about the newly added API design.",
+                        "schema": {
+                            "$ref": "#/definitions/ApiDesign"
+                        }
+                    }
+                }
             },
             "post": {
                 "summary": "Create an API Design",
-                "description": "Creates a new, empty API Design for the authenticated user."
+                "description": "Creates a new, empty API Design for the authenticated user.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Information about a brand new API design and where to store its content.",
+                        "schema": {
+                            "$ref": "#/definitions/NewApiDesign"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Details of the newly created API design.",
+                        "schema": {
+                            "$ref": "#/definitions/ApiDesign"
+                        }
+                    }
+                }
             }
         },
         "/designs/{designId}": {
-            "get": {},
-            "put": {},
-            "delete": {},
+            "get": {
+                "summary": "Get an API Design"
+            },
+            "put": {
+                "summary": "Update an API Design"
+            },
+            "delete": {
+                "summary": "Remove an API Design"
+            },
             "parameters": [
                 {
                     "name": "designId",
@@ -64,8 +106,61 @@
             ]
         },
         "/designs/{designId}/content": {
-            "get": {},
-            "post": {},
+            "get": {
+                "summary": "Get an API Design's Content",
+                "responses": {
+                    "200": {
+                        "description": "When the API design content is returned successfully.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Update an API Design's Content",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "The new API design content (in OpenAPI format).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Indicates that the update was successful."
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "designId",
+                    "in": "path",
+                    "description": "The unique ID of an API Design.",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/designs/{designId}/collaborators": {
+            "get": {
+                "summary": "Get all Collaborators",
+                "description": "Returns information about all of the users who have collaborated on the API Design.",
+                "responses": {
+                    "200": {
+                        "description": "A list of collaborators.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "#/definitions/Collaborator"
+                            }
+                        }
+                    }
+                }
+            },
             "parameters": [
                 {
                     "name": "designId",
@@ -117,6 +212,26 @@
         "AddApiDesign": {
             "properties": {
                 "repositoryUrl": {}
+            }
+        },
+        "Collaborator": {
+            "title": "Root Type",
+            "description": "The root of the Collaborator type's schema.",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "Name of the collaborator.",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "URL to find more information about the collaborator.",
+                    "type": "string"
+                },
+                "commits": {
+                    "format": "int32",
+                    "description": "Number of commits by this collaborator.",
+                    "type": "integer"
+                }
             }
         }
     }

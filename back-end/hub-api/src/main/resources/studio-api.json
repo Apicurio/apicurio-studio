@@ -201,6 +201,20 @@
                     "type": "string"
                 }
             ]
+        },
+        "/system/status": {
+            "get": {
+                "summary": "Get the System Status",
+                "description": "Returns information about the current status of the API/system.",
+                "responses": {
+                    "200": {
+                        "description": "When the system status is successfully returned.",
+                        "schema": {
+                            "$ref": "#/definitions/SystemStatus"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -276,6 +290,29 @@
                     "format": "int32",
                     "description": "Number of commits by this collaborator.",
                     "type": "integer"
+                }
+            }
+        },
+        "SystemStatus": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "moreInfo": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                },
+                "builtOn": {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "up": {
+                    "type": "boolean"
                 }
             }
         }

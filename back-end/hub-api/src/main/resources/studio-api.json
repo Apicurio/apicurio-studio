@@ -270,7 +270,9 @@
         },
         "AddApiDesign": {
             "properties": {
-                "repositoryUrl": {}
+                "repositoryUrl": {
+                    "type": "string"
+                }
             }
         },
         "Collaborator": {

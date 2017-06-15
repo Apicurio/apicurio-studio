@@ -358,10 +358,12 @@ export class MainFormComponent {
         scheme.flow = event.flow;
         scheme.authorizationUrl = event.authorizationUrl;
         scheme.tokenUrl = event.tokenUrl;
-        if (event.scopes) {
+        if (scheme.type === "oauth2") {
             scheme.scopes = scheme.createScopes();
-            for (let s of event.scopes) {
-                scheme.scopes.addScope(s.name, s.description);
+            if (event.scopes) {
+                for (let s of event.scopes) {
+                    scheme.scopes.addScope(s.name, s.description);
+                }
             }
         }
 

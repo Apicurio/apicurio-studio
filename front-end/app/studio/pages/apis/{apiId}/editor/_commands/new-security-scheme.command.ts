@@ -56,8 +56,8 @@ export class NewSecuritySchemeCommand extends AbstractCommand implements IComman
             scheme.authorizationUrl = this._scheme.authorizationUrl;
             scheme.flow = this._scheme.flow;
             scheme.in = this._scheme.in;
-            scheme.scopes = scheme.createScopes();
             if (this._scheme.scopes) {
+                scheme.scopes = scheme.createScopes();
                 this._scheme.scopes.scopes().forEach( name => {
                     scheme.scopes.addScope(name, this._scheme.scopes.getScopeDescription(name));
                 });

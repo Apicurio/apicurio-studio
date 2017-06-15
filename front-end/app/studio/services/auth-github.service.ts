@@ -167,6 +167,39 @@ export class GithubAuthenticationService extends AbstractGithubService implement
     }
 
     /**
+     * Secret login using only the GitHub PAT (manually created).
+     * @param pat
+     */
+    public loginPAT(pat: string): Promise<User> {
+        console.info("[GithubAuthenticationService] logging in using manual PAT.");
+
+        let tokenAuthHeader: string = "token " + pat;
+        return this.fetchAuthenticatedUser(tokenAuthHeader).then(user => {
+            console.info("[GithubAuthenticationService] call to /user succeeded with user: %o", user);
+            this._authenticated.next(true);
+            this._authenticatedUser.next(user);
+
+            // A fake PAT using the info we have.
+            this.personalAccessToken = {
+                id: -1,
+                url: null,
+                token: pat
+            };
+            localStorage.setItem(PAT_LOCAL_STORAGE_KEY, JSON.stringify(pat));
+
+            localStorage.setItem(USER_LOCAL_STORAGE_KEY, JSON.stringify(user));
+            return user;
+        }).catch(reason => {
+            let errorMessage: string = reason.statusText;
+            console.info("[GithubAuthenticationService] call to /user failed with: %o", reason);
+            if (reason.status === 401) {
+                errorMessage = reason.json().message;
+            }
+            return Promise.reject<User>(errorMessage)
+        });
+    }
+
+        /**
      * Called to log the user out.  In this case, we simply remove the credentials from the session
      * storage object and also reset the authenticated flag and the authenticatedUser.
      */

@@ -37,12 +37,14 @@ export class LoginPageComponent implements OnInit {
     private username: string;
     private password: string;
     private twoFactorToken: string;
+    private pat: string;
     private rememberUser: boolean;
     private loginError: string;
     private twoFactorEnabled: boolean = false;
     private errorIsTwoFactor: boolean = false;
 
     private authenticating: boolean = false;
+    private patMode: boolean = false;
 
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, private router: Router) {}
 
@@ -52,6 +54,41 @@ export class LoginPageComponent implements OnInit {
         if (this.rememberUser) {
             this.username = localStorage.getItem(SAVED_USERNAME_KEY);
         }
+    }
+
+    public enablePAT(): void {
+        this.patMode = true;
+    }
+
+    /**
+     * Called when the user logs in with a manually created GitHub personal access token.
+     */
+    public loginPAT(): void {
+        this.authenticating = true;
+        this.authService["loginPAT"](this.pat).then( user => {
+            console.info("[LoginPageComponent] User successfully logged in: %o", user);
+            this.authenticating = false;
+
+            let path:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.path");
+            let query:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.query");
+            let queryParams:any = {};
+
+            if (query) {
+                let qitems: string[][] = query.split("&").map(item => item.split("=").map(b => decodeURIComponent(b)));
+                for (let pair of qitems) {
+                    queryParams[pair[0]] = pair[1];
+                }
+            }
+
+            let rpath: string = this.asRoute(path);
+            console.info("[LoginPageComponent] Login successful, redirecting to: %s", rpath);
+
+            this.router.navigate([ this.asRoute(rpath) ], { "queryParams": queryParams });
+        }).catch( reason => {
+            this.authenticating = false;
+            this.loginError = reason;
+            console.info("[LoginPageComponent] Login failure reason: %s", reason);
+        });
     }
 
     /**

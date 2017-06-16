@@ -1,0 +1,26 @@
+language: java
+
+before_cache:
+  - "rm -rf $HOME/.m2/repository/io/apicurio"
+
+cache:
+  yarn: true
+  directories:
+    - "$TRAVIS_BUILD_DIR/front-end/app/node_modules" # NPM/Yarn
+    - "$HOME/.m2" # Maven
+
+before_install:
+  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+  - echo 'MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xmx512m"' > ~/.mavenrc
+
+jdk:
+  - oraclejdk8
+
+matrix:
+  include:
+    - env: ACTION='-Dtest=true'
+      jdk: oraclejdk8
+      
+install: travis_retry mvn clean install -Dinvoker.skip -Dmaven.javadoc.skip=true -Dmvn.skip.test=true -DskipTests=true -T1C -B | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ];
+
+script: if [[ -v COMMAND ]]; then $COMMAND; else travis_retry mvn test install -B -Dmaven.javadoc.skip=true $ACTION | egrep -v 'Download|\\[exec\\] [[:digit:]]+/[[:digit:]]+|^[[:space:]]*\\[exec\\][[:space:]]*$' ; [ ${PIPESTATUS[0]} == 0 ]; fi

@@ -16,14 +16,13 @@
 
 package io.apicurio.hub.api.rest.impl;
 
-import java.util.Date;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.apicurio.hub.api.Version;
 import io.apicurio.hub.api.beans.SystemStatusBean;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.storage.IStorage;
@@ -39,6 +38,8 @@ public class SystemResource implements ISystemResource {
     
     @Inject
     private IStorage storage;
+    @Inject
+    private Version version;
 
     /**
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()
@@ -49,12 +50,12 @@ public class SystemResource implements ISystemResource {
         
         SystemStatusBean status = new SystemStatusBean();
         try {
-            status.setBuiltOn(new Date());
+            status.setBuiltOn(version.getVersionDate());
             status.setDescription("The API to the Apicurio Studio Hub.");
             status.setMoreInfo("http://www.apicur.io/");
             status.setName("Apicurio Studio Hub API");
             status.setUp(storage != null && storage.listApiDesigns().size() >= 0);
-            status.setVersion("0.1.5-SNAPSHOT");
+            status.setVersion(version.getVersionString());
         } catch (StorageException e) {
             logger.error("Error getting System Status.", e);
         }

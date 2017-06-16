@@ -16,13 +16,37 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.api.Version;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 @ApplicationPath("/")
+@ApplicationScoped
 public class HubApplication extends Application {
+
+    private static Logger logger = LoggerFactory.getLogger(HubApplication.class);
+    
+    @Inject
+    private Version version;
+
+    @PostConstruct
+    public void postConstruct() {
+        logger.info("------------------------------------------------");
+        logger.info("Starting up Apicurio Hub API");
+        logger.info("\tVersion:  " + version.getVersionString());
+        logger.info("\tBuilt On: " + version.getVersionDate().toString());
+        logger.info("\tBuild:    " + version.getVersionInfo());
+        logger.info("------------------------------------------------");
+    }
 
 }

@@ -32,7 +32,7 @@ public class H2SqlStatements extends CommonSqlStatements {
      */
     @Override
     public String isDatabaseInitialized() {
-        return "SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs'";
+        return "SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_name = 'API_DESIGNS'";
     }
 
     /**

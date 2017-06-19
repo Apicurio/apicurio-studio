@@ -31,11 +31,15 @@ public class Configuration {
      * 2) System Properties
      * 
      * @param key
+     * @param defaultValue
      */
-    private String getEnvVarOrSysProp(String key) {
+    private String getEnvVarOrSysProp(String key, String defaultValue) {
         String rval = System.getenv(key);
         if (rval == null) {
             rval = System.getProperty(key);
+        }
+        if (rval == null) {
+            rval = defaultValue;
         }
         return rval;
     }
@@ -44,22 +48,14 @@ public class Configuration {
      * @return the configured JDBC type (default: h2)
      */
     public String getJdbcType() {
-        String prop = this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.type");
-        if (prop == null) {
-            prop = "h2";
-        }
-        return prop;
+        return this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.type", "h2");
     }
 
     /**
      * @return true if the database should be initialized programmatically (default: true)
      */
     public boolean isJdbcInit() {
-        String prop = this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.init");
-        if (prop == null) {
-            prop = "true";
-        }
-        return "true".equals(prop);
+        return "true".equals(this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.init", "true"));
     }
 
 }

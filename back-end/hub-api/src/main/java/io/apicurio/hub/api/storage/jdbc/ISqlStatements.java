@@ -34,5 +34,25 @@ public interface ISqlStatements {
      * A sequence of statements needed to initialize the database.
      */
     public List<String> databaseInitialization();
+
+    /**
+     * A statement used to insert a row into the api_designs table.
+     */
+    public String insertApiDesign();
+
+    /**
+     * A statement used to delete a row from the api_designs table.
+     */
+    public String deleteApiDesign();
+
+    /**
+     * A statement used to select all API designs.
+     */
+    public String selectApiDesigns();
+
+    /**
+     * A statement used to select a single API design by its unique id.
+     */
+    public String selectApiDesignById();
     
 }

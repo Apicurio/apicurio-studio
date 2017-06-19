@@ -22,4 +22,35 @@ package io.apicurio.hub.api.storage.jdbc;
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
 
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertApiDesign()
+     */
+    @Override
+    public String insertApiDesign() {
+        return "INSERT INTO api_designs (name, description, repository_url, created_by, created_on, modified_by, modified_on) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#deleteApiDesign()
+     */
+    @Override
+    public String deleteApiDesign() {
+        return "DELETE FROM api_designs d WHERE d.id = ?";
+    }
+
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectApiDesigns()
+     */
+    @Override
+    public String selectApiDesigns() {
+        return "SELECT * FROM api_designs d";
+    }
+
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectApiDesignById()
+     */
+    @Override
+    public String selectApiDesignById() {
+        return "SELECT * FROM api_designs d WHERE d.id = ?";
+    }
 }

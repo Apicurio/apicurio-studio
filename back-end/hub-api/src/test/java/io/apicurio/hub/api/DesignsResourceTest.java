@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.api;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -27,14 +29,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.apicurio.hub.api.beans.SystemStatusBean;
-import io.apicurio.hub.api.rest.ISystemResource;
+import io.apicurio.hub.api.beans.AddApiDesign;
+import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.exceptions.AlreadyExistsException;
+import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.rest.IDesignsResource;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 @RunWith(Arquillian.class)
-public class SystemResourceTest {
+public class DesignsResourceTest {
     
     @Deployment
     public static WebArchive deployment() {
@@ -44,13 +49,29 @@ public class SystemResourceTest {
         return war;
     }
 
-    @Inject ISystemResource system;
+    @Inject IDesignsResource resource;
     
     @Test
-    public void testStatus() {
-        SystemStatusBean status = system.getStatus();
-        Assert.assertNotNull(status);
-        Assert.assertEquals("Apicurio Studio Hub API", status.getName());
+    public void testListDesignsEmpty() throws ServerError {
+        Collection<ApiDesign> designs = resource.listDesigns();
+        Assert.assertNotNull(designs);
     }
+    
+    @Test
+    public void testAddDesign() throws ServerError, AlreadyExistsException {
+        AddApiDesign info = new AddApiDesign();
+        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.addDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getRepositoryUrl(), design.getRepositoryUrl());
+        Assert.assertNotNull(design.getId());
+        
+        resource.addDesign(info);
+    }    
+    
+    @Test
+    public void testCreateDesign() throws ServerError, AlreadyExistsException {
+        // TODO add test for Create Design
+    }    
 
 }

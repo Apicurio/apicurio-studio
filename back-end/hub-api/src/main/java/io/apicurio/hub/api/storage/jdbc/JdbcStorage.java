@@ -16,9 +16,8 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -73,6 +72,8 @@ public class JdbcStorage implements IStorage {
             if (!isDatabaseInitialized()) {
                 logger.debug("Database not initialized.");
                 initializeDatabase();
+            } else {
+                logger.debug("Database was already initialized, skipping.");
             }
         }
     }
@@ -112,17 +113,45 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public ApiDesign getApiDesign(String designId) throws NotFoundException, StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        logger.debug("Selecting a single API Design: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiDesignById();
+                return handle.createQuery(statement).bind(0, designId).mapToBean(ApiDesign.class).findOnly();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        }
     }
 
     /**
      * @see io.apicurio.hub.api.storage.IStorage#createApiDesign(io.apicurio.hub.api.beans.ApiDesign)
      */
     @Override
-    public void createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException {
-        // TODO Auto-generated method stub
-        
+    public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException {
+        logger.debug("Inserting an API Design: {}", design.getRepositoryUrl());
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertApiDesign();
+                return handle.createUpdate(statement)
+                      .bind(0, design.getName())
+                      .bind(1, design.getDescription())
+                      .bind(2, design.getRepositoryUrl())
+                      .bind(3, design.getCreatedBy())
+                      .bind(4, design.getCreatedOn())
+                      .bind(5, design.getModifiedBy())
+                      .bind(6, design.getModifiedOn())
+                      .executeAndReturnGeneratedKeys("id")
+                      .mapTo(String.class)
+                      .findOnly();
+            });
+        } catch (Exception e) {
+            if (e.getMessage().contains("Unique")) {
+                throw new AlreadyExistsException();
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -130,16 +159,29 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public void deleteApiDesign(String designId) throws NotFoundException, StorageException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Deleting an API Design: {}", designId);
+        this.jdbi.withHandle( handle -> {
+            String statement = sqlStatements.deleteApiDesign();
+            int rowCount = handle.createUpdate(statement)
+                  .bind(0, designId)
+                  .execute();
+            if (rowCount == 0) {
+                throw new NotFoundException();
+            }
+            return null;
+        });
     }
 
     /**
      * @see io.apicurio.hub.api.storage.IStorage#listApiDesigns()
      */
     @Override
-    public Set<ApiDesign> listApiDesigns() throws StorageException {
-        return Collections.EMPTY_SET;
+    public Collection<ApiDesign> listApiDesigns() throws StorageException {
+        logger.debug("Getting a list of all API designs.");
+        return this.jdbi.withHandle( handle -> {
+            String statement = sqlStatements.selectApiDesigns();
+            return handle.createQuery(statement).mapToBean(ApiDesign.class).list();
+        });
     }
 
 }

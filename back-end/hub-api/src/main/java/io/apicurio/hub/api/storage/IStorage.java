@@ -16,7 +16,7 @@
 
 package io.apicurio.hub.api.storage;
 
-import java.util.Set;
+import java.util.Collection;
 
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -27,12 +27,43 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
  */
 public interface IStorage {
 
+    /**
+     * TODO javadoc
+     * @param designId
+     * @return
+     * @throws NotFoundException
+     * @throws StorageException
+     */
     public ApiDesign getApiDesign(String designId) throws NotFoundException, StorageException;
 
-    public void createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException;
+    /**
+     * Creates a new API Design in the storage layer and returns a new unique Design ID.  This
+     * ID should be used in the future to retrieve information about the design (and to delete
+     * or update it).
+     * 
+     * If an API design already exists for the given source repository URL, this will throw
+     * an exception.
+     * 
+     * @param design
+     * @return the unique design id
+     * @throws AlreadyExistsException
+     * @throws StorageException
+     */
+    public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException;
 
+    /**
+     * TODO javadoc
+     * @param designId
+     * @throws NotFoundException
+     * @throws StorageException
+     */
     public void deleteApiDesign(String designId) throws NotFoundException, StorageException;
 
-    public Set<ApiDesign> listApiDesigns() throws StorageException;
+    /**
+     * TODO javadoc
+     * @return
+     * @throws StorageException
+     */
+    public Collection<ApiDesign> listApiDesigns() throws StorageException;
 
 }

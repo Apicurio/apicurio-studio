@@ -66,7 +66,12 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getRepositoryUrl(), design.getRepositoryUrl());
         Assert.assertNotNull(design.getId());
         
-        resource.addDesign(info);
+        try {
+            resource.addDesign(info);
+            Assert.fail("Expected an error: AlreadyExistsException");
+        } catch (AlreadyExistsException e) {
+            // OK, expected
+        }
     }    
     
     @Test

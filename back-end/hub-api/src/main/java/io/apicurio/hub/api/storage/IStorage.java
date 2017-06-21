@@ -28,9 +28,9 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
 public interface IStorage {
 
     /**
-     * TODO javadoc
+     * Gets a single API Design from the storage layer by its unique ID.
      * @param designId
-     * @return
+     * @return an API Design
      * @throws NotFoundException
      * @throws StorageException
      */
@@ -52,7 +52,8 @@ public interface IStorage {
     public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException;
 
     /**
-     * TODO javadoc
+     * Delets a single API Design by its unique ID.  Throws an exception if no design
+     * was found.
      * @param designId
      * @throws NotFoundException
      * @throws StorageException
@@ -60,8 +61,9 @@ public interface IStorage {
     public void deleteApiDesign(String designId) throws NotFoundException, StorageException;
 
     /**
-     * TODO javadoc
-     * @return
+     * Returns a collection of API Designs accessible by the currently authenticated
+     * user.
+     * @return a collection of API Designs
      * @throws StorageException
      */
     public Collection<ApiDesign> listApiDesigns() throws StorageException;

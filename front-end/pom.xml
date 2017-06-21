@@ -13,6 +13,7 @@
   <modules>
     <module>app</module>
     <module>war</module>
+    <module>wildfly</module>
     <module>quickstart</module>
   </modules>
 </project>

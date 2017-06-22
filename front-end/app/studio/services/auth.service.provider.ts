@@ -19,10 +19,21 @@ import {Http} from "@angular/http";
 
 import {IAuthenticationService} from "./auth.service";
 import {GithubAuthenticationService} from "./auth-github.service";
+import {ConfigService} from "./config.service";
+import {TokenAuthenticationService} from "./auth-token.service";
 
 
-function AuthenticationServiceFactory(http: Http): IAuthenticationService {
-    return new GithubAuthenticationService(http);
+function AuthenticationServiceFactory(http: Http, config: ConfigService): IAuthenticationService {
+    if (config.authType() === "local") {
+        console.info("[AuthenticationServiceFactory] Creating local github auth service.");
+        return new GithubAuthenticationService(http);
+    } else if (config.authType() === "token") {
+        console.info("[AuthenticationServiceFactory] Creating token auth service.");
+        return new TokenAuthenticationService(http, config);
+    } else {
+        console.info("[AuthenticationServiceFactory] Unsupported auth type: %s", config.authType());
+        return null;
+    }
 };
 
 
@@ -30,6 +41,5 @@ export let AuthenticationServiceProvider =
 {
     provide: IAuthenticationService,
     useFactory: AuthenticationServiceFactory,
-    deps: [Http]
+    deps: [Http, ConfigService]
 };
-

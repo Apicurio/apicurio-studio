@@ -30,9 +30,10 @@ import { AceEditorComponent } from "ng2-ace-editor";
 import {StudioComponent} from "./studio.component";
 import {StudioRouting} from "./studio.routing";
 
-/* Service Providers */
+/* Services */
 import {ApisServiceProvider} from "./services/apis.service.provider";
 import {AuthenticationServiceProvider} from "./services/auth.service.provider";
+import {ConfigService} from "./services/config.service";
 
 /* Resolves */
 import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
@@ -118,9 +119,8 @@ import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/ap
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent
     ],
-    providers: [ApisServiceProvider, AuthenticationServiceProvider,
-        RecentApisResolve, ApiResolve, ApiDefinitionResolve,
-        AuthenticationCanActivateGuard, ApiEditorPageGuard
+    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, RecentApisResolve, ApiResolve,
+        ApiDefinitionResolve, AuthenticationCanActivateGuard, ApiEditorPageGuard
     ],
     bootstrap: [StudioComponent]
 })

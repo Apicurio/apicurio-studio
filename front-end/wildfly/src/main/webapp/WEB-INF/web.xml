@@ -12,6 +12,15 @@
     <url-pattern>/apis/*</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>StudioConfigServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.wildfly.servlets.StudioConfigServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StudioConfigServlet</servlet-name>
+    <url-pattern>/config.js</url-pattern>
+  </servlet-mapping>
+  
   <filter>
   	<filter-name>ResourceCacheControlFilter</filter-name>
   	<filter-class>io.apicurio.studio.fe.wildfly.filters.ResourceCacheControlFilter</filter-class>

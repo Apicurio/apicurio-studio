@@ -12,6 +12,13 @@
 	<name>apicurio-studio-be-hub-api</name>
 
 	<dependencies>
+		<!-- Project Dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>apicurio-studio-shared-beans</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- Third Party Libraries -->
 		<dependency>
 			<groupId>org.jdbi</groupId>
@@ -22,8 +29,29 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mashape.unirest</groupId>
+			<artifactId>unirest-java</artifactId>
+		</dependency>
 
 		<!-- Provided Dependencies -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.servlet</groupId>
+			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_2.0_spec</artifactId>

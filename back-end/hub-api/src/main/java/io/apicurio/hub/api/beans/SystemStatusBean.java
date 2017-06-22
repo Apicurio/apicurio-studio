@@ -18,6 +18,8 @@ package io.apicurio.hub.api.beans;
 
 import java.util.Date;
 
+import io.apicurio.studio.shared.beans.User;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -29,6 +31,7 @@ public class SystemStatusBean {
     private String version;
     private Date builtOn;
     private boolean up;
+    private User user;
     
     /**
      * Constructor.
@@ -118,6 +121,20 @@ public class SystemStatusBean {
      */
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    /**
+     * @return the user
+     */
+    public User getUser() {
+        return user;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

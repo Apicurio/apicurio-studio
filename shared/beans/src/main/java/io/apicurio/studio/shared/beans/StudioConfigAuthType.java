@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
-
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.studio.shared.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
+public enum StudioConfigAuthType {
 
-    /**
-     * Returns the User information for the currently authenticated user.
-     */
-    public User getCurrentUser();
-
+    local, token
+    
 }

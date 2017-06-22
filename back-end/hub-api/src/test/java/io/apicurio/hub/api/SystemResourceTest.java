@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,13 +35,14 @@ import io.apicurio.hub.api.rest.ISystemResource;
  * @author eric.wittmann@gmail.com
  */
 @RunWith(Arquillian.class)
+@Ignore
 public class SystemResourceTest {
     
     @Deployment
     public static WebArchive deployment() {
         WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("pom.xml")
                 .importBuildOutput().as(WebArchive.class);
-        System.out.println(war.toString(true));
+//        System.out.println(war.toString(true));
         return war;
     }
 

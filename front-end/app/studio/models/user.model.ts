@@ -17,14 +17,14 @@
 
 
 export class User {
-    username: string;
+    login: string;
     id: number;
     name: string;
     email: string;
     avatar: string;
 
     constructor() {
-        this.username = "";
+        this.login = "";
         this.name = "";
         this.email = "";
     }

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.hub.api.Version;
 import io.apicurio.hub.api.beans.SystemStatusBean;
 import io.apicurio.hub.api.rest.ISystemResource;
+import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
 
@@ -40,6 +41,8 @@ public class SystemResource implements ISystemResource {
     private IStorage storage;
     @Inject
     private Version version;
+    @Inject
+    private ISecurityContext securityContext;
 
     /**
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()
@@ -56,6 +59,7 @@ public class SystemResource implements ISystemResource {
             status.setName("Apicurio Studio Hub API");
             status.setUp(storage != null && storage.listApiDesigns().size() >= 0);
             status.setVersion(version.getVersionString());
+            status.setUser(securityContext.getCurrentUser());
         } catch (StorageException e) {
             logger.error("Error getting System Status.", e);
         }

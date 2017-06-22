@@ -16,16 +16,43 @@
 
 package io.apicurio.hub.api.security;
 
+import javax.enterprise.context.RequestScoped;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+
 import io.apicurio.studio.shared.beans.User;
 
 /**
+ * A security context that uses github access tokens to authenticate the user.
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
-
+@RequestScoped
+public class GitHubSecurityContext implements ISecurityContext {
+    
+    @Context
+    private HttpServletRequest httpRequest;
+    
+    private User user;
+    
     /**
-     * Returns the User information for the currently authenticated user.
+     * Constructor.
      */
-    public User getCurrentUser();
+    public GitHubSecurityContext() {
+    }
+    
+    /**
+     * @param user
+     */
+    protected void setUser(User user) {
+        this.user = user;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.security.ISecurityContext#getCurrentUser()
+     */
+    @Override
+    public User getCurrentUser() {
+        return user;
+    }
 
 }

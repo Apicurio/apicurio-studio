@@ -81,7 +81,7 @@ export class CreateApiFormComponent {
     }
 
     public userOrg(): string {
-        return this.user.username;
+        return this.user.login;
     }
 
     public organizations(): string[] {
@@ -93,7 +93,7 @@ export class CreateApiFormComponent {
         this.model.repository = null;
         this.fetchingRepos = true;
         this._repositories = [];
-        this.apis.getRepositories(this.model.organization, org === this.user.username).subscribe( repos => {
+        this.apis.getRepositories(this.model.organization, org === this.user.login).subscribe( repos => {
             this._repositories = repos.sort( (repo1, repo2) => {
                 return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
             });

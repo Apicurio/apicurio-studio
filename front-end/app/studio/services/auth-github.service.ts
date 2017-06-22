@@ -74,7 +74,7 @@ export class GithubAuthenticationService extends AbstractGithubService implement
         if (s_user && s_pat) {
             let user: User = JSON.parse(s_user);
             if (!user.name) {
-                user.name = user.username;
+                user.name = user.login;
             }
             let pat: GithubPersonalAccessToken = JSON.parse(s_pat);
 
@@ -251,9 +251,9 @@ export class GithubAuthenticationService extends AbstractGithubService implement
             user.avatar = jdata.avatar_url;
             user.email = jdata.email;
             user.name = jdata.name;
-            user.username = jdata.login;
+            user.login = jdata.login;
             if (!user.name) {
-                user.name = user.username;
+                user.name = user.login;
             }
             return user;
         }).toPromise();

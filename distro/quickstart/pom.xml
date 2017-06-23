@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apicurio</groupId>
+        <artifactId>apicurio-studio-distro</artifactId>
+        <version>0.1.6-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>apicurio-studio-distro-quickstart</artifactId>
+    <packaging>pom</packaging>
+    <name>apicurio-studio-distro-quickstart</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-fe-wildfly</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-be-hub-api</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>1.8.2</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>prepare-wildfly</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <antversion property="antversion" />
+                                <echo>Ant Version: ${antversion}</echo>
+
+                                <property name="wildfly.version" value="${version.wildfly}" />
+                                <property name="wildfly.download.url" value="http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />
+                                <property name="wildfly.download.zip" location="${project.build.directory}/wildfly-${wildfly.version}.zip" />
+                                <property name="wildfly.install.dir" value="${project.build.directory}" />
+                                <property name="wildfly.appserver.dir" value="${wildfly.install.dir}/wildfly-${wildfly.version}" />
+
+                                <!-- Download and unpack Apache wildfly -->
+                                <delete dir="${wildfly.appserver.dir}" />
+                                <get src="${wildfly.download.url}" dest="${wildfly.download.zip}" usetimestamp="true" skipexisting="true" />
+                                <unzip src="${wildfly.download.zip}" dest="${wildfly.install.dir}" overwrite="false" />
+
+                                <!-- Make sure to chmod 755 the shell scripts -->
+                                <chmod perm="a+x" dir="${wildfly.appserver.dir}/bin">
+                                    <include name="*.sh" />
+                                </chmod>
+                                
+                                <!-- Rename to 'apicurio-studio-$version' -->
+                                <move file="${wildfly.appserver.dir}" tofile="${project.build.directory}/apicurio-studio-${project.version}" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>quickstart</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>apicurio-studio-${project.version}</finalName>
+                            <attach>true</attach>
+                            <descriptors>
+                                <descriptor>src/main/assembly/quickstart.xml</descriptor>
+                            </descriptors>
+                            <archiverConfig>
+                                <defaultDirectoryMode>0755</defaultDirectoryMode>
+                            </archiverConfig>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

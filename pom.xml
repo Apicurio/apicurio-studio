@@ -60,6 +60,9 @@
 		<!-- Tomcat Version -->
 		<version.tomcat>8.5.15</version.tomcat>
 
+		<!-- Wildfly Version -->
+		<version.wildfly>10.1.0.Final</version.wildfly>
+
 		<!-- Plugin Versions -->
 		<version.antrun.plugin>1.8</version.antrun.plugin>
 		<version.assembly.plugin>2.5</version.assembly.plugin>
@@ -571,9 +574,10 @@
 	</distributionManagement>
 
 	<modules>
+		<module>shared</module>
 		<module>back-end</module>
 		<module>front-end</module>
-		<module>shared</module>
+		<module>distro</module>
 		<module>tools</module>
 	</modules>
 

@@ -41,5 +41,19 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>src/main/resources/welcome-content</directory>
+      <outputDirectory>apicurio-studio-${project.version}/welcome-content</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/resources/standalone/configuration</directory>
+      <outputDirectory>apicurio-studio-${project.version}/standalone/configuration</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
   </fileSets>
 </assembly>

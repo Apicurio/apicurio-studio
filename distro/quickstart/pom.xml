@@ -64,6 +64,9 @@
                                     <include name="*.sh" />
                                 </chmod>
                                 
+                                <!-- Remove the welcome content (will be replaced) -->
+                                <delete dir="${wildfly.appserver.dir}/welcome-content" />
+                                
                                 <!-- Rename to 'apicurio-studio-$version' -->
                                 <move file="${wildfly.appserver.dir}" tofile="${project.build.directory}/apicurio-studio-${project.version}" />
                             </tasks>

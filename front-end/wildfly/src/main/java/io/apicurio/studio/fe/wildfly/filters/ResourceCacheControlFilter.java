@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ResourceCacheControlFilter implements Filter {
 
-    private static void disableHttpCaching(HttpServletResponse httpResponse) {
+    public static void disableHttpCaching(HttpServletResponse httpResponse) {
         Date now = new Date();
         httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
         httpResponse.setDateHeader("Expires", expiredSinceYesterday(now)); //$NON-NLS-1$
@@ -69,7 +69,7 @@ public class ResourceCacheControlFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
 
-        if (requestURI == null || !requestURI.contains(".") || requestURI.contains("version.js")) {
+        if (requestURI == null || !requestURI.contains(".") || requestURI.contains("version.js") || requestURI.contains("config.js")) {
             disableHttpCaching(httpResponse);
         } else {
             httpResponse.setDateHeader("Expires", expiresInOneYear(now)); //$NON-NLS-1$

@@ -81,7 +81,7 @@ export class NewRequestBodyCommand extends AbstractCommand implements ICommand {
         let bodyParam: Oas20Parameter = null;
         for (let param of operation.parameters) {
             if (param.in === "body") {
-                bodyParam = param;
+                bodyParam = param as Oas20Parameter;
                 break;
             }
         }

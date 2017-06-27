@@ -14,28 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
-import {
-    Oas20PathItem, Oas20Operation, Oas20PathItems, Oas20Paths, Oas20Document, Oas20Schema,
-    Oas20Parameter
-} from "oai-ts-core";
+import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Paths, OasOperation} from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";
 import {NewOperationCommand} from "../../_commands/new-operation.command";
 import {ChangePropertyCommand} from "../../_commands/change-property.command";
-import {
-    DeleteAllParameters, DeleteNodeCommand, DeleteParameterCommand,
-    DeletePathCommand
-} from "../../_commands/delete.command";
+import {DeleteAllParameters, DeleteParameterCommand, DeletePathCommand} from "../../_commands/delete.command";
 import {NodeSelectionEvent, SourceFormComponent} from "./source-form.base";
 import {ReplacePathItemCommand} from "../../_commands/replace.command";
 import {ModelUtils} from "../../_util/model.util";
-import {
-    ChangePathParametersDescriptionCommand,
-    ChangePathParametersTypeCommand
-} from "../../_commands/change-path-parameters.command";
 import {SimplifiedType} from "../../_models/simplified-type.model";
 import {ChangeParameterTypeCommand} from "../../_commands/change-parameter-type.command";
-import {ObjectUtils} from "../../_util/object.util";
 import {NewParamCommand} from "../../_commands/new-param.command";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 
@@ -124,7 +113,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         return this.summary(this.path.head);
     }
 
-    private summary(operation: Oas20Operation): string {
+    private summary(operation: OasOperation): string {
         if (operation === null || operation === undefined) {
             return "Not Supported";
         } else {
@@ -164,7 +153,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         return this.description(this.path.head);
     }
 
-    private description(operation: Oas20Operation): string {
+    private description(operation: OasOperation): string {
         if (operation === null || operation === undefined) {
             return "Not Supported";
         } else {
@@ -206,7 +195,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     }
 
     public pathParam(paramName: string): Oas20Parameter {
-        let param: Oas20Parameter = this.path.parameter("path", paramName);
+        let param: Oas20Parameter = this.path.parameter("path", paramName) as Oas20Parameter;
 
         if (param === null) {
             param = this.path.createParameter();
@@ -239,7 +228,8 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         if (!this.path.parameters) {
             return [];
         }
-        return this.path.parameters.filter( value => {
+        let params: Oas20Parameter[] = this.path.parameters as Oas20Parameter[];
+        return params.filter( value => {
             return value.in === paramType;
         }).sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);

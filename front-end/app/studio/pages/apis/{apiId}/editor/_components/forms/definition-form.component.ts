@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
-import {
-    Oas20DefinitionSchema, OasLibraryUtils, Oas20Document, Oas20Definitions,
-    Oas20PropertySchema
-} from "oai-ts-core";
+import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Oas20Definitions, Oas20PropertySchema, Oas20SchemaDefinition} from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";
 
 import "brace/theme/eclipse";
 import "brace/mode/json";
 import {
-    DeleteAllPropertiesCommand, DeleteDefinitionSchemaCommand,
+    DeleteAllPropertiesCommand,
+    DeleteDefinitionSchemaCommand,
     DeletePropertyCommand
 } from "../../_commands/delete.command";
 import {ReplaceDefinitionSchemaCommand} from "../../_commands/replace.command";
@@ -41,15 +39,16 @@ import {NewSchemaPropertyCommand} from "../../_commands/new-schema-property.comm
     templateUrl: "definition-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class DefinitionFormComponent extends SourceFormComponent<Oas20DefinitionSchema> {
+export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefinition> {
 
-    private _definition: Oas20DefinitionSchema;
+    private _definition: Oas20SchemaDefinition;
     @Input()
-    set definition(definition: Oas20DefinitionSchema) {
+    set definition(definition: Oas20SchemaDefinition) {
         this._definition = definition;
         this.sourceNode = definition;
     }
-    get definition(): Oas20DefinitionSchema {
+
+    get definition(): Oas20SchemaDefinition {
         return this._definition;
     }
 
@@ -57,11 +56,11 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20Definition
 
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
 
-    protected createEmptyNodeForSource(): Oas20DefinitionSchema {
-        return (<Oas20Definitions>this.definition.parent()).createDefinitionSchema(this.definition.definitionName());
+    protected createEmptyNodeForSource(): Oas20SchemaDefinition {
+        return (<Oas20Definitions>this.definition.parent()).createSchemaDefinition(this.definition.definitionName());
     }
 
-    protected createReplaceNodeCommand(node: Oas20DefinitionSchema): ICommand {
+    protected createReplaceNodeCommand(node: Oas20SchemaDefinition): ICommand {
         return new ReplaceDefinitionSchemaCommand(this.definition, node);
     }
 
@@ -75,9 +74,9 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20Definition
 
     public properties(): Oas20PropertySchema[] {
         let rval: Oas20PropertySchema[] = [];
-        this.definition.propertyNames().sort( (left, right) => {
+        this.definition.propertyNames().sort((left, right) => {
             return left.localeCompare(right);
-        }).forEach( name => rval.push(<Oas20PropertySchema>this.definition.property(name)) );
+        }).forEach(name => rval.push(<Oas20PropertySchema>this.definition.property(name)));
 
         return rval;
     }

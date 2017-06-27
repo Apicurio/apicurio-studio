@@ -107,7 +107,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public bodyParam(): Oas20Parameter {
-        let params: Oas20Parameter[] = this.operation.parameters;
+        let params: Oas20Parameter[] = this.operation.parameters as Oas20Parameter[];
         if (params) {
             for (let param of params) {
                 if (param.in === "body") {
@@ -316,13 +316,14 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public parameters(paramType: string): Oas20Parameter[] {
-        return this.operation.getParameters(paramType).sort((param1, param2) => {
+        let params: Oas20Parameter[] = this.operation.getParameters(paramType) as Oas20Parameter[];
+        return params.sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
     }
 
     public pathParam(paramName: string): Oas20Parameter {
-        let param: Oas20Parameter = this.operation.parameter("path", paramName);
+        let param: Oas20Parameter = this.operation.parameter("path", paramName) as Oas20Parameter;
 
         if (param === null) {
             param = this.operation.createParameter();
@@ -344,7 +345,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public queryParameters(): Oas20Parameter[] {
         let opParams: Oas20Parameter[] = this.parameters("query");
-        let piParams: Oas20Parameter[] = (<Oas20PathItem>this.operation.parent()).getParameters("query");
+        let piParams: Oas20Parameter[] = (<Oas20PathItem>this.operation.parent()).getParameters("query") as Oas20Parameter[];
         let hasOpParam = function(param: Oas20Parameter): boolean {
             var found: boolean = false;
             opParams.forEach( opParam => {
@@ -405,7 +406,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         }
         let rval: Oas20Response[] = [];
         for (let scode of this.operation.responses.responseStatusCodes()) {
-            let response: Oas20Response = this.operation.responses.response(scode);
+            let response: Oas20Response = this.operation.responses.response(scode) as Oas20Response;
             rval.push(response);
         }
         return rval.sort((a, b) => {

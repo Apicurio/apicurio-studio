@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OpaqueToken} from "@angular/core";
+import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
 import {User} from "../models/user.model";
@@ -53,4 +53,4 @@ export interface IAuthenticationService {
     injectAuthHeaders(headers: Headers): void;
 }
 
-export const IAuthenticationService = new OpaqueToken("IAuthenticationService");
+export const IAuthenticationService = new InjectionToken("IAuthenticationService");

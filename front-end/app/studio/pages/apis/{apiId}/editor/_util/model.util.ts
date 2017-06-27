@@ -18,10 +18,11 @@
 import {
     Oas20Parameter, Oas20Operation, Oas20PathItem, IOas20NodeVisitor, Oas20Document, Oas20Info,
     Oas20Contact, Oas20License, Oas20Paths, Oas20ParameterDefinition, Oas20ExternalDocumentation,
-    Oas20SecurityRequirement, Oas20Responses, Oas20Response, Oas20ResponseDefinition, Oas20DefinitionSchema, Oas20XML,
+    Oas20SecurityRequirement, Oas20Responses, Oas20Response, Oas20ResponseDefinition, Oas20SchemaDefinition, Oas20XML,
     Oas20Scopes, Oas20SecurityScheme, Oas20SecurityDefinitions, Oas20Tag, Oas20Items, Oas20Example, Oas20Header,
     Oas20Headers, Oas20Schema, Oas20PropertySchema, Oas20AllOfSchema, Oas20ItemsSchema, Oas20Definitions,
-    Oas20ParametersDefinitions, Oas20ResponsesDefinitions, OasExtension, Oas20AdditionalPropertiesSchema, OasNode
+    Oas20ParametersDefinitions, Oas20ResponsesDefinitions, OasExtension, Oas20AdditionalPropertiesSchema, OasNode,
+    OasOperation
 } from "oai-ts-core";
 import {ObjectUtils} from "./object.util";
 
@@ -54,7 +55,7 @@ export class ModelUtils {
      * @return {Oas20Parameter[]}
      */
     public static getAllPathParams(path: Oas20PathItem, paramName: string): Oas20Parameter[] {
-        let operations: Oas20Operation[] = [
+        let operations: OasOperation[] = [
             path.get, path.put, path.post, path.delete, path.options, path.head, path.patch
         ];
         let params: Oas20Parameter[] = [];
@@ -64,7 +65,7 @@ export class ModelUtils {
             if (operation.parameters) {
                 operation.parameters.forEach( parameter => {
                     if (parameter.name === paramName && parameter.in === "path") {
-                        params.push(parameter);
+                        params.push(parameter as Oas20Parameter);
                     }
                 });
             }
@@ -176,7 +177,7 @@ export abstract class AllNodeVisitor implements IOas20NodeVisitor {
         this.doVisitNode(node);
     }
 
-    visitDefinitionSchema(node: Oas20DefinitionSchema): void {
+    visitSchemaDefinition(node: Oas20SchemaDefinition): void {
         this.doVisitNode(node);
     }
 

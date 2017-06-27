@@ -18,7 +18,7 @@
 import {Component, EventEmitter, HostListener, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    Oas20DefinitionSchema,
+    Oas20SchemaDefinition,
     Oas20Document, Oas20NodeVisitorAdapter,
     Oas20Operation,
     Oas20PathItem, Oas20ResponseDefinition,
@@ -31,7 +31,7 @@ import {NewPathCommand} from "./_commands/new-path.command";
 import {NewDefinitionCommand} from "./_commands/new-definition.command";
 import {AddPathDialogComponent} from "./_components/dialogs/add-path.component";
 import {DeleteDefinitionSchemaCommand, DeleteNodeCommand, DeletePathCommand} from "./_commands/delete.command";
-import {AllNodeVisitor, ModelUtils} from "./_util/model.util";
+import {AllNodeVisitor} from "./_util/model.util";
 import {ObjectUtils} from "./_util/object.util";
 import {NodeSelectionEvent} from "./_components/forms/source-form.base";
 
@@ -92,7 +92,8 @@ export class ApiEditorComponent {
      */
     public paths(): Oas20PathItem[] {
         if (this.document().paths) {
-            return this.document().paths.pathItems().filter( pathItem => {
+            let items: Oas20PathItem[] = this.document().paths.pathItems() as Oas20PathItem[];
+            return items.filter( pathItem => {
                 if (this.acceptThroughFilter(pathItem.path())) {
                     return pathItem;
                 } else {
@@ -110,7 +111,7 @@ export class ApiEditorComponent {
      * Returns the array of definitions, filtered by search criteria and sorted.
      * @return {any}
      */
-    public definitions(): Oas20DefinitionSchema[] {
+    public definitions(): Oas20SchemaDefinition[] {
         if (this.document().definitions) {
             return this.document().definitions.definitions().filter( def => {
                 if (this.acceptThroughFilter(def.definitionName())) {
@@ -162,7 +163,7 @@ export class ApiEditorComponent {
                 this.selectMain();
             }
         } else if (this.selectedType === "definition") {
-            let definition: Oas20DefinitionSchema = this.selectedItem as Oas20DefinitionSchema;
+            let definition: Oas20SchemaDefinition = this.selectedItem as Oas20SchemaDefinition;
             if (!this.isValidDefinition(definition)) {
                 this.selectMain();
             }
@@ -206,7 +207,7 @@ export class ApiEditorComponent {
         return op === operation;
     }
 
-    protected isValidDefinition(definition: Oas20DefinitionSchema): boolean {
+    protected isValidDefinition(definition: Oas20SchemaDefinition): boolean {
         if (ObjectUtils.isNullOrUndefined(definition)) {
             return false;
         }
@@ -290,7 +291,7 @@ export class ApiEditorComponent {
      * Called when the user selects a definition from the master area.
      * @param def
      */
-    public selectDefinition(def: Oas20DefinitionSchema): void {
+    public selectDefinition(def: Oas20SchemaDefinition): void {
         this.selectedItem = def;
         this.selectedType = "definition";
     }
@@ -384,7 +385,7 @@ export class ApiEditorComponent {
     public addPath(path: string): void {
         let command: ICommand = new NewPathCommand(path);
         this.onCommand(command);
-        this.selectPath(this.document().paths.pathItem(path));
+        this.selectPath(this.document().paths.pathItem(path) as Oas20PathItem);
     }
 
     /**
@@ -414,9 +415,9 @@ export class ApiEditorComponent {
      * Returns the currently selected definition.
      * @return {any}
      */
-    public selectedDefinition(): Oas20DefinitionSchema {
+    public selectedDefinition(): Oas20SchemaDefinition {
         if (this.selectedType === "definition") {
-            return this.selectedItem as Oas20DefinitionSchema;
+            return this.selectedItem as Oas20SchemaDefinition;
         } else {
             return null;
         }
@@ -664,7 +665,7 @@ export class ApiEditorComponent {
      * @param event
      * @param definition
      */
-    public showDefinitionContextMenu(event: MouseEvent, definition: Oas20DefinitionSchema): void {
+    public showDefinitionContextMenu(event: MouseEvent, definition: Oas20SchemaDefinition): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
@@ -677,7 +678,7 @@ export class ApiEditorComponent {
      * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
      */
     public deleteDefinition(): void {
-        let command: ICommand = new DeleteDefinitionSchemaCommand((this.contextMenuItem as Oas20DefinitionSchema).definitionName());
+        let command: ICommand = new DeleteDefinitionSchemaCommand((this.contextMenuItem as Oas20SchemaDefinition).definitionName());
         this.onCommand(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -760,7 +761,7 @@ class SelectedItemVisitor extends Oas20NodeVisitorAdapter {
         this.selectedItem = node;
     }
 
-    visitDefinitionSchema(node: Oas20DefinitionSchema): void {
+    visitDefinitionSchema(node: Oas20SchemaDefinition): void {
         this.selectedType = "definition";
         this.selectedItem = node;
     }

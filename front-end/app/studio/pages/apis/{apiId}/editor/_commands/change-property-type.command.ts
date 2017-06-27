@@ -54,7 +54,11 @@ export class ChangePropertyTypeCommand extends AbstractCommand implements IComma
         this._oldRef = prop.$ref;
         this._oldType = prop.type;
         this._oldFormat = prop.format;
-        this._oldItems = prop.items;
+        if (Array.isArray(prop.items)) {
+            this._oldItems = prop.items as Oas20ItemsSchema[];
+        } else if (prop.items) {
+            this._oldItems = prop.items as Oas20ItemsSchema;
+        }
 
         if (this._newType.isSimpleType()) {
             prop.$ref = null;

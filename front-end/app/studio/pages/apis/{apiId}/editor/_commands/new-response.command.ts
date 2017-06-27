@@ -52,9 +52,9 @@ export class NewResponseCommand extends AbstractCommand implements ICommand {
             operation.responses
         }
 
-        let response: Oas20Response = operation.responses.response(this._statusCode);
+        let response: Oas20Response = operation.responses.response(this._statusCode) as Oas20Response;
         if (this.isNullOrUndefined(response)) {
-            response = operation.responses.createResponse(this._statusCode);
+            response = operation.responses.createResponse(this._statusCode) as Oas20Response;
             operation.responses.addResponse(this._statusCode, response);
             this._created = true;
         }

@@ -107,7 +107,7 @@ class DetectOverrideVisitor extends Oas20NodeVisitorAdapter {
     }
 
     public visitOperation(node: Oas20Operation): void {
-        this.overriddenParam = (<Oas20PathItem>node.parent()).parameter(this.param.in, this.param.name);
+        this.overriddenParam = (<Oas20PathItem>node.parent()).parameter(this.param.in, this.param.name) as Oas20Parameter;
     }
 
 }

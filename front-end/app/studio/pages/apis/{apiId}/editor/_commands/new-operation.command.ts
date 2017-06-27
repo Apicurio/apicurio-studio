@@ -47,7 +47,7 @@ export class NewOperationCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        let path: Oas20PathItem = doc.paths.pathItem(this._path);
+        let path: Oas20PathItem = doc.paths.pathItem(this._path) as Oas20PathItem;
         if (this.isNullOrUndefined(path)) {
             return;
         }
@@ -73,7 +73,7 @@ export class NewOperationCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        let path: Oas20PathItem = doc.paths.pathItem(this._path);
+        let path: Oas20PathItem = doc.paths.pathItem(this._path) as Oas20PathItem;
         if (this.isNullOrUndefined(path)) {
             return;
         }

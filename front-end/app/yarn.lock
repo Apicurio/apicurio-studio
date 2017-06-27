@@ -2,41 +2,59 @@
 # yarn lockfile v1
 
 
-"@angular/common@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-2.4.10.tgz#a3a682d2228fa30ec23dd0eb57c8e887fba26997"
+"@angular/common@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.2.4.tgz#9b7ee0e692ab03191a7cd9af331d0f492d3cefeb"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/compiler@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-2.4.10.tgz#f51fd34820b2a02c7cb61fbcf49873c58056fb0c"
+"@angular/compiler@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.2.4.tgz#7936a87b2d483abcef840b868c1fcf67221c4914"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/core@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-2.4.10.tgz#0b8320a65065965d998645b1f5cd3cf769b441ea"
+"@angular/core@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.2.4.tgz#e8df7a8dd5de5a327784dfc35b5da6344281cf1b"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/forms@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-2.4.10.tgz#062133aaade1f3b3c962f1593208c541b622fd06"
+"@angular/forms@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-4.2.4.tgz#ae09755332ea463f561df01aac2bd369e5d35dc9"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/http@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/http/-/http-2.4.10.tgz#ff6beade5b39c989ebf2393c49b34eebd43e9555"
+"@angular/http@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.2.4.tgz#ed039c0d53a587d24575f4cabfd1db8e7f1e3f8b"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/platform-browser-dynamic@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-2.4.10.tgz#8df25dec2b06adc690cc9bc26448deccaebcd8ec"
+"@angular/platform-browser-dynamic@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.2.4.tgz#5190fda79425ae49a49224985614c9780a370761"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/platform-browser@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-2.4.10.tgz#cbf25608148fb4ffef96cc5005ba5d7b3e093906"
+"@angular/platform-browser@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-4.2.4.tgz#00a44dcb2fd777b54bc17c1ce734aa18fe9fd039"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/router@3.4.3":
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/@angular/router/-/router-3.4.3.tgz#19846caa1f87d9b83f005f45a2be15b6744db8fd"
+"@angular/router@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-4.2.4.tgz#2f193f3a36da19b11a08c9b40e391bd8fde59c56"
+  dependencies:
+    tslib "^1.7.1"
 
-"@angular/upgrade@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@angular/upgrade/-/upgrade-2.4.10.tgz#b69a3ee324d4450eb1696ddc9bded1a6ec06ca52"
+"@angular/upgrade@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@angular/upgrade/-/upgrade-4.2.4.tgz#a34ae66860fa9bf81a0fdfc1d790b82f25b57b96"
+  dependencies:
+    tslib "^1.7.1"
 
 "@types/core-js@0.9.35":
   version "0.9.35"
@@ -2638,9 +2656,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-oai-ts-core@0.1.15:
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.1.15.tgz#ad6fffd3be3b2aa3dd75f395e201bda5712ffd32"
+oai-ts-core@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.1.tgz#fbb1d6ad8a80e328b23e2fb577c5e6e0b6e7e1aa"
   dependencies:
     core-js "2.4.1"
 
@@ -3626,6 +3644,10 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
+tslib@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.7.1.tgz#bc8004164691923a79fe8378bbeb3da2017538ec"
+
 tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
@@ -3972,6 +3994,6 @@ yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
 
-zone.js@0.7.4:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.7.4.tgz#0e624fe5b724450ee433495deff15c02b3908ee0"
+zone.js@0.8.4:
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.4.tgz#cc40ae5a1c879601c5ebba2096b5c80f0c4c3602"

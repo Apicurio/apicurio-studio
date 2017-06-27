@@ -46,7 +46,7 @@ export class NewPathCommand extends AbstractCommand implements ICommand {
         }
 
         if (this.isNullOrUndefined(doc.paths.pathItem(this._newPath))) {
-            let pathItem: Oas20PathItem = doc.paths.createPathItem(this._newPath);
+            let pathItem: Oas20PathItem = doc.paths.createPathItem(this._newPath) as Oas20PathItem;
             doc.paths.addPathItem(this._newPath, pathItem);
             this._pathExisted = false;
         } else {

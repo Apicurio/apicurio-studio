@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Oas20Items, Oas20ItemsSchema, Oas20Schema} from "oai-ts-core";
+import {Oas20Items, Oas20ItemsSchema, Oas20Schema, OasSchema} from "oai-ts-core";
 import {ObjectUtils} from "../_util/object.util";
 
 
@@ -52,7 +52,7 @@ export class SimplifiedType {
         return rval;
     }
 
-    public static fromSchema(schema: Oas20Schema): SimplifiedType {
+    public static fromSchema(schema: OasSchema): SimplifiedType {
         let rval: SimplifiedType = new SimplifiedType();
         if (schema && schema.$ref) {
             rval.type = schema.$ref;

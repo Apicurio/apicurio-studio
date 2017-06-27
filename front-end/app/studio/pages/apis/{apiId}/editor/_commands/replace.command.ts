@@ -18,7 +18,7 @@
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, Oas20Paths, Oas20Operation,
-    Oas20Definitions, Oas20DefinitionSchema
+    Oas20Definitions, Oas20SchemaDefinition
 } from "oai-ts-core";
 
 
@@ -75,14 +75,14 @@ abstract class AbstractReplaceNodeCommand<T extends OasNode> extends AbstractCom
 /**
  * A command used to replace a definition schema with a newer version.
  */
-export class ReplaceDefinitionSchemaCommand extends AbstractReplaceNodeCommand<Oas20DefinitionSchema> implements ICommand {
+export class ReplaceDefinitionSchemaCommand extends AbstractReplaceNodeCommand<Oas20SchemaDefinition> implements ICommand {
 
     /**
      * Remove the given node.
      * @param doc
      * @param node
      */
-    protected removeNode(doc: Oas20Document, node: Oas20DefinitionSchema): void {
+    protected removeNode(doc: Oas20Document, node: Oas20SchemaDefinition): void {
         let definitions: Oas20Definitions = doc.definitions;
         definitions.removeDefinition(node.definitionName());
     }
@@ -92,7 +92,7 @@ export class ReplaceDefinitionSchemaCommand extends AbstractReplaceNodeCommand<O
      * @param doc
      * @param node
      */
-    protected addNode(doc: Oas20Document, node: Oas20DefinitionSchema): void {
+    protected addNode(doc: Oas20Document, node: Oas20SchemaDefinition): void {
         let definitions: Oas20Definitions = doc.definitions;
         definitions.addDefinition(node.definitionName(), node);
     }
@@ -121,7 +121,7 @@ export class ReplacePathItemCommand extends AbstractReplaceNodeCommand<Oas20Path
      * @param node
      */
     protected addNode(doc: Oas20Document, node: Oas20PathItem): void {
-        let paths: Oas20Paths = doc.paths;
+        let paths: Oas20Paths = doc.paths as Oas20Paths;
         paths.addPathItem(node.path(), node);
     }
 

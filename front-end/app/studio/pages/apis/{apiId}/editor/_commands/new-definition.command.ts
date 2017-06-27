@@ -17,7 +17,7 @@
 
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20DefinitionSchema, Oas20SchemaFactory
+    OasDocument, Oas20Document, Oas20SchemaDefinition, Oas20SchemaFactory
 } from "oai-ts-core";
 
 /**
@@ -49,11 +49,11 @@ export class NewDefinitionCommand extends AbstractCommand implements ICommand {
         }
 
         if (this.isNullOrUndefined(doc.definitions.definition(this._newDefinitionName))) {
-            let definition: Oas20DefinitionSchema;
+            let definition: Oas20SchemaDefinition;
             if (this._newDefinitionExample) {
-                definition = new Oas20SchemaFactory().createDefinitionSchemaFromExample(doc, this._newDefinitionName, this._newDefinitionExample);
+                definition = new Oas20SchemaFactory().createSchemaDefinitionFromExample(doc, this._newDefinitionName, this._newDefinitionExample) as Oas20SchemaDefinition;
             } else {
-                definition = doc.definitions.createDefinitionSchema(this._newDefinitionName);
+                definition = doc.definitions.createSchemaDefinition(this._newDefinitionName);
             }
             doc.definitions.addDefinition(this._newDefinitionName, definition);
 

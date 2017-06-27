@@ -56,7 +56,7 @@ export class ChangeParameterTypeCommand extends AbstractCommand implements IComm
         this._oldType = param.type;
         this._oldFormat = param.format;
         this._oldItems = param.items;
-        this._oldSchema = param.schema;
+        this._oldSchema = param.schema as Oas20Schema;
 
         // If it's a body param, change the schema child.  Otherwise change the param itself.
         if (param.in === "body") {

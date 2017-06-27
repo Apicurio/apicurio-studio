@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OpaqueToken} from "@angular/core";
+import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition} from "../models/api.model";
@@ -123,4 +123,4 @@ export interface IApisService {
     getRepositories(organization: string, isUser?: boolean): Observable<string[]>;
 }
 
-export const IApisService = new OpaqueToken("IApisService");
+export const IApisService = new InjectionToken("IApisService");

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import {ICommand, AbstractCommand} from "../_services/commands.manager";
+import {AbstractCommand, ICommand} from "../_services/commands.manager";
 import {
-    OasDocument, Oas20Document, Oas20Operation, OasNodePath, Oas20Parameter, Oas20PathItem,
-    IOas20ParameterParent
+    IOasParameterParent, Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, OasDocument,
+    OasNodePath
 } from "oai-ts-core";
 
 /**
@@ -54,7 +54,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         this._created = false;
 
         let doc: Oas20Document = <Oas20Document> document;
-        let parent: IOas20ParameterParent = <any>this._parentPath.resolve(doc) as IOas20ParameterParent;
+        let parent: IOasParameterParent = <any>this._parentPath.resolve(doc) as IOasParameterParent;
 
         if (this.isNullOrUndefined(parent)) {
             console.info("[NewParamCommand] Operation is null.");
@@ -70,7 +70,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
             parent.parameters = [];
         }
 
-        let param: Oas20Parameter = parent.createParameter();
+        let param: Oas20Parameter = parent.createParameter() as Oas20Parameter;
         param.in = this._paramType;
         param.name = this._paramName;
         if (param.in === "path") {
@@ -93,7 +93,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         }
 
         let doc: Oas20Document = <Oas20Document> document;
-        let parent: IOas20ParameterParent = <any>this._parentPath.resolve(doc) as IOas20ParameterParent;
+        let parent: IOasParameterParent = <any>this._parentPath.resolve(doc) as IOasParameterParent;
 
         if (this.isNullOrUndefined(parent)) {
             return;
@@ -102,7 +102,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
         let theParam: Oas20Parameter = null;
         for (let param of parent.parameters) {
             if (param.in === this._paramType && param.name === this._paramName) {
-                theParam = param;
+                theParam = param as Oas20Parameter;
                 break;
             }
         }
@@ -124,7 +124,7 @@ export class NewParamCommand extends AbstractCommand implements ICommand {
      * @param parent
      * @returns {boolean}
      */
-    private hasParam(paramName: string, paramType: string, parent: IOas20ParameterParent): boolean {
+    private hasParam(paramName: string, paramType: string, parent: IOasParameterParent): boolean {
         return parent.parameters && parent.parameters.filter((value) => {
             return value.in === paramType && value.name === paramName;
         }).length > 0;

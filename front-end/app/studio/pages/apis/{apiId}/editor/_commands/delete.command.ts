@@ -18,8 +18,9 @@
 import {ICommand, AbstractCommand} from "../_services/commands.manager";
 import {
     OasDocument, Oas20Document, Oas20PathItem, OasNode, OasNodePath, Oas20Paths, Oas20Operation,
-    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20DefinitionSchema, Oas20Tag,
-    Oas20SecurityScheme, Oas20SecurityDefinitions, Oas20PropertySchema, Oas20Schema, IOas20ParameterParent
+    Oas20Parameter, Oas20Response, Oas20Responses, Oas20Definitions, Oas20SchemaDefinition, Oas20Tag,
+    Oas20SecurityScheme, Oas20SecurityDefinitions, Oas20PropertySchema, Oas20Schema, IOasParameterParent,
+    OasParameterBase
 } from "oai-ts-core";
 
 /**
@@ -94,12 +95,12 @@ export class DeletePathCommand extends AbstractCommand implements ICommand {
         console.info("[DeletePathCommand] Executing for path: %s", this._path);
         this._oldPath = null;
         let doc: Oas20Document  = <Oas20Document>document;
-        let paths: Oas20Paths = doc.paths;
+        let paths: Oas20Paths = doc.paths as Oas20Paths;
         if (this.isNullOrUndefined(paths)) {
             return;
         }
 
-        this._oldPath = paths.removePathItem(this._path);
+        this._oldPath = paths.removePathItem(this._path) as Oas20PathItem;
     }
 
     /**
@@ -109,7 +110,7 @@ export class DeletePathCommand extends AbstractCommand implements ICommand {
     public undo(document: OasDocument): void {
         console.info("[DeletePathCommand] Reverting.");
         let doc: Oas20Document  = <Oas20Document>document;
-        let paths: Oas20Paths = doc.paths;
+        let paths: Oas20Paths = doc.paths as Oas20Paths;
         if (this.isNullOrUndefined(paths) || this.isNullOrUndefined(this._oldPath)) {
             return;
         }
@@ -146,7 +147,7 @@ export class DeleteAllParameters extends AbstractCommand implements ICommand {
         console.info("[DeleteAllParameters] Executing.");
         this._oldQueryParams = [];
 
-        let parent: IOas20ParameterParent = (<any>this._parentPath.resolve(document)) as IOas20ParameterParent;
+        let parent: IOasParameterParent = (<any>this._parentPath.resolve(document)) as IOasParameterParent;
 
         if (this.isNullOrUndefined(parent) || this.isNullOrUndefined(parent.parameters) || parent.parameters.length === 0) {
             return;
@@ -154,7 +155,7 @@ export class DeleteAllParameters extends AbstractCommand implements ICommand {
 
         for (let param of parent.parameters) {
             if (param.in === this._paramType) {
-                this._oldQueryParams.push(param);
+                this._oldQueryParams.push(param as Oas20Parameter);
             }
         }
 
@@ -178,7 +179,7 @@ export class DeleteAllParameters extends AbstractCommand implements ICommand {
             return;
         }
 
-        let parent: IOas20ParameterParent = (<any>this._parentPath.resolve(document)) as IOas20ParameterParent;
+        let parent: IOasParameterParent = (<any>this._parentPath.resolve(document)) as IOasParameterParent;
         if (this.isNullOrUndefined(parent)) {
             return;
         }
@@ -225,7 +226,7 @@ export class DeleteParameterCommand extends AbstractCommand implements ICommand 
             return;
         }
 
-        let params: Oas20Parameter[] = (<Oas20Operation>param.parent()).parameters;
+        let params: OasParameterBase[] = (<Oas20Operation>param.parent()).parameters;
         params.splice(params.indexOf(param), 1);
 
         this._oldParameter = param;
@@ -241,7 +242,7 @@ export class DeleteParameterCommand extends AbstractCommand implements ICommand 
             return;
         }
 
-        let parent: IOas20ParameterParent = <any>this._parentPath.resolve(document) as IOas20ParameterParent;
+        let parent: IOasParameterParent = <any>this._parentPath.resolve(document) as IOasParameterParent;
         if (this.isNullOrUndefined(parent)) {
             return;
         }
@@ -329,7 +330,7 @@ export class DeleteResponseCommand extends AbstractCommand implements ICommand {
 export class DeleteDefinitionSchemaCommand extends AbstractCommand implements ICommand {
 
     private _definitionName: string;
-    private _oldDefinition: Oas20DefinitionSchema;
+    private _oldDefinition: Oas20SchemaDefinition;
 
     constructor(definitionName: string) {
         super();
@@ -497,7 +498,7 @@ export class DeletePropertyCommand extends AbstractCommand implements ICommand {
             return;
         }
 
-        this._oldProperty = (<Oas20Schema>property.parent()).removeProperty(property.propertyName());
+        this._oldProperty = (<Oas20Schema>property.parent()).removeProperty(property.propertyName()) as Oas20PropertySchema;
     }
 
     /**
@@ -551,7 +552,7 @@ export class DeleteAllPropertiesCommand extends AbstractCommand implements IComm
         }
 
         schema.propertyNames().forEach( pname => {
-            this._oldProperties.push(schema.removeProperty(pname));
+            this._oldProperties.push(schema.removeProperty(pname) as Oas20PropertySchema);
         });
     }
 

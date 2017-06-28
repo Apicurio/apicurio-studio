@@ -107,7 +107,7 @@
                         "in": "body",
                         "description": "Updated API design meta-data.",
                         "schema": {
-                            "$ref": "#/definitions/ApiDesign"
+                            "$ref": "#/definitions/UpdateApiDesign"
                         }
                     }
                 ],
@@ -237,17 +237,21 @@
                     "type": "string"
                 },
                 "createdBy": {
+                    "description": "User that created the API design.",
                     "type": "string"
                 },
                 "createdOn": {
                     "format": "date-time",
+                    "description": "When the API design was created.",
                     "type": "string"
                 },
                 "modifiedBy": {
+                    "description": "User that last modified the API design.",
                     "type": "string"
                 },
                 "modifiedOn": {
                     "format": "date-time",
+                    "description": "When the API design was last modified.",
                     "type": "string"
                 }
             }
@@ -315,6 +319,18 @@
                 },
                 "up": {
                     "type": "boolean"
+                }
+            }
+        },
+        "UpdateApiDesign": {
+            "properties": {
+                "name": {
+                    "description": "New name for the API design.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Updated short description of the API design.",
+                    "type": "string"
                 }
             }
         }

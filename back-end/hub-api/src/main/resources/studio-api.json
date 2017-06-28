@@ -112,8 +112,11 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Indicates that the update was successful."
+                    "200": {
+                        "description": "Upon success, returns the full API design.",
+                        "schema": {
+                            "$ref": "#/definitions/ApiDesign"
+                        }
                     }
                 }
             },

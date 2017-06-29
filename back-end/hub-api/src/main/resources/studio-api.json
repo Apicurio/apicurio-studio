@@ -59,6 +59,9 @@
                         "schema": {
                             "$ref": "#/definitions/ApiDesign"
                         }
+                    },
+                    "404": {
+                        "description": "When the provided repository resource doesn't exist."
                     }
                 }
             },
@@ -95,6 +98,9 @@
                         "schema": {
                             "$ref": "#/definitions/ApiDesign"
                         }
+                    },
+                    "404": {
+                        "description": "When the API design does not exist."
                     }
                 }
             },
@@ -117,6 +123,9 @@
                         "schema": {
                             "$ref": "#/definitions/ApiDesign"
                         }
+                    },
+                    "404": {
+                        "description": "When the API design does not exist."
                     }
                 }
             },
@@ -126,6 +135,9 @@
                 "responses": {
                     "204": {
                         "description": "Indicates that the API design was removed successfully."
+                    },
+                    "404": {
+                        "description": "When the API design does not exist."
                     }
                 }
             },
@@ -148,6 +160,9 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    "404": {
+                        "description": "When the API design does not exist."
                     }
                 }
             },
@@ -166,6 +181,9 @@
                 "responses": {
                     "200": {
                         "description": "Indicates that the update was successful."
+                    },
+                    "404": {
+                        "description": "When the API design does not exist."
                     }
                 }
             },

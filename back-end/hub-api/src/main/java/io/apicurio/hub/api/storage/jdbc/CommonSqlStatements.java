@@ -53,4 +53,12 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String selectApiDesignById() {
         return "SELECT * FROM api_designs d WHERE d.id = ?";
     }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#updateApiDesign()
+     */
+    @Override
+    public String updateApiDesign() {
+        return "UPDATE api_designs SET name = ?, description = ?, modified_by = ?, modified_on = ? WHERE id = ?";
+    }
 }

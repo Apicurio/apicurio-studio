@@ -14,45 +14,49 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api;
+package io.apicurio.hub.api.rest.impl;
 
-import javax.inject.Inject;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.archive.importer.MavenImporter;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import io.apicurio.hub.api.Version;
 import io.apicurio.hub.api.beans.SystemStatusBean;
 import io.apicurio.hub.api.rest.ISystemResource;
+import test.io.apicurio.hub.api.MockSecurityContext;
+import test.io.apicurio.hub.api.MockStorage;
+import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@RunWith(Arquillian.class)
-@Ignore
 public class SystemResourceTest {
     
-    @Deployment
-    public static WebArchive deployment() {
-        WebArchive war = ShrinkWrap.create(MavenImporter.class).loadPomFromFile("pom.xml")
-                .importBuildOutput().as(WebArchive.class);
-//        System.out.println(war.toString(true));
-        return war;
-    }
+    private MockStorage storage;
+    private ISystemResource resource;
 
-    @Inject ISystemResource system;
+    @Before
+    public void setUp() {
+        storage = new MockStorage();
+        resource = new SystemResource();
+        Version version = new Version();
+        version.load();
+        TestUtil.setPrivateField(resource, "storage", storage);
+        TestUtil.setPrivateField(resource, "version", version);
+        TestUtil.setPrivateField(resource, "securityContext", new MockSecurityContext());
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    }
     
     @Test
     public void testStatus() {
-        SystemStatusBean status = system.getStatus();
+        SystemStatusBean status = resource.getStatus();
         Assert.assertNotNull(status);
         Assert.assertEquals("Apicurio Studio Hub API", status.getName());
+        Assert.assertEquals(true, status.isUp());
     }
 
 }

@@ -52,13 +52,22 @@ public interface IStorage {
     public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException;
 
     /**
-     * Delets a single API Design by its unique ID.  Throws an exception if no design
+     * Deletes a single API Design by its unique ID.  Throws an exception if no design
      * was found.
      * @param designId
      * @throws NotFoundException
      * @throws StorageException
      */
     public void deleteApiDesign(String designId) throws NotFoundException, StorageException;
+
+    /**
+     * Updates a single API design.  An exception is thrown if no design for the given ID
+     * was found.
+     * @param design
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public void updateApiDesign(ApiDesign design) throws NotFoundException, StorageException;
 
     /**
      * Returns a collection of API Designs accessible by the currently authenticated

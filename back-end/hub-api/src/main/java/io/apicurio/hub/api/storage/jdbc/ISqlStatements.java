@@ -54,5 +54,10 @@ public interface ISqlStatements {
      * A statement used to select a single API design by its unique id.
      */
     public String selectApiDesignById();
+
+    /**
+     * A statement used to update a single API design.
+     */
+    public String updateApiDesign();
     
 }

@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.storage;
+package test.io.apicurio.hub.api;
+
+import java.lang.reflect.Field;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class StorageException extends Exception {
-
-    private static final long serialVersionUID = -8581804968627819781L;
+public class TestUtil {
     
     /**
-     * Constructor.
+     * Sets the value of a private field on a target object.
+     * @param target
+     * @param fieldName
+     * @param fieldValue
      */
-    public StorageException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructor.
-     * @param message
-     * @param cause
-     */
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
+    public static void setPrivateField(Object target, String fieldName, Object fieldValue) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, fieldValue);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

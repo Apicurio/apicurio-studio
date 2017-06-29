@@ -14,29 +14,38 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.storage;
+package test.io.apicurio.hub.api;
+
+import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.studio.shared.beans.User;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class StorageException extends Exception {
+public class MockSecurityContext implements ISecurityContext {
 
-    private static final long serialVersionUID = -8581804968627819781L;
-    
-    /**
-     * Constructor.
-     */
-    public StorageException(String message) {
-        super(message);
+    private User user = new User();
+    {
+        user.setAvatar("avatar.jpg");
+        user.setEmail("user@example.org");
+        user.setId(1);
+        user.setLogin("user");
+        user.setName("User");
     }
     
     /**
-     * Constructor.
-     * @param message
-     * @param cause
+     * @see io.apicurio.hub.api.security.ISecurityContext#getCurrentUser()
      */
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public User getCurrentUser() {
+        return user;
+    }
+    
+    /**
+     * @param user
+     */
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

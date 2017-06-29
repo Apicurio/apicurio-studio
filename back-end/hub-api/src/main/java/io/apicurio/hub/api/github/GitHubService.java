@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.storage;
+package io.apicurio.hub.api.github;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class StorageException extends Exception {
+@ApplicationScoped
+public class GitHubService implements IGitHubService {
 
-    private static final long serialVersionUID = -8581804968627819781L;
-    
     /**
-     * Constructor.
+     * @see io.apicurio.hub.api.github.IGitHubService#validateResourceExists(java.lang.String)
      */
-    public StorageException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructor.
-     * @param message
-     * @param cause
-     */
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException {
+        // TODO implement validateResourceExists for GitHubService!
+        return null;
     }
 
 }

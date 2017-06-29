@@ -16,7 +16,6 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
-import java.lang.reflect.Field;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -32,6 +31,7 @@ import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.config.Configuration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
+import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -50,8 +50,8 @@ public class JdbcStorageTest {
     public void setUp() {
         storage = new JdbcStorage();
         ds = createInMemoryDatasource();
-        setPrivateField(storage, "config", new Configuration());
-        setPrivateField(storage, "dataSource", ds);
+        TestUtil.setPrivateField(storage, "config", new Configuration());
+        TestUtil.setPrivateField(storage, "dataSource", ds);
         storage.postConstruct();
     }
     
@@ -190,23 +190,40 @@ public class JdbcStorageTest {
             // OK!
         }
     }
-    
-    /**
-     * Sets the value of a private field on a target object.
-     * @param target
-     * @param fieldName
-     * @param fieldValue
-     */
-    private static void setPrivateField(Object target, String fieldName, Object fieldValue) {
-        try {
-            Field field = target.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(target, fieldValue);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
+    @Test
+    public void testUpdateApiDesign() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setModifiedBy("user");
+        design.setModifiedOn(now);
+        design.setName("API Name");
+        design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
+        
+        String designId = storage.createApiDesign(design);
+        design.setId(designId);
+        
+        design.setModifiedBy("user2");
+        design.setModifiedOn(new Date(now.getTime() + 100));
+        design.setName("Updated API Name");
+        design.setDescription("Updated description.");
+        storage.updateApiDesign(design);
+        
+        // now fetch the design from the storage and verify its values
+        ApiDesign updatedDesign = storage.getApiDesign(designId);
+        Assert.assertEquals(design.getId(), updatedDesign.getId());
+        Assert.assertEquals(design.getName(), updatedDesign.getName());
+        Assert.assertEquals(design.getDescription(), updatedDesign.getDescription());
+        Assert.assertEquals(design.getRepositoryUrl(), updatedDesign.getRepositoryUrl());
+        Assert.assertEquals(design.getCreatedBy(), updatedDesign.getCreatedBy());
+        Assert.assertEquals(design.getCreatedOn(), updatedDesign.getCreatedOn());
+        Assert.assertEquals(design.getModifiedBy(), updatedDesign.getModifiedBy());
+        Assert.assertEquals(design.getModifiedOn(), updatedDesign.getModifiedOn());
+    }
+    
     /**
      * Creates an in-memory datasource.
      * @throws SQLException

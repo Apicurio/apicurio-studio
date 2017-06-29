@@ -27,10 +27,15 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
+import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.github.IGitHubService;
 import io.apicurio.hub.api.rest.IDesignsResource;
+import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
 
@@ -44,6 +49,10 @@ public class DesignsResource implements IDesignsResource {
 
     @Inject
     private IStorage storage;
+    @Inject
+    private IGitHubService github;
+    @Inject
+    private ISecurityContext security;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -62,19 +71,21 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#addDesign(io.apicurio.hub.api.beans.AddApiDesign)
      */
     @Override
-    public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException {
+    public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException, NotFoundException {
         logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
+        
+        ApiDesignResourceInfo resourceInfo = this.github.validateResourceExists(info.getRepositoryUrl());
         
         Date now = new Date();
         
         ApiDesign design = new ApiDesign();
-        design.setCreatedBy("user");
-        design.setCreatedOn(now);
-        design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
-        design.setName("API Name");
+        design.setName(resourceInfo.getName());
+        design.setDescription(resourceInfo.getDescription());
         design.setRepositoryUrl(info.getRepositoryUrl());
+        design.setCreatedBy(this.security.getCurrentUser().getLogin());
+        design.setCreatedOn(now);
+        design.setModifiedBy(this.security.getCurrentUser().getLogin());
+        design.setModifiedOn(now);
         
         try {
             String id = this.storage.createApiDesign(design);
@@ -94,6 +105,54 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getDesign(java.lang.String)
+     */
+    @Override
+    public ApiDesign getDesign(String designId) throws ServerError, NotFoundException {
+        logger.debug("Getting an API design with ID {}", designId);
+        try {
+            return this.storage.getApiDesign(designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateDesign(java.lang.String, io.apicurio.hub.api.beans.UpdateApiDesign)
+     */
+    @Override
+    public ApiDesign updateDesign(String designId, UpdateApiDesign update) throws ServerError, NotFoundException {
+        try {
+            logger.debug("Updating an API Design with ID {}", designId);
+            ApiDesign design = this.storage.getApiDesign(designId);
+            if (update.getDescription() != null) {
+                design.setDescription(update.getDescription());
+            }
+            if (update.getName() != null) {
+                design.setName(update.getName());
+            }
+            design.setModifiedBy(this.security.getCurrentUser().getLogin());
+            design.setModifiedOn(new Date());
+            this.storage.updateApiDesign(design);
+            return design;
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#deleteDesign(java.lang.String)
+     */
+    @Override
+    public void deleteDesign(String designId) throws ServerError, NotFoundException {
+        try {
+            this.storage.deleteApiDesign(designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
 
 }

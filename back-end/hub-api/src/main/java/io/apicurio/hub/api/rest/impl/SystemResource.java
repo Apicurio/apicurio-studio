@@ -62,6 +62,7 @@ public class SystemResource implements ISystemResource {
             status.setUser(securityContext.getCurrentUser());
         } catch (StorageException e) {
             logger.error("Error getting System Status.", e);
+            status.setUp(false);
         }
 
         return status;

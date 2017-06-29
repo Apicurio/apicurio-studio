@@ -160,16 +160,46 @@ public class JdbcStorage implements IStorage {
     @Override
     public void deleteApiDesign(String designId) throws NotFoundException, StorageException {
         logger.debug("Deleting an API Design: {}", designId);
-        this.jdbi.withHandle( handle -> {
-            String statement = sqlStatements.deleteApiDesign();
-            int rowCount = handle.createUpdate(statement)
-                  .bind(0, designId)
-                  .execute();
-            if (rowCount == 0) {
-                throw new NotFoundException();
-            }
-            return null;
-        });
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteApiDesign();
+                int rowCount = handle.createUpdate(statement)
+                      .bind(0, designId)
+                      .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting an API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#updateApiDesign(io.apicurio.hub.api.beans.ApiDesign)
+     */
+    @Override
+    public void updateApiDesign(ApiDesign design) throws NotFoundException, StorageException {
+        logger.debug("Updating an API Design: {}", design.getId());
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateApiDesign();
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, design.getName())
+                        .bind(1, design.getDescription())
+                        .bind(2, design.getModifiedBy())
+                        .bind(3, design.getModifiedOn())
+                        .bind(4, design.getId())
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error updating an API design.", e);
+        }
     }
 
     /**
@@ -178,10 +208,14 @@ public class JdbcStorage implements IStorage {
     @Override
     public Collection<ApiDesign> listApiDesigns() throws StorageException {
         logger.debug("Getting a list of all API designs.");
-        return this.jdbi.withHandle( handle -> {
-            String statement = sqlStatements.selectApiDesigns();
-            return handle.createQuery(statement).mapToBean(ApiDesign.class).list();
-        });
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiDesigns();
+                return handle.createQuery(statement).mapToBean(ApiDesign.class).list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error listing API designs.", e);
+        }
     }
 
 }

@@ -14,29 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.storage;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class StorageException extends Exception {
-
-    private static final long serialVersionUID = -8581804968627819781L;
+public class UpdateApiDesign {
+    
+    private String name;
+    private String description;
     
     /**
      * Constructor.
      */
-    public StorageException(String message) {
-        super(message);
+    public UpdateApiDesign() {
     }
-    
+
     /**
-     * Constructor.
-     * @param message
-     * @param cause
+     * @return the name
      */
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

@@ -236,6 +236,20 @@
                     }
                 }
             }
+        },
+        "/currentuser": {
+            "get": {
+                "summary": "Get Current User Info",
+                "description": "Returns information about the authenticated user.",
+                "responses": {
+                    "200": {
+                        "description": "When the call successfully returns the User info.",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -351,6 +365,29 @@
                 },
                 "description": {
                     "description": "Updated short description of the API design.",
+                    "type": "string"
+                }
+            }
+        },
+        "User": {
+            "title": "Root Type",
+            "description": "The root of the User type's schema.",
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "id": {
+                    "format": "int32",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "avatar": {
                     "type": "string"
                 }
             }

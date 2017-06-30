@@ -19,8 +19,12 @@ package test.io.apicurio.hub.api;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.IGitHubService;
 
@@ -40,10 +44,33 @@ public class MockGitHubService implements IGitHubService {
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(repositoryUrl);
+            info.setUrl(repositoryUrl);
             return info;
         } catch (URISyntaxException e) {
             throw new NotFoundException();
         }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getCollaborators(java.lang.String)
+     */
+    @Override
+    public Collection<Collaborator> getCollaborators(String repoUrl) {
+        Set<Collaborator> rval = new HashSet<>();
+
+        Collaborator c1 = new Collaborator();
+        c1.setCommits(7);
+        c1.setName("user1");
+        c1.setUrl("urn:user1");
+        rval.add(c1);
+        
+        Collaborator c2 = new Collaborator();
+        c2.setCommits(7);
+        c2.setName("user1");
+        c2.setUrl("urn:user1");
+        rval.add(c2);
+        
+        return rval;
     }
 
 }

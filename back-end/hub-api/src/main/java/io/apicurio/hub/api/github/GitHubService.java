@@ -17,20 +17,29 @@
 package io.apicurio.hub.api.github;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.security.ISecurityContext;
 
@@ -39,6 +48,8 @@ import io.apicurio.hub.api.security.ISecurityContext;
  */
 @ApplicationScoped
 public class GitHubService implements IGitHubService {
+
+    private static Logger logger = LoggerFactory.getLogger(GitHubService.class);
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -53,6 +64,7 @@ public class GitHubService implements IGitHubService {
      */
     @Override
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException {
+        logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
             GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
             if (resource == null) {
@@ -73,6 +85,10 @@ public class GitHubService implements IGitHubService {
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(description);
+            info.setUrl("https://github.com/:org/:repo/blob/master/:path"
+                    .replace(":org", resource.getOrganization())
+                    .replace(":repo", resource.getRepository())
+                    .replace(":path", resource.getResourcePath()));
             return info;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -87,13 +103,15 @@ public class GitHubService implements IGitHubService {
      * TODO need more granular error conditions besides just {@link NotFoundException}
      */
     private String getResourceContent(GitHubResource resource) throws NotFoundException {
+        logger.debug("Getting resource content for: {}/{} - {}", 
+                resource.getOrganization(), resource.getRepository(), resource.getResourcePath());
         try {
-            String githubApiUrl = this.endpoint("/repos/:owner/:repo/contents/:path")
+            String contentUrl = this.endpoint("/repos/:owner/:repo/contents/:path")
                     .bind("owner", resource.getOrganization())
                     .bind("repo", resource.getRepository())
                     .bind("path", resource.getResourcePath())
                     .url();
-            GetRequest request = Unirest.get(githubApiUrl).header("Accept", "application/json");
+            GetRequest request = Unirest.get(contentUrl).header("Accept", "application/json");
             security.addSecurity(request);
             HttpResponse<String> userResp = request.asString();
             if (userResp.getStatus() != 200) {
@@ -104,6 +122,56 @@ public class GitHubService implements IGitHubService {
             }
         } catch (UnirestException e) {
             throw new NotFoundException();
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getCollaborators(java.lang.String)
+     */
+    @Override
+    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException {
+        logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
+        try {
+            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            if (resource == null) {
+                throw new NotFoundException();
+            }
+            
+            String commitsUrl = endpoint("/repos/:org/:repo/commits")
+                    .bind("org", resource.getOrganization())
+                    .bind("repo", resource.getRepository())
+                    .url();
+            HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
+                    .queryString("path", resource.getResourcePath());
+            security.addSecurity(request);
+            HttpResponse<JsonNode> response = request.asJson();
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+            
+            Map<String, Collaborator> cidx = new HashMap<>();
+            JsonNode node = response.getBody();
+            if (node.isArray()) {
+                JSONArray array = node.getArray();
+                array.forEach( obj -> {
+                    JSONObject jobj = (JSONObject) obj;
+                    JSONObject authorObj = (JSONObject) jobj.get("author");
+                    String user = authorObj.getString("login");
+                    Collaborator collaborator = cidx.get(user);
+                    if (collaborator == null) {
+                        collaborator = new Collaborator();
+                        collaborator.setName(user);
+                        collaborator.setUrl(authorObj.getString("html_url"));
+                        collaborator.setCommits(1);
+                        cidx.put(user, collaborator);
+                    } else {
+                        collaborator.setCommits(collaborator.getCommits() + 1);
+                    }
+                });
+            }
+            return cidx.values();
+        } catch (UnirestException e) {
+            throw new RuntimeException(e);
         }
     }
 

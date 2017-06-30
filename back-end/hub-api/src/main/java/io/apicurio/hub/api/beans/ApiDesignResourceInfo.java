@@ -25,6 +25,7 @@ public class ApiDesignResourceInfo {
     
     private String name;
     private String description;
+    private String url;
     
     /**
      * Constructor.
@@ -58,6 +59,20 @@ public class ApiDesignResourceInfo {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

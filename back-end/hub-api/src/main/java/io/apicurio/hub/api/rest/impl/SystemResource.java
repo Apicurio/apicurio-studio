@@ -42,7 +42,7 @@ public class SystemResource implements ISystemResource {
     @Inject
     private Version version;
     @Inject
-    private ISecurityContext securityContext;
+    private ISecurityContext security;
 
     /**
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()
@@ -52,14 +52,15 @@ public class SystemResource implements ISystemResource {
         logger.debug("Getting system status.");
         
         SystemStatus status = new SystemStatus();
+        String user = this.security.getCurrentUser().getLogin();
         try {
             status.setBuiltOn(version.getVersionDate());
             status.setDescription("The API to the Apicurio Studio Hub.");
             status.setMoreInfo("http://www.apicur.io/");
             status.setName("Apicurio Studio Hub API");
-            status.setUp(storage != null && storage.listApiDesigns().size() >= 0);
+            status.setUp(storage != null && storage.listApiDesigns(user).size() >= 0);
             status.setVersion(version.getVersionString());
-            status.setUser(securityContext.getCurrentUser());
+            status.setUser(security.getCurrentUser());
         } catch (StorageException e) {
             logger.error("Error getting System Status.", e);
             status.setUp(false);

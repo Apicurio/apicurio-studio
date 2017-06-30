@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -58,7 +59,7 @@ public interface IDesignsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException;
-    
+
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +75,11 @@ public interface IDesignsResource {
     @DELETE
     @Path("{designId}")
     public void deleteDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/collaborators")
+    public Collection<Collaborator> getCollaborators(@PathParam("designId") String designId) throws ServerError, NotFoundException;
     
 }

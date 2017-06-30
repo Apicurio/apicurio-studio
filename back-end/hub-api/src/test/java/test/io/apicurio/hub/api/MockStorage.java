@@ -35,10 +35,10 @@ public class MockStorage implements IStorage {
     private int counter = 1;
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getApiDesign(java.lang.String)
+     * @see io.apicurio.hub.api.storage.IStorage#getApiDesign(java.lang.String, java.lang.String)
      */
     @Override
-    public ApiDesign getApiDesign(String designId) throws NotFoundException, StorageException {
+    public ApiDesign getApiDesign(String userId, String designId) throws NotFoundException, StorageException {
         ApiDesign design = this.designs.get(designId);
         if (design == null) {
             throw new NotFoundException();
@@ -47,10 +47,10 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#createApiDesign(io.apicurio.hub.api.beans.ApiDesign)
+     * @see io.apicurio.hub.api.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
      */
     @Override
-    public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException {
+    public String createApiDesign(String userId, ApiDesign design) throws AlreadyExistsException, StorageException {
         for (ApiDesign d : designs.values()) {
             if (d.getRepositoryUrl().equals(design.getRepositoryUrl())) {
                 throw new AlreadyExistsException();
@@ -63,21 +63,21 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#deleteApiDesign(java.lang.String)
+     * @see io.apicurio.hub.api.storage.IStorage#deleteApiDesign(java.lang.String, java.lang.String)
      */
     @Override
-    public void deleteApiDesign(String designId) throws NotFoundException, StorageException {
+    public void deleteApiDesign(String userId, String designId) throws NotFoundException, StorageException {
         if (this.designs.remove(designId) == null) {
             throw new NotFoundException();
         }
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#updateApiDesign(io.apicurio.hub.api.beans.ApiDesign)
+     * @see io.apicurio.hub.api.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
      */
     @Override
-    public void updateApiDesign(ApiDesign design) throws NotFoundException, StorageException {
-        ApiDesign savedDesign = this.getApiDesign(design.getId());
+    public void updateApiDesign(String userId, ApiDesign design) throws NotFoundException, StorageException {
+        ApiDesign savedDesign = this.getApiDesign(userId, design.getId());
         savedDesign.setName(design.getName());
         savedDesign.setDescription(design.getDescription());
         savedDesign.setModifiedBy(design.getModifiedBy());
@@ -85,10 +85,10 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#listApiDesigns()
+     * @see io.apicurio.hub.api.storage.IStorage#listApiDesigns(java.lang.String)
      */
     @Override
-    public Collection<ApiDesign> listApiDesigns() throws StorageException {
+    public Collection<ApiDesign> listApiDesigns(String userId) throws StorageException {
         return this.designs.values();
     }
 

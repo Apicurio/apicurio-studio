@@ -37,13 +37,13 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String deleteApiDesign() {
         return "DELETE FROM api_designs d WHERE d.id = ?";
     }
-
+    
     /**
      * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectApiDesigns()
      */
     @Override
     public String selectApiDesigns() {
-        return "SELECT * FROM api_designs d";
+        return "SELECT d.* FROM api_designs d INNER JOIN acl a ON a.design_id = d.id WHERE a.user_id = ?";
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesignById() {
-        return "SELECT * FROM api_designs d WHERE d.id = ?";
+        return "SELECT d.* FROM api_designs d INNER JOIN acl a ON a.design_id = d.id WHERE d.id = ? AND a.user_id = ?";
     }
     
     /**
@@ -60,5 +60,29 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String updateApiDesign() {
         return "UPDATE api_designs SET name = ?, description = ?, modified_by = ?, modified_on = ? WHERE id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertAcl()
+     */
+    @Override
+    public String insertAcl() {
+        return "INSERT INTO acl (user_id, design_id, role) VALUES (?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#clearAcl()
+     */
+    @Override
+    public String clearAcl() {
+        return "DELETE FROM acl a WHERE a.design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#hasWritePermission()
+     */
+    @Override
+    public String hasWritePermission() {
+        return "SELECT COUNT(*) FROM acl a WHERE a.design_id = ? AND a.user_id = ? AND (a.role = 'owner' OR a.role = 'editor')";
     }
 }

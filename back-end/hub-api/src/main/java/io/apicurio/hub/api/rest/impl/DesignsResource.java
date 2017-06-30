@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -61,7 +62,8 @@ public class DesignsResource implements IDesignsResource {
     public Collection<ApiDesign> listDesigns() throws ServerError {
         try {
             logger.debug("Listing API Designs");
-            return this.storage.listApiDesigns();
+            String user = this.security.getCurrentUser().getLogin();
+            return this.storage.listApiDesigns(user);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -77,18 +79,19 @@ public class DesignsResource implements IDesignsResource {
         ApiDesignResourceInfo resourceInfo = this.github.validateResourceExists(info.getRepositoryUrl());
         
         Date now = new Date();
-        
+        String user = this.security.getCurrentUser().getLogin();
+
         ApiDesign design = new ApiDesign();
         design.setName(resourceInfo.getName());
         design.setDescription(resourceInfo.getDescription());
-        design.setRepositoryUrl(info.getRepositoryUrl());
-        design.setCreatedBy(this.security.getCurrentUser().getLogin());
+        design.setRepositoryUrl(resourceInfo.getUrl());
+        design.setCreatedBy(user);
         design.setCreatedOn(now);
-        design.setModifiedBy(this.security.getCurrentUser().getLogin());
+        design.setModifiedBy(user);
         design.setModifiedOn(now);
         
         try {
-            String id = this.storage.createApiDesign(design);
+            String id = this.storage.createApiDesign(user, design);
             design.setId(id);
         } catch (StorageException e) {
             throw new ServerError(e);
@@ -114,7 +117,8 @@ public class DesignsResource implements IDesignsResource {
     public ApiDesign getDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Getting an API design with ID {}", designId);
         try {
-            return this.storage.getApiDesign(designId);
+            String user = this.security.getCurrentUser().getLogin();
+            return this.storage.getApiDesign(user, designId);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -127,7 +131,8 @@ public class DesignsResource implements IDesignsResource {
     public ApiDesign updateDesign(String designId, UpdateApiDesign update) throws ServerError, NotFoundException {
         try {
             logger.debug("Updating an API Design with ID {}", designId);
-            ApiDesign design = this.storage.getApiDesign(designId);
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesign design = this.storage.getApiDesign(user, designId);
             if (update.getDescription() != null) {
                 design.setDescription(update.getDescription());
             }
@@ -136,7 +141,7 @@ public class DesignsResource implements IDesignsResource {
             }
             design.setModifiedBy(this.security.getCurrentUser().getLogin());
             design.setModifiedOn(new Date());
-            this.storage.updateApiDesign(design);
+            this.storage.updateApiDesign(user, design);
             return design;
         } catch (StorageException e) {
             throw new ServerError(e);
@@ -149,7 +154,23 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
         try {
-            this.storage.deleteApiDesign(designId);
+            String user = this.security.getCurrentUser().getLogin();
+            this.storage.deleteApiDesign(user, designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getCollaborators(java.lang.String)
+     */
+    @Override
+    public Collection<Collaborator> getCollaborators(String designId) throws ServerError, NotFoundException {
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            String repoUrl = design.getRepositoryUrl();
+            return this.github.getCollaborators(repoUrl);
         } catch (StorageException e) {
             throw new ServerError(e);
         }

@@ -68,7 +68,7 @@ public class JdbcStorageTest {
 
     @Test
     public void testListApiDesigns() throws Exception {
-        Collection<ApiDesign> designs = storage.listApiDesigns();
+        Collection<ApiDesign> designs = storage.listApiDesigns("user");
         Assert.assertNotNull(designs);
         Assert.assertEquals(0, designs.size());
         
@@ -82,25 +82,40 @@ public class JdbcStorageTest {
         design.setModifiedBy("user");
         design.setModifiedOn(now);
         
+        // Add five designs as user1
         design.setName("API 1");
         design.setRepositoryUrl(baseUrl + "#api1");
-        storage.createApiDesign(design);
+        storage.createApiDesign("user", design);
         design.setName("API 2");
         design.setRepositoryUrl(baseUrl + "#api2");
-        storage.createApiDesign(design);
+        storage.createApiDesign("user", design);
         design.setName("API 3");
         design.setRepositoryUrl(baseUrl + "#api3");
-        storage.createApiDesign(design);
+        storage.createApiDesign("user", design);
         design.setName("API 4");
         design.setRepositoryUrl(baseUrl + "#api4");
-        storage.createApiDesign(design);
+        storage.createApiDesign("user", design);
         design.setName("API 5");
         design.setRepositoryUrl(baseUrl + "#api5");
-        storage.createApiDesign(design);
+        storage.createApiDesign("user", design);
 
-        designs = storage.listApiDesigns();
+        // Now a couple more as user2
+        design.setName("API 6");
+        design.setRepositoryUrl(baseUrl + "#api6");
+        storage.createApiDesign("user2", design);
+        design.setName("API 7");
+        design.setRepositoryUrl(baseUrl + "#api7");
+        storage.createApiDesign("user2", design);
+
+        // Fetch all 5 from user1
+        designs = storage.listApiDesigns("user");
         Assert.assertNotNull(designs);
         Assert.assertEquals(5, designs.size());
+
+        // Now both from user2
+        designs = storage.listApiDesigns("user2");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(2, designs.size());
     }
     
     @Test
@@ -115,12 +130,12 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String id = storage.createApiDesign(design);
+        String id = storage.createApiDesign("user", design);
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
         
         try {
-            storage.createApiDesign(design);
+            storage.createApiDesign("user", design);
             Assert.fail("Expected an 'AlreadyExistsException'");
         } catch (AlreadyExistsException e) {
             // OK!
@@ -139,18 +154,26 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String designId = storage.createApiDesign(design);
+        String designId = storage.createApiDesign("user", design);
         
         // Fetch it by its ID
-        design = storage.getApiDesign(designId);
+        design = storage.getApiDesign("user", designId);
         Assert.assertNotNull(design);
         
-        // Delete it
-        storage.deleteApiDesign(designId);
+        // Try deleting it as a user without permission to do so
+        try {
+            storage.deleteApiDesign("user2", designId);
+            Assert.fail("Expected NotFoundException");
+        } catch (NotFoundException e) {
+            // OK!
+        }
+        
+        // Delete it with the proper user!
+        storage.deleteApiDesign("user", designId);
         
         // Now fetch again and expect a NotFoundException
         try {
-            storage.getApiDesign(designId);
+            storage.getApiDesign("user", designId);
             Assert.fail("Expected NotFoundException");
         } catch (NotFoundException e) {
             // OK!
@@ -169,10 +192,10 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String designId = storage.createApiDesign(design);
+        String designId = storage.createApiDesign("user", design);
         
         // Fetch it by its ID
-        design = storage.getApiDesign(designId);
+        design = storage.getApiDesign("user", designId);
         Assert.assertNotNull(design);
         Assert.assertEquals("user", design.getCreatedBy());
         Assert.assertEquals("user", design.getModifiedBy());
@@ -183,7 +206,14 @@ public class JdbcStorageTest {
         Assert.assertEquals("urn://JdbcStorageTest.testCreateApiDesign", design.getRepositoryUrl());
         
         try {
-            storage.getApiDesign("17");
+            storage.getApiDesign("user", "17");
+            Assert.fail("Expected NotFoundException");
+        } catch (NotFoundException e) {
+            // OK!
+        }
+        
+        try {
+            storage.getApiDesign("user2", designId);
             Assert.fail("Expected NotFoundException");
         } catch (NotFoundException e) {
             // OK!
@@ -202,17 +232,17 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String designId = storage.createApiDesign(design);
+        String designId = storage.createApiDesign("user", design);
         design.setId(designId);
         
         design.setModifiedBy("user2");
         design.setModifiedOn(new Date(now.getTime() + 100));
         design.setName("Updated API Name");
         design.setDescription("Updated description.");
-        storage.updateApiDesign(design);
+        storage.updateApiDesign("user", design);
         
         // now fetch the design from the storage and verify its values
-        ApiDesign updatedDesign = storage.getApiDesign(designId);
+        ApiDesign updatedDesign = storage.getApiDesign("user", designId);
         Assert.assertEquals(design.getId(), updatedDesign.getId());
         Assert.assertEquals(design.getName(), updatedDesign.getName());
         Assert.assertEquals(design.getDescription(), updatedDesign.getDescription());
@@ -221,6 +251,13 @@ public class JdbcStorageTest {
         Assert.assertEquals(design.getCreatedOn(), updatedDesign.getCreatedOn());
         Assert.assertEquals(design.getModifiedBy(), updatedDesign.getModifiedBy());
         Assert.assertEquals(design.getModifiedOn(), updatedDesign.getModifiedOn());
+        
+        try {
+            storage.updateApiDesign("user2", design);
+            Assert.fail("Expected a NotFoundException");
+        } catch (NotFoundException e) {
+            // expected
+        }
     }
     
     /**

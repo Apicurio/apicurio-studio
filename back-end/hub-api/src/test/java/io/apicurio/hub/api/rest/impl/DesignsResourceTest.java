@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -176,6 +177,22 @@ public class DesignsResourceTest {
         } catch (NotFoundException e) {
             // should get here
         }
+    }    
+
+    @Test
+    public void testGetCollaborators() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+        AddApiDesign info = new AddApiDesign();
+        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        resource.addDesign(info);
+
+        Collection<Collaborator> collaborators = resource.getCollaborators("1");
+        Assert.assertNotNull(collaborators);
+        Assert.assertFalse(collaborators.isEmpty());
+        Assert.assertEquals(2, collaborators.size());
+        Collaborator collaborator = collaborators.iterator().next();
+        Assert.assertEquals(7, collaborator.getCommits());
+        Assert.assertEquals("user1", collaborator.getName());
+        Assert.assertEquals("urn:user1", collaborator.getUrl());
     }    
 
 }

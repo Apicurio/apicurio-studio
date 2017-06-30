@@ -44,7 +44,7 @@ public class SystemResourceTest {
         version.load();
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "version", version);
-        TestUtil.setPrivateField(resource, "securityContext", new MockSecurityContext());
+        TestUtil.setPrivateField(resource, "security", new MockSecurityContext());
     }
     
     @After

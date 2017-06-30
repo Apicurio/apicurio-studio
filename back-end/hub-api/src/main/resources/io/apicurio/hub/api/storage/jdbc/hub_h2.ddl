@@ -7,3 +7,7 @@ CREATE TABLE api_designs (id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(255) N
 ALTER TABLE api_designs ADD PRIMARY KEY (id);
 ALTER TABLE api_designs ADD CONSTRAINT UK_designs_1 UNIQUE (repository_url);
 
+CREATE TABLE acl (user_id VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, role VARCHAR(255) NOT NULL);
+ALTER TABLE acl ADD PRIMARY KEY (user_id, design_id);
+ALTER TABLE acl ADD CONSTRAINT FK_acl_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
+CREATE INDEX IDX_acl_2 ON acl(role);

@@ -29,12 +29,13 @@ public interface IStorage {
 
     /**
      * Gets a single API Design from the storage layer by its unique ID.
+     * @param userId
      * @param designId
      * @return an API Design
      * @throws NotFoundException
      * @throws StorageException
      */
-    public ApiDesign getApiDesign(String designId) throws NotFoundException, StorageException;
+    public ApiDesign getApiDesign(String userId, String designId) throws NotFoundException, StorageException;
 
     /**
      * Creates a new API Design in the storage layer and returns a new unique Design ID.  This
@@ -43,38 +44,41 @@ public interface IStorage {
      * 
      * If an API design already exists for the given source repository URL, this will throw
      * an exception.
-     * 
+     * @param userId
      * @param design
      * @return the unique design id
      * @throws AlreadyExistsException
      * @throws StorageException
      */
-    public String createApiDesign(ApiDesign design) throws AlreadyExistsException, StorageException;
+    public String createApiDesign(String userId, ApiDesign design) throws AlreadyExistsException, StorageException;
 
     /**
      * Deletes a single API Design by its unique ID.  Throws an exception if no design
      * was found.
+     * @param userId
      * @param designId
      * @throws NotFoundException
      * @throws StorageException
      */
-    public void deleteApiDesign(String designId) throws NotFoundException, StorageException;
+    public void deleteApiDesign(String userId, String designId) throws NotFoundException, StorageException;
 
     /**
      * Updates a single API design.  An exception is thrown if no design for the given ID
      * was found.
+     * @param userId
      * @param design
      * @throws NotFoundException
      * @throws StorageException
      */
-    public void updateApiDesign(ApiDesign design) throws NotFoundException, StorageException;
+    public void updateApiDesign(String userId, ApiDesign design) throws NotFoundException, StorageException;
 
     /**
      * Returns a collection of API Designs accessible by the currently authenticated
      * user.
+     * @param userId
      * @return a collection of API Designs
      * @throws StorageException
      */
-    public Collection<ApiDesign> listApiDesigns() throws StorageException;
+    public Collection<ApiDesign> listApiDesigns(String userId) throws StorageException;
 
 }

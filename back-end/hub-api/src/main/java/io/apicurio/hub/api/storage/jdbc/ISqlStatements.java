@@ -59,5 +59,21 @@ public interface ISqlStatements {
      * A statement used to update a single API design.
      */
     public String updateApiDesign();
+
+    /**
+     * A statement used to insert a row into the acl table.
+     */
+    public String insertAcl();
+
+    /**
+     * A statement used to delete all acl rows for an api design.
+     */
+    public String clearAcl();
+    
+    /**
+     * A statement used to determine if a user has permission to write/delete an API design.
+     * @return
+     */
+    public String hasWritePermission();
     
 }

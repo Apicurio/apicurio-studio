@@ -21,7 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.apicurio.hub.api.beans.SystemStatusBean;
+import io.apicurio.hub.api.beans.SystemStatus;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -32,6 +32,6 @@ public interface ISystemResource {
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public SystemStatusBean getStatus();
+    public SystemStatus getStatus();
     
 }

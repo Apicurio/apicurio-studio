@@ -19,57 +19,58 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class NewApiDesignBean {
-    
-    private String name;
-    private String description;
-    private String repositoryUrl;
+public class ApiError {
+
+    private String errorType;
+    private String message;
+    private String trace;
     
     /**
      * Constructor.
      */
-    public NewApiDesignBean() {
+    public ApiError() {
     }
 
     /**
-     * @return the name
+     * @return the errorType
      */
-    public String getName() {
-        return name;
+    public String getErrorType() {
+        return errorType;
     }
 
     /**
-     * @param name the name to set
+     * @param errorType the errorType to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setErrorType(String errorType) {
+        this.errorType = errorType;
     }
 
     /**
-     * @return the description
+     * @return the message
      */
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * @param description the description to set
+     * @param message the message to set
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
-     * @return the repositoryUrl
+     * @return the trace
      */
-    public String getRepositoryUrl() {
-        return repositoryUrl;
+    public String getTrace() {
+        return trace;
     }
 
     /**
-     * @param repositoryUrl the repositoryUrl to set
+     * @param trace the trace to set
      */
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
+    public void setTrace(String trace) {
+        this.trace = trace;
     }
+    
 }

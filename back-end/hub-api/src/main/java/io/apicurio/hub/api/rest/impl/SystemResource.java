@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.Version;
-import io.apicurio.hub.api.beans.SystemStatusBean;
+import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
@@ -48,10 +48,10 @@ public class SystemResource implements ISystemResource {
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()
      */
     @Override
-    public SystemStatusBean getStatus() {
+    public SystemStatus getStatus() {
         logger.debug("Getting system status.");
         
-        SystemStatusBean status = new SystemStatusBean();
+        SystemStatus status = new SystemStatus();
         try {
             status.setBuiltOn(version.getVersionDate());
             status.setDescription("The API to the Apicurio Studio Hub.");

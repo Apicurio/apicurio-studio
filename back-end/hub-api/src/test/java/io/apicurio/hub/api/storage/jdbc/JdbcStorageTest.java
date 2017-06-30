@@ -82,7 +82,6 @@ public class JdbcStorageTest {
         design.setModifiedBy("user");
         design.setModifiedOn(now);
         
-        
         design.setName("API 1");
         design.setRepositoryUrl(baseUrl + "#api1");
         storage.createApiDesign(design);

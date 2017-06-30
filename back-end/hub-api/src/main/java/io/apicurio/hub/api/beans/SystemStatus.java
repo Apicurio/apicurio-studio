@@ -23,7 +23,7 @@ import io.apicurio.studio.shared.beans.User;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class SystemStatusBean {
+public class SystemStatus {
 
     private String name;
     private String description;
@@ -36,7 +36,7 @@ public class SystemStatusBean {
     /**
      * Constructor.
      */
-    public SystemStatusBean() {
+    public SystemStatus() {
     }
 
     /**

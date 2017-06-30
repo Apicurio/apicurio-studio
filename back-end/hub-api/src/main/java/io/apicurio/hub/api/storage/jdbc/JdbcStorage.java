@@ -149,7 +149,7 @@ public class JdbcStorage implements IStorage {
             if (e.getMessage().contains("Unique")) {
                 throw new AlreadyExistsException();
             } else {
-                throw e;
+                throw new StorageException("Error inserting API design.", e);
             }
         }
     }

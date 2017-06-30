@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
+package io.apicurio.hub.api.rest;
 
-import com.mashape.unirest.request.HttpRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import io.apicurio.studio.shared.beans.User;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
+@Path("currentuser")
+public interface ICurrentUserResource {
 
-    /**
-     * Returns the User information for the currently authenticated user.
-     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public User getCurrentUser();
-
-    /**
-     * Called to add security information to the given external API request.  For example, this may take
-     * the form of adding an Authorization header to the request with the current bearer token.
-     * @param request
-     */
-    public void addSecurity(HttpRequest request);
-
+    
 }

@@ -21,30 +21,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.apicurio.hub.api.Version;
-import io.apicurio.hub.api.beans.SystemStatus;
-import io.apicurio.hub.api.rest.ISystemResource;
+import io.apicurio.hub.api.rest.ICurrentUserResource;
+import io.apicurio.studio.shared.beans.User;
 import test.io.apicurio.hub.api.MockSecurityContext;
-import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class SystemResourceTest {
+public class CurrentUserResourceTest {
     
-    private MockStorage storage;
-    private ISystemResource resource;
+    private ICurrentUserResource resource;
 
     @Before
     public void setUp() {
-        storage = new MockStorage();
-        resource = new SystemResource();
-        Version version = new Version();
-        version.load();
-        TestUtil.setPrivateField(resource, "storage", storage);
-        TestUtil.setPrivateField(resource, "version", version);
-        TestUtil.setPrivateField(resource, "securityContext", new MockSecurityContext());
+        resource = new CurrentUserResource();
+        TestUtil.setPrivateField(resource, "security", new MockSecurityContext());
     }
     
     @After
@@ -52,11 +44,14 @@ public class SystemResourceTest {
     }
     
     @Test
-    public void testStatus() {
-        SystemStatus status = resource.getStatus();
-        Assert.assertNotNull(status);
-        Assert.assertEquals("Apicurio Studio Hub API", status.getName());
-        Assert.assertEquals(true, status.isUp());
+    public void testGetCurrentUser() {
+        User user = resource.getCurrentUser();
+        Assert.assertNotNull(user);
+        Assert.assertEquals("avatar.jpg", user.getAvatar());
+        Assert.assertEquals("user@example.org", user.getEmail());
+        Assert.assertEquals(1, user.getId());
+        Assert.assertEquals("user", user.getLogin());
+        Assert.assertEquals("User", user.getName());
     }
 
 }

@@ -20,6 +20,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 
+import com.mashape.unirest.request.HttpRequest;
+
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -53,6 +55,14 @@ public class GitHubSecurityContext implements ISecurityContext {
     @Override
     public User getCurrentUser() {
         return user;
+    }
+
+    /**
+     * @see io.apicurio.hub.api.security.ISecurityContext#addSecurity(com.mashape.unirest.request.HttpRequest)
+     */
+    @Override
+    public void addSecurity(HttpRequest request) {
+        // TODO implement adding security to the HTTP request!!
     }
 
 }

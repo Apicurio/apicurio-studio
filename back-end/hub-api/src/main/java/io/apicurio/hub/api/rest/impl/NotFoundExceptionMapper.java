@@ -14,27 +14,34 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
+package io.apicurio.hub.api.rest.impl;
 
-import com.mashape.unirest.request.HttpRequest;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-import io.apicurio.studio.shared.beans.User;
+import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
+@Provider
+public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
     /**
-     * Returns the User information for the currently authenticated user.
+     * Constructor.
      */
-    public User getCurrentUser();
-
+    public NotFoundExceptionMapper() {
+    }
+    
     /**
-     * Called to add security information to the given external API request.  For example, this may take
-     * the form of adding an Authorization header to the request with the current bearer token.
-     * @param request
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
      */
-    public void addSecurity(HttpRequest request);
+    @Override
+    public Response toResponse(NotFoundException data) {
+        ResponseBuilder builder = Response.status(404);
+        return builder.build();
+    }
 
 }

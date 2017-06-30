@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
+package io.apicurio.hub.api.rest.impl;
 
-import com.mashape.unirest.request.HttpRequest;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import io.apicurio.hub.api.rest.ICurrentUserResource;
+import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.studio.shared.beans.User;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
+@ApplicationScoped
+public class CurrentUserResource implements ICurrentUserResource {
+    
+    @Inject
+    private ISecurityContext security;
 
     /**
-     * Returns the User information for the currently authenticated user.
+     * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
      */
-    public User getCurrentUser();
-
-    /**
-     * Called to add security information to the given external API request.  For example, this may take
-     * the form of adding an Authorization header to the request with the current bearer token.
-     * @param request
-     */
-    public void addSecurity(HttpRequest request);
+    @Override
+    public User getCurrentUser() {
+        return security.getCurrentUser();
+    }
 
 }

@@ -20,10 +20,18 @@ import {Http} from "@angular/http";
 import {LocalApisService} from "./apis-local.service";
 import {IApisService} from "./apis.service";
 import {IAuthenticationService} from "./auth.service";
+import {ConfigService} from "./config.service";
+import {HubApisService} from "./apis-hub.service";
 
 
-function ApisServiceFactory(http: Http, authService: IAuthenticationService): IApisService {
-    return new LocalApisService(http, authService);
+function ApisServiceFactory(http: Http, authService: IAuthenticationService, config: ConfigService): IApisService {
+    if (config.apisType() === "hub") {
+        console.info("[ApisServiceFactory] Creating instance of HubApisService");
+        return new HubApisService(http, authService, config);
+    } else {
+        console.info("[ApisServiceFactory] Creating instance of LocalApisService");
+        return new LocalApisService(http, authService);
+    }
 };
 
 
@@ -31,6 +39,6 @@ export let ApisServiceProvider =
 {
     provide: IApisService,
     useFactory: ApisServiceFactory,
-    deps: [Http, IAuthenticationService]
+    deps: [Http, IAuthenticationService, ConfigService]
 };
 

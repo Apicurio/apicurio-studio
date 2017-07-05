@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
+export class NewApi {
 
-export class ApiRepositoryResource {
-    repositoryType: string;
+    name: string;
+    description: string;
     repositoryUrl: string;
-    resourceName: string;
 
     constructor() {
-        this.repositoryType = "";
+        this.name = "";
+        this.description = "";
         this.repositoryUrl = "";
-        this.resourceName = "";
     }
+
 }

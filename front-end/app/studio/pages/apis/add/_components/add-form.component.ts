@@ -18,6 +18,7 @@
 import {Component, Inject, EventEmitter, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
 import {Api} from "../../../../models/api.model";
+import {AddApi} from "../../../../models/add-api.model";
 
 
 @Component({
@@ -28,10 +29,9 @@ import {Api} from "../../../../models/api.model";
 })
 export class AddApiFormComponent {
 
-    @Output() onAddApi = new EventEmitter<Api>();
+    @Output() onAddApi = new EventEmitter<AddApi>();
 
     model: string;
-    discoveringApi: boolean;
     addingApi: boolean;
     dragging: boolean;
     error: string;
@@ -52,18 +52,12 @@ export class AddApiFormComponent {
      */
     public addApi(): void {
         this.error = null;
-        this.discoveringApi = true;
-        this.apis.discoverApi(this.model).then(api => {
-            if (!api.name) {
-                api.name = "Unknown API";
-            }
-            this.addingApi = true;
-            this.onAddApi.emit(api);
-        }).catch( reason => {
-            this.discoveringApi = false;
-            this.error = reason;
-        });
+
+        let addApi: AddApi = new AddApi();
+        addApi.repositoryUrl = this.model;
+
         this.addingApi = true;
+        this.onAddApi.emit(addApi);
     }
 
     public onDragOver(event: DragEvent): void {

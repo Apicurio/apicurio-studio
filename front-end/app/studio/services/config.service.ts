@@ -41,18 +41,41 @@ export class ConfigService {
     }
 
     public authType(): string {
+        if (!this.config.auth) {
+            return null;
+        }
         return this.config.auth.type;
     }
 
     public authToken(): string {
+        if (!this.config.auth) {
+            return null;
+        }
         return this.config.auth.token;
     }
 
     public logoutUrl(): string {
+        if (!this.config.auth) {
+            return null;
+        }
         return this.config.auth.logoutUrl;
     }
 
     public user(): User {
         return <any>this.config.user;
+    }
+
+    public apisType(): string {
+        if (!this.config.apis) {
+            return null;
+        }
+        return this.config.apis.type;
+    }
+
+    public hubUrl(): string {
+        if (!this.config.apis) {
+            return null;
+        }
+        return this.config.apis.hubUrl;
     }
 }

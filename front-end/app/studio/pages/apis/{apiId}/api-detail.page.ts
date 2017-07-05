@@ -72,11 +72,7 @@ export class ApiDetailPageComponent implements OnInit {
      * @return {string}
      */
     public getResourceUrlLabel(): string {
-        let sep: string = "";
-        if (!this.api.repositoryResource.resourceName.startsWith("/")) {
-            sep = "/";
-        }
-        return this.api.repositoryResource.repositoryUrl + sep + this.api.repositoryResource.resourceName;
+        return "View on GitHub";
     }
 
     /**
@@ -84,11 +80,7 @@ export class ApiDetailPageComponent implements OnInit {
      * @return {string}
      */
     public getResourceUrlHref(): string {
-        let sep: string = "";
-        if (!this.api.repositoryResource.resourceName.startsWith("/")) {
-            sep = "/";
-        }
-        return this.api.repositoryResource.repositoryUrl + "/blob/master" + sep + this.api.repositoryResource.resourceName;
+        return this.api.repositoryUrl;
     }
 
     /**

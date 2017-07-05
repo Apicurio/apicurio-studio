@@ -36,7 +36,6 @@ import {AuthenticationServiceProvider} from "./services/auth.service.provider";
 import {ConfigService} from "./services/config.service";
 
 /* Resolves */
-import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
 import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
 
@@ -119,7 +118,7 @@ import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/ap
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent
     ],
-    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, RecentApisResolve, ApiResolve,
+    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, ApiResolve,
         ApiDefinitionResolve, AuthenticationCanActivateGuard, ApiEditorPageGuard
     ],
     bootstrap: [StudioComponent]

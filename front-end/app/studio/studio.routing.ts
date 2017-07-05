@@ -26,7 +26,6 @@ import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 
 /* Resolvers */
-import {RecentApisResolve} from "./pages/dashboard/dashboard.resolve";
 import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 import {ApiEditorPageComponent, ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
@@ -36,10 +35,7 @@ import {AddApiPageComponent} from "./pages/apis/add/add.page";
 const _studioRoutes: any[] = [
     {
         path: "",
-        component: DashboardPageComponent,
-        resolve: {
-            recentApis: RecentApisResolve
-        }
+        component: DashboardPageComponent
     },
     {
         path: "apis",

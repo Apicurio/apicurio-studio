@@ -20,16 +20,11 @@ import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
+import {NewApi} from "../models/new-api.model";
+import {AddApi} from "../models/add-api.model";
 
 
 export interface IApisService {
-
-    /**
-     * Called to discover the details about an API.  This will typically parse the URL, and then query
-     * the appropriate back-end to divine additional API details (such as its name and description).
-     * @param apiUrl
-     */
-    discoverApi(apiUrl: string): Promise<Api>;
 
     /**
      * Gets an array of the repository types supported by this apis service.
@@ -64,7 +59,7 @@ export interface IApisService {
      * @param api
      * @return Promise<Api>
      */
-    createApi(api: Api): Promise<Api>;
+    createApi(api: NewApi): Promise<Api>;
 
     /**
      * Adds an existing API to the Studio.  The assumption with this call is that the
@@ -76,7 +71,7 @@ export interface IApisService {
      * stored.
      * @param api
      */
-    addApi(api: Api): Promise<Api>;
+    addApi(api: AddApi): Promise<Api>;
 
     /**
      * Called to delete an API.  This is done asynchronously and thus returns a promise.

@@ -101,10 +101,10 @@ public class GitHubAuthenticationFilter implements Filter {
      */
     private String getAuthenticationToken(HttpServletRequest request) {
         String tokenHeader = request.getHeader("Authorization");
-        if (tokenHeader == null || !tokenHeader.toLowerCase().startsWith("bearer ")) {
+        if (tokenHeader == null || !(tokenHeader.toLowerCase().startsWith("bearer ") || tokenHeader.toLowerCase().startsWith("token "))) {
             return null;
         }
-        String token = tokenHeader.substring(7);
+        String token = tokenHeader.substring(tokenHeader.indexOf(' ') + 1);
         return token;
     }
 

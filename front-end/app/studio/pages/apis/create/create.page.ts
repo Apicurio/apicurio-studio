@@ -21,6 +21,7 @@ import {Router} from "@angular/router";
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 import {CreateApiFormComponent} from "./_components/create-form.component";
+import {NewApi} from "../../../models/new-api.model";
 
 @Component({
     moduleId: module.id,
@@ -51,12 +52,12 @@ export class CreateApiPageComponent implements OnInit {
     /**
      * Called when the Create API form (component) emits a "create-api" event.  This is bound to
      * from the createapi.page.html template.
-     * @param api
+     * @param newApi
      */
-    public onCreateApi(api: Api) {
-        console.log("[CreateApiPageComponent] onCreateApi(): " + JSON.stringify(api))
-        this.apis.createApi(api).then(updatedApi => {
-            let link: string[] = [ "/apis", updatedApi.id ];
+    public onCreateApi(newApi: NewApi) {
+        console.log("[CreateApiPageComponent] onCreateApi(): " + JSON.stringify(newApi))
+        this.apis.createApi(newApi).then(api => {
+            let link: string[] = [ "/apis", api.id ];
             console.info("[CreateApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {

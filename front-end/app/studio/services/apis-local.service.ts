@@ -26,21 +26,43 @@ import {IAuthenticationService} from "./auth.service";
 import {AbstractGithubService} from "./github";
 import {Oas20Document, OasLibraryUtils} from "oai-ts-core";
 import {ObjectUtils, HttpUtils} from "../util/common";
+import {NewApi} from "../models/new-api.model";
+import {AddApi} from "../models/add-api.model";
 
 
 const APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.local-apis.apis";
 
 
-class GithubRepoInfo {
+class GithubResourceInfo {
     org: string;
     repo: string;
+    resource: string;
 
-    public static fromUrl(url: string): GithubRepoInfo {
-        let items: string[] = url.split("/");
-        let repoInfo: GithubRepoInfo = new GithubRepoInfo();
-        repoInfo.repo = items.pop();
-        repoInfo.org = items.pop();
-        return repoInfo;
+    public static fromUrl(url: string): GithubResourceInfo {
+        let r: RegExp = new RegExp("https://github.com/([^/]+)/([^/]+)/blob/[^/]+/(.*.json)", "i");
+        let result: RegExpExecArray = r.exec(url);
+        if (result == null) {
+            r = new RegExp("https://raw.githubusercontent.com/([^/]+)/([^/]+)/[^/]+/(.*.json)", "i");
+            result = r.exec(url);
+        }
+        if (result == null) {
+            return null;
+        }
+
+        let rval: GithubResourceInfo = new GithubResourceInfo();
+        rval.org = result[1];
+        rval.repo = result[2];
+        rval.resource = result[3];
+
+        if (rval.resource == null) {
+            return null;
+        }
+
+        return rval;
+    }
+
+    public toUrl(): string {
+        return "https://github.com/" + this.org + "/" + this.repo + "/blob/master" + this.resource;
     }
 
 }
@@ -84,7 +106,14 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
     private loadApisFromLocalStorage(): Api[] {
         let storedApis: string = localStorage.getItem(APIS_LOCAL_STORAGE_KEY);
         if (storedApis) {
-            return JSON.parse(storedApis);
+            let apis: any[] = JSON.parse(storedApis);
+            // Note: filter out legacy apis (the structure has changed)
+            return apis.filter( api => {
+                if (api['repositoryResource']) {
+                    return false;
+                }
+                return true;
+            });
         } else {
             return [];
         }
@@ -133,7 +162,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param api
      * @return {Promise<Api>}
      */
-    public createApi(api: Api): Promise<Api> {
+    public createApi(api: NewApi): Promise<Api> {
         console.info("[LocalApisService] Creating the API in GitHub");
         let library: OasLibraryUtils = new OasLibraryUtils();
         let oaiDoc: Oas20Document = <Oas20Document>library.createDocument("2.0");
@@ -145,15 +174,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         let b64Content: string = btoa(oaiContent);
         let commitMessage: string = "Initial creation of API: " + api.name;
 
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
-        let resName: string = api.repositoryResource.resourceName;
-        if (resName.startsWith("/")) {
-            resName = resName.substr(1);
-        }
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(api.repositoryUrl);
         let createFileUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
             owner: gri.org,
             repo: gri.repo,
-            path: resName
+            path: gri.resource
         });
         let headers: Headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
@@ -167,8 +192,22 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
 
         console.info("[LocalApisService] Creating an API Definition in github @ URL: %s", createFileUrl);
 
-        return this.http.put(createFileUrl, body, options).map( response => {
-            return api;
+        return this.http.put(createFileUrl, body, options).map( _ => {
+            let rval: Api = new Api();
+            let now: Date = new Date();
+
+            rval.id = String(this.apiIdCounter++);
+            rval.name = api.repositoryUrl;
+            rval.description = api.repositoryUrl;
+            rval.repositoryUrl = api.repositoryUrl;
+            this.authService.getAuthenticatedUser().subscribe( user => {
+                rval.createdBy = user.login;
+                rval.modifiedBy = user.login;
+            });
+            rval.createdOn = now;
+            rval.modifiedOn = now;
+
+            return rval;
         }).flatMap( api => {
             return this.addApi(api);
         }).toPromise();
@@ -176,21 +215,23 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
 
     /**
      * Adds an API based on the provided meta-data.
-     * @param api
+     * @param addApi
      * @return {Promise<Api>}
      */
-    public addApi(api: Api): Promise<Api> {
-        // Generate a new ID for the Api
-        api.id = String(this.apiIdCounter++);
-        // Push the new Api onto the list
-        this.allApis.unshift(api);
-        // Save the result in local storage
-        this.storeApisInLocalStorage(this.allApis);
-        // Publish some events
-        this._apis.next(this.allApis);
-        let ra: Api[] = this.allApis.slice(0, 4);
-        this._recentApis.next(ra);
-        return Promise.resolve(api);
+    public addApi(addApi: AddApi): Promise<Api> {
+        return this.discoverApi(addApi.repositoryUrl).then( api => {
+            // Generate a new ID for the Api
+            api.id = String(this.apiIdCounter++);
+            // Push the new Api onto the list
+            this.allApis.unshift(api);
+            // Save the result in local storage
+            this.storeApisInLocalStorage(this.allApis);
+            // Publish some events
+            this._apis.next(this.allApis);
+            let ra: Api[] = this.allApis.slice(0, 4);
+            this._recentApis.next(ra);
+            return Promise.resolve(api);
+        });
     }
 
     /**
@@ -245,15 +286,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @return {undefined}
      */
     public updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition> {
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(definition.repositoryResource.repositoryUrl);
-        let path: string = definition.repositoryResource.resourceName;
-        if (path.startsWith("/")) {
-            path = path.slice(1);
-        }
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(definition.repositoryUrl);
         let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
             owner: gri.org,
             repo: gri.repo,
-            path: path
+            path: gri.resource
         });
         let headers = new Headers({ "Accept": "application/json", "Content-Type": "application/json" });
         this.authService.injectAuthHeaders(headers);
@@ -305,12 +342,8 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      */
     public getCollaborators(api: Api): Promise<ApiCollaborators> {
         console.info("[LocalApisService] Getting collaborator info.");
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(api.repositoryUrl);
         console.info("[LocalApisService] Parsed GRI: %o", gri);
-        let path: string = api.repositoryResource.resourceName;
-        if (path.startsWith("/")) {
-            path = path.slice(1);
-        }
         let commitsUrl: string = this.endpoint("/repos/:owner/:repo/commits", {
             owner: gri.org,
             repo: gri.repo
@@ -320,7 +353,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
         let headers: Headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
         let searchParams: URLSearchParams = new URLSearchParams();
-        searchParams.set("path", path);
+        searchParams.set("path", gri.resource);
         let options = new RequestOptions({
             headers: headers,
             search: searchParams
@@ -458,50 +491,14 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @return {undefined}
      */
     public discoverApi(apiUrl: string): Promise<Api> {
-        if (!apiUrl) {
-            return Promise.reject<Api>("Invalid API url.");
-        }
-        if (!apiUrl.startsWith("http")) {
-            return Promise.reject<Api>("Invalid API url.");
-        }
-
-        var parser = document.createElement("a");
-        parser.href = apiUrl;
-
-        if (parser.hostname != "github.com") {
-            return Promise.reject<Api>("Host not supported: " + parser.hostname);
-        }
-
-        if (!parser.pathname) {
-            return Promise.reject<Api>("Incomplete GitHub URL.");
-        }
-
-        let pathItems: string[] = parser.pathname.split("/");
-
-        if (!pathItems[0]) {
-            pathItems.shift();
-        }
-
-        if (pathItems.length < 2) {
-            return Promise.reject<Api>("Incomplete GitHub URL.");
-        }
-
         let api: Api = new Api();
-        api.repositoryResource.repositoryType = "GitHub";
-        api.repositoryResource.repositoryUrl = "http://github.com/" + pathItems.shift() + "/" + pathItems.shift();
-        if (pathItems.length >= 3 && pathItems[0] === "blob") {
-            // Remove the "blob" item
-            pathItems.shift();
-            // Remove the branch item
-            pathItems.shift();
+        api.repositoryUrl = apiUrl;
 
-            // Set the resource path/name
-            api.repositoryResource.resourceName = "/" + pathItems.join("/");
-
-            // Resolve the name and description from this (full) repository resource
-            return this.resolveApiInfo(api);
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(apiUrl);
+        if (gri === null) {
+            return Promise.reject<Api>("Invalid GitHub resource URL: " + apiUrl);
         } else {
-            return Promise.resolve(api);
+            return this.resolveApiInfo(api);
         }
     }
 
@@ -511,15 +508,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param api
      */
     private resolveApiInfo(api: Api): Promise<Api> {
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
-        let path: string = api.repositoryResource.resourceName;
-        if (path.startsWith("/")) {
-            path = path.slice(1);
-        }
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(api.repositoryUrl);
         let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
             owner: gri.org,
             repo: gri.repo,
-            path: path
+            path: gri.resource
         });
         let headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
@@ -544,15 +537,11 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param api
      */
     private resolveApiDefinitionSpec(api: ApiDefinition): Promise<ApiDefinition> {
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(api.repositoryResource.repositoryUrl);
-        let path: string = api.repositoryResource.resourceName;
-        if (path.startsWith("/")) {
-            path = path.slice(1);
-        }
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(api.repositoryUrl);
         let contentUrl: string = this.endpoint("/repos/:owner/:repo/contents/:path", {
             owner: gri.org,
             repo: gri.repo,
-            path: path
+            path: gri.resource
         });
         let headers = new Headers({ "Accept": "application/json" });
         this.authService.injectAuthHeaders(headers);
@@ -622,7 +611,7 @@ export class LocalApisService extends AbstractGithubService implements IApisServ
      * @param comment
      */
     private addCommitComment(definition: ApiDefinition, commitSha: string, comment: string): void {
-        let gri: GithubRepoInfo = GithubRepoInfo.fromUrl(definition.repositoryResource.repositoryUrl);
+        let gri: GithubResourceInfo = GithubResourceInfo.fromUrl(definition.repositoryUrl);
         let commentUrl: string = this.endpoint("/repos/:owner/:repo/commits/:sha/comments", {
             owner: gri.org,
             repo: gri.repo,

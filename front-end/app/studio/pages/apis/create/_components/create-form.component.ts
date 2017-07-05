@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import {Component, Inject, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
-import {Api} from "../../../../models/api.model";
 import {User} from "../../../../models/user.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
-import {Observable} from "rxjs/Observable";
+import {NewApi} from "../../../../models/new-api.model";
 
 
 @Component({
@@ -31,7 +30,7 @@ import {Observable} from "rxjs/Observable";
 })
 export class CreateApiFormComponent {
 
-    @Output() onCreateApi = new EventEmitter<Api>();
+    @Output() onCreateApi = new EventEmitter<NewApi>();
 
     model: any = {
         name: null,
@@ -116,12 +115,10 @@ export class CreateApiFormComponent {
      * Called when the user clicks the "Create API" submit button on the form.
      */
     public createApi(): void {
-        let api: Api = new Api();
+        let api: NewApi = new NewApi();
         api.name = this.model.name;
         api.description = this.model.description;
-        api.repositoryResource.repositoryType = "GitHub";
-        api.repositoryResource.repositoryUrl = "https://github.com/" + this.model.organization + "/" + this.model.repository;
-        api.repositoryResource.resourceName = this.model.resource;
+        api.repositoryUrl = "https://github.com/" + this.model.organization + "/" + this.model.repository + this.model.resource;
 
         this.creatingApi = true;
         this.onCreateApi.emit(api);

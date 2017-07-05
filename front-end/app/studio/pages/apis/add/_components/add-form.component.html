@@ -26,11 +26,7 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || addingApi || discoveringApi">Add API</button>
-                    <p *ngIf="discoveringApi" style="display: inline-block; margin-left: 10px">
-                        <span class="spinner spinner-xs spinner-inline"></span>
-                        <span>Fetching API details...</span>
-                    </p>
+                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || addingApi">Add API</button>
                 </div>
             </div>
         </form>

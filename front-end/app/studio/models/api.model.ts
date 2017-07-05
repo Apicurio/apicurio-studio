@@ -16,14 +16,12 @@
  */
 
 
-import {ApiRepositoryResource} from "./api-repository-resource";
-
 export class Api {
 
     id: string;
     name: string;
     description: string;
-    repositoryResource: ApiRepositoryResource;
+    repositoryUrl: string;
     createdOn: Date;
     createdBy: string;
     modifiedOn: Date;
@@ -33,7 +31,7 @@ export class Api {
         this.id = "";
         this.name = "";
         this.description = "";
-        this.repositoryResource = new ApiRepositoryResource();
+        this.repositoryUrl = "";
         this.createdOn = new Date();
         this.createdBy = "";
         this.modifiedOn = new Date();
@@ -58,17 +56,11 @@ export class ApiDefinition extends Api {
         apiDef.id = api.id;
         apiDef.name = api.name;
         apiDef.description = api.description;
+        apiDef.repositoryUrl = api.repositoryUrl;
         apiDef.createdOn = api.createdOn;
         apiDef.createdBy = api.createdBy;
         apiDef.modifiedOn = api.modifiedOn;
         apiDef.modifiedBy = api.modifiedBy;
-
-        if (api.repositoryResource) {
-            apiDef.repositoryResource = new ApiRepositoryResource();
-            apiDef.repositoryResource.repositoryType = api.repositoryResource.repositoryType;
-            apiDef.repositoryResource.repositoryUrl = api.repositoryResource.repositoryUrl;
-            apiDef.repositoryResource.resourceName = api.repositoryResource.resourceName;
-        }
 
         return apiDef;
     }

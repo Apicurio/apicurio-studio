@@ -154,6 +154,7 @@
         "/designs/{designId}/content": {
             "get": {
                 "summary": "Get an API Design's Content",
+                "description": "Returns the full OpenAPI specification content for a given API Design.",
                 "responses": {
                     "200": {
                         "description": "When the API design content is returned successfully.",
@@ -166,20 +167,20 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update an API Design's Content",
+                "description": "Update the full content of an API design, replacing any previous OpenAPI document.",
                 "parameters": [
                     {
                         "name": "body",
                         "in": "body",
-                        "description": "The new API design content (in OpenAPI format).",
                         "schema": {
                             "type": "string"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "Indicates that the update was successful."
                     },
                     "404": {
@@ -250,6 +251,27 @@
                     }
                 }
             }
+        },
+        "/currentuser/organizations": {
+            "get": {
+                "summary": "List all GitHub Organizations",
+                "description": "Returns a list of all Organizations the user belongs to."
+            }
+        },
+        "/currentuser/organizations/{org}/repositories": {
+            "get": {
+                "summary": "List all GitHub Repositories",
+                "description": "Returns a list of all repositories within the given GitHub organization."
+            },
+            "parameters": [
+                {
+                    "name": "org",
+                    "in": "path",
+                    "description": "A GitHub organization.",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
         }
     },
     "definitions": {

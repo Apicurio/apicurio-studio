@@ -255,13 +255,35 @@
         "/currentuser/organizations": {
             "get": {
                 "summary": "List all GitHub Organizations",
-                "description": "Returns a list of all Organizations the user belongs to."
+                "description": "Returns a list of all Organizations the user belongs to.",
+                "responses": {
+                    "200": {
+                        "description": "Response when the list of organizations is successfully returned.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/currentuser/organizations/{org}/repositories": {
             "get": {
                 "summary": "List all GitHub Repositories",
-                "description": "Returns a list of all repositories within the given GitHub organization."
+                "description": "Returns a list of all repositories within the given GitHub organization.",
+                "responses": {
+                    "200": {
+                        "description": "Response when the list of repositories is successfully returned.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             },
             "parameters": [
                 {

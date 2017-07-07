@@ -80,6 +80,7 @@ export class ApiEditorPageComponent implements OnInit {
             this.isSaving = false;
         }).catch( error => {
             // TODO do something interesting with this error!
+            alert(error);
         });
     }
 

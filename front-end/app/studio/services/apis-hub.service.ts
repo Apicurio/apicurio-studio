@@ -157,11 +157,53 @@ export class HubApisService implements IApisService {
     }
 
     public getApiDefinition(apiId: string): Promise<ApiDefinition> {
-        return undefined;
+        return this.getApi(apiId).then( api => {
+            let getContentUrl: string = this.endpoint("/designs/:designId/content", {
+                designId: apiId
+            });
+
+            let headers: Headers = new Headers({ "Accept": "application/json" });
+            this.authService.injectAuthHeaders(headers);
+            let options = new RequestOptions({
+                headers: headers
+            });
+
+            console.info("[HubApisService] Getting API Design content: %s", getContentUrl);
+
+            return this.http.get(getContentUrl, options).map( response => {
+                let openApiSpec: any = response.json();
+                let rheaders: Headers = response.headers;
+                let sha: string = rheaders.get("X-Content-SHA");
+                console.info("Received SHA: " + sha);
+                let apiDef: ApiDefinition = ApiDefinition.fromApi(api);
+                apiDef.spec = openApiSpec;
+                apiDef.version = sha;
+                return apiDef;
+            }).toPromise();
+        });
     }
 
     public updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition> {
-        return undefined;
+        console.info("[HubApisService] Updating an API definition (content): ", definition.name);
+
+        let updateContentUrl: string = this.endpoint("/designs/:designId/content", {
+            designId: definition.id
+        });
+        let headers: Headers = new Headers({
+            "Content-Type": "application/json",
+            "X-Apicurio-CommitMessage": saveMessage,
+            "X-Content-SHA": definition.version
+        });
+        console.info("SHA: " + definition.version);
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+        let body: any = definition.spec;
+
+        return this.http.put(updateContentUrl, body, options).map( response => {
+            return definition;
+        }).toPromise();
     }
 
     public getCollaborators(api: Api): Promise<ApiCollaborators> {
@@ -198,13 +240,37 @@ export class HubApisService implements IApisService {
     }
 
     public getOrganizations(): Observable<string[]> {
-        // TODO implement this!
-        return Observable.of(["Apicurio", "apiman", "EricWittmann"]);
+        let organizationsUrl: string = this.endpoint("/currentuser/organizations");
+
+        let headers: Headers = new Headers({ "Accept": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+
+        console.info("[HubApisService] Getting organizations: %s", organizationsUrl);
+
+        return this.http.get(organizationsUrl, options).map( response => {
+            return response.json() as string[];
+        });
     }
 
     public getRepositories(organization: string, isUser?: boolean): Observable<string[]> {
-        // TODO implement this!
-        return Observable.of(["apicurio-studio", "api-samples", "apiman"]);
+        let repositoriesUrl: string = this.endpoint("/currentuser/organizations/:org/repositories", {
+            org: organization
+        });
+
+        let headers: Headers = new Headers({ "Accept": "application/json" });
+        this.authService.injectAuthHeaders(headers);
+        let options = new RequestOptions({
+            headers: headers
+        });
+
+        console.info("[HubApisService] Getting repositories: %s", repositoriesUrl);
+
+        return this.http.get(repositoriesUrl, options).map( response => {
+            return response.json() as string[];
+        });
     }
 
     /**

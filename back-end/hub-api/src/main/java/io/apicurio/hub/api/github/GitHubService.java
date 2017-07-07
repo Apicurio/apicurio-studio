@@ -259,7 +259,7 @@ public class GitHubService implements IGitHubService {
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
             security.addSecurity(request);
             HttpResponse<InputStream> response = request.body(requestBody).asBinary();
-            if (response.getStatus() != 201) {
+            if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
         } catch (UnsupportedEncodingException | UnirestException e) {

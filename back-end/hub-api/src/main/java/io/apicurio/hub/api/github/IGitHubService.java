@@ -20,10 +20,13 @@ import java.util.Collection;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com
+ * 
+ * TODO throw a checked exception when github api calls fail
  */
 public interface IGitHubService {
 
@@ -45,5 +48,29 @@ public interface IGitHubService {
      * @throws NotFoundException
      */
     public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException;
+
+    /**
+     * Fetchs the content of a github resource.  Uses the GitHub API to get access to
+     * the actual resource content and returns it as a string.  Should only be used
+     * for text resources, for obvious reasons.
+     * @param repositoryUrl
+     */
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException;
+
+    /**
+     * Updates the raw content for a resource in GitHub using the GH API.
+     * @param repositoryUrl
+     * @param commitMessage
+     * @param content
+     */
+    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content);
+
+    /**
+     * Creates a new resource in GitHub with the given content.
+     * @param repositoryUrl
+     * @param commitMessage
+     * @param content
+     */
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content);
 
 }

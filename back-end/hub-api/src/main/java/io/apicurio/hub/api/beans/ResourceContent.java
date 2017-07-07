@@ -14,29 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.exceptions;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class ServerError extends Exception {
-
-    private static final long serialVersionUID = -3028768755076394243L;
+public class ResourceContent {
+    
+    private String content;
+    private String sha;
     
     /**
      * Constructor.
-     * @param error
      */
-    public ServerError(String error) {
-        super(error);
+    public ResourceContent() {
     }
-    
+
     /**
-     * Constructor.
-     * @param rootCause
+     * @return the content
      */
-    public ServerError(Exception rootCause) {
-        super("Unexpected server error", rootCause);
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * @param content the content to set
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    /**
+     * @return the sha
+     */
+    public String getSha() {
+        return sha;
+    }
+
+    /**
+     * @param sha the sha to set
+     */
+    public void setSha(String sha) {
+        this.sha = sha;
     }
 
 }

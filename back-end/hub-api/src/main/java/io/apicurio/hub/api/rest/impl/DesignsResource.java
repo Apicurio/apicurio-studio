@@ -16,20 +16,36 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.OpenApiDocument;
+import io.apicurio.hub.api.beans.OpenApiInfo;
+import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -47,6 +63,7 @@ import io.apicurio.hub.api.storage.StorageException;
 public class DesignsResource implements IDesignsResource {
 
     private static Logger logger = LoggerFactory.getLogger(DesignsResource.class);
+    private static ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     private IStorage storage;
@@ -54,6 +71,9 @@ public class DesignsResource implements IDesignsResource {
     private IGitHubService github;
     @Inject
     private ISecurityContext security;
+
+    @Context 
+    private HttpServletRequest request;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -106,8 +126,43 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException {
         logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
-        // TODO Auto-generated method stub
-        return null;
+        
+        try {
+            Date now = new Date();
+            String user = this.security.getCurrentUser().getLogin();
+            
+            try {
+                this.github.validateResourceExists(info.getRepositoryUrl());
+                throw new StorageException("GitHub resource already exists: " + info.getRepositoryUrl());
+            } catch (NotFoundException e) {
+                // This is what we want!
+            }
+
+            ApiDesign design = new ApiDesign();
+            design.setName(info.getName());
+            design.setDescription(info.getDescription());
+            design.setRepositoryUrl(info.getRepositoryUrl());
+            design.setCreatedBy(user);
+            design.setCreatedOn(now);
+            design.setModifiedBy(user);
+            design.setModifiedOn(now);
+            
+            storage.createApiDesign(user, design);
+            
+            OpenApiDocument doc = new OpenApiDocument();
+            doc.setSwagger("2.0");
+            doc.setInfo(new OpenApiInfo());
+            doc.getInfo().setTitle(info.getName());
+            doc.getInfo().setDescription(info.getDescription());
+            doc.getInfo().setVersion("1.0.0");
+            String oaiContent = mapper.writeValueAsString(doc);
+            
+            this.github.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
+            
+            return design;
+        } catch (JsonProcessingException | StorageException e) {
+            throw new ServerError(e);
+        }
     }
 
     /**
@@ -153,6 +208,7 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
+        logger.debug("Deleting an API Design with ID {}", designId);
         try {
             String user = this.security.getCurrentUser().getLogin();
             this.storage.deleteApiDesign(user, designId);
@@ -166,11 +222,84 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public Collection<Collaborator> getCollaborators(String designId) throws ServerError, NotFoundException {
+        logger.debug("Retrieving collaborators list for design with ID: {}", designId);
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesign design = this.storage.getApiDesign(user, designId);
             String repoUrl = design.getRepositoryUrl();
             return this.github.getCollaborators(repoUrl);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String)
+     */
+    @Override
+    public Response getContent(String designId) throws ServerError, NotFoundException {
+        logger.debug("Getting content for API design with ID: {}", designId);
+        try {
+            ApiDesign design = this.getDesign(designId);
+            ResourceContent content = this.github.getResourceContent(design.getRepositoryUrl());
+            
+            byte[] bytes = content.getContent().getBytes("UTF-8");
+            String ct = "application/json; charset=utf-8";
+            String cl = String.valueOf(bytes.length);
+            
+            ResponseBuilder builder = Response.ok().entity(content.getContent())
+                    .header("X-Content-SHA", content.getSha())
+                    .header("Content-Type", ct)
+                    .header("Content-Length", cl);
+            return builder.build();
+        } catch (UnsupportedEncodingException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateContent(java.lang.String)
+     */
+    @Override
+    public void updateContent(String designId) throws ServerError, NotFoundException {
+        logger.debug("Updating content for API design with ID: {}", designId);
+        ApiDesign design = this.getDesign(designId);
+
+        String contentType = request.getContentType();
+        if (!contentType.equals("application/json")) {
+            throw new ServerError("Unexpected content-type: " + contentType);
+        }
+        
+        String sha = request.getHeader("X-Content-SHA");
+        if (sha == null) {
+            throw new ServerError("Missing request Header: 'X-Content-SHA'");
+        }
+        
+        String commitMessage = request.getHeader("X-Apicurio-CommitMessage");
+        try {
+            if (commitMessage == null) {
+                commitMessage = "Updating API design: " + new URI(design.getRepositoryUrl()).getPath();
+            }
+        } catch (URISyntaxException e1) {
+            commitMessage = "Updating API design";
+        }
+        
+        String content = null;
+        try (Reader data = request.getReader()) {
+            content = IOUtils.toString(data);
+        } catch (IOException e) {
+            throw new ServerError(e);
+        }
+        
+        ResourceContent rc = new ResourceContent();
+        rc.setContent(content);
+        rc.setSha(sha);
+        
+        this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, rc);
+        design.setModifiedBy(this.security.getCurrentUser().getLogin());
+        design.setModifiedOn(new Date());
+        try {
+            this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
         } catch (StorageException e) {
             throw new ServerError(e);
         }

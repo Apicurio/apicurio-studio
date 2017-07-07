@@ -17,6 +17,8 @@
 package io.apicurio.hub.api.github;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -37,9 +40,14 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
+import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
+import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
+import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.security.ISecurityContext;
 
@@ -53,6 +61,25 @@ public class GitHubService implements IGitHubService {
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
     private static final ObjectMapper mapper = new ObjectMapper();
+    
+    static {
+        Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
+            public <T> T readValue(String value, Class<T> valueType) {
+                try {
+                    return mapper.readValue(value, valueType);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            public String writeValue(Object value) {
+                try {
+                    return mapper.writeValueAsString(value);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 
     @Inject
     private ISecurityContext security;
@@ -171,6 +198,98 @@ public class GitHubService implements IGitHubService {
             }
             return cidx.values();
         } catch (UnirestException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getResourceContent(java.lang.String)
+     */
+    @Override
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException {
+        try {
+            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            String getContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
+                    .bind("org", resource.getOrganization())
+                    .bind("repo", resource.getRepository())
+                    .bind("path", resource.getResourcePath())
+                    .url();
+            HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
+            security.addSecurity(request);
+            HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+            
+            GitHubGetContentsResponse body = response.getBody();
+            String b64Content = body.getContent();
+            String content = new String(Base64.decodeBase64(b64Content), "utf-8");
+            ResourceContent rval = new ResourceContent();
+            rval.setContent(content);
+            rval.setSha(body.getSha());
+            return rval;
+        } catch (UnirestException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
+     */
+    @Override
+    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) {
+        try {
+            String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
+            
+            GitHubUpdateFileRequest requestBody = new GitHubUpdateFileRequest();
+            requestBody.setMessage(commitMessage);
+            requestBody.setContent(b64Content);
+            requestBody.setSha(content.getSha());
+
+            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
+                .bind("org", resource.getOrganization())
+                .bind("repo", resource.getRepository())
+                .bind("path", resource.getResourcePath())
+                .url();
+
+            HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
+            security.addSecurity(request);
+            HttpResponse<InputStream> response = request.body(requestBody).asBinary();
+            if (response.getStatus() != 201) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+        } catch (UnsupportedEncodingException | UnirestException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content) {
+        try {
+            String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
+            
+            GitHubCreateFileRequest requestBody = new GitHubCreateFileRequest();
+            requestBody.setMessage(commitMessage);
+            requestBody.setContent(b64Content);
+
+            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
+                .bind("org", resource.getOrganization())
+                .bind("repo", resource.getRepository())
+                .bind("path", resource.getResourcePath())
+                .url();
+
+            HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
+            security.addSecurity(request);
+            HttpResponse<InputStream> response = request.body(requestBody).asBinary();
+            if (response.getStatus() != 201) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+        } catch (UnsupportedEncodingException | UnirestException e) {
             throw new RuntimeException(e);
         }
     }

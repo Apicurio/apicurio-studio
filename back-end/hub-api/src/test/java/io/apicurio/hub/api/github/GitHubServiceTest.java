@@ -21,11 +21,11 @@ import java.util.Collection;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.TestUtil;
@@ -33,7 +33,7 @@ import test.io.apicurio.hub.api.TestUtil;
 /**
  * @author eric.wittmann@gmail.com
  */
-@Ignore
+//@Ignore
 public class GitHubServiceTest {
 
     private IGitHubService service;
@@ -65,7 +65,7 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#validateResourceExists(java.lang.String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getCollaborators(String)}.
      */
     @Test
     public void testGetCollaborators() throws NotFoundException {
@@ -77,7 +77,16 @@ public class GitHubServiceTest {
         Assert.assertEquals(3, collaborator.getCommits());
         Assert.assertEquals("EricWittmann", collaborator.getName());
         Assert.assertEquals("https://github.com/EricWittmann", collaborator.getUrl());
-        
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getResourceContent(String)}.
+     */
+    @Test
+    public void testGetResourceContent() throws NotFoundException {
+        ResourceContent content = service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
+        Assert.assertTrue(content.getContent().contains("Rate Limiter API"));
+        Assert.assertNotNull(content.getSha());
     }
     
 }

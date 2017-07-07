@@ -14,29 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.exceptions;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class ServerError extends Exception {
-
-    private static final long serialVersionUID = -3028768755076394243L;
+public class OpenApiDocument {
+    
+    private String swagger;
+    private OpenApiInfo info;
     
     /**
      * Constructor.
-     * @param error
      */
-    public ServerError(String error) {
-        super(error);
+    public OpenApiDocument() {
     }
-    
+
     /**
-     * Constructor.
-     * @param rootCause
+     * @return the swagger
      */
-    public ServerError(Exception rootCause) {
-        super("Unexpected server error", rootCause);
+    public String getSwagger() {
+        return swagger;
+    }
+
+    /**
+     * @param swagger the swagger to set
+     */
+    public void setSwagger(String swagger) {
+        this.swagger = swagger;
+    }
+
+    /**
+     * @return the info
+     */
+    public OpenApiInfo getInfo() {
+        return info;
+    }
+
+    /**
+     * @param info the info to set
+     */
+    public void setInfo(OpenApiInfo info) {
+        this.info = info;
     }
 
 }

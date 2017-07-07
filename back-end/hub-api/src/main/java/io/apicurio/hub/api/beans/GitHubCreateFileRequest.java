@@ -14,29 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.exceptions;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class ServerError extends Exception {
-
-    private static final long serialVersionUID = -3028768755076394243L;
+public class GitHubCreateFileRequest {
+    
+    private String message;
+    private String content;
     
     /**
      * Constructor.
-     * @param error
      */
-    public ServerError(String error) {
-        super(error);
+    public GitHubCreateFileRequest() {
     }
-    
+
     /**
-     * Constructor.
-     * @param rootCause
+     * @return the message
      */
-    public ServerError(Exception rootCause) {
-        super("Unexpected server error", rootCause);
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * @param message the message to set
+     */
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    /**
+     * @return the content
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * @param content the content to set
+     */
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }

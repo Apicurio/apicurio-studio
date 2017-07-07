@@ -27,6 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
@@ -81,5 +82,16 @@ public interface IDesignsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/collaborators")
     public Collection<Collaborator> getCollaborators(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/content")
+    public Response getContent(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/content")
+    public void updateContent(@PathParam("designId") String designId) throws ServerError, NotFoundException;
     
 }

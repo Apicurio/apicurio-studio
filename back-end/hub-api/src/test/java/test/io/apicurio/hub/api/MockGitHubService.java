@@ -144,6 +144,32 @@ public class MockGitHubService implements IGitHubService {
         getAudit().add("createResourceContent::" + repositoryUrl + "::" + commitMessage + "::" + content.hashCode());
         // do nothing - mock only
     }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getOrganizations()
+     */
+    @Override
+    public Collection<String> getOrganizations() {
+        getAudit().add("getOrganizations");
+        Set<String> orgs = new HashSet<>();
+        orgs.add("Org1");
+        orgs.add("Org2");
+        orgs.add("Org3");
+        return orgs;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getRepositories(java.lang.String)
+     */
+    @Override
+    public Collection<String> getRepositories(String org) {
+        getAudit().add("getRepositories::" + org);
+        Set<String> repos = new HashSet<>();
+        repos.add(org + "-Repo1");
+        repos.add(org + "-Repo2");
+        repos.add(org + "-Repo3");
+        return repos;
+    }
 
     /**
      * @return the audit

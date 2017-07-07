@@ -72,7 +72,7 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private ISecurityContext security;
 
-    @Context 
+    @Context
     private HttpServletRequest request;
 
     /**

@@ -16,8 +16,11 @@
 
 package io.apicurio.hub.api.rest;
 
+import java.util.Collection;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -32,5 +35,15 @@ public interface ICurrentUserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public User getCurrentUser();
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/organizations")
+    public Collection<String> getOrganizations();
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/organizations/{org}/repositories")
+    public Collection<String> getRepositories(@PathParam("org") String org);
     
 }

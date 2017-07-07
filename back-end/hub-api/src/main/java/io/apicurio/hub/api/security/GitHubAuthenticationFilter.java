@@ -89,6 +89,7 @@ public class GitHubAuthenticationFilter implements Filter {
                 httpResp.sendError(401);
             } else {
                 security.setUser(user);
+                security.setToken(token);
                 chain.doFilter(request, response);
             }
         }

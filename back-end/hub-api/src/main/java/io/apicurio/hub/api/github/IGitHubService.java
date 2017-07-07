@@ -73,4 +73,15 @@ public interface IGitHubService {
      */
     public void createResourceContent(String repositoryUrl, String commitMessage, String content);
 
+    /**
+     * Lists all of the GitHub organizations for the current user.
+     */
+    public Collection<String> getOrganizations();
+
+    /**
+     * Lists all of the GitHub repositories for the current user within the given organization.
+     * @param org
+     */
+    public Collection<String> getRepositories(String org);
+
 }

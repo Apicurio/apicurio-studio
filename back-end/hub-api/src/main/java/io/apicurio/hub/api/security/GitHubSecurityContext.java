@@ -35,6 +35,7 @@ public class GitHubSecurityContext implements ISecurityContext {
     private HttpServletRequest httpRequest;
     
     private User user;
+    private String token;
     
     /**
      * Constructor.
@@ -58,11 +59,25 @@ public class GitHubSecurityContext implements ISecurityContext {
     }
 
     /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
      * @see io.apicurio.hub.api.security.ISecurityContext#addSecurity(com.mashape.unirest.request.HttpRequest)
      */
     @Override
     public void addSecurity(HttpRequest request) {
-        // TODO implement adding security to the HTTP request!!
+        request.header("Authorization", "token " + getToken());
     }
 
 }

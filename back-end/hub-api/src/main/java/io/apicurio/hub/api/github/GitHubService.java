@@ -21,7 +21,10 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -292,6 +295,110 @@ public class GitHubService implements IGitHubService {
         } catch (UnsupportedEncodingException | UnirestException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getOrganizations()
+     */
+    @Override
+    public Collection<String> getOrganizations() {
+        logger.debug("Getting organizations for current user.");
+        try {
+            String orgsUrl = endpoint("/user/orgs").url();
+            Collection<String> rval = new HashSet<>();
+            while (orgsUrl != null) {
+                HttpRequest request = Unirest.get(orgsUrl).header("Accept", "application/json");
+                security.addSecurity(request);
+                HttpResponse<JsonNode> response = request.asJson();
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+                }
+                
+                JSONArray array = response.getBody().getArray();
+                array.forEach( obj -> {
+                    JSONObject org = (JSONObject) obj;
+                    String login = org.getString("login");
+                    rval.add(login);
+                });
+                
+                String linkHeader = response.getHeaders().getFirst("Link");
+                Map<String, String> links = parseLinkHeader(linkHeader);
+                orgsUrl = links.get("next");
+            }
+            return rval;
+        } catch (UnirestException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubService#getRepositories(java.lang.String)
+     */
+    @Override
+    public Collection<String> getRepositories(String org) {
+        logger.debug("Getting the repositories from organization {}", org);
+        try {
+            String reposUrl;
+            if (org.equals(this.security.getCurrentUser().getLogin())) {
+                reposUrl = endpoint("/users/:username/repos").bind("username", org).url();
+            } else {
+                reposUrl = endpoint("/orgs/:org/repos").bind("org", org).url();
+            }
+            
+            Collection<String> rval = new HashSet<>();
+            while (reposUrl != null) {
+                HttpRequest request = Unirest.get(reposUrl).header("Accept", "application/json");
+                security.addSecurity(request);
+                HttpResponse<JsonNode> response = request.asJson();
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+                }
+                
+                JSONArray array = response.getBody().getArray();
+                array.forEach( obj -> {
+                    JSONObject repo = (JSONObject) obj;
+                    String name = repo.getString("name");
+                    rval.add(name);
+                });
+                
+                String linkHeader = response.getHeaders().getFirst("Link");
+                Map<String, String> links = parseLinkHeader(linkHeader);
+                reposUrl = links.get("next");
+            }
+            return rval;
+        } catch (UnirestException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Parses the HTTP "Link" header and returns a map of named links.  A typical link header value
+     * might look like this:
+     * 
+     * <https://api.github.com/user/1890703/repos?page=2>; rel="next", <https://api.github.com/user/1890703/repos?page=3>; rel="last"
+     * 
+     * The return value for this would be a map with two items:
+     *   
+     *   next=https://api.github.com/user/1890703/repos?page=2
+     *   last=https://api.github.com/user/1890703/repos?page=3
+     *   
+     * @param linkHeader
+     */
+    static Map<String, String> parseLinkHeader(String linkHeader) {
+        Map<String, String> rval = new HashMap<>();
+        if (linkHeader != null) {
+            String[] split = linkHeader.split(",");
+            for (String item : split) {
+                Pattern pattern = Pattern.compile("<(.+)>; rel=\"(.+)\"");
+                Matcher matcher = pattern.matcher(item.trim());
+                if (matcher.matches()) {
+                    String url = matcher.group(1);
+                    String name = matcher.group(2);
+                    rval.put(name, url);
+                }
+            }
+        }
+        return rval;
     }
 
     /**

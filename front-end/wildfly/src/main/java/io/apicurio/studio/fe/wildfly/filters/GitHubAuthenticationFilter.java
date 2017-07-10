@@ -121,13 +121,14 @@ public class GitHubAuthenticationFilter implements Filter {
                         .header("Accept", "application/json")
                         .body(tokenReq)
                         .asObject(AccessTokenResponse.class);
+                
                 AccessTokenResponse token = tokenResp.getBody();
                 session.setAttribute(TOKEN_KEY, token);
-                String redirectUrl = (String) session.getAttribute(REDIRECT_KEY);
-                httpResp.sendRedirect(redirectUrl);
-                
                 User user = authenticateUser(token.getAccess_token());
                 session.setAttribute(USER_KEY, user);
+
+                String redirectUrl = (String) session.getAttribute(REDIRECT_KEY);
+                httpResp.sendRedirect(redirectUrl);
             } catch (UnirestException e) {
                 throw new ServletException(e);
             }

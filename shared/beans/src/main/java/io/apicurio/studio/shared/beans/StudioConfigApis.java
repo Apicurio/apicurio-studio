@@ -25,58 +25,43 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
-public class StudioConfig {
+public class StudioConfigApis {
     
-    private StudioConfigAuth auth;
-    private StudioConfigApis apis;
-    private User user;
+    private StudioConfigApisType type;
+    private String hubUrl;
     
     /**
      * Constructor.
      */
-    public StudioConfig() {
+    public StudioConfigApis() {
     }
 
     /**
-     * @return the auth
+     * @return the type
      */
-    public StudioConfigAuth getAuth() {
-        return auth;
+    public StudioConfigApisType getType() {
+        return type;
     }
 
     /**
-     * @param auth the auth to set
+     * @param type the type to set
      */
-    public void setAuth(StudioConfigAuth auth) {
-        this.auth = auth;
+    public void setType(StudioConfigApisType type) {
+        this.type = type;
     }
 
     /**
-     * @return the user
+     * @return the hubUrl
      */
-    public User getUser() {
-        return user;
+    public String getHubUrl() {
+        return hubUrl;
     }
 
     /**
-     * @param user the user to set
+     * @param hubUrl the hubUrl to set
      */
-    public void setUser(User user) {
-        this.user = user;
+    public void setHubUrl(String hubUrl) {
+        this.hubUrl = hubUrl;
     }
-
-    /**
-     * @return the api config
-     */
-	public StudioConfigApis getApis() {
-		return apis;
-	}
-
-	/**
-	 * @param api the api config
-	 */
-	public void setApis(StudioConfigApis apis) {
-		this.apis = apis;
-	}
 
 }

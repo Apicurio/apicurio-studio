@@ -17,6 +17,8 @@
 package io.apicurio.studio.fe.wildfly.servlets;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.studio.fe.wildfly.beans.AccessTokenResponse;
 import io.apicurio.studio.fe.wildfly.filters.GitHubAuthenticationFilter;
 import io.apicurio.studio.shared.beans.StudioConfig;
+import io.apicurio.studio.shared.beans.StudioConfigApis;
+import io.apicurio.studio.shared.beans.StudioConfigApisType;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
 import io.apicurio.studio.shared.beans.StudioConfigAuthType;
 import io.apicurio.studio.shared.beans.User;
@@ -66,15 +70,27 @@ public class StudioConfigServlet extends HttpServlet {
             User user = (User) session.getAttribute(GitHubAuthenticationFilter.USER_KEY);
             
             if (token == null) {
+                System.out.println("Error: 'token' is null!");
                 response.sendError(403);
+                return;
+            }
+            if (user == null) {
+                System.out.println("Error: 'user' is null!");
+                response.sendError(401);
                 return;
             }
 
             StudioConfig config = new StudioConfig();
+            
             config.setAuth(new StudioConfigAuth());
             config.getAuth().setType(StudioConfigAuthType.token);
             config.getAuth().setToken(token.getAccess_token());
             config.getAuth().setLogoutUrl(request.getContextPath() + "/logout");
+            
+            config.setApis(new StudioConfigApis());
+            config.getApis().setType(StudioConfigApisType.hub);
+            config.getApis().setHubUrl(generateHubApiUrl(request));
+            
             config.setUser(user);
             
             g.writeObject(config);
@@ -83,6 +99,19 @@ public class StudioConfigServlet extends HttpServlet {
             response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             throw new ServletException(e);
+        }
+    }
+
+    /**
+     * Generates a URL that the caller can use to access the Hub API.
+     * @param request
+     */
+    private String generateHubApiUrl(HttpServletRequest request) {
+        try {
+            String url = request.getRequestURL().toString();
+            return new URI(url).resolve("/api-hub").toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 

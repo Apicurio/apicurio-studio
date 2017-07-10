@@ -24,6 +24,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -39,11 +40,11 @@ public interface ICurrentUserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizations")
-    public Collection<String> getOrganizations();
+    public Collection<String> getOrganizations() throws ServerError;
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/organizations/{org}/repositories")
-    public Collection<String> getRepositories(@PathParam("org") String org);
+    public Collection<String> getRepositories(@PathParam("org") String org) throws ServerError;
     
 }

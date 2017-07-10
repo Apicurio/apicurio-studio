@@ -89,11 +89,9 @@ public class GitHubService implements IGitHubService {
 
     /**
      * @see io.apicurio.hub.api.github.IGitHubService#validateResourceExists(java.lang.String)
-     * 
-     * TODO need more granular error conditions besides just {@link NotFoundException}
      */
     @Override
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException {
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, GitHubException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
             GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
@@ -121,7 +119,7 @@ public class GitHubService implements IGitHubService {
                     .replace(":path", resource.getResourcePath()));
             return info;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error checking that a GitHub resource exists.", e);
         }
     }
 
@@ -132,7 +130,7 @@ public class GitHubService implements IGitHubService {
      * 
      * TODO need more granular error conditions besides just {@link NotFoundException}
      */
-    private String getResourceContent(GitHubResource resource) throws NotFoundException {
+    private String getResourceContent(GitHubResource resource) throws NotFoundException, GitHubException {
         logger.debug("Getting resource content for: {}/{} - {}", 
                 resource.getOrganization(), resource.getRepository(), resource.getResourcePath());
         try {
@@ -151,7 +149,7 @@ public class GitHubService implements IGitHubService {
                 return json;
             }
         } catch (UnirestException e) {
-            throw new NotFoundException();
+            throw new GitHubException("Error getting GitHub resource content.", e);
         }
     }
     
@@ -159,7 +157,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#getCollaborators(java.lang.String)
      */
     @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException {
+    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, GitHubException {
         logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
         try {
             GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
@@ -183,6 +181,9 @@ public class GitHubService implements IGitHubService {
             JsonNode node = response.getBody();
             if (node.isArray()) {
                 JSONArray array = node.getArray();
+                if (array.length() == 0) {
+                	throw new NotFoundException();
+                }
                 array.forEach( obj -> {
                     JSONObject jobj = (JSONObject) obj;
                     JSONObject authorObj = (JSONObject) jobj.get("author");
@@ -198,10 +199,12 @@ public class GitHubService implements IGitHubService {
                         collaborator.setCommits(collaborator.getCommits() + 1);
                     }
                 });
+            } else {
+            	throw new NotFoundException();
             }
             return cidx.values();
         } catch (UnirestException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error getting collaborator information for a GitHub resource.", e);
         }
     }
 
@@ -209,7 +212,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#getResourceContent(java.lang.String)
      */
     @Override
-    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException {
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, GitHubException {
         try {
             GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
             String getContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
@@ -220,6 +223,9 @@ public class GitHubService implements IGitHubService {
             HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
             security.addSecurity(request);
             HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
+            if (response.getStatus() == 404) {
+            	throw new NotFoundException();
+            }
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
@@ -232,7 +238,7 @@ public class GitHubService implements IGitHubService {
             rval.setSha(body.getSha());
             return rval;
         } catch (UnirestException | UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error getting Github resource content.", e);
         }
     }
     
@@ -240,7 +246,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
      */
     @Override
-    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) {
+    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) throws GitHubException {
         try {
             String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
             
@@ -263,7 +269,7 @@ public class GitHubService implements IGitHubService {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
         } catch (UnsupportedEncodingException | UnirestException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error updating Github resource content.", e);
         }
     }
     
@@ -271,7 +277,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void createResourceContent(String repositoryUrl, String commitMessage, String content) {
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws GitHubException {
         try {
             String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
             
@@ -293,7 +299,7 @@ public class GitHubService implements IGitHubService {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
         } catch (UnsupportedEncodingException | UnirestException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error creating Github resource content.", e);
         }
     }
     
@@ -301,7 +307,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#getOrganizations()
      */
     @Override
-    public Collection<String> getOrganizations() {
+    public Collection<String> getOrganizations() throws GitHubException {
         logger.debug("Getting organizations for current user.");
         try {
             String orgsUrl = endpoint("/user/orgs").url();
@@ -327,7 +333,7 @@ public class GitHubService implements IGitHubService {
             }
             return rval;
         } catch (UnirestException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error getting GitHub organizations.", e);
         }
     }
     
@@ -335,7 +341,7 @@ public class GitHubService implements IGitHubService {
      * @see io.apicurio.hub.api.github.IGitHubService#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<String> getRepositories(String org) {
+    public Collection<String> getRepositories(String org) throws GitHubException {
         logger.debug("Getting the repositories from organization {}", org);
         try {
             String reposUrl;
@@ -367,7 +373,7 @@ public class GitHubService implements IGitHubService {
             }
             return rval;
         } catch (UnirestException e) {
-            throw new RuntimeException(e);
+            throw new GitHubException("Error getting GitHub repositories.", e);
         }
     }
 

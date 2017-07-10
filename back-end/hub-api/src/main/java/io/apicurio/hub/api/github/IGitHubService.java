@@ -37,7 +37,7 @@ public interface IGitHubService {
      * @param repositoryUrl
      * @throws NotFoundException
      */
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException;
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, GitHubException;
 
     /**
      * Fetchs information about the collaborators for a given repository resource.
@@ -47,7 +47,7 @@ public interface IGitHubService {
      * @param repositoryUrl
      * @throws NotFoundException
      */
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException;
+    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, GitHubException;
 
     /**
      * Fetchs the content of a github resource.  Uses the GitHub API to get access to
@@ -55,7 +55,7 @@ public interface IGitHubService {
      * for text resources, for obvious reasons.
      * @param repositoryUrl
      */
-    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException;
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, GitHubException;
 
     /**
      * Updates the raw content for a resource in GitHub using the GH API.
@@ -63,7 +63,7 @@ public interface IGitHubService {
      * @param commitMessage
      * @param content
      */
-    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content);
+    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) throws GitHubException;
 
     /**
      * Creates a new resource in GitHub with the given content.
@@ -71,17 +71,17 @@ public interface IGitHubService {
      * @param commitMessage
      * @param content
      */
-    public void createResourceContent(String repositoryUrl, String commitMessage, String content);
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws GitHubException;
 
     /**
      * Lists all of the GitHub organizations for the current user.
      */
-    public Collection<String> getOrganizations();
+    public Collection<String> getOrganizations() throws GitHubException;
 
     /**
      * Lists all of the GitHub repositories for the current user within the given organization.
      * @param org
      */
-    public Collection<String> getRepositories(String org);
+    public Collection<String> getRepositories(String org) throws GitHubException;
 
 }

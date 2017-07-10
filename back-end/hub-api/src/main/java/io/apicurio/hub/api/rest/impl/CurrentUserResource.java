@@ -21,6 +21,8 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubService;
 import io.apicurio.hub.api.rest.ICurrentUserResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -49,16 +51,24 @@ public class CurrentUserResource implements ICurrentUserResource {
      * @see io.apicurio.hub.api.rest.ICurrentUserResource#getOrganizations()
      */
     @Override
-    public Collection<String> getOrganizations() {
-        return this.github.getOrganizations();
+    public Collection<String> getOrganizations() throws ServerError {
+        try {
+			return this.github.getOrganizations();
+		} catch (GitHubException e) {
+			throw new ServerError(e);
+		}
     }
     
     /**
      * @see io.apicurio.hub.api.rest.ICurrentUserResource#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<String> getRepositories(String org) {
-        return this.github.getRepositories(org);
+    public Collection<String> getRepositories(String org) throws ServerError {
+        try {
+            return this.github.getRepositories(org);
+		} catch (GitHubException e) {
+			throw new ServerError(e);
+		}
     }
 
 }

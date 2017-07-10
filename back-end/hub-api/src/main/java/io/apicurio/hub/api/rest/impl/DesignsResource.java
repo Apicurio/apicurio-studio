@@ -50,6 +50,7 @@ import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubService;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -96,28 +97,32 @@ public class DesignsResource implements IDesignsResource {
     public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException, NotFoundException {
         logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
         
-        ApiDesignResourceInfo resourceInfo = this.github.validateResourceExists(info.getRepositoryUrl());
-        
-        Date now = new Date();
-        String user = this.security.getCurrentUser().getLogin();
-
-        ApiDesign design = new ApiDesign();
-        design.setName(resourceInfo.getName());
-        design.setDescription(resourceInfo.getDescription());
-        design.setRepositoryUrl(resourceInfo.getUrl());
-        design.setCreatedBy(user);
-        design.setCreatedOn(now);
-        design.setModifiedBy(user);
-        design.setModifiedOn(now);
-        
         try {
-            String id = this.storage.createApiDesign(user, design);
-            design.setId(id);
-        } catch (StorageException e) {
-            throw new ServerError(e);
-        }
-        
-        return design;
+			ApiDesignResourceInfo resourceInfo = this.github.validateResourceExists(info.getRepositoryUrl());
+			
+			Date now = new Date();
+			String user = this.security.getCurrentUser().getLogin();
+
+			ApiDesign design = new ApiDesign();
+			design.setName(resourceInfo.getName());
+			design.setDescription(resourceInfo.getDescription());
+			design.setRepositoryUrl(resourceInfo.getUrl());
+			design.setCreatedBy(user);
+			design.setCreatedOn(now);
+			design.setModifiedBy(user);
+			design.setModifiedOn(now);
+			
+			try {
+			    String id = this.storage.createApiDesign(user, design);
+			    design.setId(id);
+			} catch (StorageException e) {
+			    throw new ServerError(e);
+			}
+			
+			return design;
+		} catch (GitHubException e) {
+			throw new ServerError(e);
+		}
     }
 
     /**
@@ -160,7 +165,7 @@ public class DesignsResource implements IDesignsResource {
             this.github.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
             
             return design;
-        } catch (JsonProcessingException | StorageException e) {
+        } catch (JsonProcessingException | StorageException | GitHubException e) {
             throw new ServerError(e);
         }
     }
@@ -228,7 +233,7 @@ public class DesignsResource implements IDesignsResource {
             ApiDesign design = this.storage.getApiDesign(user, designId);
             String repoUrl = design.getRepositoryUrl();
             return this.github.getCollaborators(repoUrl);
-        } catch (StorageException e) {
+        } catch (StorageException | GitHubException e) {
             throw new ServerError(e);
         }
     }
@@ -252,7 +257,7 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException | GitHubException e) {
             throw new ServerError(e);
         }
     }
@@ -287,20 +292,17 @@ public class DesignsResource implements IDesignsResource {
         String content = null;
         try (Reader data = request.getReader()) {
             content = IOUtils.toString(data);
-        } catch (IOException e) {
-            throw new ServerError(e);
-        }
-        
-        ResourceContent rc = new ResourceContent();
-        rc.setContent(content);
-        rc.setSha(sha);
-        
-        this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, rc);
-        design.setModifiedBy(this.security.getCurrentUser().getLogin());
-        design.setModifiedOn(new Date());
-        try {
-            this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
-        } catch (StorageException e) {
+
+            ResourceContent rc = new ResourceContent();
+            rc.setContent(content);
+            rc.setSha(sha);
+            
+            this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, rc);
+            design.setModifiedBy(this.security.getCurrentUser().getLogin());
+            design.setModifiedOn(new Date());
+
+        	this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
+        } catch (StorageException | GitHubException | IOException e) {
             throw new ServerError(e);
         }
     }

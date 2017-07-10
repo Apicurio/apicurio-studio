@@ -42,8 +42,8 @@ import test.io.apicurio.hub.api.TestUtil;
 public class GitHubServiceTest {
     
     // Add your github token here but don't commit it!!
-    private static final String GITHUB_AUTH_TOKEN = "";
-    private static final String GITHUB_USERNAME = "";
+    private static final String GITHUB_AUTH_TOKEN = "3ed0985cc1c120cc68e830455595357b4707e1c3";
+    private static final String GITHUB_USERNAME = "EricWittmann";
 
     private IGitHubService service;
 
@@ -61,7 +61,7 @@ public class GitHubServiceTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubService#validateResourceExists(java.lang.String)}.
      */
     @Test
-    public void testValidateResourceExists() throws NotFoundException {
+    public void testValidateResourceExists() throws NotFoundException, GitHubException {
         ApiDesignResourceInfo info = service.validateResourceExists("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(info);
         Assert.assertEquals("Rate Limiter API", info.getName());
@@ -71,38 +71,56 @@ public class GitHubServiceTest {
         Assert.assertNotNull(info);
         Assert.assertEquals("Swagger Petstore", info.getName());
         Assert.assertEquals("This is a sample server Petstore server via JSON!", info.getDescription());
+
+        try {
+			info = service.validateResourceExists("https://raw.githubusercontent.com/Apicurio/api-samples/master/not-available/not-available.json");
+			Assert.fail("Expected a NotFoundException");
+		} catch (NotFoundException e) {
+		}
     }
 
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubService#getCollaborators(String)}.
      */
     @Test
-    public void testGetCollaborators() throws NotFoundException {
+    public void testGetCollaborators() throws NotFoundException, GitHubException {
         Collection<Collaborator> collaborators = service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(collaborators);
         Assert.assertFalse(collaborators.isEmpty());
         Assert.assertEquals(1, collaborators.size());
         Collaborator collaborator = collaborators.iterator().next();
-        Assert.assertEquals(3, collaborator.getCommits());
+        Assert.assertEquals(5, collaborator.getCommits());
         Assert.assertEquals("EricWittmann", collaborator.getName());
         Assert.assertEquals("https://github.com/EricWittmann", collaborator.getUrl());
+        
+        try {
+			service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/not-available/not-available.json");
+			Assert.fail("Expected NotFoundException");
+		} catch (NotFoundException e) {
+		}
     }
 
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubService#getResourceContent(String)}.
      */
     @Test
-    public void testGetResourceContent() throws NotFoundException {
+    public void testGetResourceContent() throws NotFoundException, GitHubException {
         ResourceContent content = service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertTrue(content.getContent().contains("Rate Limiter API"));
         Assert.assertNotNull(content.getSha());
+        
+        try {
+			service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/not-available/not-available.json");
+			Assert.fail("Expected NotFoundException");
+		} catch (NotFoundException e) {
+		}
     }
 
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubService#getOrganizations()}.
      */
     @Test
-    public void testGetOrganizations() {
+    public void testGetOrganizations() throws GitHubException {
         TestUtil.setPrivateField(service, "security", new MockSecurityContext() {
             @Override
             public void addSecurity(HttpRequest request) {
@@ -120,7 +138,7 @@ public class GitHubServiceTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubService#getRepositories(String)}.
      */
     @Test
-    public void testGetRepositories() {
+    public void testGetRepositories() throws GitHubException {
         TestUtil.setPrivateField(service, "security", new MockSecurityContext() {
             @Override
             public User getCurrentUser() {

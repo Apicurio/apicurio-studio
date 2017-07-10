@@ -22,6 +22,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mashape.unirest.request.HttpRequest;
@@ -37,12 +38,12 @@ import test.io.apicurio.hub.api.TestUtil;
 /**
  * @author eric.wittmann@gmail.com
  */
-//@Ignore
+@Ignore
 public class GitHubServiceTest {
     
     // Add your github token here but don't commit it!!
-    private static final String GITHUB_AUTH_TOKEN = "94461823961afff0ce073dab596df8e5f93a635a";
-    private static final String GITHUB_USERNAME = "EricWittmann";
+    private static final String GITHUB_AUTH_TOKEN = "";
+    private static final String GITHUB_USERNAME = "";
 
     private IGitHubService service;
 

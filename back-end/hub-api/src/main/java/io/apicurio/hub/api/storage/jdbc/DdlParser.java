@@ -58,7 +58,6 @@ public class DdlParser {
      * @param ddlStream
      * @throws IOException
      */
-    @SuppressWarnings("nls")
     public List<String> parse(InputStream ddlStream) throws IOException {
         List<String> rval = new LinkedList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, "UTF-8"));

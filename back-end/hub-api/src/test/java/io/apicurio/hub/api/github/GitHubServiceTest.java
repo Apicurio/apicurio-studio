@@ -42,8 +42,8 @@ import test.io.apicurio.hub.api.TestUtil;
 public class GitHubServiceTest {
     
     // Add your github token here but don't commit it!!
-    private static final String GITHUB_AUTH_TOKEN = "3ed0985cc1c120cc68e830455595357b4707e1c3";
-    private static final String GITHUB_USERNAME = "EricWittmann";
+    private static final String GITHUB_AUTH_TOKEN = "";
+    private static final String GITHUB_USERNAME = "";
 
     private IGitHubService service;
 

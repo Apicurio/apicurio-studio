@@ -1,5 +1,4 @@
-/**
- * @license
+/*
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +14,13 @@
  * limitations under the License.
  */
 
-import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
-import {StudioModule}           from "./studio.module";
-import {enableProdMode} from '@angular/core';
+package io.apicurio.studio.shared.beans;
 
+/**
+ * @author eric.wittmann@gmail.com
+ */
+public enum StudioConfigMode {
+    
+    dev, prod
 
-let config = window["ApicurioStudioConfig"];
-if (config.mode && config.mode === "prod") {
-    console.info("[Main] Enabling angular production mode.");
-    enableProdMode();
 }
-
-
-const platform = platformBrowserDynamic();
-platform.bootstrapModule(StudioModule);

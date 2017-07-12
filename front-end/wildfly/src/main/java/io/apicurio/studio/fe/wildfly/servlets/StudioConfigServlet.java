@@ -39,6 +39,7 @@ import io.apicurio.studio.shared.beans.StudioConfigApis;
 import io.apicurio.studio.shared.beans.StudioConfigApisType;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
 import io.apicurio.studio.shared.beans.StudioConfigAuthType;
+import io.apicurio.studio.shared.beans.StudioConfigMode;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -81,6 +82,8 @@ public class StudioConfigServlet extends HttpServlet {
             }
 
             StudioConfig config = new StudioConfig();
+            
+            config.setMode(StudioConfigMode.prod);
             
             config.setAuth(new StudioConfigAuth());
             config.getAuth().setType(StudioConfigAuthType.token);

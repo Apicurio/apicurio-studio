@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class StudioConfig {
     
+    private StudioConfigMode mode;
     private StudioConfigAuth auth;
     private StudioConfigApis apis;
     private User user;
@@ -78,5 +79,19 @@ public class StudioConfig {
 	public void setApis(StudioConfigApis apis) {
 		this.apis = apis;
 	}
+
+    /**
+     * @return the mode
+     */
+    public StudioConfigMode getMode() {
+        return mode;
+    }
+
+    /**
+     * @param mode the mode to set
+     */
+    public void setMode(StudioConfigMode mode) {
+        this.mode = mode;
+    }
 
 }

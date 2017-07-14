@@ -47,12 +47,15 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
 import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.api.util.OpenApiTools;
+import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -103,16 +106,11 @@ public class GitHubService implements IGitHubService {
             String b64Content = (String) jsonContent.get("content");
             
             content = new String(Base64.decodeBase64(b64Content), "UTF-8");
-            jsonContent = mapper.reader(Map.class).readValue(content);
-            
-            @SuppressWarnings("unchecked")
-            Map<String, Object> infoContent = (Map<String, Object>) jsonContent.get("info");
-            String name = (String) infoContent.get("title");
-            String description = (String) infoContent.get("description");
+            NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
             
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(name);
-            info.setDescription(description);
+            info.setName(nad.name);
+            info.setDescription(nad.description);
             info.setUrl("https://github.com/:org/:repo/blob/master/:path"
                     .replace(":org", resource.getOrganization())
                     .replace(":repo", resource.getRepository())
@@ -127,8 +125,6 @@ public class GitHubService implements IGitHubService {
      * Gets the content of the given GitHub resource.  This is done by querying for the
      * content using the GH API.
      * @param resource
-     * 
-     * TODO need more granular error conditions besides just {@link NotFoundException}
      */
     private String getResourceContent(GitHubResource resource) throws NotFoundException, GitHubException {
         logger.debug("Getting resource content for: {}/{} - {}", 
@@ -243,10 +239,11 @@ public class GitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
+     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
      */
     @Override
-    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) throws GitHubException {
+    public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
+            ResourceContent content) throws GitHubException {
         try {
             String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
             
@@ -264,15 +261,50 @@ public class GitHubService implements IGitHubService {
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
             security.addSecurity(request);
-            HttpResponse<InputStream> response = request.body(requestBody).asBinary();
+            HttpResponse<JsonNode> response = request.body(requestBody).asJson();
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
+            JsonNode node = response.getBody();
+            String newSha = node.getObject().getJSONObject("content").getString("sha");
+            
+            if (commitComment != null && !commitComment.trim().isEmpty()) {
+                String commitSha = node.getObject().getJSONObject("commit").getString("sha");
+                this.addCommitComment(repositoryUrl, commitSha, commitComment);
+            }
+            
+            return newSha;
         } catch (UnsupportedEncodingException | UnirestException e) {
             throw new GitHubException("Error updating Github resource content.", e);
         }
     }
     
+    /**
+     * Uses the GH API to add a commit comment.
+     * @param repositoryUrl
+     * @param commitSha
+     * @param commitComment
+     */
+    private void addCommitComment(String repositoryUrl, String commitSha, String commitComment) throws UnirestException {
+        GitHubCreateCommitCommentRequest body = new GitHubCreateCommitCommentRequest();
+        body.setBody(commitComment);
+
+        GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+        String addCommentUrl = this.endpoint("/repos/:org/:repo/commits/:sha/comments")
+            .bind("org", resource.getOrganization())
+            .bind("repo", resource.getRepository())
+            .bind("path", resource.getResourcePath())
+            .bind("sha", commitSha)
+            .url();
+
+        HttpRequestWithBody request = Unirest.post(addCommentUrl).header("Content-Type", "application/json; charset=utf-8");
+        security.addSecurity(request);
+        HttpResponse<JsonNode> response = request.body(body).asJson();
+        if (response.getStatus() != 201) {
+            throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+        }
+    }
+
     /**
      * @see io.apicurio.hub.api.github.IGitHubService#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
      */

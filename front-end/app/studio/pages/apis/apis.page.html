@@ -4,7 +4,8 @@
         <li breadcrumb label="APIs" icon="search" class="active"></li>
     </breadcrumbs>
 </div>
-<div class="container-fluid api-list-apis">
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-list-apis" *ngIf="!pageError">
     <div class="row toolbar-pf">
         <div class="col-sm-12">
             <form class="toolbar-pf-actions" (submit)="filterApis()" #filterForm="ngForm">
@@ -43,7 +44,7 @@
         </div>
     </div>
     <div class="row api-list-items">
-        <div class="col-md-12 empty-state" *ngIf="allApis.length === 0">
+        <div class="col-md-12 empty-state" *ngIf="isLoaded('apis') && allApis.length === 0">
             <div class="blank-slate-pf">
                 <div class="blank-slate-pf-icon">
                     <span class="pficon pficon pficon-add-circle-o"></span>
@@ -77,7 +78,24 @@
                 <strong>No APIs matched the filter!</strong> Try changing your filter criteria - there is definitely at least one API you can work on...
             </div>
         </div>
-        <div class="col-md-12">
+
+        <!-- The 'loading APIs' card -->
+        <div class="col-md-12" *ngIf="!isLoaded('apis')">
+            <div class="container-fluid container-cards-pf">
+                <div class="row row-cards-pf">
+                    <div class="card-pf card-pf-accented">
+                        <div class="card-pf-heading">
+                            <h1 class="card-pf-title">
+                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading API Designs...</p>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The list or card view -->
+        <div class="col-md-12" *ngIf="isLoaded('apis')">
             <apis-list *ngIf="filters.layout === 'list'" [apis]="filteredApis" [selectedApis]="selectedApis"
                        (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-list>
             <apis-cards *ngIf="filters.layout === 'card'" [apis]="filteredApis" [selectedApis]="selectedApis"

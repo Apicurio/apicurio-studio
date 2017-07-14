@@ -21,6 +21,7 @@ import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {ModalDirective} from "ng2-bootstrap";
+import {AbstractPageComponent} from "../../../../components/page-base.component";
 
 @Component({
     moduleId: module.id,
@@ -28,7 +29,7 @@ import {ModalDirective} from "ng2-bootstrap";
     templateUrl: "api-editor.page.html",
     styleUrls: ["api-editor.page.css"]
 })
-export class ApiEditorPageComponent implements OnInit {
+export class ApiEditorPageComponent extends AbstractPageComponent {
 
     public apiDefinition: ApiDefinition;
 
@@ -48,13 +49,24 @@ export class ApiEditorPageComponent implements OnInit {
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService) {
+        super();
         this.apiDefinition = new ApiDefinition();
     }
 
-    public ngOnInit(): void {
-        this.route.data.subscribe( value => {
-            this.apiDefinition = value["apiDefinition"];
-            console.info("[ApiEditorPageComponent] API definition resolved successfully.");
+    /**
+     * Called to kick off loading the page's async data.
+     */
+    public loadAsyncPageData(): void {
+        console.info("[ApiEditorPageComponent] Loading async page data");
+        this.route.params.subscribe( params => {
+            let apiId: string = params["apiId"];
+            this.apis.getApiDefinition(apiId).then(def => {
+                this.apiDefinition = def;
+                this.loaded("def");
+            }).catch(error => {
+                console.error("[ApiEditorPageComponent] Error loading API definition.");
+                this.error(error);
+            });
         });
     }
 
@@ -79,11 +91,17 @@ export class ApiEditorPageComponent implements OnInit {
             this.apiDefinition = definition;
             this.isSaving = false;
         }).catch( error => {
-            // TODO do something interesting with this error!
-            alert(error);
+            console.error("[ApiEditorPageComponent] Error saving API design content.");
+            this.error(error);
+            this.isSaving = false;
+            this.isDirty = false;
         });
     }
 
+    /**
+     * Returns true if the editor is dirty.
+     * @return {boolean}
+     */
     public isEditorDirty(): boolean {
         return this.isDirty;
     }

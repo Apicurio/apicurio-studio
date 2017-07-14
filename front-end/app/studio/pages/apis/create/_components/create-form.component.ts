@@ -64,7 +64,7 @@ export class CreateApiFormComponent {
             this.user = user;
         });
 
-        apis.getOrganizations().subscribe( orgs => {
+        apis.getOrganizations().then( orgs => {
             this._organizations = [];
             for (let org in orgs) {
                 this._organizations.push(org);
@@ -73,8 +73,9 @@ export class CreateApiFormComponent {
                 return org1.toLowerCase().localeCompare(org2.toLowerCase());
             });
             this.fetchingOrgs = false;
-        }, errorReason => {
-            this.error = errorReason;
+        }).catch( error => {
+            console.error("[CreateApiFormComponent] Error getting orgs: %o", error)
+            this.error = error;
             this.fetchingRepos = false;
         });
     }
@@ -92,12 +93,13 @@ export class CreateApiFormComponent {
         this.model.repository = null;
         this.fetchingRepos = true;
         this._repositories = [];
-        this.apis.getRepositories(this.model.organization, org === this.user.login).subscribe( repos => {
+        this.apis.getRepositories(this.model.organization, org === this.user.login).then( repos => {
             this._repositories = repos.sort( (repo1, repo2) => {
                 return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
             });
             this.fetchingRepos = false;
-        }, errorReason => {
+        }).catch( errorReason => {
+            console.error("[CreateApiFormComponent] Error getting repos: %o", errorReason)
             this.error = errorReason;
             this.fetchingRepos = false;
         });

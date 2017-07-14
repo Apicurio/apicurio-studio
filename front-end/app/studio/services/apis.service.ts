@@ -34,11 +34,12 @@ export interface IApisService {
     getSupportedRepositoryTypes(): string[];
 
     /**
-     * Gets an observable over all of the APIs.  The list of APIs is not guaranteed
+     * Gets a promise over all of the APIs.  The list of APIs is not guaranteed
      * to be in any particular order.  The resulting observer can be used to watch for
-     * changes to the list of APIs.
+     * changes to the list of APIs.  It is assumed that calling this will fetch
+     * the list of APIs from the server.
      */
-    getAllApis(): Observable<Api[]>;
+    getApis(): Promise<Api[]>;
 
     /**
      * Gets an observable over the recent APIs.  Callers can then subscribe to this
@@ -101,21 +102,21 @@ export interface IApisService {
 
     /**
      * Gets the list of collaborators for the API with the given id.
-     * @param api
+     * @param apiId
      */
-    getCollaborators(api: Api): Promise<ApiCollaborators>;
+    getCollaborators(apiId: string): Promise<ApiCollaborators>;
 
     /**
      * Gets a list of all organizations the logged in user belongs to.
      */
-    getOrganizations(): Observable<string[]>;
+    getOrganizations(): Promise<string[]>;
 
     /**
      * Gets all of the repositories found in a given organization.
      * @param organization
      * @param isUser
      */
-    getRepositories(organization: string, isUser?: boolean): Observable<string[]>;
+    getRepositories(organization: string, isUser?: boolean): Promise<string[]>;
 }
 
 export const IApisService = new InjectionToken("IApisService");

@@ -25,13 +25,13 @@ import {TokenAuthenticationService} from "./auth-token.service";
 
 function AuthenticationServiceFactory(http: Http, config: ConfigService): IAuthenticationService {
     if (config.authType() === "local") {
-        console.info("[AuthenticationServiceFactory] Creating local github auth service.");
+        console.info("[AuthenticationServiceFactory] Creating local GitHub auth service.");
         return new GithubAuthenticationService(http);
     } else if (config.authType() === "token") {
         console.info("[AuthenticationServiceFactory] Creating token auth service.");
         return new TokenAuthenticationService(http, config);
     } else {
-        console.info("[AuthenticationServiceFactory] Unsupported auth type: %s", config.authType());
+        console.error("[AuthenticationServiceFactory] Unsupported auth type: %s", config.authType());
         return null;
     }
 };

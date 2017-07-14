@@ -5,16 +5,26 @@
         <li breadcrumb [label]="api.name" icon="bolt" class="active"></li>
     </breadcrumbs>
 </div>
-<div class="container-fluid api-details">
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-details" *ngIf="!pageError">
     <div class="row-fluid">
         <!-- Left Column -->
         <div class="col-xs-12 col-sm-6 col-md-6">
             <div class="container-fluid container-cards-pf api-editor-overview">
                 <div class="row row-cards-pf">
 
-                    <!-- Overview Information Card -->
                     <div class="">
-                        <div class="card-pf card-pf-accented">
+                        <!-- Loading API Card -->
+                        <div class="card-pf card-pf-accented" *ngIf="!isLoaded('api')">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                </h1>
+                            </div>
+                        </div>
+
+                        <!-- Overview Information Card -->
+                        <div class="card-pf card-pf-accented" *ngIf="isLoaded('api')">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
                                     <span class="fa fa-fw fa-bolt api-deployed api-card-icon"></span>
@@ -92,10 +102,10 @@
                                 <h2 style="height: 18px;" class="card-pf-title">Top Collaborators</h2>
                             </div>
                             <div class="card-pf-body">
-                                <div class="api-data-loading" *ngIf="!dataLoaded['collaborators']">
+                                <div class="api-data-loading" *ngIf="!isLoaded('collaborators')">
                                     <p><span class="spinner spinner-xs spinner-inline"></span> Loading collaborators data...</p>
                                 </div>
-                                <div class="api-collaborators" *ngIf="dataLoaded['collaborators']">
+                                <div class="api-collaborators" *ngIf="isLoaded('collaborators')">
                                     <div class="progress-container progress-description-left" *ngFor="let c of collaborators.collaborators">
                                         <div class="progress-description"><a href="{{ c.userUrl }}" target="_blank">{{ c.userName }}</a></div>
                                         <div class="progress">

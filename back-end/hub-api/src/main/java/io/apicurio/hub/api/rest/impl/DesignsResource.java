@@ -27,6 +27,7 @@ import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -56,6 +57,8 @@ import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.api.util.OpenApiTools;
+import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -75,6 +78,8 @@ public class DesignsResource implements IDesignsResource {
 
     @Context
     private HttpServletRequest request;
+    @Context
+    private HttpServletResponse response;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -131,7 +136,7 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException {
         logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
-        
+
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
@@ -281,6 +286,7 @@ public class DesignsResource implements IDesignsResource {
         }
         
         String commitMessage = request.getHeader("X-Apicurio-CommitMessage");
+        String commitComment = request.getHeader("X-Apicurio-CommitComment");
         try {
             if (commitMessage == null) {
                 commitMessage = "Updating API design: " + new URI(design.getRepositoryUrl()).getPath();
@@ -297,12 +303,31 @@ public class DesignsResource implements IDesignsResource {
             rc.setContent(content);
             rc.setSha(sha);
             
-            this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, rc);
+            String newSha = this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
+            this.response.setHeader("X-Content-SHA", newSha);
+            
+            this.updateNameAndDescription(design, content);
             design.setModifiedBy(this.security.getCurrentUser().getLogin());
             design.setModifiedOn(new Date());
 
         	this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
         } catch (StorageException | GitHubException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * Parses the content and extracts the name and description.  Sets them on the
+     * given API Design object.
+     * @param design
+     * @param content
+     */
+    private void updateNameAndDescription(ApiDesign design, String content) throws ServerError {
+        try {
+            NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
+            design.setName(nad.name);
+            design.setDescription(nad.description);
+        } catch (IOException e) {
             throw new ServerError(e);
         }
     }

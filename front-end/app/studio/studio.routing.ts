@@ -24,13 +24,12 @@ import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
-
-/* Resolvers */
-import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
-import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
-import {ApiEditorPageComponent, ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
-import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
 import {AddApiPageComponent} from "./pages/apis/add/add.page";
+import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
+
+/* Guards */
+import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
+import {ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 const _studioRoutes: any[] = [
     {
@@ -51,17 +50,11 @@ const _studioRoutes: any[] = [
     },
     {
         path: "apis/:apiId",
-        component: ApiDetailPageComponent,
-        resolve: {
-            api: ApiResolve
-        }
+        component: ApiDetailPageComponent
     },
     {
         path: "apis/:apiId/editor",
         component: ApiEditorPageComponent,
-        resolve: {
-            apiDefinition: ApiDefinitionResolve
-        },
         canDeactivate: [ApiEditorPageGuard]
     },
     {

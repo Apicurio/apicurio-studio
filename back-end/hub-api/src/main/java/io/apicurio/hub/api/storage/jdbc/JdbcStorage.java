@@ -48,7 +48,7 @@ public class JdbcStorage implements IStorage {
 
     @Inject
     private Configuration config;
-    @Resource(mappedName="java:jboss/datasources/ExampleDS")
+    @Resource(mappedName="java:jboss/datasources/ApicurioDS")
     private DataSource dataSource;
     
     private ISqlStatements sqlStatements;

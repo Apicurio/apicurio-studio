@@ -5,7 +5,8 @@
         <li breadcrumb label="Add API" icon="plus" class="active"></li>
     </breadcrumbs>
 </div>
-<div class="container-fluid">
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid" *ngIf="!pageError">
     <div class="addapi-form row">
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">

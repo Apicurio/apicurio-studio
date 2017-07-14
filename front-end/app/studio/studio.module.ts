@@ -35,10 +35,6 @@ import {ApisServiceProvider} from "./services/apis.service.provider";
 import {AuthenticationServiceProvider} from "./services/auth.service.provider";
 import {ConfigService} from "./services/config.service";
 
-/* Resolves */
-import {ApiResolve} from "./pages/apis/{apiId}/api-detail.resolve";
-import {ApiDefinitionResolve} from "./pages/apis/{apiId}/editor/api-editor.resolve";
-
 /* Guards */
 import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 import {ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
@@ -49,6 +45,7 @@ import {VerticalNavComponent} from "./components/vertical-nav.component";
 import {BreadcrumbsComponent} from "./components/breadcrumbs/breadcrumbs.component";
 import {BreadcrumbComponent} from "./components/breadcrumbs/breadcrumb.component";
 import {ConfirmDeleteDialogComponent} from "./components/dialogs/confirm-delete.component";
+import {PageErrorComponent} from "./components/page-error.component";
 
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
@@ -116,10 +113,10 @@ import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/ap
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
         ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
-        ApiCommitFormComponent
+        ApiCommitFormComponent, PageErrorComponent
     ],
-    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, ApiResolve,
-        ApiDefinitionResolve, AuthenticationCanActivateGuard, ApiEditorPageGuard
+    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, AuthenticationCanActivateGuard,
+        ApiEditorPageGuard
     ],
     bootstrap: [StudioComponent]
 })

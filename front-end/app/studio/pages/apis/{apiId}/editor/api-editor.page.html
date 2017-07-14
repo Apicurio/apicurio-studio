@@ -9,8 +9,26 @@
         <api-commit [disabled]="!isDirty" [saving]="isSaving" (onSave)="saveChange($event)"></api-commit>
     </div>
 </div>
-<div id="api-editor">
-    <api-editor #apiEditor [api]="apiDefinition" (onDirty)="onEditorDirty($event)"></api-editor>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div id="api-editor" *ngIf="!pageError" [ngSwitch]="isLoaded('def')">
+
+    <!-- "Data Loading" spinner -->
+    <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="false">
+        <div class="row row-cards-pf">
+            <div class="">
+                <div class="card-pf card-pf-accented">
+                    <div class="card-pf-heading">
+                        <h1 class="card-pf-title">
+                            <p><span class="spinner spinner-xs spinner-inline"></span> Loading API definition...</p>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The API Editor -->
+    <api-editor #apiEditor [api]="apiDefinition" (onDirty)="onEditorDirty($event)" *ngSwitchCase="true"></api-editor>
 </div>
 
 <!-- Discard Changes Confirmation Dialog -->

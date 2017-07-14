@@ -18,6 +18,25 @@
 import {Injectable} from "@angular/core";
 import {User} from "../models/user.model";
 
+let DEFAULT_CONFIG: any = {
+    mode: "dev",
+    auth: {
+        type: "token",
+        token: "xyz"
+    },
+    apis: {
+        type: "hub",
+        hubUrl: "https://localhost:8443/api-hub"
+    },
+    user: {
+        id: 1,
+        login: "User",
+        name: "User",
+        email: "user@example.org",
+        avatar: null
+    }
+};
+
 /**
  * An abstract base class for services that need to make API calls to Github.
  */
@@ -31,12 +50,8 @@ export class ConfigService {
             this.config = window["ApicurioStudioConfig"];
             console.info("[ConfigService] Found app config.");
         } else {
-            console.info("[ConfigService] App config not found.");
-            this.config = {
-                auth: {
-                    type: "local"
-                }
-            };
+            console.error("[ConfigService] App config not found!");
+            this.config = DEFAULT_CONFIG;
         }
     }
 

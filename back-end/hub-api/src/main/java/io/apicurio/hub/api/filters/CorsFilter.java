@@ -53,13 +53,13 @@ public class CorsFilter implements Filter {
             httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
             httpResp.setHeader("Access-Control-Max-Age", "1800"); //$NON-NLS-1$ //$NON-NLS-2$
             httpResp.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,HEAD,DELETE"); //$NON-NLS-1$ //$NON-NLS-2$
-            httpResp.setHeader("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Accept,Origin,Authorization,X-Content-SHA,X-Apicurio-CommitMessage"); //$NON-NLS-1$ //$NON-NLS-2$
-            httpResp.setHeader("Access-Control-Expose-Headers", "X-Apicurio-Error,X-Content-SHA,X-Apicurio-CommitMessage"); //$NON-NLS-1$ //$NON-NLS-2$
+            httpResp.setHeader("Access-Control-Allow-Headers", "X-Requested-With,Content-Type,Accept,Origin,Authorization,X-Content-SHA,X-Apicurio-CommitMessage,X-Apicurio-CommitComment"); //$NON-NLS-1$ //$NON-NLS-2$
+            httpResp.setHeader("Access-Control-Expose-Headers", "X-Apicurio-Error,X-Content-SHA,X-Apicurio-CommitMessage,X-Apicurio-CommitComment"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (hasOriginHeader(httpReq)) {
                 httpResp.setHeader("Access-Control-Allow-Origin", httpReq.getHeader("Origin")); //$NON-NLS-1$ //$NON-NLS-2$
                 httpResp.setHeader("Access-Control-Allow-Credentials", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-                httpResp.setHeader("Access-Control-Expose-Headers", "X-Apicurio-Error,X-Content-SHA,X-Apicurio-CommitMessage"); //$NON-NLS-1$ //$NON-NLS-2$
+                httpResp.setHeader("Access-Control-Expose-Headers", "X-Apicurio-Error,X-Content-SHA,X-Apicurio-CommitMessage,X-Apicurio-CommitComment"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             chain.doFilter(httpReq, httpResp);
         }

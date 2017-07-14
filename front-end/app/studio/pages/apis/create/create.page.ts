@@ -22,6 +22,7 @@ import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 import {CreateApiFormComponent} from "./_components/create-form.component";
 import {NewApi} from "../../../models/new-api.model";
+import {AbstractPageComponent} from "../../../components/page-base.component";
 
 @Component({
     moduleId: module.id,
@@ -29,10 +30,7 @@ import {NewApi} from "../../../models/new-api.model";
     templateUrl: "create.page.html",
     styleUrls: ["create.page.css"]
 })
-export class CreateApiPageComponent implements OnInit {
-
-    protected hasError: boolean = false;
-    protected errorMessage: string = null;
+export class CreateApiPageComponent extends AbstractPageComponent {
 
     @ViewChild("createApiForm") form: CreateApiFormComponent;
 
@@ -41,12 +39,8 @@ export class CreateApiPageComponent implements OnInit {
      * @param router
      * @param apis
      */
-    constructor(
-            private router: Router,
-            @Inject(IApisService) private apis: IApisService) {
-    }
-
-    public ngOnInit(): void {
+    constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
+        super();
     }
 
     /**
@@ -61,10 +55,8 @@ export class CreateApiPageComponent implements OnInit {
             console.info("[CreateApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {
-            console.error("[CreateApiPageComponent] Error saving API: %o", error);
-            this.hasError = true;
-            this.errorMessage = error;
-            this.form.reset();
+            console.error("[CreateApiPageComponent] Error creating an API");
+            this.error(error);
         })
     }
 

@@ -42,6 +42,7 @@ import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import test.io.apicurio.hub.api.MockGitHubService;
 import test.io.apicurio.hub.api.MockHttpServletRequest;
+import test.io.apicurio.hub.api.MockHttpServletResponse;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.TestUtil;
@@ -314,8 +315,12 @@ public class DesignsResourceTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Content-SHA", "0123456789");
+        headers.put("X-Apicurio-CommitMessage", "UpdateApiNow!");
+        headers.put("X-Apicurio-CommitComment", "Just a comment.");
         MockHttpServletRequest request = new MockHttpServletRequest(headers, content);
         TestUtil.setPrivateField(resource, "request", request);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        TestUtil.setPrivateField(resource, "response", response);
         resource.updateContent(design.getId());
         
         String ghLog = github.auditLog();
@@ -323,9 +328,10 @@ public class DesignsResourceTest {
         Assert.assertEquals(
                 "---\n" + 
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "updateResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json::Updating API design: /Apicurio/api-samples/blob/master/pet-store/pet-store.json::0123456789::-1073691667\n" + 
+                "updateResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json::UpdateApiNow!::Just a comment.::0123456789::-1073691667\n" + 
                 "---", 
                 ghLog);
+        Assert.assertNotNull(response.getHeader("X-Content-SHA"));
     }
 
 }

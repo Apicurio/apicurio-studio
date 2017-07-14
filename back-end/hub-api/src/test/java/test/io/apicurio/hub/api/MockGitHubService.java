@@ -24,11 +24,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubService;
 
 /**
@@ -128,12 +130,15 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
+     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
      */
     @Override
-    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) {
-        getAudit().add("updateResourceContent::" + repositoryUrl + "::" + commitMessage + "::" + content.getSha() + "::" + content.getContent().hashCode());
+    public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
+            ResourceContent content) throws GitHubException {
+        getAudit().add("updateResourceContent::" + repositoryUrl + "::" + commitMessage + "::" + commitComment
+                + "::" + content.getSha() + "::" + content.getContent().hashCode());
         // do nothing - mock only
+        return UUID.randomUUID().toString();
     }
     
     /**

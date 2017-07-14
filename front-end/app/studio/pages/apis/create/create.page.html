@@ -5,7 +5,8 @@
         <li breadcrumb label="Create API" icon="plus" class="active"></li>
     </breadcrumbs>
 </div>
-<div class="container-fluid">
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid" *ngIf="!pageError">
     <div class="createapi-form row">
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
@@ -24,11 +25,6 @@
         </div>
         <div class="col-md-7">
             <createapi-form #createApiForm (onCreateApi)="onCreateApi($event)" #createApiForm></createapi-form>
-            <div class="alert alert-danger" *ngIf="hasError">
-                <span class="pficon pficon-error-circle-o"></span>
-                <strong>Error Creating API!</strong>
-                <span>{{ errorMessage }}</span>
-            </div>
         </div>
     </div>
 </div>

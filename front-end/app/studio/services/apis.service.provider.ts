@@ -17,7 +17,6 @@
 
 import {Http} from "@angular/http";
 
-import {LocalApisService} from "./apis-local.service";
 import {IApisService} from "./apis.service";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
@@ -29,8 +28,8 @@ function ApisServiceFactory(http: Http, authService: IAuthenticationService, con
         console.info("[ApisServiceFactory] Creating instance of HubApisService");
         return new HubApisService(http, authService, config);
     } else {
-        console.info("[ApisServiceFactory] Creating instance of LocalApisService");
-        return new LocalApisService(http, authService);
+        console.error("[ApisServiceFactory] Unknown type for APIs Service: %s", config.apisType());
+        return null;
     }
 };
 

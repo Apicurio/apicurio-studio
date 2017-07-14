@@ -61,9 +61,11 @@ public interface IGitHubService {
      * Updates the raw content for a resource in GitHub using the GH API.
      * @param repositoryUrl
      * @param commitMessage
+     * @param commitComment 
      * @param content
+     * @return the latest SHA hash
      */
-    public void updateResourceContent(String repositoryUrl, String commitMessage, ResourceContent content) throws GitHubException;
+    public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment, ResourceContent content) throws GitHubException;
 
     /**
      * Creates a new resource in GitHub with the given content.

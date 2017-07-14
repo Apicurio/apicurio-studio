@@ -20,6 +20,7 @@ import {Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
+import {AbstractPageComponent} from "../../../components/page-base.component";
 
 @Component({
     moduleId: module.id,
@@ -27,19 +28,15 @@ import {Api} from "../../../models/api.model";
     templateUrl: "add.page.html",
     styleUrls: ["add.page.css"]
 })
-export class AddApiPageComponent implements OnInit {
+export class AddApiPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
      * @param router
      * @param apis
      */
-    constructor(
-            private router: Router,
-            @Inject(IApisService) private apis: IApisService) {
-    }
-
-    public ngOnInit(): void {
+    constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
+        super();
     }
 
     /**
@@ -55,6 +52,7 @@ export class AddApiPageComponent implements OnInit {
             this.router.navigate(link);
         }).catch( error => {
             console.error("[AddApiPageComponent] Error saving API: %o", error);
+            this.error(error);
         })
     }
 

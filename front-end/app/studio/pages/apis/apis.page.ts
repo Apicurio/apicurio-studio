@@ -21,6 +21,7 @@ import {Router} from "@angular/router";
 import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
 import {ArrayUtils} from "../../util/common";
+import {AbstractPageComponent} from "../../components/page-base.component";
 
 
 const API_FILTERS_KEY = "apicurio.studio.pages.apis.filters";
@@ -61,27 +62,40 @@ class Filters {
     templateUrl: "apis.page.html",
     styleUrls: ["apis.page.css"]
 })
-export class ApisPageComponent implements OnInit, OnDestroy {
+export class ApisPageComponent extends AbstractPageComponent implements OnDestroy {
 
-    private allApis: Api[];
+    private allApis: Api[] = [];
     private filteredApis: Api[];
     private selectedApis: Api[];
     private filters: Filters = new Filters();
 
+    /**
+     * C'tor.
+     * @param apis
+     */
     constructor(@Inject(IApisService) private apis: IApisService) {
+        super();
         this.filteredApis = [];
         this.selectedApis = [];
-    }
 
-    ngOnInit(): void {
-        console.log("[DashboardPageComponent] onInit")
         let fsaved: string = sessionStorage.getItem(API_FILTERS_KEY);
         if (fsaved) {
             this.filters = new Filters(JSON.parse(fsaved));
         }
-        this.apis.getAllApis().subscribe( apis => {
+    }
+
+    /**
+     * Called to asynchronously load data needed by the page.
+     */
+    public loadAsyncPageData(): void {
+        console.log("[ApisPageComponent] loadAsyncPageData")
+        this.apis.getApis().then( apis => {
             this.allApis = apis;
             this.filterApis();
+            this.loaded("apis");
+        }).catch( error => {
+            console.error("[ApisPageComponent] Error fetching API list.");
+            this.error(error);
         });
     }
 
@@ -141,6 +155,9 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
     }
 
+    /**
+     * Called to delete all selected APIs.
+     */
     public deleteApis(): void {
         // TODO deleting the APIs is done asynchronously - we need some sort of visual status (spinner) to watch progress, and then close the dialog when it's done
 
@@ -148,7 +165,13 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         let itemsToDelete: Api[] = ArrayUtils.intersect(this.selectedApis, this.filteredApis);
         console.log("[ApisPageComponent] Deleting %s selected APIs.", itemsToDelete.length);
         for (let api of itemsToDelete) {
-            this.apis.deleteApi(api);
+            this.apis.deleteApi(api).then( () => {
+                this.removeApiFromList(api);
+                this.filterApis();
+            }).catch( error => {
+                console.error("[ApisPageComponent] Error deleting an API with ID %s", api.id);
+                this.error(error);
+            });
         }
         this.selectedApis = [];
     }
@@ -165,4 +188,7 @@ export class ApisPageComponent implements OnInit, OnDestroy {
         this.filters.reset();
     }
 
+    private removeApiFromList(api: Api) {
+        this.allApis.splice(this.allApis.indexOf(api), 1);
+    }
 }

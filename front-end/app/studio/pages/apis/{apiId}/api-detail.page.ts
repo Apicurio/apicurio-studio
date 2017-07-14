@@ -21,6 +21,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 import {ApiCollaborators} from "../../../models/api-collaborators";
+import {AbstractPageComponent} from "../../../components/page-base.component";
 
 @Component({
     moduleId: module.id,
@@ -28,12 +29,10 @@ import {ApiCollaborators} from "../../../models/api-collaborators";
     templateUrl: "api-detail.page.html",
     styleUrls: ["api-detail.page.css"]
 })
-export class ApiDetailPageComponent implements OnInit {
+export class ApiDetailPageComponent extends AbstractPageComponent {
 
     public api: Api;
     public collaborators: ApiCollaborators;
-
-    public dataLoaded: Map<string, boolean> = new Map<string, boolean>();
 
     /**
      * Constructor.
@@ -44,15 +43,8 @@ export class ApiDetailPageComponent implements OnInit {
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService) {
+        super();
         this.api = new Api();
-    }
-
-    public ngOnInit(): void {
-        this.route.data.subscribe( value => {
-            this.api = value["api"];
-            console.info("[ApiDetailPageComponent] API from resolve: %o", this.api);
-            this.loadAsyncPageData();
-        });
     }
 
     /**
@@ -60,11 +52,24 @@ export class ApiDetailPageComponent implements OnInit {
      */
     public loadAsyncPageData(): void {
         console.info("[ApiDetailPageComponent] Loading async page data");
-        this.apis.getCollaborators(this.api).then( collaborators => {
-            console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
-            this.collaborators = collaborators;
-            this.dataLoaded["collaborators"] = true;
-        } );
+        this.route.params.subscribe( params => {
+            let apiId: string = params["apiId"];
+            this.apis.getApi(apiId).then(api => {
+                this.api = api;
+                this.dataLoaded["api"] = true;
+            }).catch(error => {
+                console.error("[ApiDetailPageComponent] Error getting API");
+                this.error(error);
+            });
+            this.apis.getCollaborators(apiId).then(collaborators => {
+                console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
+                this.collaborators = collaborators;
+                this.dataLoaded["collaborators"] = true;
+            }).catch(error => {
+                console.error("[ApiDetailPageComponent] Error getting API collaborators");
+                this.error(error);
+            });
+        });
     }
 
     /**
@@ -91,8 +96,7 @@ export class ApiDetailPageComponent implements OnInit {
         this.apis.deleteApi(this.api).then(() => {
             this.router.navigate([ "" ]);
         }).catch( reason => {
-            // TODO need to do better than this!
-            alert("Failed to delete the API!");
+            this.error(reason);
         });
     }
 

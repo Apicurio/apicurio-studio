@@ -23,6 +23,7 @@ import {IAuthenticationService} from "../../services/auth.service";
 import {Observable} from "rxjs";
 import {User} from "../../models/user.model";
 import {IApisService} from "../../services/apis.service";
+import {AbstractPageComponent} from "../../components/page-base.component";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.
@@ -33,10 +34,21 @@ import {IApisService} from "../../services/apis.service";
     templateUrl: "dashboard.page.html",
     styleUrls: ["dashboard.page.css"]
 })
-export class DashboardPageComponent {
+export class DashboardPageComponent extends AbstractPageComponent {
 
     constructor(@Inject(IApisService) private apis: IApisService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService) {
+        super();
+    }
+
+    public loadAsyncPageData(): void {
+        console.log("[DashboardPageComponent] loadAsyncPageData")
+        this.apis.getApis().then( apis => {
+            this.loaded("apis");
+        }).catch( error => {
+            console.error("[DashboardPageComponent] Error fetching API list.");
+            this.error(error);
+        });
     }
 
     public user(): Observable<User> {

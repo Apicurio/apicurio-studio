@@ -27,6 +27,10 @@ import {SimplifiedType} from "../../_models/simplified-type.model";
 import {ChangeParameterTypeCommand} from "../../_commands/change-parameter-type.command";
 import {NewParamCommand} from "../../_commands/new-param.command";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
+import {AddPathItemCommand} from "../../_commands/add-path.command";
+import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
+import {AddPathDialogComponent} from "../dialogs/add-path.component";
+import {NewPathCommand} from "../../_commands/new-path.command";
 
 
 @Component({
@@ -50,6 +54,8 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
+    @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
+    @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
 
     protected createEmptyNodeForSource(): Oas20PathItem {
         return (<Oas20Paths>this.path.parent()).createPathItem(this.path.path());
@@ -188,6 +194,27 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         let command: ICommand = new DeletePathCommand(this.path.path());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
+    }
+
+    public newPath(): void {
+        this.addPathDialog.open(this.path.path());
+    }
+
+    public addPath(path: string): void {
+        let command: ICommand = new NewPathCommand(path);
+        this.onCommand.emit(command);
+    }
+
+    public clone(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.clonePathDialog.open(this.path);
+        } else {
+            let pathItem: Oas20PathItem = modalData.object;
+            console.info("[PathFormComponent] Clone path item: %s", modalData.path);
+            let cloneSrcObj: any = this.oasLibrary().writeNode(pathItem);
+            let command: ICommand = new AddPathItemCommand(modalData.path, cloneSrcObj);
+            this.onCommand.emit(command);
+        }
     }
 
     public canHavePathParams(): boolean {

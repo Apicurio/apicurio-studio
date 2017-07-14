@@ -10,6 +10,13 @@
             </button>
             <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
                 <li>
+                    <a href="#" onclick="return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Definition</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
                     <a href="#" onclick="return false" (click)="delete()">
                         <span class="pficon pficon-delete"></span>
                         <span>Delete Definition</span>
@@ -94,3 +101,4 @@
 </div>
 
 <add-schema-property-dialog #addSchemaPropertyDialog (onAdd)="addSchemaProperty($event)"></add-schema-property-dialog>
+<clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>

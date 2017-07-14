@@ -97,6 +97,8 @@ import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_com
 import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-icon.component";
 import {ProblemFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/problem-form.component";
 import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.form";
+import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
+import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
 
 
 @NgModule({
@@ -113,7 +115,7 @@ import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/ap
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
         ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
-        ApiCommitFormComponent, PageErrorComponent
+        ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent
     ],
     providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, AuthenticationCanActivateGuard,
         ApiEditorPageGuard

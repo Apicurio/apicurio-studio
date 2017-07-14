@@ -32,6 +32,8 @@ import {ChangePropertyCommand} from "../../_commands/change-property.command";
 import {ChangePropertyTypeCommand} from "../../_commands/change-property-type.command";
 import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {NewSchemaPropertyCommand} from "../../_commands/new-schema-property.command";
+import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
+import {AddDefinitionCommand} from "../../_commands/add-definition.command";
 
 @Component({
     moduleId: module.id,
@@ -55,6 +57,7 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
+    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
 
     protected createEmptyNodeForSource(): Oas20SchemaDefinition {
         return (<Oas20Definitions>this.definition.parent()).createSchemaDefinition(this.definition.definitionName());
@@ -110,6 +113,18 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
         let command: ICommand = new DeleteDefinitionSchemaCommand(this.definition.definitionName());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
+    }
+
+    public clone(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.cloneDefinitionDialog.open(this.definition);
+        } else {
+            let definition: Oas20SchemaDefinition = modalData.definition;
+            console.info("[DefinitionFormComponent] Clone definition: %s", modalData.name);
+            let cloneSrcObj: any = this.oasLibrary().writeNode(definition);
+            let command: ICommand = new AddDefinitionCommand(modalData.name, cloneSrcObj);
+            this.onCommand.emit(command);
+        }
     }
 
     public formType(): string {

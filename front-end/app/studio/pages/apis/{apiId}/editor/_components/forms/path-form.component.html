@@ -7,6 +7,19 @@
             </button>
             <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
                 <li>
+                    <a href="#" onclick="return false" (click)="newPath()">
+                        <span class="pficon pficon-add-circle-o"></span>
+                        <span>New Sub-Path</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Path</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
                     <a href="javascript:return false" (click)="delete()">
                         <span class="pficon pficon-delete"></span>
                         <span>Delete Path</span>
@@ -276,3 +289,5 @@
 </div>
 
 <add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>
+<add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
+<clone-path-dialog #clonePathDialog (onClone)="clone($event)"></clone-path-dialog>

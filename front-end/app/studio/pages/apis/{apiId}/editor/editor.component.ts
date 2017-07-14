@@ -34,6 +34,10 @@ import {DeleteDefinitionSchemaCommand, DeleteNodeCommand, DeletePathCommand} fro
 import {AllNodeVisitor} from "./_util/model.util";
 import {ObjectUtils} from "./_util/object.util";
 import {NodeSelectionEvent} from "./_components/forms/source-form.base";
+import {CloneDefinitionDialogComponent} from "./_components/dialogs/clone-definition.component";
+import {AddDefinitionCommand} from "./_commands/add-definition.command";
+import {ClonePathDialogComponent} from "./_components/dialogs/clone-path.component";
+import {AddPathItemCommand} from "./_commands/add-path.command";
 
 
 @Component({
@@ -64,6 +68,8 @@ export class ApiEditorComponent {
     };
 
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
+    @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
+    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
 
     filterCriteria: string = null;
 
@@ -648,6 +654,21 @@ export class ApiEditorComponent {
     }
 
     /**
+     * Called when the user clicks "Clone Path" in the context-menu for a path item.
+     */
+    public clonePath(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.clonePathDialog.open(this.contextMenuItem as Oas20PathItem);
+        } else {
+            let pathItem: Oas20PathItem = modalData.object;
+            console.info("[ApiEditorComponent] Clone path item: %s", modalData.path);
+            let cloneSrcObj: any = this._library.writeNode(pathItem);
+            let command: ICommand = new AddPathItemCommand(modalData.path, cloneSrcObj);
+            this.onCommand(command);
+        }
+    }
+
+    /**
      * Called when the user clicks "Delete Operation" in the context-menu for a operation.
      */
     public deleteOperation(): void {
@@ -684,6 +705,21 @@ export class ApiEditorComponent {
             this.selectMain();
         }
         this.closeContextMenu();
+    }
+
+    /**
+     * Called when the user clicks "Clone Definition" in the context-menu for a definition.
+     */
+    public cloneDefinition(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.cloneDefinitionDialog.open(this.contextMenuItem as Oas20SchemaDefinition);
+        } else {
+            let definition: Oas20SchemaDefinition = modalData.definition;
+            console.info("[ApiEditorComponent] Clone definition: %s", modalData.name);
+            let cloneSrcObj: any = this._library.writeNode(definition);
+            let command: ICommand = new AddDefinitionCommand(modalData.name, cloneSrcObj);
+            this.onCommand(command);
+        }
     }
 
     /**

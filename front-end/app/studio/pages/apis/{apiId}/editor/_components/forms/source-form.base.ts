@@ -182,4 +182,8 @@ export abstract class SourceFormComponent<T extends OasNode> {
     public enableSourceMode(): void {
         this._mode = "source";
     }
+
+    public oasLibrary(): OasLibraryUtils {
+        return SourceFormComponent.library;
+    }
 }

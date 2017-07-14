@@ -1,0 +1,35 @@
+<!-- Clone Definition Dialog -->
+<div>
+    <div bsModal #cloneDefinitionModal="bs-modal" class="modal fade" id="cloneDefinitionModal" tabindex="-1" role="dialog"
+         aria-labelledby="cloneDefinitionModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()"
+         (onShown)="cloneDefinitionInput.focus()" (onHidden)="close()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="cloneDefinitionModalLabel">Clone Definition</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter a new definition name below and then click Clone.</p>
+                    <form id="clonedef-form" class="form-horizontal" #cloneDefinitionForm="ngForm" data-dismiss="modal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="definitionName">Name</label>
+                            <div class="col-sm-10">
+                                <input #cloneDefinitionInput name="definitionName" type="text" id="definitionName" class="form-control"
+                                       placeholder="Enter a Definition Name"
+                                       required [(ngModel)]="name">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="clone()"
+                            [disabled]="!cloneDefinitionForm.form.valid">Clone</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

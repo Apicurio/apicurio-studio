@@ -78,8 +78,12 @@ export class ChangePropertyTypeCommand extends AbstractCommand implements IComma
             prop.format = null;
             prop.items = prop.createItemsSchema();
             if (this._newType.of) {
-                prop.items.type = this._newType.of.type;
-                prop.items.format = this._newType.of.as;
+                if (this._newType.of.isRef()) {
+                    prop.items.$ref = this._newType.of.type;
+                } else {
+                    prop.items.type = this._newType.of.type;
+                    prop.items.format = this._newType.of.as;
+                }
             }
         }
     }

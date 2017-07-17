@@ -94,6 +94,7 @@ export class HubApisService implements IApisService {
                 this.theRecentApis = this.getRecentFromAllApis(apis);
                 this._recentApis.next(this.theRecentApis);
             }
+            this.removeMissingRecentApis(apis);
             return apis;
         }).toPromise();
     }
@@ -470,5 +471,25 @@ export class HubApisService implements IApisService {
 
         this.theRecentApis = recent;
         return recent;
+    }
+
+    /**
+     * Removes any API from the "recent APIs" list that is not in the
+     * given list of "all" Apis.
+     * @param apis
+     */
+    private removeMissingRecentApis(apis: Api[]) {
+        this.theRecentApis.filter( recentApi => {
+            let found: boolean = false;
+            apis.forEach( api => {
+                if (api.id === recentApi.id) {
+                    found = true;
+                }
+            });
+            return !found;
+        }).forEach( diffApi => {
+            console.info("[HubApisService] Removing '%s' from the recent APIs list.", diffApi.name);
+            this.theRecentApis.splice(this.theRecentApis.indexOf(diffApi), 1);
+        });
     }
 }

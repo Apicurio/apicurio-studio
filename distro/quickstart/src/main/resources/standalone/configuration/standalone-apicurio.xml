@@ -152,7 +152,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ApicurioDS" pool-name="ApicurioDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:${jboss.server.data.dir}/apicurio;AUTO_SERVER=TRUE</connection-url>
+                    <connection-url>jdbc:h2:mem:apicurio;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
                     <driver>h2</driver>
                     <security>
                         <user-name>sa</user-name>

@@ -111,11 +111,26 @@ public class StudioConfigServlet extends HttpServlet {
      */
     private String generateHubApiUrl(HttpServletRequest request) {
         try {
-            String url = request.getRequestURL().toString();
-            return new URI(url).resolve("/api-hub").toString();
+            String url = lookupHubApiUrl();
+            if (url == null) {
+                url = request.getRequestURL().toString();
+                url = new URI(url).resolve("/api-hub").toString();
+            }
+            return url;
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns the GitHub OAuth client-secret.
+     */
+    private String lookupHubApiUrl() {
+        String hubUrl = System.getProperty("apicurio.github.config.hubUrl", null);
+        if (hubUrl == null) {
+            hubUrl = System.getenv("CONFIG_HUB_URL");
+        }
+        return hubUrl;
     }
 
 }

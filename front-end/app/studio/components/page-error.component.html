@@ -72,6 +72,26 @@
                 </div>
             </div>
 
+            <!-- Connection Error -->
+            <div class="card-pf card-pf-accented card-pf-error" *ngSwitchCase="0">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-plug"></span>
+                        <span>Connection Error</span>
+                        <span>(Could Not Reach Server)</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        We couldn't reach the Apicurio Studio server!  Perhaps try reloading this
+                        page in a few minutes?  Maybe check your internet connection?
+                    </p>
+                    <div class="actions">
+                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Any Other Error -->
             <div class="card-pf card-pf-accented card-pf-error" *ngSwitchDefault>
                 <div class="card-pf-heading">

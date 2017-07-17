@@ -1,0 +1,10 @@
+<datasource jndi-name="java:jboss/datasources/ApicurioDS"
+	pool-name="ApicurioDS" enabled="true" use-java-context="true">
+    <connection-url>jdbc:mysql://MYSQLSERVER:3306/apicurio</connection-url>
+	<driver>mysql-connector-java-5.1.42-bin.jar_com.mysql.jdbc.Driver_5_1
+	</driver>
+	<security>
+		<user-name>DBUSER</user-name>
+		<password>DBPASS</password>
+	</security>
+</datasource>

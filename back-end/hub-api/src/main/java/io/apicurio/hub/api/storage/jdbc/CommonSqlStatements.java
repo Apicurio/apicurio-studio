@@ -35,7 +35,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String deleteApiDesign() {
-        return "DELETE FROM api_designs d WHERE d.id = ?";
+        return "DELETE FROM api_designs WHERE id = ?";
     }
     
     /**
@@ -75,7 +75,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String clearAcl() {
-        return "DELETE FROM acl a WHERE a.design_id = ?";
+        return "DELETE FROM acl WHERE design_id = ?";
     }
     
     /**

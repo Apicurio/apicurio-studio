@@ -29,6 +29,11 @@
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
     </extensions>
+    
+    <system-properties>
+    	<property name="apicurio.hub.storage.jdbc.type" value="h2" />
+    </system-properties>
+
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">

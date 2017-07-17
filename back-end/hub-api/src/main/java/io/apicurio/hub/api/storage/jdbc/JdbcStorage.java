@@ -62,10 +62,18 @@ public class JdbcStorage implements IStorage {
 
         jdbi = Jdbi.create(dataSource);
 
-        if (config.getJdbcType().equalsIgnoreCase("h2")) {
-            sqlStatements = new H2SqlStatements();
-        } else {
-            throw new RuntimeException("Unsupported JDBC type: " + config.getJdbcType());
+        switch (config.getJdbcType()) {
+            case "h2":
+                sqlStatements = new H2SqlStatements();
+                break;
+            case "mysql5":
+                sqlStatements = new MySQL5SqlStatements();
+                break;
+            case "postgresql9":
+                sqlStatements = new PostgreSQL9SqlStatements();
+                break;
+            default:
+                throw new RuntimeException("Unsupported JDBC type: " + config.getJdbcType());
         }
         
         if (config.isJdbcInit()) {
@@ -118,7 +126,7 @@ public class JdbcStorage implements IStorage {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiDesignById();
                 return handle.createQuery(statement)
-                        .bind(0, designId)
+                        .bind(0, Long.valueOf(designId))
                         .bind(1, userId)
                         .mapToBean(ApiDesign.class)
                         .findOnly();
@@ -153,7 +161,7 @@ public class JdbcStorage implements IStorage {
                 statement = sqlStatements.insertAcl();
                 handle.createUpdate(statement)
                       .bind(0, userId)
-                      .bind(1, designId)
+                      .bind(1, Long.parseLong(designId))
                       .bind(2, "owner")
                       .execute();
                 
@@ -179,7 +187,7 @@ public class JdbcStorage implements IStorage {
                 // Check for permissions first
                 String statement = sqlStatements.hasWritePermission();
                 int count = handle.createQuery(statement)
-                    .bind(0, designId)
+                    .bind(0, Long.valueOf(designId))
                     .bind(1, userId)
                     .mapTo(Integer.class).findOnly();
                 if (count == 0) {
@@ -188,12 +196,12 @@ public class JdbcStorage implements IStorage {
 
                 // If OK then delete ACL entries
                 statement = sqlStatements.clearAcl();
-                handle.createUpdate(statement).bind(0, designId).execute();
+                handle.createUpdate(statement).bind(0, Long.valueOf(designId)).execute();
                 
                 // Then delete the api design itself
                 statement = sqlStatements.deleteApiDesign();
                 int rowCount = handle.createUpdate(statement)
-                      .bind(0, designId)
+                      .bind(0, Long.valueOf(designId))
                       .bind(1, userId)
                       .execute();
                 if (rowCount == 0) {
@@ -219,7 +227,7 @@ public class JdbcStorage implements IStorage {
                 // Check for permissions first
                 String statement = sqlStatements.hasWritePermission();
                 int count = handle.createQuery(statement)
-                    .bind(0, design.getId())
+                    .bind(0, Long.valueOf(design.getId()))
                     .bind(1, userId)
                     .mapTo(Integer.class).findOnly();
                 if (count == 0) {
@@ -233,7 +241,7 @@ public class JdbcStorage implements IStorage {
                         .bind(1, design.getDescription())
                         .bind(2, design.getModifiedBy())
                         .bind(3, design.getModifiedOn())
-                        .bind(4, design.getId())
+                        .bind(4, Long.valueOf(design.getId()))
                         .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();

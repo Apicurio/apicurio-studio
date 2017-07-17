@@ -1,0 +1,9 @@
+<datasource jndi-name="java:jboss/datasources/ApicurioDS"
+	pool-name="ApicurioDS" enabled="true" use-java-context="true">
+    <connection-url>jdbc:postgresql://POSTGRESQLSERVER:5432/apicurio</connection-url>
+	<driver>postgresql-9.3-1102.jdbc41.jar</driver>
+	<security>
+		<user-name>DBUSER</user-name>
+		<password>DBPASS</password>
+	</security>
+</datasource>

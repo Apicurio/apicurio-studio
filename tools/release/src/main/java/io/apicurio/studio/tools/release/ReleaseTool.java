@@ -259,7 +259,7 @@ public class ReleaseTool {
         builder.append("The following issues have been resolved in this release:\n\n");
 
         issues.forEach(issue -> {
-            builder.append(String.format("* [#%d](%s) %s", issue.getInt("number"), issue.getString("url"), issue.getString("title")));
+            builder.append(String.format("* [#%d](%s) %s", issue.getInt("number"), issue.getString("html_url"), issue.getString("title")));
             builder.append("\n");
         });
 

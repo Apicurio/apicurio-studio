@@ -21,6 +21,46 @@ package io.apicurio.hub.api.storage.jdbc;
  * @author eric.wittmann@gmail.com
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertLinkedAccount()
+     */
+    @Override
+    public String insertLinkedAccount() {
+        return "INSERT INTO accounts (user_id, type, token, linked_on, used_on) VALUES (?, ?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectLinkedAccountByType()
+     */
+    @Override
+    public String selectLinkedAccountByType() {
+        return "SELECT a.* FROM accounts a WHERE a.user_id = ? AND a.type = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectLinkedAccounts()
+     */
+    @Override
+    public String selectLinkedAccounts() {
+        return "SELECT a.* FROM accounts a WHERE a.user_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#deleteLinkedAccount()
+     */
+    @Override
+    public String deleteLinkedAccount() {
+        return "DELETE FROM accounts WHERE user_id = ? AND type = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#deleteLinkedAccounts()
+     */
+    @Override
+    public String deleteLinkedAccounts() {
+        return "DELETE FROM accounts WHERE user_id = ?";
+    }
 
     /**
      * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertApiDesign()

@@ -76,7 +76,7 @@ export class TokenAuthenticationService implements IAuthenticationService {
     }
 
     /**
-     * Not supported.
+     * Logout.
      */
     public logout(): void {
         window.location.href = this.config.logoutUrl();
@@ -87,7 +87,7 @@ export class TokenAuthenticationService implements IAuthenticationService {
      * @param headers
      */
     public injectAuthHeaders(headers: Headers): void {
-        let authHeader: string = "token " + this.accessToken;
+        let authHeader: string = "bearer " + this.accessToken;
         headers.set("Authorization", authHeader);
     }
 

@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
-
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
-
-    /**
-     * Returns the User information for the currently authenticated user.
-     */
-    public User getCurrentUser();
+public enum LinkedAccountType {
+    
+    GitHub, GitLab, BitBucket
 
 }

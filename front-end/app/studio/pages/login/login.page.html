@@ -9,13 +9,13 @@
                 <div class="form-group">
                     <label for="inputUsername" class="col-sm-2 col-md-2 control-label">Username</label>
                     <div class="col-sm-10 col-md-10">
-                        <input name="username" type="text" class="form-control" id="inputUsername" required placeholder="Enter your GitHub username..." autofocus tabindex="1" [(ngModel)]="username">
+                        <input name="username" type="text" class="form-control" id="inputUsername" required placeholder="Enter your username..." autofocus tabindex="1" [(ngModel)]="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword" class="col-sm-2 col-md-2 control-label">Password</label>
                     <div class="col-sm-10 col-md-10">
-                        <input name="password" type="password" class="form-control" id="inputPassword" required placeholder="Enter your GitHub password..." tabindex="2" [(ngModel)]="password">
+                        <input name="password" type="password" class="form-control" id="inputPassword" required placeholder="Enter your password..." tabindex="2" [(ngModel)]="password">
                     </div>
                 </div>
                 <div class="form-group" *ngIf="twoFactorEnabled">
@@ -39,51 +39,19 @@
                     </div>
                 </div>
             </form>
-            <!-- GitHub PAT Login Form -->
-            <form class="form-horizontal" role="form" (submit)="loginPAT()" #loginPATForm="ngForm" *ngIf="patMode">
-                <div class="form-group">
-                    <label for="inputUsername" class="col-sm-2 col-md-2 control-label">Token</label>
-                    <div class="col-sm-10 col-md-10">
-                        <input name="token" type="text" class="form-control" id="inputToken" required placeholder="Enter your GitHub personal access token..." tabindex="1" [(ngModel)]="pat">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-8 col-sm-offset-2 col-sm-6 col-md-offset-2 col-md-6">
-                    </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4 submit">
-                        <button type="submit" class="btn btn-primary btn-lg" tabindex="5"
-                                [disabled]="!loginPATForm.form.valid || authenticating"><span class="fa fa-fw fa-github"></span><span>Log In</span></button>
-                    </div>
-                </div>
-            </form>
         </div>
         <div class="col-sm-5 col-md-6 col-lg-7 details">
-            <div *ngIf="loginError && !errorIsTwoFactor" class="alert alert-danger">
+            <div *ngIf="loginError" class="alert alert-danger">
                 <span class="pficon pficon-error-circle-o"></span>
                 <strong>Error Logging In!</strong>
                 <span>{{ loginError }}</span>
-            </div>
-            <div *ngIf="loginError && errorIsTwoFactor" class="alert alert-info">
-                <span class="pficon pficon-info"></span>
-                <strong>Two Factor Authentication Enabled</strong>
-                <span>It seems you have <a href="https://help.github.com/articles/about-two-factor-authentication/">two factor authentication</a> enabled in GitHub.  Please provide your two-factor key to complete the login process.</span>
             </div>
             <div *ngIf="!loginError">
                 <p>
                     <strong>Welcome to Apicurio Studio!</strong>
                     <span>
-                        Use this form to log into the application.  Use your <a href="https://www.github.com">GitHub</a>
-                        credentials for this!  Note that we never store your GitHub credentials!  We actually use them to
-                        create a <a href="https://github.com/blog/1509-personal-api-tokens">GitHub Personal Access Token</a>.
-                        You can then <a href="https://github.com/settings/tokens">revoke access</a> at any time!
+                        Use this form to log into the application.
                     </span>
-                </p>
-                <p style="margin-top: 15px">
-                    Not comfortable giving us your GitHub credentials?  We get it!  Just <a href="">create your own token</a> and then
-                    <button class="btn btn-xs btn-default" (click)="enablePAT()">Click Here</button> to give us that instead!
-                </p>
-                <p style="margin-top: 15px">
-                    Don't yet have a GitHub account?  It's easy to <a href="https://github.com/join">sign up for a new account</a>!
                 </p>
             </div>
         </div>

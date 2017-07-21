@@ -41,6 +41,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import io.apicurio.studio.fe.wildfly.beans.AccessTokenRequest;
 import io.apicurio.studio.fe.wildfly.beans.AccessTokenResponse;
+import io.apicurio.studio.fe.wildfly.config.RequestAttributeKeys;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -74,8 +75,6 @@ public class GitHubAuthenticationFilter implements Filter {
     private static String AUTH_URL = "https://github.com/login/oauth/authorize?scope=user:email+repo+read:org&client_id=";
     private static String ACCESS_TOKEN_URL = "https://github.com/login/oauth/access_token";
 
-    public static String TOKEN_KEY = "GitHubAuthenticationFilter.token";
-    public static String USER_KEY = "GitHubAuthenticationFilter.user";
     private static String REDIRECT_KEY = "GitHubAuthenticationFilter.redirectTo";
     private static String STATE_KEY = "GitHubAuthenticationFilter.state";
     
@@ -123,9 +122,9 @@ public class GitHubAuthenticationFilter implements Filter {
                         .asObject(AccessTokenResponse.class);
                 
                 AccessTokenResponse token = tokenResp.getBody();
-                session.setAttribute(TOKEN_KEY, token);
+                session.setAttribute(RequestAttributeKeys.TOKEN_KEY, token);
                 User user = authenticateUser(token.getAccess_token());
-                session.setAttribute(USER_KEY, user);
+                session.setAttribute(RequestAttributeKeys.USER_KEY, user);
 
                 String redirectUrl = (String) session.getAttribute(REDIRECT_KEY);
                 httpResp.sendRedirect(redirectUrl);
@@ -133,8 +132,8 @@ public class GitHubAuthenticationFilter implements Filter {
                 throw new ServletException(e);
             }
         } else if (httpReq.getServletPath().endsWith("/logout")) {
-            session.removeAttribute(TOKEN_KEY);
-            session.removeAttribute(USER_KEY);
+            session.removeAttribute(RequestAttributeKeys.TOKEN_KEY);
+            session.removeAttribute(RequestAttributeKeys.USER_KEY);
             
             String logoutPageHtml = createLogoutPage();
             httpResp.setContentType("text/html");
@@ -142,7 +141,7 @@ public class GitHubAuthenticationFilter implements Filter {
             httpResp.getWriter().print(logoutPageHtml);
             httpResp.getWriter().flush();
         } else {
-            AccessTokenResponse token = (AccessTokenResponse) session.getAttribute(TOKEN_KEY);
+            AccessTokenResponse token = (AccessTokenResponse) session.getAttribute(RequestAttributeKeys.TOKEN_KEY);
             if (token == null) {
                 StringBuffer originalAppUrl = httpReq.getRequestURL();
                 String qs = httpReq.getQueryString();

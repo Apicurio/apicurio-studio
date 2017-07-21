@@ -36,6 +36,31 @@ public interface ISqlStatements {
     public List<String> databaseInitialization();
 
     /**
+     * A statement used to insert a row into the accounts table.
+     */
+    public String insertLinkedAccount();
+
+    /**
+     * A statement used to select a single Linked Account by its type (and user).
+     */
+    public String selectLinkedAccountByType();
+
+    /**
+     * A statement used to delete a row from the accounts table.
+     */
+    public String deleteLinkedAccount();
+
+    /**
+     * A statement used to delete all rows from the accounts table (per user).
+     */
+    public String deleteLinkedAccounts();
+
+    /**
+     * A statement used to select all API designs.
+     */
+    public String selectLinkedAccounts();
+    
+    /**
      * A statement used to insert a row into the api_designs table.
      */
     public String insertApiDesign();

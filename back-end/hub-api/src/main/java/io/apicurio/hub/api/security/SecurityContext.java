@@ -17,10 +17,6 @@
 package io.apicurio.hub.api.security;
 
 import javax.enterprise.context.RequestScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-
-import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.studio.shared.beans.User;
 
@@ -29,18 +25,14 @@ import io.apicurio.studio.shared.beans.User;
  * @author eric.wittmann@gmail.com
  */
 @RequestScoped
-public class GitHubSecurityContext implements ISecurityContext {
-    
-    @Context
-    private HttpServletRequest httpRequest;
+public class SecurityContext implements ISecurityContext {
     
     private User user;
-    private String token;
     
     /**
      * Constructor.
      */
-    public GitHubSecurityContext() {
+    public SecurityContext() {
     }
     
     /**
@@ -56,28 +48,6 @@ public class GitHubSecurityContext implements ISecurityContext {
     @Override
     public User getCurrentUser() {
         return user;
-    }
-
-    /**
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @param token the token to set
-     */
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    /**
-     * @see io.apicurio.hub.api.security.ISecurityContext#addSecurity(com.mashape.unirest.request.HttpRequest)
-     */
-    @Override
-    public void addSecurity(HttpRequest request) {
-        request.header("Authorization", "token " + getToken());
     }
 
 }

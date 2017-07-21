@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.LinkedAccount;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.config.Configuration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -114,6 +116,72 @@ public class JdbcStorage implements IStorage {
             return null;
         });
         logger.debug("---");
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     */
+    @Override
+    public void createLinkedAccount(String userId, LinkedAccount account)
+            throws AlreadyExistsException, StorageException {
+        logger.debug("Inserting a Linked Account {} for {}", account.getType().name(), userId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertLinkedAccount();
+                handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, account.getType().name())
+                      .bind(2, account.getToken())
+                      .bind(3, account.getLinkedOn())
+                      .bind(4, account.getUsedOn())
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            if (e.getMessage().contains("Unique")) {
+                throw new AlreadyExistsException();
+            } else {
+                throw new StorageException("Error inserting API design.", e);
+            }
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type)
+            throws StorageException, NotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#listLinkedAccounts(java.lang.String)
+     */
+    @Override
+    public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void deleteLinkedAccount(String userId, LinkedAccountType type)
+            throws StorageException, NotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#deleteLinkedAccounts(java.lang.String)
+     */
+    @Override
+    public void deleteLinkedAccounts(String userId) throws StorageException {
+        // TODO Auto-generated method stub
+        
     }
 
     /**

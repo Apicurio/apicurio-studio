@@ -19,6 +19,8 @@ package io.apicurio.hub.api.storage;
 import java.util.Collection;
 
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.LinkedAccount;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 
@@ -26,6 +28,48 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
  * @author eric.wittmann@gmail.com
  */
 public interface IStorage {
+    
+    /**
+     * Creates a linked account for the given user.
+     * @param userId
+     * @param account
+     * @throws AlreadyExistsException
+     * @throws StorageException
+     */
+    public void createLinkedAccount(String userId, LinkedAccount account) throws AlreadyExistsException, StorageException;
+    
+    /**
+     * Returns a collection of linked accounts for the given user.
+     * @param userId
+     * @return
+     * @throws StorageException
+     */
+    public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException;
+    
+    /**
+     * Deletes a single linked account for the given user.
+     * @param userId
+     * @param type
+     * @throws StorageException
+     * @throws NotFoundException
+     */
+    public void deleteLinkedAccount(String userId, LinkedAccountType type) throws StorageException, NotFoundException;
+    
+    /**
+     * Deletes all linked accounts for the given user.
+     * @param userId
+     * @throws StorageException
+     */
+    public void deleteLinkedAccounts(String userId) throws StorageException;
+    
+    /**
+     * Gets a single linked account for a user by its type.
+     * @param userId
+     * @param type
+     * @throws StorageException
+     * @throws NotFoundException
+     */
+    public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type) throws StorageException, NotFoundException;
 
     /**
      * Gets a single API Design from the storage layer by its unique ID.

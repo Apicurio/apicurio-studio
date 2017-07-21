@@ -136,7 +136,7 @@ public class GitHubService implements IGitHubService {
                     .bind("path", resource.getResourcePath())
                     .url();
             GetRequest request = Unirest.get(contentUrl).header("Accept", "application/json");
-            security.addSecurity(request);
+            addSecurity(request);
             HttpResponse<String> userResp = request.asString();
             if (userResp.getStatus() != 200) {
                 throw new NotFoundException();
@@ -167,7 +167,7 @@ public class GitHubService implements IGitHubService {
                     .url();
             HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
                     .queryString("path", resource.getResourcePath());
-            security.addSecurity(request);
+            addSecurity(request);
             HttpResponse<JsonNode> response = request.asJson();
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -217,7 +217,7 @@ public class GitHubService implements IGitHubService {
                     .bind("path", resource.getResourcePath())
                     .url();
             HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
-            security.addSecurity(request);
+            addSecurity(request);
             HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
             if (response.getStatus() == 404) {
             	throw new NotFoundException();
@@ -260,7 +260,7 @@ public class GitHubService implements IGitHubService {
                 .url();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
-            security.addSecurity(request);
+            addSecurity(request);
             HttpResponse<JsonNode> response = request.body(requestBody).asJson();
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -298,7 +298,7 @@ public class GitHubService implements IGitHubService {
             .url();
 
         HttpRequestWithBody request = Unirest.post(addCommentUrl).header("Content-Type", "application/json; charset=utf-8");
-        security.addSecurity(request);
+        addSecurity(request);
         HttpResponse<JsonNode> response = request.body(body).asJson();
         if (response.getStatus() != 201) {
             throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -325,7 +325,7 @@ public class GitHubService implements IGitHubService {
                 .url();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
-            security.addSecurity(request);
+            addSecurity(request);
             HttpResponse<InputStream> response = request.body(requestBody).asBinary();
             if (response.getStatus() != 201) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -346,7 +346,7 @@ public class GitHubService implements IGitHubService {
             Collection<String> rval = new HashSet<>();
             while (orgsUrl != null) {
                 HttpRequest request = Unirest.get(orgsUrl).header("Accept", "application/json");
-                security.addSecurity(request);
+                addSecurity(request);
                 HttpResponse<JsonNode> response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -386,7 +386,7 @@ public class GitHubService implements IGitHubService {
             Collection<String> rval = new HashSet<>();
             while (reposUrl != null) {
                 HttpRequest request = Unirest.get(reposUrl).header("Accept", "application/json");
-                security.addSecurity(request);
+                addSecurity(request);
                 HttpResponse<JsonNode> response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -446,7 +446,15 @@ public class GitHubService implements IGitHubService {
     protected Endpoint endpoint(String path) {
         return new Endpoint(GITHUB_API_ENDPOINT + path);
     }
-    
+
+    /**
+     * Adds the appropriate security credentials into the request.
+     * @param request
+     */
+    protected void addSecurity(HttpRequest request) {
+        request.header("Authorization", "Bearer d9e5fb7d1836f6b681d39f1b70174d125c3b4b89");
+    }
+
     /**
      * An endpoint that will be used to make a call to the GitHub API.  The form of an endpoint path
      * should be (for example):

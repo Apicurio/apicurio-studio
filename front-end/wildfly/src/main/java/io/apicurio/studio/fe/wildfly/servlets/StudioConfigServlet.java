@@ -32,8 +32,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.apicurio.studio.fe.wildfly.beans.AccessTokenResponse;
-import io.apicurio.studio.fe.wildfly.filters.GitHubAuthenticationFilter;
+import io.apicurio.studio.fe.wildfly.config.RequestAttributeKeys;
 import io.apicurio.studio.shared.beans.StudioConfig;
 import io.apicurio.studio.shared.beans.StudioConfigApis;
 import io.apicurio.studio.shared.beans.StudioConfigApisType;
@@ -67,8 +66,8 @@ public class StudioConfigServlet extends HttpServlet {
             g.useDefaultPrettyPrinter();
 
             HttpSession session = request.getSession();
-            AccessTokenResponse token = (AccessTokenResponse) session.getAttribute(GitHubAuthenticationFilter.TOKEN_KEY);
-            User user = (User) session.getAttribute(GitHubAuthenticationFilter.USER_KEY);
+            String token = (String) session.getAttribute(RequestAttributeKeys.TOKEN_KEY);
+            User user = (User) session.getAttribute(RequestAttributeKeys.USER_KEY);
             
             if (token == null) {
                 System.out.println("Error: 'token' is null!");
@@ -87,7 +86,7 @@ public class StudioConfigServlet extends HttpServlet {
             
             config.setAuth(new StudioConfigAuth());
             config.getAuth().setType(StudioConfigAuthType.token);
-            config.getAuth().setToken(token.getAccess_token());
+            config.getAuth().setToken(token);
             config.getAuth().setLogoutUrl(request.getContextPath() + "/logout");
             
             config.setApis(new StudioConfigApis());

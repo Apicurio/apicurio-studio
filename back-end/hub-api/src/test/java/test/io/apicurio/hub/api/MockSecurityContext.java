@@ -16,8 +16,6 @@
 
 package test.io.apicurio.hub.api;
 
-import com.mashape.unirest.request.HttpRequest;
-
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.studio.shared.beans.User;
 
@@ -48,14 +46,6 @@ public class MockSecurityContext implements ISecurityContext {
      */
     public void setUser(User user) {
         this.user = user;
-    }
-
-    /**
-     * @see io.apicurio.hub.api.security.ISecurityContext#addSecurity(com.mashape.unirest.request.HttpRequest)
-     */
-    @Override
-    public void addSecurity(HttpRequest request) {
-        // Do nothing
     }
 
 }

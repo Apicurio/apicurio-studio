@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
-
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.studio.fe.wildfly.config;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
-
-    /**
-     * Returns the User information for the currently authenticated user.
-     */
-    public User getCurrentUser();
+public interface RequestAttributeKeys {
+    
+    public static String TOKEN_KEY = RequestAttributeKeys.class.getName() + ".token";
+    public static String USER_KEY = RequestAttributeKeys.class.getName() + ".user";
 
 }

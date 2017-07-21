@@ -18,18 +18,18 @@
 import {Http} from "@angular/http";
 
 import {IAuthenticationService} from "./auth.service";
-import {GithubAuthenticationService} from "./auth-github.service";
 import {ConfigService} from "./config.service";
 import {TokenAuthenticationService} from "./auth-token.service";
+import {OIDCDirectGrantAuthenticationService} from "./auth-oidc.service";
 
 
 function AuthenticationServiceFactory(http: Http, config: ConfigService): IAuthenticationService {
-    if (config.authType() === "local") {
-        console.info("[AuthenticationServiceFactory] Creating local GitHub auth service.");
-        return new GithubAuthenticationService(http);
-    } else if (config.authType() === "token") {
+    if (config.authType() === "token") {
         console.info("[AuthenticationServiceFactory] Creating token auth service.");
         return new TokenAuthenticationService(http, config);
+    } else if (config.authType() === "oidc-direct-grant") {
+        console.info("[AuthenticationServiceFactory] Creating OIDC Direct Grant auth service.");
+        return new OIDCDirectGrantAuthenticationService(http, config);
     } else {
         console.error("[AuthenticationServiceFactory] Unsupported auth type: %s", config.authType());
         return null;

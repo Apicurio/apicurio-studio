@@ -18,7 +18,6 @@
 import {Component, OnInit, Inject} from "@angular/core";
 import {IAuthenticationService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import {GithubAuthenticationCredentials} from "../../services/auth-github.service";
 
 const REMEMBER_USERNAME_KEY = "apicurio.studio.pages.login.remember-username";
 const SAVED_USERNAME_KEY    = "apicurio.studio.pages.login.username";
@@ -36,15 +35,10 @@ export class LoginPageComponent implements OnInit {
 
     private username: string;
     private password: string;
-    private twoFactorToken: string;
-    private pat: string;
     private rememberUser: boolean;
     private loginError: string;
-    private twoFactorEnabled: boolean = false;
-    private errorIsTwoFactor: boolean = false;
 
     private authenticating: boolean = false;
-    private patMode: boolean = false;
 
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, private router: Router) {}
 
@@ -54,41 +48,6 @@ export class LoginPageComponent implements OnInit {
         if (this.rememberUser) {
             this.username = localStorage.getItem(SAVED_USERNAME_KEY);
         }
-    }
-
-    public enablePAT(): void {
-        this.patMode = true;
-    }
-
-    /**
-     * Called when the user logs in with a manually created GitHub personal access token.
-     */
-    public loginPAT(): void {
-        this.authenticating = true;
-        this.authService["loginPAT"](this.pat).then( user => {
-            console.info("[LoginPageComponent] User successfully logged in: %o", user);
-            this.authenticating = false;
-
-            let path:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.path");
-            let query:string = sessionStorage.getItem("apicurio.studio.pages.login.redirect-to.query");
-            let queryParams:any = {};
-
-            if (query) {
-                let qitems: string[][] = query.split("&").map(item => item.split("=").map(b => decodeURIComponent(b)));
-                for (let pair of qitems) {
-                    queryParams[pair[0]] = pair[1];
-                }
-            }
-
-            let rpath: string = this.asRoute(path);
-            console.info("[LoginPageComponent] Login successful, redirecting to: %s", rpath);
-
-            this.router.navigate([ this.asRoute(rpath) ], { "queryParams": queryParams });
-        }).catch( reason => {
-            this.authenticating = false;
-            this.loginError = reason;
-            console.info("[LoginPageComponent] Login failure reason: %s", reason);
-        });
     }
 
     /**
@@ -101,12 +60,6 @@ export class LoginPageComponent implements OnInit {
             localStorage.setItem(SAVED_USERNAME_KEY, this.username);
         }
         let credential: any = this.password;
-        if (this.twoFactorEnabled) {
-            credential = new GithubAuthenticationCredentials();
-            credential.login = this.username;
-            credential.password = this.password;
-            credential.twoFactorToken = this.twoFactorToken;
-        }
         this.authService.login(this.username, credential).then( user => {
             console.info("[LoginPageComponent] User successfully logged in: %o", user);
             this.authenticating = false;
@@ -130,20 +83,6 @@ export class LoginPageComponent implements OnInit {
             this.authenticating = false;
             this.loginError = reason;
             console.info("[LoginPageComponent] Login failure reason: %s", reason);
-            let requiresTwoFactor: boolean = reason.indexOf("OTP") >= 0;
-            if (!requiresTwoFactor) {
-                this.password = null;
-                if (this.loginError === "Forbidden") {
-                    this.loginError = "There have been several failed attempts to sign in from this account or IP address. Please wait a while and try again later.";
-                }
-            }
-            this.twoFactorEnabled = (this.twoFactorEnabled || requiresTwoFactor);
-            this.errorIsTwoFactor = requiresTwoFactor;
-            if (this.errorIsTwoFactor && (this.twoFactorToken ? true : false)) {
-                this.loginError = "Error logging in (invalid two-factor authentication token).";
-                this.errorIsTwoFactor = false;
-                this.twoFactorToken = null;
-            }
         });
     }
 

@@ -54,7 +54,7 @@ public class GitHubAuthenticationFilter implements Filter {
     }
     
     @Inject
-    private GitHubSecurityContext security;
+    private ISecurityContext security;
 
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -88,8 +88,7 @@ public class GitHubAuthenticationFilter implements Filter {
                 httpResp.setHeader("WWW-Authenticate", "Bearer realm=\"apicurio-studio\"");
                 httpResp.sendError(401);
             } else {
-                security.setUser(user);
-                security.setToken(token);
+                ((SecurityContext) security).setUser(user);
                 chain.doFilter(request, response);
             }
         }

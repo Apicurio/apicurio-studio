@@ -25,8 +25,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.mashape.unirest.request.HttpRequest;
-
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.ResourceContent;
@@ -42,7 +40,6 @@ import test.io.apicurio.hub.api.TestUtil;
 public class GitHubServiceTest {
     
     // Add your github token here but don't commit it!!
-    private static final String GITHUB_AUTH_TOKEN = "";
     private static final String GITHUB_USERNAME = "";
 
     private IGitHubService service;
@@ -121,12 +118,7 @@ public class GitHubServiceTest {
      */
     @Test
     public void testGetOrganizations() throws GitHubException {
-        TestUtil.setPrivateField(service, "security", new MockSecurityContext() {
-            @Override
-            public void addSecurity(HttpRequest request) {
-                request.header("Authorization", "token " + GITHUB_AUTH_TOKEN);
-            }
-        });
+        TestUtil.setPrivateField(service, "security", new MockSecurityContext());
 
         Collection<String> organizations = service.getOrganizations();
         Assert.assertNotNull(organizations);
@@ -145,10 +137,6 @@ public class GitHubServiceTest {
                 User user = super.getCurrentUser();
                 user.setLogin(GITHUB_USERNAME);
                 return user;
-            }
-            @Override
-            public void addSecurity(HttpRequest request) {
-                request.header("Authorization", "token " + GITHUB_AUTH_TOKEN);
             }
         });
 

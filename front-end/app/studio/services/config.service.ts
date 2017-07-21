@@ -69,6 +69,13 @@ export class ConfigService {
         return this.config.auth.token;
     }
 
+    public authData(): any {
+        if (!this.config.auth) {
+            return null;
+        }
+        return this.config.auth.data;
+    }
+
     public logoutUrl(): string {
         if (!this.config.auth) {
             return null;

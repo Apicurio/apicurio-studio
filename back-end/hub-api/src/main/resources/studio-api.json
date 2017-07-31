@@ -1,440 +1,574 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "Apicurio Studio API",
-        "description": "The REST API used by the Apicurio Studio UI to add and update the API Designs for a given user.",
-        "contact": {
-            "name": "Apicurio",
-            "url": "http://www.apicur.io/",
-            "email": "apicurio@lists.jboss.org"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "https://www.apache.org/licenses/LICENSE-2.0"
-        },
-        "version": "1.0.0"
+  "swagger": "2.0",
+  "info": {
+    "title": "Apicurio Studio API",
+    "description": "The REST API used by the Apicurio Studio UI to add and update the API Designs for a given user.",
+    "contact": {
+      "name": "Apicurio",
+      "url": "http://www.apicur.io/",
+      "email": "apicurio@lists.jboss.org"
     },
-    "paths": {
-        "/designs": {
-            "get": {
-                "summary": "List API Designs",
-                "description": "Returns a list of all API Designs for the authenticated user.",
-                "parameters": [
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Limit the results to the most recent N designs.",
-                        "type": "integer",
-                        "format": "int32"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The list of API Designs.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "#/definitions/ApiDesign"
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "summary": "Add an API Design",
-                "description": "Adds an existing API Design to the studio.",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "Information necessary to add a single API design to the studio.",
-                        "schema": {
-                            "$ref": "#/definitions/AddApiDesign"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Information about the newly added API design.",
-                        "schema": {
-                            "$ref": "#/definitions/ApiDesign"
-                        }
-                    },
-                    "404": {
-                        "description": "When the provided repository resource doesn't exist."
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create an API Design",
-                "description": "Creates a new, empty API Design for the authenticated user.",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "Information about a brand new API design and where to store its content.",
-                        "schema": {
-                            "$ref": "#/definitions/NewApiDesign"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Details of the newly created API design.",
-                        "schema": {
-                            "$ref": "#/definitions/ApiDesign"
-                        }
-                    }
-                }
-            }
-        },
-        "/designs/{designId}": {
-            "get": {
-                "summary": "Get an API Design",
-                "description": "Gets the meta-data for a single API design, referenced by its unique identifier.  Note that this does not include the *content* of the design - that must be fetched separately via the /content sub-resource.",
-                "responses": {
-                    "200": {
-                        "description": "The full meta-data for an API design.",
-                        "schema": {
-                            "$ref": "#/definitions/ApiDesign"
-                        }
-                    },
-                    "404": {
-                        "description": "When the API design does not exist."
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update an API Design",
-                "description": "Updates the meta-data for a single API design, referenced by its unique identifier.",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "Updated API design meta-data.",
-                        "schema": {
-                            "$ref": "#/definitions/UpdateApiDesign"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Upon success, returns the full API design.",
-                        "schema": {
-                            "$ref": "#/definitions/ApiDesign"
-                        }
-                    },
-                    "404": {
-                        "description": "When the API design does not exist."
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Remove an API Design",
-                "description": "Removes an API design from the studio.  Note that this does not delete the content for the design (which typically resides in a source control repository like GitHub).",
-                "responses": {
-                    "204": {
-                        "description": "Indicates that the API design was removed successfully."
-                    },
-                    "404": {
-                        "description": "When the API design does not exist."
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "designId",
-                    "in": "path",
-                    "description": "The unique ID of an API Design.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        },
-        "/designs/{designId}/content": {
-            "get": {
-                "summary": "Get an API Design's Content",
-                "description": "Returns the full OpenAPI specification content for a given API Design.",
-                "responses": {
-                    "200": {
-                        "description": "When the API design content is returned successfully.",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "When the API design does not exist."
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update an API Design's Content",
-                "description": "Update the full content of an API design, replacing any previous OpenAPI document.",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Indicates that the update was successful."
-                    },
-                    "404": {
-                        "description": "When the API design does not exist."
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "designId",
-                    "in": "path",
-                    "description": "The unique ID of an API Design.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        },
-        "/designs/{designId}/collaborators": {
-            "get": {
-                "summary": "Get all Collaborators",
-                "description": "Returns information about all of the users who have collaborated on the API Design.",
-                "responses": {
-                    "200": {
-                        "description": "A list of collaborators.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "#/definitions/Collaborator"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "designId",
-                    "in": "path",
-                    "description": "The unique ID of an API Design.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        },
-        "/system/status": {
-            "get": {
-                "summary": "Get the System Status",
-                "description": "Returns information about the current status of the API/system.",
-                "responses": {
-                    "200": {
-                        "description": "When the system status is successfully returned.",
-                        "schema": {
-                            "$ref": "#/definitions/SystemStatus"
-                        }
-                    }
-                }
-            }
-        },
-        "/currentuser": {
-            "get": {
-                "summary": "Get Current User Info",
-                "description": "Returns information about the authenticated user.",
-                "responses": {
-                    "200": {
-                        "description": "When the call successfully returns the User info.",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            }
-        },
-        "/currentuser/organizations": {
-            "get": {
-                "summary": "List all GitHub Organizations",
-                "description": "Returns a list of all Organizations the user belongs to.",
-                "responses": {
-                    "200": {
-                        "description": "Response when the list of organizations is successfully returned.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/currentuser/organizations/{org}/repositories": {
-            "get": {
-                "summary": "List all GitHub Repositories",
-                "description": "Returns a list of all repositories within the given GitHub organization.",
-                "responses": {
-                    "200": {
-                        "description": "Response when the list of repositories is successfully returned.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "org",
-                    "in": "path",
-                    "description": "A GitHub organization.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
     },
-    "definitions": {
-        "ApiDesign": {
-            "properties": {
-                "id": {
-                    "description": "The unique ID of the API design.",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "The name of the API design.",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "Short description of the API design.",
-                    "type": "string"
-                },
-                "repositoryUrl": {
-                    "description": "Source code repository containing the API design content.",
-                    "type": "string"
-                },
-                "createdBy": {
-                    "description": "User that created the API design.",
-                    "type": "string"
-                },
-                "createdOn": {
-                    "format": "date-time",
-                    "description": "When the API design was created.",
-                    "type": "string"
-                },
-                "modifiedBy": {
-                    "description": "User that last modified the API design.",
-                    "type": "string"
-                },
-                "modifiedOn": {
-                    "format": "date-time",
-                    "description": "When the API design was last modified.",
-                    "type": "string"
-                }
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/designs": {
+      "get": {
+        "summary": "List API Designs",
+        "description": "Returns a list of all API Designs for the authenticated user.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the results to the most recent N designs.",
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of API Designs.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/ApiDesign"
+              }
             }
-        },
-        "NewApiDesign": {
-            "properties": {
-                "name": {
-                    "description": "Name of the new API design.",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "Description of the new API design.",
-                    "type": "string"
-                },
-                "repositoryUrl": {
-                    "description": "Full source code repository URL (where to store the API design).",
-                    "type": "string"
-                }
-            }
-        },
-        "AddApiDesign": {
-            "properties": {
-                "repositoryUrl": {
-                    "type": "string"
-                }
-            }
-        },
-        "Collaborator": {
-            "title": "Root Type",
-            "description": "The root of the Collaborator type's schema.",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "description": "Name of the collaborator.",
-                    "type": "string"
-                },
-                "url": {
-                    "description": "URL to find more information about the collaborator.",
-                    "type": "string"
-                },
-                "commits": {
-                    "format": "int32",
-                    "description": "Number of commits by this collaborator.",
-                    "type": "integer"
-                }
-            }
-        },
-        "SystemStatus": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "moreInfo": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                },
-                "builtOn": {
-                    "format": "date-time",
-                    "type": "string"
-                },
-                "up": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "UpdateApiDesign": {
-            "properties": {
-                "name": {
-                    "description": "New name for the API design.",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "Updated short description of the API design.",
-                    "type": "string"
-                }
-            }
-        },
-        "User": {
-            "title": "Root Type",
-            "description": "The root of the User type's schema.",
-            "type": "object",
-            "properties": {
-                "login": {
-                    "type": "string"
-                },
-                "id": {
-                    "format": "int32",
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                }
-            }
+          }
         }
+      },
+      "put": {
+        "summary": "Add an API Design",
+        "description": "Adds an existing API Design to the studio.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Information necessary to add a single API design to the studio.",
+            "schema": {
+              "$ref": "#/definitions/AddApiDesign"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Information about the newly added API design.",
+            "schema": {
+              "$ref": "#/definitions/ApiDesign"
+            }
+          },
+          "404": {
+            "description": "When the provided repository resource doesn't exist."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an API Design",
+        "description": "Creates a new, empty API Design for the authenticated user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Information about a brand new API design and where to store its content.",
+            "schema": {
+              "$ref": "#/definitions/NewApiDesign"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Details of the newly created API design.",
+            "schema": {
+              "$ref": "#/definitions/ApiDesign"
+            }
+          }
+        }
+      }
+    },
+    "/designs/{designId}": {
+      "get": {
+        "summary": "Get an API Design",
+        "description": "Gets the meta-data for a single API design, referenced by its unique identifier.  Note that this does not include the *content* of the design - that must be fetched separately via the /content sub-resource.",
+        "responses": {
+          "200": {
+            "description": "The full meta-data for an API design.",
+            "schema": {
+              "$ref": "#/definitions/ApiDesign"
+            }
+          },
+          "404": {
+            "description": "When the API design does not exist."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an API Design",
+        "description": "Updates the meta-data for a single API design, referenced by its unique identifier.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated API design meta-data.",
+            "schema": {
+              "$ref": "#/definitions/UpdateApiDesign"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upon success, returns the full API design.",
+            "schema": {
+              "$ref": "#/definitions/ApiDesign"
+            }
+          },
+          "404": {
+            "description": "When the API design does not exist."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove an API Design",
+        "description": "Removes an API design from the studio.  Note that this does not delete the content for the design (which typically resides in a source control repository like GitHub).",
+        "responses": {
+          "204": {
+            "description": "Indicates that the API design was removed successfully."
+          },
+          "404": {
+            "description": "When the API design does not exist."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "designId",
+          "in": "path",
+          "description": "The unique ID of an API Design.",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/designs/{designId}/content": {
+      "get": {
+        "summary": "Get an API Design's Content",
+        "description": "Returns the full OpenAPI specification content for a given API Design.",
+        "responses": {
+          "200": {
+            "description": "When the API design content is returned successfully.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "404": {
+            "description": "When the API design does not exist."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an API Design's Content",
+        "description": "Update the full content of an API design, replacing any previous OpenAPI document.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Indicates that the update was successful."
+          },
+          "404": {
+            "description": "When the API design does not exist."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "designId",
+          "in": "path",
+          "description": "The unique ID of an API Design.",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/designs/{designId}/collaborators": {
+      "get": {
+        "summary": "Get all Collaborators",
+        "description": "Returns information about all of the users who have collaborated on the API Design.",
+        "responses": {
+          "200": {
+            "description": "A list of collaborators.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/Collaborator"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "designId",
+          "in": "path",
+          "description": "The unique ID of an API Design.",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/system/status": {
+      "get": {
+        "summary": "Get the System Status",
+        "description": "Returns information about the current status of the API/system.",
+        "responses": {
+          "200": {
+            "description": "When the system status is successfully returned.",
+            "schema": {
+              "$ref": "#/definitions/SystemStatus"
+            }
+          }
+        }
+      }
+    },
+    "/currentuser": {
+      "get": {
+        "summary": "Get Current User Info",
+        "description": "Returns information about the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "When the call successfully returns the User info.",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/currentuser/organizations": {
+      "get": {
+        "summary": "List all GitHub Organizations",
+        "description": "Returns a list of all Organizations the user belongs to.",
+        "responses": {
+          "200": {
+            "description": "Response when the list of organizations is successfully returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/currentuser/organizations/{org}/repositories": {
+      "get": {
+        "summary": "List all GitHub Repositories",
+        "description": "Returns a list of all repositories within the given GitHub organization.",
+        "responses": {
+          "200": {
+            "description": "Response when the list of repositories is successfully returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "org",
+          "in": "path",
+          "description": "A GitHub organization.",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/accounts": {
+      "get": {
+        "summary": "List Linked Accounts",
+        "description": "Gets a list of all Linked Accounts configured for the user.",
+        "responses": {
+          "200": {
+            "description": "List of linked accounts.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/LinkedAccount"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Linked Account",
+        "description": "Creates a new Linked Account for the user.  This initiates a new account, but it must be completed before it can be used.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data necessary to initiate a new linked account.",
+            "schema": {
+              "$ref": "#/definitions/CreateLinkedAccount"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account creation initiated successfully.",
+            "schema": {
+              "$ref": "#/definitions/InitiatedLinkedAccount"
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{accountType}": {
+      "get": {
+        "summary": "Get Linked Account",
+        "description": "Gets information about a single Linked Account.",
+        "responses": {
+          "200": {
+            "description": "A linked account.",
+            "schema": {
+              "$ref": "#/definitions/LinkedAccount"
+            }
+          },
+          "404": {
+            "description": "No account of this type found."
+          }
+        }
+      },
+      "put": {
+        "summary": "Complete Linked Account",
+        "description": "Called to complete the account linking process (after successful 3rd party authentication).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Information needed to complete the account linking process.",
+            "schema": {
+              "$ref": "#/definitions/CompleteLinkedAccount"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Account linkage successful."
+          },
+          "404": {
+            "description": "Not account of this type found."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Linked Account",
+        "description": "Deletes a single Linked Account.",
+        "responses": {
+          "204": {
+            "description": "Account successfully deleted."
+          },
+          "404": {
+            "description": "No account of this type found."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "accountType",
+          "in": "path",
+          "description": "The type of account, such as GitHub, GitLab, or Bitbucket",
+          "required": true,
+          "type": "string"
+        }
+      ]
     }
+  },
+  "definitions": {
+    "ApiDesign": {
+      "properties": {
+        "id": {
+          "description": "The unique ID of the API design.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the API design.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Short description of the API design.",
+          "type": "string"
+        },
+        "repositoryUrl": {
+          "description": "Source code repository containing the API design content.",
+          "type": "string"
+        },
+        "createdBy": {
+          "description": "User that created the API design.",
+          "type": "string"
+        },
+        "createdOn": {
+          "format": "date-time",
+          "description": "When the API design was created.",
+          "type": "string"
+        },
+        "modifiedBy": {
+          "description": "User that last modified the API design.",
+          "type": "string"
+        },
+        "modifiedOn": {
+          "format": "date-time",
+          "description": "When the API design was last modified.",
+          "type": "string"
+        }
+      }
+    },
+    "NewApiDesign": {
+      "properties": {
+        "name": {
+          "description": "Name of the new API design.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description of the new API design.",
+          "type": "string"
+        },
+        "repositoryUrl": {
+          "description": "Full source code repository URL (where to store the API design).",
+          "type": "string"
+        }
+      }
+    },
+    "AddApiDesign": {
+      "properties": {
+        "repositoryUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "Collaborator": {
+      "title": "Root Type",
+      "description": "The root of the Collaborator type's schema.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Name of the collaborator.",
+          "type": "string"
+        },
+        "url": {
+          "description": "URL to find more information about the collaborator.",
+          "type": "string"
+        },
+        "commits": {
+          "format": "int32",
+          "description": "Number of commits by this collaborator.",
+          "type": "integer"
+        }
+      }
+    },
+    "SystemStatus": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "moreInfo": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "builtOn": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "up": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UpdateApiDesign": {
+      "properties": {
+        "name": {
+          "description": "New name for the API design.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Updated short description of the API design.",
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "title": "Root Type",
+      "description": "The root of the User type's schema.",
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "id": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        }
+      }
+    },
+    "LinkedAccount": {
+      "properties": {
+        "type": {
+          "description": "The type of account: GitHub, GitLab, Bitbucket",
+          "type": "string"
+        },
+        "linkedOn": {
+          "format": "date-time",
+          "description": "Date the account was linked (completed).",
+          "type": "string"
+        },
+        "usedOn": {
+          "format": "date-time",
+          "description": "The date the account was last used.",
+          "type": "string"
+        }
+      }
+    },
+    "CreateLinkedAccount": {
+      "properties": {
+        "type": {
+          "description": "Account type: GitHub, GitLab, Bitbucket",
+          "type": "string"
+        }
+      }
+    },
+    "CompleteLinkedAccount": {},
+    "InitiatedLinkedAccount": {
+      "properties": {
+        "authUrl": {
+          "description": "The (e.g. OIDC) authentication URL used to complete account creation.",
+          "type": "string"
+        }
+      }
+    }
+  }
 }

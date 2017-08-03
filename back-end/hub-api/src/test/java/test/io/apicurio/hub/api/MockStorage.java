@@ -54,6 +54,14 @@ public class MockStorage implements IStorage {
     }
     
     /**
+     * @see io.apicurio.hub.api.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     */
+    @Override
+    public void updateLinkedAccount(String userId, LinkedAccount account) throws NotFoundException, StorageException {
+        this.getLinkedAccount(userId, account.getType()).setUsedOn(account.getUsedOn());
+    }
+    
+    /**
      * @see io.apicurio.hub.api.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
      */
     @Override

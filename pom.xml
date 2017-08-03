@@ -193,6 +193,11 @@
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-common</artifactId>
+                <version>${version.org.keycloak}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-adapter-core</artifactId>
                 <version>${version.org.keycloak}</version>
             </dependency>

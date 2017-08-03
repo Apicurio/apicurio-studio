@@ -18,6 +18,10 @@
 import {ModuleWithProviders} from "@angular/core";
 import {Routes, RouterModule} from "@angular/router";
 
+/* Guards */
+import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
+import {ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
+
 /* Pages */
 import {LoginPageComponent} from "./pages/login/login.page";
 import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
@@ -26,10 +30,12 @@ import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {AddApiPageComponent} from "./pages/apis/add/add.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
+import {ProfilePageComponent} from "./pages/settings/profile/profile.page";
+import {LinkedAccountsPageComponent} from "./pages/settings/accounts/accounts.page";
+import {SettingsPageComponent} from "./pages/settings/settings";
+import {NotFoundPageComponent} from "./pages/404.page";
+import {CreatedLinkedAccountPageComponent} from "./pages/settings/accounts/{accountType}/created/created.page";
 
-/* Guards */
-import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
-import {ApiEditorPageGuard} from "./pages/apis/{apiId}/editor/api-editor.page";
 
 const _studioRoutes: any[] = [
     {
@@ -58,8 +64,28 @@ const _studioRoutes: any[] = [
         canDeactivate: [ApiEditorPageGuard]
     },
     {
+        path: "settings",
+        component: SettingsPageComponent
+    },
+    {
+        path: "settings/profile",
+        component: ProfilePageComponent
+    },
+    {
+        path: "settings/accounts",
+        component: LinkedAccountsPageComponent
+    },
+    {
+        path: "settings/accounts/:accountType/created",
+        component: CreatedLinkedAccountPageComponent
+    },
+    {
         path: "login",
         component: LoginPageComponent
+    },
+    {
+        path: "**",
+        component: NotFoundPageComponent
     }
 ];
 /* Add standard authentication guard to every route (except the login route). */

@@ -38,6 +38,10 @@
     <servlet-name>AngularServlet</servlet-name>
     <url-pattern>/apis/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/settings/*</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>StudioConfigServlet</servlet-name>

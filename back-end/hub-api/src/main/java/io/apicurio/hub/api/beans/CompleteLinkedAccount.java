@@ -19,18 +19,28 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public enum LinkedAccountType {
-
-    GitHub("github"), GitLab("gitlab"), Bitbucket("bitbucket");
-
-    private final String alias;
+public class CompleteLinkedAccount {
     
-    private LinkedAccountType(String alias) {
-        this.alias = alias;
+    private String nonce;
+    
+    /**
+     * Constructor.
+     */
+    public CompleteLinkedAccount() {
     }
-    
-    public String alias() {
-        return this.alias;
+
+    /**
+     * @return the nonce
+     */
+    public String getNonce() {
+        return nonce;
+    }
+
+    /**
+     * @param nonce the nonce to set
+     */
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
 }

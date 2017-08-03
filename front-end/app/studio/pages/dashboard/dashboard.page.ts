@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 
 import {Api} from "../../models/api.model";
@@ -36,9 +36,9 @@ import {AbstractPageComponent} from "../../components/page-base.component";
 })
 export class DashboardPageComponent extends AbstractPageComponent {
 
-    constructor(@Inject(IApisService) private apis: IApisService,
+    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService) {
-        super();
+        super(route);
     }
 
     public loadAsyncPageData(): void {

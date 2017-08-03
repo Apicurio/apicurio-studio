@@ -16,6 +16,8 @@
  */
 
 import {OnInit} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
 
 export abstract class AbstractPageComponent implements OnInit {
 
@@ -23,18 +25,30 @@ export abstract class AbstractPageComponent implements OnInit {
     public pageError: any;
 
     /**
+     * C'tor.
+     * @param {ActivatedRoute} route
+     */
+    constructor(protected route: ActivatedRoute) {
+    }
+
+    /**
      * Called when the page is initialized.  Triggers the loading of asynchronous
      * page data.
      */
     public ngOnInit(): void {
-        this.loadAsyncPageData();
+        let combined = Observable.combineLatest(this.route.params, this.route.queryParams, (params, qparams) => ({params, qparams}));
+        combined.subscribe( ap => {
+            this.loadAsyncPageData(ap.params, ap.qparams);
+        });
     }
 
     /**
      * Called to kick off loading the page's async data.  Subclasses should
      * override to provide page-specific data loading.
+     * @param pathParams
+     * @param queryParams
      */
-    public loadAsyncPageData(): void {
+    public loadAsyncPageData(pathParams: any, queryParams: any): void {
     }
 
     /**

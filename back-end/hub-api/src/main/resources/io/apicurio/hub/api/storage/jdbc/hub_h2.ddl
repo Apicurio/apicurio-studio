@@ -2,7 +2,7 @@
 -- DDL for the Apicurio Studio Hub API - Database: H2
 -- *********************************************************************
 
-CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP NOT NULL, used_on TIMESTAMP);
+CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP, used_on TIMESTAMP, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
 CREATE INDEX IDX_accounts_1 ON accounts(user_id);
 

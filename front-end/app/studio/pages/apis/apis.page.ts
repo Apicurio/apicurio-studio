@@ -16,7 +16,7 @@
  */
 
 import {Component, OnInit, Inject, OnDestroy} from "@angular/core";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
@@ -71,10 +71,11 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
 
     /**
      * C'tor.
-     * @param apis
+     * @param {IApisService} apis
+     * @param {ActivatedRoute} route
      */
-    constructor(@Inject(IApisService) private apis: IApisService) {
-        super();
+    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute) {
+        super(route);
         this.filteredApis = [];
         this.selectedApis = [];
 

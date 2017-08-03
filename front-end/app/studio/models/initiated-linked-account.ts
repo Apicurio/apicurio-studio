@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +15,15 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.beans;
 
-/**
- * @author eric.wittmann@gmail.com
- */
-public enum LinkedAccountType {
+export class InitiatedLinkedAccount {
 
-    GitHub("github"), GitLab("gitlab"), Bitbucket("bitbucket");
+    authUrl: string;
+    nonce: string;
 
-    private final String alias;
-    
-    private LinkedAccountType(String alias) {
-        this.alias = alias;
-    }
-    
-    public String alias() {
-        return this.alias;
+    constructor() {
+        this.authUrl = null;
+        this.nonce = null;
     }
 
 }

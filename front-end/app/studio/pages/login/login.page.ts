@@ -18,6 +18,7 @@
 import {Component, OnInit, Inject} from "@angular/core";
 import {IAuthenticationService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {ConfigService} from "../../services/config.service";
 
 const REMEMBER_USERNAME_KEY = "apicurio.studio.pages.login.remember-username";
 const SAVED_USERNAME_KEY    = "apicurio.studio.pages.login.username";
@@ -40,13 +41,18 @@ export class LoginPageComponent implements OnInit {
 
     private authenticating: boolean = false;
 
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, private router: Router) {}
+    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, private router: Router, private config: ConfigService) {}
 
     ngOnInit(): void {
         let v: string = localStorage.getItem(REMEMBER_USERNAME_KEY);
         this.rememberUser = v == "true";
         if (this.rememberUser) {
             this.username = localStorage.getItem(SAVED_USERNAME_KEY);
+        }
+        if (this.config.authData().user) {
+            this.username = this.config.authData().user;
+            this.password = this.config.authData().password;
+            this.login();
         }
     }
 

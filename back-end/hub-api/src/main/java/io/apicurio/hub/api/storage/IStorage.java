@@ -72,6 +72,15 @@ public interface IStorage {
     public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type) throws StorageException, NotFoundException;
 
     /**
+     * Updates a linked account.
+     * @param userId
+     * @param account
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public void updateLinkedAccount(String userId, LinkedAccount account) throws NotFoundException, StorageException;
+
+    /**
      * Gets a single API Design from the storage layer by its unique ID.
      * @param userId
      * @param designId

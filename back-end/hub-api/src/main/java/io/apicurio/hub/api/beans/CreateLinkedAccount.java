@@ -16,22 +16,18 @@
 
 package io.apicurio.hub.api.beans;
 
-import java.util.Date;
-
 /**
  * @author eric.wittmann@gmail.com
  */
-public class LinkedAccount {
-
+public class CreateLinkedAccount {
+    
     private LinkedAccountType type;
-    private Date linkedOn;
-    private Date usedOn;
-    private String nonce;
+    private String redirectUrl;
     
     /**
      * Constructor.
      */
-    public LinkedAccount() {
+    public CreateLinkedAccount() {
     }
 
     /**
@@ -49,44 +45,17 @@ public class LinkedAccount {
     }
 
     /**
-     * @return the linkedOn
+     * @return the redirectUrl
      */
-    public Date getLinkedOn() {
-        return linkedOn;
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 
     /**
-     * @param linkedOn the linkedOn to set
+     * @param redirectUrl the redirectUrl to set
      */
-    public void setLinkedOn(Date linkedOn) {
-        this.linkedOn = linkedOn;
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
     }
 
-    /**
-     * @return the usedOn
-     */
-    public Date getUsedOn() {
-        return usedOn;
-    }
-
-    /**
-     * @param usedOn the usedOn to set
-     */
-    public void setUsedOn(Date usedOn) {
-        this.usedOn = usedOn;
-    }
-
-    /**
-     * @return the nonce
-     */
-    public String getNonce() {
-        return nonce;
-    }
-
-    /**
-     * @param nonce the nonce to set
-     */
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
-    }
 }

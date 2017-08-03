@@ -27,7 +27,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertLinkedAccount() {
-        return "INSERT INTO accounts (user_id, type, token, linked_on, used_on) VALUES (?, ?, ?, ?, ?)";
+        return "INSERT INTO accounts (user_id, type, linked_on, used_on, nonce) VALUES (?, ?, ?, ?, ?)";
     }
     
     /**
@@ -38,6 +38,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         return "SELECT a.* FROM accounts a WHERE a.user_id = ? AND a.type = ?";
     }
     
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#updateLinkedAccount()
+     */
+    @Override
+    public String updateLinkedAccount() {
+        return "UPDATE accounts SET used_on = ?, linked_on = ?, nonce = ? WHERE user_id = ? AND type = ?";
+    }
+
     /**
      * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectLinkedAccounts()
      */

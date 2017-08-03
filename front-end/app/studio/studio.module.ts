@@ -32,6 +32,7 @@ import {StudioRouting} from "./studio.routing";
 
 /* Services */
 import {ApisServiceProvider} from "./services/apis.service.provider";
+import {LinkedAccountsServiceProvider} from "./services/accounts.service.provider";
 import {AuthenticationServiceProvider} from "./services/auth.service.provider";
 import {ConfigService} from "./services/config.service";
 
@@ -55,6 +56,11 @@ import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {AddApiPageComponent} from "./pages/apis/add/add.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
+import {ProfilePageComponent} from "./pages/settings/profile/profile.page";
+import {LinkedAccountsPageComponent} from "./pages/settings/accounts/accounts.page";
+import {SettingsPageComponent} from "./pages/settings/settings";
+import {NotFoundPageComponent} from "./pages/404.page";
+import {CreatedLinkedAccountPageComponent} from "./pages/settings/accounts/{accountType}/created/created.page";
 
 /* Page Components */
 import {CreateApiFormComponent} from "./pages/apis/create/_components/create-form.component";
@@ -115,10 +121,12 @@ import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
         ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
-        ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent
+        ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
+        ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
+        CreatedLinkedAccountPageComponent
     ],
-    providers: [ApisServiceProvider, AuthenticationServiceProvider, ConfigService, AuthenticationCanActivateGuard,
-        ApiEditorPageGuard
+    providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
+        AuthenticationCanActivateGuard, ApiEditorPageGuard
     ],
     bootstrap: [StudioComponent]
 })

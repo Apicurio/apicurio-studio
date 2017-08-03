@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.LinkedAccount;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.config.Configuration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -219,7 +221,7 @@ public class JdbcStorageTest {
             // OK!
         }
     }
-
+    
     @Test
     public void testUpdateApiDesign() throws Exception {
         ApiDesign design = new ApiDesign();
@@ -259,7 +261,173 @@ public class JdbcStorageTest {
             // expected
         }
     }
+
+    @Test
+    public void testCreateLinkedAccount() throws Exception {
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.GitHub);
+        account.setLinkedOn(now);
+        account.setUsedOn(now);
+        
+        storage.createLinkedAccount("user", account);
+        
+        try {
+            storage.createLinkedAccount("user", account);
+            Assert.fail("Expected an 'AlreadyExistsException'");
+        } catch (AlreadyExistsException e) {
+            // OK!
+        }
+
+        storage.createLinkedAccount("user2", account);
+    }
+
+    @Test
+    public void testGetLinkedAccount() throws Exception {
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.GitLab);
+        account.setLinkedOn(now);
+        account.setUsedOn(now);
+        storage.createLinkedAccount("user", account);
+        
+        LinkedAccount fetchedAccount = storage.getLinkedAccount("user", LinkedAccountType.GitLab);
+        Assert.assertNotNull(fetchedAccount);
+        Assert.assertEquals(account.getType(), fetchedAccount.getType());
+        Assert.assertEquals(account.getLinkedOn(), fetchedAccount.getLinkedOn());
+        Assert.assertEquals(account.getUsedOn(), fetchedAccount.getUsedOn());
+    }
     
+    @Test
+    public void testListLinkedAccounts() throws Exception {
+        Collection<LinkedAccount> designs = storage.listLinkedAccounts("user");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(0, designs.size());
+        
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.Bitbucket);
+        account.setLinkedOn(now);
+
+        storage.createLinkedAccount("user", account);
+        account.setType(LinkedAccountType.GitHub);
+        storage.createLinkedAccount("user", account);
+        account.setType(LinkedAccountType.GitLab);
+        storage.createLinkedAccount("user", account);
+        
+        account.setType(LinkedAccountType.GitHub);
+        storage.createLinkedAccount("user2", account);
+        account.setType(LinkedAccountType.GitLab);
+        storage.createLinkedAccount("user2", account);
+
+        designs = storage.listLinkedAccounts("user");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(3, designs.size());
+
+        designs = storage.listLinkedAccounts("user2");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(2, designs.size());
+    }
+    
+    @Test
+    public void testUpdateLinkedAccount() throws Exception {
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.Bitbucket);
+        account.setLinkedOn(now);
+        account.setUsedOn(now);
+        storage.createLinkedAccount("user", account);
+        
+        Thread.sleep(10);
+        
+        now = new Date();
+        account.setUsedOn(now);
+        storage.updateLinkedAccount("user", account);
+
+        account = storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+        Assert.assertNotNull(account);
+        Assert.assertEquals(now, account.getUsedOn());
+        
+        try {
+            storage.updateLinkedAccount("user2", account);
+            Assert.fail("Expected a NotFoundException");
+        } catch (NotFoundException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testDeleteLinkedAccount() throws Exception {
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.Bitbucket);
+        account.setLinkedOn(now);
+        account.setUsedOn(now);
+        storage.createLinkedAccount("user", account);
+        
+        // Fetch it by its ID
+        account = storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+        Assert.assertNotNull(account);
+        
+        // Try deleting it as the wrong user
+        try {
+            storage.deleteLinkedAccount("user2", LinkedAccountType.Bitbucket);
+            Assert.fail("Expected NotFoundException");
+        } catch (NotFoundException e) {
+            // OK!
+        }
+
+        // Can still retrieve it?
+        account = storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+        Assert.assertNotNull(account);
+
+        
+        // Delete it with the proper user!
+        storage.deleteLinkedAccount("user", LinkedAccountType.Bitbucket);
+        
+        // Now fetch again and expect a NotFoundException
+        try {
+            storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+            Assert.fail("Expected NotFoundException");
+        } catch (NotFoundException e) {
+            // OK!
+        }
+    }
+
+    @Test
+    public void testDeleteLinkedAccounts() throws Exception {
+        LinkedAccount account = new LinkedAccount();
+        Date now = new Date();
+        account.setType(LinkedAccountType.Bitbucket);
+        account.setLinkedOn(now);
+        account.setUsedOn(now);
+        storage.createLinkedAccount("user", account);
+        account.setType(LinkedAccountType.GitLab);
+        storage.createLinkedAccount("user", account);
+        
+        // Fetch it by its ID
+        account = storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+        Assert.assertNotNull(account);
+        
+        // Try deleting as the wrong user
+        storage.deleteLinkedAccounts("user2");
+
+        // Can still get it (not deleted)
+        account = storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+        Assert.assertNotNull(account);
+
+        // Delete it with the proper user!
+        storage.deleteLinkedAccounts("user");
+        
+        // Now fetch again and expect a NotFoundException
+        try {
+            storage.getLinkedAccount("user", LinkedAccountType.Bitbucket);
+            Assert.fail("Expected NotFoundException");
+        } catch (NotFoundException e) {
+            // OK!
+        }
+    }
+
     /**
      * Creates an in-memory datasource.
      * @throws SQLException

@@ -23,7 +23,7 @@ import {IApisService} from "../services/apis.service";
  * Models the sub-menus off the main left-hand vertical nav.
  */
 enum VerticalNavSubMenuType {
-    None, Dashboard, APIs
+    None, Dashboard, APIs, Settings
 }
 
 
@@ -65,6 +65,14 @@ export class VerticalNavComponent implements OnInit {
      */
     isAPIsRoute(): boolean {
         return this.router.isActive("/apis", false);
+    }
+
+    /**
+     * Returns true if the currently active route is /settings/*
+     * @returns {boolean}
+     */
+    isSettingsRoute(): boolean {
+        return this.router.isActive("/settings", false);
     }
 
     /**

@@ -42,31 +42,29 @@ export class ApiEditorPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param router
-     * @param route
-     * @param apis
+     * @param {Router} router
+     * @param {ActivatedRoute} route
+     * @param {IApisService} apis
      */
-    constructor(private router: Router,
-                private route: ActivatedRoute,
+    constructor(private router: Router, route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService) {
-        super();
+        super(route);
         this.apiDefinition = new ApiDefinition();
     }
 
     /**
      * Called to kick off loading the page's async data.
+     * @param params
      */
-    public loadAsyncPageData(): void {
+    public loadAsyncPageData(params: any): void {
         console.info("[ApiEditorPageComponent] Loading async page data");
-        this.route.params.subscribe( params => {
-            let apiId: string = params["apiId"];
-            this.apis.getApiDefinition(apiId).then(def => {
-                this.apiDefinition = def;
-                this.loaded("def");
-            }).catch(error => {
-                console.error("[ApiEditorPageComponent] Error loading API definition.");
-                this.error(error);
-            });
+        let apiId: string = params["apiId"];
+        this.apis.getApiDefinition(apiId).then(def => {
+            this.apiDefinition = def;
+            this.loaded("def");
+        }).catch(error => {
+            console.error("[ApiEditorPageComponent] Error loading API definition.");
+            this.error(error);
         });
     }
 

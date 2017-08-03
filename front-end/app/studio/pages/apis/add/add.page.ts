@@ -16,7 +16,7 @@
  */
 
 import {Component, OnInit, Inject} from "@angular/core";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
@@ -32,17 +32,18 @@ export class AddApiPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param router
-     * @param apis
+     * @param {Router} router
+     * @param {ActivatedRoute} route
+     * @param {IApisService} apis
      */
-    constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
-        super();
+    constructor(private router: Router, route: ActivatedRoute, @Inject(IApisService) private apis: IApisService) {
+        super(route);
     }
 
     /**
      * Called when the Add API form (component) emits a "add-api" event.  This is bound to
      * from the addapi.page.html template.
-     * @param api
+     * @param {Api} api
      */
     public onAddApi(api: Api) {
         console.log("[AddApiPageComponent] onAddApi(): " + JSON.stringify(api))

@@ -59,8 +59,6 @@ public class JdbcStorage implements IStorage {
     @PostConstruct
     public void postConstruct() {
         logger.debug("JDBC Storage constructed successfully.");
-        logger.debug("Injected config: " + config);
-        logger.debug("Injected DS:     " + dataSource);
 
         jdbi = Jdbi.create(dataSource);
 
@@ -131,9 +129,9 @@ public class JdbcStorage implements IStorage {
                 handle.createUpdate(statement)
                       .bind(0, userId)
                       .bind(1, account.getType().name())
-                      .bind(2, account.getToken())
-                      .bind(3, account.getLinkedOn())
-                      .bind(4, account.getUsedOn())
+                      .bind(2, account.getLinkedOn())
+                      .bind(3, account.getUsedOn())
+                      .bind(4, account.getNonce())
                       .execute();
                 return null;
             });
@@ -152,8 +150,21 @@ public class JdbcStorage implements IStorage {
     @Override
     public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type)
             throws StorageException, NotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        logger.debug("Selecting a single Linked Account: {}::{}", userId, type.name());
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectLinkedAccountByType();
+                return handle.createQuery(statement)
+                        .bind(0, userId)
+                        .bind(1, type.name())
+                        .mapToBean(LinkedAccount.class)
+                        .findOnly();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting linked account.");
+        }
     }
     
     /**
@@ -161,8 +172,18 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException {
-        // TODO Auto-generated method stub
-        return null;
+        logger.debug("Getting a list of all Linked Accouts for {}.", userId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectLinkedAccounts();
+                return handle.createQuery(statement)
+                        .bind(0, userId)
+                        .mapToBean(LinkedAccount.class)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error listing linked accounts.", e);
+        }
     }
     
     /**
@@ -171,8 +192,24 @@ public class JdbcStorage implements IStorage {
     @Override
     public void deleteLinkedAccount(String userId, LinkedAccountType type)
             throws StorageException, NotFoundException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Deleting a Linked Account: {}::{}", userId, type.name());
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteLinkedAccount();
+                int rowCount = handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, type.name())
+                      .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new StorageException("Error deleting a Linked Account", e);
+        }
     }
     
     /**
@@ -180,8 +217,46 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public void deleteLinkedAccounts(String userId) throws StorageException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Deleting all Linked Accounts for {}", userId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteLinkedAccounts();
+                handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting Linked Accounts", e);
+        }        
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     */
+    @Override
+    public void updateLinkedAccount(String userId, LinkedAccount account) throws NotFoundException, StorageException {
+        logger.debug("Updating a Linked Account: {}::{}", userId, account.getType().name());
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateLinkedAccount();
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, account.getUsedOn())
+                        .bind(1, account.getLinkedOn())
+                        .bind(2, account.getNonce())
+                        .bind(3, userId)
+                        .bind(4, account.getType().name())
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new StorageException("Error updating a Linked Account.", e);
+        }
     }
 
     /**
@@ -201,6 +276,8 @@ public class JdbcStorage implements IStorage {
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting API design.");
         }
     }
 

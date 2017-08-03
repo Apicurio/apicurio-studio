@@ -29,18 +29,16 @@ import {ApiCollaborator, ApiCollaborators} from "../models/api-collaborators";
 import {Headers, Http, RequestOptions} from "@angular/http";
 import {NewApi} from "../models/new-api.model";
 import {AddApi} from "../models/add-api.model";
+import {AbstractHubService} from "./hub";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
-
 
 /**
  * An implementation of the APIs service that uses the Apicurio Studio back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
-export class HubApisService implements IApisService {
-
-    private apiBaseHref: string;
+export class HubApisService extends AbstractHubService implements IApisService {
 
     private theRecentApis: Api[];
     private _recentApis: BehaviorSubject<Api[]> = new BehaviorSubject([]);
@@ -53,8 +51,8 @@ export class HubApisService implements IApisService {
      * @param http
      * @param authService
      */
-    constructor(private http: Http, private authService: IAuthenticationService, private config: ConfigService) {
-        this.apiBaseHref = this.config.hubUrl();
+    constructor(http: Http, authService: IAuthenticationService, config: ConfigService) {
+        super(http, authService, config);
         this.theRecentApis = this.loadRecentApis();
         if (this.theRecentApis === null) {
             this._recentApis.next([]);
@@ -64,26 +62,20 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Returns the supported repository types.
-     * @return {[string]}
+     * @see IApisService.getSupportedRepositoryTypes
      */
     public getSupportedRepositoryTypes(): string[] {
         return ["GitHub"];
     }
 
     /**
-     * Fetch the APIs from the back-end service.
-     * @return {Promise<Api[]>}
+     * @see IApisService.getApis
      */
     public getApis(): Promise<Api[]> {
         console.info("[HubApisService] Getting all APIs");
-        let listApisUrl: string = this.endpoint("/designs");
 
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let listApisUrl: string = this.endpoint("/designs");
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Fetching API list: %s", listApisUrl);
 
@@ -100,27 +92,20 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Gets the recent APIs.
-     * @return {Observable<Api[]>}
+     * @see IApisService.getRecentApis
      */
     public getRecentApis(): Observable<Api[]> {
         return this.recentApis;
     }
 
     /**
-     * Creates an API by calling the back end service.
-     * @param api
-     * @return {Promise<Api>}
+     * @see IApisService.createApi
      */
     public createApi(api: NewApi): Promise<Api> {
         console.info("[HubApisService] Creating the API via the hub API");
 
         let createApiUrl: string = this.endpoint("/designs");
-        let headers: Headers = new Headers({ "Accept": "application/json", "Content-Type": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
         let body: any = api;
 
         console.info("[HubApisService] Creating an API Design: %s", createApiUrl);
@@ -132,19 +117,13 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Adds an API by calling the back end service.
-     * @param api
-     * @return {Promise<Api>}
+     * @see IApisService.addApi
      */
     public addApi(api: AddApi): Promise<Api> {
         console.info("[HubApisService] Adding an API design via the hub API");
 
         let addApiUrl: string = this.endpoint("/designs");
-        let headers: Headers = new Headers({ "Accept": "application/json", "Content-Type": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
         let body: any = api;
 
         console.info("[HubApisService] Adding an API Design: %s", addApiUrl);
@@ -156,9 +135,7 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Deletes and API by calling the back-end service.
-     * @param api
-     * @return {Promise<void>}
+     * @see IApisService.deleteApi
      */
     public deleteApi(api: Api): Promise<void> {
         console.info("[HubApisService] Deleting an API design via the hub API");
@@ -166,12 +143,7 @@ export class HubApisService implements IApisService {
         let deleteApiUrl: string = this.endpoint("/designs/:designId", {
             designId: api.id
         });
-
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Deleting an API Design: %s", deleteApiUrl);
 
@@ -184,20 +156,13 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Fetches a single API from the back-end service.
-     * @param apiId
-     * @return {Promise<Api>}
+     * @see IApisService.getApi
      */
     public getApi(apiId: string): Promise<Api> {
         let getApiUrl: string = this.endpoint("/designs/:designId", {
             designId: apiId
         });
-
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Getting an API Design: %s", getApiUrl);
 
@@ -210,21 +175,14 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Gets an API definition by fetrching its meta-data and then its content.
-     * @param apiId
-     * @return {Promise<ApiDefinition>}
+     * @see IApisService.getApiDefinition
      */
     public getApiDefinition(apiId: string): Promise<ApiDefinition> {
         return this.getApi(apiId).then( api => {
             let getContentUrl: string = this.endpoint("/designs/:designId/content", {
                 designId: apiId
             });
-
-            let headers: Headers = new Headers({ "Accept": "application/json" });
-            this.authService.injectAuthHeaders(headers);
-            let options = new RequestOptions({
-                headers: headers
-            });
+            let options: RequestOptions = this.options({ "Accept": "application/json" });
 
             console.info("[HubApisService] Getting API Design content: %s", getContentUrl);
 
@@ -242,28 +200,20 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Updates the content of an API by storing it in the back-end service.
-     * @param definition
-     * @param saveMessage
-     * @param saveComment
-     * @return {Promise<T>}
+     * @see IApisService.updateApiDefinition
      */
     public updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition> {
         console.info("[HubApisService] Updating an API definition (content): %s", definition.name);
+        console.info("[HubApisService] SHA: %s", definition.version);
 
         let updateContentUrl: string = this.endpoint("/designs/:designId/content", {
             designId: definition.id
         });
-        let headers: Headers = new Headers({
+        let options: RequestOptions = this.options({
             "Content-Type": "application/json",
             "X-Apicurio-CommitMessage": saveMessage,
             "X-Apicurio-CommitComment": saveComment,
             "X-Content-SHA": definition.version
-        });
-        console.info("[HubApisService] SHA: %s", definition.version);
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
         });
         let body: any = definition.spec;
 
@@ -276,20 +226,13 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Fetches the list of collaborators for a given API by calling the back-end service.
-     * @param apiId
-     * @return {Promise<T>}
+     * @see IApisService.getCollaborators
      */
     public getCollaborators(apiId: string): Promise<ApiCollaborators> {
         let collaboratorsUrl: string = this.endpoint("/designs/:designId/collaborators", {
             designId: apiId
         });
-
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Getting collaborators: %s", collaboratorsUrl);
 
@@ -314,17 +257,11 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Fetches the current user's organizations from the back-end service.
-     * @return {Promise<string[]>}
+     * @see IApisService.getOrganizations
      */
     public getOrganizations(): Promise<string[]> {
         let organizationsUrl: string = this.endpoint("/currentuser/organizations");
-
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Getting organizations: %s", organizationsUrl);
 
@@ -334,21 +271,13 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Fetches the current user's repositories from the back-end service.
-     * @param organization
-     * @param isUser
-     * @return {Promise<string[]>}
+     * @see IApisService.getRepositories
      */
     public getRepositories(organization: string, isUser?: boolean): Promise<string[]> {
         let repositoriesUrl: string = this.endpoint("/currentuser/organizations/:org/repositories", {
             org: organization
         });
-
-        let headers: Headers = new Headers({ "Accept": "application/json" });
-        this.authService.injectAuthHeaders(headers);
-        let options = new RequestOptions({
-            headers: headers
-        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Getting repositories: %s", repositoriesUrl);
 
@@ -358,23 +287,8 @@ export class HubApisService implements IApisService {
     }
 
     /**
-     * Creates a github API endpoint from the api path and params.
-     * @param path
-     * @param params
-     * @return {string}
-     */
-    protected endpoint(path: string, params?: any): string {
-        if (params) {
-            for (let key in params) {
-                let value: string = params[key];
-                path = path.replace(":" + key, value);
-            }
-        }
-        return this.apiBaseHref + path;
-    }
-
-    /**
      * Loads the recent APIs from browser local storage.
+     * @return {Api[]}
      */
     private loadRecentApis(): Api[] {
         let storedApis: string = localStorage.getItem(RECENT_APIS_LOCAL_STORAGE_KEY);
@@ -389,7 +303,8 @@ export class HubApisService implements IApisService {
     /**
      * Returns the most recent 3 APIs from the full list of APIs provided.  Uses the
      * API's "last modified" time to determine the most recent 3 APIs.
-     * @param apis
+     * @param {Api[]} apis
+     * @return {Api[]}
      */
     private getRecentFromAllApis(apis: Api[]): Api[] {
         return apis.slice().sort( (api1, api2) => {
@@ -403,7 +318,8 @@ export class HubApisService implements IApisService {
     /**
      * Adds the given API to the list of "recent APIs".  This may also remove an API
      * from the list in addition to re-ordering the recent APIs list.
-     * @param api
+     * @param {Api} api
+     * @return {Api[]}
      */
     private addToRecentApis(api: Api): Api[] {
         let recent: Api[] = [];
@@ -443,7 +359,8 @@ export class HubApisService implements IApisService {
 
     /**
      * Removes an API from the list of recent APIs.
-     * @param api
+     * @param {Api} api
+     * @return {Api[]}
      */
     private removeFromRecent(api: Api) {
         let recent: Api[] = [];
@@ -476,7 +393,7 @@ export class HubApisService implements IApisService {
     /**
      * Removes any API from the "recent APIs" list that is not in the
      * given list of "all" Apis.
-     * @param apis
+     * @param {Api[]} apis
      */
     private removeMissingRecentApis(apis: Api[]) {
         this.theRecentApis.filter( recentApi => {

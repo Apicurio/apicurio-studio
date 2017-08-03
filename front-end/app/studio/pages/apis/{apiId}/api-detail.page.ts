@@ -36,39 +36,37 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param router
-     * @param route
-     * @param apis
+     * @param {Router} router
+     * @param {ActivatedRoute} route
+     * @param {IApisService} apis
      */
-    constructor(private router: Router,
-                private route: ActivatedRoute,
+    constructor(private router: Router, route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService) {
-        super();
+        super(route);
         this.api = new Api();
     }
 
     /**
      * Called to kick off loading the page's async data.
+     * @param params
      */
-    public loadAsyncPageData(): void {
+    public loadAsyncPageData(params: any): void {
         console.info("[ApiDetailPageComponent] Loading async page data");
-        this.route.params.subscribe( params => {
-            let apiId: string = params["apiId"];
-            this.apis.getApi(apiId).then(api => {
-                this.api = api;
-                this.dataLoaded["api"] = true;
-            }).catch(error => {
-                console.error("[ApiDetailPageComponent] Error getting API");
-                this.error(error);
-            });
-            this.apis.getCollaborators(apiId).then(collaborators => {
-                console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
-                this.collaborators = collaborators;
-                this.dataLoaded["collaborators"] = true;
-            }).catch(error => {
-                console.error("[ApiDetailPageComponent] Error getting API collaborators");
-                this.error(error);
-            });
+        let apiId: string = params["apiId"];
+        this.apis.getApi(apiId).then(api => {
+            this.api = api;
+            this.dataLoaded["api"] = true;
+        }).catch(error => {
+            console.error("[ApiDetailPageComponent] Error getting API");
+            this.error(error);
+        });
+        this.apis.getCollaborators(apiId).then(collaborators => {
+            console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
+            this.collaborators = collaborators;
+            this.dataLoaded["collaborators"] = true;
+        }).catch(error => {
+            console.error("[ApiDetailPageComponent] Error getting API collaborators");
+            this.error(error);
         });
     }
 

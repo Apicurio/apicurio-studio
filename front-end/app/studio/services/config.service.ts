@@ -21,21 +21,14 @@ import {User} from "../models/user.model";
 let DEFAULT_CONFIG: any = {
     mode: "dev",
     auth: {
-        type: "token",
-        token: "xyz"
+        type: "keycloakjs"
     },
     apis: {
         type: "hub",
-        hubUrl: "https://localhost:8443/api-hub"
-    },
-    user: {
-        id: 1,
-        login: "User",
-        name: "User",
-        email: "user@example.org",
-        avatar: null
+        hubUrl: "http://localhost:8080/api-hub"
     }
 };
+
 
 /**
  * An abstract base class for services that need to make API calls to Github.

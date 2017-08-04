@@ -7,3 +7,4 @@ node
 typings
 npm-debug.log
 dist/
+keycloak.json

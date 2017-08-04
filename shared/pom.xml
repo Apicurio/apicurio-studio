@@ -12,5 +12,6 @@
   <name>apicurio-studio-shared</name>
   <modules>
     <module>beans</module>
+    <module>config</module>
   </modules>
 </project>

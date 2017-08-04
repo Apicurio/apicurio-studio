@@ -21,10 +21,14 @@ import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 import {TokenAuthenticationService} from "./auth-token.service";
 import {OIDCDirectGrantAuthenticationService} from "./auth-oidc.service";
+import {KeycloakAuthenticationService} from "./auth-keycloak.service";
 
 
 function AuthenticationServiceFactory(http: Http, config: ConfigService): IAuthenticationService {
-    if (config.authType() === "token") {
+    if (config.authType() === "keycloakjs") {
+        console.info("[AuthenticationServiceFactory] Creating keycloak.js auth service.");
+        return new KeycloakAuthenticationService(http, config);
+    } else if (config.authType() === "token") {
         console.info("[AuthenticationServiceFactory] Creating token auth service.");
         return new TokenAuthenticationService(http, config);
     } else if (config.authType() === "oidc-direct-grant") {

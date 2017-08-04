@@ -69,7 +69,8 @@ public class ResourceCacheControlFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
 
-        if (requestURI == null || !requestURI.contains(".") || requestURI.contains("version.js") || requestURI.contains("config.js")) {
+        if (requestURI == null || !requestURI.contains(".") || requestURI.contains("version.js") || 
+                requestURI.contains("config.js") || requestURI.contains("keycloak.json")) {
             disableHttpCaching(httpResponse);
         } else {
             httpResponse.setDateHeader("Expires", expiresInOneYear(now)); //$NON-NLS-1$

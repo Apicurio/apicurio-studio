@@ -19,13 +19,12 @@ import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import {StudioModule}           from "./studio.module";
 import {enableProdMode} from '@angular/core';
 
-
 let config = window["ApicurioStudioConfig"];
 if (config.mode && config.mode === "prod") {
     console.info("[Main] Enabling angular production mode.");
     enableProdMode();
 }
 
-
 const platform = platformBrowserDynamic();
 platform.bootstrapModule(StudioModule);
+

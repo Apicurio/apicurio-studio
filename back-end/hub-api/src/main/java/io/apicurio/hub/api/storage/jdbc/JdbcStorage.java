@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.config.Configuration;
+import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.storage.IStorage;
@@ -49,7 +49,7 @@ public class JdbcStorage implements IStorage {
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
 
     @Inject
-    private Configuration config;
+    private HubApiConfiguration config;
     @Resource(mappedName="java:jboss/datasources/ApicurioDS")
     private DataSource dataSource;
     

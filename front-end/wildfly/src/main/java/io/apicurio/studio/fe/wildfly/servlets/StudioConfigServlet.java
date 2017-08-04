@@ -20,11 +20,15 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonEncoding;
@@ -33,6 +37,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.studio.fe.wildfly.config.RequestAttributeKeys;
+import io.apicurio.studio.fe.wildfly.config.StudioUiConfiguration;
 import io.apicurio.studio.shared.beans.StudioConfig;
 import io.apicurio.studio.shared.beans.StudioConfigApis;
 import io.apicurio.studio.shared.beans.StudioConfigApisType;
@@ -50,6 +55,11 @@ import io.apicurio.studio.shared.beans.User;
 public class StudioConfigServlet extends HttpServlet {
     
     private static final long serialVersionUID = -4719439088893434221L;
+
+    private static Logger logger = LoggerFactory.getLogger(StudioConfigServlet.class);
+
+    @Inject
+    private StudioUiConfiguration uiConfig;
 
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -70,12 +80,12 @@ public class StudioConfigServlet extends HttpServlet {
             User user = (User) session.getAttribute(RequestAttributeKeys.USER_KEY);
             
             if (token == null) {
-                System.out.println("Error: 'token' is null!");
+                logger.error("Authentication 'token' is null (not authenticated?)");
                 response.sendError(403);
                 return;
             }
             if (user == null) {
-                System.out.println("Error: 'user' is null!");
+                logger.error("Authentication 'user' is null (not authenticated?)");
                 response.sendError(401);
                 return;
             }
@@ -110,7 +120,7 @@ public class StudioConfigServlet extends HttpServlet {
      */
     private String generateHubApiUrl(HttpServletRequest request) {
         try {
-            String url = lookupHubApiUrl();
+            String url = this.uiConfig.getHubApiUrl();
             if (url == null) {
                 url = request.getRequestURL().toString();
                 url = new URI(url).resolve("/api-hub").toString();
@@ -119,17 +129,6 @@ public class StudioConfigServlet extends HttpServlet {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Returns the GitHub OAuth client-secret.
-     */
-    private String lookupHubApiUrl() {
-        String hubUrl = System.getProperty("apicurio.github.config.hubUrl", null);
-        if (hubUrl == null) {
-            hubUrl = System.getenv("CONFIG_HUB_URL");
-        }
-        return hubUrl;
     }
 
 }

@@ -18,6 +18,11 @@
 			<artifactId>apicurio-studio-shared-beans</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-shared-config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<!-- Third Party Libraries -->
 		<dependency>

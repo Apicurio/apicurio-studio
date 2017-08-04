@@ -30,7 +30,7 @@ import org.junit.Test;
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.config.Configuration;
+import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import test.io.apicurio.hub.api.TestUtil;
@@ -52,7 +52,7 @@ public class JdbcStorageTest {
     public void setUp() {
         storage = new JdbcStorage();
         ds = createInMemoryDatasource();
-        TestUtil.setPrivateField(storage, "config", new Configuration());
+        TestUtil.setPrivateField(storage, "config", new HubApiConfiguration());
         TestUtil.setPrivateField(storage, "dataSource", ds);
         storage.postConstruct();
     }

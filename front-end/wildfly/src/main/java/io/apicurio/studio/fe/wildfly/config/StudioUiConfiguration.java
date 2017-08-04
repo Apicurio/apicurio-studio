@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package io.apicurio.studio.shared.beans;
+package io.apicurio.studio.fe.wildfly.config;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import io.apicurio.studio.shared.config.Configuration;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public enum StudioConfigAuthType {
+@ApplicationScoped
+public class StudioUiConfiguration extends Configuration {
 
-    local, token, keycloakjs
-    
+    private static final String HUB_API_URL_ENV = "APICURIO_UI_HUB_API_URL";
+    private static final String HUB_API_URL_SYSPROP = "apicurio-ui.hub-api.url";
+
+    /**
+     * Returns the URL of the Apicurio Hub API.
+     */
+    public String getHubApiUrl() {
+        return getConfigurationProperty(HUB_API_URL_ENV, HUB_API_URL_SYSPROP, null);
+    }
 }

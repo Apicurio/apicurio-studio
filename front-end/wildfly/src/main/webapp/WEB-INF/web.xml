@@ -53,6 +53,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>KeycloakNoopServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.wildfly.servlets.KeycloakNoopServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>KeycloakNoopServlet</servlet-name>
+    <url-pattern>/keycloak.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>KeycloakLogoutServlet</servlet-name>
     <servlet-class>io.apicurio.studio.fe.wildfly.servlets.KeycloakLogoutServlet</servlet-class>
   </servlet>

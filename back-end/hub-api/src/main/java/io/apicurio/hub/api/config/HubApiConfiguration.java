@@ -18,44 +18,32 @@ package io.apicurio.hub.api.config;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.apicurio.studio.shared.config.Configuration;
+
 /**
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
-public class Configuration {
+public class HubApiConfiguration extends Configuration {
+    
+    private static final String JDBC_TYPE_ENV = "APICURIO_HUB_STORAGE_JDBC_TYPE";
+    private static final String JDBC_TYPE_SYSPROP = "apicurio.hub.storage.jdbc.type";
 
-    /**
-     * Looks for the given key in the following places (in order):
-     * 
-     * 1) Environment variables
-     * 2) System Properties
-     * 
-     * @param key
-     * @param defaultValue
-     */
-    private String getEnvVarOrSysProp(String key, String defaultValue) {
-        String rval = System.getenv(key);
-        if (rval == null) {
-            rval = System.getProperty(key);
-        }
-        if (rval == null) {
-            rval = defaultValue;
-        }
-        return rval;
-    }
+    private static final String JDBC_INIT_ENV = "APICURIO_HUB_STORAGE_JDBC_INIT";
+    private static final String JDBC_INIT_SYSPROP = "apicurio.hub.storage.jdbc.init";
 
     /**
      * @return the configured JDBC type (default: h2)
      */
     public String getJdbcType() {
-        return this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.type", "h2");
+        return getConfigurationProperty(JDBC_TYPE_ENV, JDBC_TYPE_SYSPROP, "h2");
     }
 
     /**
      * @return true if the database should be initialized programmatically (default: true)
      */
     public boolean isJdbcInit() {
-        return "true".equals(this.getEnvVarOrSysProp("apicurio.hub.storage.jdbc.init", "true"));
+        return "true".equals(getConfigurationProperty(JDBC_INIT_ENV, JDBC_INIT_SYSPROP, "true"));
     }
 
 }

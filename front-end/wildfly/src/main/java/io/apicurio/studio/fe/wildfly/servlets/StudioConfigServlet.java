@@ -42,7 +42,6 @@ import io.apicurio.studio.shared.beans.StudioConfig;
 import io.apicurio.studio.shared.beans.StudioConfigApis;
 import io.apicurio.studio.shared.beans.StudioConfigApisType;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
-import io.apicurio.studio.shared.beans.StudioConfigAuthType;
 import io.apicurio.studio.shared.beans.StudioConfigMode;
 import io.apicurio.studio.shared.beans.User;
 
@@ -76,10 +75,10 @@ public class StudioConfigServlet extends HttpServlet {
             g.useDefaultPrettyPrinter();
 
             HttpSession session = request.getSession();
-            String token = (String) session.getAttribute(RequestAttributeKeys.TOKEN_KEY);
+            StudioConfigAuth auth = (StudioConfigAuth) session.getAttribute(RequestAttributeKeys.AUTH_KEY);
             User user = (User) session.getAttribute(RequestAttributeKeys.USER_KEY);
             
-            if (token == null) {
+            if (auth == null) {
                 logger.error("Authentication 'token' is null (not authenticated?)");
                 response.sendError(403);
                 return;
@@ -94,10 +93,7 @@ public class StudioConfigServlet extends HttpServlet {
             
             config.setMode(StudioConfigMode.prod);
             
-            config.setAuth(new StudioConfigAuth());
-            config.getAuth().setType(StudioConfigAuthType.token);
-            config.getAuth().setToken(token);
-            config.getAuth().setLogoutUrl(request.getContextPath() + "/logout");
+            config.setAuth(auth);
             
             config.setApis(new StudioConfigApis());
             config.getApis().setType(StudioConfigApisType.hub);

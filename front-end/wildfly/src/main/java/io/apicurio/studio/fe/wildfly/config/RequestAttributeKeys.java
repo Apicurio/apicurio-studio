@@ -21,7 +21,7 @@ package io.apicurio.studio.fe.wildfly.config;
  */
 public interface RequestAttributeKeys {
     
-    public static String TOKEN_KEY = RequestAttributeKeys.class.getName() + ".token";
+    public static String AUTH_KEY = RequestAttributeKeys.class.getName() + ".auth";
     public static String USER_KEY = RequestAttributeKeys.class.getName() + ".user";
 
 }

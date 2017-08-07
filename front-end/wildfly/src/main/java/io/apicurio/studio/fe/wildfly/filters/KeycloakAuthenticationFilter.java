@@ -31,6 +31,8 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 
 import io.apicurio.studio.fe.wildfly.config.RequestAttributeKeys;
+import io.apicurio.studio.shared.beans.StudioConfigAuthType;
+import io.apicurio.studio.shared.beans.StudioConfigAuth;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -59,9 +61,13 @@ public class KeycloakAuthenticationFilter implements Filter {
             HttpSession httpSession = httpReq.getSession();
             
             // Set the token as a string in the request (as an attribute) for later use.
-            String tokenStr = session.getTokenString();
-            httpSession.setAttribute(RequestAttributeKeys.TOKEN_KEY, tokenStr);
-
+            StudioConfigAuth auth = new StudioConfigAuth();
+            auth.setType(StudioConfigAuthType.token);
+            auth.setLogoutUrl(((HttpServletRequest) request).getContextPath() + "/logout");
+            auth.setToken(session.getTokenString());
+            auth.setTokenRefreshPeriod(expirationToRefreshPeriod(session.getToken().getExpiration()));
+            httpSession.setAttribute(RequestAttributeKeys.AUTH_KEY, auth);
+            
             // Fabricate a User object from information in the access token and store it in the request.
             AccessToken token = session.getToken();
             if (token != null) {
@@ -76,12 +82,32 @@ public class KeycloakAuthenticationFilter implements Filter {
     }
 
     /**
+     * Converts the token expiration time (in seconds) into a refresh period.  The
+     * refresh period is simply the # of seconds to wait until a refresh is needed.
+     * @param expiration
+     */
+    private int expirationToRefreshPeriod(int expiration) {
+        int nowInSeconds = org.keycloak.common.util.Time.currentTime();
+        int expiresInSeconds = expiration;
+
+        if (expiresInSeconds <= nowInSeconds) {
+            return 1;
+        } else {
+            return expiresInSeconds - nowInSeconds;
+        }
+    }
+
+    /**
      * @see javax.servlet.Filter#destroy()
      */
     @Override
     public void destroy() {
     }
     
+    /**
+     * Gets the KC session from the request.
+     * @param req
+     */
     private KeycloakSecurityContext getSession(HttpServletRequest req) {
         return (KeycloakSecurityContext) req.getAttribute(KeycloakSecurityContext.class.getName());
     }

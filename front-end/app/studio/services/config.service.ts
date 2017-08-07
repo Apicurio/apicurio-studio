@@ -62,6 +62,13 @@ export class ConfigService {
         return this.config.auth.token;
     }
 
+    public authRefreshPeriod(): number {
+        if (!this.config.auth) {
+            return null;
+        }
+        return this.config.auth.tokenRefreshPeriod;
+    }
+
     public authData(): any {
         if (!this.config.auth) {
             return null;

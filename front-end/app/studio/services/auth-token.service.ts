@@ -48,6 +48,16 @@ export class TokenAuthenticationService implements IAuthenticationService {
 
         this._authenticated.next(true);
         this._authenticatedUser.next(config.user());
+
+        let refreshPeriod: number = config.authRefreshPeriod();
+        if (refreshPeriod) {
+            console.info("[TokenAuthenticationService] Will refresh auth token in %d seconds.", refreshPeriod)
+            setTimeout(() => {
+                this.refreshToken();
+            }, refreshPeriod * 1000);
+        } else {
+            console.info("[TokenAuthenticationService] No refresh period set. Token may expire unexpectedly!");
+        }
     }
 
     /**
@@ -89,6 +99,44 @@ export class TokenAuthenticationService implements IAuthenticationService {
     public injectAuthHeaders(headers: Headers): void {
         let authHeader: string = "bearer " + this.accessToken;
         headers.set("Authorization", authHeader);
+    }
+
+    /**
+     * Refreshes the authentication token.
+     */
+    protected refreshToken(): void {
+        let base: string = document.getElementsByTagName("base")[0].href;
+        if (base.indexOf("/") == 0) {
+            base = location.origin + base;
+        }
+        let url: string = base + "token";
+        let headers: any = { "Accept": "application/json" };
+        let options = new RequestOptions({
+            headers: new Headers(headers)
+        });
+
+        console.info("[TokenAuthenticationService] Refreshing auth token: %s", url);
+
+        this.http.get(url, options).map( response => {
+            let auth: any = response.json();
+            return auth;
+        }).toPromise().then( auth => {
+            this.accessToken = auth.token;
+            let refreshPeriod: number = auth.tokenRefreshPeriod;
+            if (refreshPeriod) {
+                console.info("[TokenAuthenticationService] Will refresh auth token in %d seconds.", refreshPeriod)
+                setTimeout(() => {
+                    this.refreshToken();
+                }, refreshPeriod * 1000);
+            } else {
+                console.info("[TokenAuthenticationService] No refresh period set. Token may expire unexpectedly!");
+            }
+        }).catch( error => {
+            console.info("[TokenAuthenticationService] Error refreshing auth token.  Will try again in 30s.");
+            setTimeout(() => {
+                this.refreshToken();
+            }, 30 * 1000);
+        });
     }
 
 }

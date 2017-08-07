@@ -122,7 +122,7 @@ public class GitHubAuthenticationFilter implements Filter {
                         .asObject(AccessTokenResponse.class);
                 
                 AccessTokenResponse token = tokenResp.getBody();
-                session.setAttribute(RequestAttributeKeys.TOKEN_KEY, token);
+                session.setAttribute(RequestAttributeKeys.AUTH_KEY, token);
                 User user = authenticateUser(token.getAccess_token());
                 session.setAttribute(RequestAttributeKeys.USER_KEY, user);
 
@@ -132,7 +132,7 @@ public class GitHubAuthenticationFilter implements Filter {
                 throw new ServletException(e);
             }
         } else if (httpReq.getServletPath().endsWith("/logout")) {
-            session.removeAttribute(RequestAttributeKeys.TOKEN_KEY);
+            session.removeAttribute(RequestAttributeKeys.AUTH_KEY);
             session.removeAttribute(RequestAttributeKeys.USER_KEY);
             
             String logoutPageHtml = createLogoutPage();
@@ -141,7 +141,7 @@ public class GitHubAuthenticationFilter implements Filter {
             httpResp.getWriter().print(logoutPageHtml);
             httpResp.getWriter().flush();
         } else {
-            AccessTokenResponse token = (AccessTokenResponse) session.getAttribute(RequestAttributeKeys.TOKEN_KEY);
+            AccessTokenResponse token = (AccessTokenResponse) session.getAttribute(RequestAttributeKeys.AUTH_KEY);
             if (token == null) {
                 StringBuffer originalAppUrl = httpReq.getRequestURL();
                 String qs = httpReq.getQueryString();

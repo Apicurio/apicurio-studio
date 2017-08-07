@@ -29,6 +29,8 @@ public class StudioConfigAuth {
     
     private StudioConfigAuthType type;
     private String token;
+    private int tokenRefreshPeriod;
+    private String tokenRefreshUrl;
     private String logoutUrl;
     
     /**
@@ -77,6 +79,20 @@ public class StudioConfigAuth {
      */
     public void setLogoutUrl(String logoutUrl) {
         this.logoutUrl = logoutUrl;
+    }
+
+    /**
+     * @return the tokenRefreshPeriod
+     */
+    public int getTokenRefreshPeriod() {
+        return tokenRefreshPeriod;
+    }
+
+    /**
+     * @param tokenRefreshPeriod the tokenRefreshPeriod to set
+     */
+    public void setTokenRefreshPeriod(int tokenRefreshPeriod) {
+        this.tokenRefreshPeriod = tokenRefreshPeriod;
     }
 
 }

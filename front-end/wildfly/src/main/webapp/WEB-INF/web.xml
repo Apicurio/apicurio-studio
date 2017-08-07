@@ -70,6 +70,15 @@
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>TokenRefreshServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.wildfly.servlets.TokenRefreshServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TokenRefreshServlet</servlet-name>
+    <url-pattern>/token</url-pattern>
+  </servlet-mapping>
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All</web-resource-name>

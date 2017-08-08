@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  *  
  * @author eric.wittmann@gmail.com
  */
-public class ResourceResolver {
+public class GitHubResourceResolver {
     
     private static Pattern pattern1 = Pattern.compile("https://github.com/([^/]+)/([^/]+)/blob/[^/]+/(.*.json)");
     private static Pattern pattern2 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/[^/]+/(.*.json)");

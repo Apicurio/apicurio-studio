@@ -48,4 +48,12 @@ public class MockSecurityContext implements ISecurityContext {
         this.user = user;
     }
 
+    /**
+     * @see io.apicurio.hub.api.security.ISecurityContext#getToken()
+     */
+    @Override
+    public String getToken() {
+        return "TOKEN12345";
+    }
+
 }

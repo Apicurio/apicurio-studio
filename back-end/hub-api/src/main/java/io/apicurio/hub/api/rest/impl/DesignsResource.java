@@ -48,11 +48,12 @@ import io.apicurio.hub.api.beans.OpenApiDocument;
 import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
+import io.apicurio.hub.api.connectors.ISourceConnector;
+import io.apicurio.hub.api.connectors.SourceConnectorFactory;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
-import io.apicurio.hub.api.github.GitHubException;
-import io.apicurio.hub.api.github.IGitHubService;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
@@ -72,7 +73,7 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private IStorage storage;
     @Inject
-    private IGitHubService github;
+    private SourceConnectorFactory sourceConnectorFactory;
     @Inject
     private ISecurityContext security;
 
@@ -103,7 +104,8 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
         
         try {
-			ApiDesignResourceInfo resourceInfo = this.github.validateResourceExists(info.getRepositoryUrl());
+            ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
+			ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getRepositoryUrl());
 			
 			Date now = new Date();
 			String user = this.security.getCurrentUser().getLogin();
@@ -125,7 +127,7 @@ public class DesignsResource implements IDesignsResource {
 			}
 			
 			return design;
-		} catch (GitHubException e) {
+		} catch (SourceConnectorException e) {
 			throw new ServerError(e);
 		}
     }
@@ -140,9 +142,11 @@ public class DesignsResource implements IDesignsResource {
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
-            
+
+            ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
+
             try {
-                this.github.validateResourceExists(info.getRepositoryUrl());
+                connector.validateResourceExists(info.getRepositoryUrl());
                 throw new StorageException("GitHub resource already exists: " + info.getRepositoryUrl());
             } catch (NotFoundException e) {
                 // This is what we want!
@@ -167,10 +171,10 @@ public class DesignsResource implements IDesignsResource {
             doc.getInfo().setVersion("1.0.0");
             String oaiContent = mapper.writeValueAsString(doc);
             
-            this.github.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
+            connector.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
             
             return design;
-        } catch (JsonProcessingException | StorageException | GitHubException e) {
+        } catch (JsonProcessingException | StorageException | SourceConnectorException | NotFoundException e) {
             throw new ServerError(e);
         }
     }
@@ -237,8 +241,10 @@ public class DesignsResource implements IDesignsResource {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesign design = this.storage.getApiDesign(user, designId);
             String repoUrl = design.getRepositoryUrl();
-            return this.github.getCollaborators(repoUrl);
-        } catch (StorageException | GitHubException e) {
+            
+            ISourceConnector connector = this.sourceConnectorFactory.createConnector(repoUrl);
+            return connector.getCollaborators(repoUrl);
+        } catch (StorageException | SourceConnectorException e) {
             throw new ServerError(e);
         }
     }
@@ -251,7 +257,8 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Getting content for API design with ID: {}", designId);
         try {
             ApiDesign design = this.getDesign(designId);
-            ResourceContent content = this.github.getResourceContent(design.getRepositoryUrl());
+            ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
+            ResourceContent content = connector.getResourceContent(design.getRepositoryUrl());
             
             byte[] bytes = content.getContent().getBytes("UTF-8");
             String ct = "application/json; charset=utf-8";
@@ -262,7 +269,7 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (UnsupportedEncodingException | GitHubException e) {
+        } catch (UnsupportedEncodingException | SourceConnectorException e) {
             throw new ServerError(e);
         }
     }
@@ -274,6 +281,8 @@ public class DesignsResource implements IDesignsResource {
     public void updateContent(String designId) throws ServerError, NotFoundException {
         logger.debug("Updating content for API design with ID: {}", designId);
         ApiDesign design = this.getDesign(designId);
+
+        ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
 
         String contentType = request.getContentType();
         if (!contentType.equals("application/json")) {
@@ -303,7 +312,7 @@ public class DesignsResource implements IDesignsResource {
             rc.setContent(content);
             rc.setSha(sha);
             
-            String newSha = this.github.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
+            String newSha = connector.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
             this.response.setHeader("X-Content-SHA", newSha);
             
             this.updateNameAndDescription(design, content);
@@ -311,7 +320,7 @@ public class DesignsResource implements IDesignsResource {
             design.setModifiedOn(new Date());
 
         	this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
-        } catch (StorageException | GitHubException | IOException e) {
+        } catch (StorageException | SourceConnectorException | IOException e) {
             throw new ServerError(e);
         }
     }

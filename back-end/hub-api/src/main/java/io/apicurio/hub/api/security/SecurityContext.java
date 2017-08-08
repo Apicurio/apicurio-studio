@@ -28,6 +28,7 @@ import io.apicurio.studio.shared.beans.User;
 public class SecurityContext implements ISecurityContext {
     
     private User user;
+    private String token;
     
     /**
      * Constructor.
@@ -48,6 +49,20 @@ public class SecurityContext implements ISecurityContext {
     @Override
     public User getCurrentUser() {
         return user;
+    }
+
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

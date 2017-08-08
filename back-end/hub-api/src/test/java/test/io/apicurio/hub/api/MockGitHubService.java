@@ -28,15 +28,16 @@ import java.util.UUID;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.github.GitHubException;
-import io.apicurio.hub.api.github.IGitHubService;
+import io.apicurio.hub.api.github.IGitHubSourceConnector;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class MockGitHubService implements IGitHubService {
+public class MockGitHubService implements IGitHubSourceConnector {
     
     public static final String STATIC_CONTENT = "{\r\n" + 
             "  \"swagger\" : \"2.0\",\r\n" + 
@@ -73,7 +74,7 @@ public class MockGitHubService implements IGitHubService {
     private List<String> audit = new ArrayList<>();
 
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#validateResourceExists(java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#validateResourceExists(java.lang.String)
      */
     @Override
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException {
@@ -95,7 +96,7 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getCollaborators(java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getCollaborators(java.lang.String)
      */
     @Override
     public Collection<Collaborator> getCollaborators(String repositoryUrl) {
@@ -118,7 +119,7 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getResourceContent(java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getResourceContent(java.lang.String)
      */
     @Override
     public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException {
@@ -130,11 +131,11 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
      */
     @Override
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
-            ResourceContent content) throws GitHubException {
+            ResourceContent content) throws SourceConnectorException {
         getAudit().add("updateResourceContent::" + repositoryUrl + "::" + commitMessage + "::" + commitComment
                 + "::" + content.getSha() + "::" + content.getContent().hashCode());
         // do nothing - mock only
@@ -142,7 +143,7 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) {
@@ -151,7 +152,7 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getOrganizations()
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getOrganizations()
      */
     @Override
     public Collection<String> getOrganizations() {
@@ -164,7 +165,7 @@ public class MockGitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getRepositories(java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getRepositories(java.lang.String)
      */
     @Override
     public Collection<String> getRepositories(String org) {
@@ -192,5 +193,13 @@ public class MockGitHubService implements IGitHubService {
         }
         buffer.append("---");
         return buffer.toString();
+    }
+
+    /**
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
+     */
+    @Override
+    public LinkedAccountType getType() {
+        return LinkedAccountType.GitHub;
     }
 }

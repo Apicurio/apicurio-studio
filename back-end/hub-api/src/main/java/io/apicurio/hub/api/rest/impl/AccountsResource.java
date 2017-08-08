@@ -41,6 +41,7 @@ import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
@@ -61,6 +62,8 @@ public class AccountsResource implements IAccountsResource {
     private IStorage storage;
     @Inject
     private ISecurityContext security;
+    @Inject
+    private HubApiConfiguration config;
 
     @Context
     private HttpServletRequest request;
@@ -107,9 +110,9 @@ public class AccountsResource implements IAccountsResource {
             logger.debug("Linked Account created in DB.");
 
             // Step #2 - initiate account linking with Keycloak
-            String redirectUri = info.getRedirectUrl(); // "https://localhost:8443/studio/settings/accounts/" + info.getType().name() + "/created";
-            String authServerRootUrl = "http://bluejay:8180"; // TODO get this from configuration!
-            String realm = "apicurio"; // TODO get this from configuration
+            String redirectUri = info.getRedirectUrl();
+            String authServerRootUrl = config.getKeycloakAuthUrl();
+            String realm = config.getKeycloakRealm();
             String provider = info.getType().alias();
 
             KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());

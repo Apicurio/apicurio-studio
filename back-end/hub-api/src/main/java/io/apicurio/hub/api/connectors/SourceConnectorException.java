@@ -14,24 +14,37 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
-
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.hub.api.connectors;
 
 /**
- * A security context for the current request.
  * @author eric.wittmann@gmail.com
  */
-public interface ISecurityContext {
+public class SourceConnectorException extends Exception {
+
+    private static final long serialVersionUID = -3833110634715047550L;
 
     /**
-     * Returns the User information for the currently authenticated user.
+     * Constructor.
      */
-    public User getCurrentUser();
+    public SourceConnectorException(String message) {
+        super(message);
+    }
     
     /**
-     * Returns the token used to authenticate.
+     * Constructor.
+     * @param message
+     * @param cause
      */
-    public String getToken();
+    public SourceConnectorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructor.
+     * @param cause
+     */
+    public SourceConnectorException(Throwable cause) {
+        super(cause);
+    }
 
 }

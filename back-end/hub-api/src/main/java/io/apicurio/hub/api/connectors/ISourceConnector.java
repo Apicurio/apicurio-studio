@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.github;
+package io.apicurio.hub.api.connectors;
 
 import java.util.Collection;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
+ * A connector to a source code control system or platform.  Provides a way to get access
+ * to information stored in something like git.  Also allows storing information in such
+ * a system.  Typical implementations may include GitHub, GitLab, and Bitbucket.
  * @author eric.wittmann@gmail.com
- * 
- * TODO throw a checked exception when github api calls fail
  */
-public interface IGitHubService {
+public interface ISourceConnector {
+    
+    /**
+     * Gets the linked account type that this connector supports.
+     */
+    public LinkedAccountType getType();
 
     /**
      * Validates that the given repository URL can be resolved to a real resource
@@ -37,7 +44,7 @@ public interface IGitHubService {
      * @param repositoryUrl
      * @throws NotFoundException
      */
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, GitHubException;
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException;
 
     /**
      * Fetchs information about the collaborators for a given repository resource.
@@ -47,43 +54,32 @@ public interface IGitHubService {
      * @param repositoryUrl
      * @throws NotFoundException
      */
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, GitHubException;
+    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException;
 
     /**
-     * Fetchs the content of a github resource.  Uses the GitHub API to get access to
+     * Fetchs the content of a github resource.  Uses the source control API to get access to
      * the actual resource content and returns it as a string.  Should only be used
      * for text resources, for obvious reasons.
      * @param repositoryUrl
      */
-    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, GitHubException;
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException;
 
     /**
-     * Updates the raw content for a resource in GitHub using the GH API.
+     * Updates the raw content for a resource in the source control system using its API.
      * @param repositoryUrl
      * @param commitMessage
      * @param commitComment 
      * @param content
      * @return the latest SHA hash
      */
-    public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment, ResourceContent content) throws GitHubException;
+    public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment, ResourceContent content) throws SourceConnectorException;
 
     /**
-     * Creates a new resource in GitHub with the given content.
+     * Creates a new resource in the source control system with the given content.
      * @param repositoryUrl
      * @param commitMessage
      * @param content
      */
-    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws GitHubException;
-
-    /**
-     * Lists all of the GitHub organizations for the current user.
-     */
-    public Collection<String> getOrganizations() throws GitHubException;
-
-    /**
-     * Lists all of the GitHub repositories for the current user within the given organization.
-     * @param org
-     */
-    public Collection<String> getRepositories(String org) throws GitHubException;
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException;
 
 }

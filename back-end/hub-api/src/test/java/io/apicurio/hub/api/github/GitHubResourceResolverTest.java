@@ -22,26 +22,26 @@ import org.junit.Test;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class ResourceResolverTest {
+public class GitHubResourceResolverTest {
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.ResourceResolver#resolve(java.lang.String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubResourceResolver#resolve(java.lang.String)}.
      */
     @Test
     public void testResolve() {
-        GitHubResource resource = ResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        GitHubResource resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("pet-store/pet-store.json", resource.getResourcePath());
 
-        resource = ResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.json");
+        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.json", resource.getResourcePath());
 
-        resource = ResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
+        resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());

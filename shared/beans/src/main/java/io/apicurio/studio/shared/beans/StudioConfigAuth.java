@@ -30,7 +30,6 @@ public class StudioConfigAuth {
     private StudioConfigAuthType type;
     private String token;
     private int tokenRefreshPeriod;
-    private String tokenRefreshUrl;
     private String logoutUrl;
     
     /**

@@ -21,9 +21,10 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.github.GitHubException;
-import io.apicurio.hub.api.github.IGitHubService;
+import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.rest.ICurrentUserResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.studio.shared.beans.User;
@@ -37,7 +38,7 @@ public class CurrentUserResource implements ICurrentUserResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private IGitHubService github;
+    private IGitHubSourceConnector github;
 
     /**
      * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
@@ -54,7 +55,7 @@ public class CurrentUserResource implements ICurrentUserResource {
     public Collection<String> getOrganizations() throws ServerError {
         try {
 			return this.github.getOrganizations();
-		} catch (GitHubException e) {
+		} catch (GitHubException | SourceConnectorException e) {
 			throw new ServerError(e);
 		}
     }
@@ -66,7 +67,7 @@ public class CurrentUserResource implements ICurrentUserResource {
     public Collection<String> getRepositories(String org) throws ServerError {
         try {
             return this.github.getRepositories(org);
-		} catch (GitHubException e) {
+		} catch (GitHubException | SourceConnectorException e) {
 			throw new ServerError(e);
 		}
     }

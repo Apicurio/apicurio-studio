@@ -66,6 +66,7 @@ public class KeycloakAuthenticationFilter implements Filter {
                 user.setLogin(token.getPreferredUsername());
                 user.setName(token.getName());
                 ((SecurityContext) security).setUser(user);
+                ((SecurityContext) security).setToken(session.getTokenString());
             }
         }
         chain.doFilter(request, response);

@@ -28,6 +28,7 @@ import org.junit.Test;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.studio.shared.beans.User;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -37,16 +38,16 @@ import test.io.apicurio.hub.api.TestUtil;
  * @author eric.wittmann@gmail.com
  */
 @Ignore
-public class GitHubServiceTest {
+public class GitHubSourceConnectorTest {
     
     // Add your github token here but don't commit it!!
     private static final String GITHUB_USERNAME = "";
 
-    private IGitHubService service;
+    private IGitHubSourceConnector service;
 
     @Before
     public void setUp() {
-        service = new GitHubService();
+        service = new GitHubSourceConnector();
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
     }
     
@@ -55,10 +56,10 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#validateResourceExists(java.lang.String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#validateResourceExists(java.lang.String)}.
      */
     @Test
-    public void testValidateResourceExists() throws NotFoundException, GitHubException {
+    public void testValidateResourceExists() throws NotFoundException, SourceConnectorException {
         ApiDesignResourceInfo info = service.validateResourceExists("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(info);
         Assert.assertEquals("Rate Limiter API", info.getName());
@@ -77,10 +78,10 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getCollaborators(String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getCollaborators(String)}.
      */
     @Test
-    public void testGetCollaborators() throws NotFoundException, GitHubException {
+    public void testGetCollaborators() throws NotFoundException, SourceConnectorException {
         Collection<Collaborator> collaborators = service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(collaborators);
         Assert.assertFalse(collaborators.isEmpty());
@@ -98,10 +99,10 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getResourceContent(String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getResourceContent(String)}.
      */
     @Test
-    public void testGetResourceContent() throws NotFoundException, GitHubException {
+    public void testGetResourceContent() throws NotFoundException, SourceConnectorException {
         ResourceContent content = service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertTrue(content.getContent().contains("Rate Limiter API"));
         Assert.assertNotNull(content.getSha());
@@ -114,10 +115,10 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getOrganizations()}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getOrganizations()}.
      */
     @Test
-    public void testGetOrganizations() throws GitHubException {
+    public void testGetOrganizations() throws GitHubException, SourceConnectorException {
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
 
         Collection<String> organizations = service.getOrganizations();
@@ -127,10 +128,10 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getRepositories(String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getRepositories(String)}.
      */
     @Test
-    public void testGetRepositories() throws GitHubException {
+    public void testGetRepositories() throws GitHubException, SourceConnectorException {
         TestUtil.setPrivateField(service, "security", new MockSecurityContext() {
             @Override
             public User getCurrentUser() {
@@ -151,11 +152,11 @@ public class GitHubServiceTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubService#getRepositories(String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getRepositories(String)}.
      */
     @Test
     public void testParseLinkHeader() {
-        Map<String, String> map = GitHubService.parseLinkHeader("<https://api.github.com/user/1890703/repos?page=2>; rel=\"next\", <https://api.github.com/user/1890703/repos?page=3>; rel=\"last\"");
+        Map<String, String> map = GitHubSourceConnector.parseLinkHeader("<https://api.github.com/user/1890703/repos?page=2>; rel=\"next\", <https://api.github.com/user/1890703/repos?page=3>; rel=\"last\"");
         Assert.assertNotNull(map);
         Assert.assertEquals(2, map.size());
         Assert.assertEquals("https://api.github.com/user/1890703/repos?page=2", map.get("next"));

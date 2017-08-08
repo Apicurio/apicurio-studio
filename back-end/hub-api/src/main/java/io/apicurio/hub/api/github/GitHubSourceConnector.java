@@ -35,8 +35,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -51,53 +49,53 @@ import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
 import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.connectors.AbstractSourceConnector;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.util.OpenApiTools;
 import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
+ * Implementation of the GitHub source connector.
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
-public class GitHubService implements IGitHubService {
+public class GitHubSourceConnector extends AbstractSourceConnector implements IGitHubSourceConnector {
 
-    private static Logger logger = LoggerFactory.getLogger(GitHubService.class);
+    private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
-    private static final ObjectMapper mapper = new ObjectMapper();
     
-    static {
-        Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
-            public <T> T readValue(String value, Class<T> valueType) {
-                try {
-                    return mapper.readValue(value, valueType);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            public String writeValue(Object value) {
-                try {
-                    return mapper.writeValueAsString(value);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-    }
-
     @Inject
     private ISecurityContext security;
-
+    
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#validateResourceExists(java.lang.String)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
      */
     @Override
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, GitHubException {
+    public LinkedAccountType getType() {
+        return LinkedAccountType.GitHub;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#getBaseApiEndpointUrl()
+     */
+    @Override
+    protected String getBaseApiEndpointUrl() {
+        return GITHUB_API_ENDPOINT;
+    }
+
+    /**
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#validateResourceExists(java.lang.String)
+     */
+    @Override
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
-            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             if (resource == null) {
                 throw new NotFoundException();
             }
@@ -117,7 +115,7 @@ public class GitHubService implements IGitHubService {
                     .replace(":path", resource.getResourcePath()));
             return info;
         } catch (IOException e) {
-            throw new GitHubException("Error checking that a GitHub resource exists.", e);
+            throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
         }
     }
 
@@ -126,7 +124,7 @@ public class GitHubService implements IGitHubService {
      * content using the GH API.
      * @param resource
      */
-    private String getResourceContent(GitHubResource resource) throws NotFoundException, GitHubException {
+    private String getResourceContent(GitHubResource resource) throws NotFoundException, SourceConnectorException {
         logger.debug("Getting resource content for: {}/{} - {}", 
                 resource.getOrganization(), resource.getRepository(), resource.getResourcePath());
         try {
@@ -136,7 +134,7 @@ public class GitHubService implements IGitHubService {
                     .bind("path", resource.getResourcePath())
                     .url();
             GetRequest request = Unirest.get(contentUrl).header("Accept", "application/json");
-            addSecurity(request);
+            addSecurityTo(request);
             HttpResponse<String> userResp = request.asString();
             if (userResp.getStatus() != 200) {
                 throw new NotFoundException();
@@ -145,18 +143,18 @@ public class GitHubService implements IGitHubService {
                 return json;
             }
         } catch (UnirestException e) {
-            throw new GitHubException("Error getting GitHub resource content.", e);
+            throw new SourceConnectorException("Error getting GitHub resource content.", e);
         }
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getCollaborators(java.lang.String)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#getCollaborators(java.lang.String)
      */
     @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, GitHubException {
+    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
         try {
-            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             if (resource == null) {
                 throw new NotFoundException();
             }
@@ -167,7 +165,7 @@ public class GitHubService implements IGitHubService {
                     .url();
             HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
                     .queryString("path", resource.getResourcePath());
-            addSecurity(request);
+            addSecurityTo(request);
             HttpResponse<JsonNode> response = request.asJson();
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -200,24 +198,24 @@ public class GitHubService implements IGitHubService {
             }
             return cidx.values();
         } catch (UnirestException e) {
-            throw new GitHubException("Error getting collaborator information for a GitHub resource.", e);
+            throw new SourceConnectorException("Error getting collaborator information for a GitHub resource.", e);
         }
     }
 
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getResourceContent(java.lang.String)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#getResourceContent(java.lang.String)
      */
     @Override
-    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, GitHubException {
+    public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         try {
-            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             String getContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                     .bind("org", resource.getOrganization())
                     .bind("repo", resource.getRepository())
                     .bind("path", resource.getResourcePath())
                     .url();
             HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
-            addSecurity(request);
+            addSecurityTo(request);
             HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
             if (response.getStatus() == 404) {
             	throw new NotFoundException();
@@ -234,16 +232,16 @@ public class GitHubService implements IGitHubService {
             rval.setSha(body.getSha());
             return rval;
         } catch (UnirestException | UnsupportedEncodingException e) {
-            throw new GitHubException("Error getting Github resource content.", e);
+            throw new SourceConnectorException("Error getting Github resource content.", e);
         }
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#updateResourceContent(java.lang.String, java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ResourceContent)
      */
     @Override
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
-            ResourceContent content) throws GitHubException {
+            ResourceContent content) throws SourceConnectorException {
         try {
             String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
             
@@ -252,7 +250,7 @@ public class GitHubService implements IGitHubService {
             requestBody.setContent(b64Content);
             requestBody.setSha(content.getSha());
 
-            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
@@ -260,7 +258,7 @@ public class GitHubService implements IGitHubService {
                 .url();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
-            addSecurity(request);
+            addSecurityTo(request);
             HttpResponse<JsonNode> response = request.body(requestBody).asJson();
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -275,7 +273,7 @@ public class GitHubService implements IGitHubService {
             
             return newSha;
         } catch (UnsupportedEncodingException | UnirestException e) {
-            throw new GitHubException("Error updating Github resource content.", e);
+            throw new SourceConnectorException("Error updating Github resource content.", e);
         }
     }
     
@@ -284,12 +282,15 @@ public class GitHubService implements IGitHubService {
      * @param repositoryUrl
      * @param commitSha
      * @param commitComment
+     * @throws UnirestException
+     * @throws SourceConnectorException
      */
-    private void addCommitComment(String repositoryUrl, String commitSha, String commitComment) throws UnirestException {
+    private void addCommitComment(String repositoryUrl, String commitSha, String commitComment)
+            throws UnirestException, SourceConnectorException {
         GitHubCreateCommitCommentRequest body = new GitHubCreateCommitCommentRequest();
         body.setBody(commitComment);
 
-        GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+        GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
         String addCommentUrl = this.endpoint("/repos/:org/:repo/commits/:sha/comments")
             .bind("org", resource.getOrganization())
             .bind("repo", resource.getRepository())
@@ -298,7 +299,7 @@ public class GitHubService implements IGitHubService {
             .url();
 
         HttpRequestWithBody request = Unirest.post(addCommentUrl).header("Content-Type", "application/json; charset=utf-8");
-        addSecurity(request);
+        addSecurityTo(request);
         HttpResponse<JsonNode> response = request.body(body).asJson();
         if (response.getStatus() != 201) {
             throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -306,10 +307,10 @@ public class GitHubService implements IGitHubService {
     }
 
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#createResourceContent(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws GitHubException {
+    public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
         try {
             String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
             
@@ -317,7 +318,7 @@ public class GitHubService implements IGitHubService {
             requestBody.setMessage(commitMessage);
             requestBody.setContent(b64Content);
 
-            GitHubResource resource = ResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
@@ -325,28 +326,28 @@ public class GitHubService implements IGitHubService {
                 .url();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
-            addSecurity(request);
+            addSecurityTo(request);
             HttpResponse<InputStream> response = request.body(requestBody).asBinary();
             if (response.getStatus() != 201) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
         } catch (UnsupportedEncodingException | UnirestException e) {
-            throw new GitHubException("Error creating Github resource content.", e);
+            throw new SourceConnectorException("Error creating Github resource content.", e);
         }
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getOrganizations()
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getOrganizations()
      */
     @Override
-    public Collection<String> getOrganizations() throws GitHubException {
+    public Collection<String> getOrganizations() throws GitHubException, SourceConnectorException {
         logger.debug("Getting organizations for current user.");
         try {
             String orgsUrl = endpoint("/user/orgs").url();
             Collection<String> rval = new HashSet<>();
             while (orgsUrl != null) {
                 HttpRequest request = Unirest.get(orgsUrl).header("Accept", "application/json");
-                addSecurity(request);
+                addSecurityTo(request);
                 HttpResponse<JsonNode> response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -370,10 +371,10 @@ public class GitHubService implements IGitHubService {
     }
     
     /**
-     * @see io.apicurio.hub.api.github.IGitHubService#getRepositories(java.lang.String)
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<String> getRepositories(String org) throws GitHubException {
+    public Collection<String> getRepositories(String org) throws GitHubException, SourceConnectorException {
         logger.debug("Getting the repositories from organization {}", org);
         try {
             String reposUrl;
@@ -386,7 +387,7 @@ public class GitHubService implements IGitHubService {
             Collection<String> rval = new HashSet<>();
             while (reposUrl != null) {
                 HttpRequest request = Unirest.get(reposUrl).header("Accept", "application/json");
-                addSecurity(request);
+                addSecurityTo(request);
                 HttpResponse<JsonNode> response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -407,6 +408,15 @@ public class GitHubService implements IGitHubService {
         } catch (UnirestException e) {
             throw new GitHubException("Error getting GitHub repositories.", e);
         }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#addSecurityTo(com.mashape.unirest.request.HttpRequest)
+     */
+    @Override
+    protected void addSecurityTo(HttpRequest request) throws SourceConnectorException {
+        String idpToken = getExternalToken();
+        request.header("Authorization", "Bearer " + idpToken);
     }
 
     /**
@@ -437,71 +447,6 @@ public class GitHubService implements IGitHubService {
             }
         }
         return rval;
-    }
-
-    /**
-     * Creates a github API endpoint from the api path.
-     * @param path
-     */
-    protected Endpoint endpoint(String path) {
-        return new Endpoint(GITHUB_API_ENDPOINT + path);
-    }
-
-    /**
-     * Adds the appropriate security credentials into the request.
-     * @param request
-     */
-    protected void addSecurity(HttpRequest request) {
-        request.header("Authorization", "Bearer d9e5fb7d1836f6b681d39f1b70174d125c3b4b89");
-    }
-
-    /**
-     * An endpoint that will be used to make a call to the GitHub API.  The form of an endpoint path
-     * should be (for example):
-     * 
-     * https://api.github.com/repos/:owner/:repo/contents/:path
-     * 
-     * The path parameters can then be set by calling bind() on the {@link Endpoint} object.
-     * 
-     * @author eric.wittmann@gmail.com
-     */
-    public static class Endpoint {
-        
-        private String url;
-        
-        /**
-         * Constructor.
-         */
-        public Endpoint(String url) {
-            this.url = url;
-        }
-        
-        /**
-         * Binds a parameter to the endpoint.  
-         * @param paramName
-         * @param value
-         * @return
-         */
-        public Endpoint bind(String paramName, Object value) {
-            this.url = this.url.replace(":" + paramName, String.valueOf(value));
-            return this;
-        }
-        
-        /**
-         * Returns the url.
-         */
-        public String url() {
-            return this.url;
-        }
-        
-        /**
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return this.url;
-        }
-        
     }
 
 }

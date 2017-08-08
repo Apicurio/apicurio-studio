@@ -10,17 +10,7 @@
     <div class="row" style="min-height: 35px"></div>
     <div class="row row-cards-pf">
         <div class="col-xs-12 col-sm-2">
-            <div class="panel panel-default panel-settings">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Settings</h3>
-                </div>
-                <div class="panel-body">
-                    <ul class="nav nav-settings">
-                        <li role="presentation" class="active"><a [routerLink]="['/settings/profile']">User Profile</a></li>
-                        <li role="presentation"><a [routerLink]="['/settings/accounts']">Linked Accounts</a></li>
-                    </ul>
-                </div>
-            </div>
+            <settings-nav tab="profile"></settings-nav>
         </div>
         <div class="col-xs-12 col-sm-5">
             <div class="card-pf card-pf-accented">

@@ -55,7 +55,10 @@ export class KeycloakAuthenticationService implements IAuthenticationService {
         this._authenticated.next(true);
         this._authenticatedUser.next(user);
 
-        // TODO periodically refresh the token (start a job for this)
+        // Periodically refresh
+        setInterval(() => {
+            this.keycloak.updateToken(10);
+        }, 10000);
     }
 
     /**

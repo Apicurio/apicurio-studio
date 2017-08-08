@@ -69,6 +69,7 @@ import {ApisListComponent} from "./pages/apis/_components/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.component";
+import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
 
 /** Directives **/
 import {DivAutoHeight, TextAreaAutosize} from "./directives/autosize.directive";
@@ -123,7 +124,7 @@ import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
-        CreatedLinkedAccountPageComponent
+        CreatedLinkedAccountPageComponent, SettingsNavComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

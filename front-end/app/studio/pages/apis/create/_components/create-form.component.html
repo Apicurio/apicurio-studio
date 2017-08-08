@@ -19,54 +19,110 @@
             <hr/>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-organization">Organization</label>
+                <label class="col-sm-2 control-label">Store In</label>
                 <div class="col-sm-10">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="api-organization" data-toggle="dropdown">
-                            <span *ngIf="model.organization !== null">{{ model.organization }}</span>
-                            <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
-                            <span class="disabled" *ngIf="model.organization === null">(select organization)</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
-                            <li role="presentation"><a role="menuitem" (click)="setOrganization(userOrg())">{{ userOrg() }}</a></li>
-                            <li class="divider"></li>
-                            <li *ngFor="let org of organizations()" role="presentation"><a role="menuitem" (click)="setOrganization(org)">{{ org }}</a></li>
-                        </ul>
+                    <div class="platform-toggle"
+                         [class.disabled]="!hasLinkedAccount('GitHub')"
+                         [class.selected]="model.accountType === 'GitHub'"
+                         (click)="setType('GitHub')">
+                        <span class="fa fa-fw fa-github"></span>
+                        <br/>
+                        <span class="lbl">GitHub</span>
+                    </div>
+                    <div class="platform-toggle"
+                         [class.disabled]="!hasLinkedAccount('GitLab')"
+                         [class.selected]="model.accountType === 'GitLab'"
+                         (click)="setType('GitLab')"
+                         data-toggle="tooltip"
+                         data-placement="bottom"
+                         title="Hello World!">
+                        <span class="fa fa-fw fa-gitlab"></span>
+                        <br/>
+                        <span class="lbl">GitLab</span>
+                    </div>
+                    <div class="platform-toggle"
+                         [class.disabled]="!hasLinkedAccount('Bitbucket')"
+                         [class.selected]="model.accountType === 'Bitbucket'"
+                         (click)="setType('Bitbucket')">
+                        <span class="fa fa-fw fa-bitbucket"></span>
+                        <br/>
+                        <span class="lbl">Bitbucket</span>
+                    </div>
+
+                    <div class="account-link-warning" *ngIf="showAccountLinkingWarning">
+                        <div class="alert alert-info">
+                            <button type="button" class="close" (click)="showAccountLinkingWarning = false">
+                                <span class="pficon pficon-close"></span>
+                            </button>
+                            <span class="pficon pficon-info"></span>
+                            <strong>Account not linked!</strong> In order to store an API in a particular platform,
+                            you must <a [routerLink]="['/settings/accounts']">link your platform account</a> to Apicurio Studio.
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-repository">Repository</label>
-                <div class="col-sm-10">
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="api-repository" data-toggle="dropdown"
-                                [disabled]="model.organization === null">
-                            <span *ngIf="model.repository !== null">{{ model.repository }}</span>
-                            <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
-                            <span class="disabled" *ngIf="model.repository === null">(select repository)</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
-                            <li *ngFor="let repo of repositories()" role="presentation"><a role="menuitem" (click)="setRepository(repo)">{{ repo }}</a></li>
-                        </ul>
+
+            <!-- GitHub Form Items -->
+            <div class="github-form-items" *ngIf="model.accountType === 'GitHub'">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-organization">Organization</label>
+                    <div class="col-sm-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-organization" data-toggle="dropdown">
+                                <span *ngIf="model.github.organization !== null">{{ model.github.organization }}</span>
+                                <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.github.organization === null">(select organization)</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
+                                <li role="presentation"><a role="menuitem" (click)="setGitHubOrganization(gitHubUserOrg())">{{ gitHubUserOrg() }}</a></li>
+                                <li class="divider"></li>
+                                <li *ngFor="let org of gitHubOrganizations()" role="presentation"><a role="menuitem" (click)="setGitHubOrganization(org)">{{ org }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-repository">Repository</label>
+                    <div class="col-sm-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-repository" data-toggle="dropdown"
+                                    [disabled]="model.github.organization === null">
+                                <span *ngIf="model.github.repository !== null">{{ model.github.repository }}</span>
+                                <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.github.repository === null">(select repository)</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
+                                <li *ngFor="let repo of gitHubRepositories()" role="presentation"><a role="menuitem" (click)="setGitHubRepository(repo)">{{ repo }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
+                    <div class="col-sm-10">
+                        <input name="repository.resource" type="text" id="api-repository-resource" class="form-control"
+                               placeholder="/path/to/apis/openapi-doc.json" required
+                               [(ngModel)]="model.github.resource"
+                               pattern="(/[^/]+)*/?[^/]+\.json">
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
-                <div class="col-sm-10">
-                    <input name="repository.resource" type="text" id="api-repository-resource" class="form-control"
-                           placeholder="/path/to/apis/openapi-doc.json" required
-                           [(ngModel)]="model.resource"
-                           pattern="(/[^/]+)*/?[^/]+\.json">
-                </div>
+
+            <!-- GitLab Form Items -->
+            <div class="gitlab-form-items" *ngIf="model.accountType === 'GitLab'">
             </div>
+
+            <!-- Bitbucket Form Items -->
+            <div class="bitbucket-form-items" *ngIf="model.accountType === 'Bitbucket'">
+            </div>
+
             <hr/>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary"
-                            [disabled]="!apiForm.form.valid || creatingApi || model.repository === null">
+                            [disabled]="!apiForm.form.valid || creatingApi || !isFormComplete()">
                         <span *ngIf="!creatingApi">Create API</span>
                         <span *ngIf="creatingApi" class="spinner spinner-xs spinner-inline"></span>
                         <span *ngIf="creatingApi">Creating</span>

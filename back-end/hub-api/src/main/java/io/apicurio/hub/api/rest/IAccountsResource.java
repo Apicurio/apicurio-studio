@@ -30,6 +30,8 @@ import javax.ws.rs.core.MediaType;
 
 import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -53,7 +55,7 @@ public interface IAccountsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public InitiatedLinkedAccount createLinkedAccount(CreateLinkedAccount info) throws ServerError, AlreadyExistsException;
 
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{accountType}")
@@ -67,5 +69,21 @@ public interface IAccountsResource {
     @DELETE
     @Path("{accountType}")
     public void deleteLinkedAccount(@PathParam("accountType") String accountType) throws ServerError, NotFoundException;
+
+
+    /*
+     * GitHub specific endpoints - only valid when "accountType" is "GitHub"
+     */
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/organizations")
+    public Collection<GitHubOrganization> getOrganizations(@PathParam("accountType") String accountType) throws ServerError;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/organizations/{org}/repositories")
+    public Collection<GitHubRepository> getRepositories(@PathParam("accountType") String accountType, 
+            @PathParam("org") String org) throws ServerError;
+
 }

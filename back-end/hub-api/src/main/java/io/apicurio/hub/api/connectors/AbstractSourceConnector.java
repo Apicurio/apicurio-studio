@@ -67,9 +67,9 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     }
 
     @Inject
-    private HubApiConfiguration config;
+    protected HubApiConfiguration config;
     @Inject
-    private ISecurityContext security;
+    protected ISecurityContext security;
 
     /**
      * Returns the base URL for the source connector's API.

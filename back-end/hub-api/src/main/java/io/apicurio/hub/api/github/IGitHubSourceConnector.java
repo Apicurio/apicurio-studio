@@ -18,6 +18,8 @@ package io.apicurio.hub.api.github;
 
 import java.util.Collection;
 
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 
@@ -30,12 +32,12 @@ public interface IGitHubSourceConnector extends ISourceConnector {
     /**
      * Lists all of the GitHub organizations for the current user.
      */
-    public Collection<String> getOrganizations() throws GitHubException, SourceConnectorException;
+    public Collection<GitHubOrganization> getOrganizations() throws GitHubException, SourceConnectorException;
 
     /**
      * Lists all of the GitHub repositories for the current user within the given organization.
      * @param org
      */
-    public Collection<String> getRepositories(String org) throws GitHubException, SourceConnectorException;
+    public Collection<GitHubRepository> getRepositories(String org) throws GitHubException, SourceConnectorException;
 
 }

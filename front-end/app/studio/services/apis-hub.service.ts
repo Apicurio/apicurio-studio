@@ -257,36 +257,6 @@ export class HubApisService extends AbstractHubService implements IApisService {
     }
 
     /**
-     * @see IApisService.getOrganizations
-     */
-    public getOrganizations(): Promise<string[]> {
-        let organizationsUrl: string = this.endpoint("/currentuser/organizations");
-        let options: RequestOptions = this.options({ "Accept": "application/json" });
-
-        console.info("[HubApisService] Getting organizations: %s", organizationsUrl);
-
-        return this.http.get(organizationsUrl, options).map( response => {
-            return response.json() as string[];
-        }).toPromise();
-    }
-
-    /**
-     * @see IApisService.getRepositories
-     */
-    public getRepositories(organization: string, isUser?: boolean): Promise<string[]> {
-        let repositoriesUrl: string = this.endpoint("/currentuser/organizations/:org/repositories", {
-            org: organization
-        });
-        let options: RequestOptions = this.options({ "Accept": "application/json" });
-
-        console.info("[HubApisService] Getting repositories: %s", repositoriesUrl);
-
-        return this.http.get(repositoriesUrl, options).map( response => {
-            return response.json() as string[];
-        }).toPromise();
-    }
-
-    /**
      * Loads the recent APIs from browser local storage.
      * @return {Api[]}
      */

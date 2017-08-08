@@ -14,30 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.rest.impl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import io.apicurio.hub.api.rest.ICurrentUserResource;
-import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@ApplicationScoped
-public class CurrentUserResource implements ICurrentUserResource {
+public class GitHubOrganization {
     
-    @Inject
-    private ISecurityContext security;
+    private String id;
+    private boolean userOrg;
+    
+    /**
+     * Constructor.
+     */
+    public GitHubOrganization() {
+    }
 
     /**
-     * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
+     * @return the id
      */
-    @Override
-    public User getCurrentUser() {
-        return security.getCurrentUser();
+    public String getId() {
+        return id;
     }
-    
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the userOrg
+     */
+    public boolean isUserOrg() {
+        return userOrg;
+    }
+
+    /**
+     * @param userOrg the userOrg to set
+     */
+    public void setUserOrg(boolean userOrg) {
+        this.userOrg = userOrg;
+    }
+
 }

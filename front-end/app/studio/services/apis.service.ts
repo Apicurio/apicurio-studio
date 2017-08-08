@@ -105,18 +105,6 @@ export interface IApisService {
      * @param apiId
      */
     getCollaborators(apiId: string): Promise<ApiCollaborators>;
-
-    /**
-     * Gets a list of all organizations the logged in user belongs to.
-     */
-    getOrganizations(): Promise<string[]>;
-
-    /**
-     * Gets all of the repositories found in a given organization.
-     * @param organization
-     * @param isUser
-     */
-    getRepositories(organization: string, isUser?: boolean): Promise<string[]>;
 }
 
 export const IApisService = new InjectionToken("IApisService");

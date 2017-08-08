@@ -27,6 +27,8 @@ import {LinkedAccount} from "../models/linked-account";
 import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
 import {CreateLinkedAccount} from "../models/create-linked-account";
 import {CompleteLinkedAccount} from "../models/complete-linked-account";
+import {GitHubOrganization} from "../models/github-organization";
+import {GitHubRepository} from "../models/github-repository";
 
 
 /**
@@ -135,6 +137,39 @@ export class HubLinkedAccountsService extends AbstractHubService implements ILin
 
         return this.http.put(url, body, options).map( () => {
             return null;
+        }).toPromise();
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountOrganizations
+     */
+    public getAccountOrganizations(accountType: string): Promise<GitHubOrganization[]> {
+        let organizationsUrl: string = this.endpoint("/accounts/:accountType/organizations", {
+            accountType: accountType
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting organizations: %s", organizationsUrl);
+
+        return this.http.get(organizationsUrl, options).map( response => {
+            return response.json() as GitHubOrganization[];
+        }).toPromise();
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountRepositories
+     */
+    public getAccountRepositories(accountType: string, organization: string): Promise<GitHubRepository[]> {
+        let repositoriesUrl: string = this.endpoint("/accounts/:accountType/organizations/:org/repositories", {
+            accountType: accountType,
+            org: organization
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting repositories: %s", repositoriesUrl);
+
+        return this.http.get(repositoriesUrl, options).map( response => {
+            return response.json() as GitHubRepository[];
         }).toPromise();
     }
 

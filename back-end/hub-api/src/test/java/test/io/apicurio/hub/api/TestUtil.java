@@ -31,12 +31,31 @@ public class TestUtil {
      */
     public static void setPrivateField(Object target, String fieldName, Object fieldValue) {
         try {
-            Field field = target.getClass().getDeclaredField(fieldName);
+            Field field = findField(target, fieldName);
             field.setAccessible(true);
             field.set(target, fieldValue);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Finds a field with the given name.
+     * @param target
+     * @param fieldName
+     * @throws NoSuchFieldException
+     */
+    private static Field findField(Object target, String fieldName) throws NoSuchFieldException {
+        Class<?> targetClass = target.getClass();
+        while (targetClass != Object.class) {
+            try {
+                Field field = targetClass.getDeclaredField(fieldName);
+                return field;
+            } catch (NoSuchFieldException e) {
+                targetClass = targetClass.getSuperclass();
+            }
+        }
+        throw new NoSuchFieldException();
     }
 
 }

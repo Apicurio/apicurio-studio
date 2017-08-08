@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
@@ -48,13 +47,14 @@ import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
 import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.util.OpenApiTools;
 import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
@@ -68,9 +68,6 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
-    
-    @Inject
-    private ISecurityContext security;
     
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
@@ -340,15 +337,31 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
      * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getOrganizations()
      */
     @Override
-    public Collection<String> getOrganizations() throws GitHubException, SourceConnectorException {
+    public Collection<GitHubOrganization> getOrganizations() throws GitHubException, SourceConnectorException {
         logger.debug("Getting organizations for current user.");
         try {
+            Collection<GitHubOrganization> rval = new HashSet<>();
+
+            // Add the user's personal org
+            String userUrl = endpoint("/user").url();
+            HttpRequest request = Unirest.get(userUrl).header("Accept", "application/json");
+            addSecurityTo(request);
+            HttpResponse<JsonNode> response = request.asJson();
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+            String userLogin = response.getBody().getObject().getString("login");
+            GitHubOrganization ghorg = new GitHubOrganization();
+            ghorg.setId(userLogin);
+            ghorg.setUserOrg(true);
+            rval.add(ghorg);
+
+            // Add all the orgs visible to the user
             String orgsUrl = endpoint("/user/orgs").url();
-            Collection<String> rval = new HashSet<>();
             while (orgsUrl != null) {
-                HttpRequest request = Unirest.get(orgsUrl).header("Accept", "application/json");
+                request = Unirest.get(orgsUrl).header("Accept", "application/json");
                 addSecurityTo(request);
-                HttpResponse<JsonNode> response = request.asJson();
+                response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
                 }
@@ -357,13 +370,17 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 array.forEach( obj -> {
                     JSONObject org = (JSONObject) obj;
                     String login = org.getString("login");
-                    rval.add(login);
+                    GitHubOrganization gho = new GitHubOrganization();
+                    gho.setId(login);
+                    gho.setUserOrg(false);
+                    rval.add(gho);
                 });
                 
                 String linkHeader = response.getHeaders().getFirst("Link");
                 Map<String, String> links = parseLinkHeader(linkHeader);
                 orgsUrl = links.get("next");
             }
+            
             return rval;
         } catch (UnirestException e) {
             throw new GitHubException("Error getting GitHub organizations.", e);
@@ -374,21 +391,33 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
      * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<String> getRepositories(String org) throws GitHubException, SourceConnectorException {
+    public Collection<GitHubRepository> getRepositories(String org) throws GitHubException, SourceConnectorException {
         logger.debug("Getting the repositories from organization {}", org);
         try {
+            // First get the user's login id
+            String userUrl = endpoint("/user").url();
+            HttpRequest request = Unirest.get(userUrl).header("Accept", "application/json");
+            addSecurityTo(request);
+            HttpResponse<JsonNode> response = request.asJson();
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+            }
+            String userLogin = response.getBody().getObject().getString("login");
+
+            // Figure out if we're listing the user's repos or an org's repos
             String reposUrl;
-            if (org.equals(this.security.getCurrentUser().getLogin())) {
+            if (org.equals(userLogin)) {
                 reposUrl = endpoint("/users/:username/repos").bind("username", org).url();
             } else {
                 reposUrl = endpoint("/orgs/:org/repos").bind("org", org).url();
             }
-            
-            Collection<String> rval = new HashSet<>();
+
+            // Return all pages of repos
+            Collection<GitHubRepository> rval = new HashSet<>();
             while (reposUrl != null) {
-                HttpRequest request = Unirest.get(reposUrl).header("Accept", "application/json");
+                request = Unirest.get(reposUrl).header("Accept", "application/json");
                 addSecurityTo(request);
-                HttpResponse<JsonNode> response = request.asJson();
+                response = request.asJson();
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
                 }
@@ -396,8 +425,10 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 JSONArray array = response.getBody().getArray();
                 array.forEach( obj -> {
                     JSONObject repo = (JSONObject) obj;
-                    String name = repo.getString("name");
-                    rval.add(name);
+                    GitHubRepository ghrepo = new GitHubRepository();
+                    ghrepo.setName(repo.getString("name"));
+                    ghrepo.setPriv(repo.getBoolean("private"));
+                    rval.add(ghrepo);
                 });
                 
                 String linkHeader = response.getHeaders().getFirst("Link");

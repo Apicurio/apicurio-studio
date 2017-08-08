@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +15,14 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.rest;
+export class GitHubRepository {
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+    name: string;
+    priv: boolean;
 
-import io.apicurio.studio.shared.beans.User;
+    constructor() {
+        this.name = null;
+        this.priv = false;
+    }
 
-/**
- * @author eric.wittmann@gmail.com
- */
-@Path("currentuser")
-public interface ICurrentUserResource {
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public User getCurrentUser();
-    
 }

@@ -19,6 +19,8 @@ import {InjectionToken} from "@angular/core";
 
 import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
 import {LinkedAccount} from "../models/linked-account";
+import {GitHubOrganization} from "../models/github-organization";
+import {GitHubRepository} from "../models/github-repository";
 
 
 /**
@@ -57,10 +59,26 @@ export interface ILinkedAccountsService {
     /**
      * Finalizes/completes the account linking process for a particular account type.  This
      * should get called once the account linking flow has been completed.
-     * @param accountType
-     * @param nonce
+     * @param {string} accountType
+     * @param {string} nonce
+     * @return {Promise<void>}
      */
     completeLinkedAccount(accountType: string, nonce: string): Promise<void>;
+
+    /**
+     * Gets a list of all organizations the user belongs to.
+     * @param {string} accountType
+     * @return {Promise<string[]>}
+     */
+    getAccountOrganizations(accountType: string): Promise<GitHubOrganization[]>;
+
+    /**
+     * Gets all of the repositories found in a given organization.
+     * @param {string} accountType
+     * @param {string} organization
+     * @return {Promise<string[]>}
+     */
+    getAccountRepositories(accountType: string, organization: string): Promise<GitHubRepository[]>;
 
 }
 

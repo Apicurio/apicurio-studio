@@ -14,30 +14,48 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.rest.impl;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import io.apicurio.hub.api.rest.ICurrentUserResource;
-import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.studio.shared.beans.User;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@ApplicationScoped
-public class CurrentUserResource implements ICurrentUserResource {
+public class GitHubRepository {
     
-    @Inject
-    private ISecurityContext security;
+    private String name;
+    private boolean priv;
+    
+    /**
+     * Constructor.
+     */
+    public GitHubRepository() {
+    }
 
     /**
-     * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
+     * @return the name
      */
-    @Override
-    public User getCurrentUser() {
-        return security.getCurrentUser();
+    public String getName() {
+        return name;
     }
-    
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the priv
+     */
+    public boolean isPriv() {
+        return priv;
+    }
+
+    /**
+     * @param priv the priv to set
+     */
+    public void setPriv(boolean priv) {
+        this.priv = priv;
+    }
+
 }

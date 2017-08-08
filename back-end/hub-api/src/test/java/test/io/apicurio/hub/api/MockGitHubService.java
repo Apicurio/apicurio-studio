@@ -28,6 +28,8 @@ import java.util.UUID;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -155,26 +157,46 @@ public class MockGitHubService implements IGitHubSourceConnector {
      * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getOrganizations()
      */
     @Override
-    public Collection<String> getOrganizations() {
+    public Collection<GitHubOrganization> getOrganizations() {
         getAudit().add("getOrganizations");
-        Set<String> orgs = new HashSet<>();
-        orgs.add("Org1");
-        orgs.add("Org2");
-        orgs.add("Org3");
+        Set<GitHubOrganization> orgs = new HashSet<>();
+        orgs.add(org("Org1"));
+        orgs.add(org("Org2"));
+        orgs.add(org("Org3"));
         return orgs;
     }
     
     /**
+     * Creates an org.
+     */
+    private GitHubOrganization org(String name) {
+        GitHubOrganization org = new GitHubOrganization();
+        org.setId(name);
+        org.setUserOrg(false);
+        return org;
+    }
+
+    /**
      * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<String> getRepositories(String org) {
+    public Collection<GitHubRepository> getRepositories(String org) {
         getAudit().add("getRepositories::" + org);
-        Set<String> repos = new HashSet<>();
-        repos.add(org + "-Repo1");
-        repos.add(org + "-Repo2");
-        repos.add(org + "-Repo3");
+        Set<GitHubRepository> repos = new HashSet<>();
+        repos.add(repo(org + "-Repo1"));
+        repos.add(repo(org + "-Repo2"));
+        repos.add(repo(org + "-Repo3"));
         return repos;
+    }
+
+    /**
+     * Creates a repo.
+     */
+    private GitHubRepository repo(String name) {
+        GitHubRepository repo = new GitHubRepository();
+        repo.setName(name);
+        repo.setPriv(false);
+        return repo;
     }
 
     /**

@@ -139,6 +139,11 @@ public class DesignsResource implements IDesignsResource {
     public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException {
         logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
 
+        // Null description not allowed
+        if (info.getDescription() == null) {
+            info.setDescription("");
+        }
+
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
@@ -161,7 +166,8 @@ public class DesignsResource implements IDesignsResource {
             design.setModifiedBy(user);
             design.setModifiedOn(now);
             
-            storage.createApiDesign(user, design);
+            String designId = storage.createApiDesign(user, design);
+            design.setId(designId);
             
             OpenApiDocument doc = new OpenApiDocument();
             doc.setSwagger("2.0");

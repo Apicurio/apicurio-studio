@@ -38,13 +38,18 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.config.HubApiConfiguration;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.github.GitHubException;
+import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
@@ -64,6 +69,9 @@ public class AccountsResource implements IAccountsResource {
     private ISecurityContext security;
     @Inject
     private HubApiConfiguration config;
+    
+    @Inject
+    private IGitHubSourceConnector github;
 
     @Context
     private HttpServletRequest request;
@@ -199,6 +207,36 @@ public class AccountsResource implements IAccountsResource {
             String user = this.security.getCurrentUser().getLogin();
             this.storage.deleteLinkedAccount(user, LinkedAccountType.valueOf(accountType));
         } catch (StorageException | IllegalArgumentException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getOrganizations()
+     */
+    @Override
+    public Collection<GitHubOrganization> getOrganizations(String accountType) throws ServerError {
+        if (LinkedAccountType.valueOf(accountType) != LinkedAccountType.GitHub) {
+            throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
+        }
+        try {
+            return this.github.getOrganizations();
+        } catch (GitHubException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getRepositories(java.lang.String)
+     */
+    @Override
+    public Collection<GitHubRepository> getRepositories(String accountType, String org) throws ServerError {
+        if (LinkedAccountType.valueOf(accountType) != LinkedAccountType.GitHub) {
+            throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
+        }
+        try {
+            return this.github.getRepositories(org);
+        } catch (GitHubException | SourceConnectorException e) {
             throw new ServerError(e);
         }
     }

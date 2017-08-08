@@ -27,28 +27,37 @@ import org.junit.Test;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.GitHubOrganization;
+import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.studio.shared.beans.User;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@Ignore
 public class GitHubSourceConnectorTest {
     
-    // Add your github token here but don't commit it!!
-    private static final String GITHUB_USERNAME = "";
+    private static final String GITHUB_PAT = "";
 
     private IGitHubSourceConnector service;
+    private HubApiConfiguration config;
 
     @Before
     public void setUp() {
-        service = new GitHubSourceConnector();
+        service = new GitHubSourceConnector() {
+            @Override
+            protected String getExternalToken() throws SourceConnectorException {
+                return GITHUB_PAT;
+            }
+        };
+        config = new HubApiConfiguration();
+        
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
+        TestUtil.setPrivateField(service, "config", config);
     }
     
     @After
@@ -59,6 +68,7 @@ public class GitHubSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#validateResourceExists(java.lang.String)}.
      */
     @Test
+    @Ignore
     public void testValidateResourceExists() throws NotFoundException, SourceConnectorException {
         ApiDesignResourceInfo info = service.validateResourceExists("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(info);
@@ -81,6 +91,7 @@ public class GitHubSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getCollaborators(String)}.
      */
     @Test
+    @Ignore
     public void testGetCollaborators() throws NotFoundException, SourceConnectorException {
         Collection<Collaborator> collaborators = service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(collaborators);
@@ -102,6 +113,7 @@ public class GitHubSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getResourceContent(String)}.
      */
     @Test
+    @Ignore
     public void testGetResourceContent() throws NotFoundException, SourceConnectorException {
         ResourceContent content = service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertTrue(content.getContent().contains("Rate Limiter API"));
@@ -118,37 +130,26 @@ public class GitHubSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getOrganizations()}.
      */
     @Test
+    @Ignore
     public void testGetOrganizations() throws GitHubException, SourceConnectorException {
-        TestUtil.setPrivateField(service, "security", new MockSecurityContext());
-
-        Collection<String> organizations = service.getOrganizations();
+        Collection<GitHubOrganization> organizations = service.getOrganizations();
         Assert.assertNotNull(organizations);
         Assert.assertTrue(organizations.size() > 0);
-        Assert.assertTrue(organizations.contains("apiman"));
     }
 
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getRepositories(String)}.
      */
     @Test
+    @Ignore
     public void testGetRepositories() throws GitHubException, SourceConnectorException {
-        TestUtil.setPrivateField(service, "security", new MockSecurityContext() {
-            @Override
-            public User getCurrentUser() {
-                User user = super.getCurrentUser();
-                user.setLogin(GITHUB_USERNAME);
-                return user;
-            }
-        });
-
-        Collection<String> repositories = service.getRepositories("EricWittmann");
+        Collection<GitHubRepository> repositories = service.getRepositories("EricWittmann");
         Assert.assertNotNull(repositories);
         System.out.println("Found " + repositories.size() + " repositories!");
         repositories.forEach( repo -> {
-            System.out.println("\t" + repo);
+            System.out.println("\t" + repo.getName());
         });
         Assert.assertTrue(repositories.size() > 0);
-        Assert.assertTrue(repositories.contains("apiman"));
     }
 
     /**

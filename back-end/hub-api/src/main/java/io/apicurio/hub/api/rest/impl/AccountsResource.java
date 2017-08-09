@@ -36,6 +36,10 @@ import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.request.HttpRequest;
+
 import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.GitHubOrganization;
@@ -204,10 +208,46 @@ public class AccountsResource implements IAccountsResource {
     public void deleteLinkedAccount(String accountType) throws ServerError, NotFoundException {
         logger.debug("Deleting a Linked Account of type {}", accountType);
         try {
+            LinkedAccountType type = LinkedAccountType.valueOf(accountType);
             String user = this.security.getCurrentUser().getLogin();
-            this.storage.deleteLinkedAccount(user, LinkedAccountType.valueOf(accountType));
+            
+            this.storage.deleteLinkedAccount(user, type);
+            
+            this.deleteIdentityProvider(type);
         } catch (StorageException | IllegalArgumentException e) {
             throw new ServerError(e);
+        }
+    }
+
+    /**
+     * Removes the identity provider from Keycloak.
+     * @param type
+     */
+    private void deleteIdentityProvider(LinkedAccountType type) {
+        logger.debug("Deleting identity provider from Keycloak: {}", type);
+        try {
+            KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+
+            String authServerRootUrl = config.getKeycloakAuthUrl();
+            String realm = config.getKeycloakRealm();
+            String provider = type.alias();
+            
+            session.getToken().getSessionState();
+
+            String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
+                             .path("/auth/realms/{realm}/account/federated-identity-update")
+                             .queryParam("action", "REMOVE")
+                             .queryParam("provider_id", provider).build(realm).toString();
+            logger.debug("Deleting identity provider using URL: {}", url);
+
+            HttpRequest request = Unirest.get(url).header("Accept", "application/json").header("Authorization", "Bearer " + session.getTokenString());
+            HttpResponse<String> response = request.asString();
+            if (response.getStatus() != 200) {
+                logger.debug("HTTP Response Status Code when deleting identity provider: {}", response.getStatus());
+                logger.debug("HTTP Response Body when deleting identity provider: {}", response.getBody());
+            }
+        } catch (Exception e) {
+            logger.error("Error deleting identity provider from Keycloak.", e);
         }
     }
 

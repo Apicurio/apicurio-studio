@@ -65,6 +65,12 @@ export class CreatedLinkedAccountPageComponent extends AbstractPageComponent {
             this.accountsApi.completeLinkedAccount(this.accountType, this.nonce).then( () => {
                 this.router.navigate(["/settings/accounts"]);
             }).catch( error => this.error(error));
+        } else {
+            this.accountsApi.deleteLinkedAccount(this.accountType).then( () => {
+                console.info("[CreatedLinkedAccountPageComponent] Deleted the (failed) linked account.");
+            }).catch(error => {
+                console.info("[CreatedLinkedAccountPageComponent] Tried to delete the (failed) linked account but got an error: %s", error.toString());
+            });
         }
     }
 

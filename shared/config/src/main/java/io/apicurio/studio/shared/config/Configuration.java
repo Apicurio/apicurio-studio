@@ -22,7 +22,7 @@ package io.apicurio.studio.shared.config;
 public abstract class Configuration {
 
     private static final String KC_AUTH_URL_ENV = "APICURIO_KC_AUTH_URL";
-    private static final String KC_AUTH_URL_SYSPROP = "apicurio.kc.auth.url";
+    private static final String KC_AUTH_URL_SYSPROP = "apicurio.kc.auth.rootUrl";
 
     private static final String KC_AUTH_REALM_ENV = "APICURIO_KC_AUTH_REALM";
     private static final String KC_AUTH_REALM_SYSPROP = "apicurio.kc.auth.realm";

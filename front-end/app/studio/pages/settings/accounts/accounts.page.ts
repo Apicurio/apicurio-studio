@@ -37,6 +37,9 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
     private accounts: LinkedAccount[];
     private linksInProgress: any = {};
 
+    private showGitlabWarning: false;
+    private showBitbucketWarning: false;
+
     /**
      * C'tor.
      * @param {ILinkedAccountsService} accountsApi

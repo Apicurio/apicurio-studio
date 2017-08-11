@@ -36,6 +36,7 @@ import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
+import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
@@ -57,6 +58,7 @@ public class DesignsResourceTest {
     private MockStorage storage;
     private MockSecurityContext security;
     private MockGitHubService github;
+    private SourceConnectorFactory sourceConnectorFactory;
 
     @Before
     public void setUp() {
@@ -64,11 +66,14 @@ public class DesignsResourceTest {
 
         storage = new MockStorage();
         security = new MockSecurityContext();
+
+        sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
+        TestUtil.setPrivateField(sourceConnectorFactory, "gitHub", github);
 
         TestUtil.setPrivateField(resource, "storage", storage);
+        TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
-        TestUtil.setPrivateField(resource, "github", github);
     }
     
     @After

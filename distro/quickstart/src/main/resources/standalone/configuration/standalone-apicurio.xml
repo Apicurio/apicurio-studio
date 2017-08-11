@@ -31,7 +31,10 @@
     </extensions>
     
     <system-properties>
-    	<property name="apicurio.hub.storage.jdbc.type" value="h2" />
+        <property name="apicurio.kc.auth.rootUrl" value="https://localhost:8443"/>
+        <property name="apicurio.kc.auth.realm" value="apicurio"/>
+        <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
+        <property name="apicurio.hub.storage.jdbc.init" value="true"/>
     </system-properties>
 
     <management>
@@ -402,6 +405,28 @@
             <client-config name="Standard-Client-Config"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
+        <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
+            <realm name="apicurio">
+                <realm-public-key>PUBLIC_KEY_HERE</realm-public-key>
+                <auth-server-url>${apicurio.kc.auth.rootUrl}/auth</auth-server-url>
+                <ssl-required>NONE</ssl-required>
+                <enable-cors>true</enable-cors>
+                <principal-attribute>preferred_username</principal-attribute>
+            </realm>
+            <secure-deployment name="apicurio-studio-be-hub-api-0.1.8-SNAPSHOT.war">
+                <realm>apicurio</realm>
+                <resource>apicurio-api</resource>
+                <bearer-only>true</bearer-only>
+                <disable-trust-manager>true</disable-trust-manager>
+                <credential name="secret">SECRET_HERE</credential>
+            </secure-deployment>
+            <secure-deployment name="apicurio-studio-fe-wildfly-0.1.8-SNAPSHOT.war">
+                <realm>apicurio</realm>
+                <resource>apicurio-studio</resource>
+                <public-client>true</public-client>
+                <disable-trust-manager>true</disable-trust-manager>
+            </secure-deployment>
+        </subsystem>
     </profile>
     <interfaces>
         <interface name="management">

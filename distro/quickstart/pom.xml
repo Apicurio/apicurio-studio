@@ -54,10 +54,17 @@
                                 <property name="wildfly.install.dir" value="${project.build.directory}" />
                                 <property name="wildfly.appserver.dir" value="${wildfly.install.dir}/wildfly-${wildfly.version}" />
 
-                                <!-- Download and unpack Apache wildfly -->
+                                <!-- Download and unpack WildFly -->
                                 <delete dir="${wildfly.appserver.dir}" />
                                 <get src="${wildfly.download.url}" dest="${wildfly.download.zip}" usetimestamp="true" skipexisting="true" />
                                 <unzip src="${wildfly.download.zip}" dest="${wildfly.install.dir}" overwrite="false" />
+
+                                <!-- Download and unpack Keycloak OIDC adapter -->
+                                <get src="https://downloads.jboss.org/keycloak/${version.org.keycloak}/adapters/keycloak-oidc/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
+                                     dest="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
+                                     usetimestamp="true" skipexisting="true" />
+                                <unzip src="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
+                                       dest="${wildfly.appserver.dir}" overwrite="false" />
 
                                 <!-- Make sure to chmod 755 the shell scripts -->
                                 <chmod perm="a+x" dir="${wildfly.appserver.dir}/bin">

@@ -12,8 +12,6 @@
   <name>apicurio-studio-fe</name>
   <modules>
     <module>app</module>
-    <module>war</module>
     <module>wildfly</module>
-    <module>quickstart</module>
   </modules>
 </project>

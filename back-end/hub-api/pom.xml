@@ -129,6 +129,7 @@
 	</dependencies>
 
 	<build>
+        <finalName>apicurio-studio-api</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

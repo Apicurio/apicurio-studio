@@ -28,11 +28,12 @@
         <extension module="org.wildfly.extension.request-controller"/>
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
+        <extension module="org.keycloak.keycloak-adapter-subsystem"/>
     </extensions>
     
     <system-properties>
-        <property name="apicurio.kc.auth.rootUrl" value="https://localhost:8443"/>
-        <property name="apicurio.kc.auth.realm" value="apicurio"/>
+        <property name="apicurio.kc.auth.rootUrl" value="https://auth-apistudio.rhcloud.com"/>
+        <property name="apicurio.kc.auth.realm" value="apicurio-local"/>
         <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
         <property name="apicurio.hub.storage.jdbc.init" value="true"/>
     </system-properties>
@@ -155,7 +156,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ApicurioDS" pool-name="ApicurioDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:mem:apicurio;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
+                    <connection-url>jdbc:h2:${jboss.server.data.dir}/apicurio;AUTO_SERVER=FALSE</connection-url>
                     <driver>h2</driver>
                     <security>
                         <user-name>sa</user-name>
@@ -361,6 +362,11 @@
                         <auth-module code="Dummy"/>
                     </authentication-jaspi>
                 </security-domain>
+                <security-domain name="keycloak">
+                    <authentication>
+                        <login-module code="org.keycloak.adapters.jboss.KeycloakLoginModule" flag="required"/>
+                    </authentication>
+                </security-domain>
             </security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:3.0">
@@ -374,7 +380,7 @@
         <subsystem xmlns="urn:jboss:domain:undertow:3.1">
             <buffer-cache name="default"/>
             <server name="default-server">
-                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
+                <http-listener name="default" socket-binding="http" proxy-address-forwarding="true" redirect-socket="https" enable-http2="true"/>
                 <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
@@ -406,22 +412,22 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
-            <realm name="apicurio">
-                <realm-public-key>PUBLIC_KEY_HERE</realm-public-key>
+            <realm name="apicurio-local">
+                <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNAqN6gTpgluPizQqEyqYyPht83XBGV0yaBBXQChIfwOG27hs4lt3utY4ynFNLZluhcss7Fbec6ZykZbQTqJmoFVBo0leD2okZj2jvFSwyQ3hXOwar01aNxEezeauz0zH+34bdr+UP5DoqdSPnwoKfEs1Mk+q1KNNqgnuJgYn0xsB4lTQKOV2uLN89y2sWKzz6LJI6z0+KcRXS2MUFIc2uUmuCitC+X7jrOAPs0G0dyeyeqkYTdJbKJ/AuMyfsCF8i3KHcsdRET8xx7JWz5y8Nh1hvIBmUtps7jHn5cGgU5kpv1Lk2xCzjcsB872A3WqJBKCyqe5DO+Kj5fyuRHMyQIDAQAB</realm-public-key>
                 <auth-server-url>${apicurio.kc.auth.rootUrl}/auth</auth-server-url>
                 <ssl-required>NONE</ssl-required>
                 <enable-cors>true</enable-cors>
                 <principal-attribute>preferred_username</principal-attribute>
             </realm>
-            <secure-deployment name="apicurio-studio-be-hub-api-0.1.8-SNAPSHOT.war">
-                <realm>apicurio</realm>
+            <secure-deployment name="apicurio-studio-api.war">
+                <realm>apicurio-local</realm>
                 <resource>apicurio-api</resource>
                 <bearer-only>true</bearer-only>
                 <disable-trust-manager>true</disable-trust-manager>
-                <credential name="secret">SECRET_HERE</credential>
+                <credential name="secret">6f13da19-7cc1-40c0-85bf-6fac81ff5c05</credential>
             </secure-deployment>
-            <secure-deployment name="apicurio-studio-fe-wildfly-0.1.8-SNAPSHOT.war">
-                <realm>apicurio</realm>
+            <secure-deployment name="apicurio-studio.war">
+                <realm>apicurio-local</realm>
                 <resource>apicurio-studio</resource>
                 <public-client>true</public-client>
                 <disable-trust-manager>true</disable-trust-manager>
@@ -430,10 +436,10 @@
     </profile>
     <interfaces>
         <interface name="management">
-            <loopback-address value="${jboss.bind.address.management:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address.management:127.0.0.1}"/>
         </interface>
         <interface name="public">
-            <loopback-address value="${jboss.bind.address:127.0.0.1}"/>
+            <inet-address value="${jboss.bind.address:127.0.0.1}"/>
         </interface>
     </interfaces>
     <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">

@@ -9,6 +9,7 @@
     <!-- Studio UI WAR -->
     <dependencySet>
       <outputDirectory>apicurio-studio-${project.version}/standalone/deployments</outputDirectory>
+      <outputFileNameMapping>apicurio-studio.war</outputFileNameMapping>
       <includes>
         <include>*:apicurio-studio-fe-wildfly:war</include>
       </includes>
@@ -22,6 +23,7 @@
     <!-- Studio Hub API -->
     <dependencySet>
       <outputDirectory>apicurio-studio-${project.version}/standalone/deployments</outputDirectory>
+      <outputFileNameMapping>apicurio-studio-api.war</outputFileNameMapping>
       <includes>
         <include>*:apicurio-studio-be-hub-api:war</include>
       </includes>

@@ -1,7 +1,7 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
         <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
-        <li breadcrumb label="Settings" icon="sliders" [route]="[ '/settings' ]"></li>
+        <li breadcrumb label="Settings" icon="cogs" [route]="[ '/settings' ]"></li>
         <li breadcrumb label="Profile" icon="user" class="active"></li>
     </breadcrumbs>
 </div>
@@ -24,15 +24,15 @@
                     <div class="user-info">
                         <div>
                             <span class="user-info-label">Name:</span>
-                            <span>Eric Wittmann</span>
+                            <span>{{ (user() | async).name }}</span>
                         </div>
                         <div>
                             <span class="user-info-label">Login:</span>
-                            <span>eric</span>
+                            <span>{{ (user() | async).login }}</span>
                         </div>
                         <div>
                             <span class="user-info-label">Email:</span>
-                            <span>eric.wittmann@gmail.com</span>
+                            <span>{{ (user() | async).email }}</span>
                         </div>
                     </div>
                 </div>

@@ -24,6 +24,8 @@ import {Observable} from "rxjs";
 import {User} from "../../models/user.model";
 import {IApisService} from "../../services/apis.service";
 import {AbstractPageComponent} from "../../components/page-base.component";
+import {ILinkedAccountsService} from "../../services/accounts.service";
+import {LinkedAccount} from "../../models/linked-account";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.
@@ -36,11 +38,24 @@ import {AbstractPageComponent} from "../../components/page-base.component";
 })
 export class DashboardPageComponent extends AbstractPageComponent {
 
+    accounts: LinkedAccount[];
+
+    /**
+     * C'tor.
+     * @param {IApisService} apis
+     * @param {ActivatedRoute} route
+     * @param {ILinkedAccountsService} accountsService
+     * @param {IAuthenticationService} authService
+     */
     constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
+                @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService) {
         super(route);
     }
 
+    /**
+     * @see AbstractPageComponent.loadAsyncPageData
+     */
     public loadAsyncPageData(): void {
         console.log("[DashboardPageComponent] loadAsyncPageData")
         this.apis.getApis().then( apis => {
@@ -49,12 +64,27 @@ export class DashboardPageComponent extends AbstractPageComponent {
             console.error("[DashboardPageComponent] Error fetching API list.");
             this.error(error);
         });
+        this.accountsService.getLinkedAccounts().then( accounts => {
+            this.loaded("accounts");
+            this.accounts = accounts;
+        }).catch( error => {
+            console.error("[DashboardPageComponent] Error fetching linked accounts.");
+            this.error(error);
+        });
     }
 
+    /**
+     * Gets the authenticated user.
+     * @return {Observable<User>}
+     */
     public user(): Observable<User> {
         return this.authService.getAuthenticatedUser();
     }
 
+    /**
+     * Gets the user's "recent APIs".
+     * @return {Observable<Api[]>}
+     */
     public recentApis(): Observable<Api[]> {
         return this.apis.getRecentApis();
     }

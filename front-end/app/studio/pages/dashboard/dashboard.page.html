@@ -25,10 +25,36 @@
             </div>
         </div>
     </div>
-    <div class="row row-cards-pf">
-        <!-- Recent APIs (or empty state) -->
-        <div class="col-xs-12 col-sm-6 col-md-6">
 
+    <!-- No Linked Accounts card -->
+    <div class="row row-cards-pf" *ngIf="isLoaded('accounts') && accounts.length === 0">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="card-pf">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-info-circle"></span>
+                        <span><strong>Linked Account</strong> Needed!</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        It seems you have not yet linked a source code account (like <a href="https://www.github.com">GitHub</a>) to
+                        Apicurio Studio.  You will need to do this in order to save changes to your new or existing API Designs.
+                    </p>
+                    <div>
+                        <a class="btn btn-lg btn-primary" [routerLink]="['/settings/accounts']">
+                            <span class="fa fa-fw fa-link"></span><span>Link an Account</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent APIs (or empty state) -->
+    <div class="row row-cards-pf" *ngIf="isLoaded('apis')">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <!-- No APIs Found -->
             <div class="card-pf blank-slate-card-pf" *ngIf="(recentApis() | async).length == 0">
                 <div class="blank-slate-pf">
                     <div class="blank-slate-pf-icon">
@@ -56,7 +82,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Recent APIs -->
             <div class="card-pf" *ngIf="(recentApis() | async).length > 0">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">Your Recent APIs</h2>

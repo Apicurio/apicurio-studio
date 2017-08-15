@@ -35,6 +35,7 @@ export class CreatedLinkedAccountPageComponent extends AbstractPageComponent {
     accountType: string;
     linkError: string;
     nonce: string;
+    alreadyCompleted: boolean = false;
 
     /**
      * C'tor.
@@ -62,9 +63,14 @@ export class CreatedLinkedAccountPageComponent extends AbstractPageComponent {
         console.info("Nonce: %s", this.nonce);
 
         if (!this.isLinkError()) {
-            this.accountsApi.completeLinkedAccount(this.accountType, this.nonce).then( () => {
-                this.router.navigate(["/settings/accounts"]);
-            }).catch( error => this.error(error));
+            if (this.nonce) {
+                this.accountsApi.completeLinkedAccount(this.accountType, this.nonce).then(() => {
+                    localStorage.removeItem(ACCOUNT_LINK_NONCE_KEY + "." + this.accountType);
+                    this.router.navigate(["/settings/accounts"]);
+                }).catch(error => this.error(error));
+            } else {
+                this.alreadyCompleted = true;
+            }
         } else {
             this.accountsApi.deleteLinkedAccount(this.accountType).then( () => {
                 console.info("[CreatedLinkedAccountPageComponent] Deleted the (failed) linked account.");

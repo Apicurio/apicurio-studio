@@ -46,6 +46,12 @@ public class GitHubResourceResolverTest {
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("apiman-rls/apiman-rls.json", resource.getResourcePath());
+
+        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.json");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("Apicurio", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("pet-store.json", resource.getResourcePath());
     }
 
 }

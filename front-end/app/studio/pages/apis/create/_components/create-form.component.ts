@@ -150,7 +150,14 @@ export class CreateApiFormComponent {
         api.name = this.model.name;
         api.description = this.model.description;
         if (this.model.accountType === "GitHub") {
-            api.repositoryUrl = "https://github.com/" + this.model.github.organization + "/" + this.model.github.repository + this.model.github.resource;
+            let sep: string = "";
+            if (this.model.github.resource && this.model.github.resource[0] !== '/') {
+                sep = "/";
+            }
+            api.repositoryUrl = "https://github.com/" +
+                this.model.github.organization + "/" +
+                this.model.github.repository + "/blob/master" + sep +
+                this.model.github.resource;
         } else if (this.model.accountType === "GitLab") {
         } else if (this.model.accountType === "Bitbucket") {
         }

@@ -41,7 +41,7 @@
             </div>
 
             <!-- Please Wait, Linking... -->
-            <div class="card-pf card-pf-accented" *ngIf="!isLinkError()">
+            <div class="card-pf card-pf-accented" *ngIf="!alreadyCompleted && !isLinkError()">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-info"></span>
@@ -58,8 +58,27 @@
                         moment, after which you will be redirected back to the
                         <a [routerLink]="['/settings/accounts']">Settings &gt;&gt; Accounts</a> page.
                     </p>
-                    <p class="in-progress"><span class="spinner spinner-xs spinner-inline"></span> Finalizing linked account, please wait...</p>
+                    <p class="in-progress"><span class="spinner spinner-xs spinner-inline"></span> Finalizing account link, please wait...</p>
                     <div class="actions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Already Completed -->
+            <div class="card-pf card-pf-accented" *ngIf="alreadyCompleted">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-info-circle"></span>
+                        <span>Action Already Completed</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        This account has already been successfully linked.  Click the button below
+                        to return to the Settings page.
+                    </p>
+                    <div class="actions">
+                        <a class="btn btn-default" routerLink="/settings/accounts">Back to Accounts</a>
                     </div>
                 </div>
             </div>

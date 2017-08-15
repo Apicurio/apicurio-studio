@@ -57,5 +57,12 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>${basedir}/../../back-end/hub-api/src/main/resources/io/apicurio/hub/api/storage/jdbc</directory>
+      <outputDirectory>apicurio-studio-${project.version}/ddls</outputDirectory>
+      <filtered>false</filtered>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
   </fileSets>
 </assembly>

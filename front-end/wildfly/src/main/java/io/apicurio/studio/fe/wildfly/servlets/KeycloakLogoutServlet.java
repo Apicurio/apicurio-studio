@@ -43,9 +43,6 @@ public class KeycloakLogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.logout();
-        if (req.getSession() != null && !req.getSession().isNew()) {
-            req.getSession().invalidate();
-        }
         resp.sendRedirect("/studio");
     }
 

@@ -69,13 +69,21 @@
                             <div class="card-pf-body">
                                 <h3 class="api-description">{{ api.description }}</h3>
                                 <div class="api-created-info">
-                                    <div>
+                                    <div class="info-left">
                                         <span class="fa fa-fw fa-clock-o"></span>
                                         <span>Created on <em>{{ api.createdOn | date }}</em></span>
                                     </div>
-                                    <div *ngIf="api.createdBy">
+                                    <div class="info-right">
+                                        <span class="fa fa-fw fa-clock-o"></span>
+                                        <span>Modified on <em>{{ api.modifiedOn | date }}</em></span>
+                                    </div>
+                                    <div class="info-left">
                                         <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
+                                    </div>
+                                    <div class="info-right">
+                                        <span class="fa fa-fw fa-user"></span>
+                                        <span>Modified by <em>{{ api.modifiedBy }}</em></span>
                                     </div>
                                     <div>
                                         <span class="fa fa-fw fa-github"></span>

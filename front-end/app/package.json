@@ -22,7 +22,7 @@
     "@angular/upgrade": "4.2.4",
     "@types/core-js": "0.9.35",
     "@types/node": "6.0.56",
-    "oai-ts-core": "0.2.1",
+    "oai-ts-core": "0.2.2",
     "yamljs": "0.2.10",
     "core-js": "2.4.1",
     "reflect-metadata": "0.1.9",

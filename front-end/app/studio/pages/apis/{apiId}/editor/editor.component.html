@@ -1,248 +1,33 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
-    <div class="editor-master">
-        <!-- Path Context Menu -->
-        <ul id="path-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'path'"
-            [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
-            <li>
-                <a href="#" onclick="return false" (click)="newPath()">
-                    <span class="pficon pficon-add-circle-o"></span>
-                    <span>New Sub-Path</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="return false" (click)="clonePath()">
-                    <span class="fa fa-clone"></span>
-                    <span>Clone Path</span>
-                </a>
-            </li>
-            <li class="divider"></li>
-            <li>
-                <a href="#" onclick="return false" (click)="deletePath()">
-                    <span class="pficon pficon-delete"></span>
-                    <span>Delete Path</span>
-                </a>
-            </li>
-        </ul>
 
-        <!-- Operation Context Menu -->
-        <ul id="operation-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'operation'"
-            [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
-            <li>
-                <a href="#" onclick="return false" (click)="deleteOperation()">
-                    <span class="pficon pficon-delete"></span>
-                    <span>Delete Operation</span>
-                </a>
-            </li>
-        </ul>
+    <master [document]="document()" #master
+            [validationErrors]="validationErrors"
+            (onCommand)="onCommand($event)"
+            (onNodeSelected)="onNodeSelected($event)"></master>
 
-        <!-- Definition Context Menu -->
-        <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
-            [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
-            <li>
-                <a href="#" onclick="return false" (click)="cloneDefinition()">
-                    <span class="fa fa-clone"></span>
-                    <span>Clone Definition</span>
-                </a>
-            </li>
-            <li class="divider"></li>
-            <li>
-                <a href="#" onclick="return false" (click)="deleteDefinition()">
-                    <span class="pficon pficon-delete"></span>
-                    <span>Delete Definition</span>
-                </a>
-            </li>
-        </ul>
-
-        <!-- Main Editor Selector (name of API, select to show Main Form -->
-        <div class="editor-main" [class.selected]="selectedType === 'main'" (click)="selectMain()">
-            <h2>{{ document().info.title }}</h2>
-        </div>
-
-        <!-- Search - Used to Filter Paths and Definitions -->
-        <div class="editor-search">
-            <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
-            <validation-icon [validationErrors]="validationErrors" (onClick)="toggleValidationPanel()"></validation-icon>
-        </div>
-
-        <!-- Validation Problems -->
-        <div class="editor-validation" [class.expanded]="validationPanelOpen" autoheight maxHeight="200">
-
-            <div class="validation-no-problem" *ngIf="validationErrors.length === 0">
-                <span class="icon fa fa-fw fa-info-circle"></span>
-                <span class="message">No validation problems found!</span>
-            </div>
-
-            <div class="validation-problem" *ngFor="let problem of validationErrors"
-                 [class.selected]="selectedItem === problem && selectedType === 'problem'"
-                 (click)="selectProblem(problem)">
-                <span class="icon fa fa-fw fa-exclamation-circle"></span>
-                <span class="code">{{ problem.errorCode }}</span>
-                <span class="message">{{ problem.message }}</span>
-            </div>
-        </div>
-
-        <!-- Outline - Paths, Definitions, Responses -->
-        <div class="editor-outline">
-            <!-- Paths Section -->
-            <div class="section path-section panel-group">
-                <div class="section-header panel-title">
-                    <a data-toggle="collapse" data-target="#path-section-body">
-                        <span class="section-label">Paths</span>
-                    </a>
-                    <context-help>
-                        <p>
-                            The core of any REST API is the set of resources/paths it exposes.  Each path is of
-                            the form <strong>/path/to/resource</strong> and can support a number of operations such
-                            as <strong>GET</strong>, <strong>POST</strong>, and <strong>DELETE</strong>.
-                        </p>
-                        <br>
-                        <p>
-                            Note that paths can have parameters, which are defined using bracket syntax, like this:
-                        </p>
-                        <pre>/root/resources/<span class="path-param">{{ '{' }}resourceId}</span>/subresource/<span class="path-param">{{ '{' }}subresourceId}</span></pre>
-                        <p>
-                            The result is a path with two dynamic components: <strong>resourceId</strong> and <strong>subresourceId</strong>.
-                        </p>
-                    </context-help>
-                    <button class="btn btn-sm btn-default pull-right"
-                            (click)="addPathDialog.open(getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
-                </div>
-                <div class="section-body collapse in" id="path-section-body">
-                    <div class="api-path" *ngFor="let path of paths()"
-                            [class.problem-marker]="hasValidationProblem(path)"
-                            [class.contexted]="isPathContexted(path)"
-                            [class.selected]="isPathSelected(path)">
-                        <div path-item [path]="path.path()" (click)="selectPath(path)" (contextmenu)="showPathContextMenu($event, path)"></div>
-                        <div class="api-operations" *ngIf="isPathSelected(path) && hasAtLeastOneOperation(path)">
-                            <span *ngIf="hasOperation(path, 'get')" class="label label-success"  (click)="selectOperation(path.get)"
-                                  (contextmenu)="showOperationContextMenu($event, path.get)"
-                                  [class.problem-marker]="hasValidationProblem(path.get)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.get"
-                                  [class.selected]="selectedItem === path.get">GET</span>
-                            <span *ngIf="hasOperation(path, 'put')" class="label label-info" (click)="selectOperation(path.put)"
-                                  (contextmenu)="showOperationContextMenu($event, path.put)"
-                                  [class.problem-marker]="hasValidationProblem(path.put)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.put"
-                                  [class.selected]="selectedItem === path.put">PUT</span>
-                            <span *ngIf="hasOperation(path, 'post')" class="label label-warning" (click)="selectOperation(path.post)"
-                                  (contextmenu)="showOperationContextMenu($event, path.post)"
-                                  [class.problem-marker]="hasValidationProblem(path.post)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.post"
-                                  [class.selected]="selectedItem === path.post">POST</span>
-                            <span *ngIf="hasOperation(path, 'delete')" class="label label-danger" (click)="selectOperation(path.delete)"
-                                  (contextmenu)="showOperationContextMenu($event, path.delete)"
-                                  [class.problem-marker]="hasValidationProblem(path.delete)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.delete"
-                                  [class.selected]="selectedItem === path.delete">DELETE</span>
-                            <span *ngIf="hasOperation(path, 'options')" class="label label-info" (click)="selectOperation(path.options)"
-                                  (contextmenu)="showOperationContextMenu($event, path.options)"
-                                  [class.problem-marker]="hasValidationProblem(path.options)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.options"
-                                  [class.selected]="selectedItem === path.options">OPTIONS</span>
-                            <span *ngIf="hasOperation(path, 'head')" class="label label-info" (click)="selectOperation(path.head)"
-                                  (contextmenu)="showOperationContextMenu($event, path.head)"
-                                  [class.problem-marker]="hasValidationProblem(path.head)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.head"
-                                  [class.selected]="selectedItem === path.head">HEAD</span>
-                            <span *ngIf="hasOperation(path, 'patch')" class="label label-info" (click)="selectOperation(path.patch)"
-                                  (contextmenu)="showOperationContextMenu($event, path.patch)"
-                                  [class.problem-marker]="hasValidationProblem(path.patch)"
-                                  [class.contexted]="contextMenuType === 'operation' && contextMenuItem === path.patch"
-                                  [class.selected]="selectedItem === path.patch">PATCH</span>
-                            <span>&nbsp;</span>
-                        </div>
-                    </div>
-                    <div class="alert alert-warning" *ngIf="paths().length === 0">
-                        <span class="pficon pficon-warning-triangle-o"></span>
-                        <strong>No Paths Found!</strong>
-                        <span>APIs need at least one path.</span>
-                        <span>&nbsp;</span>
-                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addPathDialog.open('/')">Add Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Definitions Section -->
-            <div class="section definition-section panel-group">
-                <div class="section-header panel-title">
-                    <a data-toggle="collapse" data-target="#definition-section-body">
-                        <span class="section-label">Definitions</span>
-                    </a>
-                    <context-help>
-                        <p>
-                            It is often necessary for many operations to return the same type of data
-                            (or a list of that same data type).  Rather than define the same data type
-                            multiple times within each operation, you can create named Definitions
-                            in this section.  These can then be referenced in the <strong>Request Body</strong>
-                            and also <strong>Responses</strong> of any Operation in the API.
-                        </p>
-                    </context-help>
-                    <button class="btn btn-sm btn-default pull-right"
-                            (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
-                </div>
-                <div class="section-body collapse in" id="definition-section-body">
-                    <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="def.definitionName()"
-                         (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"
-                         [class.problem-marker]="hasValidationProblem(def)"
-                         [class.contexted]="contextMenuType === 'definition' && contextMenuItem === def"
-                         [class.selected]="selectedItem === def"></div>
-                    <div class="alert alert-info" *ngIf="definitions().length === 0">
-                        <span class="pficon pficon-info"></span>
-                        <strong>None Found</strong>
-                        <span>Reusable types are useful!</span>
-                        <span>&nbsp;</span>
-                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px"
-                                (click)="addDefinitionDialog.open()">Add Now</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Responses Section -->
-            <!--
-            <div class="section response-section panel-group">
-                <div class="section-header panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-target="#response-section-body">
-                        <span class="section-label">Responses</span>
-                    </a>
-                    <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
-                </div>
-                <div class="section-body collapse" id="response-section-body">
-                    <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"
-                         (click)="selectResponse(responseName)"
-                         [class.selected]="selectedItem === responseName && selectedType === 'response'"></div>
-                    <div class="alert alert-info" *ngIf="responseNames().length === 0">
-                        <span class="pficon pficon-info"></span>
-                        <strong>None Found</strong>
-                        <span>Share responses across paths.</span>
-                        <span>&nbsp;</span>
-                        <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px">Add Now</button>
-                    </div>
-                </div>
-            </div>
-            -->
-        </div>
-    </div>
-
-    <div class="editor-detail">
-        <main-form [document]="document()" (onCommand)="onCommand($event)" class="editor-detail-form"
-                   *ngIf="selectedType === 'main'"></main-form>
-        <path-form [path]="selectedPath()" (onCommand)="onCommand($event)" class="editor-detail-form"
-                   (onNodeSelected)="selectNode($event)" (onDeselect)="deselectPath()"
-                   *ngIf="selectedType === 'path'"></path-form>
-        <operation-form [operation]="selectedOperation()" (onCommand)="onCommand($event)" class="editor-detail-form"
+    <div class="editor-detail" [ngSwitch]="formType">
+        <main-form [document]="document()" class="editor-detail-form"
+                   (onCommand)="onCommand($event)"
+                   *ngSwitchCase="'main_20'"></main-form>
+        <path-form [path]="selectedPath()" class="editor-detail-form"
+                   (onCommand)="onCommand($event)"
+                   (onNodeSelected)="selectNode($event)"
+                   (onDeselect)="deselectPath()"
+                   *ngSwitchCase="'path_20'"></path-form>
+        <operation-form [operation]="selectedOperation()" class="editor-detail-form"
+                        (onCommand)="onCommand($event)"
                         (onNodeSelected)="selectNode($event)"
-                        (onDeselect)="deselectOperation()" *ngIf="selectedType === 'operation'"></operation-form>
-        <definition-form [definition]="selectedDefinition()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                        (onDeselect)="deselectOperation()"
+                        *ngSwitchCase="'operation_20'"></operation-form>
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         (onCommand)="onCommand($event)"
                          (onNodeSelected)="selectNode($event)"
-                         (onDeselect)="deselectDefinition()" *ngIf="selectedType === 'definition'"></definition-form>
-        <problem-form [problem]="selectedProblem()" (onCommand)="onCommand($event)" class="editor-detail-form"
+                         (onDeselect)="deselectDefinition()"
+                         *ngSwitchCase="'definition_20'"></definition-form>
+        <problem-form [problem]="selectedProblem()" class="editor-detail-form"
+                      (onCommand)="onCommand($event)"
                       (onGoToProblem)="goToProblem()"
-                      *ngIf="selectedType === 'problem'"></problem-form>
+                      *ngSwitchCase="'problem_20'"></problem-form>
     </div>
-
-    <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
-    <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
-    <add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>
-    <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
 
 </div>

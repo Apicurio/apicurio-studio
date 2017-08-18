@@ -106,6 +106,7 @@ import {ProblemFormComponent} from "./pages/apis/{apiId}/editor/_components/form
 import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.form";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
+import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
 
 
 @NgModule({
@@ -124,7 +125,7 @@ import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
-        CreatedLinkedAccountPageComponent, SettingsNavComponent
+        CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

@@ -109,10 +109,14 @@ public class DesignsResource implements IDesignsResource {
 			
 			Date now = new Date();
 			String user = this.security.getCurrentUser().getLogin();
+            String description = resourceInfo.getDescription();
+            if (description == null) {
+                description = "";
+            }
 
 			ApiDesign design = new ApiDesign();
 			design.setName(resourceInfo.getName());
-			design.setDescription(resourceInfo.getDescription());
+            design.setDescription(description);
 			design.setRepositoryUrl(resourceInfo.getUrl());
 			design.setCreatedBy(user);
 			design.setCreatedOn(now);

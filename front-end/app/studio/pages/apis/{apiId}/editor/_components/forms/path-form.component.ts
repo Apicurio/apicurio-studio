@@ -20,7 +20,7 @@ import {ICommand} from "../../_services/commands.manager";
 import {NewOperationCommand} from "../../_commands/new-operation.command";
 import {ChangePropertyCommand} from "../../_commands/change-property.command";
 import {DeleteAllParameters, DeleteParameterCommand, DeletePathCommand} from "../../_commands/delete.command";
-import {NodeSelectionEvent, SourceFormComponent} from "./source-form.base";
+import {SourceFormComponent} from "./source-form.base";
 import {ReplacePathItemCommand} from "../../_commands/replace.command";
 import {ModelUtils} from "../../_util/model.util";
 import {SimplifiedType} from "../../_models/simplified-type.model";
@@ -31,6 +31,7 @@ import {AddPathItemCommand} from "../../_commands/add-path.command";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
 import {NewPathCommand} from "../../_commands/new-path.command";
+import {NodeSelectionEvent} from "../../_events/node-selection.event";
 
 
 @Component({

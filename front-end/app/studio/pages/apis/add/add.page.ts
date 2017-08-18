@@ -52,7 +52,7 @@ export class AddApiPageComponent extends AbstractPageComponent {
             console.info("[AddApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {
-            console.error("[AddApiPageComponent] Error saving API: %o", error);
+            console.error("[AddApiPageComponent] Error adding API: %o", error);
             this.error(error);
         })
     }

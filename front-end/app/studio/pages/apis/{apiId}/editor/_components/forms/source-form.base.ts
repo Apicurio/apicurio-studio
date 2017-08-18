@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {EventEmitter, ViewChild, Output} from "@angular/core";
+import {EventEmitter, Output, ViewChild} from "@angular/core";
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";
 
@@ -25,17 +25,8 @@ import "brace/mode/yaml";
 import {AceEditorDirective} from "ng2-ace-editor";
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
+import {NodeSelectionEvent} from "../../_events/node-selection.event";
 
-
-export class NodeSelectionEvent {
-    public node: OasNode;
-    public type: string;
-
-    constructor(node: OasNode, type: string) {
-        this.node = node;
-        this.type = type;
-    }
-}
 
 /**
  * Base class for all forms that support a "Source" tab.

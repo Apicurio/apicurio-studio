@@ -87,6 +87,7 @@ export class ApiEditorComponent implements OnChanges {
         } else {
             this.formType = "main_30";
         }
+        console.info("****** just set the form type to: %s", this.formType);
     }
 
     /**
@@ -187,7 +188,11 @@ export class ApiEditorComponent implements OnChanges {
         let doc: OasDocument = this.document();
         let resetVisitor: ResetProblemsVisitor = new ResetProblemsVisitor();
         OasVisitorUtil.visitTree(doc, resetVisitor);
-        this.validationErrors = this._library.validate(doc, true);
+
+        // TODO also validate 3.0.x documents once the oai-ts-core library supports that
+        if (doc.getSpecVersion() === "2.0") {
+            this.validationErrors = this._library.validate(doc, true);
+        }
     }
 
     /**

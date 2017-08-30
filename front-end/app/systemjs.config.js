@@ -20,8 +20,10 @@
             '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
-            // OAI library
+            // OAI Library
             'oai-ts-core': 'npm:oai-ts-core/bundles/OAI.umd.js',
+            // OAI Commands Library
+            'oai-ts-commands': 'npm:oai-ts-commands/bundles/OAI-commands.umd.js',
             // YAMLjs library
             'yamljs': 'npm:yamljs',
             // NG2 Bootstrap

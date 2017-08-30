@@ -78,7 +78,10 @@ import {DivAutoHeight, TextAreaAutosize} from "./directives/autosize.directive";
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
-import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
+import {
+    Main20FormComponent,
+    Main30FormComponent
+} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
@@ -116,7 +119,7 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
         CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
-        ResponseItemComponent, MainFormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
+        ResponseItemComponent, Main20FormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
         TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
@@ -125,7 +128,7 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
-        CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent
+        CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

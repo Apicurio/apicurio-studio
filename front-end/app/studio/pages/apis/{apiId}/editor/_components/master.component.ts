@@ -39,14 +39,18 @@ import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.compone
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
 import {ObjectUtils} from "../_util/object.util";
-import {NewPathCommand} from "../_commands/new-path.command";
 import {ICommand} from "../_services/commands.manager";
 import {AllNodeVisitor} from "../_visitors/base.visitor";
-import {NewDefinitionCommand} from "../_commands/new-definition.command";
-import {DeleteDefinitionSchemaCommand, DeleteNodeCommand, DeletePathCommand} from "../_commands/delete.command";
-import {AddPathItemCommand} from "../_commands/add-path.command";
-import {AddDefinitionCommand} from "../_commands/add-definition.command";
 import {NodeSelectionEvent} from "../_events/node-selection.event";
+import {
+    createAddPathItemCommand,
+    createAddSchemaDefinitionCommand,
+    createDeleteNodeCommand,
+    createDeletePathCommand,
+    createDeleteSchemaDefinitionCommand,
+    createNewPathCommand,
+    createNewSchemaDefinitionCommand
+} from "oai-ts-commands";
 
 
 /**
@@ -358,7 +362,7 @@ export class EditorMasterComponent {
      * @param {string} path
      */
     public addPath(path: string): void {
-        let command: ICommand = new NewPathCommand(path);
+        let command: ICommand = createNewPathCommand(this.document, path);
         this.onCommand.emit(command);
         this.selectPath(this.document.paths.pathItem(path) as OasPathItem);
     }
@@ -433,7 +437,7 @@ export class EditorMasterComponent {
      * Called when the user fills out the Add Definition modal dialog and clicks Add.
      */
     public addDefinition(modalData: any): void {
-        let command: ICommand = new NewDefinitionCommand(modalData.name, modalData.example);
+        let command: ICommand = createNewSchemaDefinitionCommand(this.document, modalData.name, modalData.example);
         this.onCommand.emit(command);
         this.selectDefinition(this.getDefinitionByName(modalData.name));
     }
@@ -520,7 +524,7 @@ export class EditorMasterComponent {
      * Called when the user clicks "Delete Path" in the context-menu for a path.
      */
     public deletePath(): void {
-        let command: ICommand = new DeletePathCommand((this.contextMenuItem as Oas20PathItem).path());
+        let command: ICommand = createDeletePathCommand(this.document, (this.contextMenuItem as Oas20PathItem).path());
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -538,7 +542,7 @@ export class EditorMasterComponent {
             let pathItem: Oas20PathItem = modalData.object;
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
             let cloneSrcObj: any = this._library.writeNode(pathItem);
-            let command: ICommand = new AddPathItemCommand(modalData.path, cloneSrcObj);
+            let command: ICommand = createAddPathItemCommand(this.document, modalData.path, cloneSrcObj);
             this.onCommand.emit(command);
         }
     }
@@ -548,7 +552,7 @@ export class EditorMasterComponent {
      */
     public deleteOperation(): void {
         let operation: Oas20Operation = this.contextMenuItem as Oas20Operation;
-        let command: ICommand = new DeleteNodeCommand(operation.method(), operation.parent());
+        let command: ICommand = createDeleteNodeCommand(this.document, operation.method(), operation.parent());
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectPath((this.selectedItem as Oas20Operation).parent() as Oas20PathItem);
@@ -574,7 +578,7 @@ export class EditorMasterComponent {
      * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
      */
     public deleteDefinition(): void {
-        let command: ICommand = new DeleteDefinitionSchemaCommand((this.contextMenuItem as Oas20SchemaDefinition).definitionName());
+        let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, (this.contextMenuItem as Oas20SchemaDefinition).definitionName());
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -592,7 +596,7 @@ export class EditorMasterComponent {
             let definition: Oas20SchemaDefinition = modalData.definition;
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this._library.writeNode(definition);
-            let command: ICommand = new AddDefinitionCommand(modalData.name, cloneSrcObj);
+            let command: ICommand = createAddSchemaDefinitionCommand(this.document, modalData.name, cloneSrcObj);
             this.onCommand.emit(command);
         }
     }

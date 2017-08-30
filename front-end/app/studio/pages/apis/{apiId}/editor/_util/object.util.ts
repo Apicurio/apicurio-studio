@@ -1,4 +1,3 @@
-import {ElementRef} from "@angular/core";
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -15,6 +14,8 @@ import {ElementRef} from "@angular/core";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {ElementRef} from "@angular/core";
 
 
 export class ArrayUtils {

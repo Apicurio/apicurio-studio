@@ -15,30 +15,29 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation, Output, EventEmitter, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Response} from "oai-ts-core";
 import {
-    Oas20Operation, Oas20Parameter, Oas20Response,
-    Oas20Document, Oas20PathItem
-} from "oai-ts-core";
+    createChangeParameterTypeCommand,
+    createChangePropertyCommand,
+    createChangeResponseTypeCommand,
+    createDeleteAllParametersCommand,
+    createDeleteNodeCommand,
+    createDeleteParameterCommand,
+    createDeleteResponseCommand,
+    createNewParamCommand,
+    createNewRequestBodyCommand,
+    createNewResponseCommand,
+    createReplaceOperationCommand
+} from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
-import {NewRequestBodyCommand} from "../../_commands/new-request-body.command";
-import {ChangeParameterTypeCommand} from "../../_commands/change-parameter-type.command";
-import {ChangePropertyCommand} from "../../_commands/change-property.command";
-import {
-    DeleteNodeCommand, DeleteAllParameters, DeleteParameterCommand,
-    DeleteResponseCommand
-} from "../../_commands/delete.command";
-import {NewResponseCommand} from "../../_commands/new-response.command";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
-import {ReplaceOperationCommand} from "../../_commands/replace.command";
 import {ObjectUtils} from "../../_util/object.util";
 import {SimplifiedType} from "../../_models/simplified-type.model";
-import {ChangeResponseTypeCommand} from "../../_commands/change-response-type.command";
 import {DropDownOption} from "../common/drop-down.component";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
-import {NewParamCommand} from "../../_commands/new-param.command";
 import {ModelUtils} from "../../_util/model.util";
 
 
@@ -71,7 +70,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     protected createReplaceNodeCommand(node: Oas20Operation): ICommand {
-        return new ReplaceOperationCommand(this.operation, node);
+        return createReplaceOperationCommand(this.operation.ownerDocument(), this.operation, node);
     }
 
     public summary(): string {
@@ -276,7 +275,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         let bodyParam: Oas20Parameter = this.bodyParam();
         let nt: SimplifiedType = new SimplifiedType();
         nt.type = newType;
-        let command: ICommand = new ChangeParameterTypeCommand(bodyParam, nt);
+        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, nt);
         this.onCommand.emit(command);
     }
 
@@ -286,7 +285,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         newType.of = new SimplifiedType();
         newType.of.type = newOf;
         newType.as = null;
-        let command: ICommand = new ChangeParameterTypeCommand(bodyParam, newType);
+        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
         this.onCommand.emit(command);
     }
 
@@ -299,7 +298,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         if (newType.isArray() && newType.of) {
             newType.of.as = newAs;
         }
-        let command: ICommand = new ChangeParameterTypeCommand(bodyParam, newType);
+        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
         this.onCommand.emit(command);
     }
 
@@ -443,79 +442,79 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public changeSummary(newSummary: string): void {
-        let command: ICommand = new ChangePropertyCommand<string>("summary", newSummary, this.operation);
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"summary", newSummary);
         this.onCommand.emit(command);
     }
 
     public changeDescription(newDescription: string): void {
-        let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, this.operation);
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation, "description", newDescription);
         this.onCommand.emit(command);
     }
 
     public changeBodyDescription(newBodyDescription: string): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
-        let command: ICommand = new ChangePropertyCommand<string>("description", newBodyDescription, bodyParam);
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), bodyParam,"description", newBodyDescription);
         this.onCommand.emit(command);
     }
 
     public changeParamDescription(param: Oas20Parameter, newParamDescription: string): void {
-        let command: ICommand = new ChangePropertyCommand<string>("description", newParamDescription, param);
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), param, "description", newParamDescription);
         this.onCommand.emit(command);
     }
 
     public changeParamType(param: Oas20Parameter, newType: SimplifiedType): void {
-        let command: ICommand = new ChangeParameterTypeCommand(param, newType);
+        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), param, newType);
         this.onCommand.emit(command);
     }
 
     public changeResponseType(response: Oas20Response, newType: SimplifiedType): void {
-        let command: ICommand = new ChangeResponseTypeCommand(response, newType);
+        let command: ICommand = createChangeResponseTypeCommand(this.operation.ownerDocument(), response, newType);
         this.onCommand.emit(command);
     }
 
     public changeResponseDescription(response: Oas20Response, newDescription: string): void {
-        let command: ICommand = new ChangePropertyCommand<string>("description", newDescription, response);
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), response, "description", newDescription);
         this.onCommand.emit(command);
     }
 
     public createRequestBody(): void {
-        let command: ICommand = new NewRequestBodyCommand(this.operation);
+        let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
         this.onCommand.emit(command);
     }
 
     public delete(): void {
-        let command: ICommand = new DeleteNodeCommand(this.operation.method(), this.operation.parent());
+        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), this.operation.method(), this.operation.parent());
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
     }
 
     public deleteRequestBody(): void {
         if (this.hasBodyParam()) {
-            let command: ICommand = new DeleteAllParameters(this.operation, "body");
+            let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "body");
             this.onCommand.emit(command);
         } else {
-            let command: ICommand = new DeleteAllParameters(this.operation, "formData");
+            let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "formData");
             this.onCommand.emit(command);
         }
     }
 
     public deleteAllQueryParams(): void {
-        let command: ICommand = new DeleteAllParameters(this.operation, "query");
+        let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "query");
         this.onCommand.emit(command);
     }
 
     public deleteAllResponses(): void {
-        let command: ICommand = new DeleteNodeCommand("responses", this.operation);
+        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), "responses", this.operation);
         this.onCommand.emit(command);
     }
 
     public deleteParam(parameter: Oas20Parameter): void {
-        let command: ICommand = new DeleteParameterCommand(parameter);
+        let command: ICommand = createDeleteParameterCommand(this.operation.ownerDocument(), parameter);
         this.onCommand.emit(command);
     }
 
     public deleteResponse(response: Oas20Response): void {
-        let command: ICommand = new DeleteResponseCommand(response);
+        let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
         this.onCommand.emit(command);
     }
 
@@ -528,12 +527,12 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public addQueryParam(name: string): void {
-        let command: ICommand = new NewParamCommand(this.operation, name, "query");
+        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "query");
         this.onCommand.emit(command);
     }
 
     public addFormDataParam(name: string): void {
-        let command: ICommand = new NewParamCommand(this.operation, name, "formData");
+        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "formData");
         this.onCommand.emit(command);
     }
 
@@ -542,12 +541,12 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public addResponse(statusCode: string): void {
-        let command: ICommand = new NewResponseCommand(this.operation, statusCode);
+        let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
         this.onCommand.emit(command);
     }
 
     public createPathParam(paramName: string): void {
-        let command: ICommand = new NewParamCommand(this.operation, paramName, "path");
+        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, paramName, "path");
         this.onCommand.emit(command);
     }
 

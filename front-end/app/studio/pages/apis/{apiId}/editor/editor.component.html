@@ -6,9 +6,13 @@
             (onNodeSelected)="onNodeSelected($event)"></master>
 
     <div class="editor-detail" [ngSwitch]="formType">
-        <main-form [document]="document()" class="editor-detail-form"
-                   (onCommand)="onCommand($event)"
-                   *ngSwitchCase="'main_20'"></main-form>
+        <main-20-form [document]="document()" class="editor-detail-form"
+                      (onCommand)="onCommand($event)"
+                      *ngSwitchCase="'main_20'"></main-20-form>
+        <main-30-form [document]="document()" class="editor-detail-form"
+                      (onCommand)="onCommand($event)"
+                      *ngSwitchCase="'main_30'"></main-30-form>
+
         <path-form [path]="selectedPath()" class="editor-detail-form"
                    (onCommand)="onCommand($event)"
                    (onNodeSelected)="selectNode($event)"

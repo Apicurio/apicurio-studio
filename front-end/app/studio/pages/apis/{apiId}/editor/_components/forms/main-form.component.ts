@@ -15,29 +15,41 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation, Output, EventEmitter} from "@angular/core";
+import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {
-    OasDocument, Oas20Document, Oas20Tag, Oas20Contact, Oas20SecurityScheme,
-    Oas20SecurityDefinitions, OasSecurityScheme, Oas30Document, Oas30SecurityScheme, OasContact, OasTag
+    Oas20Document,
+    Oas20SecurityDefinitions,
+    Oas20SecurityScheme,
+    Oas30Document,
+    Oas30SecurityScheme,
+    OasContact,
+    OasDocument, OasLibraryUtils,
+    OasSecurityScheme,
+    OasTag
 } from "oai-ts-core";
 import {
+    createChangeContactCommand,
+    createChangeDescriptionCommand,
+    createChangeLicenseCommand,
     createChangePropertyCommand,
+    createChangeSecuritySchemeCommand,
     createChangeTitleCommand,
     createChangeVersionCommand,
-    createChangeDescriptionCommand,
-    createDeleteTagCommand,
-    createNewTagCommand,
-    createChangeLicenseCommand,
-    createChangeContactCommand,
     createDeleteNodeCommand,
+    createDeleteSecuritySchemeCommand,
+    createDeleteTagCommand,
     createNewSecuritySchemeCommand,
-    createChangeSecuritySchemeCommand,
-    createDeleteSecuritySchemeCommand
+    createNewTagCommand
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 import {ILicense, LicenseService} from "../../_services/license.service";
-import {SecuritySchemeEventData} from "../dialogs/security-scheme.component";
+import {
+    Scope, SecurityScheme20DialogComponent,
+    SecurityScheme20EventData
+} from "../dialogs/security-scheme-20.component";
 import {ObjectUtils} from "../../_util/object.util";
+import {ContactInfo} from "../dialogs/set-contact.component";
+import {SecurityScheme30DialogComponent, SecurityScheme30EventData} from "../dialogs/security-scheme-30.component";
 
 
 export abstract class MainFormComponent {
@@ -286,7 +298,7 @@ export abstract class MainFormComponent {
      * Called to change the document's contact information.
      * @param contactInfo
      */
-    public setContactInfo(contactInfo: OasContact): void {
+    public setContactInfo(contactInfo: ContactInfo): void {
         let command: ICommand = createChangeContactCommand(this.document, contactInfo.name, contactInfo.email, contactInfo.url);
         this.onCommand.emit(command);
     }
@@ -323,8 +335,8 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user changes the description of a security scheme in the table of schemes.
-     * @param scheme
-     * @param description
+     * @param {OasSecurityScheme} scheme
+     * @param {string} description
      */
     public changeSecuritySchemeDescription(scheme: OasSecurityScheme, description: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, scheme, "description", description);
@@ -333,13 +345,78 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user adds a new security scheme.
-     * @param event
+     * @param {SecurityScheme20EventData | SecurityScheme30EventData} event
      */
-    public addSecurityScheme(event: SecuritySchemeEventData): void {
+    public abstract addSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
+
+    /**
+     * Called when the user changes an existing security scheme.
+     * @param {SecurityScheme20EventData | SecurityScheme30EventData} event
+     */
+    public abstract changeSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
+
+    /**
+     * Deletes a security scheme.
+     * @param {Oas20SecurityScheme | Oas30SecurityScheme} scheme
+     */
+    public deleteSecurityScheme(scheme: Oas20SecurityScheme | Oas30SecurityScheme): void {
+        let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Opens the security scheme dialog for adding or editing a security scheme.
+     * @param {OasSecurityScheme} scheme
+     */
+    public abstract openSecuritySchemeDialog(scheme?: OasSecurityScheme);
+}
+
+
+/**
+ * The OAI 2.0 version of the main form.
+ */
+@Component({
+    moduleId: module.id,
+    selector: "main-20-form",
+    templateUrl: "main-form.component.html",
+    encapsulation: ViewEncapsulation.None
+})
+export class Main20FormComponent extends MainFormComponent {
+
+    @ViewChild("securityScheme20Dialog") securitySchemeDialog: SecurityScheme20DialogComponent;
+
+    /**
+     * Opens the security scheme dialog.
+     * @param {Oas20SecurityScheme} scheme
+     */
+    public openSecuritySchemeDialog(scheme?: Oas20SecurityScheme): void {
+        this.securitySchemeDialog.open(scheme);
+    }
+
+    /**
+     * Returns all defined security schemes.
+     * @return {OasSecurityScheme[]}
+     */
+    public securitySchemes(): OasSecurityScheme[] {
+        let secdefs: Oas20SecurityDefinitions = (this.document as Oas20Document).securityDefinitions;
+        if (secdefs) {
+            return secdefs.securitySchemes().sort( (scheme1, scheme2) => {
+                return scheme1.schemeName().localeCompare(scheme2.schemeName());
+            });
+        }
+        return [];
+    }
+
+    /**
+     * Called when the user adds a new security scheme.
+     * @param {SecurityScheme20EventData} event
+     */
+    public addSecurityScheme(event: SecurityScheme20EventData): void {
         console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
-        let scheme: Oas20SecurityScheme = new Oas20SecurityScheme(event.schemeName);
+        let scheme: Oas20SecurityScheme = (this.document as Oas20Document).createSecurityDefinitions().createSecurityScheme(event.schemeName);
         scheme.description = event.description;
         scheme.type = event.type;
+        // TODO set values in the Oas20SecurityScheme only if necessary based on the type - avoid potential of leaking info from the dialog into the data model
         scheme.name = event.name;
         scheme.in = event.in;
         scheme.flow = event.flow;
@@ -361,11 +438,11 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user changes an existing security scheme.
-     * @param event
+     * @param {SecurityScheme20EventData} event
      */
-    public changeSecurityScheme(event: SecuritySchemeEventData): void {
+    public changeSecurityScheme(event: SecurityScheme20EventData): void {
         console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
-        let scheme: Oas20SecurityScheme = new Oas20SecurityScheme(event.schemeName);
+        let scheme: Oas20SecurityScheme = (this.document as Oas20Document).createSecurityDefinitions().createSecurityScheme(event.schemeName);
         scheme.description = event.description;
         scheme.type = event.type;
         scheme.name = event.name;
@@ -373,52 +450,17 @@ export abstract class MainFormComponent {
         scheme.flow = event.flow;
         scheme.authorizationUrl = event.authorizationUrl;
         scheme.tokenUrl = event.tokenUrl;
-        if (event.scopes) {
-            scheme.scopes = scheme.createScopes();
-            for (let s of event.scopes) {
-                scheme.scopes.addScope(s.name, s.description);
+        if (scheme.type === "oauth2") {
+            if (event.scopes) {
+                scheme.scopes = scheme.createScopes();
+                for (let s of event.scopes) {
+                    scheme.scopes.addScope(s.name, s.description);
+                }
             }
         }
 
         let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
         this.onCommand.emit(command);
-    }
-
-    /**
-     * Deletes a security scheme.
-     * @param scheme
-     */
-    public deleteSecurityScheme(scheme: Oas20SecurityScheme): void {
-        let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
-        this.onCommand.emit(command);
-    }
-
-}
-
-
-/**
- * The OAI 2.0 version of the main form.
- */
-@Component({
-    moduleId: module.id,
-    selector: "main-20-form",
-    templateUrl: "main-form.component.html",
-    encapsulation: ViewEncapsulation.None
-})
-export class Main20FormComponent extends MainFormComponent {
-
-    /**
-     * Returns all defined security schemes.
-     * @return {OasSecurityScheme[]}
-     */
-    public securitySchemes(): OasSecurityScheme[] {
-        let secdefs: Oas20SecurityDefinitions = (this.document as Oas20Document).securityDefinitions;
-        if (secdefs) {
-            return secdefs.securitySchemes().sort( (scheme1, scheme2) => {
-                return scheme1.schemeName().localeCompare(scheme2.schemeName());
-            });
-        }
-        return [];
     }
 
 }
@@ -435,6 +477,16 @@ export class Main20FormComponent extends MainFormComponent {
 })
 export class Main30FormComponent extends MainFormComponent {
 
+    @ViewChild("securityScheme30Dialog") securitySchemeDialog: SecurityScheme30DialogComponent;
+
+    /**
+     * Opens the security scheme dialog.
+     * @param {Oas30SecurityScheme} scheme
+     */
+    public openSecuritySchemeDialog(scheme?: Oas30SecurityScheme): void {
+        this.securitySchemeDialog.open(scheme);
+    }
+
     /**
      * Returns all defined security schemes.
      * @return {OasSecurityScheme[]}
@@ -450,4 +502,97 @@ export class Main30FormComponent extends MainFormComponent {
         return [];
     }
 
+    /**
+     * Called when the user adds a new security scheme.
+     * @param {SecurityScheme30EventData} event
+     */
+    public addSecurityScheme(event: SecurityScheme30EventData): void {
+        console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
+
+        let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
+        this.copyToModel(event, scheme);
+
+        let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Called when the user changes an existing security scheme.
+     * @param {SecurityScheme30EventData} event
+     */
+    public changeSecurityScheme(event: SecurityScheme30EventData): void {
+        console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
+
+        let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
+        this.copyToModel(event, scheme);
+
+        let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Converts from array of scopes to scopes object for data model.
+     * @param {Scope[]} scopes
+     */
+    private toScopes(scopes: Scope[]): any {
+        let rval: any = {};
+        scopes.forEach( scope => {
+            rval[scope.name] = scope.description;
+        });
+        return rval;
+    }
+
+    /**
+     * Copy the event data to the data model.
+     * @param {SecurityScheme30EventData} event
+     * @param {Oas30SecurityScheme} scheme
+     */
+    private copyToModel(event: SecurityScheme30EventData, scheme: Oas30SecurityScheme) {
+        scheme.description = event.description;
+        scheme.type = event.type;
+        if (scheme.type === "http") {
+            scheme.scheme = event.scheme;
+            if (scheme.scheme === "Bearer") {
+                scheme.bearerFormat = event.bearerFormat;
+            }
+        }
+        if (scheme.type === "apiKey") {
+            scheme.in = event.in;
+            scheme.name = event.name;
+        }
+        if (scheme.type === "oauth2") {
+            scheme.flows = scheme.createOAuthFlows();
+            if (event.flows.implicit.enabled) {
+                scheme.flows.implicit = scheme.flows.createImplicitOAuthFlow();
+                scheme.flows.implicit.authorizationUrl = event.flows.implicit.authorizationUrl;
+                scheme.flows.implicit.tokenUrl = event.flows.implicit.tokenUrl;
+                scheme.flows.implicit.refreshUrl = event.flows.implicit.refreshUrl;
+                scheme.flows.implicit.scopes = this.toScopes(event.flows.implicit.scopes);
+            }
+            if (event.flows.password.enabled) {
+                scheme.flows.password = scheme.flows.createPasswordOAuthFlow();
+                scheme.flows.password.authorizationUrl = event.flows.password.authorizationUrl;
+                scheme.flows.password.tokenUrl = event.flows.password.tokenUrl;
+                scheme.flows.password.refreshUrl = event.flows.password.refreshUrl;
+                scheme.flows.password.scopes = this.toScopes(event.flows.password.scopes);
+            }
+            if (event.flows.clientCredentials.enabled) {
+                scheme.flows.clientCredentials = scheme.flows.createClientCredentialsOAuthFlow();
+                scheme.flows.clientCredentials.authorizationUrl = event.flows.clientCredentials.authorizationUrl;
+                scheme.flows.clientCredentials.tokenUrl = event.flows.clientCredentials.tokenUrl;
+                scheme.flows.clientCredentials.refreshUrl = event.flows.clientCredentials.refreshUrl;
+                scheme.flows.clientCredentials.scopes = this.toScopes(event.flows.clientCredentials.scopes);
+            }
+            if (event.flows.authorizationCode.enabled) {
+                scheme.flows.authorizationCode = scheme.flows.createAuthorizationCodeOAuthFlow();
+                scheme.flows.authorizationCode.authorizationUrl = event.flows.authorizationCode.authorizationUrl;
+                scheme.flows.authorizationCode.tokenUrl = event.flows.authorizationCode.tokenUrl;
+                scheme.flows.authorizationCode.refreshUrl = event.flows.authorizationCode.refreshUrl;
+                scheme.flows.authorizationCode.scopes = this.toScopes(event.flows.authorizationCode.scopes);
+            }
+        }
+        if (scheme.type === "openIdConnect") {
+            scheme.openIdConnectUrl = event.openIdConnectUrl;
+        }
+    }
 }

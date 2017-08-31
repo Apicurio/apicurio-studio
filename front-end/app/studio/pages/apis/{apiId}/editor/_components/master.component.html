@@ -180,7 +180,7 @@
                         (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
             </div>
             <div class="section-body collapse in" id="definition-section-body">
-                <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="def.definitionName()"
+                <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="definitionName(def)"
                      (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"
                      [class.problem-marker]="hasValidationProblem(def)"
                      [class.contexted]="contextMenuType === 'definition' && contextMenuItem === def"

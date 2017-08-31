@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {Component, Output, EventEmitter, ViewChildren, QueryList, ElementRef} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
-import {Oas20PathItem} from "oai-ts-core";
+import {OasPathItem} from "oai-ts-core";
 
 
 @Component({
@@ -35,12 +35,12 @@ export class ClonePathDialogComponent {
     protected _isOpen: boolean = false;
 
     protected path: string = "";
-    protected object: Oas20PathItem;
+    protected object: OasPathItem;
 
     /**
      * Called to open the dialog.
      */
-    public open(path: Oas20PathItem): void {
+    public open(path: OasPathItem): void {
         this.object = path;
         this.path = path.path();
         if (!this.path.endsWith("/")) {

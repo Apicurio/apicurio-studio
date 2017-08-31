@@ -94,7 +94,8 @@ import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dia
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
-import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme.component";
+import {SecurityScheme20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme-20.component";
+import {SecurityScheme30DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme-30.component";
 import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
 import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
 import {DropDownComponent} from "./pages/apis/{apiId}/editor/_components/common/drop-down.component";
@@ -123,8 +124,8 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
         TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
-        ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
-        ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
+        ContextHelpComponent, SetContactDialogComponent, SecurityScheme20DialogComponent, SecurityScheme30DialogComponent,
+        DropDownComponent, ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Output, EventEmitter, ViewChildren, QueryList, ElementRef} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
 
 

@@ -18,9 +18,7 @@
 import {Component, EventEmitter, HostListener, Input, Output, ViewChild} from "@angular/core";
 import {
     Oas20Document,
-    Oas20Operation,
-    Oas20PathItem,
-    Oas20ResponseDefinition,
+    Oas20ResponseDefinition, Oas20Schema,
     Oas20SchemaDefinition,
     Oas30Document,
     Oas30ResponseDefinition,
@@ -105,7 +103,7 @@ export class EditorMasterComponent {
      * Returns the array of definitions, filtered by search criteria and sorted.
      * @return {(Oas20SchemaDefinition | Oas30SchemaDefinition)[]}
      */
-    public definitions(): (Oas20SchemaDefinition|Oas30SchemaDefinition)[] {
+    public definitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
         OasVisitorUtil.visitTree(this.document, viz);
         return viz.getSortedSchemaDefinitions();
@@ -148,12 +146,12 @@ export class EditorMasterComponent {
                 this.selectMain();
             }
         } else if (this.selectedType === "definition") {
-            let definition: Oas20SchemaDefinition|Oas30SchemaDefinition = this.selectedItem;
+            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = this.selectedItem;
             if (!this.isValidDefinition(definition)) {
                 this.selectMain();
             }
         } else if (this.selectedType === "response") {
-            let response: Oas20ResponseDefinition|Oas30ResponseDefinition = this.selectedItem;
+            let response: Oas20ResponseDefinition | Oas30ResponseDefinition = this.selectedItem;
             if (!this.isValidResponse(response)) {
                 this.selectMain();
             }
@@ -296,7 +294,7 @@ export class EditorMasterComponent {
      * Called when the user selects a definition from the master area.
      * @param def
      */
-    public selectDefinition(def: Oas20SchemaDefinition|Oas30SchemaDefinition): void {
+    public selectDefinition(def: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this.selectedItem = def;
         this.selectedType = "definition";
         this.fireNodeSelectedEvent();
@@ -324,7 +322,7 @@ export class EditorMasterComponent {
      * Called when the user selects a response from the master area.
      * @param {Oas20ResponseDefinition | Oas30ResponseDefinition} response
      */
-    public selectResponse(response: Oas20ResponseDefinition|Oas30ResponseDefinition): void {
+    public selectResponse(response: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
         this.selectedItem = response;
         this.selectedType = "response";
         this.fireNodeSelectedEvent();
@@ -369,44 +367,41 @@ export class EditorMasterComponent {
 
     /**
      * Called to test whether the given resource path has an operation of the given type defined.
-     * @param {Oas20PathItem} pathItem
+     * @param {OasPathItem} pathItem
      * @param {string} operation
      * @return {boolean}
      */
-    public hasOperation(pathItem: Oas20PathItem, operation: string): boolean {
-        let op: Oas20Operation = pathItem[operation];
-        if (op !== null && op !== undefined) {
-            return true;
-        }
-        return false;
+    public hasOperation(pathItem: OasPathItem, operation: string): boolean {
+        let op: OasOperation = pathItem[operation];
+        return !ObjectUtils.isNullOrUndefined(op);
     }
 
     /**
      * Returns true if the given path is the currently selected item *or* is the parent
      * of the currently selected item.
-     * @param {Oas20PathItem} pathItem
+     * @param {OasPathItem} pathItem
      * @return {boolean}
      */
-    public isPathSelected(pathItem: Oas20PathItem): boolean {
+    public isPathSelected(pathItem: OasPathItem): boolean {
         return this.selectedItem && (this.selectedItem === pathItem || (this.selectedItem.parent && this.selectedItem.parent() === pathItem));
     }
 
     /**
      * Returns true if the given path is the current context menu item *or* is the parent
      * of the current context menu item.
-     * @param {Oas20PathItem} pathItem
+     * @param {OasPathItem} pathItem
      * @return {boolean}
      */
-    public isPathContexted(pathItem: Oas20PathItem): boolean {
+    public isPathContexted(pathItem: OasPathItem): boolean {
         return this.contextMenuItem && (this.contextMenuItem === pathItem || (this.contextMenuItem.parent && this.contextMenuItem.parent() === pathItem));
     }
 
     /**
      * Returns true if the given path item has at least one operation.
-     * @param {Oas20PathItem} pathItem
+     * @param {OasPathItem} pathItem
      * @return {boolean}
      */
-    public hasAtLeastOneOperation(pathItem: Oas20PathItem): boolean {
+    public hasAtLeastOneOperation(pathItem: OasPathItem): boolean {
         if (pathItem) {
             if (pathItem.get) {
                 return true;
@@ -437,7 +432,8 @@ export class EditorMasterComponent {
      * Called when the user fills out the Add Definition modal dialog and clicks Add.
      */
     public addDefinition(modalData: any): void {
-        let command: ICommand = createNewSchemaDefinitionCommand(this.document, modalData.name, modalData.example);
+        let example: string = (modalData.example === "") ? null : modalData.example;
+        let command: ICommand = createNewSchemaDefinitionCommand(this.document, modalData.name, example);
         this.onCommand.emit(command);
         this.selectDefinition(this.getDefinitionByName(modalData.name));
     }
@@ -447,7 +443,7 @@ export class EditorMasterComponent {
      * @param {string} name
      * @return {Oas20SchemaDefinition | Oas30SchemaDefinition}
      */
-    protected getDefinitionByName(name: string): Oas20SchemaDefinition|Oas30SchemaDefinition {
+    protected getDefinitionByName(name: string): Oas20SchemaDefinition | Oas30SchemaDefinition {
         if (this.document.getSpecVersion() === "2.0") {
             return (this.document as Oas20Document).definitions.definition(name);
         } else {
@@ -472,7 +468,7 @@ export class EditorMasterComponent {
      * @param event
      * @param pathItem
      */
-    public showPathContextMenu(event: MouseEvent, pathItem: Oas20PathItem): void {
+    public showPathContextMenu(event: MouseEvent, pathItem: OasPathItem): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
@@ -484,9 +480,9 @@ export class EditorMasterComponent {
     /**
      * Called when the user right-clicks on an operation.
      * @param {MouseEvent} event
-     * @param {Oas20Operation} operation
+     * @param {OasOperation} operation
      */
-    public showOperationContextMenu(event: MouseEvent, operation: Oas20Operation): void {
+    public showOperationContextMenu(event: MouseEvent, operation: OasOperation): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
@@ -516,7 +512,7 @@ export class EditorMasterComponent {
      * Called when the user clicks "New Path" in the context-menu for a path.
      */
     public newPath(): void {
-        this.addPathDialog.open((this.contextMenuItem as Oas20PathItem).path());
+        this.addPathDialog.open((this.contextMenuItem as OasPathItem).path());
         this.closeContextMenu();
     }
 
@@ -524,7 +520,7 @@ export class EditorMasterComponent {
      * Called when the user clicks "Delete Path" in the context-menu for a path.
      */
     public deletePath(): void {
-        let command: ICommand = createDeletePathCommand(this.document, (this.contextMenuItem as Oas20PathItem).path());
+        let command: ICommand = createDeletePathCommand(this.document, (this.contextMenuItem as OasPathItem).path());
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -537,9 +533,9 @@ export class EditorMasterComponent {
      */
     public clonePath(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.clonePathDialog.open(this.contextMenuItem as Oas20PathItem);
+            this.clonePathDialog.open(this.contextMenuItem as OasPathItem);
         } else {
-            let pathItem: Oas20PathItem = modalData.object;
+            let pathItem: OasPathItem = modalData.object;
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
             let cloneSrcObj: any = this._library.writeNode(pathItem);
             let command: ICommand = createAddPathItemCommand(this.document, modalData.path, cloneSrcObj);
@@ -551,11 +547,11 @@ export class EditorMasterComponent {
      * Called when the user clicks "Delete Operation" in the context-menu for a operation.
      */
     public deleteOperation(): void {
-        let operation: Oas20Operation = this.contextMenuItem as Oas20Operation;
+        let operation: OasOperation = this.contextMenuItem as OasOperation;
         let command: ICommand = createDeleteNodeCommand(this.document, operation.method(), operation.parent());
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
-            this.selectPath((this.selectedItem as Oas20Operation).parent() as Oas20PathItem);
+            this.selectPath((this.selectedItem as OasOperation).parent() as OasPathItem);
         }
         this.closeContextMenu();
     }
@@ -565,7 +561,7 @@ export class EditorMasterComponent {
      * @param event
      * @param definition
      */
-    public showDefinitionContextMenu(event: MouseEvent, definition: Oas20SchemaDefinition): void {
+    public showDefinitionContextMenu(event: MouseEvent, definition: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         event.preventDefault();
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
@@ -578,7 +574,13 @@ export class EditorMasterComponent {
      * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
      */
     public deleteDefinition(): void {
-        let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, (this.contextMenuItem as Oas20SchemaDefinition).definitionName());
+        let schemaDefName: string = null;
+        if (this.document.getSpecVersion() === "2.0") {
+            schemaDefName = (this.contextMenuItem as Oas20SchemaDefinition).definitionName();
+        } else {
+            schemaDefName = (this.contextMenuItem as Oas30SchemaDefinition).name();
+        }
+        let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, schemaDefName);
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectMain();
@@ -591,9 +593,9 @@ export class EditorMasterComponent {
      */
     public cloneDefinition(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.cloneDefinitionDialog.open(this.contextMenuItem as Oas20SchemaDefinition);
+            this.cloneDefinitionDialog.open(this.contextMenuItem as any);
         } else {
-            let definition: Oas20SchemaDefinition = modalData.definition;
+            let definition: OasNode = modalData.definition;
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this._library.writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.document, modalData.name, cloneSrcObj);
@@ -607,6 +609,17 @@ export class EditorMasterComponent {
      */
     public toggleValidationPanel(): void {
         this.validationPanelOpen = !this.validationPanelOpen;
+    }
+
+    /**
+     * Returns the name of the definition.
+     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
+     * @return {string}
+     */
+    public definitionName(definition: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
+        return definition.ownerDocument().getSpecVersion() === "2.0" ?
+            (definition as Oas20SchemaDefinition).definitionName() :
+            (definition as Oas30SchemaDefinition).name();
     }
 
     /**

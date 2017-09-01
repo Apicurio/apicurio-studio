@@ -35,7 +35,7 @@ import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
-import {SimplifiedType} from "../../_models/simplified-type.model";
+import {SimplifiedType} from "oai-ts-commands";
 import {DropDownOption} from "../common/drop-down.component";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {ModelUtils} from "../../_util/model.util";

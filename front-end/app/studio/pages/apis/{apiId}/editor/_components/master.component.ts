@@ -315,6 +315,7 @@ export class EditorMasterComponent {
      * Deselects the currently selected definition.
      */
     public deselectDefinition(): void {
+        console.info("[EditorMasterComponent] Deselecting the current definition (selecting main).");
         this.selectMain();
     }
 

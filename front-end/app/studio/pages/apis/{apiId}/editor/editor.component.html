@@ -18,16 +18,24 @@
                    (onNodeSelected)="selectNode($event)"
                    (onDeselect)="deselectPath()"
                    *ngSwitchCase="'path_20'"></path-form>
+
         <operation-form [operation]="selectedOperation()" class="editor-detail-form"
                         (onCommand)="onCommand($event)"
                         (onNodeSelected)="selectNode($event)"
                         (onDeselect)="deselectOperation()"
                         *ngSwitchCase="'operation_20'"></operation-form>
+
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          (onCommand)="onCommand($event)"
                          (onNodeSelected)="selectNode($event)"
                          (onDeselect)="deselectDefinition()"
                          *ngSwitchCase="'definition_20'"></definition-form>
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         (onCommand)="onCommand($event)"
+                         (onNodeSelected)="selectNode($event)"
+                         (onDeselect)="deselectDefinition()"
+                         *ngSwitchCase="'definition_30'"></definition-form>
+
         <problem-form [problem]="selectedProblem()" class="editor-detail-form"
                       (onCommand)="onCommand($event)"
                       (onGoToProblem)="goToProblem()"

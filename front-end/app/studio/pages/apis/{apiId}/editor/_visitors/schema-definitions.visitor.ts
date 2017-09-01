@@ -46,7 +46,7 @@ export class FindSchemaDefinitionsVisitor extends AbstractCombinedVisitorAdapter
     /**
      * Sorts and returns the path items.
      */
-    public getSortedSchemaDefinitions() {
+    public getSortedSchemaDefinitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         return this.schemaDefinitions.sort( (def1, def2) => {
             let name1: string = FindSchemaDefinitionsVisitor.definitionName(def1);
             let name2: string = FindSchemaDefinitionsVisitor.definitionName(def2);

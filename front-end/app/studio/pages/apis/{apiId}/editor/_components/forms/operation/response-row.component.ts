@@ -21,7 +21,7 @@ import {
 } from "oai-ts-core";
 import {DropDownOption} from "../../common/drop-down.component";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
-import {SimplifiedType} from "../../../_models/simplified-type.model";
+import {SimplifiedType} from "oai-ts-commands";
 import {AbstractTypedItemComponent} from "./typed-item.component";
 
 

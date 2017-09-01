@@ -15,23 +15,22 @@
  * limitations under the License.
  */
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas20Definitions, Oas20PropertySchema, Oas20SchemaDefinition} from "oai-ts-core";
+import {Oas20Document, Oas20SchemaDefinition, Oas30Document, Oas30SchemaDefinition, OasSchema} from "oai-ts-core";
 import {
+    createAddSchemaDefinitionCommand,
     createChangePropertyCommand,
     createChangePropertyTypeCommand,
-    createDeletePropertyCommand,
-    createNewSchemaPropertyCommand,
     createDeleteAllPropertiesCommand,
-    createReplaceSchemaDefinitionCommand,
+    createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
-    createAddSchemaDefinitionCommand
+    createNewSchemaPropertyCommand,
+    createReplaceSchemaDefinitionCommand, SimplifiedType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 
 import "brace/theme/eclipse";
 import "brace/mode/json";
 import {SourceFormComponent} from "./source-form.base";
-import {SimplifiedType} from "../../_models/simplified-type.model";
 import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
 
@@ -42,16 +41,16 @@ import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.compon
     templateUrl: "definition-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefinition> {
+export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
-    private _definition: Oas20SchemaDefinition;
+    private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
     @Input()
-    set definition(definition: Oas20SchemaDefinition) {
+    set definition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition) {
         this._definition = definition;
         this.sourceNode = definition;
     }
 
-    get definition(): Oas20SchemaDefinition {
+    get definition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
         return this._definition;
     }
 
@@ -60,11 +59,23 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
 
-    protected createEmptyNodeForSource(): Oas20SchemaDefinition {
-        return (<Oas20Definitions>this.definition.parent()).createSchemaDefinition(this.definition.definitionName());
+    public definitionName(): string {
+        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
+            return (this.definition as Oas20SchemaDefinition).definitionName();
+        } else {
+            return (this.definition as Oas30SchemaDefinition).name();
+        }
     }
 
-    protected createReplaceNodeCommand(node: Oas20SchemaDefinition): ICommand {
+    protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition {
+        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
+            return (this.definition.ownerDocument() as Oas20Document).definitions.createSchemaDefinition(this.definitionName());
+        } else {
+            return (this.definition.ownerDocument() as Oas30Document).components.createSchemaDefinition(this.definitionName());
+        }
+    }
+
+    protected createReplaceNodeCommand(node: Oas20SchemaDefinition | Oas30SchemaDefinition): ICommand {
         return createReplaceSchemaDefinitionCommand(node.ownerDocument(), this.definition, node);
     }
 
@@ -76,27 +87,27 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
         return this.properties().length > 0;
     }
 
-    public properties(): Oas20PropertySchema[] {
-        let rval: Oas20PropertySchema[] = [];
+    public properties(): OasSchema[] {
+        let rval: OasSchema[] = [];
         this.definition.propertyNames().sort((left, right) => {
             return left.localeCompare(right);
-        }).forEach(name => rval.push(<Oas20PropertySchema>this.definition.property(name)));
+        }).forEach(name => rval.push(this.definition.property(name)));
 
         return rval;
     }
 
-    public changePropertyDescription(property: Oas20PropertySchema, newDescription: string): void {
+    public changePropertyDescription(property: OasSchema, newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(property.ownerDocument(), property, "description", newDescription);
         this.onCommand.emit(command);
     }
 
-    public changePropertyType(property: Oas20PropertySchema, newType: SimplifiedType): void {
-        let command: ICommand = createChangePropertyTypeCommand(property.ownerDocument(), property, newType);
+    public changePropertyType(property: OasSchema, newType: SimplifiedType): void {
+        let command: ICommand = createChangePropertyTypeCommand(property.ownerDocument(), property as any, newType);
         this.onCommand.emit(command);
     }
 
-    public deleteProperty(property: Oas20PropertySchema): void {
-        let command: ICommand = createDeletePropertyCommand(property.ownerDocument(), property);
+    public deleteProperty(property: OasSchema): void {
+        let command: ICommand = createDeletePropertyCommand(property.ownerDocument(), property as any);
         this.onCommand.emit(command);
     }
 
@@ -111,8 +122,10 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
     }
 
     public delete(): void {
-        let command: ICommand = createDeleteSchemaDefinitionCommand(this.definition.ownerDocument(), this.definition.definitionName());
+        console.info("[DefinitionFormComponent] Deleting schema definition.");
+        let command: ICommand = createDeleteSchemaDefinitionCommand(this.definition.ownerDocument(), this.definitionName());
         this.onCommand.emit(command);
+        console.info("AAA");
         this.onDeselect.emit(true);
     }
 
@@ -120,7 +133,7 @@ export class DefinitionFormComponent extends SourceFormComponent<Oas20SchemaDefi
         if (undefined === modalData || modalData === null) {
             this.cloneDefinitionDialog.open(this.definition);
         } else {
-            let definition: Oas20SchemaDefinition = modalData.definition;
+            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
             console.info("[DefinitionFormComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this.oasLibrary().writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.definition.ownerDocument(), modalData.name, cloneSrcObj);

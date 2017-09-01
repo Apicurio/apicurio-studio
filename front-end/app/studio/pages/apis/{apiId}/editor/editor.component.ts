@@ -251,6 +251,14 @@ export class ApiEditorComponent implements OnChanges {
     }
 
     /**
+     * Deselects the currently selected definition.
+     */
+    public deselectDefinition(): void {
+        console.info("[ApiEditorComponent] Deselecting the current definition (selecting main).");
+        this.master.selectMain();
+    }
+
+    /**
      * Called when the user clicks the "Go To Problem" button for a particular problem.
      */
     public goToProblem(): void {

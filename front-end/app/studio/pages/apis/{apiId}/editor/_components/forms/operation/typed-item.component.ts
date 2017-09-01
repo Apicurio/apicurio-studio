@@ -17,7 +17,7 @@
 
 import {Output, EventEmitter} from "@angular/core";
 import {DropDownOption} from "../../common/drop-down.component";
-import {SimplifiedType} from "../../../_models/simplified-type.model";
+import {SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 
 

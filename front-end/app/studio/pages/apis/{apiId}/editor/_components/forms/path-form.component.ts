@@ -20,7 +20,7 @@ import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Paths
 import {ICommand} from "../../_services/commands.manager";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
-import {SimplifiedType} from "../../_models/simplified-type.model";
+import {SimplifiedType} from "oai-ts-commands";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";

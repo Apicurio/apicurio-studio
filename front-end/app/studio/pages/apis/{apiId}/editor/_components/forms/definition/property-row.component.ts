@@ -15,11 +15,18 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input} from "@angular/core";
-import {SimplifiedType} from "../../../_models/simplified-type.model";
-import {Oas20Document, Oas20PropertySchema} from "oai-ts-core";
+import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {SimplifiedType} from "oai-ts-commands";
+import {
+    Oas20PropertySchema,
+    Oas20SchemaDefinition,
+    Oas30PropertySchema,
+    Oas30SchemaDefinition,
+    OasVisitorUtil
+} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "../operation/typed-item.component";
 import {DropDownOption} from "../../common/drop-down.component";
+import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 
 
 @Component({
@@ -30,7 +37,7 @@ import {DropDownOption} from "../../common/drop-down.component";
 })
 export class PropertyRowComponent extends AbstractTypedItemComponent {
 
-    @Input() property: Oas20PropertySchema;
+    @Input() property: Oas20PropertySchema | Oas30PropertySchema;
     @Input() propertyClass: string = "";
     @Input() canDelete: boolean = true;
 
@@ -44,21 +51,19 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
 
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = super.typeOptions();
-        let doc: Oas20Document = <Oas20Document>this.property.ownerDocument();
 
-        if (doc.definitions) {
-            let co: DropDownOption[] = doc.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
+        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        if (defs.length > 0) {
+            options.push({ divider: true });
+            defs.forEach( def => {
+                let defName: string = (def.ownerDocument().getSpecVersion() === "2.0") ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                options.push({
+                    value: "#/definitions/" + defName,
+                    name: defName
+                });
             });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
         }
 
         return options;
@@ -66,21 +71,19 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
 
     public typeOfOptions(): DropDownOption[] {
         let options: DropDownOption[] = super.typeOfOptions();
-        let doc: Oas20Document = <Oas20Document>this.property.ownerDocument();
 
-        if (doc.definitions) {
-            let co: DropDownOption[] = doc.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
+        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        if (defs.length > 0) {
+            options.push({ divider: true });
+            defs.forEach( def => {
+                let defName: string = (def.ownerDocument().getSpecVersion() === "2.0") ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                options.push({
+                    value: "#/definitions/" + defName,
+                    name: defName
+                });
             });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
         }
 
         return options;

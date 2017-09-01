@@ -16,7 +16,7 @@
  */
 
 import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
-import {SimplifiedType} from "../../../_models/simplified-type.model";
+import {SimplifiedType} from "oai-ts-commands";
 import {Oas20NodeVisitorAdapter, Oas20Operation, Oas20Parameter, Oas20PathItem} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "./typed-item.component";
 

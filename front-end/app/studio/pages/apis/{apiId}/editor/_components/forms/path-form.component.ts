@@ -16,15 +16,10 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Paths, OasOperation} from "oai-ts-core";
+import {OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
 import {ICommand} from "../../_services/commands.manager";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
-import {SimplifiedType} from "oai-ts-commands";
-import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
-import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
-import {AddPathDialogComponent} from "../dialogs/add-path.component";
-import {NodeSelectionEvent} from "../../_events/node-selection.event";
 import {
     createAddPathItemCommand,
     createChangeParameterTypeCommand,
@@ -35,8 +30,13 @@ import {
     createNewOperationCommand,
     createNewParamCommand,
     createNewPathCommand,
-    createReplacePathItemCommand
+    createReplacePathItemCommand,
+    SimplifiedType
 } from "oai-ts-commands";
+import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
+import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
+import {AddPathDialogComponent} from "../dialogs/add-path.component";
+import {NodeSelectionEvent} from "../../_events/node-selection.event";
 
 
 @Component({
@@ -45,15 +45,15 @@ import {
     templateUrl: "path-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
+export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
-    protected _path: Oas20PathItem;
+    protected _path: OasPathItem;
     @Input()
-    set path(path: Oas20PathItem) {
+    set path(path: OasPathItem) {
         this._path = path;
         this.sourceNode = path;
     }
-    get path(): Oas20PathItem {
+    get path(): OasPathItem {
         return this._path;
     }
 
@@ -63,16 +63,16 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
 
-    protected createEmptyNodeForSource(): Oas20PathItem {
-        return (<Oas20Paths>this.path.parent()).createPathItem(this.path.path());
+    protected createEmptyNodeForSource(): OasPathItem {
+        return (<OasPaths>this.path.parent()).createPathItem(this.path.path());
     }
 
-    protected createReplaceNodeCommand(node: Oas20PathItem) {
-        return createReplacePathItemCommand(this.path.ownerDocument(), this.path, node);
+    protected createReplaceNodeCommand(node: OasPathItem) {
+        return createReplacePathItemCommand(this.path.ownerDocument(), this.path as any, node as any);
     }
 
-    public document(): Oas20Document {
-        return <Oas20Document>this.path.ownerDocument();
+    public document(): OasDocument {
+        return this.path.ownerDocument();
     }
 
     public hasGet(): boolean {
@@ -177,7 +177,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         }
     }
 
-    public selectOperation(operation: Oas20Operation): void {
+    public selectOperation(operation: OasOperation): void {
         this.onNodeSelected.emit(new NodeSelectionEvent(operation, "operation"));
     }
 
@@ -186,12 +186,12 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         this.onCommand.emit(command);
     }
 
-    public changeSummary(newSummary: string, operation: Oas20Operation): void {
+    public changeSummary(newSummary: string, operation: OasOperation): void {
         let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), operation, "summary", newSummary);
         this.onCommand.emit(command);
     }
 
-    public changeDescription(newDescription: string, operation: Oas20Operation): void {
+    public changeDescription(newDescription: string, operation: OasOperation): void {
         let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), operation, "description", newDescription);
         this.onCommand.emit(command);
     }
@@ -215,7 +215,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         if (undefined === modalData || modalData === null) {
             this.clonePathDialog.open(this.path);
         } else {
-            let pathItem: Oas20PathItem = modalData.object;
+            let pathItem: OasPathItem = modalData.object;
             console.info("[PathFormComponent] Clone path item: %s", modalData.path);
             let cloneSrcObj: any = this.oasLibrary().writeNode(pathItem);
             let command: ICommand = createAddPathItemCommand(this.path.ownerDocument(), modalData.path, cloneSrcObj);
@@ -227,8 +227,8 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         return this.path.path().indexOf('{') != -1;
     }
 
-    public pathParam(paramName: string): Oas20Parameter {
-        let param: Oas20Parameter = this.path.parameter("path", paramName) as Oas20Parameter;
+    public pathParam(paramName: string): OasParameterBase {
+        let param: OasParameterBase = this.path.parameter("path", paramName) as OasParameterBase;
 
         if (param === null) {
             param = this.path.createParameter();
@@ -241,7 +241,7 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
         return param;
     }
 
-    public pathParameters(): Oas20Parameter[] {
+    public pathParameters(): OasParameterBase[] {
         let pathParamNames: string[] = ModelUtils.detectPathParamNames(this.path.path());
         return pathParamNames.map( pname => {
             return this.pathParam(pname);
@@ -257,11 +257,11 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
             }).length > 0;
     }
 
-    public parameters(paramType: string): Oas20Parameter[] {
+    public parameters(paramType: string): OasParameterBase[] {
         if (!this.path.parameters) {
             return [];
         }
-        let params: Oas20Parameter[] = this.path.parameters as Oas20Parameter[];
+        let params: OasParameterBase[] = this.path.parameters;
         return params.filter( value => {
             return value.in === paramType;
         }).sort((param1, param2) => {
@@ -270,26 +270,26 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     }
 
     public createPathParam(paramName: string): void {
-        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path, paramName, "path");
+        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path as any, paramName, "path");
         this.onCommand.emit(command);
     }
 
-    public changeParamDescription(param: Oas20Parameter, newParamDescription: string): void {
+    public changeParamDescription(param: OasParameterBase, newParamDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), param, "description", newParamDescription);
         this.onCommand.emit(command);
     }
 
-    public changeParamType(param: Oas20Parameter, newType: SimplifiedType): void {
-        let command: ICommand = createChangeParameterTypeCommand(this.path.ownerDocument(), param, newType);
+    public changeParamType(param: OasParameterBase, newType: SimplifiedType): void {
+        let command: ICommand = createChangeParameterTypeCommand(this.path.ownerDocument(), param as any, newType);
         this.onCommand.emit(command);
     }
 
-    public queryParameters(): Oas20Parameter[] {
+    public queryParameters(): OasParameterBase[] {
         return this.parameters("query");
     }
 
-    public deleteParam(parameter: Oas20Parameter): void {
-        let command: ICommand = createDeleteParameterCommand(this.path.ownerDocument(), parameter);
+    public deleteParam(parameter: OasParameterBase): void {
+        let command: ICommand = createDeleteParameterCommand(this.path.ownerDocument(), parameter as any);
         this.onCommand.emit(command);
     }
 
@@ -298,12 +298,12 @@ export class PathFormComponent extends SourceFormComponent<Oas20PathItem> {
     }
 
     public addQueryParam(name: string): void {
-        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path, name, "query");
+        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path as any, name, "query");
         this.onCommand.emit(command);
     }
 
     public deleteAllQueryParams(): void {
-        let command: ICommand = createDeleteAllParametersCommand(this.path.ownerDocument(), this.path, "query");
+        let command: ICommand = createDeleteAllParametersCommand(this.path.ownerDocument(), this.path as any, "query");
         this.onCommand.emit(command);
     }
 

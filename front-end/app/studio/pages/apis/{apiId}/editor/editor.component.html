@@ -18,6 +18,11 @@
                    (onNodeSelected)="selectNode($event)"
                    (onDeselect)="deselectPath()"
                    *ngSwitchCase="'path_20'"></path-form>
+        <path-form [path]="selectedPath()" class="editor-detail-form"
+                   (onCommand)="onCommand($event)"
+                   (onNodeSelected)="selectNode($event)"
+                   (onDeselect)="deselectPath()"
+                   *ngSwitchCase="'path_30'"></path-form>
 
         <operation-form [operation]="selectedOperation()" class="editor-detail-form"
                         (onCommand)="onCommand($event)"

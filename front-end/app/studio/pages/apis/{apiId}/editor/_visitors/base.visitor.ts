@@ -91,6 +91,8 @@ import {
 /**
  * Base class for visitors that are cabable of visiting both a 2.0 and 3.0 
  * data model.
+ *
+ * TODO replace with visitors added to oai-ts-core in version 0.2.6
  */
 export class AbstractCombinedVisitorAdapter implements IOas20NodeVisitor, IOas30NodeVisitor {
 

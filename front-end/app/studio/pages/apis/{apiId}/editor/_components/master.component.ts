@@ -350,8 +350,11 @@ export class EditorMasterComponent {
      * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
     public getCurrentPathSelection(): string {
-        if (this.selectedType === "path" || this.selectedType === "operation") {
+        if (this.selectedType === "path") {
             return (this.selectedItem as OasPathItem).path();
+        }
+        if (this.selectedType === "operation") {
+            return ((this.selectedItem as OasOperation).parent() as OasPathItem).path();
         }
         return "/";
     }

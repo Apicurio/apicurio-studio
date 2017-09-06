@@ -51,6 +51,10 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
 
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = super.typeOptions();
+        let refPrefix: string = "#/components/schemas/";
+        if (this.property.ownerDocument().getSpecVersion() === "2.0") {
+            refPrefix = "#/definitions/";
+        }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
         OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
@@ -60,7 +64,7 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
             defs.forEach( def => {
                 let defName: string = (def.ownerDocument().getSpecVersion() === "2.0") ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
                 options.push({
-                    value: "#/definitions/" + defName,
+                    value: refPrefix + defName,
                     name: defName
                 });
             });
@@ -71,6 +75,10 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
 
     public typeOfOptions(): DropDownOption[] {
         let options: DropDownOption[] = super.typeOfOptions();
+        let refPrefix: string = "#/components/schemas/";
+        if (this.property.ownerDocument().getSpecVersion() === "2.0") {
+            refPrefix = "#/definitions/";
+        }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
         OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
@@ -80,7 +88,7 @@ export class PropertyRowComponent extends AbstractTypedItemComponent {
             defs.forEach( def => {
                 let defName: string = (def.ownerDocument().getSpecVersion() === "2.0") ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
                 options.push({
-                    value: "#/definitions/" + defName,
+                    value: refPrefix + defName,
                     name: defName
                 });
             });

@@ -1,0 +1,53 @@
+<div class="content" *ngIf="hasMediaTypes()">
+    <ul class="nav nav-tabs">
+        <li *ngFor="let mtName of mediaTypeNames()" [class.active]="mtName === mediaTypeName">
+            <a (click)="selectMediaType(mtName)">
+                <span>{{ mtName }}</span>
+                <button style="margin-left: 5px" class="btn btn-xs btn-default" (click)="removeMediaType(mtName)"><span class="pficon pficon-delete"></span></button>
+            </a>
+        </li>
+        <!--<li><a style="margin-left: 2px" class="btn btn-default" (click)="addMediaTypeDialog.open()" title="Add another Media Type..."><span class="fa fa-fw fa-plus"></span></a></li>-->
+
+        <button class="btn btn-sm btn-default pull-right" (click)="addMediaTypeDialog.open()"
+                title="Add a new media type."><span class="fa fa-plus"></span></button>
+        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllMediaTypes()"
+                title="Delete all media types."><span class="pficon pficon-delete"></span></button>
+
+    </ul>
+    <div class="panel panel-default tab-panel">
+        <div class="panel-body">
+
+            <div class="media-type">
+                <span class="strong">Type:</span>
+                <drop-down [value]="mediaTypeType()"
+                           [options]="mediaTypeTypeOptions()"
+                           (onValueChange)="changeMediaTypeType($event)"
+                           [noSelectionLabel]="'Choose Type'"></drop-down>
+                <span *ngIf="shouldShowMediaTypeTypeOf()">of</span>
+                <drop-down *ngIf="shouldShowMediaTypeTypeOf()"
+                           [value]="mediaTypeTypeOf()"
+                           [options]="mediaTypeTypeOfOptions()"
+                           (onValueChange)="changeMediaTypeTypeOf($event)"
+                           [noSelectionLabel]="'Choose Type'"></drop-down>
+                <span *ngIf="shouldShowMediaTypeTypeAs()">as</span>
+                <drop-down *ngIf="shouldShowMediaTypeTypeAs()"
+                           [value]="mediaTypeTypeAs()"
+                           [options]="mediaTypeTypeAsOptions()"
+                           (onValueChange)="changeMediaTypeTypeAs($event)"
+                           [noSelectionLabel]="'(optional) Format'"></drop-down>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="content" *ngIf="!hasMediaTypes()">
+    <div class="alert alert-info">
+        <span class="pficon pficon-info"></span>
+        <strong>No Media Types</strong>
+        <span>You must define and then configure at least one media type.</span>
+        <button class="btn btn-primary btn-sm pull-right" (click)="addMediaTypeDialog.open()">Add Media Type</button>
+    </div>
+</div>
+
+<add-media-type-dialog #addMediaTypeDialog (onAdd)="addMediaType($event)"></add-media-type-dialog>

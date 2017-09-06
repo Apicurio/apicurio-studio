@@ -53,7 +53,7 @@
     </ul>
 
     <!-- Main Editor Selector (name of API, select to show Main Form -->
-    <div class="editor-main" [class.selected]="selectedType === 'main'" (click)="selectMain()">
+    <div class="editor-main" [class.selected]="selectedType === 'main'" [class.oai30]="isOAI30()" [class.oai20]="isSwagger2()" (click)="selectMain()">
         <h2>{{ document.info.title }}</h2>
     </div>
 

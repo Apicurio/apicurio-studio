@@ -70,12 +70,21 @@
 .api-editor div.tab-panel {
   border-top: none;
 }
+.api-editor div.tab-panel {
+  border-color: rgb(221, 221, 221);
+}
 
 .api-editor .nav-tabs > li > a {
   cursor: pointer;
 }
 .api-editor .nav-tabs > li > a.active {
   cursor: default;
+}
+.api-editor .nav-tabs > li > a > button {
+  visibility: hidden;
+}
+.api-editor .nav-tabs > li > a:hover > button {
+  visibility: visible;
 }
 
 .api-editor .api-item-description {
@@ -132,6 +141,14 @@
   margin: 0;
 }
 .api-editor .editor-master .editor-main.selected h2 {
+}
+.api-editor .editor-master .editor-main.oai30 {
+  padding-left: 36px;
+  background: url("/assets/openapi_32.png") no-repeat 10px 5px;
+}
+.api-editor .editor-master .editor-main.oai20 {
+  padding-left: 36px;
+  background: url("/assets/swagger_32.png") no-repeat 10px 7px;
 }
 
 .api-editor .editor-master .editor-search {
@@ -661,6 +678,21 @@
   font-weight: 600;
 }
 .api-editor .editor-detail .api-operation-detail .request-body-section .request-body-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-content {
+  margin-top: 20px;
+}
+
+.api-editor .editor-detail .api-operation-detail .media-type {
+}
+.api-editor .editor-detail .api-operation-detail .media-type .strong {
+  font-weight: 600;
+}
+.api-editor .editor-detail .api-operation-detail .media-type .dropdown {
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;

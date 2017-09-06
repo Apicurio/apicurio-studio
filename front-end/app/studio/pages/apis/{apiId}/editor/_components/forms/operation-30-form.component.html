@@ -124,16 +124,40 @@
                                 types usually do not include a body.
                             </p>
                         </context-help>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
+                                title="Delete the request body."
+                                [disabled]="!hasRequestBody()"><span class="pficon pficon-delete"></span></button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
-                        <div class="alert alert-info"
+
+                        <div class="alert alert-info" *ngIf="!hasRequestBody()"
                              [class.alert-warning]="operation.method() === 'put' || operation.method() === 'post'">
                             <span class="pficon"
                                   [class.pficon-info]="operation.method() !== 'put' && operation.method() !== 'post'"
                                   [class.pficon-warning-triangle-o]="operation.method() === 'put' || operation.method() === 'post'"></span>
                             <strong>None Found</strong>
                             <span>No request body has been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right">Add Body</button>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="addRequestBody()">Add Body</button>
+                        </div>
+
+                        <div *ngIf="hasRequestBody()">
+                            <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
+                                <span class="pficon pficon-warning-triangle-o"></span>
+                                <strong>Not Recommended</strong>
+                                <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
+                            </div>
+                            <inline-textarea-editor [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
+                                                    [labelClass]="'request-body-description api-item-description description'"
+                                                    [inputClass]="'api-description-editor api-item-description request-body-description api-item-description description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
+                            <div class="request-body-content">
+                                <content [content]="operation.requestBody.content"
+                                         [document]="operation.ownerDocument()"
+                                         (onNewMediaType)="createRequestBodyMediaType($event)"
+                                         (onMediaTypeChange)="changeRequestBodyMediaType($event)"
+                                         (onRemoveMediaType)="deleteRequestBodyMediaType($event)"></content>
+                            </div>
                         </div>
                     </div>
                 </div>

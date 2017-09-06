@@ -16,15 +16,17 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response} from "oai-ts-core";
+import {Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response} from "oai-ts-core";
 import {
+    createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteAllParametersCommand,
+    createDeleteAllParametersCommand, createDeleteMediaTypeCommand,
     createDeleteNodeCommand,
     createDeleteParameterCommand,
-    createDeleteResponseCommand,
+    createDeleteResponseCommand, createNewMediaTypeCommand,
     createNewParamCommand,
+    createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
     SimplifiedType
@@ -34,6 +36,8 @@ import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
+import {ObjectUtils} from "../../_util/object.util";
+import {MediaTypeChangeEvent} from "./operation/content.component";
 
 
 @Component({
@@ -97,6 +101,13 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         } else {
             return false;
         }
+    }
+
+    public bodyDescription(): string {
+        if (this.operation.requestBody) {
+            return this.operation.requestBody.description;
+        }
+        return null;
     }
 
     public parameters(paramType: string): Oas30Parameter[] {
@@ -198,6 +209,10 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         });
     }
 
+    public hasRequestBody(): boolean {
+        return !ObjectUtils.isNullOrUndefined(this.operation.requestBody);
+    }
+
     public hasResponses(): boolean {
         if (!this.operation.responses) {
             return false;
@@ -216,6 +231,11 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public changeDescription(newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation, "description", newDescription);
+        this.onCommand.emit(command);
+    }
+
+    public changeBodyDescription(newBodyDescription: string): void {
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation.requestBody,"description", newBodyDescription);
         this.onCommand.emit(command);
     }
 
@@ -266,6 +286,36 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public addQueryParam(name: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "query");
+        this.onCommand.emit(command);
+    }
+
+    public addRequestBody(): void {
+        let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public deleteRequestBody(): void {
+        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), "requestBody", this.operation);
+        this.onCommand.emit(command);
+    }
+
+    public createRequestBodyMediaType(mediaType: string): void {
+        console.info("Creating request body media type: " + mediaType);
+        let command: ICommand = createNewMediaTypeCommand(this.operation.ownerDocument(), this.operation.requestBody, mediaType);
+        this.onCommand.emit(command);
+    }
+
+    public deleteRequestBodyMediaType(mediaType: string): void {
+        console.info("Deleting request body media type: " + mediaType);
+        let mt: Oas30MediaType = this.operation.requestBody.getMediaType(mediaType);
+        let command: ICommand = createDeleteMediaTypeCommand(this.operation.ownerDocument(), mt);
+        this.onCommand.emit(command);
+    }
+
+    public changeRequestBodyMediaType(event: MediaTypeChangeEvent): void {
+        console.info("Changing request body media type: " + event.name);
+        let mt: Oas30MediaType = this.operation.requestBody.getMediaType(event.name);
+        let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
         this.onCommand.emit(command);
     }
 

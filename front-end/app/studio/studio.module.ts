@@ -113,6 +113,8 @@ import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/
 import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
 import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
 import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
+import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
+import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 
 
 @NgModule({
@@ -132,7 +134,7 @@ import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
-        ResponseRow30Component, Operation30FormComponent
+        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

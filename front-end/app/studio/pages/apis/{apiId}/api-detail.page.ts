@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject, ViewChild, Injectable, HostListener} from "@angular/core";
+import {Component, Inject, ViewChild, Injectable, HostListener} from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";

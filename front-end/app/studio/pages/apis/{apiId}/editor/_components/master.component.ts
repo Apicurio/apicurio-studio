@@ -89,6 +89,14 @@ export class EditorMasterComponent {
 
     validationPanelOpen = false;
 
+    public isOAI30(): boolean {
+        return this.document.getSpecVersion().indexOf("3.0") === 0;
+    }
+
+    public isSwagger2(): boolean {
+        return this.document.getSpecVersion() === "2.0";
+    }
+
     /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
      * @return {OasPathItem[]}

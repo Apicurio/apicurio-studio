@@ -16,7 +16,7 @@
  */
 
 import {OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 
 export abstract class AbstractPageComponent implements OnInit {

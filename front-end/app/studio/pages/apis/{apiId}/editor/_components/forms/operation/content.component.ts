@@ -278,7 +278,7 @@ export class ContentComponent implements OnInit {
             this.selectDefaultMediaType();
         }
     }
-    
+
     public deleteAllMediaTypes(): void {
         // TODO fire a separate "delete all" command so that we delete all media types in a single undoable command
         this.mediaTypeNames().forEach( mtName => {

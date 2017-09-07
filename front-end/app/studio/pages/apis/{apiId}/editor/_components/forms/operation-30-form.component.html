@@ -151,6 +151,14 @@
                                                     [inputClass]="'api-description-editor api-item-description request-body-description api-item-description description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
+                            <div class="request-body-required">
+                                <span>It is</span>
+                                <drop-down [value]="operation.requestBody.required ? 'required' : 'not-required'"
+                                           [options]="requestBodyRequiredOptions()"
+                                           (onValueChange)="changeRequestBodyRequired($event)"
+                                           [noSelectionLabel]="'Not Required'"></drop-down>
+                                <span>that clients include the request body.</span>
+                            </div>
                             <div class="request-body-content">
                                 <content [content]="operation.requestBody.content"
                                          [document]="operation.ownerDocument()"

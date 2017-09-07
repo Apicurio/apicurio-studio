@@ -38,6 +38,7 @@ import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
 import {ObjectUtils} from "../../_util/object.util";
 import {MediaTypeChangeEvent} from "./operation/content.component";
+import {DropDownOption} from "../common/drop-down.component";
 
 
 @Component({
@@ -340,5 +341,18 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     public enableSourceMode(): void {
         this.sourceNode = this.operation;
         super.enableSourceMode();
+    }
+
+    public requestBodyRequiredOptions(): DropDownOption[] {
+        return [
+            { name: "Required", value: "required" },
+            { name: "Not Required", value: "not-required" }
+        ];
+    }
+
+    public changeRequestBodyRequired(value: string): void {
+        let isRequired: boolean = value === "required";
+        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation.requestBody, "required", isRequired);
+        this.onCommand.emit(command);
     }
 }

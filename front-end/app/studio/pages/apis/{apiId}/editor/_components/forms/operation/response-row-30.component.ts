@@ -18,6 +18,7 @@
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
 import {Oas30Document, Oas30Response} from "oai-ts-core";
+import {MediaTypeChangeEvent} from "./content.component";
 
 
 @Component({
@@ -34,6 +35,9 @@ export class ResponseRow30Component {
     @Input() response: Oas30Response;
 
     @Output() onDescriptionChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onCreateMediaType: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onDeleteMediaType: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onMediaTypeChange: EventEmitter<MediaTypeChangeEvent> = new EventEmitter<MediaTypeChangeEvent>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
@@ -93,6 +97,38 @@ export class ResponseRow30Component {
 
     public isValid(): boolean {
         return true;
+    }
+
+    public responseTypeInfo(): string {
+        if (!this.response.content) {
+            return "No response media types defined.";
+        }
+        let numMediaTypes: number = Object.keys(this.response.content).length;
+        if (numMediaTypes === 0) {
+            return "No response media types defined.";
+        }
+
+        if (numMediaTypes === 1) {
+            return "Media Type: " + this.response.getMediaTypes()[0].name();
+        }
+        
+        return "" + numMediaTypes + " response media types supported.";
+    }
+
+    public setDescription(description: string): void {
+        this.onDescriptionChange.emit(description);
+    }
+
+    public createResponseMediaType(mediaType: string): void {
+        this.onCreateMediaType.emit(mediaType);
+    }
+
+    public deleteResponseMediaType(mediaType: string): void {
+        this.onDeleteMediaType.emit(mediaType);
+    }
+
+    public changeResponseMediaType(event: MediaTypeChangeEvent): void {
+        this.onMediaTypeChange.emit(event);
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

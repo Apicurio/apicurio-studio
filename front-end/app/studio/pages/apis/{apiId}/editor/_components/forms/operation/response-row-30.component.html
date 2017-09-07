@@ -6,7 +6,7 @@
                                                      [value]="response.description"></inline-text-editor></div>
     </div>
     <div class="col-md-4 type">
-
+        <span>{{ responseTypeInfo() }}</span>
     </div>
     <div class="col-md-2 actions">
         <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
@@ -15,17 +15,17 @@
 </div>
 <div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
     <form  class="form-horizontal">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="response-content">
+                <content [content]="response.content"
+                         [document]="response.ownerDocument()"
+                         (onNewMediaType)="createResponseMediaType($event)"
+                         (onMediaTypeChange)="changeResponseMediaType($event)"
+                         (onRemoveMediaType)="deleteResponseMediaType($event)"></content>
+            </div>
             <div class="form-group form-group-actions">
-                <div class="col-sm-offset-4 col-sm-8">
-                    <button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>
-                    <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
-                </div>
+                <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Done</button>
             </div>
         </div>
-        <div class="col-md-6">
-        </div>
     </form>
-</div>
-<div class="type-editor-shade" *ngIf="isEditing()" (click)="cancel()">
 </div>

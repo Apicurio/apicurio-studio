@@ -301,21 +301,41 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     }
 
     public createRequestBodyMediaType(mediaType: string): void {
-        console.info("Creating request body media type: " + mediaType);
+        console.info("[Operation30FormComponent] Creating request body media type: " + mediaType);
         let command: ICommand = createNewMediaTypeCommand(this.operation.ownerDocument(), this.operation.requestBody, mediaType);
         this.onCommand.emit(command);
     }
 
     public deleteRequestBodyMediaType(mediaType: string): void {
-        console.info("Deleting request body media type: " + mediaType);
+        console.info("[Operation30FormComponent] Deleting request body media type: " + mediaType);
         let mt: Oas30MediaType = this.operation.requestBody.getMediaType(mediaType);
         let command: ICommand = createDeleteMediaTypeCommand(this.operation.ownerDocument(), mt);
         this.onCommand.emit(command);
     }
 
     public changeRequestBodyMediaType(event: MediaTypeChangeEvent): void {
-        console.info("Changing request body media type: " + event.name);
+        console.info("[Operation30FormComponent] Changing request body media type: " + event.name);
         let mt: Oas30MediaType = this.operation.requestBody.getMediaType(event.name);
+        let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
+        this.onCommand.emit(command);
+    }
+
+    public createResponseMediaType(response: Oas30Response, mediaType: string): void {
+        console.info("[Operation30FormComponent] Creating response media type: " + mediaType);
+        let command: ICommand = createNewMediaTypeCommand(this.operation.ownerDocument(), response, mediaType);
+        this.onCommand.emit(command);
+    }
+
+    public deleteResponseMediaType(response: Oas30Response, mediaType: string): void {
+        console.info("[Operation30FormComponent] Deleting response media type: " + mediaType);
+        let mt: Oas30MediaType = response.getMediaType(mediaType);
+        let command: ICommand = createDeleteMediaTypeCommand(this.operation.ownerDocument(), mt);
+        this.onCommand.emit(command);
+    }
+
+    public changeResponseMediaType(response: Oas30Response, event: MediaTypeChangeEvent): void {
+        console.info("[Operation30FormComponent] Changing response media type: " + event.name);
+        let mt: Oas30MediaType = response.getMediaType(event.name);
         let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
         this.onCommand.emit(command);
     }

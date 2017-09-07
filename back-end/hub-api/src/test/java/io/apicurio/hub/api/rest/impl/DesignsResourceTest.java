@@ -159,6 +159,7 @@ public class DesignsResourceTest {
     @Test
     public void testCreateDesign() throws ServerError, AlreadyExistsException {
         NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("2.0");
         info.setName("My API");
         info.setDescription("Description of my API.");
         info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json");
@@ -181,13 +182,13 @@ public class DesignsResourceTest {
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
-        String expectedContent = "{\"swagger\":\"2.0\",\"info\":{\"title\":\"My API\",\"description\":\"Description of my API.\",\"version\":\"1.0.0\"}}";
+        String expectedContent = "{\"info\":{\"title\":\"My API\",\"description\":\"Description of my API.\",\"version\":\"1.0.0\"},\"swagger\":\"2.0\"}";
         Assert.assertEquals(
                 "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" + 
-                "createResourceContent::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json::Initial creation of API: My API::" + expectedContent.hashCode() + "\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" + 
-                "---", 
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" +
+                "createResourceContent::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json::Initial creation of API: My API::" + expectedContent.hashCode() + "\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" +
+                "---",
                 ghLog);
     }
 

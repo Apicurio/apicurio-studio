@@ -153,7 +153,8 @@
                                                     (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
                             <div class="request-body-required">
                                 <span>It is</span>
-                                <drop-down [value]="operation.requestBody.required ? 'required' : 'not-required'"
+                                <drop-down [id]="'api-request-body-required'"
+                                           [value]="operation.requestBody.required ? 'required' : 'not-required'"
                                            [options]="requestBodyRequiredOptions()"
                                            (onValueChange)="changeRequestBodyRequired($event)"
                                            [noSelectionLabel]="'Not Required'"></drop-down>

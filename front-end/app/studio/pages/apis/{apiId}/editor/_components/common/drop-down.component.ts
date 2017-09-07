@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Input, Output, EventEmitter, ViewChildren, QueryList, ElementRef} from "@angular/core";
-import {DomUtils} from "../../_util/object.util";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 
 export class DropDownOption {
@@ -35,29 +34,12 @@ export class DropDownComponent {
 
     private _open: boolean = false;
 
+    @Input() id: string;
     @Input() value: string;
     @Input() options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";
 
     @Output() onValueChange: EventEmitter<string> = new EventEmitter<string>();
-
-    @ViewChildren("ddButton") ddButton: QueryList<ElementRef>;
-    @ViewChildren("ddMenu") ddMenu: QueryList<ElementRef>;
-
-    @HostListener("document:click", ["$event"])
-    public onDocumentClick(event: MouseEvent): void {
-        if (this.ddButton && this.ddButton.first && this.ddButton.first.nativeElement) {
-            if (this.ddButton.first.nativeElement.contains(event.target)) {
-                return;
-            }
-        }
-        if (this.ddMenu && this.ddMenu.first && this.ddMenu.first.nativeElement) {
-            if (DomUtils.elementBounds(this.ddMenu.first, event.clientX, event.clientY)) {
-                return;
-            }
-        }
-        this.close();
-    }
 
     public toggle(): void {
         this._open = !this._open;
@@ -97,16 +79,6 @@ export class DropDownComponent {
         this.value = value;
         this.close();
         this.onValueChange.emit(this.value);
-    }
-
-    /**
-     * Called whenever the user presses a key.
-     * @param event
-     */
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.close();
-        }
     }
 
 }

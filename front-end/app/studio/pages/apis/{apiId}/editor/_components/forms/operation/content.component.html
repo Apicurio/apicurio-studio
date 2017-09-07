@@ -19,18 +19,21 @@
 
             <div class="media-type">
                 <span class="strong">Type:</span>
-                <drop-down [value]="mediaTypeType()"
+                <drop-down [id]="'api-media-type-type'"
+                           [value]="mediaTypeType()"
                            [options]="mediaTypeTypeOptions()"
                            (onValueChange)="changeMediaTypeType($event)"
                            [noSelectionLabel]="'Choose Type'"></drop-down>
                 <span *ngIf="shouldShowMediaTypeTypeOf()">of</span>
                 <drop-down *ngIf="shouldShowMediaTypeTypeOf()"
+                           [id]="'api-media-type-type-of'"
                            [value]="mediaTypeTypeOf()"
                            [options]="mediaTypeTypeOfOptions()"
                            (onValueChange)="changeMediaTypeTypeOf($event)"
                            [noSelectionLabel]="'Choose Type'"></drop-down>
                 <span *ngIf="shouldShowMediaTypeTypeAs()">as</span>
                 <drop-down *ngIf="shouldShowMediaTypeTypeAs()"
+                           [id]="'api-media-type-type-as'"
                            [value]="mediaTypeTypeAs()"
                            [options]="mediaTypeTypeAsOptions()"
                            (onValueChange)="changeMediaTypeTypeAs($event)"

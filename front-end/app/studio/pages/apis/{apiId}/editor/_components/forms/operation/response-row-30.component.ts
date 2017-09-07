@@ -111,7 +111,7 @@ export class ResponseRow30Component {
         if (numMediaTypes === 1) {
             return "Media Type: " + this.response.getMediaTypes()[0].name();
         }
-        
+
         return "" + numMediaTypes + " response media types supported.";
     }
 

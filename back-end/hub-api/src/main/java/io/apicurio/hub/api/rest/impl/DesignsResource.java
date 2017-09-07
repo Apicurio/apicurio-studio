@@ -44,13 +44,15 @@ import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.OpenApi2Document;
+import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.OpenApiDocument;
 import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.connectors.ISourceConnector;
-import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
+import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
@@ -173,8 +175,12 @@ public class DesignsResource implements IDesignsResource {
             String designId = storage.createApiDesign(user, design);
             design.setId(designId);
             
-            OpenApiDocument doc = new OpenApiDocument();
-            doc.setSwagger("2.0");
+            OpenApiDocument doc;
+            if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
+                doc = new OpenApi2Document();
+            } else {
+                doc = new OpenApi3Document();
+            }
             doc.setInfo(new OpenApiInfo());
             doc.getInfo().setTitle(info.getName());
             doc.getInfo().setDescription(info.getDescription());

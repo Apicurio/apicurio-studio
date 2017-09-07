@@ -1,5 +1,4 @@
-/**
- * @license
+/*
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +14,33 @@
  * limitations under the License.
  */
 
-export class NewApi {
+package io.apicurio.hub.api.beans;
 
-    specVersion: string;
-    name: string;
-    description: string;
-    repositoryUrl: string;
+/**
+ * @author eric.wittmann@gmail.com
+ */
+public class OpenApi3Document extends OpenApiDocument{
+    
+    private String openapi = "3.0.0";
+    
+    /**
+     * Constructor.
+     */
+    public OpenApi3Document() {
+    }
 
-    constructor() {
-        this.specVersion = null;
-        this.name = "";
-        this.description = "";
-        this.repositoryUrl = "";
+    /**
+     * @return the openapi
+     */
+    public String getOpenapi() {
+        return openapi;
+    }
+
+    /**
+     * @param openapi the openapi to set
+     */
+    public void setOpenapi(String openapi) {
+        this.openapi = openapi;
     }
 
 }

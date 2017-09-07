@@ -21,6 +21,7 @@ package io.apicurio.hub.api.beans;
  */
 public class NewApiDesign {
 
+    private String specVersion;
     private String name;
     private String description;
     private String repositoryUrl;
@@ -65,6 +66,20 @@ public class NewApiDesign {
      */
     public void setRepositoryUrl(String repositoryUrl) {
         this.repositoryUrl = repositoryUrl;
+    }
+
+    /**
+     * @return the specVersion
+     */
+    public String getSpecVersion() {
+        return specVersion;
+    }
+
+    /**
+     * @param specVersion the specVersion to set
+     */
+    public void setSpecVersion(String specVersion) {
+        this.specVersion = specVersion;
     }
     
 }

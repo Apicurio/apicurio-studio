@@ -23,6 +23,7 @@ import {NewApi} from "../../../../models/new-api.model";
 import {ILinkedAccountsService} from "../../../../services/accounts.service";
 import {LinkedAccount} from "../../../../models/linked-account";
 import {GitHubOrganization} from "../../../../models/github-organization";
+import {DropDownOption} from "../../{apiId}/editor/_components/common/drop-down.component";
 
 
 @Component({
@@ -36,6 +37,7 @@ export class CreateApiFormComponent {
     @Output() onCreateApi = new EventEmitter<NewApi>();
 
     model: any = {
+        type: "3.0.0",
         name: null,
         description: null,
         accountType: null,
@@ -93,7 +95,18 @@ export class CreateApiFormComponent {
         });
     }
 
-    public setType(accountType: string): void {
+    public typeOptions(): DropDownOption[] {
+        return [
+            { name: "Open API 2.0 (Swagger)", value: "2.0"},
+            { name: "Open API 3.0.0", value: "3.0.0"}
+        ];
+    }
+
+    public changeType(value: string): void {
+        this.model.type = value;
+    }
+
+    public setAccountType(accountType: string): void {
         if (this.model.accountType === accountType) {
             return;
         }
@@ -147,6 +160,7 @@ export class CreateApiFormComponent {
      */
     public createApi(): void {
         let api: NewApi = new NewApi();
+        api.specVersion = this.model.type;
         api.name = this.model.name;
         api.description = this.model.description;
         if (this.model.accountType === "GitHub") {
@@ -161,6 +175,8 @@ export class CreateApiFormComponent {
         } else if (this.model.accountType === "GitLab") {
         } else if (this.model.accountType === "Bitbucket") {
         }
+
+        console.info("[CreateApiFormComponent] Firing 'create-api' event: %o", api);
 
         this.creatingApi = true;
         this.onCreateApi.emit(api);

@@ -19,29 +19,14 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class OpenApiDocument {
+public abstract class OpenApiDocument {
     
-    private String swagger;
     private OpenApiInfo info;
     
     /**
      * Constructor.
      */
     public OpenApiDocument() {
-    }
-
-    /**
-     * @return the swagger
-     */
-    public String getSwagger() {
-        return swagger;
-    }
-
-    /**
-     * @param swagger the swagger to set
-     */
-    public void setSwagger(String swagger) {
-        this.swagger = swagger;
     }
 
     /**

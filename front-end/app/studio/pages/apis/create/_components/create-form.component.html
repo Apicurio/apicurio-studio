@@ -2,6 +2,12 @@
     <div class="panel-body">
         <form id="createapi-form" class="form-horizontal" (submit)="createApi()" #apiForm="ngForm">
             <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-type">Type</label>
+                <div class="col-sm-10">
+                    <drop-down id="api-type" [id]="'api-create-api-specVersion'" [value]="model.type" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-2 control-label" for="api-name">Name</label>
                 <div class="col-sm-10">
                     <input name="name" type="text" id="api-name" class="form-control" placeholder="Enter the new API's name"
@@ -24,7 +30,7 @@
                     <div class="platform-toggle"
                          [class.disabled]="!hasLinkedAccount('GitHub')"
                          [class.selected]="model.accountType === 'GitHub'"
-                         (click)="setType('GitHub')">
+                         (click)="setAccountType('GitHub')">
                         <span class="fa fa-fw fa-github"></span>
                         <br/>
                         <span class="lbl">GitHub</span>
@@ -32,7 +38,7 @@
                     <div class="platform-toggle"
                          [class.disabled]="!hasLinkedAccount('GitLab')"
                          [class.selected]="model.accountType === 'GitLab'"
-                         (click)="setType('GitLab')"
+                         (click)="setAccountType('GitLab')"
                          data-toggle="tooltip"
                          data-placement="bottom"
                          title="Hello World!">
@@ -43,7 +49,7 @@
                     <div class="platform-toggle"
                          [class.disabled]="!hasLinkedAccount('Bitbucket')"
                          [class.selected]="model.accountType === 'Bitbucket'"
-                         (click)="setType('Bitbucket')">
+                         (click)="setAccountType('Bitbucket')">
                         <span class="fa fa-fw fa-bitbucket"></span>
                         <br/>
                         <span class="lbl">Bitbucket</span>

@@ -156,8 +156,6 @@
             </div>
 
         </div>
-        <set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>
-        <set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>
     </div>
 
     <!-- Global Tags -->
@@ -225,7 +223,7 @@
                     <li><a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a></li>
                 </ul>
             </context-help>
-            <button class="btn btn-sm btn-default pull-right" (click)="securitySchemeDialog.open()"><span class="fa fa-plus"></span></button>
+            <button class="btn btn-sm btn-default pull-right" (click)="openSecuritySchemeDialog()"><span class="fa fa-plus"></span></button>
         </div>
         <div class="section-body collapse" id="security-section-body" [class.in]="hasSecurity()">
 
@@ -233,7 +231,7 @@
                 <span class="pficon pficon-info"></span>
                 <strong>None Found</strong>
                 <span>No security options have been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="securitySchemeDialog.open()">Add Security</button>
+                <button class="btn btn-primary btn-sm pull-right" (click)="openSecuritySchemeDialog()">Add Security</button>
             </div>
 
             <table class="table table-striped api-operation-parameters" *ngIf="hasSecurity()">
@@ -255,7 +253,7 @@
                                                                 [value]="scheme.description"></inline-text-editor></td>
                     <td class="actions" nowrap>
                         <div>
-                            <button class="btn btn-sm btn-default" (click)="securitySchemeDialog.open(scheme)"
+                            <button class="btn btn-sm btn-default" (click)="openSecuritySchemeDialog(scheme)"
                                     title="Edit security scheme."><span class="pficon pficon-edit"></span></button>
                             <button class="btn btn-sm btn-default" (click)="deleteSecurityScheme(scheme)"
                                     title="Delete security scheme."><span class="pficon pficon-delete"></span></button>
@@ -267,8 +265,12 @@
         </div>
     </div>
 
+    <set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>
+    <set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>
     <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
-    <security-scheme-dialog #securitySchemeDialog (onSchemeAdded)="addSecurityScheme($event)"
-                            (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-dialog>
+    <security-scheme-20-dialog #securityScheme20Dialog (onSchemeAdded)="addSecurityScheme($event)"
+                               (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-20-dialog>
+    <security-scheme-30-dialog #securityScheme30Dialog (onSchemeAdded)="addSecurityScheme($event)"
+                               (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-30-dialog>
 
 </div>

@@ -15,9 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
-import {Oas20Contact} from "oai-ts-core";
+import {OasContact} from "oai-ts-core";
+
+
+export class ContactInfo {
+    public name: string;
+    public email: string;
+    public url: string;
+}
 
 
 @Component({
@@ -27,7 +34,7 @@ import {Oas20Contact} from "oai-ts-core";
 })
 export class SetContactDialogComponent {
 
-    @Output() onContact: EventEmitter<Oas20Contact> = new EventEmitter<Oas20Contact>();
+    @Output() onContact: EventEmitter<ContactInfo> = new EventEmitter<ContactInfo>();
 
     @ViewChildren("setContactModal") setContactModal: QueryList<ModalDirective>;
 
@@ -39,8 +46,9 @@ export class SetContactDialogComponent {
 
     /**
      * Called to open the dialog.
+     * @param {OasContact} contact
      */
-    public open(contact?: Oas20Contact): void {
+    public open(contact?: OasContact): void {
         this._isOpen = true;
         this.name = "";
         this.email = "";
@@ -69,10 +77,11 @@ export class SetContactDialogComponent {
      * Called when the user clicks "add".
      */
     protected ok(): void {
-        let contact: Oas20Contact = new Oas20Contact();
-        contact.email = this.email;
-        contact.name = this.name;
-        contact.url = this.url;
+        let contact: ContactInfo = {
+            name: this.name,
+            email: this.email,
+            url: this.url
+        };
         this.onContact.emit(contact);
         this.cancel();
     }

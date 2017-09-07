@@ -16,8 +16,8 @@
  */
 
 import {Component, Input} from "@angular/core";
-import {SimplifiedType} from "../../_models/simplified-type.model";
 import {ObjectUtils} from "../../_util/object.util";
+import {SimplifiedType} from "oai-ts-commands";
 
 @Component({
     moduleId: module.id,

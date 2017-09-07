@@ -56,9 +56,10 @@ export class KeycloakAuthenticationService implements IAuthenticationService {
         this._authenticatedUser.next(user);
 
         // Periodically refresh
+        // TODO run this outsize NgZone using zone.runOutsideAngular() : https://angular.io/api/core/NgZone
         setInterval(() => {
-            this.keycloak.updateToken(10);
-        }, 10000);
+            this.keycloak.updateToken(30);
+        }, 30000);
     }
 
     /**

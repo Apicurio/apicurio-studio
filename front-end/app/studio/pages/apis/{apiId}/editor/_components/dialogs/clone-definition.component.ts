@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
-import {Oas20SchemaDefinition} from "oai-ts-core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
 
 
 @Component({
@@ -34,15 +34,21 @@ export class CloneDefinitionDialogComponent {
     protected _isOpen: boolean = false;
 
     protected name: string = "";
-    protected definition: Oas20SchemaDefinition;
+    protected definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
     /**
      * Called to open the dialog.
+     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
      */
-    public open(definition: Oas20SchemaDefinition): void {
+    public open(definition: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._isOpen = true;
-        this.name = "CloneOf" + definition.definitionName();
         this.definition = definition;
+        this.name = "CloneOf";
+        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
+            this.name += (definition as Oas20SchemaDefinition).definitionName();
+        } else {
+            this.name += (definition as Oas30SchemaDefinition).name();
+        }
 
         this.cloneDefinitionModal.changes.subscribe( () => {
             if (this.cloneDefinitionModal.first) {

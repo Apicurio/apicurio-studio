@@ -8,6 +8,7 @@
     "url": "https://github.com/apicurio/apicurio-studio"
   },
   "scripts": {
+    "compile": "tsc -p ./tsconfig.json",
     "start": "concurrently \"tsc -w\" \"watch-less -d ./studio -e .css\" \"watch-less -d ./assets -e .css\" \"lite-server\""
   },
   "dependencies": {
@@ -22,7 +23,8 @@
     "@angular/upgrade": "4.2.4",
     "@types/core-js": "0.9.35",
     "@types/node": "6.0.56",
-    "oai-ts-core": "0.2.1",
+    "oai-ts-core": "0.2.5",
+    "oai-ts-commands": "0.2.7",
     "yamljs": "0.2.10",
     "core-js": "2.4.1",
     "reflect-metadata": "0.1.9",

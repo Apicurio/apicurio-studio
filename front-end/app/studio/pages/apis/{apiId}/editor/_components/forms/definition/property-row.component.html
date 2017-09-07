@@ -20,19 +20,19 @@
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="propertyType">Type</label>
                 <div class="col-sm-8">
-                    <drop-down id="propertyType" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                    <drop-down id="propertyType" [id]="'api-schema-property-type'" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="model.type === 'array'">
                 <label class="col-sm-4 control-label" for="propertyTypeOf">of</label>
                 <div class="col-sm-8">
-                    <drop-down id="propertyTypeOf" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                    <drop-down id="propertyTypeOf" [id]="'api-schema-property-type-of'" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="shouldShowFormattedAs()">
                 <label class="col-sm-4 control-label" for="propertyTypeFormat">formatted as</label>
                 <div class="col-sm-8">
-                    <drop-down id="propertyTypeFormat" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
+                    <drop-down id="propertyTypeFormat" [id]="'api-schema-property-type-as'" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
                 </div>
             </div>
             <div class="form-group form-group-actions">
@@ -46,6 +46,4 @@
 
         </div>
     </form>
-</div>
-<div class="type-editor-shade" *ngIf="isEditing()" (click)="cancel()">
 </div>

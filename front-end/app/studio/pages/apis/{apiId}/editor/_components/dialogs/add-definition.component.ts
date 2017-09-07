@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ng2-bootstrap";
 import {AceEditorDirective} from "ng2-ace-editor";
 
@@ -51,7 +51,7 @@ export class AddDefinitionDialogComponent {
         this.exampleValid = true;
         this.exampleFormattable = false;
 
-        this.addDefinitionModal.changes.subscribe( thing => {
+        this.addDefinitionModal.changes.subscribe( () => {
             if (this.addDefinitionModal.first) {
                 this.addDefinitionModal.first.show();
             }

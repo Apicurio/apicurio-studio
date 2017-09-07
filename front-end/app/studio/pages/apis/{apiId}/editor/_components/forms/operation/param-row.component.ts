@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
-import {SimplifiedType} from "../../../_models/simplified-type.model";
-import {Oas20NodeVisitorAdapter, Oas20Operation, Oas20Parameter, Oas20PathItem} from "oai-ts-core";
+import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {SimplifiedType} from "oai-ts-commands";
+import {Oas20Parameter, Oas30Parameter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "./typed-item.component";
+import {AbstractCombinedVisitorAdapter} from "../../../_visitors/base.visitor";
 
 
 @Component({
@@ -29,16 +30,16 @@ import {AbstractTypedItemComponent} from "./typed-item.component";
 })
 export class ParamRowComponent extends AbstractTypedItemComponent {
 
-    private _param: Oas20Parameter;
-    private _overriddenParam: Oas20Parameter;
+    private _param: OasParameterBase;
+    private _overriddenParam: OasParameterBase;
     @Input()
-    set param(param: Oas20Parameter) {
+    set param(param: OasParameterBase) {
         this._param = param;
         this.missingFlag = this.param.n_attribute("missing") === true;
         this._overriddenParam = this.getOverriddenParam(param);
         this.overrideFlag = this._overriddenParam !== null;
     }
-    get param(): Oas20Parameter {
+    get param(): OasParameterBase {
         return this._param;
     }
 
@@ -50,14 +51,14 @@ export class ParamRowComponent extends AbstractTypedItemComponent {
     private overrideFlag: boolean;
 
     protected modelForEditing(): SimplifiedType {
-        return SimplifiedType.fromItems(this.param);
+        return this.paramToSimplifiedType(this.param);
     }
 
     protected modelForViewing(): SimplifiedType {
         if (this.missingFlag && this._overriddenParam !== null) {
-            return SimplifiedType.fromItems(this._overriddenParam);
+            return this.paramToSimplifiedType(this._overriddenParam);
         } else {
-            return SimplifiedType.fromItems(this.param);
+            return this.paramToSimplifiedType(this.param);
         }
     }
 
@@ -89,25 +90,33 @@ export class ParamRowComponent extends AbstractTypedItemComponent {
         this.onCreate.emit(true);
     }
 
-    public getOverriddenParam(param: Oas20Parameter): Oas20Parameter {
+    public getOverriddenParam(param: OasParameterBase): OasParameterBase {
         let viz: DetectOverrideVisitor = new DetectOverrideVisitor(param);
         param.parent().accept(viz);
         return viz.overriddenParam;
     }
 
+    private paramToSimplifiedType(param: OasParameterBase): SimplifiedType {
+        if (param.ownerDocument().getSpecVersion() === "2.0") {
+            return SimplifiedType.fromItems(param as Oas20Parameter);
+        } else {
+            return SimplifiedType.fromSchema((param as Oas30Parameter).schema);
+        }
+    }
+
 }
 
 
-class DetectOverrideVisitor extends Oas20NodeVisitorAdapter {
+class DetectOverrideVisitor extends AbstractCombinedVisitorAdapter {
 
-    public overriddenParam: Oas20Parameter = null;
+    public overriddenParam: OasParameterBase = null;
 
-    constructor(private param: Oas20Parameter) {
+    constructor(private param: OasParameterBase) {
         super();
     }
 
-    public visitOperation(node: Oas20Operation): void {
-        this.overriddenParam = (<Oas20PathItem>node.parent()).parameter(this.param.in, this.param.name) as Oas20Parameter;
+    public visitOperation(node: OasOperation): void {
+        this.overriddenParam = (<OasPathItem>node.parent()).parameter(this.param.in, this.param.name) as OasParameterBase;
     }
 
 }

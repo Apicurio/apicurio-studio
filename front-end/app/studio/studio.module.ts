@@ -78,7 +78,10 @@ import {DivAutoHeight, TextAreaAutosize} from "./directives/autosize.directive";
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
-import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
+import {
+    Main20FormComponent,
+    Main30FormComponent
+} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
@@ -91,7 +94,8 @@ import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dia
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
-import {SecuritySchemeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme.component";
+import {SecurityScheme20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme-20.component";
+import {SecurityScheme30DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-scheme-30.component";
 import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
 import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
 import {DropDownComponent} from "./pages/apis/{apiId}/editor/_components/common/drop-down.component";
@@ -106,6 +110,11 @@ import {ProblemFormComponent} from "./pages/apis/{apiId}/editor/_components/form
 import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.form";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
+import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
+import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
+import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
+import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
+import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 
 
 @NgModule({
@@ -115,16 +124,17 @@ import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
         CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
-        ResponseItemComponent, MainFormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
+        ResponseItemComponent, Main20FormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
         TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
-        ContextHelpComponent, SetContactDialogComponent, SecuritySchemeDialogComponent, DropDownComponent,
-        ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
+        ContextHelpComponent, SetContactDialogComponent, SecurityScheme20DialogComponent, SecurityScheme30DialogComponent,
+        DropDownComponent, ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
-        CreatedLinkedAccountPageComponent, SettingsNavComponent
+        CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
+        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

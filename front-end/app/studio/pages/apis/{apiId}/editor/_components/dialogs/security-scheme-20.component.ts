@@ -27,7 +27,7 @@ export interface Scope {
 }
 
 
-export interface SecuritySchemeEventData {
+export interface SecurityScheme20EventData {
     schemeName: string;
     description: string;
     type: string;
@@ -43,19 +43,19 @@ export interface SecuritySchemeEventData {
 
 @Component({
     moduleId: module.id,
-    selector: "security-scheme-dialog",
-    templateUrl: "security-scheme.component.html"
+    selector: "security-scheme-20-dialog",
+    templateUrl: "security-scheme-20.component.html"
 })
-export class SecuritySchemeDialogComponent {
+export class SecurityScheme20DialogComponent {
 
-    @Output() onSchemeAdded: EventEmitter<SecuritySchemeEventData> = new EventEmitter<SecuritySchemeEventData>();
-    @Output() onSchemeChanged: EventEmitter<SecuritySchemeEventData> = new EventEmitter<SecuritySchemeEventData>();
+    @Output() onSchemeAdded: EventEmitter<SecurityScheme20EventData> = new EventEmitter<SecurityScheme20EventData>();
+    @Output() onSchemeChanged: EventEmitter<SecurityScheme20EventData> = new EventEmitter<SecurityScheme20EventData>();
 
     @ViewChildren("securitySchemeModal") securitySchemeModal: QueryList<ModalDirective>;
 
     protected _isOpen: boolean = false;
 
-    protected model: SecuritySchemeEventData;
+    protected model: SecurityScheme20EventData;
     protected mode: string;
 
     /**

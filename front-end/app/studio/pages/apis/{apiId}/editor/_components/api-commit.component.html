@@ -1,5 +1,5 @@
 <div class="dropdown" dropdown (onToggle)="toggled($event)" [isOpen]="isOpen" (isOpenChange)="isOpen = $event"
-     [isDisabled]="disabled || saving" [autoClose]="'outsideClick'">
+     [isDisabled]="disabled || saving" [autoClose]="false">
     <button class="btn btn-primary dropdown-toggle" type="button" id="commitMessageMenu" dropdownToggle>
         <span *ngIf="!saving">Save Changes</span>
         <span *ngIf="saving" class="spinner spinner-xs spinner-inline"></span>

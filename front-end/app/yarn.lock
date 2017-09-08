@@ -2566,7 +2566,7 @@ moment-timezone@^0.4.0, moment-timezone@^0.4.1:
   dependencies:
     moment ">= 2.6.0"
 
-moment@*, moment@2.17.1, moment@^2.11.2:
+moment@*, moment@^2.11.2:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -2604,18 +2604,16 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-ng2-ace-editor@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/ng2-ace-editor/-/ng2-ace-editor-0.1.5.tgz#4b07da5beea43bfa5ea38bf5414ab8fd16e463ae"
+ng2-ace-editor@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/ng2-ace-editor/-/ng2-ace-editor-0.2.5.tgz#3b99da834dd103f48d5ecdc695eda11324ada2d1"
   dependencies:
     ace-builds "^1.2.5"
     brace "^0.9.0"
 
-ng2-bootstrap@1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/ng2-bootstrap/-/ng2-bootstrap-1.2.5.tgz#765d87d74bfe2274648929f72accbdf585e6cc6a"
-  dependencies:
-    moment "2.17.1"
+ngx-bootstrap@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-1.9.2.tgz#7afdb5d10f30eefa945eed000e386766de770f69"
 
 node-pre-gyp@^0.6.29:
   version "0.6.33"

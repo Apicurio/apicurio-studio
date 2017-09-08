@@ -20,7 +20,7 @@ import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {ApiDefinition} from "../../../../models/api.model";
 import {IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
-import {ModalDirective} from "ng2-bootstrap";
+import {ModalDirective} from "ngx-bootstrap";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 
 @Component({

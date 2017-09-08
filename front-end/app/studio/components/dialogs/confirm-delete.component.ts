@@ -16,7 +16,7 @@
  */
 
 import {Component, Output, EventEmitter, ViewChildren, QueryList, ElementRef} from "@angular/core";
-import {ModalDirective} from "ng2-bootstrap";
+import {ModalDirective} from "ngx-bootstrap";
 
 
 @Component({

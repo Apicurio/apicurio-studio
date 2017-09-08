@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ng2-bootstrap";
+import {ModalDirective} from "ngx-bootstrap";
 import {Oas30OAuthFlow, Oas30SecurityScheme} from "oai-ts-core";
 import {Scope} from "./security-scheme-20.component";
 import {ObjectUtils} from "../../_util/object.util";

@@ -27,7 +27,7 @@
             // YAMLjs library
             'yamljs': 'npm:yamljs',
             // NG2 Bootstrap
-            'ng2-bootstrap': 'node_modules/ng2-bootstrap',
+            'ngx-bootstrap': 'node_modules/ngx-bootstrap',
             // NG2 ACE Editor
             'ng2-ace-editor': 'npm:ng2-ace-editor',
             'brace': 'npm:brace',
@@ -55,9 +55,9 @@
             rxjs: {
                 defaultExtension: 'js'
             },
-            'ng2-bootstrap': {
+            'ngx-bootstrap': {
                 format: 'cjs',
-                main: 'bundles/ng2-bootstrap.umd.js',
+                main: 'bundles/ngx-bootstrap.umd.js',
                 defaultExtension: 'js'
             },
             'ng2-ace-editor': {

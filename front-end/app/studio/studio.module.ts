@@ -21,7 +21,7 @@ import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 
 /* Bootstrap */
-import {ModalModule, DropdownModule} from "ng2-bootstrap";
+import {ModalModule, BsDropdownModule} from "ngx-bootstrap";
 
 /* ACE Editor */
 import { AceEditorComponent } from "ng2-ace-editor";
@@ -118,7 +118,7 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), DropdownModule.forRoot()],
+    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), BsDropdownModule.forRoot()],
     declarations: [
         StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent,
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,

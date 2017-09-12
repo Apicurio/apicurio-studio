@@ -33,7 +33,7 @@
     "zone.js": "0.8.17",
     "bootstrap": "3.3.7",
     "patternfly" : "3.27.1",
-    "ngx-bootstrap": "1.9.2",
+    "ngx-bootstrap": "1.9.3",
     "ng2-ace-editor": "0.2.5",
     "buffer": "5.0.5",
     "brace": "0.9.1",

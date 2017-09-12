@@ -75,9 +75,9 @@ export class DropDownComponent {
         return null;
     }
 
-    public setValue(value: string, event: MouseEvent): void {
+    public setValue(value: string): void {
         this.value = value;
-        this.close();
+        //this.close();
         this.onValueChange.emit(this.value);
     }
 

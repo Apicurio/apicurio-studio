@@ -16,16 +16,20 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 /**
  * H2 implementation of the sql statements interface.  Provides sql statements that
  * are specific to PostgreSQL, where applicable.
  * @author eric.wittmann@gmail.com
  */
 public class PostgreSQL9SqlStatements extends CommonSqlStatements {
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.CommonSqlStatements#dbType()
+     */
+    @Override
+    protected String dbType() {
+        return "postgresql9";
+    }
 
     /**
      * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#isDatabaseInitialized()
@@ -33,19 +37,6 @@ public class PostgreSQL9SqlStatements extends CommonSqlStatements {
     @Override
     public String isDatabaseInitialized() {
         return "SELECT count(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs' LIMIT 1";
-    }
-
-    /**
-     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#databaseInitialization()
-     */
-    @Override
-    public List<String> databaseInitialization() {
-        DdlParser parser = new DdlParser();
-        try (InputStream input = getClass().getResourceAsStream("hub_mysql5.ddl")) {
-            return parser.parse(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

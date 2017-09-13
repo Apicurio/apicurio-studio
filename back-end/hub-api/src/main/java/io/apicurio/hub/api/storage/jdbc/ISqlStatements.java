@@ -36,6 +36,19 @@ public interface ISqlStatements {
     public List<String> databaseInitialization();
 
     /**
+     * A sequence of statements needed to upgrade the DB from one version to another.
+     * @param fromVersion
+     * @param toVersion
+     */
+    public List<String> databaseUpgrade(int fromVersion, int toVersion);
+
+
+    /**
+     * A statement that returns the current DB version (pulled from the "apicurio" attribute table).
+     */
+    public String getDatabaseVersion();
+
+    /**
      * A statement used to insert a row into the accounts table.
      */
     public String insertLinkedAccount();

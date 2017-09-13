@@ -16,12 +16,62 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Shared base class for all sql statements.
  * @author eric.wittmann@gmail.com
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
+
+    /**
+     * Returns the database type identifier.
+     */
+    protected abstract String dbType();
+
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#databaseInitialization()
+     */
+    @Override
+    public List<String> databaseInitialization() {
+        DdlParser parser = new DdlParser();
+        try (InputStream input = getClass().getResourceAsStream("hub_" + dbType() + ".ddl")) {
+            return parser.parse(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#databaseUpgrade(int, int)
+     */
+    @Override
+    public List<String> databaseUpgrade(int fromVersion, int toVersion) {
+        List<String> statements = new ArrayList<>();
+        DdlParser parser = new DdlParser();
+        
+        for (int version = fromVersion + 1; version <= toVersion; version++) {
+            try (InputStream input = getClass().getResourceAsStream("upgrade-" + version + "_" + dbType() + ".ddl")) {
+                statements.addAll(parser.parse(input));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return statements;
+    }
     
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#getDatabaseVersion()
+     */
+    @Override
+    public String getDatabaseVersion() {
+        return "SELECT a.prop_value FROM apicurio a WHERE a.prop_name = ?";
+    }
+
     /**
      * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertLinkedAccount()
      */

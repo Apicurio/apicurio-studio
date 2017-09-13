@@ -45,8 +45,10 @@ import io.apicurio.hub.api.storage.StorageException;
  */
 @ApplicationScoped
 public class JdbcStorage implements IStorage {
-
+    
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
+    private static int DB_VERSION = 1;
+    private static Object dbMutex = new Object();
 
     @Inject
     private HubApiConfiguration config;
@@ -77,15 +79,32 @@ public class JdbcStorage implements IStorage {
         }
         
         if (config.isJdbcInit()) {
+            synchronized (dbMutex) {
+                if (!isDatabaseInitialized()) {
+                    logger.debug("Database not initialized.");
+                    initializeDatabase();
+                } else {
+                    logger.debug("Database was already initialized, skipping.");
+                }
+                
+                if (!isDatabaseCurrent()) {
+                    logger.debug("Old database version detected, upgrading.");
+                    upgradeDatabase();
+                }
+            }
+        } else {
             if (!isDatabaseInitialized()) {
-                logger.debug("Database not initialized.");
-                initializeDatabase();
-            } else {
-                logger.debug("Database was already initialized, skipping.");
+                logger.error("Database not initialized.  Please use the DDL scripts to initialize the database before starting the application.");
+                throw new RuntimeException("Database not initialized.");
+            }
+            
+            if (!isDatabaseCurrent()) {
+                logger.error("Detected an old version of the database.  Please use the DDL upgrade scripts to bring your database up to date.");
+                throw new RuntimeException("Database not upgraded.");
             }
         }
     }
-    
+
     /**
      * @return true if the database has already been initialized
      */
@@ -95,6 +114,15 @@ public class JdbcStorage implements IStorage {
             ResultIterable<Integer> result = handle.createQuery(this.sqlStatements.isDatabaseInitialized()).mapTo(Integer.class);
             return result.findOnly().intValue() > 0;
         });
+    }
+
+    /**
+     * @return true if the database has already been initialized
+     */
+    private boolean isDatabaseCurrent() {
+        logger.debug("Checking to see if the DB is up-to-date.");
+        int version = this.getDatabaseVersion();
+        return version == DB_VERSION;
     }
 
     /**
@@ -115,7 +143,51 @@ public class JdbcStorage implements IStorage {
         });
         logger.debug("---");
     }
+
+    /**
+     * Upgrades the database by executing a number of DDL statements found in DB-specific
+     * DDL upgrade scripts.
+     */
+    private void upgradeDatabase() {
+        logger.info("Upgrading the Apicurio Hub API database.");
+        
+        int fromVersion = this.getDatabaseVersion();
+        int toVersion = DB_VERSION;
+
+        logger.info("\tDatabase type: {}", config.getJdbcType());
+        logger.info("\tFrom Version:  {}", fromVersion);
+        logger.info("\tTo Version:    {}", toVersion);
+
+        final List<String> statements = this.sqlStatements.databaseUpgrade(fromVersion, toVersion);
+        logger.debug("---");
+        this.jdbi.withHandle( handle -> {
+            statements.forEach( statement -> {
+                logger.debug(statement);
+                handle.createUpdate(statement).execute();
+            });
+            return null;
+        });
+        logger.debug("---");
+    }
     
+    /**
+     * Reuturns the current DB version by selecting the value in the 'apicurio' table.
+     */
+    private int getDatabaseVersion() {
+        return this.jdbi.withHandle(handle -> {
+            ResultIterable<String> result = handle.createQuery(this.sqlStatements.getDatabaseVersion())
+                    .bind(0, "db_version")
+                    .mapTo(String.class);
+            try {
+                String versionStr = result.findOnly();
+                int version = Integer.parseInt(versionStr);
+                return version;
+            } catch (Exception e) {
+                return 0;
+            }
+        });
+    }
+
     /**
      * @see io.apicurio.hub.api.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
      */

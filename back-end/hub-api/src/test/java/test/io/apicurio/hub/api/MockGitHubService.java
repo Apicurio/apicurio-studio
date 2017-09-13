@@ -90,6 +90,7 @@ public class MockGitHubService implements IGitHubSourceConnector {
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(repositoryUrl);
+            info.setTags(new String[] { "tag1", "tag2" });
             info.setUrl(repositoryUrl);
             return info;
         } catch (URISyntaxException e) {

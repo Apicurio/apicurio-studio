@@ -36,8 +36,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.ApiDesign;
@@ -49,6 +52,7 @@ import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.OpenApiDocument;
 import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.Tag;
 import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -60,8 +64,6 @@ import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
-import io.apicurio.hub.api.util.OpenApiTools;
-import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -71,6 +73,11 @@ public class DesignsResource implements IDesignsResource {
 
     private static Logger logger = LoggerFactory.getLogger(DesignsResource.class);
     private static ObjectMapper mapper = new ObjectMapper();
+    static {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+        mapper.setSerializationInclusion(Include.NON_NULL);
+    }
 
     @Inject
     private IStorage storage;
@@ -331,7 +338,7 @@ public class DesignsResource implements IDesignsResource {
             String newSha = connector.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
             this.response.setHeader("X-Content-SHA", newSha);
             
-            this.updateNameAndDescription(design, content);
+            this.updateDesignMetaData(design, content);
             design.setModifiedBy(this.security.getCurrentUser().getLogin());
             design.setModifiedOn(new Date());
 
@@ -347,11 +354,23 @@ public class DesignsResource implements IDesignsResource {
      * @param design
      * @param content
      */
-    private void updateNameAndDescription(ApiDesign design, String content) throws ServerError {
+    private void updateDesignMetaData(ApiDesign design, String content) throws ServerError {
         try {
-            NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
-            design.setName(nad.name);
-            design.setDescription(nad.description);
+            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
+            if (document.getInfo() != null) {
+                if (document.getInfo().getTitle() != null) {
+                    design.setName(document.getInfo().getTitle());
+                }
+                if (document.getInfo().getDescription() != null) {
+                    design.setDescription(document.getInfo().getDescription());
+                }
+            }
+            if (document.getTags() != null) {
+                Tag[] tags = document.getTags();
+                for (Tag tag : tags) {
+                    design.getTags().add(tag.getName());
+                }
+            }
         } catch (IOException e) {
             throw new ServerError(e);
         }

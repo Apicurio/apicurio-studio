@@ -22,6 +22,7 @@ package io.apicurio.hub.api.beans;
 public abstract class OpenApiDocument {
     
     private OpenApiInfo info;
+    private Tag[] tags;
     
     /**
      * Constructor.
@@ -41,6 +42,20 @@ public abstract class OpenApiDocument {
      */
     public void setInfo(OpenApiInfo info) {
         this.info = info;
+    }
+
+    /**
+     * @return the tags
+     */
+    public Tag[] getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(Tag[] tags) {
+        this.tags = tags;
     }
 
 }

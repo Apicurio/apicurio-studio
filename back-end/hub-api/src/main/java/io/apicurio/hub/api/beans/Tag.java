@@ -17,30 +17,20 @@
 package io.apicurio.hub.api.beans;
 
 /**
- * Represents some basic information extracted from an API Design resource (the 
- * content of an API design, typically an OpenAPI document).
  * @author eric.wittmann@gmail.com
  */
-public class ApiDesignResourceInfo {
+public class Tag {
     
     private String name;
     private String description;
-    private String[] tags;
-    private String url;
     
-    /**
-     * Constructor.
-     */
-    public ApiDesignResourceInfo() {
-    }
-
     /**
      * @return the name
      */
     public String getName() {
         return name;
     }
-
+    
     /**
      * @param name the name to set
      */
@@ -61,33 +51,5 @@ public class ApiDesignResourceInfo {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
-     * @return the tags
-     */
-    public String[] getTags() {
-        return tags;
-    }
-
-    /**
-     * @param tags the tags to set
-     */
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
+    
 }

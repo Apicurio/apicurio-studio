@@ -31,6 +31,7 @@ export class ApisCardsComponent {
     @Input() selectedApis: Api[];
     @Output() onApiSelected: EventEmitter<Api> = new EventEmitter<Api>();
     @Output() onApiDeselected: EventEmitter<Api> = new EventEmitter<Api>();
+    @Output() onTagSelected: EventEmitter<string> = new EventEmitter<string>();
 
     /**
      * Constructor.
@@ -47,6 +48,12 @@ export class ApisCardsComponent {
 
     public isSelected(api: Api): boolean {
         return this.selectedApis.indexOf(api) != -1;
+    }
+
+    public selectTag(tag: string, event: MouseEvent): void {
+        event.stopPropagation();
+        event.preventDefault();
+        this.onTagSelected.emit(tag);
     }
 
 }

@@ -99,7 +99,8 @@ public class DesignsResource implements IDesignsResource {
         try {
             logger.debug("Listing API Designs");
             String user = this.security.getCurrentUser().getLogin();
-            return this.storage.listApiDesigns(user);
+            Collection<ApiDesign> designs = this.storage.listApiDesigns(user);
+            return designs;
         } catch (StorageException e) {
             throw new ServerError(e);
         }

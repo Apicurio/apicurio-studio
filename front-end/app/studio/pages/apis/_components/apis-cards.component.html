@@ -9,6 +9,10 @@
                 </h2>
                 <div class="card-pf-body">
                     <hr/>
+                    <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
+                        <span class="api-tags-label">Tags:</span>
+                        <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
+                    </div>
                     <p class="api-description">{{api.description}}</p>
                 </div>
             </div>

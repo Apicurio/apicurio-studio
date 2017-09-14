@@ -27,6 +27,7 @@
   -ms-transition: background-color 300ms;
   -o-transition: background-color 300ms;
   transition: background-color 300ms;
+  height: 220px;
 }
 .api-card:hover {
   background-color: rgb(237, 237, 237);
@@ -38,6 +39,27 @@
 
 .api-description {
   font-size: 13px;
-  height: 75px;
   overflow-y: auto;
+}
+
+.api-card .api-tags {
+  margin-bottom: 8px;
+}
+.api-card .api-tags .api-tags-label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+.api-card .api-tags .api-tag {
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+.api-card .api-tags .api-tag:hover {
+  cursor: pointer;
+  background-color: #0088ce;
+  border-color: #00659c;
+  color: white;
 }

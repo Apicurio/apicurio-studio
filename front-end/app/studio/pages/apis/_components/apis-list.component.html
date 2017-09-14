@@ -11,6 +11,12 @@
                     </div>
                     <div class="list-group-item-text">{{ api.description }}</div>
                 </div>
+                <div class="list-view-pf-additional-info">
+                    <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
+                        <span class="api-tags-label">Tags:</span>
+                        <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

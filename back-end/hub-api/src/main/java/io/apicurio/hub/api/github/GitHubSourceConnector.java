@@ -34,6 +34,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -51,12 +53,11 @@ import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
 import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.util.OpenApiTools;
-import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
  * Implementation of the GitHub source connector.
@@ -66,6 +67,10 @@ import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 public class GitHubSourceConnector extends AbstractSourceConnector implements IGitHubSourceConnector {
 
     private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
+    private static final ObjectMapper mapper = new ObjectMapper();
+    static {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
     
@@ -100,12 +105,31 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(content);
             String b64Content = (String) jsonContent.get("content");
             
+            String name = resource.getResourcePath();
+            String description = "";
+            String[] tags = null;
+            
             content = new String(Base64.decodeBase64(b64Content), "UTF-8");
-            NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
+            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
+            if (document.getInfo() != null) {
+                if (document.getInfo().getTitle() != null) {
+                    name = document.getInfo().getTitle();
+                }
+                if (document.getInfo().getDescription() != null) {
+                    description = document.getInfo().getDescription();
+                }
+            }
+            if (document.getTags() != null) {
+                tags = new String[document.getTags().length];
+                for (int idx = 0; idx < document.getTags().length; idx++) {
+                    tags[idx] = document.getTags()[idx].getName();
+                }
+            }
             
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(nad.name);
-            info.setDescription(nad.description);
+            info.setName(name);
+            info.setDescription(description);
+            info.setTags(tags);
             info.setUrl("https://github.com/:org/:repo/blob/master/:path"
                     .replace(":org", resource.getOrganization())
                     .replace(":repo", resource.getRepository())

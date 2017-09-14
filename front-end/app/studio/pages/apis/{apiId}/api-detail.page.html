@@ -94,6 +94,10 @@
                                         </a>
                                     </div>
                                 </div>
+                                <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
+                                    <span class="api-tags-label">Tags:</span>
+                                    <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
+                                </div>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Design API</a>
                                     <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">View Documentation</a>

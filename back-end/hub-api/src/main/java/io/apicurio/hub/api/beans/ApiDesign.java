@@ -17,12 +17,14 @@
 package io.apicurio.hub.api.beans;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class ApiDesign {
-    
+
     private String id;
     private String name;
     private String description;
@@ -31,7 +33,8 @@ public class ApiDesign {
     private Date createdOn;
     private String modifiedBy;
     private Date modifiedOn;
-    
+    private Set<String> tags = new HashSet<>();
+
     /**
      * Constructor.
      */
@@ -148,6 +151,20 @@ public class ApiDesign {
      */
     public void setModifiedOn(Date modifiedOn) {
         this.modifiedOn = modifiedOn;
+    }
+
+    /**
+     * @return the tags
+     */
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
     }
     
 }

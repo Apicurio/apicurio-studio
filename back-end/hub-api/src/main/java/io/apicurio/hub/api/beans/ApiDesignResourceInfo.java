@@ -25,6 +25,7 @@ public class ApiDesignResourceInfo {
     
     private String name;
     private String description;
+    private String[] tags;
     private String url;
     
     /**
@@ -73,6 +74,20 @@ public class ApiDesignResourceInfo {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * @return the tags
+     */
+    public String[] getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags the tags to set
+     */
+    public void setTags(String[] tags) {
+        this.tags = tags;
     }
 
 }

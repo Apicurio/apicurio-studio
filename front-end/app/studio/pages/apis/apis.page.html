@@ -12,7 +12,7 @@
                 <div class="form-group toolbar-pf-filter">
                     <label class="sr-only" for="filter">Name</label>
                     <div class="input-group" style="width: 100%">
-                        <input name="name-filter" [(ngModel)]="filters.nameFilter" type="text" class="form-control name-filter" id="filter" placeholder="Filter by name...">
+                        <input name="name-filter" [(ngModel)]="filters.nameFilter" type="text" class="form-control name-filter" id="filter" placeholder="Filter by name or tag...">
                     </div>
                 </div>
                 <div class="form-group">
@@ -97,8 +97,10 @@
         <!-- The list or card view -->
         <div class="col-md-12" *ngIf="isLoaded('apis')">
             <apis-list *ngIf="filters.layout === 'list'" [apis]="filteredApis" [selectedApis]="selectedApis"
+                       (onTagSelected)="onTagSelected($event)"
                        (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-list>
             <apis-cards *ngIf="filters.layout === 'card'" [apis]="filteredApis" [selectedApis]="selectedApis"
+                        (onTagSelected)="onTagSelected($event)"
                         (onApiSelected)="onSelected($event)" (onApiDeselected)="onDeselected($event)"></apis-cards>
         </div>
     </div>

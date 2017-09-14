@@ -16,8 +16,12 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -26,7 +30,9 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.result.ResultIterable;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +51,10 @@ import io.apicurio.hub.api.storage.StorageException;
  */
 @ApplicationScoped
 public class JdbcStorage implements IStorage {
-
+    
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
+    private static int DB_VERSION = 1;
+    private static Object dbMutex = new Object();
 
     @Inject
     private HubApiConfiguration config;
@@ -77,15 +85,32 @@ public class JdbcStorage implements IStorage {
         }
         
         if (config.isJdbcInit()) {
+            synchronized (dbMutex) {
+                if (!isDatabaseInitialized()) {
+                    logger.debug("Database not initialized.");
+                    initializeDatabase();
+                } else {
+                    logger.debug("Database was already initialized, skipping.");
+                }
+                
+                if (!isDatabaseCurrent()) {
+                    logger.debug("Old database version detected, upgrading.");
+                    upgradeDatabase();
+                }
+            }
+        } else {
             if (!isDatabaseInitialized()) {
-                logger.debug("Database not initialized.");
-                initializeDatabase();
-            } else {
-                logger.debug("Database was already initialized, skipping.");
+                logger.error("Database not initialized.  Please use the DDL scripts to initialize the database before starting the application.");
+                throw new RuntimeException("Database not initialized.");
+            }
+            
+            if (!isDatabaseCurrent()) {
+                logger.error("Detected an old version of the database.  Please use the DDL upgrade scripts to bring your database up to date.");
+                throw new RuntimeException("Database not upgraded.");
             }
         }
     }
-    
+
     /**
      * @return true if the database has already been initialized
      */
@@ -95,6 +120,15 @@ public class JdbcStorage implements IStorage {
             ResultIterable<Integer> result = handle.createQuery(this.sqlStatements.isDatabaseInitialized()).mapTo(Integer.class);
             return result.findOnly().intValue() > 0;
         });
+    }
+
+    /**
+     * @return true if the database has already been initialized
+     */
+    private boolean isDatabaseCurrent() {
+        logger.debug("Checking to see if the DB is up-to-date.");
+        int version = this.getDatabaseVersion();
+        return version == DB_VERSION;
     }
 
     /**
@@ -115,7 +149,51 @@ public class JdbcStorage implements IStorage {
         });
         logger.debug("---");
     }
+
+    /**
+     * Upgrades the database by executing a number of DDL statements found in DB-specific
+     * DDL upgrade scripts.
+     */
+    private void upgradeDatabase() {
+        logger.info("Upgrading the Apicurio Hub API database.");
+        
+        int fromVersion = this.getDatabaseVersion();
+        int toVersion = DB_VERSION;
+
+        logger.info("\tDatabase type: {}", config.getJdbcType());
+        logger.info("\tFrom Version:  {}", fromVersion);
+        logger.info("\tTo Version:    {}", toVersion);
+
+        final List<String> statements = this.sqlStatements.databaseUpgrade(fromVersion, toVersion);
+        logger.debug("---");
+        this.jdbi.withHandle( handle -> {
+            statements.forEach( statement -> {
+                logger.debug(statement);
+                handle.createUpdate(statement).execute();
+            });
+            return null;
+        });
+        logger.debug("---");
+    }
     
+    /**
+     * Reuturns the current DB version by selecting the value in the 'apicurio' table.
+     */
+    private int getDatabaseVersion() {
+        return this.jdbi.withHandle(handle -> {
+            ResultIterable<String> result = handle.createQuery(this.sqlStatements.getDatabaseVersion())
+                    .bind(0, "db_version")
+                    .mapTo(String.class);
+            try {
+                String versionStr = result.findOnly();
+                int version = Integer.parseInt(versionStr);
+                return version;
+            } catch (Exception e) {
+                return 0;
+            }
+        });
+    }
+
     /**
      * @see io.apicurio.hub.api.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
      */
@@ -271,13 +349,13 @@ public class JdbcStorage implements IStorage {
                 return handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId))
                         .bind(1, userId)
-                        .mapToBean(ApiDesign.class)
+                        .map(ApiDesignRowMapper.instance)
                         .findOnly();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
         } catch (Exception e) {
-            throw new StorageException("Error getting API design.");
+            throw new StorageException("Error getting API design.", e);
         }
     }
 
@@ -298,6 +376,7 @@ public class JdbcStorage implements IStorage {
                       .bind(4, design.getCreatedOn())
                       .bind(5, design.getModifiedBy())
                       .bind(6, design.getModifiedOn())
+                      .bind(7, asCsv(design.getTags()))
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
                       .findOnly();
@@ -318,6 +397,23 @@ public class JdbcStorage implements IStorage {
             } else {
                 throw new StorageException("Error inserting API design.", e);
             }
+        }
+    }
+
+    /**
+     * Converts from a Set of tags to a CSV of those tags.
+     * @param tags
+     */
+    private static String asCsv(Set<String> tags) {
+        StringBuilder builder = new StringBuilder();
+        tags.forEach( tag -> {
+            builder.append(tag);
+            builder.append(',');
+        });
+        if (builder.length() > 0) {
+            return builder.substring(0, builder.length() - 1);
+        } else {
+            return null;
         }
     }
 
@@ -386,7 +482,8 @@ public class JdbcStorage implements IStorage {
                         .bind(1, design.getDescription())
                         .bind(2, design.getModifiedBy())
                         .bind(3, design.getModifiedOn())
-                        .bind(4, Long.valueOf(design.getId()))
+                        .bind(4, asCsv(design.getTags()))
+                        .bind(5, Long.valueOf(design.getId()))
                         .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();
@@ -411,12 +508,57 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.selectApiDesigns();
                 return handle.createQuery(statement)
                         .bind(0, userId)
-                        .mapToBean(ApiDesign.class)
+                        .map(ApiDesignRowMapper.instance)
                         .list();
             });
         } catch (Exception e) {
             throw new StorageException("Error listing API designs.", e);
         }
+    }
+    
+    /**
+     * A row mapper to read an api design from the DB (as a single row in a SELECT)
+     * and return an ApiDesign instance.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiDesignRowMapper implements RowMapper<ApiDesign> {
+        
+        public static final ApiDesignRowMapper instance = new ApiDesignRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiDesign map(ResultSet rs, StatementContext ctx) throws SQLException {
+            ApiDesign design = new ApiDesign();
+            design.setId(rs.getString("id"));
+            design.setName(rs.getString("name"));
+            design.setDescription(rs.getString("description"));
+            design.setRepositoryUrl(rs.getString("repository_url"));
+            design.setCreatedBy(rs.getString("created_by"));
+            design.setCreatedOn(rs.getTimestamp("created_on"));
+            design.setModifiedBy(rs.getString("modified_by"));
+            design.setModifiedOn(rs.getTimestamp("modified_on"));
+            String tags = rs.getString("tags");
+            design.getTags().addAll(toSet(tags));
+            return design;
+        }
+
+        /**
+         * Read CSV data and convert to a set of strings.
+         * @param tags
+         */
+        private Set<String> toSet(String tags) {
+            Set<String> rval = new HashSet<String>();
+            if (tags != null && tags.length() > 0) {
+                String[] split = tags.split(",");
+                for (String tag : split) {
+                    rval.add(tag.trim());
+                }
+            }
+            return rval;
+        }
+
     }
 
 }

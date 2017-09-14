@@ -14,29 +14,42 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.storage.jdbc;
+package io.apicurio.hub.api.beans;
 
 /**
- * H2 implementation of the sql statements interface.  Provides sql statements that
- * are specific to PostgreSQL, where applicable.
  * @author eric.wittmann@gmail.com
  */
-public class PostgreSQL9SqlStatements extends CommonSqlStatements {
+public class Tag {
+    
+    private String name;
+    private String description;
     
     /**
-     * @see io.apicurio.hub.api.storage.jdbc.CommonSqlStatements#dbType()
+     * @return the name
      */
-    @Override
-    protected String dbType() {
-        return "postgresql9";
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#isDatabaseInitialized()
+     * @return the description
      */
-    @Override
-    public String isDatabaseInitialized() {
-        return "SELECT count(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs' LIMIT 1";
+    public String getDescription() {
+        return description;
     }
 
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
 }

@@ -26,6 +26,7 @@ export class Api {
     createdBy: string;
     modifiedOn: Date;
     modifiedBy: string;
+    tags: string[];
 
     constructor() {
         this.id = "";
@@ -36,6 +37,7 @@ export class Api {
         this.createdBy = "";
         this.modifiedOn = new Date();
         this.modifiedBy = "";
+        this.tags = null;
     }
 
 }

@@ -18,8 +18,10 @@ package io.apicurio.hub.api.storage.jdbc;
 
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
@@ -193,6 +195,8 @@ public class JdbcStorageTest {
         design.setModifiedOn(now);
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
+        design.getTags().add("tag1");
+        design.getTags().add("tag2");
         
         String designId = storage.createApiDesign("user", design);
         
@@ -206,6 +210,7 @@ public class JdbcStorageTest {
         Assert.assertEquals("Just added the design!", design.getDescription());
         Assert.assertEquals("API Name", design.getName());
         Assert.assertEquals("urn://JdbcStorageTest.testCreateApiDesign", design.getRepositoryUrl());
+        Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2")), design.getTags());
         
         try {
             storage.getApiDesign("user", "17");
@@ -233,6 +238,8 @@ public class JdbcStorageTest {
         design.setModifiedOn(now);
         design.setName("API Name");
         design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
+        design.getTags().add("tag1");
+        design.getTags().add("tag2");
         
         String designId = storage.createApiDesign("user", design);
         design.setId(designId);
@@ -241,6 +248,10 @@ public class JdbcStorageTest {
         design.setModifiedOn(new Date(now.getTime() + 100));
         design.setName("Updated API Name");
         design.setDescription("Updated description.");
+        design.getTags().clear();
+        design.getTags().add("tag3");
+        design.getTags().add("tag4");
+        design.getTags().add("tag5");
         storage.updateApiDesign("user", design);
         
         // now fetch the design from the storage and verify its values
@@ -253,6 +264,7 @@ public class JdbcStorageTest {
         Assert.assertEquals(design.getCreatedOn(), updatedDesign.getCreatedOn());
         Assert.assertEquals(design.getModifiedBy(), updatedDesign.getModifiedBy());
         Assert.assertEquals(design.getModifiedOn(), updatedDesign.getModifiedOn());
+        Assert.assertEquals(design.getTags(), updatedDesign.getTags());
         
         try {
             storage.updateApiDesign("user2", design);

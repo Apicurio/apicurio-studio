@@ -42,10 +42,20 @@ class Filters {
         }
     }
 
-    public accepts(api:Api): boolean {
+    public accepts(api: Api): boolean {
         let name: string = api.name.toLocaleLowerCase();
         let namef: string = this.nameFilter.toLocaleLowerCase();
-        return name.indexOf(namef) >= 0;
+        if (name.indexOf(namef) >= 0) {
+            return true;
+        }
+        if (api.tags && api.tags.length > 0) {
+            return api.tags.map(tag => {
+                return tag.toLocaleLowerCase() == namef;
+            }).reduce( (v1, v2) => {
+                return v1 || v2;
+            });
+        }
+        return false;
     }
 
     public reset(): void {
@@ -91,6 +101,7 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     public loadAsyncPageData(): void {
         console.log("[ApisPageComponent] loadAsyncPageData")
         this.apis.getApis().then( apis => {
+            console.info("APIS: %O", apis);
             this.allApis = apis;
             this.filterApis();
             this.loaded("apis");
@@ -154,6 +165,11 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     public onDeselected(api: Api): void {
         console.info("[ApisPageComponent] Caught the onApiDeselected event!  Data: %o", api);
         this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
+    }
+
+    public onTagSelected(tag: string): void {
+        this.filters.nameFilter = tag;
+        this.filterApis();
     }
 
     /**

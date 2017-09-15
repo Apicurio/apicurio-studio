@@ -28,7 +28,7 @@ import {
     createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
-    createReplaceOperationCommand
+    createReplaceOperationCommand, SimplifiedParameterType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
@@ -273,7 +273,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public changeRequestBodyType(newType: string): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
-        let nt: SimplifiedType = new SimplifiedType();
+        let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.type = newType;
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, nt);
         this.onCommand.emit(command);
@@ -281,7 +281,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public changeRequestBodyTypeOf(newOf: string): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
-        let newType: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
+        let newType: SimplifiedParameterType = SimplifiedParameterType.fromParameter(bodyParam);
         newType.of = new SimplifiedType();
         newType.of.type = newOf;
         newType.as = null;
@@ -291,7 +291,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public changeRequestBodyTypeAs(newAs: string): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
-        let newType: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
+        let newType: SimplifiedParameterType = SimplifiedParameterType.fromParameter(bodyParam);
         if (newType.isSimpleType()) {
             newType.as = newAs;
         }
@@ -462,7 +462,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.onCommand.emit(command);
     }
 
-    public changeParamType(param: Oas20Parameter, newType: SimplifiedType): void {
+    public changeParamType(param: Oas20Parameter, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), param, newType);
         this.onCommand.emit(command);
     }

@@ -2665,9 +2665,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-oai-ts-commands@0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.7.tgz#073041616beac2a127e6b5bc209274b1d777fc14"
+oai-ts-commands@0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.8.tgz#1947771110aeaf1d3733298476cd77d067ea4e74"
   dependencies:
     core-js "2.4.1"
     oai-ts-core "0.2.5"

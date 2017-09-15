@@ -16,10 +16,11 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
-import {SimplifiedType} from "oai-ts-commands";
-import {Oas20Parameter, Oas30Parameter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
+import {SimplifiedParameterType} from "oai-ts-commands";
+import {OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "./typed-item.component";
 import {AbstractCombinedVisitorAdapter} from "../../../_visitors/base.visitor";
+import {DropDownOption} from "../../common/drop-down.component";
 
 
 @Component({
@@ -28,7 +29,7 @@ import {AbstractCombinedVisitorAdapter} from "../../../_visitors/base.visitor";
     templateUrl: "param-row.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class ParamRowComponent extends AbstractTypedItemComponent {
+export class ParamRowComponent extends AbstractTypedItemComponent<SimplifiedParameterType> {
 
     private _param: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -50,16 +51,39 @@ export class ParamRowComponent extends AbstractTypedItemComponent {
     private missingFlag: boolean;
     private overrideFlag: boolean;
 
-    protected modelForEditing(): SimplifiedType {
+    protected modelForEditing(): SimplifiedParameterType {
         return this.paramToSimplifiedType(this.param);
     }
 
-    protected modelForViewing(): SimplifiedType {
+    protected modelForViewing(): SimplifiedParameterType {
         if (this.missingFlag && this._overriddenParam !== null) {
             return this.paramToSimplifiedType(this._overriddenParam);
         } else {
             return this.paramToSimplifiedType(this.param);
         }
+    }
+
+    public isRequired(): boolean {
+        return this.param.required;
+    }
+
+    public isPathParam(): boolean {
+        return this.param.in === "path";
+    }
+
+    public required(): string {
+        return this.model.required ? "required" : "not-required";
+    }
+
+    public requiredOptions(): DropDownOption[] {
+        return [
+            { name: "Required", value: "required" },
+            { name: "Not Required", value: "not-required" }
+        ];
+    }
+
+    public changeRequired(newValue: string): void {
+        this.model.required = newValue === "required";
     }
 
     protected paramDescription(): string {
@@ -96,12 +120,8 @@ export class ParamRowComponent extends AbstractTypedItemComponent {
         return viz.overriddenParam;
     }
 
-    private paramToSimplifiedType(param: OasParameterBase): SimplifiedType {
-        if (param.ownerDocument().getSpecVersion() === "2.0") {
-            return SimplifiedType.fromItems(param as Oas20Parameter);
-        } else {
-            return SimplifiedType.fromSchema((param as Oas30Parameter).schema);
-        }
+    private paramToSimplifiedType(param: OasParameterBase): SimplifiedParameterType {
+        return SimplifiedParameterType.fromParameter(param as any);
     }
 
 }

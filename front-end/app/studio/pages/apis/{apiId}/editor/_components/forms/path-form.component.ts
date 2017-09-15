@@ -31,7 +31,7 @@ import {
     createNewParamCommand,
     createNewPathCommand,
     createReplacePathItemCommand,
-    SimplifiedType
+    SimplifiedParameterType
 } from "oai-ts-commands";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
@@ -279,7 +279,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         this.onCommand.emit(command);
     }
 
-    public changeParamType(param: OasParameterBase, newType: SimplifiedType): void {
+    public changeParamType(param: OasParameterBase, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.path.ownerDocument(), param as any, newType);
         this.onCommand.emit(command);
     }

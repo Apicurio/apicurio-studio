@@ -16,7 +16,7 @@
  */
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
-import {SimplifiedType} from "oai-ts-commands";
+import {SimplifiedPropertyType} from "oai-ts-commands";
 import {
     Oas20PropertySchema,
     Oas20SchemaDefinition,
@@ -35,18 +35,41 @@ import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definition
     templateUrl: "property-row.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class PropertyRowComponent extends AbstractTypedItemComponent {
+export class PropertyRowComponent extends AbstractTypedItemComponent<SimplifiedPropertyType> {
 
     @Input() property: Oas20PropertySchema | Oas30PropertySchema;
     @Input() propertyClass: string = "";
     @Input() canDelete: boolean = true;
 
-    protected modelForEditing(): SimplifiedType {
-        return SimplifiedType.fromSchema(this.property);
+    protected modelForEditing(): SimplifiedPropertyType {
+        return SimplifiedPropertyType.fromPropertySchema(this.property);
     }
 
-    protected modelForViewing(): SimplifiedType {
-        return SimplifiedType.fromSchema(this.property);
+    protected modelForViewing(): SimplifiedPropertyType {
+        return SimplifiedPropertyType.fromPropertySchema(this.property);
+    }
+
+    public isRequired(): boolean {
+        let required: string[] = this.property.parent()["required"];
+        if (required && required.length > 0) {
+            return required.indexOf(this.property.propertyName()) != -1;
+        }
+        return false;
+    }
+
+    public required(): string {
+        return this.model.required ? "required" : "not-required";
+    }
+
+    public requiredOptions(): DropDownOption[] {
+        return [
+            { name: "Required", value: "required" },
+            { name: "Not Required", value: "not-required" }
+        ];
+    }
+
+    public changeRequired(newValue: string): void {
+        this.model.required = newValue === "required";
     }
 
     public typeOptions(): DropDownOption[] {

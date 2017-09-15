@@ -21,15 +21,17 @@ import {
     createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteAllParametersCommand, createDeleteMediaTypeCommand,
+    createDeleteAllParametersCommand,
+    createDeleteMediaTypeCommand,
     createDeleteNodeCommand,
     createDeleteParameterCommand,
-    createDeleteResponseCommand, createNewMediaTypeCommand,
+    createDeleteResponseCommand,
+    createNewMediaTypeCommand,
     createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
-    SimplifiedType
+    SimplifiedParameterType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
@@ -245,7 +247,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         this.onCommand.emit(command);
     }
 
-    public changeParamType(param: Oas30Parameter, newType: SimplifiedType): void {
+    public changeParamType(param: Oas30Parameter, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), param, newType);
         this.onCommand.emit(command);
     }

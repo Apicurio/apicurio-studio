@@ -21,15 +21,15 @@ import {SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 
 
-export abstract class AbstractTypedItemComponent {
+export abstract class AbstractTypedItemComponent<T extends SimplifiedType> {
 
     @Output() onDescriptionChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onTypeChange: EventEmitter<SimplifiedType> = new EventEmitter<SimplifiedType>();
+    @Output() onTypeChange: EventEmitter<T> = new EventEmitter<T>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
 
-    protected model: SimplifiedType;
+    protected model: T;
 
     public type(): string {
         if (!ObjectUtils.isNullOrUndefined(this.model)) {
@@ -125,9 +125,6 @@ export abstract class AbstractTypedItemComponent {
     }
 
     public changeTypeAs(typeAs: string): void {
-        if (ObjectUtils.isNullOrUndefined(this.model)) {
-            this.model = new SimplifiedType();
-        }
         if (this.model.isArray() && this.model.of && this.model.of.isSimpleType()) {
             this.model.of.as = typeAs;
         }
@@ -144,16 +141,16 @@ export abstract class AbstractTypedItemComponent {
         return this._editing;
     }
 
-    protected abstract modelForEditing(): SimplifiedType;
+    protected abstract modelForEditing(): T;
 
     public edit(): void {
         this.model = this.modelForEditing();
         this._editing = true;
     }
 
-    protected abstract modelForViewing(): SimplifiedType;
+    protected abstract modelForViewing(): T;
 
-    public displayType(): SimplifiedType {
+    public displayType(): T {
         return this.modelForViewing();
     }
 

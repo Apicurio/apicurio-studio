@@ -1,4 +1,4 @@
-<div class="row parameter typed-item" [class.editing]="isEditing()" [class.missing]="isMissing()"
+<div class="row parameter typed-item" [class.required]="isRequired()" [class.editing]="isEditing()" [class.missing]="isMissing()"
      [class.override]="isOverride()" [class.overridable]="isOverridable()">
 
     <div class="col-md-6 metainfo">
@@ -30,27 +30,37 @@
 </div>
 <div class="row parameter-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
     <form  class="form-horizontal">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="form-group" *ngIf="!isPathParam()">
+                <label class="col-sm-2 control-label">Parameter is</label>
+                <div class="col-sm-8 api-parameter-required">
+                    <drop-down [id]="'api-request-parameter-required'"
+                               [value]="required()"
+                               [options]="requiredOptions()"
+                               (onValueChange)="changeRequired($event)"
+                               [noSelectionLabel]="'Not Required'"></drop-down>
+                </div>
+            </div>
             <div class="form-group">
-                <label class="col-sm-4 control-label" for="parameterType">Type</label>
+                <label class="col-sm-2 control-label" for="parameterType">Type</label>
                 <div class="col-sm-8">
                     <drop-down id="parameterType" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="model.type === 'array'">
-                <label class="col-sm-4 control-label" for="parameterTypeOf">of</label>
+                <label class="col-sm-2 control-label" for="parameterTypeOf">of</label>
                 <div class="col-sm-8">
                     <drop-down id="parameterTypeOf" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="shouldShowFormattedAs()">
-                <label class="col-sm-4 control-label" for="parameterTypeFormat">formatted as</label>
+                <label class="col-sm-2 control-label" for="parameterTypeFormat">formatted as</label>
                 <div class="col-sm-8">
                     <drop-down id="parameterTypeFormat" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
                 </div>
             </div>
             <div class="form-group form-group-actions">
-                <div class="col-sm-offset-4 col-sm-8">
+                <div class="col-sm-offset-2 col-sm-8">
                     <button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>
                     <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
                 </div>

@@ -24,7 +24,7 @@ import {
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
     createNewSchemaPropertyCommand,
-    createReplaceSchemaDefinitionCommand, SimplifiedType
+    createReplaceSchemaDefinitionCommand, SimplifiedPropertyType, SimplifiedType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 
@@ -101,7 +101,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         this.onCommand.emit(command);
     }
 
-    public changePropertyType(property: OasSchema, newType: SimplifiedType): void {
+    public changePropertyType(property: OasSchema, newType: SimplifiedPropertyType): void {
         let command: ICommand = createChangePropertyTypeCommand(property.ownerDocument(), property as any, newType);
         this.onCommand.emit(command);
     }

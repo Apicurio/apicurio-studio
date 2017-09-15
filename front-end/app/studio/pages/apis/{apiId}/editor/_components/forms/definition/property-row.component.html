@@ -1,4 +1,4 @@
-<div class="row property typed-item" [class.editing]="isEditing()">
+<div class="row property typed-item" [class.required]="isRequired()" [class.editing]="isEditing()">
     <div class="col-md-6 metainfo">
         <div class="property {{ propertyClass }} name">{{ property.propertyName() }}</div>
         <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
@@ -15,35 +15,42 @@
     </div>
 </div>
 <div class="row property-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
-    <form  class="form-horizontal">
-        <div class="col-md-6">
+    <form class="form-horizontal">
+        <div class="col-md-12">
             <div class="form-group">
-                <label class="col-sm-4 control-label" for="propertyType">Type</label>
+                <label class="col-sm-2 control-label">Property is</label>
+                <div class="col-sm-8 api-property-required">
+                    <drop-down [id]="'api-request-property-required'"
+                               [value]="required()"
+                               [options]="requiredOptions()"
+                               (onValueChange)="changeRequired($event)"
+                               [noSelectionLabel]="'Not Required'"></drop-down>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="propertyType">Type</label>
                 <div class="col-sm-8">
                     <drop-down id="propertyType" [id]="'api-schema-property-type'" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="model.type === 'array'">
-                <label class="col-sm-4 control-label" for="propertyTypeOf">of</label>
+                <label class="col-sm-2 control-label" for="propertyTypeOf">of</label>
                 <div class="col-sm-8">
                     <drop-down id="propertyTypeOf" [id]="'api-schema-property-type-of'" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group" *ngIf="shouldShowFormattedAs()">
-                <label class="col-sm-4 control-label" for="propertyTypeFormat">formatted as</label>
+                <label class="col-sm-2 control-label" for="propertyTypeFormat">formatted as</label>
                 <div class="col-sm-8">
                     <drop-down id="propertyTypeFormat" [id]="'api-schema-property-type-as'" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
                 </div>
             </div>
             <div class="form-group form-group-actions">
-                <div class="col-sm-offset-4 col-sm-8">
+                <div class="col-sm-offset-2 col-sm-8">
                     <button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>
                     <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-
         </div>
     </form>
 </div>

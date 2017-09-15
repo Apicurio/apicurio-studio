@@ -31,7 +31,7 @@ import {AbstractTypedItemComponent} from "./typed-item.component";
     templateUrl: "response-row.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class ResponseRowComponent extends AbstractTypedItemComponent {
+export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedType> {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 

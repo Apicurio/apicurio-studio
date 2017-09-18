@@ -107,7 +107,6 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             
             String name = resource.getResourcePath();
             String description = "";
-            String[] tags = null;
             
             content = new String(Base64.decodeBase64(b64Content), "UTF-8");
             OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
@@ -119,21 +118,19 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                     description = document.getInfo().getDescription();
                 }
             }
-            if (document.getTags() != null) {
-                tags = new String[document.getTags().length];
-                for (int idx = 0; idx < document.getTags().length; idx++) {
-                    tags[idx] = document.getTags()[idx].getName();
-                }
-            }
             
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(description);
-            info.setTags(tags);
             info.setUrl("https://github.com/:org/:repo/blob/master/:path"
                     .replace(":org", resource.getOrganization())
                     .replace(":repo", resource.getRepository())
                     .replace(":path", resource.getResourcePath()));
+            if (document.getTags() != null) {
+                for (int idx = 0; idx < document.getTags().length; idx++) {
+                    info.getTags().add(document.getTags()[idx].getName());
+                }
+            }
             return info;
         } catch (IOException e) {
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);

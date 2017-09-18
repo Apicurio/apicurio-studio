@@ -37,8 +37,9 @@
             </form>
             <div class="row toolbar-pf-results">
                 <div class="col-sm-12">
-                    <h5>{{ filteredApis.length }} APIs found <a *ngIf="allApis.length != filteredApis.length"
+                    <h5 *ngIf="numApisToDelete === 0">{{ filteredApis.length }} APIs found <a *ngIf="allApis.length != filteredApis.length"
                                                                 class="clear-filters" (click)="clearFilters()">(out of {{ allApis.length }} total)</a></h5>
+                    <h5 *ngIf="numApisToDelete > 0"><span class="spinner spinner-xs spinner-inline"></span> Deleting {{ numApisToDelete }} APIs, please wait...</h5>
                 </div>
             </div>
         </div>

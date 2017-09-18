@@ -16,6 +16,9 @@
 
 package io.apicurio.hub.api.beans;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents some basic information extracted from an API Design resource (the 
  * content of an API design, typically an OpenAPI document).
@@ -25,7 +28,7 @@ public class ApiDesignResourceInfo {
     
     private String name;
     private String description;
-    private String[] tags;
+    private Set<String> tags = new HashSet<>();
     private String url;
     
     /**
@@ -79,14 +82,14 @@ public class ApiDesignResourceInfo {
     /**
      * @return the tags
      */
-    public String[] getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
     /**
      * @param tags the tags to set
      */
-    public void setTags(String[] tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 

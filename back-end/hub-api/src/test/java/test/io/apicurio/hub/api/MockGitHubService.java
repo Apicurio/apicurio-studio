@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -90,7 +91,7 @@ public class MockGitHubService implements IGitHubSourceConnector {
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(repositoryUrl);
-            info.setTags(new String[] { "tag1", "tag2" });
+            info.setTags(new HashSet<String>(Arrays.asList("tag1", "tag2")));
             info.setUrl(repositoryUrl);
             return info;
         } catch (URISyntaxException e) {

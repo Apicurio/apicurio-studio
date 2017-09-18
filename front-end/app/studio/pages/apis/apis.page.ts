@@ -79,6 +79,8 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     private selectedApis: Api[];
     private filters: Filters = new Filters();
 
+    private numApisToDelete: number = 0;
+
     /**
      * C'tor.
      * @param {IApisService} apis
@@ -181,10 +183,12 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
         // Note: we can only delete selected items that we can see in the UI.
         let itemsToDelete: Api[] = ArrayUtils.intersect(this.selectedApis, this.filteredApis);
         console.log("[ApisPageComponent] Deleting %s selected APIs.", itemsToDelete.length);
+        this.numApisToDelete = itemsToDelete.length;
         for (let api of itemsToDelete) {
             this.apis.deleteApi(api).then( () => {
                 this.removeApiFromList(api);
                 this.filterApis();
+                this.numApisToDelete--;
             }).catch( error => {
                 console.error("[ApisPageComponent] Error deleting an API with ID %s", api.id);
                 this.error(error);

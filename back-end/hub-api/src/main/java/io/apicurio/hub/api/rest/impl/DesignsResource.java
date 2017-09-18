@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -132,6 +133,7 @@ public class DesignsResource implements IDesignsResource {
 			design.setCreatedOn(now);
 			design.setModifiedBy(user);
 			design.setModifiedOn(now);
+			design.setTags(resourceInfo.getTags());
 			
 			try {
 			    String id = this.storage.createApiDesign(user, design);
@@ -247,6 +249,9 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Deleting an API Design with ID {}", designId);
+        
+        try { Thread.sleep(new Random(System.currentTimeMillis()).nextInt(2000)); } catch (InterruptedException e) { }
+        
         try {
             String user = this.security.getCurrentUser().getLogin();
             this.storage.deleteApiDesign(user, designId);

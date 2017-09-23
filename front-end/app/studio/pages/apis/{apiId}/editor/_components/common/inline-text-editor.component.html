@@ -15,7 +15,7 @@
         <input #newvalue required [(ngModel)]="evalue" type="text" class="form-control inline-text-editor-input inline-editor-input {{ inputClass }}"
                name="inline-text-editor-input" [style.width]="hoverWidth()" [style.height]="hoverDims.height + 2"
                (keypress)="onInputKeypress($event)" (focus)="onInputFocus(true)" (blur)="onInputFocus(false)" (mouseenter)="onInputIn(true)"
-               (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)">
+               (keydown)="onInputKeypress($event)" (mouseleave)="onInputIn(false)" autocomplete="off">
         <div class="edit-overlay" *ngIf="editing" [class.hover]="inputHover" [class.focus]="inputFocus">
              <div class="overlay-actions"
              ><button title="Save changes." [disabled]="!editform.form.valid" class="overlay-action btn btn-xs btn-primary" type="submit"

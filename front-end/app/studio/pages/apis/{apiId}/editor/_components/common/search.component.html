@@ -3,7 +3,7 @@
         <div class="search-pf-input-group">
             <label for="{{ searchId }}" class="sr-only">Search</label>
             <input name="search" id="{{ searchId }}" type="search" class="form-control" placeholder="{{ placeholder }}"
-                   value="{{ initialValue }}" [ngModel]="value" (ngModelChange)="changeValue($event)">
+                   value="{{ initialValue }}" [ngModel]="value" (ngModelChange)="changeValue($event)" autocomplete="off">
             <button *ngIf="hasValue()" type="button" class="clear" (click)="clear()"><span class="pficon pficon-close"></span></button>
         </div>
     </div>

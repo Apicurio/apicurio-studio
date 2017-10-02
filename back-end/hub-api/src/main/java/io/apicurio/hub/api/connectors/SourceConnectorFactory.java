@@ -23,6 +23,8 @@ import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
+import io.apicurio.hub.api.gitlab.GitLabResource;
+import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
 
 /**
@@ -68,6 +70,9 @@ public class SourceConnectorFactory {
             return gitHub;
         }
 
+        if (GitLabResourceResolver.resolve(repositoryUrl) != null) {
+            return gitLab;
+        }
 
         // TODO add more platforms here
 

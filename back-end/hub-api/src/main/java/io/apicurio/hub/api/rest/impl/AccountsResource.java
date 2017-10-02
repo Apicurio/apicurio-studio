@@ -152,6 +152,7 @@ public class AccountsResource implements IAccountsResource {
             byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
             String hash = Base64Url.encode(check);
             String accountLinkUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
+
                 .path("/auth/realms/{realm}/broker/{provider}/link").queryParam("nonce", nonce)
                 .queryParam("hash", hash).queryParam("client_id", clientId)
                 .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();

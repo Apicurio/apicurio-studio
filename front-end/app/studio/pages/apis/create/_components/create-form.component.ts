@@ -61,11 +61,16 @@ export class CreateApiFormComponent {
     showAccountLinkingWarning: boolean = false;
 
     private _accounts: LinkedAccount[];
+
     private _gh_orgs: string[];
     private _gh_userOrg: string;
     private _gh_repos: string[];
-    private _user: User;
 
+    private _gl_orgs: string[];
+    private _gl_userOrg: string;
+    private _gl_repos: string[];
+
+    private _user: User;
 
     public ngOnInit(): void {
     }
@@ -114,14 +119,26 @@ export class CreateApiFormComponent {
             this.model.accountType = accountType;
             this.showAccountLinkingWarning = false;
 
-            if (accountType === "GitHub" || accountType === "GitLab") {
-                this.fetchGitHubOrgs(accountType);
+            if (accountType === "GitHub") {
+                this.model.github.organization = null;
+                this.model.github.repository = null;
+                this.fetchGitHubOrgs();
             }
+
+            if (accountType === "GitLab") {
+                this.model.gitlab.organization = null;
+                this.model.gitlab.repository = null;
+                this.fetchGitLabOrgs();
+            }
+
         } else {
             this.showAccountLinkingWarning = true;
         }
     }
 
+    /*****************************************
+    * GitHub
+    *****************************************/
     public gitHubUserOrg(): string {
         return this._gh_userOrg;
     }
@@ -135,9 +152,8 @@ export class CreateApiFormComponent {
         this.model.github.repository = null;
         this.fetchingRepos = true;
         this._gh_repos = [];
-        this.accountsService.getAccountRepositories(accountType, this.model.github.organization).then( repos => {
-            this._gh_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {
-                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
+        this.accountsService.getAccountRepositories('GitHub', this.model.github.organization).then( repos => {
+            this._gh_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
             });
             this.fetchingRepos = false;
         }).catch( errorReason => {
@@ -154,6 +170,61 @@ export class CreateApiFormComponent {
     public setGitHubRepository(repo: string): void {
         this.model.github.repository = repo;
     }
+
+    private fetchGitHubOrgs(): void {
+        this._gh_orgs = this.fetchOrgs('GitHub')
+
+        if (this._gh_orgs) {
+            this._gh_orgs = this._gh_orgs.sort( (org1, org2) => {
+                return org1.toLowerCase().localeCompare(org2.toLowerCase());
+            });
+        }
+    }
+
+   /*****************************************
+    * GitLab
+    *****************************************/
+    public gitLabUserOrg(): string {
+        return this._gl_userOrg;
+    }
+
+    public gitLabOrganizations(): string[] {
+        return this._gl_orgs;
+    }
+
+    public setGitLabOrganization(org: string): void {
+        this.model.gitlab.organization = org;
+        this.model.gitlab.repository = null;
+        this.fetchingRepos = true;
+        this._gl_repos = [];
+        this.accountsService.getAccountRepositories('GitLab', this.model.gitlab.organization).then( repos => {
+            this._gl_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
+            });
+            this.fetchingRepos = false;
+        }).catch( errorReason => {
+            console.error("[CreateApiFormComponent] Error getting repos: %o", errorReason)
+            this.error = errorReason;
+            this.fetchingRepos = false;
+        });
+    }
+
+    public gitLabRepositories(): string[] {
+        return this._gl_repos;
+    }
+
+    public setGitLabRepository(repo: string): void {
+        this.model.gitlab.repository = repo;
+    }
+
+    private fetchGitLabOrgs(): void {
+        this.model.gitlab.organization = null;
+        this._gl_orgs = this.fetchOrgs('GitLab')
+
+        this._gl_orgs = this._gl_orgs.sort( (org1, org2) => {
+           return org1.toLowerCase().localeCompare(org2.toLowerCase());
+        });
+    }
+
 
     /**
      * Called when the user clicks the "Create API" submit button on the form.
@@ -173,7 +244,14 @@ export class CreateApiFormComponent {
                 this.model.github.repository + "/blob/master" + sep +
                 this.model.github.resource;
         } else if (this.model.accountType === "GitLab") {
-
+            let sep: string = "";
+            if (this.model.gitlab.resource && this.model.gitlab.resource[0] !== '/') {
+                sep = "/";
+            }
+            api.repositoryUrl = "https://gitlab.com/" +
+                this.model.gitlab.organization + "/" +
+                this.model.gitlab.repository + "/blob/master" + sep +
+                this.model.gitlab.resource;
         } else if (this.model.accountType === "Bitbucket") {
         }
 
@@ -190,7 +268,7 @@ export class CreateApiFormComponent {
      * @return {boolean}
      */
     public isFormComplete(): boolean {
-        return this.model.github.repository != null;
+        return this.model.github.repository != null || this.model.gitlab.repository != null;
     }
 
     /**
@@ -211,19 +289,12 @@ export class CreateApiFormComponent {
     /**
      * Called to fetch the available GH orgs for the user.
      */
-    private fetchGitHubOrgs(accountType:string): void {
+    private fetchOrgs(accountType: string): string[] {
+        let responseOrgs: string[] = [];
         this.fetchingOrgs = true;
         this.accountsService.getAccountOrganizations(accountType).then( orgs => {
-            this._gh_orgs = [];
             orgs.forEach( org => {
-                if (!org.userOrg) {
-                    this._gh_orgs.push(org.id);
-                } else {
-                    this._gh_userOrg = org.id;
-                }
-            });
-            this._gh_orgs = this._gh_orgs.sort( (org1, org2) => {
-                return org1.toLowerCase().localeCompare(org2.toLowerCase());
+                responseOrgs.push(org.id);
             });
             this.fetchingOrgs = false;
         }).catch( error => {
@@ -231,9 +302,6 @@ export class CreateApiFormComponent {
             this.error = error;
             this.fetchingRepos = false;
         });
-
+        return responseOrgs;
     }
-
-
-
 }

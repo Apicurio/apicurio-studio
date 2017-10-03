@@ -19,11 +19,8 @@ package io.apicurio.hub.api.rest.impl;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -47,6 +44,8 @@ import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
+import io.apicurio.hub.api.beans.GitLabGroup;
+import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
@@ -57,6 +56,7 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
+import io.apicurio.hub.api.gitlab.GitLabException;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
 import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -70,9 +70,6 @@ import io.apicurio.hub.api.storage.StorageException;
 public class AccountsResource implements IAccountsResource {
 
     private static Logger logger = LoggerFactory.getLogger(AccountsResource.class);
-
-    private static final List<LinkedAccountType> SUPPORTED_LINKED_ACCOUNT_TYPES =
-        Arrays.asList(LinkedAccountType.GitHub, LinkedAccountType.GitLab);
 
     @Inject
     private IStorage storage;
@@ -269,57 +266,63 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitHubOrganization> getOrganizations(String accountType) throws ServerError {
-
-        List<LinkedAccountType> supportedLinkedAccountTypes =
-            Arrays.asList(LinkedAccountType.GitHub, LinkedAccountType.GitLab);
-
-        if (!supportedLinkedAccountTypes.contains(LinkedAccountType.valueOf(accountType))) {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
         }
-
-        switch (LinkedAccountType.valueOf(accountType)) {
-            case GitHub:
-                try {
-                    return this.github.getOrganizations();
-                } catch (GitHubException | SourceConnectorException e) {
-                    throw new ServerError(e);
-                }
-            case GitLab:
-                try {
-                    return gitLab.getGroups();
-                } catch (GitHubException | SourceConnectorException e) {
-                    throw new ServerError(e);
-                }
+        try {
+            return this.github.getOrganizations();
+        } catch (GitHubException | SourceConnectorException e) {
+            throw new ServerError(e);
         }
-
-        return new ArrayList<>();
     }
 
     /**
      * @see io.apicurio.hub.api.rest.IAccountsResource#getRepositories(java.lang.String)
      */
     @Override
-    public Collection<GitHubRepository> getRepositories(String accountType, String org)
-        throws ServerError {
-        if (!SUPPORTED_LINKED_ACCOUNT_TYPES.contains(LinkedAccountType.valueOf(accountType))) {
+    public Collection<GitHubRepository> getRepositories(String accountType, String org) throws ServerError {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
         }
+        try {
+            return this.github.getRepositories(org);
+        } catch (GitHubException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
 
-        switch (LinkedAccountType.valueOf(accountType)) {
-            case GitHub:
-                try {
-                    return this.github.getRepositories(org);
-                } catch (GitHubException | SourceConnectorException e) {
-                    throw new ServerError(e);
-                }
-            case GitLab:
-                try {
-                    return gitLab.getRepositories(org);
-                } catch (GitHubException | SourceConnectorException e) {
-                    throw new ServerError(e);
-                }
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getGroups(java.lang.String)
+     */
+    @Override
+    public Collection<GitLabGroup> getGroups(String accountType) throws ServerError {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitLab) {
+            throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
         }
 
-        return new ArrayList<>();
+        try {
+            return gitLab.getGroups();
+        } catch (GitLabException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getProjects(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<GitLabProject> getProjects(String accountType, String group) throws ServerError {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitLab) {
+            throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
+        }
+        try {
+            return gitLab.getProjects(group);
+        } catch (GitLabException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
     }
 }

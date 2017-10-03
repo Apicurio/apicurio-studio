@@ -18,41 +18,47 @@ package io.apicurio.hub.api.gitlab;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.apicurio.hub.api.beans.*;
-import io.apicurio.hub.api.github.GitHubException;
-import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import org.apache.commons.codec.binary.Base64;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
 
+import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.GitLabAction;
+import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
+import io.apicurio.hub.api.beans.GitLabGroup;
+import io.apicurio.hub.api.beans.GitLabProject;
+import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.util.OpenApiTools;
 import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
-import sun.misc.BASE64Decoder;
-
-import static io.apicurio.hub.api.beans.GitLabAction.GitLabActionType.CREATE;
-import static io.apicurio.hub.api.beans.GitLabAction.GitLabActionType.UPDATE;
 
 /**
  * Implementation of the GitLab source connector.
@@ -65,7 +71,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private static Logger logger = LoggerFactory.getLogger(GitLabSourceConnector.class);
 
     private static final String GITLAB_API_ENDPOINT = "https://gitlab.com";
-    private static final String GITLAB_ENCODING = "base64";
 
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
@@ -96,27 +101,25 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 throw new NotFoundException();
             }
             String content = getResourceContent(resource);
-            Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(content);
-            String b64Content = (String) jsonContent.get("content");
-
-            content = new String(Base64.decodeBase64(b64Content), "UTF-8");
             NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
 
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(nad.name);
             info.setDescription(nad.description);
-            info.setUrl("https://github.com/:org/:repo/blob/master/:path"
-                    .replace(":org", resource.getGroup())
-                    .replace(":repo", resource.getProject())
-                    .replace(":path", resource.getResourcePath()));
+            info.setUrl(this.endpoint("/:group/:project/blob/:branch/:path")
+                    .bind("group", resource.getGroup())
+                    .bind("project", resource.getProject())
+                    .bind("branch", resource.getBranch())
+                    .bind("path", resource.getResourcePath())
+                    .url());
             return info;
         } catch (IOException e) {
-            throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
+            throw new SourceConnectorException("Error checking that a GitLab resource exists.", e);
         }
     }
 
     /**
-     * Gets the content of the given GitHub resource.  This is done by querying for the
+     * Gets the content of the given GitLab resource.  This is done by querying for the
      * content using the GH API.
      *
      * @param resource
@@ -137,44 +140,56 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
 
-        try {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
             if (resource == null) {
                 throw new NotFoundException();
             }
 
+            // TODO should use list of commits instead, so we can get contributors specific to the repository file itself (not contributors on the project as a whole)
             String commitsUrl = endpoint("/api/v4/projects/:id/repository/contributors")
                     .bind("id", toEncodedId(resource))
                     .url();
-            HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
-                    .queryString("path", resource.getResourcePath());
-            addSecurityTo(request);
-            HttpResponse<JsonNode> response = request.asJson();
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from GitLab: " + response.getStatus() + "::" + response.getStatusText());
-            }
+            
+            HttpGet get = new HttpGet(commitsUrl);
+            get.addHeader("Accept", "application/json");
+            get.addHeader("PRIVATE-TOKEN", getExternalToken());
 
-            List<Collaborator> collaborators = new ArrayList<>();
-
-            JsonNode node = response.getBody();
-            if (node.isArray()) {
-                JSONArray array = node.getArray();
-                if (array.length() == 0) {
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                if (response.getStatusLine().getStatusCode() == 404) {
                     throw new NotFoundException();
                 }
-                array.forEach(obj -> {
-                    JSONObject jobj = (JSONObject) obj;
-                    String name = jobj.get("name").toString();
-                    Collaborator collaborator = new Collaborator();
-                    collaborator.setName(name);
-                    collaborators.add(collaborator);
-                });
-            } else {
-                throw new NotFoundException();
+                
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
+                }
+    
+                List<Collaborator> collaborators = new ArrayList<>();
+                
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    if (node.isArray()) {
+                        ArrayNode array = (ArrayNode) node;
+                        if (array.size() == 0) {
+                            throw new NotFoundException();
+                        }
+                        array.forEach(obj -> {
+                            JsonNode jobj = (JsonNode) obj;
+                            String name = jobj.get("name").asText();
+                            Collaborator collaborator = new Collaborator();
+                            collaborator.setName(name);
+                            collaborator.setCommits(jobj.get("commits").asInt());
+                            collaborator.setUrl(this.endpoint("/").url());
+                            collaborators.add(collaborator);
+                        });
+                    } else {
+                        throw new NotFoundException();
+                    }
+                    return collaborators;
+                }
             }
-            return collaborators;
-        } catch (UnirestException e) {
-            throw new SourceConnectorException("Error getting collaborator information for a GitHub resource.", e);
+        } catch (IOException e) {
+            throw new SourceConnectorException("Error getting collaborator information for a GitLab resource.", e);
         }
     }
 
@@ -193,7 +208,11 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     @Override
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
                                         ResourceContent content) throws SourceConnectorException {
-        return commitToGitLab(repositoryUrl, content.getContent(), commitMessage, UPDATE);
+        String rval = commitToGitLab(repositoryUrl, content.getContent(), commitMessage, false);
+        if (commitComment != null && !commitComment.trim().isEmpty()) {
+            addCommitComment(repositoryUrl, rval, commitComment);
+        }
+        return rval;
     }
 
     /**
@@ -206,27 +225,31 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      * @throws SourceConnectorException
      */
     private void addCommitComment(String repositoryUrl, String commitSha, String commitComment)
-            throws UnirestException, SourceConnectorException {
+            throws SourceConnectorException {
 
         GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
 
         String urlEncodedId = toEncodedId(resource);
-
-        String addCommentUrl = this.endpoint("/projects/:id/repository/commits/:sha/comments")
+        String addCommentUrl = this.endpoint("/api/v4/projects/:id/repository/commits/:sha/comments")
                 .bind("id", urlEncodedId)
                 .bind("sha", commitSha)
                 .url();
 
-        GitLabPostCommentToCommitRequest body = new GitLabPostCommentToCommitRequest();
-        body.setNote(commitComment);
-        body.setId(urlEncodedId);
-        body.setSha(commitSha);
-
-        HttpRequestWithBody request = Unirest.post(addCommentUrl).header("Content-Type", "application/json; charset=utf-8");
-        addSecurityTo(request);
-        HttpResponse<JsonNode> response = request.body(body).asJson();
-        if (response.getStatus() != 201) {
-            throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(addCommentUrl);
+            post.addHeader("PRIVATE-TOKEN", getExternalToken());
+            // Set note as a form body parameter
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            nvps.add(new BasicNameValuePair("note", commitComment));
+            post.setEntity(new UrlEncodedFormEntity(nvps));
+            
+            try (CloseableHttpResponse response = httpClient.execute(post)) {
+                if (response.getStatusLine().getStatusCode() != 201) {
+                    throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
+                }
+            }
+        } catch (IOException e) {
+            throw new SourceConnectorException("Error adding comment to GitLab commit.", e);
         }
     }
 
@@ -235,69 +258,76 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     @Override
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
-        commitToGitLab(repositoryUrl, content, commitMessage, CREATE);
+        commitToGitLab(repositoryUrl, content, commitMessage, true);
     }
 
     /**
      * @see IGitLabSourceConnector#getGroups()
      */
     @Override
-    public Collection<GitHubOrganization> getGroups()
-            throws GitHubException, SourceConnectorException {
+    public Collection<GitLabGroup> getGroups() throws GitLabException, SourceConnectorException {
+        logger.debug("Getting the GitLab groups for current user");
 
-        try {
-            Collection<GitHubOrganization> rval = new HashSet<>();
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet get = new HttpGet(this.endpoint("/api/v4/groups").url());
+            get.addHeader("Accept", "application/json");
+            get.addHeader("PRIVATE-TOKEN", getExternalToken());
 
-            HttpRequest request = Unirest.get("https://gitlab.com/api/v4/groups");
-            addSecurityTo(request);
-
-            HttpResponse<JsonNode> response = request.asJson();
-            JSONArray array = response.getBody().getArray();
-
-            array.forEach(obj -> {
-                JSONObject org = (JSONObject) obj;
-                String login = org.getString("name");
-                GitHubOrganization gho = new GitHubOrganization();
-                gho.setId(login);
-                gho.setUserOrg(false);
-                rval.add(gho);
-            });
-
-            return rval;
-        } catch (UnirestException e) {
-            throw new GitHubException("Error getting GitHub organizations.", e);
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                Collection<GitLabGroup> rval = new HashSet<>();
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    if (node.isArray()) {
+                        ArrayNode array = (ArrayNode) node;
+                        array.forEach(obj -> {
+                            JsonNode org = (JsonNode) obj;
+                            String login = org.get("name").asText();
+                            GitLabGroup glg = new GitLabGroup();
+                            glg.setId(login);
+                            rval.add(glg);
+                        });
+                    }
+                    return rval;
+                }
+            }
+        } catch (IOException e) {
+            throw new GitLabException("Error getting GitLab organizations.", e);
         }
     }
-
+    
     /**
-     * @see IGitLabSourceConnector#getRepositories(String)
+     * @see io.apicurio.hub.api.gitlab.IGitLabSourceConnector#getProjects(java.lang.String)
      */
     @Override
-    public Collection<GitHubRepository> getRepositories(String org) throws GitHubException, SourceConnectorException {
-        logger.debug("Getting the repositories from organization {}", org);
-        try {
-            Collection<GitHubRepository> rval = new HashSet<>();
+    public Collection<GitLabProject> getProjects(String group) throws GitLabException, SourceConnectorException {
+        logger.debug("Getting the projects from group {}", group);
 
-            String requestUrl = String.format("https://gitlab.com/api/v4/groups/%s/projects", org);
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            String requestUrl = this.endpoint("/api/v4/groups/:group/projects").bind("group", group).url();
 
-            HttpRequest request = Unirest.get(requestUrl);
-            addSecurityTo(request);
+            HttpGet get = new HttpGet(requestUrl);
+            get.addHeader("Accept", "application/json");
+            get.addHeader("PRIVATE-TOKEN", getExternalToken());
 
-            HttpResponse<JsonNode> response = request.asJson();
-            JSONArray array = response.getBody().getArray();
-
-            array.forEach(obj -> {
-                JSONObject repo = (JSONObject) obj;
-                String name = repo.getString("name");
-                GitHubRepository gho = new GitHubRepository();
-                gho.setName(name);
-                rval.add(gho);
-            });
-
-            return rval;
-
-        } catch (UnirestException e) {
-            throw new GitHubException("Error getting GitHub repositories.", e);
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                Collection<GitLabProject> rval = new HashSet<>();
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    if (node.isArray()) {
+                        ArrayNode array = (ArrayNode) node;
+                        array.forEach(obj -> {
+                            JsonNode repo = (JsonNode) obj;
+                            String name = repo.get("name").asText();
+                            GitLabProject gho = new GitLabProject();
+                            gho.setName(name);
+                            rval.add(gho);
+                        });
+                    }
+                    return rval;
+                }
+            }
+        } catch (IOException e) {
+            throw new GitLabException("Error getting GitLab repositories.", e);
         }
     }
 
@@ -306,131 +336,130 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     @Override
     protected void addSecurityTo(HttpRequest request) throws SourceConnectorException {
-        //String idpToken = getExternalToken();
-        //request.header("Authorization", "Bearer " + idpToken);
-
-        request.getHeaders().put("PRIVATE-TOKEN", Arrays.asList("H-ogyvysLsvjtqRytJpy"));
+//        String idpToken = getExternalToken();
+//        request.header("PRIVATE-TOKEN", idpToken);
+        // TODO: not currently supported because we're not using Unirest as our HTTP client.  We'll convert *all* clients to use Apache HTTP Client soon and this method will change
     }
 
-    private String commitToGitLab(String repositoryUrl, String content, String commitMessage, GitLabAction.GitLabActionType actionType) throws SourceConnectorException {
-        try {
-            String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
+    /**
+     * Commits new repository file content to GitLab.
+     * @param repositoryUrl
+     * @param content
+     * @param commitMessage
+     * @param create
+     * @throws SourceConnectorException
+     */
+    private String commitToGitLab(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
 
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
 
-            String urlEncodedId = toEncodedId(resource);
-
-            String createContentUrl = this.endpoint("/api/v4/projects/:id/repository/commits")
-                    //.bind("project", resource.getProject())
-                    .bind("id", urlEncodedId)
+            String contentUrl = this.endpoint("/api/v4/projects/:id/repository/commits")
+                    .bind("id", toEncodedId(resource))
                     .url();
+            
+            HttpPost post = new HttpPost(contentUrl);
+            post.addHeader("Content-Type", "application/json");
+            post.addHeader("PRIVATE-TOKEN", getExternalToken());
 
-            GitLabCreateFileRequest requestBody = new GitLabCreateFileRequest();
-            requestBody.setCommitMessage(commitMessage);
-            requestBody.setBranch(resource.getBranch());
-            requestBody.setId(urlEncodedId);
-
+            GitLabCreateFileRequest body = new GitLabCreateFileRequest();
+            body.setBranch(resource.getBranch());
+            body.setCommitMessage(commitMessage);
+            
+            body.setActions(new ArrayList<>());
             GitLabAction action = new GitLabAction();
-            action.setGitLabAction(actionType);
-            action.setEncoding(GITLAB_ENCODING);
-            action.setContent(b64Content);
-            action.setFilePath(resource.getResourcePath());
-
-            requestBody.setActions(Arrays.asList(action));
-
-            HttpRequestWithBody request = Unirest.post(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
-            addSecurityTo(request);
-
-            HttpResponse<JsonNode> response = request.body(requestBody).asJson();
-
-            if (response.getStatus() != 201) {
-                throw new UnirestException("Unexpected response from GitLab: " + response.getStatus() + "::" + response.getStatusText());
+            String b64Content = Base64.encodeBase64String(content.getBytes("UTF-8"));
+            action.setGitLabAction(GitLabActionType.UPDATE);
+            if (create) {
+                action.setGitLabAction(GitLabActionType.CREATE);
             }
-
-            return response.getBody().getObject().get("id").toString();
-
-        } catch (UnsupportedEncodingException | UnirestException e) {
+            action.setFilePath(resource.getResourcePath());
+            action.setContent(b64Content);
+            action.setEncoding("base64");
+            body.getActions().add(action);
+            
+            // Set the POST body
+            post.setEntity(new StringEntity(mapper.writeValueAsString(body)));
+            
+            try (CloseableHttpResponse response = httpClient.execute(post)) {
+                if (response.getStatusLine().getStatusCode() != 201) {
+                    throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
+                }
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    return node.get("id").asText();
+                }
+            }
+        } catch (IOException e) {
             throw new SourceConnectorException("Error creating GitLab resource content.", e);
         }
     }
 
     private ResourceContent getResourceContentFromGitLab(GitLabResource resource) throws NotFoundException, SourceConnectorException {
-        try {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path?ref=:branch")
                     .bind("id", toEncodedId(resource))
-                    .bind("path", resource.getResourcePath())
-                    .bind("branch", resource.getBranch())
+                    .bind("path", toEncodedPath(resource))
+                    .bind("branch", toEncodedBranch(resource))
                     .url();
-
-            HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
-            addSecurityTo(request);
-
-            HttpResponse<JsonNode> response = request.asJson();
-
-            if (response.getStatus() == 404) {
-                throw new NotFoundException();
+            
+            HttpGet get = new HttpGet(getContentUrl);
+            get.addHeader("Accept", "application/json");
+            get.addHeader("PRIVATE-TOKEN", getExternalToken());
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                if (response.getStatusLine().getStatusCode() == 404) {
+                    throw new NotFoundException();
+                }
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
+                }
+    
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(contentStream);
+                    String b64Content = jsonContent.get("content").toString();
+                    String content = new String(Base64.decodeBase64(b64Content), "utf-8");
+                    ResourceContent rval = new ResourceContent();
+        
+                    rval.setContent(content);
+                    rval.setSha(jsonContent.get("commit_id").toString());
+        
+                    return rval;
+                }
             }
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from GitLab: " + response.getStatus() + "::" + response.getStatusText());
-            }
-
-            String b64Content = response.getBody().getObject().get("content").toString();
-            String content = new String(Base64.decodeBase64(b64Content), "utf-8");
-            ResourceContent rval = new ResourceContent();
-
-            rval.setContent(new String(java.util.Base64.getDecoder().decode(content)));
-            rval.setSha(response.getBody().getObject().get("commit_id").toString());
-
-            return rval;
-        } catch (UnirestException | UnsupportedEncodingException e) {
-            throw new SourceConnectorException("Error getting Github resource content.", e);
+        } catch (IOException e) {
+            throw new SourceConnectorException("Error getting GitLab resource content.", e);
         }
     }
 
 
     private String toEncodedId(GitLabResource resource) {
-
         String urlEncodedId;
-
         try {
             urlEncodedId = URLEncoder.encode(String.format("%s/%s", resource.getGroup(), resource.getProject()), "UTF-8");
         } catch (Exception ex) {
             return "";
         }
-
         return urlEncodedId;
-
     }
 
-    /**
-     * Parses the HTTP "Link" header and returns a map of named links.  A typical link header value
-     * might look like this:
-     * <p>
-     * <https://api.github.com/user/1890703/repos?page=2>; rel="next", <https://api.github.com/user/1890703/repos?page=3>; rel="last"
-     * <p>
-     * The return value for this would be a map with two items:
-     * <p>
-     * next=https://api.github.com/user/1890703/repos?page=2
-     * last=https://api.github.com/user/1890703/repos?page=3
-     *
-     * @param linkHeader
-     */
-    static Map<String, String> parseLinkHeader(String linkHeader) {
-        Map<String, String> rval = new HashMap<>();
-        if (linkHeader != null) {
-            String[] split = linkHeader.split(",");
-            for (String item : split) {
-                Pattern pattern = Pattern.compile("<(.+)>; rel=\"(.+)\"");
-                Matcher matcher = pattern.matcher(item.trim());
-                if (matcher.matches()) {
-                    String url = matcher.group(1);
-                    String name = matcher.group(2);
-                    rval.put(name, url);
-                }
-            }
+    private String toEncodedPath(GitLabResource resource) {
+        String urlEncodedPath;
+        try {
+            urlEncodedPath = URLEncoder.encode(resource.getResourcePath(), "UTF-8");
+        } catch (Exception ex) {
+            return "";
         }
-        return rval;
+        return urlEncodedPath;
     }
 
+    private String toEncodedBranch(GitLabResource resource) {
+        String urlEncodedBranch;
+        try {
+            urlEncodedBranch = URLEncoder.encode(resource.getBranch(), "UTF-8");
+        } catch (Exception ex) {
+            return "";
+        }
+        return urlEncodedBranch;
+    }
 
 }

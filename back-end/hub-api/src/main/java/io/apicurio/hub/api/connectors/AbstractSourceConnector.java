@@ -28,6 +28,7 @@ import org.keycloak.common.util.KeycloakUriBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
@@ -48,6 +49,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
     static {
+        mapper.setSerializationInclusion(Include.NON_NULL);
         Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {

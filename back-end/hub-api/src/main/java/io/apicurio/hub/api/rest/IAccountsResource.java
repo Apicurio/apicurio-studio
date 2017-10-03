@@ -32,6 +32,8 @@ import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
+import io.apicurio.hub.api.beans.GitLabGroup;
+import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -85,5 +87,21 @@ public interface IAccountsResource {
     @Path("{accountType}/organizations/{org}/repositories")
     public Collection<GitHubRepository> getRepositories(@PathParam("accountType") String accountType, 
             @PathParam("org") String org) throws ServerError;
+
+
+    /*
+     * GitLab specific endpoints - only valid when "accountType" is "GitLab"
+     */
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/groups")
+    public Collection<GitLabGroup> getGroups(@PathParam("accountType") String accountType) throws ServerError;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/groups/{group}/projects")
+    public Collection<GitLabProject> getProjects(@PathParam("accountType") String accountType, 
+            @PathParam("group") String group) throws ServerError;
 
 }

@@ -18,11 +18,10 @@ package io.apicurio.hub.api.gitlab;
 
 import java.util.Collection;
 
-import io.apicurio.hub.api.beans.GitHubOrganization;
-import io.apicurio.hub.api.beans.GitHubRepository;
+import io.apicurio.hub.api.beans.GitLabGroup;
+import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.github.GitHubException;
 
 /**
  * A GitLab specific source connector.
@@ -31,15 +30,18 @@ import io.apicurio.hub.api.github.GitHubException;
 public interface IGitLabSourceConnector extends ISourceConnector {
 
     /**
-     * Lists all of the GitHub organizations for the current user.
+     * Lists all of the GitLab groups for the current user.
+     * @throws GitLabException
+     * @throws SourceConnectorException
      */
-    public Collection<GitHubOrganization> getGroups()
-        throws GitHubException, SourceConnectorException;
+    public Collection<GitLabGroup> getGroups() throws GitLabException, SourceConnectorException;
 
     /**
-     * Lists all of the GitHub repositories for the current user within the given organization.
-     * @param org
+     * Lists all of the GitLab projects for the current user within the given group.
+     * @param group
+     * @throws GitLabException
+     * @throws SourceConnectorException
      */
-    public Collection<GitHubRepository> getRepositories(String org) throws GitHubException, SourceConnectorException;
+    public Collection<GitLabProject> getProjects(String group) throws GitLabException, SourceConnectorException;
 
 }

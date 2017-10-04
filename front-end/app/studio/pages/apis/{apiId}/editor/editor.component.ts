@@ -176,7 +176,6 @@ export class ApiEditorComponent implements OnChanges {
      * Called to reset the editor's internal state.
      */
     public reset(): void {
-        this._document = null;
         this._commands.reset();
         this.onDirty.emit(false);
     }

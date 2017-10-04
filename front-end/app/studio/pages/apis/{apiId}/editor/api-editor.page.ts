@@ -86,7 +86,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent {
         let apiDef: ApiDefinition = this.apiEditor.getUpdatedApiDefinition();
         this.apis.updateApiDefinition(apiDef, saveInfo.summary, saveInfo.description).then(definition => {
             this.apiEditor.reset();
-            this.apiDefinition = definition;
+            this.apiDefinition.version = definition.version;
+            this.apiDefinition.id = definition.id;
+            this.apiDefinition.name = definition.name;
+            this.apiDefinition.description = definition.description;
             this.isSaving = false;
         }).catch( error => {
             console.error("[ApiEditorPageComponent] Error saving API design content.");

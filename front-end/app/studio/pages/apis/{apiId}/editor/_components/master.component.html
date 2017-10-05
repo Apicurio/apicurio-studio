@@ -104,7 +104,7 @@
                     </p>
                 </context-help>
                 <button class="btn btn-sm btn-default pull-right"
-                        (click)="addPathDialog.open(getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
+                        (click)="addPathDialog.open(document, getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
             </div>
             <div class="section-body collapse in" id="path-section-body">
                 <div class="api-path" *ngFor="let path of paths()"
@@ -156,7 +156,7 @@
                     <strong>No Paths Found!</strong>
                     <span>APIs need at least one path.</span>
                     <span>&nbsp;</span>
-                    <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addPathDialog.open('/')">Add Now</button>
+                    <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px" (click)="addPathDialog.open(document, '/')">Add Now</button>
                 </div>
             </div>
         </div>
@@ -177,7 +177,7 @@
                     </p>
                 </context-help>
                 <button class="btn btn-sm btn-default pull-right"
-                        (click)="addDefinitionDialog.open()"><span class="fa fa-plus"></span></button>
+                        (click)="addDefinitionDialog.open(document)"><span class="fa fa-plus"></span></button>
             </div>
             <div class="section-body collapse in" id="definition-section-body">
                 <div definition-item class="api-definition" *ngFor="let def of definitions()" [name]="definitionName(def)"
@@ -191,7 +191,7 @@
                     <span>Reusable types are useful!</span>
                     <span>&nbsp;</span>
                     <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px"
-                            (click)="addDefinitionDialog.open()">Add Now</button>
+                            (click)="addDefinitionDialog.open(document)">Add Now</button>
                 </div>
             </div>
         </div>

@@ -203,7 +203,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     }
 
     public newPath(): void {
-        this.addPathDialog.open(this.path.path());
+        this.addPathDialog.open(this.path.ownerDocument(), this.path.path());
     }
 
     public addPath(path: string): void {
@@ -213,7 +213,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     public clone(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.clonePathDialog.open(this.path);
+            this.clonePathDialog.open(this.path.ownerDocument(), this.path);
         } else {
             let pathItem: OasPathItem = modalData.object;
             console.info("[PathFormComponent] Clone path item: %s", modalData.path);

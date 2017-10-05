@@ -17,6 +17,9 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
+import {OasDocument, OasLibraryUtils} from "oai-ts-core";
+import {FormControl} from "@angular/forms";
+import {Subject} from "rxjs/Subject";
 
 
 @Component({
@@ -35,10 +38,16 @@ export class AddPathDialogComponent {
 
     protected path: string = "";
 
+    protected pathChanged: Subject<string> = new Subject<string>();
+    protected paths: string[] = [];
+    protected pathExists: boolean = false;
+
     /**
      * Called to open the dialog.
+     * @param {OasDocument} document
+     * @param {string} path
      */
-    public open(path?: string): void {
+    public open(document: OasDocument, path?: string): void {
         this.path = path;
         if (!path) {
             this.path = "";
@@ -52,6 +61,20 @@ export class AddPathDialogComponent {
                 this.addPathModal.first.show();
             }
         });
+
+        this.paths = [];
+        this.pathExists = false;
+        if (document.paths) {
+            document.paths.pathItems().forEach( pathItem => {
+                this.paths.push(pathItem.path());
+            });
+            this.pathChanged
+                .debounceTime(300)
+                .distinctUntilChanged()
+                .subscribe( path => {
+                    this.pathExists = this.paths.indexOf(path) != -1;
+                });
+        }
     }
 
     /**

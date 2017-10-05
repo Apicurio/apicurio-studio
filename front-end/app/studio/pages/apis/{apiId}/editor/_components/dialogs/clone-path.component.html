@@ -17,13 +17,14 @@
                         <label class="col-sm-2 control-label" for="path">Path</label>
                         <div class="col-sm-10">
                             <input #clonePathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
-                                   required [(ngModel)]="path">
+                                   required [(ngModel)]="path" (ngModelChange)="pathChanged.next($event)">
+                            <div class="validation-error-label" *ngIf="pathExists">Path already exists.</div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="clone()" [disabled]="!clonePathForm.form.valid">Clone</button>
+                <button type="button" class="btn btn-primary" (click)="clone()" [disabled]="!clonePathForm.form.valid || pathExists">Clone</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

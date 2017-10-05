@@ -19,14 +19,15 @@
                             <div class="col-sm-10">
                                 <input #cloneDefinitionInput name="definitionName" type="text" id="definitionName" class="form-control"
                                        placeholder="Enter a Definition Name"
-                                       required [(ngModel)]="name">
+                                       required [(ngModel)]="name" (ngModelChange)="defChanged.next($event)">
+                                <div class="validation-error-label" *ngIf="defExists">Definition already exists.</div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" (click)="clone()"
-                            [disabled]="!cloneDefinitionForm.form.valid">Clone</button>
+                            [disabled]="!cloneDefinitionForm.form.valid || defExists">Clone</button>
                     <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
                 </div>
             </div>

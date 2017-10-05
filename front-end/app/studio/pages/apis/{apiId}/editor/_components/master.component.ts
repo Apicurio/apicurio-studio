@@ -524,7 +524,7 @@ export class EditorMasterComponent {
      * Called when the user clicks "New Path" in the context-menu for a path.
      */
     public newPath(): void {
-        this.addPathDialog.open((this.contextMenuItem as OasPathItem).path());
+        this.addPathDialog.open(this.document, (this.contextMenuItem as OasPathItem).path());
         this.closeContextMenu();
     }
 
@@ -545,7 +545,7 @@ export class EditorMasterComponent {
      */
     public clonePath(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.clonePathDialog.open(this.contextMenuItem as OasPathItem);
+            this.clonePathDialog.open(this.document, this.contextMenuItem as OasPathItem);
         } else {
             let pathItem: OasPathItem = modalData.object;
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
@@ -605,7 +605,7 @@ export class EditorMasterComponent {
      */
     public cloneDefinition(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.cloneDefinitionDialog.open(this.contextMenuItem as any);
+            this.cloneDefinitionDialog.open(this.document, this.contextMenuItem as any);
         } else {
             let definition: OasNode = modalData.definition;
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);

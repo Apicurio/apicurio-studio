@@ -19,7 +19,8 @@
                             <div class="col-sm-10">
                                 <input #addDefinitionInput name="definitionName" type="text" id="definitionName" class="form-control"
                                        placeholder="Enter a Definition Name"
-                                       required [(ngModel)]="name">
+                                       required [(ngModel)]="name" (ngModelChange)="defChanged.next($event)">
+                                <div class="validation-error-label" *ngIf="defExists">Definition already exists.</div>
                             </div>
                         </div>
                         <div class="section example-section panel-group">
@@ -52,7 +53,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" (click)="add()"
-                            [disabled]="!addDefinitionForm.form.valid || !isExampleDefinitionValid()">Add</button>
+                            [disabled]="!addDefinitionForm.form.valid || defExists || !isExampleDefinitionValid()">Add</button>
                     <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
                 </div>
             </div>

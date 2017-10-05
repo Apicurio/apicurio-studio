@@ -131,7 +131,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     public clone(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.cloneDefinitionDialog.open(this.definition);
+            this.cloneDefinitionDialog.open(this.definition.ownerDocument(), this.definition);
         } else {
             let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
             console.info("[DefinitionFormComponent] Clone definition: %s", modalData.name);

@@ -18,6 +18,9 @@
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {AceEditorDirective} from "ng2-ace-editor";
+import {Subject} from "rxjs/Subject";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasLibraryUtils, OasVisitorUtil} from "oai-ts-core";
+import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 
 @Component({
@@ -41,10 +44,14 @@ export class AddDefinitionDialogComponent {
     protected exampleValid: boolean = true;
     protected exampleFormattable: boolean = false;
 
+    protected defChanged: Subject<string> = new Subject<string>();
+    protected defs: string[] = [];
+    protected defExists: boolean = false;
+
     /**
      * Called to open the dialog.
      */
-    public open(): void {
+    public open(document: OasDocument): void {
         this._isOpen = true;
         this.name = "";
         this.example = "";
@@ -56,6 +63,25 @@ export class AddDefinitionDialogComponent {
                 this.addDefinitionModal.first.show();
             }
         });
+
+        this.defs = [];
+        this.defExists = false;
+        let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(document);
+        definitions.forEach( definition => {
+            this.defs.push(FindSchemaDefinitionsVisitor.definitionName(definition));
+        });
+        this.defChanged
+            .debounceTime(300)
+            .distinctUntilChanged()
+            .subscribe( def => {
+                this.defExists = this.defs.indexOf(def) != -1;
+            });
+    }
+
+    private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
+        let vizzy: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        OasVisitorUtil.visitTree(document, vizzy);
+        return vizzy.getSortedSchemaDefinitions()
     }
 
     /**

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ElementRef, HostListener, Directive, AfterContentChecked, AfterViewChecked, Input} from "@angular/core";
+import {AfterContentChecked, AfterViewChecked, Directive, ElementRef, HostListener, Input} from "@angular/core";
 
 @Directive({
     selector: "textarea[autosize]"
@@ -73,3 +73,25 @@ export class DivAutoHeight implements AfterViewChecked {
     }
 }
 
+
+@Directive({
+    selector: "input[autosize]"
+})
+export class TextBoxAutosize implements AfterContentChecked {
+
+    @HostListener("input", ["$event.target"])
+    onInput(textInput: HTMLInputElement): void {
+        this.adjust();
+    }
+
+    constructor(public element: ElementRef) {}
+
+    ngAfterContentChecked(): void {
+        this.adjust();
+    }
+
+    adjust(): void {
+        this.element.nativeElement.style.width = "auto";
+        this.element.nativeElement.style.width = this.element.nativeElement.scrollWidth + "px";
+    }
+}

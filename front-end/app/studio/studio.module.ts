@@ -72,7 +72,7 @@ import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-co
 import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
 
 /** Directives **/
-import {DivAutoHeight, TextAreaAutosize} from "./directives/autosize.directive";
+import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/autosize.directive";
 
 /** Editor Components */
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
@@ -134,7 +134,7 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
-        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent
+        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

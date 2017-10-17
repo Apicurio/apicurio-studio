@@ -43,11 +43,11 @@ import {NodeSelectionEvent} from "../_events/node-selection.event";
 import {
     createAddPathItemCommand,
     createAddSchemaDefinitionCommand,
-    createDeleteNodeCommand,
     createDeletePathCommand,
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
-    createNewSchemaDefinitionCommand
+    createNewSchemaDefinitionCommand,
+    createDeleteOperationCommand
 } from "oai-ts-commands";
 
 
@@ -560,7 +560,7 @@ export class EditorMasterComponent {
      */
     public deleteOperation(): void {
         let operation: OasOperation = this.contextMenuItem as OasOperation;
-        let command: ICommand = createDeleteNodeCommand(this.document, operation.method(), operation.parent());
+        let command: ICommand = createDeleteOperationCommand(this.document, operation.method(), operation.parent() as OasPathItem);
         this.onCommand.emit(command);
         if (this.contextMenuItem === this.selectedItem) {
             this.selectPath((this.selectedItem as OasOperation).parent() as OasPathItem);

@@ -23,7 +23,7 @@ import {
     Oas30Document,
     Oas30SecurityScheme,
     OasContact,
-    OasDocument, OasLibraryUtils,
+    OasDocument,
     OasSecurityScheme,
     OasTag
 } from "oai-ts-core";
@@ -35,16 +35,18 @@ import {
     createChangeSecuritySchemeCommand,
     createChangeTitleCommand,
     createChangeVersionCommand,
-    createDeleteNodeCommand,
     createDeleteSecuritySchemeCommand,
     createDeleteTagCommand,
     createNewSecuritySchemeCommand,
-    createNewTagCommand
+    createNewTagCommand,
+    createDeleteContactCommand,
+    createDeleteLicenseCommand
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 import {ILicense, LicenseService} from "../../_services/license.service";
 import {
-    Scope, SecurityScheme20DialogComponent,
+    Scope,
+    SecurityScheme20DialogComponent,
     SecurityScheme20EventData
 } from "../dialogs/security-scheme-20.component";
 import {ObjectUtils} from "../../_util/object.util";
@@ -307,7 +309,7 @@ export abstract class MainFormComponent {
      * Called when the user chooses to remove the contact info.
      */
     public deleteContact(): void {
-        let command: ICommand = createDeleteNodeCommand(this.document, "contact", this.document.info);
+        let command: ICommand = createDeleteContactCommand(this.document);
         this.onCommand.emit(command);
     }
 
@@ -315,7 +317,7 @@ export abstract class MainFormComponent {
      * Called when the user chooses to remove the license.
      */
     public deleteLicense(): void {
-        let command: ICommand = createDeleteNodeCommand(this.document, "license", this.document.info);
+        let command: ICommand = createDeleteLicenseCommand(this.document);
         this.onCommand.emit(command);
     }
 

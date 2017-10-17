@@ -16,14 +16,13 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response} from "oai-ts-core";
+import {Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response, OasPathItem} from "oai-ts-core";
 import {
     createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
     createDeleteAllParametersCommand,
     createDeleteMediaTypeCommand,
-    createDeleteNodeCommand,
     createDeleteParameterCommand,
     createDeleteResponseCommand,
     createNewMediaTypeCommand,
@@ -31,6 +30,9 @@ import {
     createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
+    createDeleteOperationCommand,
+    createDeleteAllResponsesCommand,
+    createDeleteRequestBodyCommand,
     SimplifiedParameterType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
@@ -258,7 +260,8 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     }
 
     public delete(): void {
-        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), this.operation.method(), this.operation.parent());
+        let command: ICommand = createDeleteOperationCommand(this.operation.ownerDocument(), this.operation.method(),
+            this.operation.parent() as OasPathItem);
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
     }
@@ -269,7 +272,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     }
 
     public deleteAllResponses(): void {
-        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), "responses", this.operation);
+        let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
         this.onCommand.emit(command);
     }
 
@@ -298,7 +301,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     }
 
     public deleteRequestBody(): void {
-        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), "requestBody", this.operation);
+        let command: ICommand = createDeleteRequestBodyCommand(this.operation.ownerDocument(), this.operation);
         this.onCommand.emit(command);
     }
 

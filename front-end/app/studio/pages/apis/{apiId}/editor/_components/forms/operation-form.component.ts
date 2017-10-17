@@ -16,19 +16,21 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Response} from "oai-ts-core";
+import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Response, OasPathItem} from "oai-ts-core";
 import {
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
     createChangeResponseTypeCommand,
     createDeleteAllParametersCommand,
-    createDeleteNodeCommand,
     createDeleteParameterCommand,
     createDeleteResponseCommand,
     createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
-    createReplaceOperationCommand, SimplifiedParameterType
+    createReplaceOperationCommand,
+    createDeleteOperationCommand,
+    createDeleteAllResponsesCommand,
+    SimplifiedParameterType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
@@ -483,7 +485,8 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public delete(): void {
-        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), this.operation.method(), this.operation.parent());
+        let command: ICommand = createDeleteOperationCommand(this.operation.ownerDocument(), this.operation.method(),
+            this.operation.parent() as OasPathItem);
         this.onCommand.emit(command);
         this.onDeselect.emit(true);
     }
@@ -504,7 +507,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public deleteAllResponses(): void {
-        let command: ICommand = createDeleteNodeCommand(this.operation.ownerDocument(), "responses", this.operation);
+        let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
         this.onCommand.emit(command);
     }
 

@@ -24,7 +24,8 @@ import {
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
     createNewSchemaPropertyCommand,
-    createReplaceSchemaDefinitionCommand, SimplifiedPropertyType, SimplifiedType
+    createReplaceSchemaDefinitionCommand,
+    SimplifiedPropertyType
 } from "oai-ts-commands";
 import {ICommand} from "../../_services/commands.manager";
 

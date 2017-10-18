@@ -1,0 +1,23 @@
+{
+  "__type": "AddSchemaDefinitionCommand_30",
+  "_newDefinitionName": "MySchema",
+  "_newDefinitionObj": {
+    "required": [
+      "name"
+    ],
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "address": {
+        "$ref": "#/components/schemas/Address"
+      },
+      "age": {
+        "format": "int32",
+        "minimum": 0,
+        "type": "integer"
+      }
+    }
+  }
+}

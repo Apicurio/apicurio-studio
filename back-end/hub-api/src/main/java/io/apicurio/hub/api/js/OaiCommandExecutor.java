@@ -83,10 +83,10 @@ public class OaiCommandExecutor {
             logger.debug("Creating and initializing a Nashorn script engine.");
             long start = System.currentTimeMillis();
             engine = new ScriptEngineManager().getEngineByName("nashorn");
-            URL consoleJsUrl = OaiCommandExecutorTest.class.getClassLoader().getResource("js-lib/core-console.js");
-            URL oaiJsUrl = OaiCommandExecutorTest.class.getClassLoader().getResource("js-lib/OAI.umd.js");
-            URL oaiCommandsJsUrl = OaiCommandExecutorTest.class.getClassLoader().getResource("js-lib/OAI-commands.umd.js");
-            URL libraryJsUrl = OaiCommandExecutorTest.class.getClassLoader().getResource("js-lib/core-library.js");
+            URL consoleJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-console.js");
+            URL oaiJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI.umd.js");
+            URL oaiCommandsJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI-commands.umd.js");
+            URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
 
             // Load the JS libraries into the engine
             engine.eval(IOUtils.toString(consoleJsUrl));

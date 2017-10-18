@@ -40,7 +40,7 @@ export class SchemaTypeComponent {
                 return "Array of: " + this.type.of.type;
             }
             if (this.type.of && this.type.of.isRef()) {
-                return "Array of: " + this.type.of.type.substr(14);
+                return "Array of: " + this.type.of.type.substr(this.type.of.type.lastIndexOf('/') + 1);
             }
         }
         if (this.type.isSimpleType()) {
@@ -51,7 +51,7 @@ export class SchemaTypeComponent {
             }
         }
         if (this.type.isRef()) {
-            return this.type.type.substr(14);
+            return this.type.type.substr(this.type.type.lastIndexOf('/') + 1);
         }
         return "Unknown Type";
     }

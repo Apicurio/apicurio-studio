@@ -131,7 +131,7 @@ export class ContentComponent implements OnInit {
                 return def1.name().toLocaleLowerCase().localeCompare(def2.name().toLocaleLowerCase());
             }).map( def => {
                 return {
-                    value: "#/components/schemas" + def.name(),
+                    value: "#/components/schemas/" + def.name(),
                     name: def.name()
                 };
             });

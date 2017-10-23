@@ -123,22 +123,8 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
      * </pre>
      * 
      * @param body
-     * @return
      */
-    protected static Map<String, String> parseExternalTokenResponse(String body) {
-        Map<String, String> rval = new HashMap<>();
-        String[] split1 = body.split("&");
-        for (String item : split1) {
-            String[] split2 = item.split("=");
-            String encodedKey = split2[0];
-            String encodedVal = split2[1];
-            String key = Encode.decode(encodedKey);
-            String val = Encode.decode(encodedVal);
-            rval.put(key, val);
-        }
-        
-        return rval;
-    }
+    protected abstract Map<String, String> parseExternalTokenResponse(String body);
 
     /**
      * Creates a github API endpoint from the api path.

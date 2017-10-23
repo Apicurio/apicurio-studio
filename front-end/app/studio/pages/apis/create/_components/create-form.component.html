@@ -75,17 +75,15 @@
                     <div class="col-sm-10">
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="api-organization" data-toggle="dropdown">
-                                <span *ngIf="model.github.organization !== null">{{ model.github.organization }}</span>
+                                <span *ngIf="model.github.organization !== null">{{ model.github.organization.id }}</span>
                                 <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
                                 <span class="disabled" *ngIf="model.github.organization === null">(select organization)</span>
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
-                                <li role="presentation"><a role="menuitem"
-                                                           (click)="setGitHubOrganization('GitHub', gitHubUserOrg())">{{
-                                    gitHubUserOrg() }}</a></li>
+                                <li role="presentation" *ngIf="gitHubUserOrg()"><a role="menuitem" (click)="setGitHubOrganization(gitHubUserOrg())">{{ gitHubUserOrg().id }}</a></li>
                                 <li class="divider"></li>
-                                <li *ngFor="let org of gitHubOrganizations()" role="presentation"><a role="menuitem" (click)="setGitHubOrganization(org)">{{ org }}</a></li>
+                                <li *ngFor="let org of gitHubOrganizations()" role="presentation"><a role="menuitem" (click)="setGitHubOrganization(org)">{{ org.id }}</a></li>
                             </ul>
                         </div>
                     </div>
@@ -96,21 +94,21 @@
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="api-repository" data-toggle="dropdown"
                                     [disabled]="model.github.organization === null">
-                                <span *ngIf="model.github.repository !== null">{{ model.github.repository }}</span>
+                                <span *ngIf="model.github.repository !== null">{{ model.github.repository.name }}</span>
                                 <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
                                 <span class="disabled" *ngIf="model.github.repository === null">(select repository)</span>
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
-                                <li *ngFor="let repo of gitHubRepositories()" role="presentation"><a role="menuitem" (click)="setGitHubRepository(repo)">{{ repo }}</a></li>
+                                <li *ngFor="let repo of gitHubRepositories()" role="presentation"><a role="menuitem" (click)="setGitHubRepository(repo)">{{ repo.name }}</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
+                    <label class="col-sm-2 control-label" for="api-repository-resource-1">Resource</label>
                     <div class="col-sm-10">
-                        <input name="repository.resource" type="text" id="api-repository-resource" class="form-control"
+                        <input name="repository.resource" type="text" id="api-repository-resource-1" class="form-control"
                                placeholder="/path/to/apis/openapi-doc.json" required
                                [(ngModel)]="model.github.resource"
                                pattern="(/[^/]+)*/?[^/]+\.json">
@@ -121,46 +119,46 @@
             <!-- GitLab Form Items -->
             <div class="gitlab-form-items" *ngIf="model.accountType === 'GitLab'">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="api-organization">Organization</label>
+                    <label class="col-sm-2 control-label" for="api-group">Group</label>
                     <div class="col-sm-10">
                         <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="api-organization" data-toggle="dropdown">
-                                <span *ngIf="model.gitlab.organization !== null">{{ model.gitlab.organization }}</span>
-                                <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
-                                <span class="disabled" *ngIf="model.gitlab.organization === null">(select organization)</span>
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-group" data-toggle="dropdown">
+                                <span *ngIf="model.gitlab.group !== null">{{ model.gitlab.group.name }}</span>
+                                <div *ngIf="fetchingGroups" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.gitlab.group === null">(select group)</span>
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
-                                <li role="presentation"><a role="menuitem"
-                                                           (click)="setGitLabOrganization(gitLabUserOrg())">{{
-                                    gitLabUserOrg() }}</a></li>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-group">
+                                <!--
+                                <li role="presentation"><a role="menuitem" (click)="setGitLabGroup(gitLabUser())">{{ gitLabUser() }}</a></li>
                                 <li class="divider"></li>
-                                <li *ngFor="let org of gitLabOrganizations()" role="presentation"><a role="menuitem" (click)="setGitLabOrganization(org)">{{ org }}</a></li>
+                                -->
+                                <li *ngFor="let group of gitLabGroups()" role="presentation"><a role="menuitem" (click)="setGitLabGroup(group)">{{ group.name }}</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="api-repository">Repository</label>
+                    <label class="col-sm-2 control-label" for="api-project">Project</label>
                     <div class="col-sm-10">
                         <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="api-repository" data-toggle="dropdown"
-                                    [disabled]="model.gitlab.organization === null">
-                                <span *ngIf="model.gitlab.repository !== null">{{ model.gitlab.repository }}</span>
-                                <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
-                                <span class="disabled" *ngIf="model.gitlab.repository === null">(select repository)</span>
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-project" data-toggle="dropdown"
+                                    [disabled]="model.gitlab.group === null">
+                                <span *ngIf="model.gitlab.project !== null">{{ model.gitlab.project.name }}</span>
+                                <div *ngIf="fetchingProjects" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.gitlab.project === null">(select project)</span>
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
-                                <li *ngFor="let repo of gitLabRepositories()" role="presentation"><a role="menuitem" (click)="setGitLabRepository(repo)">{{ repo }}</a></li>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-project">
+                                <li *ngFor="let project of gitLabProjects()" role="presentation"><a role="menuitem" (click)="setGitLabProject(project)">{{ project.name }}</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="api-repository-resource">Resource</label>
+                    <label class="col-sm-2 control-label" for="api-repository-resource-2">Resource</label>
                     <div class="col-sm-10">
-                        <input name="repository.resource" type="text" id="api-repository-resource" class="form-control"
+                        <input name="repository.resource" type="text" id="api-repository-resource-2" class="form-control"
                                placeholder="/path/to/apis/openapi-doc.json" required
                                [(ngModel)]="model.gitlab.resource"
                                pattern="(/[^/]+)*/?[^/]+\.json">

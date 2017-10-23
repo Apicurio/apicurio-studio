@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -47,13 +48,13 @@ import test.io.apicurio.hub.api.TestUtil;
 /**
  * @author eric.wittmann@gmail.com
  */
-@Ignore
 public class GitLabSourceConnectorTest {
     
     private static String pat = null;
     
     private IGitLabSourceConnector service;
     private HubApiConfiguration config;
+    
 
     @Before
     public void setUp() {
@@ -73,6 +74,14 @@ public class GitLabSourceConnectorTest {
                     throw new RuntimeException(e);
                 }
             }
+            
+            /**
+             * @see io.apicurio.hub.api.gitlab.GitLabSourceConnector#getExternalTokenType()
+             */
+            @Override
+            protected Object getExternalTokenType() {
+                return GitLabSourceConnector.TOKEN_TYPE_PAT;
+            }
         };
         config = new HubApiConfiguration();
         
@@ -84,10 +93,29 @@ public class GitLabSourceConnectorTest {
     public void tearDown() throws Exception {
     }
 
+    @Test
+    @Ignore
+    public void testParseExternalTokenResponse() {
+        String tokenBody = "{\r\n" + 
+                "    \"access_token\": \"XYZ\",\r\n" + 
+                "    \"token_type\": \"bearer\",\r\n" + 
+                "    \"refresh_token\": \"ABC\",\r\n" + 
+                "    \"scope\": \"openid read_user api\",\r\n" + 
+                "    \"created_at\": 1508504375,\r\n" + 
+                "    \"id_token\": \"123\"\r\n" + 
+                "}";
+        Map<String, String> response = ((GitLabSourceConnector) service).parseExternalTokenResponse(tokenBody);
+        Assert.assertNotNull(response);
+        Assert.assertEquals("XYZ", response.get("access_token"));
+        Assert.assertEquals("openid read_user api", response.get("scope"));
+        Assert.assertEquals("bearer", response.get("token_type"));
+    }
+
     /**
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#validateResourceExists(java.lang.String)}.
      */
     @Test
+    @Ignore
     public void testValidateResourceExists() throws NotFoundException, SourceConnectorException {
         ApiDesignResourceInfo info = service.validateResourceExists("https://gitlab.com/Apicurio/api-samples/blob/master/3.0/simple-api.json");
         Assert.assertNotNull(info);
@@ -105,6 +133,7 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getCollaborators(String)}.
      */
     @Test
+    @Ignore
     public void testGetCollaborators() throws NotFoundException, SourceConnectorException {
         Collection<Collaborator> collaborators = service.getCollaborators("https://gitlab.com/Apicurio/api-samples/blob/master/3.0/simple-api.json");
         Assert.assertNotNull(collaborators);
@@ -127,6 +156,7 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getResourceContent(String)}.
      */
     @Test
+    @Ignore
     public void testGetResourceContent() throws NotFoundException, SourceConnectorException {
         ResourceContent content = service.getResourceContent("https://gitlab.com/Apicurio/api-samples/blob/master/pet-store.json");
         Assert.assertTrue(content.getContent().contains("Swagger Petstore"));
@@ -143,13 +173,14 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getGroups()}.
      */
     @Test
+    @Ignore
     public void testGetGroups() throws GitLabException, SourceConnectorException {
         Collection<GitLabGroup> groups = service.getGroups();
         Assert.assertNotNull(groups);
         Assert.assertTrue(groups.size() > 0);
         System.out.println("Found " + groups.size() + " groups!");
         groups.forEach( group -> {
-            System.out.println("\t" + group.getId());
+            System.out.println("\t" + group.getName());
         });
     }
 
@@ -157,6 +188,7 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getProjects(String)}.
      */
     @Test
+    @Ignore
     public void testGetProjects() throws GitLabException, SourceConnectorException {
         Collection<GitLabProject> projects = service.getProjects("apicurio");
         Assert.assertNotNull(projects);
@@ -172,6 +204,7 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getResourceContent(String)}.
      */
     @Test
+    @Ignore
     public void testUpdateResourceContent() throws NotFoundException, SourceConnectorException, JsonProcessingException, IOException {
         String repositoryUrl = "https://gitlab.com/Apicurio/api-samples/blob/master/animation/animation-api.json";
         
@@ -188,6 +221,17 @@ public class GitLabSourceConnectorTest {
         content.setContent(newContent);
         String newSha = service.updateResourceContent(repositoryUrl, "Unit Test: Update Content", "Updated the version of: " + repositoryUrl, content);
         System.out.println("New SHA: " + newSha);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#createResourceContent(String, String, String)
+     */
+    @Test
+    @Ignore
+    public void testCreateResourceContent() throws NotFoundException, SourceConnectorException, JsonProcessingException, IOException {
+        String repositoryUrl = "https://gitlab.com/Apicurio/api-samples/blob/master/junit/api-" + System.currentTimeMillis() + ".json";
+        String content = "{ \"swagger\" : \"2.0\" }";
+        service.createResourceContent(repositoryUrl, "Created resource (junit)", content);
     }
 
 }

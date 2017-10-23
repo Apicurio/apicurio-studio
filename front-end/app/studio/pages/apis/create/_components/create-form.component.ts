@@ -24,6 +24,9 @@ import {ILinkedAccountsService} from "../../../../services/accounts.service";
 import {LinkedAccount} from "../../../../models/linked-account";
 import {GitHubOrganization} from "../../../../models/github-organization";
 import {DropDownOption} from "../../{apiId}/editor/_components/common/drop-down.component";
+import {GitHubRepository} from "../../../../models/github-repository";
+import {GitLabGroup} from "../../../../models/gitlab-group";
+import {GitLabProject} from "../../../../models/gitlab-project";
 
 
 @Component({
@@ -47,6 +50,9 @@ export class CreateApiFormComponent {
             resource: null
         },
         gitlab: {
+            group: null,
+            project: null,
+            resource: null
         },
         bitbucket: {
         }
@@ -55,20 +61,28 @@ export class CreateApiFormComponent {
     error: string;
 
     fetchingAccounts: boolean = false;
+
+    // when fetching github data
     fetchingOrgs: boolean = false;
     fetchingRepos: boolean = false;
+
+    // when fetching gitlab data
+    fetchingGroups: boolean = false;
+    fetchingProjects: boolean = false;
 
     showAccountLinkingWarning: boolean = false;
 
     private _accounts: LinkedAccount[];
 
-    private _gh_orgs: string[];
-    private _gh_userOrg: string;
-    private _gh_repos: string[];
+    // GitHub data
+    private _gh_orgs: GitHubOrganization[];
+    private _gh_userOrg: GitHubOrganization;
+    private _gh_repos: GitHubRepository[];
 
-    private _gl_orgs: string[];
-    private _gl_userOrg: string;
-    private _gl_repos: string[];
+    // GitLab data
+    private _gl_groups: GitLabGroup[];
+    private _gl_user: string;
+    private _gl_projects: GitLabProject[];
 
     private _user: User;
 
@@ -77,7 +91,9 @@ export class CreateApiFormComponent {
 
     /**
      * Constructor.
-     * @param apisService
+     * @param {IApisService} apisService
+     * @param {IAuthenticationService} authService
+     * @param {ILinkedAccountsService} accountsService
      */
     constructor(@Inject(IApisService) private apisService: IApisService,
             @Inject(IAuthenticationService) private authService: IAuthenticationService,
@@ -111,6 +127,10 @@ export class CreateApiFormComponent {
         this.model.type = value;
     }
 
+    /**
+     * Sets the selected account type.
+     * @param {string} accountType
+     */
     public setAccountType(accountType: string): void {
         if (this.model.accountType === accountType) {
             return;
@@ -126,9 +146,9 @@ export class CreateApiFormComponent {
             }
 
             if (accountType === "GitLab") {
-                this.model.gitlab.organization = null;
-                this.model.gitlab.repository = null;
-                this.fetchGitLabOrgs();
+                this.model.gitlab.group = null;
+                this.model.gitlab.project = null;
+                this.fetchGitLabGroups();
             }
 
         } else {
@@ -137,23 +157,25 @@ export class CreateApiFormComponent {
     }
 
     /*****************************************
-    * GitHub
-    *****************************************/
-    public gitHubUserOrg(): string {
+     * GitHub
+     *****************************************/
+
+    public gitHubUserOrg(): GitHubOrganization {
         return this._gh_userOrg;
     }
 
-    public gitHubOrganizations(): string[] {
+    public gitHubOrganizations(): GitHubOrganization[] {
         return this._gh_orgs;
     }
 
-    public setGitHubOrganization(accountType: string, org: string): void {
+    public setGitHubOrganization(org: GitHubOrganization): void {
         this.model.github.organization = org;
         this.model.github.repository = null;
         this.fetchingRepos = true;
         this._gh_repos = [];
-        this.accountsService.getAccountRepositories('GitHub', this.model.github.organization).then( repos => {
-            this._gh_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
+        this.accountsService.getAccountRepositories('GitHub', this.model.github.organization.id).then( repos => {
+            this._gh_repos = repos.sort( (repo1, repo2) => {
+                return repo1.name.toLowerCase().localeCompare(repo2.name.toLowerCase());
             });
             this.fetchingRepos = false;
         }).catch( errorReason => {
@@ -163,65 +185,88 @@ export class CreateApiFormComponent {
         });
     }
 
-    public gitHubRepositories(): string[] {
+    public gitHubRepositories(): GitHubRepository[] {
         return this._gh_repos;
     }
 
-    public setGitHubRepository(repo: string): void {
+    public setGitHubRepository(repo: GitHubRepository): void {
         this.model.github.repository = repo;
     }
 
     private fetchGitHubOrgs(): void {
-        this._gh_orgs = this.fetchOrgs('GitHub')
-
-        if (this._gh_orgs) {
+        this.fetchingOrgs = true;
+        this.accountsService.getAccountOrganizations("GitHub").then( orgs => {
+            this._gh_orgs = [];
+            orgs.forEach( org => {
+                if (!org.userOrg) {
+                    this._gh_orgs.push(org);
+                } else {
+                    this._gh_userOrg = org;
+                }
+            });
             this._gh_orgs = this._gh_orgs.sort( (org1, org2) => {
-                return org1.toLowerCase().localeCompare(org2.toLowerCase());
+                return org1.id.toLowerCase().localeCompare(org2.id.toLowerCase());
             });
-        }
-    }
-
-   /*****************************************
-    * GitLab
-    *****************************************/
-    public gitLabUserOrg(): string {
-        return this._gl_userOrg;
-    }
-
-    public gitLabOrganizations(): string[] {
-        return this._gl_orgs;
-    }
-
-    public setGitLabOrganization(org: string): void {
-        this.model.gitlab.organization = org;
-        this.model.gitlab.repository = null;
-        this.fetchingRepos = true;
-        this._gl_repos = [];
-        this.accountsService.getAccountRepositories('GitLab', this.model.gitlab.organization).then( repos => {
-            this._gl_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {                return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
-            });
-            this.fetchingRepos = false;
-        }).catch( errorReason => {
-            console.error("[CreateApiFormComponent] Error getting repos: %o", errorReason)
-            this.error = errorReason;
-            this.fetchingRepos = false;
+            this.fetchingOrgs = false;
+        }).catch( error => {
+            console.error("[CreateApiFormComponent] Error getting orgs: %o", error)
+            this.error = error;
+            this.fetchingOrgs = false;
         });
     }
 
-    public gitLabRepositories(): string[] {
-        return this._gl_repos;
+    /******************************************
+     * GitLab
+     ******************************************/
+
+    public gitLabUser(): string {
+        return this._gl_user;
     }
 
-    public setGitLabRepository(repo: string): void {
-        this.model.gitlab.repository = repo;
+    public gitLabGroups(): any[] {
+        return this._gl_groups;
     }
 
-    private fetchGitLabOrgs(): void {
-        this.model.gitlab.organization = null;
-        this._gl_orgs = this.fetchOrgs('GitLab')
+    public setGitLabGroup(group: any): void {
+        this.model.gitlab.group = group;
+        this.model.gitlab.project = null;
+        this.fetchingProjects = true;
+        this._gl_projects = [];
+        this.accountsService.getAccountProjects('GitLab', group.id).then( projects => {
+            this._gl_projects = projects.sort( (project1, project2) => {
+                return project1.name.toLowerCase().localeCompare(project2.name.toLowerCase());
+            });
+            this.fetchingProjects = false;
+        }).catch( errorReason => {
+            console.error("[CreateApiFormComponent] Error getting projects: %o", errorReason)
+            this.error = errorReason;
+            this.fetchingProjects = false;
+        });
+    }
 
-        this._gl_orgs = this._gl_orgs.sort( (org1, org2) => {
-           return org1.toLowerCase().localeCompare(org2.toLowerCase());
+    public gitLabProjects(): any[] {
+        return this._gl_projects;
+    }
+
+    public setGitLabProject(project: any): void {
+        this.model.gitlab.project = project;
+    }
+
+    private fetchGitLabGroups(): void {
+        this.fetchingGroups = true;
+        this.accountsService.getAccountGroups("GitLab").then( groups => {
+            this._gl_groups = [];
+            groups.forEach( group => {
+                this._gl_groups.push(group);
+            });
+            this._gl_groups = this._gl_groups.sort( (group1, group2) => {
+                return group1.name.toLowerCase().localeCompare(group2.name.toLowerCase());
+            });
+            this.fetchingGroups = false;
+        }).catch( error => {
+            console.error("[CreateApiFormComponent] Error getting groups: %o", error)
+            this.error = error;
+            this.fetchingGroups = false;
         });
     }
 
@@ -240,8 +285,8 @@ export class CreateApiFormComponent {
                 sep = "/";
             }
             api.repositoryUrl = "https://github.com/" +
-                this.model.github.organization + "/" +
-                this.model.github.repository + "/blob/master" + sep +
+                this.model.github.organization.id + "/" +
+                this.model.github.repository.name + "/blob/master" + sep +
                 this.model.github.resource;
         } else if (this.model.accountType === "GitLab") {
             let sep: string = "";
@@ -249,8 +294,8 @@ export class CreateApiFormComponent {
                 sep = "/";
             }
             api.repositoryUrl = "https://gitlab.com/" +
-                this.model.gitlab.organization + "/" +
-                this.model.gitlab.repository + "/blob/master" + sep +
+                this.model.gitlab.group.path + "/" +
+                this.model.gitlab.project.path + "/blob/master" + sep +
                 this.model.gitlab.resource;
         } else if (this.model.accountType === "Bitbucket") {
         }
@@ -268,7 +313,7 @@ export class CreateApiFormComponent {
      * @return {boolean}
      */
     public isFormComplete(): boolean {
-        return this.model.github.repository != null || this.model.gitlab.repository != null;
+        return this.model.github.repository != null || this.model.gitlab.project != null;
     }
 
     /**
@@ -284,24 +329,5 @@ export class CreateApiFormComponent {
             }, false);
         }
         return false;
-    }
-
-    /**
-     * Called to fetch the available GH orgs for the user.
-     */
-    private fetchOrgs(accountType: string): string[] {
-        let responseOrgs: string[] = [];
-        this.fetchingOrgs = true;
-        this.accountsService.getAccountOrganizations(accountType).then( orgs => {
-            orgs.forEach( org => {
-                responseOrgs.push(org.id);
-            });
-            this.fetchingOrgs = false;
-        }).catch( error => {
-            console.error("[CreateApiFormComponent] Error getting orgs: %o", error)
-            this.error = error;
-            this.fetchingRepos = false;
-        });
-        return responseOrgs;
     }
 }

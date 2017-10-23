@@ -75,7 +75,27 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
      * @return {string}
      */
     public getResourceUrlLabel(): string {
-        return "View on GitHub";
+        if (this.api.repositoryUrl.indexOf("github.com") > 0) {
+            return "View on GitHub";
+        }
+        if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
+            return "View on GitLab";
+        }
+        return "View Source";
+    }
+
+    /**
+     * Returns a type that can be used to e.g. display an appropriate icon.
+     * @return {string}
+     */
+    public getResourceType(): string {
+        if (this.api.repositoryUrl.indexOf("github.com") > 0) {
+            return "github";
+        }
+        if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
+            return "gitlab";
+        }
+        return "code";
     }
 
     /**

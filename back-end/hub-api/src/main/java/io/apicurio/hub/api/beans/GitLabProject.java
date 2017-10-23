@@ -21,7 +21,9 @@ package io.apicurio.hub.api.beans;
  */
 public class GitLabProject {
     
+    private int id;
     private String name;
+    private String path;
     
     /**
      * Constructor.
@@ -41,6 +43,34 @@ public class GitLabProject {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the path
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

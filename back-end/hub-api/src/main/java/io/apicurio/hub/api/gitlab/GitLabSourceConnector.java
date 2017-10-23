@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -48,12 +50,12 @@ import com.mashape.unirest.request.HttpRequest;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitLabAction;
+import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
 import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -71,6 +73,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private static Logger logger = LoggerFactory.getLogger(GitLabSourceConnector.class);
 
     private static final String GITLAB_API_ENDPOINT = "https://gitlab.com";
+    protected static final Object TOKEN_TYPE_PAT = "PAT";
+    protected static final Object TOKEN_TYPE_OAUTH = "OAUTH";
 
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
@@ -86,6 +90,25 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     @Override
     protected String getBaseApiEndpointUrl() {
         return GITLAB_API_ENDPOINT;
+    }
+
+    /**
+     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#parseExternalTokenResponse(java.lang.String)
+     */
+    protected Map<String, String> parseExternalTokenResponse(String body) {
+        try {
+            Map<String, String> rval = new HashMap<>();
+            JsonNode jsonNode = mapper.readTree(body);
+            rval.put("access_token", jsonNode.get("access_token").asText());
+            rval.put("token_type", jsonNode.get("token_type").asText());
+            rval.put("refresh_token", jsonNode.get("refresh_token").asText());
+            rval.put("scope", jsonNode.get("scope").asText());
+            rval.put("created_at", jsonNode.get("created_at").asText());
+            rval.put("id_token", jsonNode.get("id_token").asText());
+            return rval;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -153,7 +176,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             
             HttpGet get = new HttpGet(commitsUrl);
             get.addHeader("Accept", "application/json");
-            get.addHeader("PRIVATE-TOKEN", getExternalToken());
+            addSecurity(get);
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() == 404) {
@@ -191,6 +214,26 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         } catch (IOException e) {
             throw new SourceConnectorException("Error getting collaborator information for a GitLab resource.", e);
         }
+    }
+
+    /**
+     * Adds security information to the http request.
+     * @param request
+     */
+    protected void addSecurity(HttpRequestBase request) throws SourceConnectorException {
+        if (this.getExternalTokenType() == TOKEN_TYPE_PAT) {
+            request.addHeader("PRIVATE-TOKEN", getExternalToken());
+        }
+        if (this.getExternalTokenType() == TOKEN_TYPE_OAUTH) {
+            request.addHeader("Authorization", "Bearer " + getExternalToken());
+        }
+    }
+
+    /**
+     * @return the type of the external token (either private or oauth)
+     */
+    protected Object getExternalTokenType() {
+        return TOKEN_TYPE_OAUTH;
     }
 
     /**
@@ -237,7 +280,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(addCommentUrl);
-            post.addHeader("PRIVATE-TOKEN", getExternalToken());
+            addSecurity(post);
             // Set note as a form body parameter
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("note", commitComment));
@@ -271,9 +314,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet get = new HttpGet(this.endpoint("/api/v4/groups").url());
             get.addHeader("Accept", "application/json");
-            get.addHeader("PRIVATE-TOKEN", getExternalToken());
+            addSecurity(get);
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new SourceConnectorException("Error getting GitLab groups: " + response.getStatusLine().getReasonPhrase());
+                }
                 Collection<GitLabGroup> rval = new HashSet<>();
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     JsonNode node = mapper.readTree(contentStream);
@@ -281,9 +327,13 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         ArrayNode array = (ArrayNode) node;
                         array.forEach(obj -> {
                             JsonNode org = (JsonNode) obj;
-                            String login = org.get("name").asText();
+                            int id = org.get("id").asInt();
+                            String name = org.get("name").asText();
+                            String path = org.get("path").asText();
                             GitLabGroup glg = new GitLabGroup();
-                            glg.setId(login);
+                            glg.setId(id);
+                            glg.setName(name);
+                            glg.setPath(path);
                             rval.add(glg);
                         });
                     }
@@ -291,7 +341,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 }
             }
         } catch (IOException e) {
-            throw new GitLabException("Error getting GitLab organizations.", e);
+            throw new GitLabException("Error getting GitLab groups.", e);
         }
     }
     
@@ -307,7 +357,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
             HttpGet get = new HttpGet(requestUrl);
             get.addHeader("Accept", "application/json");
-            get.addHeader("PRIVATE-TOKEN", getExternalToken());
+            addSecurity(get);
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 Collection<GitLabProject> rval = new HashSet<>();
@@ -316,11 +366,15 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     if (node.isArray()) {
                         ArrayNode array = (ArrayNode) node;
                         array.forEach(obj -> {
-                            JsonNode repo = (JsonNode) obj;
-                            String name = repo.get("name").asText();
-                            GitLabProject gho = new GitLabProject();
-                            gho.setName(name);
-                            rval.add(gho);
+                            JsonNode project = (JsonNode) obj;
+                            int id = project.get("id").asInt();
+                            String name = project.get("name").asText();
+                            String path = project.get("path").asText();
+                            GitLabProject glp = new GitLabProject();
+                            glp.setId(id);
+                            glp.setName(name);
+                            glp.setPath(path);
+                            rval.add(glp);
                         });
                     }
                     return rval;
@@ -336,8 +390,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     @Override
     protected void addSecurityTo(HttpRequest request) throws SourceConnectorException {
-//        String idpToken = getExternalToken();
-//        request.header("PRIVATE-TOKEN", idpToken);
         // TODO: not currently supported because we're not using Unirest as our HTTP client.  We'll convert *all* clients to use Apache HTTP Client soon and this method will change
     }
 
@@ -360,7 +412,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             
             HttpPost post = new HttpPost(contentUrl);
             post.addHeader("Content-Type", "application/json");
-            post.addHeader("PRIVATE-TOKEN", getExternalToken());
+            addSecurity(post);
 
             GitLabCreateFileRequest body = new GitLabCreateFileRequest();
             body.setBranch(resource.getBranch());
@@ -396,7 +448,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     }
 
     private ResourceContent getResourceContentFromGitLab(GitLabResource resource) throws NotFoundException, SourceConnectorException {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient httpClient = HttpClients.createSystem()) {
             String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path?ref=:branch")
                     .bind("id", toEncodedId(resource))
                     .bind("path", toEncodedPath(resource))
@@ -405,7 +457,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             
             HttpGet get = new HttpGet(getContentUrl);
             get.addHeader("Accept", "application/json");
-            get.addHeader("PRIVATE-TOKEN", getExternalToken());
+            get.addHeader("Cache-Control", "no-cache");
+            get.addHeader("Postman-Token", "4d2517bb-72d0-9175-1cbe-04d61e9258a0");
+            get.addHeader("DNT", "1");
+            get.addHeader("Accept-Language", "en-US,en;q=0.8");
+            
+            addSecurity(get);
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() == 404) {
                     throw new NotFoundException();

@@ -114,8 +114,8 @@ export class CreateApiFormComponent {
             this.model.accountType = accountType;
             this.showAccountLinkingWarning = false;
 
-            if (accountType === "GitHub") {
-                this.fetchGitHubOrgs();
+            if (accountType === "GitHub" || accountType === "GitLab") {
+                this.fetchGitHubOrgs(accountType);
             }
         } else {
             this.showAccountLinkingWarning = true;
@@ -130,12 +130,12 @@ export class CreateApiFormComponent {
         return this._gh_orgs;
     }
 
-    public setGitHubOrganization(org: string): void {
+    public setGitHubOrganization(accountType: string, org: string): void {
         this.model.github.organization = org;
         this.model.github.repository = null;
         this.fetchingRepos = true;
         this._gh_repos = [];
-        this.accountsService.getAccountRepositories("GitHub", this.model.github.organization).then( repos => {
+        this.accountsService.getAccountRepositories(accountType, this.model.github.organization).then( repos => {
             this._gh_repos = repos.map(repo => repo.name).sort( (repo1, repo2) => {
                 return repo1.toLowerCase().localeCompare(repo2.toLowerCase());
             });
@@ -173,6 +173,7 @@ export class CreateApiFormComponent {
                 this.model.github.repository + "/blob/master" + sep +
                 this.model.github.resource;
         } else if (this.model.accountType === "GitLab") {
+
         } else if (this.model.accountType === "Bitbucket") {
         }
 
@@ -210,9 +211,9 @@ export class CreateApiFormComponent {
     /**
      * Called to fetch the available GH orgs for the user.
      */
-    private fetchGitHubOrgs(): void {
+    private fetchGitHubOrgs(accountType:string): void {
         this.fetchingOrgs = true;
-        this.accountsService.getAccountOrganizations("GitHub").then( orgs => {
+        this.accountsService.getAccountOrganizations(accountType).then( orgs => {
             this._gh_orgs = [];
             orgs.forEach( org => {
                 if (!org.userOrg) {
@@ -232,5 +233,7 @@ export class CreateApiFormComponent {
         });
 
     }
+
+
 
 }

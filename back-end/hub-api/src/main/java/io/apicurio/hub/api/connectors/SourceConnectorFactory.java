@@ -23,6 +23,7 @@ import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
+import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
 
 /**
  * Creates/provides connectors for different types of linked accounts.
@@ -30,11 +31,14 @@ import io.apicurio.hub.api.github.IGitHubSourceConnector;
  */
 @ApplicationScoped
 public class SourceConnectorFactory {
-    
+
     @Inject
     private IGitHubSourceConnector gitHub;
+
+    @Inject
+    private IGitLabSourceConnector gitLab;
     // TODO add more platforms here
-    
+
     /**
      * Creates a connector for a particular type of account (e.g. GitHub, GitLab, etc).
      * @param accountType
@@ -44,13 +48,17 @@ public class SourceConnectorFactory {
         if (accountType == LinkedAccountType.GitHub) {
             return gitHub;
         }
+
+        if (accountType == LinkedAccountType.GitLab) {
+            return gitLab;
+        }
         // TODO add more platforms here
-        
+
         throw new NotFoundException();
     }
 
     /**
-     * Creates a connector for a particular resource URL.  The factory will determine the 
+     * Creates a connector for a particular resource URL.  The factory will determine the
      * type of connector based on the URL pattern.
      * @param repositoryUrl
      * @throws NotFoundException
@@ -59,6 +67,8 @@ public class SourceConnectorFactory {
         if (GitHubResourceResolver.resolve(repositoryUrl) != null) {
             return gitHub;
         }
+
+
         // TODO add more platforms here
 
         throw new NotFoundException();

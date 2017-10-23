@@ -64,13 +64,12 @@
                 </div>
                 <!-- GitLab -->
                 <div class="list-group-item list-view-pf-stacked list-view-pf-expand-active account-link"
-                     [class.list-view-pf-expand-active]="showGitlabWarning"
                      [class.created]="isAccountCreated('GitLab')"
                      [class.not-created]="isAccountMissing('GitLab')"
                      [class.initiated]="isAccountInitiated('GitLab')">
                     <div class="list-group-item-header">
                         <div class="list-view-pf-actions">
-                            <button *ngIf="isAccountMissing('GitLab')" class="btn btn-primary" (click)="showGitlabWarning = true">Link</button>
+                            <button *ngIf="isAccountMissing('GitLab')" class="btn btn-primary" (click)="createLinkedAccount('GitLab')">Link</button>
                             <button *ngIf="isAccountCreated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')">Unlink</button>
                             <button *ngIf="isAccountInitiated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')">Cancel</button>
                         </div>
@@ -101,35 +100,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="list-group-item-container container-fluid" *ngIf="showGitlabWarning">
-                        <div class="close">
-                            <button type="button" class="close" (click)="showGitlabWarning = false">
-                                <span class="pficon pficon-close"></span>
-                            </button>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-1 icon">
-                                <span class="pficon pficon-info"></span>
-                            </div>
-                            <div class="col-md-10">
-                                <p>
-                                    <strong>Not yet implemented!</strong> Support for linking to your <strong>GitLab</strong> account has not
-                                    yet been implemented.  See the <a href="http://www.apicur.io/roadmap/">Apicurio Roadmap</a> for more
-                                    information.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <!-- Bitbucket -->
                 <div class="list-group-item list-view-pf-stacked account-link"
-                     [class.list-view-pf-expand-active]="showBitbucketWarning"
                      [class.created]="isAccountCreated('Bitbucket')"
                      [class.not-created]="isAccountMissing('Bitbucket')"
                      [class.initiated]="isAccountInitiated('Bitbucket')">
                     <div class="list-group-item-header">
                         <div class="list-view-pf-actions">
-                            <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="showBitbucketWarning = true">Link</button>
+                            <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="createLinkedAccount('Bitbucket')">Link</button>
                             <button *ngIf="isAccountCreated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Unlink</button>
                             <button *ngIf="isAccountInitiated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Cancel</button>
                         </div>
@@ -160,26 +139,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="list-group-item-container container-fluid" *ngIf="showBitbucketWarning">
-                        <div class="close">
-                            <button type="button" class="close" (click)="showBitbucketWarning = false">
-                                <span class="pficon pficon-close"></span>
-                            </button>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-1 icon">
-                                <span class="pficon pficon-info"></span>
-                            </div>
-                            <div class="col-md-10">
-                                <p>
-                                    <strong>Not yet implemented!</strong> Support for linking to your <strong>Bitbucket</strong> account has not
-                                    yet been implemented.  See the <a href="http://www.apicur.io/roadmap/">Apicurio Roadmap</a> for more
-                                    information.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>

@@ -32,7 +32,7 @@
     </extensions>
     
     <system-properties>
-        <property name="apicurio.kc.auth.rootUrl" value="https://auth-apistudio.rhcloud.com"/>
+      <property name="apicurio.kc.auth.rootUrl" value="https://www.snyder616.com"/>
         <property name="apicurio.kc.auth.realm" value="apicurio-local"/>
         <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
         <property name="apicurio.hub.storage.jdbc.init" value="true"/>
@@ -413,7 +413,6 @@
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <realm name="apicurio-local">
-                <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNAqN6gTpgluPizQqEyqYyPht83XBGV0yaBBXQChIfwOG27hs4lt3utY4ynFNLZluhcss7Fbec6ZykZbQTqJmoFVBo0leD2okZj2jvFSwyQ3hXOwar01aNxEezeauz0zH+34bdr+UP5DoqdSPnwoKfEs1Mk+q1KNNqgnuJgYn0xsB4lTQKOV2uLN89y2sWKzz6LJI6z0+KcRXS2MUFIc2uUmuCitC+X7jrOAPs0G0dyeyeqkYTdJbKJ/AuMyfsCF8i3KHcsdRET8xx7JWz5y8Nh1hvIBmUtps7jHn5cGgU5kpv1Lk2xCzjcsB872A3WqJBKCyqe5DO+Kj5fyuRHMyQIDAQAB</realm-public-key>
                 <auth-server-url>${apicurio.kc.auth.rootUrl}/auth</auth-server-url>
                 <ssl-required>NONE</ssl-required>
                 <enable-cors>true</enable-cors>

@@ -81,7 +81,9 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="api-organization">
-                                <li role="presentation"><a role="menuitem" (click)="setGitHubOrganization(gitHubUserOrg())">{{ gitHubUserOrg() }}</a></li>
+                                <li role="presentation"><a role="menuitem"
+                                                           (click)="setGitHubOrganization('GitHub', gitHubUserOrg())">{{
+                                    gitHubUserOrg() }}</a></li>
                                 <li class="divider"></li>
                                 <li *ngFor="let org of gitHubOrganizations()" role="presentation"><a role="menuitem" (click)="setGitHubOrganization(org)">{{ org }}</a></li>
                             </ul>
@@ -118,6 +120,55 @@
 
             <!-- GitLab Form Items -->
             <div class="gitlab-form-items" *ngIf="model.accountType === 'GitLab'">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"
+                           for="api-organization">Organization</label>
+                    <div class="col-sm-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button"
+                                    id="api-organization" data-toggle="dropdown">
+                                <span *ngIf="model.github.organization !== null">{{ model.gitlab.organization }}</span>
+                                <div *ngIf="fetchingOrgs" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.github.organization === null">(select organization)</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu"
+                                aria-labelledby="api-organization">
+                                <li role="presentation"><a role="menuitem"
+                                                           (click)="setGitHubOrganization('GitLab', gitLabUserOrg())">{{
+                                    gitHubUserOrg() }}</a></li>
+                                <li class="divider"></li>
+                                <li *ngFor="let org of gitHubOrganizations()" role="presentation"><a
+                                        role="menuitem"
+                                        (click)="setGitHubOrganization('GitLab', org)">{{ org
+                                    }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="api-repository">Repository</label>
+                        <div class="col-sm-10">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button"
+                                        id="api-repository" data-toggle="dropdown"
+                                        [disabled]="model.github.organization === null">
+                                    <span *ngIf="model.gitlab.repository !== null">{{ model.github.repository }}</span>
+                                    <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
+                                    <span class="disabled" *ngIf="model.github.repository === null">(select repository)</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu"
+                                    aria-labelledby="api-repository">
+                                    <li *ngFor="let repo of gitHubRepositories()"
+                                        role="presentation"><a role="menuitem"
+                                                               (click)="setGitHubRepository(repo)">{{
+                                        repo }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Bitbucket Form Items -->

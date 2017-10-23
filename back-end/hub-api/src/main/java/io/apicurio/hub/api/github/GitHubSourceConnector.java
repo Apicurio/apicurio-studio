@@ -31,11 +31,10 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.keycloak.common.util.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -67,10 +66,6 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
 public class GitHubSourceConnector extends AbstractSourceConnector implements IGitHubSourceConnector {
 
     private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
-    static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
     
@@ -88,6 +83,24 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     @Override
     protected String getBaseApiEndpointUrl() {
         return GITHUB_API_ENDPOINT;
+    }
+
+    /**
+     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#parseExternalTokenResponse(java.lang.String)
+     */
+    protected Map<String, String> parseExternalTokenResponse(String body) {
+        Map<String, String> rval = new HashMap<>();
+        String[] split1 = body.split("&");
+        for (String item : split1) {
+            String[] split2 = item.split("=");
+            String encodedKey = split2[0];
+            String encodedVal = split2[1];
+            String key = Encode.decode(encodedKey);
+            String val = Encode.decode(encodedVal);
+            rval.put(key, val);
+        }
+        
+        return rval;
     }
 
     /**

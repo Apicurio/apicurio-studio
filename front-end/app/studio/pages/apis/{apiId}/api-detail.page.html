@@ -86,7 +86,7 @@
                                         <span>Modified by <em>{{ api.modifiedBy }}</em></span>
                                     </div>
                                     <div>
-                                        <span class="fa fa-fw fa-github"></span>
+                                        <span class="fa fa-fw fa-{{ getResourceType() }}"></span>
                                         <a class="api-resource-url-value" target="_blank"
                                            href="{{ getResourceUrlHref() }}">
                                             <span>{{ getResourceUrlLabel() }}</span>

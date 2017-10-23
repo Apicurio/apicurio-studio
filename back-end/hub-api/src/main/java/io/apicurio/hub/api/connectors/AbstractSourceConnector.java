@@ -28,7 +28,9 @@ import org.keycloak.common.util.KeycloakUriBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -48,6 +50,8 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
     static {
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
@@ -121,22 +125,8 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
      * </pre>
      * 
      * @param body
-     * @return
      */
-    protected static Map<String, String> parseExternalTokenResponse(String body) {
-        Map<String, String> rval = new HashMap<>();
-        String[] split1 = body.split("&");
-        for (String item : split1) {
-            String[] split2 = item.split("=");
-            String encodedKey = split2[0];
-            String encodedVal = split2[1];
-            String key = Encode.decode(encodedKey);
-            String val = Encode.decode(encodedVal);
-            rval.put(key, val);
-        }
-        
-        return rval;
-    }
+    protected abstract Map<String, String> parseExternalTokenResponse(String body);
 
     /**
      * Creates a github API endpoint from the api path.

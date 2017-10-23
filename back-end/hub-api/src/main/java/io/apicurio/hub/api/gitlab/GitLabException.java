@@ -14,33 +14,29 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.beans;
+package io.apicurio.hub.api.gitlab;
 
 /**
- * @author eric.wittmann@gmail.com
+ * @author christopher.snyder@spectrumhealth.org
  */
-public class OpenApi3Document extends OpenApiDocument {
-    
-    private String openapi = "3.0.0";
-    
-    /**
+public class GitLabException extends Exception {
+
+	private static final long serialVersionUID = -6970632778617385706L;
+
+	/**
      * Constructor.
      */
-    public OpenApi3Document() {
+    public GitLabException(String message) {
+        super(message);
     }
 
     /**
-     * @return the openapi
+     * Constructor.
+     * @param message
+     * @param cause
      */
-    public String getOpenapi() {
-        return openapi;
-    }
-
-    /**
-     * @param openapi the openapi to set
-     */
-    public void setOpenapi(String openapi) {
-        this.openapi = openapi;
+    public GitLabException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

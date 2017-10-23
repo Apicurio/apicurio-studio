@@ -64,6 +64,15 @@ public class GitHubSourceConnectorTest {
     public void tearDown() throws Exception {
     }
 
+    @Test
+    public void testParseExternalTokenResponse() {
+        Map<String, String> response = ((GitHubSourceConnector) service).parseExternalTokenResponse("access_token=12345&scope=repo%2Cuser%3Aemail&token_type=bearer");
+        Assert.assertNotNull(response);
+        Assert.assertEquals("12345", response.get("access_token"));
+        Assert.assertEquals("repo,user:email", response.get("scope"));
+        Assert.assertEquals("bearer", response.get("token_type"));
+    }
+
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#validateResourceExists(java.lang.String)}.
      */

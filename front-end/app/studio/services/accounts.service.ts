@@ -21,6 +21,8 @@ import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
 import {LinkedAccount} from "../models/linked-account";
 import {GitHubOrganization} from "../models/github-organization";
 import {GitHubRepository} from "../models/github-repository";
+import {GitLabGroup} from "../models/gitlab-group";
+import {GitLabProject} from "../models/gitlab-project";
 
 
 /**
@@ -79,6 +81,21 @@ export interface ILinkedAccountsService {
      * @return {Promise<string[]>}
      */
     getAccountRepositories(accountType: string, organization: string): Promise<GitHubRepository[]>;
+
+    /**
+     * Gets a list of all groups the user belongs to.
+     * @param {string} accountType
+     * @return {Promise<any[]>}
+     */
+    getAccountGroups(accountType: string): Promise<GitLabGroup[]>;
+
+    /**
+     * Gets all of the projects found in a given group.
+     * @param {string} accountType
+     * @param {string} group
+     * @return {Promise<GitLabProject[]>}
+     */
+    getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]>;
 
 }
 

@@ -19,28 +19,58 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class OpenApi3Document extends OpenApiDocument {
-    
-    private String openapi = "3.0.0";
-    
+public class GitLabGroup {
+
+    private int id;
+    private String name;
+    private String path;
+
     /**
      * Constructor.
      */
-    public OpenApi3Document() {
+    public GitLabGroup() {
     }
 
     /**
-     * @return the openapi
+     * @return the id
      */
-    public String getOpenapi() {
-        return openapi;
+    public int getId() {
+        return id;
     }
 
     /**
-     * @param openapi the openapi to set
+     * @param id the id to set
      */
-    public void setOpenapi(String openapi) {
-        this.openapi = openapi;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the path
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

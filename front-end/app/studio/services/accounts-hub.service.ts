@@ -29,6 +29,8 @@ import {CreateLinkedAccount} from "../models/create-linked-account";
 import {CompleteLinkedAccount} from "../models/complete-linked-account";
 import {GitHubOrganization} from "../models/github-organization";
 import {GitHubRepository} from "../models/github-repository";
+import {GitLabGroup} from "../models/gitlab-group";
+import {GitLabProject} from "../models/gitlab-project";
 
 
 /**
@@ -170,6 +172,39 @@ export class HubLinkedAccountsService extends AbstractHubService implements ILin
 
         return this.http.get(repositoriesUrl, options).map( response => {
             return response.json() as GitHubRepository[];
+        }).toPromise();
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountGroups
+     */
+    public getAccountGroups(accountType: string): Promise<GitLabGroup[]> {
+        let groupsUrl: string = this.endpoint("/accounts/:accountType/groups", {
+            accountType: accountType
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting groups: %s", groupsUrl);
+
+        return this.http.get(groupsUrl, options).map( response => {
+            return response.json() as GitLabGroup[];
+        }).toPromise();
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountProjects
+     */
+    public getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]> {
+        let projectsUrl: string = this.endpoint("/accounts/:accountType/groups/:group/projects", {
+            accountType: accountType,
+            group: group
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting projects: %s", projectsUrl);
+
+        return this.http.get(projectsUrl, options).map( response => {
+            return response.json() as GitLabProject[];
         }).toPromise();
     }
 

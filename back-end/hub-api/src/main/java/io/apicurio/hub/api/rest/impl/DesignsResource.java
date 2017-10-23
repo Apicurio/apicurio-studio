@@ -168,7 +168,7 @@ public class DesignsResource implements IDesignsResource {
 
             try {
                 connector.validateResourceExists(info.getRepositoryUrl());
-                throw new StorageException("GitHub resource already exists: " + info.getRepositoryUrl());
+                throw new StorageException("Resource already exists: " + info.getRepositoryUrl());
             } catch (NotFoundException e) {
                 // This is what we want!
             }

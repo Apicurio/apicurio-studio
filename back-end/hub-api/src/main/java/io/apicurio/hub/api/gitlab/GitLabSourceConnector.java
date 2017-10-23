@@ -55,12 +55,11 @@ import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.util.OpenApiTools;
-import io.apicurio.hub.api.util.OpenApiTools.NameAndDescription;
 
 /**
  * Implementation of the GitLab source connector.
@@ -124,11 +123,22 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 throw new NotFoundException();
             }
             String content = getResourceContent(resource);
-            NameAndDescription nad = OpenApiTools.getNameAndDescriptionFromSpec(content);
-
+            
+            String name = resource.getResourcePath();
+            String description = "";
+            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
+            if (document.getInfo() != null) {
+                if (document.getInfo().getTitle() != null) {
+                    name = document.getInfo().getTitle();
+                }
+                if (document.getInfo().getDescription() != null) {
+                    description = document.getInfo().getDescription();
+                }
+            }
+            
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(nad.name);
-            info.setDescription(nad.description);
+            info.setName(name);
+            info.setDescription(description);
             info.setUrl(this.endpoint("/:group/:project/blob/:branch/:path")
                     .bind("group", resource.getGroup())
                     .bind("project", resource.getProject())

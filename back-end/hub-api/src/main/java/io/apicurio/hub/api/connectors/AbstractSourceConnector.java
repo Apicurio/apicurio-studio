@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -50,6 +51,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     protected static final ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {

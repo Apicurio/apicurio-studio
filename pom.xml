@@ -103,6 +103,8 @@
         <version.commons-pool>1.6</version.commons-pool>
         <version.javax.enterprise>1.2</version.javax.enterprise>
         <version.junit>4.11</version.junit>
+        <version.org.apache.httpcomponents>4.5.3</version.org.apache.httpcomponents>
+        <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
         <version.org.jboss.arquillian>1.1.13.Final</version.org.jboss.arquillian>
         <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
@@ -205,6 +207,16 @@
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-adapter-spi</artifactId>
                 <version>${version.org.keycloak}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${version.org.apache.httpcore}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.org.apache.httpcomponents}</version>
             </dependency>
 
             <!-- Spec Libraries -->

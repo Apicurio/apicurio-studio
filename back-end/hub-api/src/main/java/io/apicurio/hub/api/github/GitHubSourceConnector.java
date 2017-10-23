@@ -35,8 +35,6 @@ import org.keycloak.common.util.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -68,10 +66,6 @@ import io.apicurio.hub.api.exceptions.NotFoundException;
 public class GitHubSourceConnector extends AbstractSourceConnector implements IGitHubSourceConnector {
 
     private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
-    static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
 
     private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
     

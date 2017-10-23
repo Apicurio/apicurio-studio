@@ -19,7 +19,7 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class OpenApi3Document extends OpenApiDocument{
+public class OpenApi3Document extends OpenApiDocument {
     
     private String openapi = "3.0.0";
     

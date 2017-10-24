@@ -252,49 +252,6 @@
         }
       }
     },
-    "/currentuser/organizations": {
-      "get": {
-        "summary": "List all GitHub Organizations",
-        "description": "Returns a list of all Organizations the user belongs to.",
-        "responses": {
-          "200": {
-            "description": "Response when the list of organizations is successfully returned.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/currentuser/organizations/{org}/repositories": {
-      "get": {
-        "summary": "List all GitHub Repositories",
-        "description": "Returns a list of all repositories within the given GitHub organization.",
-        "responses": {
-          "200": {
-            "description": "Response when the list of repositories is successfully returned.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "org",
-          "in": "path",
-          "description": "A GitHub organization.",
-          "required": true,
-          "type": "string"
-        }
-      ]
-    },
     "/accounts": {
       "get": {
         "summary": "List Linked Accounts",
@@ -388,7 +345,123 @@
         {
           "name": "accountType",
           "in": "path",
-          "description": "The type of account, such as GitHub, GitLab, or Bitbucket",
+          "description": "The type of account.  Valid values:  gitlab | github",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/accounts/{accountType}/organizations": {
+      "get": {
+        "summary": "List GitHub Organizations",
+        "description": "Gets a list of all GitHub organizations the user has access to.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of GitHub organizations.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/GitHubOrganization"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "accountType",
+          "in": "path",
+          "description": "Account type - must be \"github\".",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/accounts/{accountType}/groups": {
+      "get": {
+        "summary": "List of all GitLab Groups",
+        "description": "Returns a list of all the GitLab Groups the user belongs to.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of GitLab groups.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/GitLabGroup"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "accountType",
+          "in": "path",
+          "description": "Account type - must be \"gitlab\".",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/accounts/{accountType}/groups/{group}/projects": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns a list of GitLab projects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/GitLabProject"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "group",
+          "in": "path",
+          "description": "The GitLab group path or id.",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "accountType",
+          "in": "path",
+          "description": "Account type - must be \"gitlab\".",
+          "required": true,
+          "type": "string"
+        }
+      ]
+    },
+    "/accounts/{accountType}/organizations/{org}/repositories": {
+      "get": {
+        "summary": "List GitHub Repositories",
+        "description": "Gets a list of GitHub repositories found in a given organization.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of GitHub repositories.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "#/definitions/GitHubRepository"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "accountType",
+          "in": "path",
+          "description": "Account type - must be \"github\".",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "org",
+          "in": "path",
+          "description": "The GitHub organization id.",
           "required": true,
           "type": "string"
         }
@@ -566,6 +639,80 @@
       "properties": {
         "authUrl": {
           "description": "The (e.g. OIDC) authentication URL used to complete account creation.",
+          "type": "string"
+        }
+      }
+    },
+    "GitHubOrganization": {
+      "required": [
+        "userOrg",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "The GitHub id of the organization.",
+          "type": "string"
+        },
+        "userOrg": {
+          "description": "Boolean indicating whether this is the User's organization.",
+          "type": "boolean"
+        }
+      }
+    },
+    "GitHubRepository": {
+      "required": [
+        "name",
+        "priv"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the repository.",
+          "type": "string"
+        },
+        "priv": {
+          "description": "Boolean indicating if the repository is private.",
+          "type": "boolean"
+        }
+      }
+    },
+    "GitLabGroup": {
+      "required": [
+        "id",
+        "name",
+        "path"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique GitLab id of the group.",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Friendly name of the group.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path of the group.",
+          "type": "string"
+        }
+      }
+    },
+    "GitLabProject": {
+      "required": [
+        "id",
+        "name",
+        "path"
+      ],
+      "properties": {
+        "id": {
+          "description": "Unique GitLab id of the group.",
+          "type": "integer"
+        },
+        "name": {
+          "description": "Friendly name of the group.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path of the group.",
           "type": "string"
         }
       }

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
@@ -29,7 +31,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.apicurio.hub.api.beans.ApiContentType;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.ApiDesignCommand;
+import io.apicurio.hub.api.beans.ApiDesignContent;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.config.HubApiConfiguration;
@@ -75,41 +81,30 @@ public class JdbcStorageTest {
         Collection<ApiDesign> designs = storage.listApiDesigns("user");
         Assert.assertNotNull(designs);
         Assert.assertEquals(0, designs.size());
-        
-        String baseUrl = "urn://JdbcStorageTest.testCreateApiDesign";
-        
+
         ApiDesign design = new ApiDesign();
         Date now = new Date();
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
         
         // Add five designs as user1
         design.setName("API 1");
-        design.setRepositoryUrl(baseUrl + "#api1");
-        storage.createApiDesign("user", design);
+        storage.createApiDesign("user", design, "{}");
         design.setName("API 2");
-        design.setRepositoryUrl(baseUrl + "#api2");
-        storage.createApiDesign("user", design);
+        storage.createApiDesign("user", design, "{}");
         design.setName("API 3");
-        design.setRepositoryUrl(baseUrl + "#api3");
-        storage.createApiDesign("user", design);
+        storage.createApiDesign("user", design, "{}");
         design.setName("API 4");
-        design.setRepositoryUrl(baseUrl + "#api4");
-        storage.createApiDesign("user", design);
+        storage.createApiDesign("user", design, "{}");
         design.setName("API 5");
-        design.setRepositoryUrl(baseUrl + "#api5");
-        storage.createApiDesign("user", design);
+        storage.createApiDesign("user", design, "{}");
 
         // Now a couple more as user2
         design.setName("API 6");
-        design.setRepositoryUrl(baseUrl + "#api6");
-        storage.createApiDesign("user2", design);
+        storage.createApiDesign("user2", design, "{}");
         design.setName("API 7");
-        design.setRepositoryUrl(baseUrl + "#api7");
-        storage.createApiDesign("user2", design);
+        storage.createApiDesign("user2", design, "{}");
 
         // Fetch all 5 from user1
         designs = storage.listApiDesigns("user");
@@ -129,21 +124,11 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
         design.setName("API Name");
-        design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String id = storage.createApiDesign("user", design);
+        String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
-        
-        try {
-            storage.createApiDesign("user", design);
-            Assert.fail("Expected an 'AlreadyExistsException'");
-        } catch (AlreadyExistsException e) {
-            // OK!
-        }
     }
 
     @Test
@@ -153,12 +138,9 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
         design.setName("API Name");
-        design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         
-        String designId = storage.createApiDesign("user", design);
+        String designId = storage.createApiDesign("user", design, "{}");
         
         // Fetch it by its ID
         design = storage.getApiDesign("user", designId);
@@ -191,25 +173,19 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
         design.setName("API Name");
-        design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         design.getTags().add("tag1");
         design.getTags().add("tag2");
         
-        String designId = storage.createApiDesign("user", design);
+        String designId = storage.createApiDesign("user", design, "{}");
         
         // Fetch it by its ID
         design = storage.getApiDesign("user", designId);
         Assert.assertNotNull(design);
         Assert.assertEquals("user", design.getCreatedBy());
-        Assert.assertEquals("user", design.getModifiedBy());
         Assert.assertEquals(now, design.getCreatedOn());
-        Assert.assertEquals(now, design.getModifiedOn());
         Assert.assertEquals("Just added the design!", design.getDescription());
         Assert.assertEquals("API Name", design.getName());
-        Assert.assertEquals("urn://JdbcStorageTest.testCreateApiDesign", design.getRepositoryUrl());
         Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2")), design.getTags());
         
         try {
@@ -234,18 +210,13 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        design.setModifiedBy("user");
-        design.setModifiedOn(now);
         design.setName("API Name");
-        design.setRepositoryUrl("urn://JdbcStorageTest.testCreateApiDesign");
         design.getTags().add("tag1");
         design.getTags().add("tag2");
         
-        String designId = storage.createApiDesign("user", design);
+        String designId = storage.createApiDesign("user", design, "{}");
         design.setId(designId);
         
-        design.setModifiedBy("user2");
-        design.setModifiedOn(new Date(now.getTime() + 100));
         design.setName("Updated API Name");
         design.setDescription("Updated description.");
         design.getTags().clear();
@@ -259,11 +230,8 @@ public class JdbcStorageTest {
         Assert.assertEquals(design.getId(), updatedDesign.getId());
         Assert.assertEquals(design.getName(), updatedDesign.getName());
         Assert.assertEquals(design.getDescription(), updatedDesign.getDescription());
-        Assert.assertEquals(design.getRepositoryUrl(), updatedDesign.getRepositoryUrl());
         Assert.assertEquals(design.getCreatedBy(), updatedDesign.getCreatedBy());
         Assert.assertEquals(design.getCreatedOn(), updatedDesign.getCreatedOn());
-        Assert.assertEquals(design.getModifiedBy(), updatedDesign.getModifiedBy());
-        Assert.assertEquals(design.getModifiedOn(), updatedDesign.getModifiedOn());
         Assert.assertEquals(design.getTags(), updatedDesign.getTags());
         
         try {
@@ -440,6 +408,120 @@ public class JdbcStorageTest {
         }
     }
 
+    @Test
+    public void testGetCollaborators() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        Collection<Collaborator> collaborators = storage.getCollaborators("user", id);
+        Assert.assertNotNull(collaborators);
+        Assert.assertFalse(collaborators.isEmpty());
+        Assert.assertEquals(1, collaborators.size());
+        Assert.assertEquals("user", collaborators.iterator().next().getName());
+        Assert.assertEquals(1, collaborators.iterator().next().getEdits());
+        
+        storage.addContent("user", id, ApiContentType.Command, "{1}");
+        storage.addContent("user", id, ApiContentType.Command, "{2}");
+        storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        storage.addContent("user2", id, ApiContentType.Command, "{4}");
+
+        collaborators = storage.getCollaborators("user", id);
+        Assert.assertNotNull(collaborators);
+        Assert.assertFalse(collaborators.isEmpty());
+        Assert.assertEquals(2, collaborators.size());
+        
+        Iterator<Collaborator> iter = collaborators.iterator();
+        Collaborator c1 = iter.next();
+        Collaborator c2 = iter.next();
+        
+        Assert.assertTrue(c1.getName().startsWith("user"));
+        Assert.assertTrue(c2.getName().startsWith("user"));
+        
+        if (c1.getName().equals("user")) {
+            Assert.assertEquals(3, c1.getEdits());
+            Assert.assertEquals(2, c2.getEdits());
+        } else {
+            Assert.assertEquals(2, c1.getEdits());
+            Assert.assertEquals(3, c2.getEdits());
+        }
+        
+        // Add another api design to complicate the data in the tables...
+        design = new ApiDesign();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Another design.");
+        design.setName("Another API");
+        storage.createApiDesign("user", design, "{}");
+
+        // The same collaborators data should get returned.
+        collaborators = storage.getCollaborators("user", id);
+        Assert.assertNotNull(collaborators);
+        Assert.assertFalse(collaborators.isEmpty());
+        Assert.assertEquals(2, collaborators.size());
+    }
+
+    @Test
+    public void testGetLatestContentDocument() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        storage.addContent("user", id, ApiContentType.Command, "{1}");
+        storage.addContent("user", id, ApiContentType.Command, "{2}");
+        storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        storage.addContent("user2", id, ApiContentType.Document, "{ROLLUP:123}");
+        storage.addContent("user2", id, ApiContentType.Command, "{4}");
+        
+        ApiDesignContent content = storage.getLatestContentDocument("user", id);
+        Assert.assertNotNull(content);
+        Assert.assertEquals("{ROLLUP:123}", content.getOaiDocument());
+        Assert.assertNotNull(content.getContentVersion());
+    }
+
+    @Test
+    public void testGetContentCommands() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        storage.addContent("user", id, ApiContentType.Command, "{1}");
+        storage.addContent("user", id, ApiContentType.Command, "{2}");
+        storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        long sinceVersion = storage.addContent("user2", id, ApiContentType.Document, "{ROLLUP:123}");
+        storage.addContent("user2", id, ApiContentType.Command, "{4}");
+        storage.addContent("user", id, ApiContentType.Command, "{5}");
+        
+        List<ApiDesignCommand> commands = storage.getContentCommands("user", id, sinceVersion);
+        Assert.assertNotNull(commands);
+        Assert.assertFalse(commands.isEmpty());
+        Assert.assertEquals(2, commands.size());
+        Iterator<ApiDesignCommand> iter = commands.iterator();
+        Assert.assertEquals("{4}", iter.next().getCommand());
+        Assert.assertEquals("{5}", iter.next().getCommand());
+    }
+    
     /**
      * Creates an in-memory datasource.
      * @throws SQLException

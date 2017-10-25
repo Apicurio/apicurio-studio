@@ -48,7 +48,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitLabAction;
 import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
 import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
@@ -164,66 +163,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         ResourceContent content = getResourceContentFromGitLab(resource);
 
         return content.getContent();
-    }
-
-    /**
-     * @see io.apicurio.hub.api.connectors.ISourceConnector#getCollaborators(String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
-
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
-            if (resource == null) {
-                throw new NotFoundException();
-            }
-
-            // TODO should use list of commits instead, so we can get contributors specific to the repository file itself (not contributors on the project as a whole)
-            String commitsUrl = endpoint("/api/v4/projects/:id/repository/contributors")
-                    .bind("id", toEncodedId(resource))
-                    .url();
-            
-            HttpGet get = new HttpGet(commitsUrl);
-            get.addHeader("Accept", "application/json");
-            addSecurity(get);
-
-            try (CloseableHttpResponse response = httpClient.execute(get)) {
-                if (response.getStatusLine().getStatusCode() == 404) {
-                    throw new NotFoundException();
-                }
-                
-                if (response.getStatusLine().getStatusCode() != 200) {
-                    throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
-                }
-    
-                List<Collaborator> collaborators = new ArrayList<>();
-                
-                try (InputStream contentStream = response.getEntity().getContent()) {
-                    JsonNode node = mapper.readTree(contentStream);
-                    if (node.isArray()) {
-                        ArrayNode array = (ArrayNode) node;
-                        if (array.size() == 0) {
-                            throw new NotFoundException();
-                        }
-                        array.forEach(obj -> {
-                            JsonNode jobj = (JsonNode) obj;
-                            String name = jobj.get("name").asText();
-                            Collaborator collaborator = new Collaborator();
-                            collaborator.setName(name);
-                            collaborator.setCommits(jobj.get("commits").asInt());
-                            collaborator.setUrl(this.endpoint("/").url());
-                            collaborators.add(collaborator);
-                        });
-                    } else {
-                        throw new NotFoundException();
-                    }
-                    return collaborators;
-                }
-            }
-        } catch (IOException e) {
-            throw new SourceConnectorException("Error getting collaborator information for a GitLab resource.", e);
-        }
     }
 
     /**

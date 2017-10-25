@@ -28,11 +28,8 @@ public class ApiDesign {
     private String id;
     private String name;
     private String description;
-    private String repositoryUrl;
     private String createdBy;
     private Date createdOn;
-    private String modifiedBy;
-    private Date modifiedOn;
     private Set<String> tags = new HashSet<>();
 
     /**
@@ -84,20 +81,6 @@ public class ApiDesign {
     }
 
     /**
-     * @return the repositoryUrl
-     */
-    public String getRepositoryUrl() {
-        return repositoryUrl;
-    }
-
-    /**
-     * @param repositoryUrl the repositoryUrl to set
-     */
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
-    }
-
-    /**
      * @return the createdBy
      */
     public String getCreatedBy() {
@@ -123,34 +106,6 @@ public class ApiDesign {
      */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
-    }
-
-    /**
-     * @return the modifiedBy
-     */
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    /**
-     * @param modifiedBy the modifiedBy to set
-     */
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    /**
-     * @return the modifiedOn
-     */
-    public Date getModifiedOn() {
-        return modifiedOn;
-    }
-
-    /**
-     * @param modifiedOn the modifiedOn to set
-     */
-    public void setModifiedOn(Date modifiedOn) {
-        this.modifiedOn = modifiedOn;
     }
 
     /**

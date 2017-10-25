@@ -125,7 +125,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertApiDesign() {
-        return "INSERT INTO api_designs (name, description, repository_url, created_by, created_on, modified_by, modified_on, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        return "INSERT INTO api_designs (name, description, created_by, created_on, tags) VALUES (?, ?, ?, ?, ?)";
     }
     
     /**
@@ -141,7 +141,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesigns() {
-        return "SELECT d.* FROM api_designs d INNER JOIN acl a ON a.design_id = d.id WHERE a.user_id = ?";
+        return "SELECT d.* FROM api_designs d JOIN acl a ON a.design_id = d.id WHERE a.user_id = ?";
     }
 
     /**
@@ -149,7 +149,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesignById() {
-        return "SELECT d.* FROM api_designs d INNER JOIN acl a ON a.design_id = d.id WHERE d.id = ? AND a.user_id = ?";
+        return "SELECT d.* FROM api_designs d JOIN acl a ON a.design_id = d.id WHERE d.id = ? AND a.user_id = ?";
     }
     
     /**
@@ -157,7 +157,15 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String updateApiDesign() {
-        return "UPDATE api_designs SET name = ?, description = ?, modified_by = ?, modified_on = ?, tags = ? WHERE id = ?";
+        return "UPDATE api_designs SET name = ?, description = ?, tags = ? WHERE id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#insertContent()
+     */
+    @Override
+    public String insertContent() {
+        return "INSERT INTO api_content (design_id, type, data, created_by, created_on) VALUES (?, ?, ?, ?, ?)";
     }
     
     /**
@@ -166,6 +174,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String insertAcl() {
         return "INSERT INTO acl (user_id, design_id, role) VALUES (?, ?, ?)";
+    }
+
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#clearContent()
+     */
+    @Override
+    public String clearContent() {
+        return "DELETE FROM api_content WHERE design_id = ?";
     }
     
     /**
@@ -181,6 +197,45 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String hasWritePermission() {
-        return "SELECT COUNT(*) FROM acl a WHERE a.design_id = ? AND a.user_id = ? AND (a.role = 'owner' OR a.role = 'editor')";
+        return "SELECT COUNT(*) "
+                + "FROM acl a "
+                + "WHERE a.design_id = ? AND a.user_id = ? AND (a.role = 'owner' OR a.role = 'editor')";
     }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectApiDesignCollaborators()
+     */
+    @Override
+    public String selectApiDesignCollaborators() {
+        return "SELECT DISTINCT COUNT(c.created_by) as edits, c.created_by "
+                + "FROM api_content c "
+                + "JOIN acl a ON a.design_id = c.design_id "
+                + "WHERE c.design_id = ? AND a.user_id = ? "
+                + "GROUP BY c.created_by";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectLatestContentDocument()
+     */
+    @Override
+    public String selectLatestContentDocument() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "JOIN acl a ON a.design_id = c.design_id "
+                + "WHERE c.design_id = ? AND c.type = 0 AND a.user_id = ? "
+                + "ORDER BY c.version DESC LIMIT 1";
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.jdbc.ISqlStatements#selectContentCommands()
+     */
+    @Override
+    public String selectContentCommands() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "JOIN acl a ON a.design_id = c.design_id "
+                + "WHERE c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
+                + "ORDER BY c.version ASC";
+    }
+    
 }

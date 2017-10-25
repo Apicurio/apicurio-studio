@@ -22,8 +22,7 @@ package io.apicurio.hub.api.beans;
 public class Collaborator {
 
     private String name;
-    private String url;
-    private int commits;
+    private int edits;
     
     /**
      * Constructor.
@@ -46,30 +45,16 @@ public class Collaborator {
     }
 
     /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
      * @return the commits
      */
-    public int getCommits() {
-        return commits;
+    public int getEdits() {
+        return edits;
     }
 
     /**
      * @param commits the commits to set
      */
-    public void setCommits(int commits) {
-        this.commits = commits;
+    public void setEdits(int commits) {
+        this.edits = commits;
     }
 }

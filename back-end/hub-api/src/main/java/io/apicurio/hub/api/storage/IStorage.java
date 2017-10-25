@@ -17,8 +17,13 @@
 package io.apicurio.hub.api.storage;
 
 import java.util.Collection;
+import java.util.List;
 
+import io.apicurio.hub.api.beans.ApiContentType;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.ApiDesignCommand;
+import io.apicurio.hub.api.beans.ApiDesignContent;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -91,19 +96,27 @@ public interface IStorage {
     public ApiDesign getApiDesign(String userId, String designId) throws NotFoundException, StorageException;
 
     /**
+     * Gets the list of users who have collaborated to edit the given API design.
+     * @param userId
+     * @param designId
+     * @return a collection of collaborators (editors) on a given API design
+     */
+    public Collection<Collaborator> getCollaborators(String userId, String designId) throws NotFoundException, StorageException;
+
+    /**
      * Creates a new API Design in the storage layer and returns a new unique Design ID.  This
      * ID should be used in the future to retrieve information about the design (and to delete
      * or update it).
      * 
-     * If an API design already exists for the given source repository URL, this will throw
-     * an exception.
+     * Initial content for the API must be provided (in the form of an OAI 2.0 or 3.0.0 document).
+     * 
      * @param userId
      * @param design
+     * @param initialApiDocument
      * @return the unique design id
-     * @throws AlreadyExistsException
      * @throws StorageException
      */
-    public String createApiDesign(String userId, ApiDesign design) throws AlreadyExistsException, StorageException;
+    public String createApiDesign(String userId, ApiDesign design, String initialApiDocument) throws StorageException;
 
     /**
      * Deletes a single API Design by its unique ID.  Throws an exception if no design
@@ -133,5 +146,36 @@ public interface IStorage {
      * @throws StorageException
      */
     public Collection<ApiDesign> listApiDesigns(String userId) throws StorageException;
+
+    /**
+     * Returns the most recent full content row for the given API Design.
+     * @param userId
+     * @param designId
+     * @return the API Design content (OAI document) and content version
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public ApiDesignContent getLatestContentDocument(String userId, String designId) throws NotFoundException, StorageException;
+
+    /**
+     * Returns a list of commands for a given API design that have been executed since 
+     * a specific content version.
+     * @param userId
+     * @param designId
+     * @param sinceVersion
+     * @throws StorageException
+     */
+    public List<ApiDesignCommand> getContentCommands(String userId, String designId, long sinceVersion) throws StorageException;
+
+    /**
+     * Adds a single content row to the DB and returns a unique content version number 
+     * for it.
+     * @param userId
+     * @param designId
+     * @param type
+     * @param data
+     * @throws StorageException
+     */
+    public long addContent(String userId, String designId, ApiContentType type, String data) throws StorageException;
 
 }

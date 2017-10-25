@@ -16,9 +16,12 @@
 
 package io.apicurio.hub.api.storage.jdbc;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,14 +32,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.CharacterStreamArgument;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.result.ResultIterable;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.apicurio.hub.api.beans.ApiContentType;
 import io.apicurio.hub.api.beans.ApiDesign;
+import io.apicurio.hub.api.beans.ApiDesignCommand;
+import io.apicurio.hub.api.beans.ApiDesignContent;
+import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.config.HubApiConfiguration;
@@ -53,7 +62,7 @@ import io.apicurio.hub.api.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 1;
+    private static int DB_VERSION = 2;
     private static Object dbMutex = new Object();
 
     @Inject
@@ -336,6 +345,56 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error updating a Linked Account.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#getCollaborators(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<Collaborator> getCollaborators(String userId, String designId)
+            throws NotFoundException, StorageException {
+        logger.debug("Selecting all collaborators for API Design: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiDesignCollaborators();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, userId)
+                        .map(CollaboratorRowMapper.instance)
+                        .list();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ApiContentType, java.lang.String)
+     */
+    @Override
+    public long addContent(String userId, String designId, ApiContentType type, String data) throws StorageException {
+        logger.debug("Inserting a 'command' content row for: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                // Insert a row in the api_content table.  Retrieve the ID.
+                String statement = sqlStatements.insertContent();
+                CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(data), data.length());
+                Long contentVersion = handle.createUpdate(statement)
+                      .bind(0, designId)
+                      .bind(1, type.getId())
+                      .bind(2, contentClob)
+                      .bind(3, userId)
+                      .bind(4, new Date())
+                      .executeAndReturnGeneratedKeys("version")
+                      .mapTo(Long.class)
+                      .findOnly();
+                return contentVersion;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting API design.", e);
+        }
+    }
 
     /**
      * @see io.apicurio.hub.api.storage.IStorage#getApiDesign(java.lang.String, java.lang.String)
@@ -358,45 +417,97 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting API design.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#getLatestContentDocument(java.lang.String, java.lang.String)
+     */
+    @Override
+    public ApiDesignContent getLatestContentDocument(String userId, String designId)
+            throws NotFoundException, StorageException {
+        logger.debug("Selecting the most recent api_content row of type 'document' for: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectLatestContentDocument();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, userId)
+                        .map(ApiDesignContentRowMapper.instance)
+                        .findOnly();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.storage.IStorage#getContentCommands(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public List<ApiDesignCommand> getContentCommands(String userId, String designId, long sinceVersion)
+            throws StorageException {
+        logger.debug("Selecting the most recent api_content row of type 'document' for: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectContentCommands();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, userId)
+                        .bind(2, sinceVersion)
+                        .map(ApiDesignCommandRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting API design.", e);
+        }
+    }
 
     /**
      * @see io.apicurio.hub.api.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
      */
     @Override
-    public String createApiDesign(String userId, ApiDesign design) throws AlreadyExistsException, StorageException {
-        logger.debug("Inserting an API Design: {}", design.getRepositoryUrl());
+    public String createApiDesign(String userId, ApiDesign design, String initialContent) throws StorageException {
+        logger.debug("Inserting an API Design: {}", design.getName());
         try {
             return this.jdbi.withHandle( handle -> {
+                // Insert a row in the api_designs table first.  Retrieve the ID.
                 String statement = sqlStatements.insertApiDesign();
                 String designId = handle.createUpdate(statement)
                       .bind(0, design.getName())
                       .bind(1, design.getDescription())
-                      .bind(2, design.getRepositoryUrl())
-                      .bind(3, design.getCreatedBy())
-                      .bind(4, design.getCreatedOn())
-                      .bind(5, design.getModifiedBy())
-                      .bind(6, design.getModifiedOn())
-                      .bind(7, asCsv(design.getTags()))
+                      .bind(2, design.getCreatedBy())
+                      .bind(3, design.getCreatedOn())
+                      .bind(4, asCsv(design.getTags()))
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
                       .findOnly();
-
+                
+                long did = Long.parseLong(designId);
+                
                 // Insert a row in the ACL table with role 'owner' for this API
                 statement = sqlStatements.insertAcl();
                 handle.createUpdate(statement)
                       .bind(0, userId)
-                      .bind(1, Long.parseLong(designId))
+                      .bind(1, did)
                       .bind(2, "owner")
+                      .execute();
+                
+                // Insert a row in the api_content table (initial value)
+                statement = sqlStatements.insertContent();
+                CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(initialContent), initialContent.length());
+                handle.createUpdate(statement)
+                      .bind(0, did)
+                      .bind(1, ApiContentType.Document.getId())
+                      .bind(2, contentClob)
+                      .bind(3, userId)
+                      .bind(4, design.getCreatedOn())
                       .execute();
                 
                 return designId;
             });
         } catch (Exception e) {
-            if (e.getMessage().contains("Unique")) {
-                throw new AlreadyExistsException();
-            } else {
-                throw new StorageException("Error inserting API design.", e);
-            }
+            throw new StorageException("Error inserting API design.", e);
         }
     }
 
@@ -427,8 +538,9 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 // Check for permissions first
                 String statement = sqlStatements.hasWritePermission();
+                Long did = Long.valueOf(designId);
                 int count = handle.createQuery(statement)
-                    .bind(0, Long.valueOf(designId))
+                    .bind(0, did)
                     .bind(1, userId)
                     .mapTo(Integer.class).findOnly();
                 if (count == 0) {
@@ -437,12 +549,16 @@ public class JdbcStorage implements IStorage {
 
                 // If OK then delete ACL entries
                 statement = sqlStatements.clearAcl();
-                handle.createUpdate(statement).bind(0, Long.valueOf(designId)).execute();
+                handle.createUpdate(statement).bind(0, did).execute();
+
+                // And also delete the api_content rows
+                statement = sqlStatements.clearContent();
+                handle.createUpdate(statement).bind(0, did).execute();
                 
                 // Then delete the api design itself
                 statement = sqlStatements.deleteApiDesign();
                 int rowCount = handle.createUpdate(statement)
-                      .bind(0, Long.valueOf(designId))
+                      .bind(0, did)
                       .bind(1, userId)
                       .execute();
                 if (rowCount == 0) {
@@ -480,10 +596,8 @@ public class JdbcStorage implements IStorage {
                 int rowCount = handle.createUpdate(statement)
                         .bind(0, design.getName())
                         .bind(1, design.getDescription())
-                        .bind(2, design.getModifiedBy())
-                        .bind(3, design.getModifiedOn())
-                        .bind(4, asCsv(design.getTags()))
-                        .bind(5, Long.valueOf(design.getId()))
+                        .bind(2, asCsv(design.getTags()))
+                        .bind(3, Long.valueOf(design.getId()))
                         .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();
@@ -534,11 +648,8 @@ public class JdbcStorage implements IStorage {
             design.setId(rs.getString("id"));
             design.setName(rs.getString("name"));
             design.setDescription(rs.getString("description"));
-            design.setRepositoryUrl(rs.getString("repository_url"));
             design.setCreatedBy(rs.getString("created_by"));
             design.setCreatedOn(rs.getTimestamp("created_on"));
-            design.setModifiedBy(rs.getString("modified_by"));
-            design.setModifiedOn(rs.getTimestamp("modified_on"));
             String tags = rs.getString("tags");
             design.getTags().addAll(toSet(tags));
             return design;
@@ -557,6 +668,78 @@ public class JdbcStorage implements IStorage {
                 }
             }
             return rval;
+        }
+
+    }
+
+    /**
+     * A row mapper to read collaborator information from a result set.  Each row in 
+     * the result set must have a 'created_by' column and an 'edits' column.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class CollaboratorRowMapper implements RowMapper<Collaborator> {
+        
+        public static final CollaboratorRowMapper instance = new CollaboratorRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public Collaborator map(ResultSet rs, StatementContext ctx) throws SQLException {
+            Collaborator collaborator = new Collaborator();
+            collaborator.setName(rs.getString("created_by"));
+            collaborator.setEdits(rs.getInt("edits"));
+            return collaborator;
+        }
+
+    }
+
+    /**
+     * A row mapper to read a 'document' style row from the api_content table.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiDesignContentRowMapper implements RowMapper<ApiDesignContent> {
+        
+        public static final ApiDesignContentRowMapper instance = new ApiDesignContentRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiDesignContent map(ResultSet rs, StatementContext ctx) throws SQLException {
+            try {
+                ApiDesignContent content = new ApiDesignContent();
+                content.setContentVersion(rs.getLong("version"));
+                content.setOaiDocument(IOUtils.toString(rs.getCharacterStream("data")));
+                return content;
+            } catch (IOException e) {
+                throw new SQLException(e);
+            }
+        }
+
+    }
+
+    /**
+     * A row mapper to read a 'document' style row from the api_content table.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiDesignCommandRowMapper implements RowMapper<ApiDesignCommand> {
+        
+        public static final ApiDesignCommandRowMapper instance = new ApiDesignCommandRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiDesignCommand map(ResultSet rs, StatementContext ctx) throws SQLException {
+            try {
+                ApiDesignCommand content = new ApiDesignCommand();
+                content.setContentVersion(rs.getLong("version"));
+                content.setCommand(IOUtils.toString(rs.getCharacterStream("data")));
+                return content;
+            } catch (IOException e) {
+                throw new SQLException(e);
+            }
         }
 
     }

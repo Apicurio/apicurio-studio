@@ -19,52 +19,43 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class NewApiDesign {
+public class ApiDesignContent {
 
-    private String specVersion;
-    private String name;
-    private String description;
+    private String oaiDocument;
+    private long contentVersion;
     
     /**
-     * @return the name
+     * Constructor.
      */
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
+    public ApiDesignContent() {
     }
 
     /**
-     * @return the description
+     * @return the oaiDocument
      */
-    public String getDescription() {
-        return description;
+    public String getOaiDocument() {
+        return oaiDocument;
     }
 
     /**
-     * @param description the description to set
+     * @param oaiDocument the oaiDocument to set
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOaiDocument(String oaiDocument) {
+        this.oaiDocument = oaiDocument;
     }
 
     /**
-     * @return the specVersion
+     * @return the contentVersion
      */
-    public String getSpecVersion() {
-        return specVersion;
+    public long getContentVersion() {
+        return contentVersion;
     }
 
     /**
-     * @param specVersion the specVersion to set
+     * @param contentVersion the contentVersion to set
      */
-    public void setSpecVersion(String specVersion) {
-        this.specVersion = specVersion;
+    public void setContentVersion(long contentVersion) {
+        this.contentVersion = contentVersion;
     }
     
 }

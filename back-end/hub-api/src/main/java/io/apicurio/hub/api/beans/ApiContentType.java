@@ -19,43 +19,38 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class UpdateApiDesign {
+public enum ApiContentType {
     
-    private String name;
-    private String description;
+    Document(0), Command(1);
+
+    private final int id;
     
     /**
      * Constructor.
      */
-    public UpdateApiDesign() {
+    private ApiContentType(int id) {
+        this.id = id;
     }
-
+    
     /**
-     * @return the name
+     * @return the id
      */
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
-
+    
     /**
-     * @param name the name to set
+     * Gets an ApiContenType from its ID value.
+     * @param id
      */
-    public void setName(String name) {
-        this.name = name;
+    public static ApiContentType fromId(int id) {
+        if (id == 0) {
+            return Document;
+        }
+        if (id == 1) {
+            return Command;
+        }
+        return null;
     }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
+    
 }

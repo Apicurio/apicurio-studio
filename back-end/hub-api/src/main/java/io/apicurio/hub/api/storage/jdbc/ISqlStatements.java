@@ -109,13 +109,40 @@ public interface ISqlStatements {
     public String insertAcl();
 
     /**
+     * A statement used to insert a content row.
+     */
+    public String insertContent();
+
+    /**
      * A statement used to delete all acl rows for an api design.
      */
     public String clearAcl();
+
+    /**
+     * A statement used to delete all api_content rows for a given api design.
+     */
+    public String clearContent();
     
     /**
      * A statement used to determine if a user has permission to write/delete an API design.
      */
     public String hasWritePermission();
+
+    /**
+     * A statement used to return all collaborators (editors) of a given API Design.
+     */
+    public String selectApiDesignCollaborators();
+
+    /**
+     * A statement used to return the latest 'document' style api_content row for
+     * a given API design.
+     */
+    public String selectLatestContentDocument();
+
+    /**
+     * A statement used to return all of the 'command' style api_content rows for
+     * a given API Design.
+     */
+    public String selectContentCommands();
 
 }

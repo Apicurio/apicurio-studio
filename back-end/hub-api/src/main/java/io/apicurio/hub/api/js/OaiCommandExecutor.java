@@ -57,6 +57,9 @@ public class OaiCommandExecutor {
      * @param commands
      */
     public String executeCommands(String oaiDocument, List<String> commands) throws OaiCommandException {
+        if (commands == null || commands.isEmpty()) {
+            return oaiDocument;
+        }
         try {
             ScriptEngine engine = getScriptEngine();
             final Invocable invocable = (Invocable) engine;

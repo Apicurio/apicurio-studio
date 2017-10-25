@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -29,7 +30,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.apicurio.hub.api.beans.AddApiDesign;
+import io.apicurio.hub.api.beans.ApiContentType;
 import io.apicurio.hub.api.beans.ApiDesign;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
@@ -45,13 +51,14 @@ import test.io.apicurio.hub.api.MockHttpServletResponse;
 import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
+import test.io.apicurio.hub.api.MockStorage.MockContentRow;
 import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class DesignsResourceTest {
-    
+
     private IDesignsResource resource;
     
     private MockStorage storage;
@@ -254,16 +261,45 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException {
         AddApiDesign info = new AddApiDesign();
         info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.addDesign(info);
         
+        // Add a command to change the title
+        MockContentRow contentRow = new MockContentRow();
+        contentRow.createdBy = "user";
+        contentRow.data = "{\r\n" + 
+                "  \"__type\": \"ChangeTitleCommand_20\",\r\n" + 
+                "  \"_newTitle\": \"testGetContent\"\r\n" + 
+                "}";
+        contentRow.designId = design.getId();
+        contentRow.type = ApiContentType.Command;
+        this.storage.addContentRow(design.getId(), contentRow);
+
+        // Add a command to change the description
+        contentRow = new MockContentRow();
+        contentRow.createdBy = "user";
+        contentRow.data = "{\r\n" + 
+                "  \"__type\": \"ChangeDescriptionCommand_20\",\r\n" + 
+                "  \"_newDescription\": \"Ut enim ad minim veniam.\"\r\n" + 
+                "}";
+        contentRow.designId = design.getId();
+        contentRow.type = ApiContentType.Command;
+        this.storage.addContentRow(design.getId(), contentRow);
+
+        // Now ask for the content - the most recent Document should be mutated
+        // by the two commands above to give a final value.
         Response content = resource.getContent(design.getId());
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "json", "utf-8"), content.getMediaType());
-        Assert.assertEquals(703, content.getLength());
-        Assert.assertEquals(MockGitHubService.STATIC_CONTENT, content.getEntity());
+        
+        String expectedOaiDoc = MockGitHubService.STATIC_CONTENT.replace("Swagger Sample App", "testGetContent")
+                .replace("This is a sample server Petstore server.", "Ut enim ad minim veniam.");
+        String actualOaiDoc = content.getEntity().toString();
+        String expected = normalizeJson(expectedOaiDoc);
+        String actual = normalizeJson(actualOaiDoc);
+        Assert.assertEquals(expected, actual);
         
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
@@ -273,6 +309,19 @@ public class DesignsResourceTest {
                 "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
+    }
+
+    /**
+     * Normalizes JSON into a standard format.
+     * @param jsonContent
+     * @throws IOException 
+     * @throws JsonProcessingException 
+     */
+    private String normalizeJson(String jsonContent) throws JsonProcessingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode expectedJson = mapper.readTree(jsonContent);
+        String njson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJson);
+        return njson;
     }
 
 }

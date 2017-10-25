@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.LinkedAccountType;
@@ -97,29 +96,6 @@ public class MockGitHubService implements IGitHubSourceConnector {
         } catch (URISyntaxException e) {
             throw new NotFoundException();
         }
-    }
-    
-    /**
-     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getCollaborators(java.lang.String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) {
-        getAudit().add("getCollaborators::" + repositoryUrl);
-        Set<Collaborator> rval = new HashSet<>();
-
-        Collaborator c1 = new Collaborator();
-        c1.setCommits(7);
-        c1.setName("user1");
-        c1.setUrl("urn:user1");
-        rval.add(c1);
-        
-        Collaborator c2 = new Collaborator();
-        c2.setCommits(7);
-        c2.setName("user1");
-        c2.setUrl("urn:user1");
-        rval.add(c2);
-        
-        return rval;
     }
     
     /**

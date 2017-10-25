@@ -16,10 +16,7 @@
 
 package io.apicurio.hub.api.connectors;
 
-import java.util.Collection;
-
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -45,16 +42,6 @@ public interface ISourceConnector {
      * @throws NotFoundException
      */
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException;
-
-    /**
-     * Fetchs information about the collaborators for a given repository resource.
-     * This will iterate through all of the git commits for the given resource
-     * and tally up commit counts for every user found.  The result is a collection
-     * of all users who have contributed to the design.
-     * @param repositoryUrl
-     * @throws NotFoundException
-     */
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException;
 
     /**
      * Fetchs the content of a github resource.  Uses the source control API to get access to

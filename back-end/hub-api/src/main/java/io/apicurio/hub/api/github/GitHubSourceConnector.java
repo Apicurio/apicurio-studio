@@ -44,7 +44,6 @@ import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
 import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
@@ -175,61 +174,6 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             }
         } catch (UnirestException e) {
             throw new SourceConnectorException("Error getting GitHub resource content.", e);
-        }
-    }
-    
-    /**
-     * @see io.apicurio.hub.api.connectors.ISourceConnector#getCollaborators(java.lang.String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
-        try {
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
-            if (resource == null) {
-                throw new NotFoundException();
-            }
-            
-            String commitsUrl = endpoint("/repos/:org/:repo/commits")
-                    .bind("org", resource.getOrganization())
-                    .bind("repo", resource.getRepository())
-                    .url();
-            HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
-                    .queryString("path", resource.getResourcePath());
-            addSecurityTo(request);
-            HttpResponse<JsonNode> response = request.asJson();
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
-            }
-            
-            Map<String, Collaborator> cidx = new HashMap<>();
-            JsonNode node = response.getBody();
-            if (node.isArray()) {
-                JSONArray array = node.getArray();
-                if (array.length() == 0) {
-                	throw new NotFoundException();
-                }
-                array.forEach( obj -> {
-                    JSONObject jobj = (JSONObject) obj;
-                    JSONObject authorObj = (JSONObject) jobj.get("author");
-                    String user = authorObj.getString("login");
-                    Collaborator collaborator = cidx.get(user);
-                    if (collaborator == null) {
-                        collaborator = new Collaborator();
-                        collaborator.setName(user);
-                        collaborator.setUrl(authorObj.getString("html_url"));
-                        collaborator.setCommits(1);
-                        cidx.put(user, collaborator);
-                    } else {
-                        collaborator.setCommits(collaborator.getCommits() + 1);
-                    }
-                });
-            } else {
-            	throw new NotFoundException();
-            }
-            return cidx.values();
-        } catch (UnirestException e) {
-            throw new SourceConnectorException("Error getting collaborator information for a GitHub resource.", e);
         }
     }
 

@@ -206,10 +206,11 @@ public class MockStorage implements IStorage {
         }
 
         for (MockContentRow row : list) {
-            if (row.designId.equals(designId) && row.type == ApiContentType.Command) {
+            if (row.designId.equals(designId) && row.type == ApiContentType.Command && row.version > sinceVersion) {
                 ApiDesignCommand cmd = new ApiDesignCommand();
                 cmd.setContentVersion(row.version);
                 cmd.setCommand(row.data);
+                rval.add(cmd);
             }
         }
         
@@ -282,7 +283,7 @@ public class MockStorage implements IStorage {
      * @param designId
      * @param row
      */
-    private void addContentRow(String designId, MockContentRow row) {
+    public void addContentRow(String designId, MockContentRow row) {
         List<MockContentRow> list = this.content.get(designId);
         if (list == null) {
             list = new ArrayList<>();

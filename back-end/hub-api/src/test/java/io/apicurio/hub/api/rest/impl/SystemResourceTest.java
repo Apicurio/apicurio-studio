@@ -26,9 +26,12 @@ import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
 import test.io.apicurio.hub.api.MockMetrics;
+import io.apicurio.hub.api.rest.ISystemResource;
+import io.apicurio.hub.core.Version;
+import io.apicurio.hub.core.beans.SystemStatus;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

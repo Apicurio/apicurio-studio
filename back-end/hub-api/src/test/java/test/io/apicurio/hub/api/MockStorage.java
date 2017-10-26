@@ -25,17 +25,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.apicurio.hub.api.beans.ApiContentType;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.ApiDesignCommand;
-import io.apicurio.hub.api.beans.ApiDesignContent;
-import io.apicurio.hub.api.beans.Collaborator;
-import io.apicurio.hub.api.beans.LinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.storage.IStorage;
-import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.LinkedAccount;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -48,7 +48,7 @@ public class MockStorage implements IStorage {
     private int counter = 1;
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.core.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type)
@@ -63,7 +63,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     * @see io.apicurio.hub.core.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
     @Override
     public void updateLinkedAccount(String userId, LinkedAccount account) throws NotFoundException, StorageException {
@@ -71,7 +71,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     * @see io.apicurio.hub.core.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
     @Override
     public void createLinkedAccount(String userId, LinkedAccount account)
@@ -86,7 +86,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void deleteLinkedAccount(String userId, LinkedAccountType type)
@@ -101,7 +101,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#deleteLinkedAccounts(java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccounts(java.lang.String)
      */
     @Override
     public void deleteLinkedAccounts(String userId) throws StorageException {
@@ -109,7 +109,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#listLinkedAccounts(java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#listLinkedAccounts(java.lang.String)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -121,7 +121,7 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getApiDesign(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#getApiDesign(java.lang.String, java.lang.String)
      */
     @Override
     public ApiDesign getApiDesign(String userId, String designId) throws NotFoundException, StorageException {
@@ -133,7 +133,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getCollaborators(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#getCollaborators(java.lang.String, java.lang.String)
      */
     @Override
     public Collection<Collaborator> getCollaborators(String user, String designId)
@@ -169,7 +169,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getLatestContentDocument(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocument(java.lang.String, java.lang.String)
      */
     @Override
     public ApiDesignContent getLatestContentDocument(String userId, String designId)
@@ -193,7 +193,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#getContentCommands(java.lang.String, java.lang.String, long)
+     * @see io.apicurio.hub.core.storage.IStorage#getContentCommands(java.lang.String, java.lang.String, long)
      */
     @Override
     public List<ApiDesignCommand> getContentCommands(String user, String designId, long sinceVersion)
@@ -218,7 +218,7 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ApiContentType, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.ApiContentType, java.lang.String)
      */
     @Override
     public long addContent(String user, String designId, ApiContentType type, String data) throws StorageException {
@@ -232,7 +232,7 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign, java.lang.String)
      */
     @Override
     public String createApiDesign(String userId, ApiDesign design, String initialContent) throws StorageException {
@@ -251,7 +251,7 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#deleteApiDesign(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#deleteApiDesign(java.lang.String, java.lang.String)
      */
     @Override
     public void deleteApiDesign(String userId, String designId) throws NotFoundException, StorageException {
@@ -261,7 +261,7 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
+     * @see io.apicurio.hub.core.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign)
      */
     @Override
     public void updateApiDesign(String userId, ApiDesign design) throws NotFoundException, StorageException {
@@ -271,7 +271,7 @@ public class MockStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.api.storage.IStorage#listApiDesigns(java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesigns(java.lang.String)
      */
     @Override
     public Collection<ApiDesign> listApiDesigns(String userId) throws StorageException {

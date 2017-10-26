@@ -27,7 +27,7 @@ import javax.ws.rs.ext.Provider;
 import org.apache.commons.io.output.StringBuilderWriter;
 
 import io.apicurio.hub.api.beans.ApiError;
-import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.core.exceptions.ServerError;
 
 /**
  * @author eric.wittmann@gmail.com

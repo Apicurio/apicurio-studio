@@ -35,16 +35,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiContentType;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
-import io.apicurio.hub.api.js.OaiCommandExecutor;
 import io.apicurio.hub.api.rest.IDesignsResource;
+import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockGitHubService;
 import test.io.apicurio.hub.api.MockHttpServletRequest;
 import test.io.apicurio.hub.api.MockHttpServletResponse;
@@ -52,7 +53,6 @@ import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.MockStorage.MockContentRow;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

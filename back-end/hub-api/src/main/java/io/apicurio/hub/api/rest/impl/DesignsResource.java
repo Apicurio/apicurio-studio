@@ -40,16 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.ApiDesignCommand;
-import io.apicurio.hub.api.beans.ApiDesignContent;
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.beans.OpenApi2Document;
-import io.apicurio.hub.api.beans.OpenApi3Document;
-import io.apicurio.hub.api.beans.OpenApiDocument;
-import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -61,8 +52,21 @@ import io.apicurio.hub.api.js.OaiCommandException;
 import io.apicurio.hub.api.js.OaiCommandExecutor;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.api.storage.IStorage;
-import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.OpenApi2Document;
+import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.hub.core.beans.OpenApiDocument;
+import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -305,92 +309,7 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-<<<<<<< 2abe88e6d9dc7324f1862e37b2f6366b3516c1fe
-        } catch (UnsupportedEncodingException | SourceConnectorException e) {
-            throw new ServerError(e);
-        }
-    }
-    
-    /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#updateContent(java.lang.String)
-     */
-    @Override
-    public void updateContent(String designId) throws ServerError, NotFoundException {
-        logger.debug("Updating content for API design with ID: {}", designId);
-        metrics.apiCall("/designs/{designId}/content", "PUT");
-
-        ApiDesign design = this.getDesign(designId);
-
-        ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
-
-        String contentType = request.getContentType();
-        if (!contentType.equals("application/json")) {
-            throw new ServerError("Unexpected content-type: " + contentType);
-        }
-        
-        String sha = request.getHeader("X-Content-SHA");
-        if (sha == null) {
-            throw new ServerError("Missing request Header: 'X-Content-SHA'");
-        }
-        
-        String commitMessage = request.getHeader("X-Apicurio-CommitMessage");
-        String commitComment = request.getHeader("X-Apicurio-CommitComment");
-        try {
-            if (commitMessage == null) {
-                commitMessage = "Updating API design: " + new URI(design.getRepositoryUrl()).getPath();
-            }
-        } catch (URISyntaxException e1) {
-            commitMessage = "Updating API design";
-        }
-        
-        String content = null;
-        try (Reader data = request.getReader()) {
-            content = IOUtils.toString(data);
-
-            ResourceContent rc = new ResourceContent();
-            rc.setContent(content);
-            rc.setSha(sha);
-            
-            String newSha = connector.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
-            this.response.setHeader("X-Content-SHA", newSha);
-            
-            this.updateDesignMetaData(design, content);
-            design.setModifiedBy(this.security.getCurrentUser().getLogin());
-            design.setModifiedOn(new Date());
-
-        	this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
-        } catch (StorageException | SourceConnectorException | IOException e) {
-            throw new ServerError(e);
-        }
-    }
-
-    /**
-     * Parses the content and extracts the name and description.  Sets them on the
-     * given API Design object.
-     * @param design
-     * @param content
-     */
-    private void updateDesignMetaData(ApiDesign design, String content) throws ServerError {
-        try {
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    design.setName(document.getInfo().getTitle());
-                }
-                if (document.getInfo().getDescription() != null) {
-                    design.setDescription(document.getInfo().getDescription());
-                }
-            }
-            if (document.getTags() != null) {
-                Tag[] tags = document.getTags();
-                for (Tag tag : tags) {
-                    design.getTags().add(tag.getName());
-                }
-            }
-        } catch (IOException e) {
-=======
         } catch (UnsupportedEncodingException | StorageException | OaiCommandException e) {
->>>>>>> updated the storage and rest layers to move toward a concurrent editing approach to editing oai docs
             throw new ServerError(e);
         }
     }

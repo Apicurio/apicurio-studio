@@ -23,8 +23,8 @@ import org.junit.Test;
 
 import io.apicurio.hub.api.rest.ICurrentUserResource;
 import io.apicurio.studio.shared.beans.User;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

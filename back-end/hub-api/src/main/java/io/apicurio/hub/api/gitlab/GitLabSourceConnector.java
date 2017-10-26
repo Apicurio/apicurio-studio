@@ -47,18 +47,18 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.GitLabAction;
 import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
 import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * Implementation of the GitLab source connector.

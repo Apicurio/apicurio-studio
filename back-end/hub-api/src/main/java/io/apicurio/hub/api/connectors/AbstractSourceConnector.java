@@ -37,8 +37,8 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
-import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.core.config.HubApiConfiguration;
 
 /**
  * Base class for all source connectors.

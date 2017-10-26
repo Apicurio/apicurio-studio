@@ -16,10 +16,10 @@
 
 package io.apicurio.hub.api.connectors;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * A connector to a source code control system or platform.  Provides a way to get access

@@ -21,12 +21,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.apicurio.hub.api.Version;
-import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
+import io.apicurio.hub.core.Version;
+import io.apicurio.hub.core.beans.SystemStatus;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

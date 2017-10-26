@@ -23,12 +23,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.apicurio.hub.api.beans.LinkedAccount;
-import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.rest.IAccountsResource;
+import io.apicurio.hub.core.beans.LinkedAccount;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

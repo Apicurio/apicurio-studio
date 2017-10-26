@@ -40,28 +40,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.ApiDesignCommand;
-import io.apicurio.hub.api.beans.ApiDesignContent;
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.beans.OpenApi2Document;
-import io.apicurio.hub.api.beans.OpenApi3Document;
-import io.apicurio.hub.api.beans.OpenApiDocument;
-import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
-import io.apicurio.hub.api.js.OaiCommandException;
-import io.apicurio.hub.api.js.OaiCommandExecutor;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.api.storage.IStorage;
-import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.OpenApi2Document;
+import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.hub.core.beans.OpenApiDocument;
+import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com

@@ -34,15 +34,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com

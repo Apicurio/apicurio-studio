@@ -12,5 +12,8 @@
   <name>apicurio-studio-be</name>
   <modules>
     <module>hub-api</module>
+    <module>hub-core</module>
+    <module>hub-editing</module>
+    <module>test-core</module>
   </modules>
 </project>

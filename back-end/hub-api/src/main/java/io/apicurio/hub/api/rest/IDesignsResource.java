@@ -30,11 +30,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
 
 /**
  * The interface that defines how to interact with API Designs in the hub API.

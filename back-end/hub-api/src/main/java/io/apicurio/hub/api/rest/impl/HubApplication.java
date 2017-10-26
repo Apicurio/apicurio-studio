@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 
-import io.apicurio.hub.api.Version;
+import io.apicurio.hub.core.Version;
 
 /**
  * @author eric.wittmann@gmail.com

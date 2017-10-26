@@ -27,14 +27,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com

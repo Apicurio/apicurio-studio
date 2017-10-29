@@ -18,6 +18,7 @@ package io.apicurio.hub.api.connectors;
 
 import java.util.Collection;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccountType;

@@ -388,7 +388,6 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             GitHubOrganization ghorg = new GitHubOrganization();
             ghorg.setId(userLogin);
             ghorg.setUserOrg(true);
-            rval.add(ghorg);
 
             // Add all the orgs visible to the user
             String orgsUrl = endpoint("/user/orgs").url();
@@ -400,7 +399,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                     throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
                 }
                 
-                JSONArray array = response.getBody().getArray();
+                    JSONArray array = response.getBody().getArray();
                 array.forEach( obj -> {
                     JSONObject org = (JSONObject) obj;
                     String login = org.getString("login");

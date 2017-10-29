@@ -20,6 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.bitbucket.BitBucketResourceResolver;
+import io.apicurio.hub.api.bitbucket.IBitBucketSourceConnector;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
@@ -38,7 +40,9 @@ public class SourceConnectorFactory {
 
     @Inject
     private IGitLabSourceConnector gitLab;
-    // TODO add more platforms here
+
+    @Inject
+    private IBitBucketSourceConnector bitbucket;
 
     /**
      * Creates a connector for a particular type of account (e.g. GitHub, GitLab, etc).
@@ -53,7 +57,10 @@ public class SourceConnectorFactory {
         if (accountType == LinkedAccountType.GitLab) {
             return gitLab;
         }
-        // TODO add more platforms here
+
+        if (accountType == LinkedAccountType.Bitbucket) {
+            return bitbucket;
+        }
 
         throw new NotFoundException();
     }
@@ -73,9 +80,10 @@ public class SourceConnectorFactory {
             return gitLab;
         }
 
-        // TODO add more platforms here
+        if (BitBucketResourceResolver.resolve(repositoryUrl) != null) {
+            return bitbucket;
+        }
 
         throw new NotFoundException();
     }
-
 }

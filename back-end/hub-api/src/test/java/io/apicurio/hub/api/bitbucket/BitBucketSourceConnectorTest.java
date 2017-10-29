@@ -48,7 +48,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class BitBucketSourceConnectorTest {
 
-    private static String basicAut = "am9uYXNyb2I6MmdqTHV2VWNaaFhqcnliamJXOVM=";
+    private static String basicAut = null;
 
     private IBitBucketSourceConnector service;
     private HubApiConfiguration config;

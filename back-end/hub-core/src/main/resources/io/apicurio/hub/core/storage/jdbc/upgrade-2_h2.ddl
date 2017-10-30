@@ -14,3 +14,7 @@ ALTER TABLE api_content ADD PRIMARY KEY (design_id, version);
 CREATE INDEX IDX_content_1 ON api_content(version);
 CREATE INDEX IDX_content_2 ON api_content(type);
 CREATE INDEX IDX_content_3 ON api_content(created_by);
+
+CREATE TABLE session_uuids (uuid VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, user_id VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, version BIGINT NOT NULL, expires_on BIGINT NOT NULL);
+ALTER TABLE session_uuids ADD PRIMARY KEY (uuid);
+CREATE INDEX IDX_uuids_1 ON session_uuids(uuid, design_id, secret);

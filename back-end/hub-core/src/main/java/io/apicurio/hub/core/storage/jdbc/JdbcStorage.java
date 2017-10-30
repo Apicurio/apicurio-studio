@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -48,7 +49,7 @@ import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
@@ -59,6 +60,7 @@ import io.apicurio.hub.core.storage.StorageException;
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
+@Default
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
@@ -66,7 +68,7 @@ public class JdbcStorage implements IStorage {
     private static Object dbMutex = new Object();
 
     @Inject
-    private HubApiConfiguration config;
+    private HubConfiguration config;
     @Resource(mappedName="java:jboss/datasources/ApicurioDS")
     private DataSource dataSource;
     
@@ -226,7 +228,7 @@ public class JdbcStorage implements IStorage {
             if (e.getMessage().contains("Unique")) {
                 throw new AlreadyExistsException();
             } else {
-                throw new StorageException("Error inserting API design.", e);
+                throw new StorageException("Error inserting Linked Account.", e);
             }
         }
     }
@@ -630,6 +632,88 @@ public class JdbcStorage implements IStorage {
         }
     }
     
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long)
+     */
+    @Override
+    public void createEditingSessionUuid(String uuid, String designId, String userId, String hash, long contentVersion,
+            long expiresOn) throws StorageException {
+        logger.debug("Inserting an Editing Session UUID row: {}", uuid);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertEditingSessionUuid();
+                handle.createUpdate(statement)
+                      .bind(0, uuid)
+                      .bind(1, Long.valueOf(designId))
+                      .bind(2, userId)
+                      .bind(3, hash)
+                      .bind(4, contentVersion)
+                      .bind(5, expiresOn)
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting editing session UUID row.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#lookupEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public long lookupEditingSessionUuid(String uuid, String designId, String userId, String hash)
+            throws StorageException {
+        logger.debug("Looking up an editing session UUID: {}", uuid);
+        long now = System.currentTimeMillis();
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectEditingSessionUuid();
+                Long contentVersion = handle.createQuery(statement)
+                        .bind(0, uuid)
+                        .bind(1, Long.valueOf(designId))
+                        .bind(2, hash)
+                        .bind(3, now)
+                        .map(new RowMapper<Long>() {
+                            @Override
+                            public Long map(ResultSet rs, StatementContext ctx) throws SQLException {
+                                return rs.getLong("version");
+                            }
+                        })
+                        .findOnly();
+                return contentVersion;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting Editing Session UUID.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#consumeEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean consumeEditingSessionUuid(String uuid, String designId, String userId, String hash)
+            throws StorageException {
+        logger.debug("Consuming/Deleting an editing session UUID: {}", uuid);
+        long now = System.currentTimeMillis();
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteEditingSessionUuid();
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, uuid)
+                        .bind(1, Long.valueOf(designId))
+                        .bind(2, hash)
+                        .bind(3, now)
+                        .execute();
+                if (rowCount == 0) {
+                    return false;
+                }
+                return true;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting a Linked Account", e);
+        }
+    }
+
     /**
      * A row mapper to read an api design from the DB (as a single row in a SELECT)
      * and return an ApiDesign instance.

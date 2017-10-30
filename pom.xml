@@ -108,6 +108,7 @@
         <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
         <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
+        <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>1.1.1.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.1.Beta1</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
         <version.org.json>20160212</version.org.json>
         <version.org.keycloak>3.2.1.Final</version.org.keycloak>
@@ -264,6 +265,11 @@
                 <groupId>javax.enterprise</groupId>
                 <artifactId>cdi-api</artifactId>
                 <version>${version.javax.enterprise}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.spec.javax.websocket</groupId>
+                <artifactId>jboss-websocket-api_1.1_spec</artifactId>
+                <version>${version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec}</version>
             </dependency>
 
             <!-- Test -->

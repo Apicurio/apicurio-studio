@@ -178,4 +178,41 @@ public interface IStorage {
      */
     public long addContent(String userId, String designId, ApiContentType type, String data) throws StorageException;
 
+    /**
+     * Creates an entry for an editing session UID.  Throws an exception if the entry could
+     * not be created for any reason.
+     * @param uuid
+     * @param designId
+     * @param userId
+     * @param hash
+     * @param contentVersion
+     * @param expiresOn
+     */
+    public void createEditingSessionUuid(String uuid, String designId, String userId, String hash, long contentVersion, 
+            long expiresOn) throws StorageException;
+    
+    /**
+     * Looks up an editing session and returns the Content Version associated with it.
+     * @param uuid
+     * @param designId
+     * @param userId
+     * @param hash
+     * @return the content version
+     * @throws StorageException
+     */
+    public long lookupEditingSessionUuid(String uuid, String designId, String userId, String hash) throws StorageException;
+    
+    /**
+     * Consumes (deletes) an editing session UUID.  Returns true if the UUID was successfully
+     * consumed or false if not (e.g. if it did not exist).  Throws an exception only if an
+     * error of some kind occurs.
+     * @param uuid
+     * @param designId
+     * @param userId
+     * @param hash
+     * @return true if the UUID was consumed
+     * @throws StorageException
+     */
+    public boolean consumeEditingSessionUuid(String uuid, String designId, String userId, String hash) throws StorageException;
+
 }

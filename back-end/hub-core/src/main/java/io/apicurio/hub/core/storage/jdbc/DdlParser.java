@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class DdlParser {
      */
     public List<String> parse(InputStream ddlStream) throws IOException {
         List<String> rval = new LinkedList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream, StandardCharsets.UTF_8));
         String line;
         StringBuilder builder = new StringBuilder();
         boolean isInMultiLineStatement = false;

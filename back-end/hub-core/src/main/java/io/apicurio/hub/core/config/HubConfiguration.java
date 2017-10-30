@@ -24,7 +24,7 @@ import io.apicurio.studio.shared.config.Configuration;
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
-public class HubApiConfiguration extends Configuration {
+public class HubConfiguration extends Configuration {
     
     private static final String JDBC_TYPE_ENV = "APICURIO_HUB_STORAGE_JDBC_TYPE";
     private static final String JDBC_TYPE_SYSPROP = "apicurio.hub.storage.jdbc.type";

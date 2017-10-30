@@ -18,7 +18,7 @@ package io.apicurio.hub.api.github;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,7 +120,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             String name = resource.getResourcePath();
             String description = "";
             
-            content = new String(Base64.decodeBase64(b64Content), "UTF-8");
+            content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
             OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
             if (document.getInfo() != null) {
                 if (document.getInfo().getTitle() != null) {
@@ -201,12 +201,12 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             
             GitHubGetContentsResponse body = response.getBody();
             String b64Content = body.getContent();
-            String content = new String(Base64.decodeBase64(b64Content), "utf-8");
+            String content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
             ResourceContent rval = new ResourceContent();
             rval.setContent(content);
             rval.setSha(body.getSha());
             return rval;
-        } catch (UnirestException | UnsupportedEncodingException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error getting Github resource content.", e);
         }
     }
@@ -218,7 +218,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
             ResourceContent content) throws SourceConnectorException {
         try {
-            String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
+            String b64Content = Base64.encodeBase64String(content.getContent().getBytes(StandardCharsets.UTF_8));
             
             GitHubUpdateFileRequest requestBody = new GitHubUpdateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -247,7 +247,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             }
             
             return newSha;
-        } catch (UnsupportedEncodingException | UnirestException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error updating Github resource content.", e);
         }
     }
@@ -287,7 +287,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     @Override
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
         try {
-            String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
+            String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
             
             GitHubCreateFileRequest requestBody = new GitHubCreateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -306,7 +306,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             if (response.getStatus() != 201) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
-        } catch (UnsupportedEncodingException | UnirestException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error creating Github resource content.", e);
         }
     }

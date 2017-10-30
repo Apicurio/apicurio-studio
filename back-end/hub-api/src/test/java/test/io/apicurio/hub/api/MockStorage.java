@@ -45,6 +45,7 @@ public class MockStorage implements IStorage {
     private Map<String, Map<LinkedAccountType, LinkedAccount>> accounts = new HashMap<>();
     private Map<String, ApiDesign> designs = new HashMap<>();
     private Map<String, List<MockContentRow>> content = new HashMap<>();
+    private Map<String, MockUuidRow> uuids = new HashMap<>();
     private int counter = 1;
     
     /**
@@ -279,6 +280,52 @@ public class MockStorage implements IStorage {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.IStorage#createEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long)
+     */
+    @Override
+    public void createEditingSessionUuid(String uuid, String designId, String userId, String hash, long contentVersion,
+            long expiresOn) throws StorageException {
+        MockUuidRow row = new MockUuidRow();
+        row.uuid = uuid;
+        row.designId = designId;
+        row.userId = userId;
+        row.secret = hash;
+        row.version = contentVersion;
+        row.expiresOn = expiresOn;
+        
+        String key = uuid + "|" + designId + "|" + userId + "|" + hash;
+        this.uuids.put(key, row);
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#lookupEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public long lookupEditingSessionUuid(String uuid, String designId, String userId, String hash)
+            throws StorageException {
+        String key = uuid + "|" + designId + "|" + userId + "|" + hash;
+        MockUuidRow row = this.uuids.get(key);
+        if (row == null) {
+            throw new StorageException("Editing Session UUID not found: " + uuid);
+        }
+        return row.version;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#consumeEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean consumeEditingSessionUuid(String uuid, String designId, String userId, String hash)
+            throws StorageException {
+        String key = uuid + "|" + designId + "|" + userId + "|" + hash;
+        MockUuidRow row = this.uuids.remove(key);
+        if (row == null) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
      * Adds a content row.
      * @param designId
      * @param row
@@ -295,14 +342,21 @@ public class MockStorage implements IStorage {
     public static class MockContentRow {
         private static long CONTENT_COUNTER = 0;
         
-        //CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT AUTO_INCREMENT NOT NULL, type TINYINT NOT NULL, data CLOB NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL);
         public String designId;
         final public long version = CONTENT_COUNTER++;
         public ApiContentType type = ApiContentType.Document;
         public String data;
         public String createdBy;
         final public Date createdOn = new Date();
-        
+    }
+
+    public static class MockUuidRow {
+        public String uuid;
+        public String designId;
+        public String userId;
+        public String secret;
+        public long version;
+        public long expiresOn;
     }
 
 }

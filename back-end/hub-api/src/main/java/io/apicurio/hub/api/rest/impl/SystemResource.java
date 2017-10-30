@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< f3eceaa83e2b01d5beb600f495b921a758faea37
 import io.apicurio.hub.api.Version;
 import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
@@ -37,10 +36,10 @@ import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
 import io.prometheus.client.exporter.common.TextFormat;
+import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.Version;
-import io.apicurio.hub.core.beans.SystemStatus;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 

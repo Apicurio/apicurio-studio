@@ -26,6 +26,7 @@ import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.core.beans.SystemStatus;
+import io.apicurio.hub.api.beans.SystemStatus;
 
 /**
  * @author eric.wittmann@gmail.com

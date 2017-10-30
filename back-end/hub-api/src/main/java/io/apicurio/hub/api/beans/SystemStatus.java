@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.beans;
+package io.apicurio.hub.api.beans;
 
 import java.util.Date;
 

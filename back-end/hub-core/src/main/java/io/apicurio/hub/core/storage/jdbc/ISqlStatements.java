@@ -145,4 +145,19 @@ public interface ISqlStatements {
      */
     public String selectContentCommands();
 
+    /**
+     * A statement used to insert a new row in the 'session_uuids' table.
+     */
+    public String insertEditingSessionUuid();
+
+    /**
+     * A statement used to select a unique editing session UUID.
+     */
+    public String selectEditingSessionUuid();
+
+    /**
+     * A statement used to delete a unique editing session UUID.
+     */
+    public String deleteEditingSessionUuid();
+
 }

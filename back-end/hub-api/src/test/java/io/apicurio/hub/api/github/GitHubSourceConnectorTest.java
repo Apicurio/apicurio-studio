@@ -30,7 +30,7 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -43,7 +43,7 @@ public class GitHubSourceConnectorTest {
     private static final String GITHUB_PAT = "";
 
     private IGitHubSourceConnector service;
-    private HubApiConfiguration config;
+    private HubConfiguration config;
 
     @Before
     public void setUp() {
@@ -53,7 +53,7 @@ public class GitHubSourceConnectorTest {
                 return GITHUB_PAT;
             }
         };
-        config = new HubApiConfiguration();
+        config = new HubConfiguration();
         
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);

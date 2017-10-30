@@ -19,6 +19,7 @@ package io.apicurio.hub.api.gitlab;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -369,7 +370,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             
             body.setActions(new ArrayList<>());
             GitLabAction action = new GitLabAction();
-            String b64Content = Base64.encodeBase64String(content.getBytes("UTF-8"));
+            String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
             action.setGitLabAction(GitLabActionType.UPDATE);
             if (create) {
                 action.setGitLabAction(GitLabActionType.CREATE);
@@ -423,7 +424,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(contentStream);
                     String b64Content = jsonContent.get("content").toString();
-                    String content = new String(Base64.decodeBase64(b64Content), "utf-8");
+                    String content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
                     ResourceContent rval = new ResourceContent();
         
                     rval.setContent(content);
@@ -441,7 +442,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private String toEncodedId(GitLabResource resource) {
         String urlEncodedId;
         try {
-            urlEncodedId = URLEncoder.encode(String.format("%s/%s", resource.getGroup(), resource.getProject()), "UTF-8");
+            urlEncodedId = URLEncoder.encode(String.format("%s/%s", resource.getGroup(), resource.getProject()), 
+                    StandardCharsets.UTF_8.name());
         } catch (Exception ex) {
             return "";
         }
@@ -451,7 +453,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private String toEncodedPath(GitLabResource resource) {
         String urlEncodedPath;
         try {
-            urlEncodedPath = URLEncoder.encode(resource.getResourcePath(), "UTF-8");
+            urlEncodedPath = URLEncoder.encode(resource.getResourcePath(), StandardCharsets.UTF_8.name());
         } catch (Exception ex) {
             return "";
         }
@@ -461,7 +463,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private String toEncodedBranch(GitLabResource resource) {
         String urlEncodedBranch;
         try {
-            urlEncodedBranch = URLEncoder.encode(resource.getBranch(), "UTF-8");
+            urlEncodedBranch = URLEncoder.encode(resource.getBranch(), StandardCharsets.UTF_8.name());
         } catch (Exception ex) {
             return "";
         }

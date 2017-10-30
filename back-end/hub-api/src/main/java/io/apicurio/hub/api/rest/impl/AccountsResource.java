@@ -56,7 +56,7 @@ import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -76,7 +76,7 @@ public class AccountsResource implements IAccountsResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private HubApiConfiguration config;
+    private HubConfiguration config;
 
     @Inject
     private IGitHubSourceConnector github;

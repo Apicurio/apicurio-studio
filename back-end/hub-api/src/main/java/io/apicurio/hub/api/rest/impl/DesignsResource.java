@@ -16,7 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -56,6 +56,7 @@ import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
 import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandException;
@@ -85,6 +86,8 @@ public class DesignsResource implements IDesignsResource {
     private ISecurityContext security;
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
+    @Inject
+    private IEditingSessionManager editingSessionManager;
 
     @Context
     private HttpServletRequest request;
@@ -217,20 +220,20 @@ public class DesignsResource implements IDesignsResource {
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
             String content = designContent.getOaiDocument();
             long contentVersion = designContent.getContentVersion();
-            String sessionId = "SESSION:" + designId; // TODO this is a placeholder until we can get live-editing via websocket implemented!
+            String sessionId = this.editingSessionManager.createSessionUuid(designId, user, this.security.getToken(), contentVersion);
 
-            byte[] bytes = content.getBytes("UTF-8");
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             String ct = "application/json; charset=utf-8";
             String cl = String.valueOf(bytes.length);
 
             ResponseBuilder builder = Response.ok().entity(content)
-                    .header("X-Apicurio-EditingSessionId", sessionId)
+                    .header("X-Apicurio-EditingSessionUuid", sessionId)
                     .header("X-Apicurio-ContentVersion", contentVersion)
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
 
             return builder.build();
-        } catch (StorageException | UnsupportedEncodingException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -278,7 +281,7 @@ public class DesignsResource implements IDesignsResource {
                 commands.add(apiCommand.getCommand());
             }
             String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
-            byte[] bytes = content.getBytes("UTF-8");
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             String ct = "application/json; charset=utf-8";
             String cl = String.valueOf(bytes.length);
             
@@ -286,7 +289,7 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (UnsupportedEncodingException | StorageException | OaiCommandException e) {
+        } catch (StorageException | OaiCommandException e) {
             throw new ServerError(e);
         }
     }

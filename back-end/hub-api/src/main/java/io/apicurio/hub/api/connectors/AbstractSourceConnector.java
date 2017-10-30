@@ -38,7 +38,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
  * Base class for all source connectors.
@@ -71,7 +71,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     }
 
     @Inject
-    protected HubApiConfiguration config;
+    protected HubConfiguration config;
     @Inject
     protected ISecurityContext security;
 

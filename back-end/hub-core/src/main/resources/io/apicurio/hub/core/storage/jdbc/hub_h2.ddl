@@ -23,3 +23,7 @@ CREATE TABLE acl (user_id VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, role
 ALTER TABLE acl ADD PRIMARY KEY (user_id, design_id);
 ALTER TABLE acl ADD CONSTRAINT FK_acl_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_acl_1 ON acl(role);
+
+CREATE TABLE session_uuids (uuid VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, user_id VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, version BIGINT NOT NULL, expires_on BIGINT NOT NULL);
+ALTER TABLE session_uuids ADD PRIMARY KEY (uuid);
+CREATE INDEX IDX_uuids_1 ON session_uuids(uuid, design_id, secret);

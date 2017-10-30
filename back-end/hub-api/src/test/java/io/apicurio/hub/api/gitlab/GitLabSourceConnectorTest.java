@@ -39,7 +39,7 @@ import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -52,7 +52,7 @@ public class GitLabSourceConnectorTest {
     private static String pat = null;
     
     private IGitLabSourceConnector service;
-    private HubApiConfiguration config;
+    private HubConfiguration config;
     
 
     @Before
@@ -82,7 +82,7 @@ public class GitLabSourceConnectorTest {
                 return GitLabSourceConnector.TOKEN_TYPE_PAT;
             }
         };
-        config = new HubApiConfiguration();
+        config = new HubConfiguration();
         
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);

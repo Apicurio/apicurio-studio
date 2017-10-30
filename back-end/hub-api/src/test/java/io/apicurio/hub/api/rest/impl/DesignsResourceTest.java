@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.test.core.TestUtil;
+import test.io.apicurio.hub.api.MockEditingSessionManager;
 import test.io.apicurio.hub.api.MockGitHubService;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
@@ -61,6 +63,7 @@ public class DesignsResourceTest {
     private MockStorage storage;
     private MockSecurityContext security;
     private MockGitHubService github;
+    private MockEditingSessionManager editingSessionManager;
     private OaiCommandExecutor commandExecutor;
     private SourceConnectorFactory sourceConnectorFactory;
 
@@ -71,6 +74,7 @@ public class DesignsResourceTest {
         storage = new MockStorage();
         security = new MockSecurityContext();
         commandExecutor = new OaiCommandExecutor();
+        editingSessionManager = new MockEditingSessionManager();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -80,6 +84,7 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
         TestUtil.setPrivateField(resource, "oaiCommandExecutor", commandExecutor);
+        TestUtil.setPrivateField(resource, "editingSessionManager", editingSessionManager);
     }
     
     @After
@@ -214,10 +219,10 @@ public class DesignsResourceTest {
         
         Response content = resource.editDesign(designId);
         Assert.assertNotNull(content);
-        Assert.assertEquals(new MediaType("application", "json", "utf-8"), content.getMediaType());
+        Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
         Assert.assertEquals(703, content.getLength());
         Assert.assertEquals(MockGitHubService.STATIC_CONTENT, content.getEntity());
-        Assert.assertEquals("SESSION:1", content.getHeaderString("X-Apicurio-EditingSessionId"));
+        Assert.assertNotNull(content.getHeaderString("X-Apicurio-EditingSessionUuid"));
         Assert.assertNotNull(content.getHeaderString("X-Apicurio-ContentVersion"));
 
         String ghLog = github.auditLog();
@@ -286,7 +291,7 @@ public class DesignsResourceTest {
         // by the two commands above to give a final value.
         Response content = resource.getContent(design.getId());
         Assert.assertNotNull(content);
-        Assert.assertEquals(new MediaType("application", "json", "utf-8"), content.getMediaType());
+        Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
         
         String expectedOaiDoc = MockGitHubService.STATIC_CONTENT.replace("Swagger Sample App", "testGetContent")
                 .replace("This is a sample server Petstore server.", "Ut enim ad minim veniam.");

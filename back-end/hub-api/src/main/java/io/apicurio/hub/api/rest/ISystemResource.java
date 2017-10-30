@@ -21,7 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.apicurio.hub.core.beans.SystemStatus;
+import io.apicurio.hub.api.beans.SystemStatus;
 
 /**
  * @author eric.wittmann@gmail.com

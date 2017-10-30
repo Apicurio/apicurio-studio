@@ -238,4 +238,30 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "ORDER BY c.version ASC";
     }
     
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertEditingSessionUuid()
+     */
+    @Override
+    public String insertEditingSessionUuid() {
+        return "INSERT INTO session_uuids (uuid, design_id, user_id, secret, version, expires_on) VALUES (?, ?, ?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectEditingSessionUuid()
+     */
+    @Override
+    public String selectEditingSessionUuid() {
+        return "SELECT u.version "
+                + "FROM session_uuids u "
+                + "WHERE u.uuid = ? AND u.design_id = ? AND u.secret = ? AND u.expires_on > ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteEditingSessionUuid()
+     */
+    @Override
+    public String deleteEditingSessionUuid() {
+        return "DELETE FROM session_uuids WHERE uuid = ? AND design_id = ? AND secret = ? AND expires_on > ?";
+    }
+    
 }

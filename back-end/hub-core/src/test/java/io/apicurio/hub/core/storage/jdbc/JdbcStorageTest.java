@@ -24,7 +24,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
@@ -38,9 +40,10 @@ import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubApiConfiguration;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.test.core.TestUtil;
 
 /**
@@ -60,7 +63,7 @@ public class JdbcStorageTest {
     public void setUp() {
         storage = new JdbcStorage();
         ds = createInMemoryDatasource();
-        TestUtil.setPrivateField(storage, "config", new HubApiConfiguration());
+        TestUtil.setPrivateField(storage, "config", new HubConfiguration());
         TestUtil.setPrivateField(storage, "dataSource", ds);
         storage.postConstruct();
     }
@@ -520,6 +523,57 @@ public class JdbcStorageTest {
         Iterator<ApiDesignCommand> iter = commands.iterator();
         Assert.assertEquals("{4}", iter.next().getCommand());
         Assert.assertEquals("{5}", iter.next().getCommand());
+    }
+
+    @Test
+    public void testEditingSessionUuids() throws Exception {
+        String user = "user1";
+        String secret = "123456789-0";
+        
+        // First, create an API
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy(user);
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        String designId = storage.createApiDesign(user, design, "{}");
+        ApiDesignContent content = storage.getLatestContentDocument(user, designId);
+        long contentVersion = content.getContentVersion();
+
+        // Now create an editing session UUID
+        String uuid = UUID.randomUUID().toString();
+        String hash = DigestUtils.sha512Hex("12345" + user + secret);
+        storage.createEditingSessionUuid(uuid, designId, user, hash, contentVersion, System.currentTimeMillis() + 10000);
+        
+        // Lookup the created UUID
+        long uuidContentVersion = storage.lookupEditingSessionUuid(uuid, designId, user, hash);
+        Assert.assertEquals(contentVersion, uuidContentVersion);
+        
+        // Try to look up an invalid one - should fail.
+        try {
+            storage.lookupEditingSessionUuid(uuid, designId, user, hash + "-invalid");
+            Assert.fail("Expected to get a StorageException!");
+        } catch (StorageException e) {
+            // Expected
+        }
+        
+        // Now consume the UUID row
+        boolean consumed = storage.consumeEditingSessionUuid(uuid, designId, user, hash);
+        Assert.assertTrue(consumed);
+
+        // Try to look up the UUID again - should fail now that it's consumed.
+        try {
+            storage.lookupEditingSessionUuid(uuid, designId, user, hash);
+            Assert.fail("Expected to get a StorageException!");
+        } catch (StorageException e) {
+            // Expected
+        }
+        
+        // Try to consume the UUID row again - rval should be false
+        consumed = storage.consumeEditingSessionUuid(uuid, designId, user, hash);
+        Assert.assertFalse(consumed);
+
     }
     
     /**

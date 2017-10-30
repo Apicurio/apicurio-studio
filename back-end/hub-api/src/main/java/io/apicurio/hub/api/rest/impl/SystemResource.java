@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.Version;
-import io.apicurio.hub.core.beans.SystemStatus;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 

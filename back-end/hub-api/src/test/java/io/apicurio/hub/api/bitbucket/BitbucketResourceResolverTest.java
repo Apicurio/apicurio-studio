@@ -24,14 +24,14 @@ import io.apicurio.hub.api.github.GitHubResourceResolver;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class BitBucketResourceResolverTest {
+public class BitbucketResourceResolverTest {
 
     /**
      * Test method for {@link GitHubResourceResolver#resolve(String)}.
      */
     @Test
     public void testResolve() {
-        BitBucketResource resource = BitBucketResourceResolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.json");
+        BitbucketResource resource = BitbucketResourceResolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("innodays", resource.getTeam());
         Assert.assertEquals("apicurio_test", resource.getRepository());
@@ -39,7 +39,7 @@ public class BitBucketResourceResolverTest {
         Assert.assertNull(resource.getBranch());
         Assert.assertEquals("api/fourthAPI.json", resource.getResourcePath());
         
-        resource = BitBucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default");
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());
@@ -47,7 +47,7 @@ public class BitBucketResourceResolverTest {
         Assert.assertEquals("46163f44a4a398e0101ee9ff10affbbf57e066f9", resource.getSlug());
         Assert.assertEquals("apis/pet-store.json", resource.getResourcePath());
 
-        resource = BitBucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json");
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());

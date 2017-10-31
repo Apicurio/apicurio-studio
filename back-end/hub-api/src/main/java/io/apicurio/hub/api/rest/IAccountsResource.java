@@ -28,6 +28,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.apicurio.hub.api.beans.BitbucketRepository;
+import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.GitHubOrganization;
@@ -103,5 +105,21 @@ public interface IAccountsResource {
     @Path("{accountType}/groups/{group}/projects")
     public Collection<GitLabProject> getProjects(@PathParam("accountType") String accountType, 
             @PathParam("group") String group) throws ServerError;
+
+
+    /*
+     * Bitbucket specific endpoints - only valid when "accountType" is "Bitbucket"
+     */
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/teams")
+    public Collection<BitbucketTeam> getTeams(@PathParam("accountType") String accountType) throws ServerError;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/teams/{team}/repositories")
+    public Collection<BitbucketRepository> getBitbucketRepositories(@PathParam("accountType") String accountType, 
+            @PathParam("team") String group) throws ServerError;
 
 }

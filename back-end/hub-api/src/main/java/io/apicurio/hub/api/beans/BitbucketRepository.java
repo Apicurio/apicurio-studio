@@ -1,8 +1,9 @@
 package io.apicurio.hub.api.beans;
 
-public class BitBucketRepository {
+public class BitbucketRepository {
 
     private String name;
+    private String slug;
     private String uuid;
 
     public String getName() {
@@ -19,5 +20,13 @@ public class BitBucketRepository {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 }

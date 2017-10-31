@@ -19,7 +19,7 @@ package io.apicurio.hub.api.bitbucket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BitBucketResourceResolver {
+public class BitbucketResourceResolver {
 
     // https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json
     private static Pattern pattern1 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/src/([^/]+)/(.*.json)");
@@ -32,10 +32,10 @@ public class BitBucketResourceResolver {
      * Resolves a bitbucket URL into a resource object.  The URL must be of the proper format.
      * @param url
      */
-    public static BitBucketResource resolve(String url) {
+    public static BitbucketResource resolve(String url) {
         Matcher matcher = pattern2.matcher(url);
         if (matcher.matches()) {
-            BitBucketResource resource = new BitBucketResource();
+            BitbucketResource resource = new BitbucketResource();
             String team = matcher.group(1);
             String repo = matcher.group(2);
             String slug = matcher.group(3);
@@ -51,7 +51,7 @@ public class BitBucketResourceResolver {
         
         matcher = pattern1.matcher(url);
         if (matcher.matches()) {
-            BitBucketResource resource = new BitBucketResource();
+            BitbucketResource resource = new BitbucketResource();
             String team = matcher.group(1);
             String repo = matcher.group(2);
             String slug = matcher.group(3);
@@ -65,7 +65,7 @@ public class BitBucketResourceResolver {
         
         matcher = pattern3.matcher(url);
         if (matcher.matches()) {
-            BitBucketResource resource = new BitBucketResource();
+            BitbucketResource resource = new BitbucketResource();
             String team = matcher.group(1);
             String repo = matcher.group(2);
             String slug = matcher.group(3);

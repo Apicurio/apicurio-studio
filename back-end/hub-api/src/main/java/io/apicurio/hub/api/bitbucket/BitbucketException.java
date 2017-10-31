@@ -19,14 +19,14 @@ package io.apicurio.hub.api.bitbucket;
 /**
  * @author christopher.snyder@spectrumhealth.org
  */
-public class BitBucketException extends Exception {
+public class BitbucketException extends Exception {
 
 	private static final long serialVersionUID = -6970632778617385706L;
 
 	/**
      * Constructor.
      */
-    public BitBucketException(String message) {
+    public BitbucketException(String message) {
         super(message);
     }
 
@@ -35,7 +35,7 @@ public class BitBucketException extends Exception {
      * @param message
      * @param cause
      */
-    public BitBucketException(String message, Throwable cause) {
+    public BitbucketException(String message, Throwable cause) {
         super(message, cause);
     }
 

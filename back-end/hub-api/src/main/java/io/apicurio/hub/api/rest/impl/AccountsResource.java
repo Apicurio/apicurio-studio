@@ -40,6 +40,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.HttpRequest;
 
+import io.apicurio.hub.api.beans.BitbucketRepository;
+import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.beans.CompleteLinkedAccount;
 import io.apicurio.hub.api.beans.CreateLinkedAccount;
 import io.apicurio.hub.api.beans.GitHubOrganization;
@@ -49,6 +51,8 @@ import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.bitbucket.BitbucketException;
+import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
 import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
@@ -80,9 +84,10 @@ public class AccountsResource implements IAccountsResource {
 
     @Inject
     private IGitHubSourceConnector github;
-
     @Inject
     private IGitLabSourceConnector gitLab;
+    @Inject
+    private IBitbucketSourceConnector bitbucket;
 
     @Context
     private HttpServletRequest request;
@@ -322,6 +327,39 @@ public class AccountsResource implements IAccountsResource {
         try {
             return gitLab.getProjects(group);
         } catch (GitLabException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getTeams(java.lang.String)
+     */
+    @Override
+    public Collection<BitbucketTeam> getTeams(String accountType) throws ServerError {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.Bitbucket) {
+            throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);
+        }
+        try {
+            return this.bitbucket.getTeams();
+        } catch (BitbucketException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getBitbucketRepositories(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<BitbucketRepository> getBitbucketRepositories(String accountType, String group)
+            throws ServerError {
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.Bitbucket) {
+            throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);
+        }
+        try {
+            return this.bitbucket.getRepositories(group);
+        } catch (SourceConnectorException | BitbucketException e) {
             throw new ServerError(e);
         }
     }

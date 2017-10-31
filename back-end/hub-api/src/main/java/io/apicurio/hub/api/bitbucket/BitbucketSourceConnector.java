@@ -41,8 +41,8 @@ import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.BitBucketRepository;
-import io.apicurio.hub.api.beans.BitBucketTeam;
+import io.apicurio.hub.api.beans.BitbucketRepository;
+import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.OpenApi3Document;
@@ -52,14 +52,14 @@ import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
- * Implementation of the BitBucket source connector.
+ * Implementation of the Bitbucket source connector.
  *
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
-public class BitBucketSourceConnector extends AbstractSourceConnector implements IBitBucketSourceConnector {
+public class BitbucketSourceConnector extends AbstractSourceConnector implements IBitbucketSourceConnector {
 
-    private static Logger logger = LoggerFactory.getLogger(BitBucketSourceConnector.class);
+    private static Logger logger = LoggerFactory.getLogger(BitbucketSourceConnector.class);
 
     private static final String BITBUCKET_API_ENDPOINT = "https://api.bitbucket.org/2.0";
     protected static final Object TOKEN_TYPE_BASIC = "BASIC";
@@ -98,9 +98,8 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             rval.put("access_token", jsonNode.get("access_token").asText());
             rval.put("token_type", jsonNode.get("token_type").asText());
             rval.put("refresh_token", jsonNode.get("refresh_token").asText());
-            rval.put("scope", jsonNode.get("scope").asText());
-            rval.put("created_at", jsonNode.get("created_at").asText());
-            rval.put("id_token", jsonNode.get("id_token").asText());
+            rval.put("scope", jsonNode.get("scopes").asText());
+            rval.put("expires_in", jsonNode.get("expires_in").asText());
             return rval;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -114,7 +113,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
-            BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
+            BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
 
             if (resource == null) {
                 throw new NotFoundException();
@@ -136,29 +135,28 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             ApiDesignResourceInfo info = new ApiDesignResourceInfo();
             info.setName(name);
             info.setDescription(description);
-            info.setUrl(this.endpoint("/:team/:repo/blob/:branch/:path")
-                    .bind("team", resource.getTeam())
-                    .bind("repo", resource.getRepository())
-                    .bind("branch", resource.getSlug())
-                    .bind("path", resource.getResourcePath())
-                    .url());
+            info.setUrl("https://bitbucket.org/:team/:repo/src/:slug/:path"
+                    .replace(":team", resource.getTeam())
+                    .replace(":repo", resource.getRepository())
+                    .replace(":slug", resource.getSlug())
+                    .replace(":path", resource.getResourcePath()));
             return info;
         } catch (IOException e) {
-            throw new SourceConnectorException("Error checking that a BitBucket resource exists.", e);
+            throw new SourceConnectorException("Error checking that a Bitbucket resource exists.", e);
         }
     }
 
     /**
-     * Gets the content of the given BitBucket resource.  This is done by querying for the
+     * Gets the content of the given Bitbucket resource.  This is done by querying for the
      * content using the GH API.
      *
      * @param resource
      */
-    private String getResourceContent(BitBucketResource resource) throws NotFoundException, SourceConnectorException {
+    private String getResourceContent(BitbucketResource resource) throws NotFoundException, SourceConnectorException {
         logger.debug("Getting resource content for: {}/{} - {}",
                 resource.getTeam(), resource.getRepository(), resource.getResourcePath());
 
-        ResourceContent content = getResourceContentFromBitBucket(resource);
+        ResourceContent content = getResourceContentFromBitbucket(resource);
 
         return content.getContent();
     }
@@ -170,7 +168,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
 
-        BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
+        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
 
         try {
             String teamsUrl = endpoint("/teams/:group/members").bind("group", resource.getTeam()).url();
@@ -182,7 +180,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             JSONObject responseObj = response.getBody().getObject();
 
             if (response.getStatus() != 200) {
-                throw new SourceConnectorException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+                throw new SourceConnectorException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
             Collection<Collaborator> rVal = new HashSet<>();
@@ -197,7 +195,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
 
             return  rVal;
         } catch (UnirestException ex) {
-            throw new SourceConnectorException("Error getting collaborators from BitBucket", ex);
+            throw new SourceConnectorException("Error getting collaborators from Bitbucket", ex);
         }
     }
 
@@ -206,8 +204,8 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
      */
     @Override
     public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
-        return getResourceContentFromBitBucket(resource);
+        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
+        return getResourceContentFromBitbucket(resource);
     }
 
     /**
@@ -216,7 +214,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
                                         ResourceContent content) throws SourceConnectorException {
-        commitToBitBucket(repositoryUrl, content.getContent(), commitMessage, false);
+        commitToBitbucket(repositoryUrl, content.getContent(), commitMessage, false);
         return null;
     }
 
@@ -231,15 +229,15 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
         } catch (NotFoundException e) {
             // This is what we want!
         }
-        commitToBitBucket(repositoryUrl, content, commitMessage, true);
+        commitToBitbucket(repositoryUrl, content, commitMessage, true);
     }
 
     /**
-     * @see IBitBucketSourceConnector#getTeams()
+     * @see IBitbucketSourceConnector#getTeams()
      */
     @Override
-    public Collection<BitBucketTeam> getTeams() throws BitBucketException, SourceConnectorException {
-        logger.debug("Getting the BitBucket teams for current user");
+    public Collection<BitbucketTeam> getTeams() throws BitbucketException, SourceConnectorException {
+        logger.debug("Getting the Bitbucket teams for current user");
 
         try {
             String teamsUrl = endpoint("/teams?role=member").url();
@@ -251,16 +249,17 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             JSONObject responseObj = response.getBody().getObject();
 
             if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
-            Collection<BitBucketTeam> rVal =  new HashSet<>();
+            Collection<BitbucketTeam> rVal =  new HashSet<>();
 
             // TODO response is paged - make sure we consume and return all data!
             responseObj.getJSONArray("values").forEach(obj -> {
-                BitBucketTeam bbt = new BitBucketTeam();
+                BitbucketTeam bbt = new BitbucketTeam();
                 JSONObject team = (JSONObject) obj;
-                bbt.setName(team.getString("display_name"));
+                bbt.setDisplayName(team.getString("display_name"));
+                bbt.setUsername(team.getString("username"));
                 bbt.setUuid(team.getString("uuid"));
                 rVal.add(bbt);
             });
@@ -268,12 +267,12 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             return rVal;
 
         } catch (UnirestException e) {
-            throw new BitBucketException("Error getting BitBucket teams.", e);
+            throw new BitbucketException("Error getting Bitbucket teams.", e);
         }
     }
 
     @Override
-    public Collection<BitBucketRepository> getRepositories(String teamName) throws BitBucketException, SourceConnectorException {
+    public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException {
         try {
             //@formatter:off
             String teamsUrl = endpoint("/repositories/:uname")
@@ -288,24 +287,25 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             JSONObject responseObj = response.getBody().getObject();
 
             if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
-            Collection<BitBucketRepository> rVal =  new HashSet<>();
+            Collection<BitbucketRepository> rVal =  new HashSet<>();
 
             // TODO response is paged - make sure we consume and return all data!
             responseObj.getJSONArray("values").forEach(obj -> {
-                BitBucketRepository bbr = new BitBucketRepository();
+                BitbucketRepository bbr = new BitbucketRepository();
                 JSONObject rep = (JSONObject) obj;
                 bbr.setName(rep.getString("name"));
                 bbr.setUuid(rep.getString("uuid"));
+                bbr.setSlug(rep.getString("slug"));
                 rVal.add(bbr);
             });
 
             return rVal;
 
         } catch (UnirestException e) {
-            throw new BitBucketException("Error getting BitBucket teams.", e);
+            throw new BitbucketException("Error getting Bitbucket teams.", e);
         }
     }
 
@@ -324,16 +324,16 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     }
 
     /**
-     * Commits new repository file content to BitBucket.
+     * Commits new repository file content to Bitbucket.
      * @param repositoryUrl
      * @param content
      * @param commitMessage
      * @param create
      * @throws SourceConnectorException
      */
-    private String commitToBitBucket(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
+    private String commitToBitbucket(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
 
-        BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
+        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
 
         try {
             //@formatter:off
@@ -363,7 +363,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
 
             int responseStatus = response.getStatus();
             if (responseStatus != 201) {
-                throw new UnirestException("Unexpected response from BitBucket: " + responseStatus + "::" + response.getStatusText());
+                throw new UnirestException("Unexpected response from Bitbucket: " + responseStatus + "::" + response.getStatusText());
             }
         } catch (UnirestException e) {
             throw new SourceConnectorException(e);
@@ -378,7 +378,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
      * @throws SourceConnectorException
      * @throws NotFoundException
      */
-    private String getShaByResource(BitBucketResource resource) throws SourceConnectorException, NotFoundException {
+    private String getShaByResource(BitbucketResource resource) throws SourceConnectorException, NotFoundException {
         try {
             //@formatter:off
             String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path?format=meta")
@@ -393,24 +393,24 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             addSecurityTo(request);
             HttpResponse<String> response = request.asString();
 
-            // Note: as of 10/31/2017 the BitBucket API responded with a 500 error (and an error HTML page)
+            // Note: as of 10/31/2017 the Bitbucket API responded with a 500 error (and an error HTML page)
             // when asking for meta-data for a resource that doesn't exist.
             if (response.getStatus() == 404 || response.getStatus() == 500) {
                 throw new NotFoundException();
             }
             if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
             }
             
             String responseData = response.getBody();
             JsonNode node = mapper.reader().readTree(responseData);
             return node.get("commit").get("hash").asText();
         } catch (SourceConnectorException | IOException | UnirestException e) {
-            throw new SourceConnectorException("Error creating BitBucket resource content.", e);
+            throw new SourceConnectorException("Error creating Bitbucket resource content.", e);
         }
     }
 
-    private ResourceContent getResourceContentFromBitBucket(BitBucketResource resource) throws NotFoundException, SourceConnectorException {
+    private ResourceContent getResourceContentFromBitbucket(BitbucketResource resource) throws NotFoundException, SourceConnectorException {
 
         String sha = getShaByResource(resource);
 
@@ -435,14 +435,14 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             }
 
             if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
             String content = null;
             try (InputStream cstream = response.getBody()) {
                 content = IOUtils.toString(cstream, StandardCharsets.UTF_8);
             } catch (IOException e) {
-                throw new SourceConnectorException("Error parsing file stream from BitBucket");
+                throw new SourceConnectorException("Error parsing file stream from Bitbucket");
             }
 
             rVal.setSha(sha);

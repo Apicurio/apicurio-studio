@@ -81,6 +81,9 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
             return "View on GitLab";
         }
+        if (this.api.repositoryUrl.indexOf("bitbucket.org") > 0) {
+            return "View on Bitbucket";
+        }
         return "View Source";
     }
 
@@ -94,6 +97,9 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         }
         if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
             return "gitlab";
+        }
+        if (this.api.repositoryUrl.indexOf("bitbucket.org") > 0) {
+            return "bitbucket";
         }
         return "code";
     }

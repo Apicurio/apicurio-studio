@@ -19,7 +19,7 @@ package io.apicurio.hub.api.bitbucket;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class BitBucketResource {
+public class BitbucketResource {
 
     private String team;
     private String repository;
@@ -30,7 +30,7 @@ public class BitBucketResource {
     /**
      * Constructor.
      */
-    public BitBucketResource() {
+    public BitbucketResource() {
     }
 
     /**

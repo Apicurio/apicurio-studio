@@ -18,29 +18,29 @@ package io.apicurio.hub.api.bitbucket;
 
 import java.util.Collection;
 
-import io.apicurio.hub.api.beans.BitBucketRepository;
-import io.apicurio.hub.api.beans.BitBucketTeam;
+import io.apicurio.hub.api.beans.BitbucketRepository;
+import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 
 /**
- * A BitBucket specific source connector.
+ * A Bitbucket specific source connector.
  */
-public interface IBitBucketSourceConnector extends ISourceConnector {
+public interface IBitbucketSourceConnector extends ISourceConnector {
 
     /**
-     * Lists all of the BitBucket teams for the current user.
-     * @throws BitBucketException
+     * Lists all of the Bitbucket teams for the current user.
+     * @throws BitbucketException
      * @throws SourceConnectorException
      */
-    public Collection<BitBucketTeam> getTeams() throws BitBucketException, SourceConnectorException;
+    public Collection<BitbucketTeam> getTeams() throws BitbucketException, SourceConnectorException;
 
     /**
-     * Lists all of the BitBucket repositories for the current user within the given group.
+     * Lists all of the Bitbucket repositories for the current user within the given group.
      * @param teamName
-     * @throws BitBucketException
+     * @throws BitbucketException
      * @throws SourceConnectorException
      */
-    public Collection<BitBucketRepository> getRepositories(String teamName) throws BitBucketException, SourceConnectorException;
+    public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException;
 
 }

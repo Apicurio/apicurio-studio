@@ -38,10 +38,7 @@
                     <div class="platform-toggle"
                          [class.disabled]="!hasLinkedAccount('GitLab')"
                          [class.selected]="model.accountType === 'GitLab'"
-                         (click)="setAccountType('GitLab')"
-                         data-toggle="tooltip"
-                         data-placement="bottom"
-                         title="Hello World!">
+                         (click)="setAccountType('GitLab')">
                         <span class="fa fa-fw fa-gitlab"></span>
                         <br/>
                         <span class="lbl">GitLab</span>
@@ -168,6 +165,52 @@
 
             <!-- Bitbucket Form Items -->
             <div class="bitbucket-form-items" *ngIf="model.accountType === 'Bitbucket'">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-team">Team</label>
+                    <div class="col-sm-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-team" data-toggle="dropdown">
+                                <span *ngIf="model.bitbucket.team !== null">{{ model.bitbucket.team.displayName }}</span>
+                                <div *ngIf="fetchingTeams" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.bitbucket.team === null">(select team)</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-team">
+                                <!--
+                                <li role="presentation" *ngIf="bitbucketUser()"><a role="menuitem" (click)="setBitbucketTeam(bitbucketUser())">{{ bitbucketUser().name }}</a></li>
+                                <li class="divider"></li>
+                                -->
+                                <li *ngFor="let team of bitbucketTeams()" role="presentation"><a role="menuitem" (click)="setBitbucketTeam(team)">{{ team.displayName }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-bb-repository">Repository</label>
+                    <div class="col-sm-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="api-bb-repository" data-toggle="dropdown"
+                                    [disabled]="model.bitbucket.team === null">
+                                <span *ngIf="model.bitbucket.repository !== null">{{ model.bitbucket.repository.name }}</span>
+                                <div *ngIf="fetchingRepos" class="spinner spinner-xs"></div>
+                                <span class="disabled" *ngIf="model.bitbucket.repository === null">(select repository)</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="api-repository">
+                                <li *ngFor="let repo of bitbucketRepositories()" role="presentation"><a role="menuitem" (click)="setBitbucketRepository(repo)">{{ repo.name }}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="api-repository-resource-3">Resource</label>
+                    <div class="col-sm-10">
+                        <input name="repository.resource" type="text" id="api-repository-resource-3" class="form-control"
+                               placeholder="/path/to/apis/openapi-doc.json" required
+                               [(ngModel)]="model.bitbucket.resource"
+                               pattern="(/[^/]+)*/?[^/]+\.json">
+                    </div>
+                </div>
             </div>
 
             <hr/>

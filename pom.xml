@@ -76,7 +76,7 @@
         <version.enforcer.plugin>1.4</version.enforcer.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>2.5</version.jar.plugin>
-        <version.javadoc.plugin>2.10.1</version.javadoc.plugin>
+        <version.javadoc.plugin>2.10.4</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>2.7</version.resources.plugin>
@@ -489,6 +489,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <additionalDependencies>
+                        <additionalDependency>
+                            <groupId>org.jboss.spec.javax.annotation</groupId>
+                            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+                            <version>1.0.1.Final</version>
+                        </additionalDependency>
+                    </additionalDependencies>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

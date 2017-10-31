@@ -64,7 +64,7 @@ public class BitBucketSourceConnectorTest {
     public static void globalSetUp() {
         File credsFile = new File(".bitbucket");
         if (!credsFile.isFile()) {
-            throw new RuntimeException("Missing BitBucket credentials.  Expected a Java properties file with BitBucket 'username' and 'password' (personal or App password) located here: " + credsFile.getAbsolutePath());
+            return;
         }
         System.out.println("Loading Bitbucket credentials from: " + credsFile.getAbsolutePath());
         try (Reader reader = new FileReader(credsFile)) {
@@ -80,6 +80,10 @@ public class BitBucketSourceConnectorTest {
 
     @Before
     public void setUp() {
+        if (basicAuth == null) {
+            File credsFile = new File(".bitbucket");
+            throw new RuntimeException("Missing BitBucket credentials.  Expected a Java properties file with BitBucket 'username' and 'password' (personal or App password) located here: " + credsFile.getAbsolutePath());
+        }
         service = new BitBucketSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
@@ -105,7 +109,7 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testGetTeams() throws SourceConnectorException, BitBucketException {
         Collection<BitBucketTeam> teams = service.getTeams();
         Assert.assertNotNull(teams);
@@ -116,7 +120,7 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testGetRepositories() throws SourceConnectorException, BitBucketException {
         String team = "apicurio";
 
@@ -131,7 +135,7 @@ public class BitBucketSourceConnectorTest {
 
 
     @Test
-    //@Ignore
+    @Ignore
     public void testGetResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException {
         String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
 
@@ -142,7 +146,7 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testValidateResourceExists() throws SourceConnectorException, BitBucketException, NotFoundException {
         String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
         ApiDesignResourceInfo info = service.validateResourceExists(url);
@@ -162,7 +166,7 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testGetCollaborators() throws SourceConnectorException, BitBucketException, NotFoundException, UnirestException {
         String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
 
@@ -171,7 +175,7 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void testCreateResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException, UnirestException {
         String url = "https://bitbucket.org/apicurio/apicurio-test/src/master/junit-apis/api-" + System.currentTimeMillis() + ".json";
         String content = "{\"swagger\":\"2.0\",\"info\":{\"title\":\"hello\",\"description\":\"hello\",\"version\":\"1.0.0\"}}";
@@ -189,7 +193,7 @@ public class BitBucketSourceConnectorTest {
     }
     
     @Test
-    //@Ignore
+    @Ignore
     public void testUpdateResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException,
             UnirestException, JsonProcessingException, IOException {
         String repositoryUrl = "https://bitbucket.org/apicurio/apicurio-test/src/1b684236c6434bc5c6644cbf62c46bbd8d40f3d1/junit-apis/test-update-content.json?at=master&fileviewer=file-view-default";

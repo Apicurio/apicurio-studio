@@ -213,7 +213,8 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Getting an API design with ID {}", designId);
         try {
             String user = this.security.getCurrentUser().getLogin();
-            return this.storage.getApiDesign(user, designId);
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            return design;
         } catch (StorageException e) {
             throw new ServerError(e);
         }

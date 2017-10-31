@@ -104,36 +104,34 @@
                      [class.created]="isAccountCreated('Bitbucket')"
                      [class.not-created]="isAccountMissing('Bitbucket')"
                      [class.initiated]="isAccountInitiated('Bitbucket')">
-                    <div class="list-group-item-header">
-                        <div class="list-view-pf-actions">
-                            <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="createLinkedAccount('Bitbucket')">Link</button>
-                            <button *ngIf="isAccountCreated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Unlink</button>
-                            <button *ngIf="isAccountInitiated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Cancel</button>
+                    <div class="list-view-pf-actions">
+                        <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="createLinkedAccount('Bitbucket')">Link</button>
+                        <button *ngIf="isAccountCreated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Unlink</button>
+                        <button *ngIf="isAccountInitiated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Cancel</button>
+                    </div>
+                    <div class="list-view-pf-main-info">
+                        <div class="list-view-pf-left account-link-icon">
+                            <span class="fa fa-fw fa-bitbucket"></span>
                         </div>
-                        <div class="list-view-pf-main-info">
-                            <div class="list-view-pf-left account-link-icon">
-                                <span class="fa fa-fw fa-bitbucket"></span>
+                        <div class="list-view-pf-body">
+                            <div class="list-view-pf-description">
+                                <div class="list-group-item-heading">Bitbucket</div>
+                                <div class="list-group-item-text">
+                                    <span *ngIf="isAccountMissing('Bitbucket')">Link to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account.</span>
+                                    <span *ngIf="isAccountCreated('Bitbucket')">A link has been established to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account!</span>
+                                    <span *ngIf="isAccountInitiated('Bitbucket')">We're linking your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account now.</span>
+                                </div>
                             </div>
-                            <div class="list-view-pf-body">
-                                <div class="list-view-pf-description">
-                                    <div class="list-group-item-heading">Bitbucket</div>
-                                    <div class="list-group-item-text">
-                                        <span *ngIf="isAccountMissing('Bitbucket')">Link to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account.</span>
-                                        <span *ngIf="isAccountCreated('Bitbucket')">A link has been established to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account!</span>
-                                        <span *ngIf="isAccountInitiated('Bitbucket')">We're linking your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account now.</span>
-                                    </div>
-                                </div>
-                                <div class="list-view-pf-additional-info" *ngIf="isAccountMissing('Bitbucket')">
-                                </div>
-                                <div class="list-view-pf-additional-info" *ngIf="isAccountCreated('Bitbucket')">
-                                    <span class="fa fa-fw fa-clock-o"></span>
-                                    <span>Linked on</span>
-                                    <span class="account-link-date">{{ account('Bitbucket').linkedOn | date }}</span>
-                                </div>
-                                <div class="list-view-pf-additional-info" *ngIf="isAccountInitiated('Bitbucket')">
-                                    <span class="fa fa-fw fa-info"></span>
-                                    <span>Link initiated, awaiting completion...</span>
-                                </div>
+                            <div class="list-view-pf-additional-info" *ngIf="isAccountMissing('Bitbucket')">
+                            </div>
+                            <div class="list-view-pf-additional-info" *ngIf="isAccountCreated('Bitbucket')">
+                                <span class="fa fa-fw fa-clock-o"></span>
+                                <span>Linked on</span>
+                                <span class="account-link-date">{{ account('Bitbucket').linkedOn | date }}</span>
+                            </div>
+                            <div class="list-view-pf-additional-info" *ngIf="isAccountInitiated('Bitbucket')">
+                                <span class="fa fa-fw fa-info"></span>
+                                <span>Link initiated, awaiting completion...</span>
                             </div>
                         </div>
                     </div>

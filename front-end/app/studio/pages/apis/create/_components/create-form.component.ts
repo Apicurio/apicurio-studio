@@ -27,6 +27,8 @@ import {DropDownOption} from "../../{apiId}/editor/_components/common/drop-down.
 import {GitHubRepository} from "../../../../models/github-repository";
 import {GitLabGroup} from "../../../../models/gitlab-group";
 import {GitLabProject} from "../../../../models/gitlab-project";
+import {BitbucketTeam} from "../../../../models/bitbucket-team";
+import {BitbucketRepository} from "../../../../models/bitbucket-repository";
 
 
 @Component({
@@ -55,6 +57,9 @@ export class CreateApiFormComponent {
             resource: null
         },
         bitbucket: {
+            team: null,
+            repository: null,
+            resource: null
         }
     };
     creatingApi: boolean = false;
@@ -70,6 +75,10 @@ export class CreateApiFormComponent {
     fetchingGroups: boolean = false;
     fetchingProjects: boolean = false;
 
+    // when fetching gitlab data
+    fetchingTeams: boolean = false;
+    //fetchingRepos: boolean; -- shared with GitHub
+
     showAccountLinkingWarning: boolean = false;
 
     private _accounts: LinkedAccount[];
@@ -83,6 +92,11 @@ export class CreateApiFormComponent {
     private _gl_groups: GitLabGroup[];
     private _gl_user: string;
     private _gl_projects: GitLabProject[];
+
+    // Bitbucket data
+    private _bb_teams: BitbucketTeam[];
+    private _bb_user: string;
+    private _bb_repos: BitbucketRepository[];
 
     private _user: User;
 
@@ -151,6 +165,12 @@ export class CreateApiFormComponent {
                 this.fetchGitLabGroups();
             }
 
+            if (accountType === "Bitbucket") {
+                this.model.bitbucket.team = null;
+                this.model.bitbucket.repository = null;
+                this.fetchBitbucketTeams();
+            }
+
         } else {
             this.showAccountLinkingWarning = true;
         }
@@ -174,7 +194,8 @@ export class CreateApiFormComponent {
         this.fetchingRepos = true;
         this._gh_repos = [];
         this.accountsService.getAccountRepositories('GitHub', this.model.github.organization.id).then( repos => {
-            this._gh_repos = repos.sort( (repo1, repo2) => {
+            let ghRepos: GitHubRepository[] = repos as GitHubRepository[];
+            this._gh_repos = ghRepos.sort( (repo1, repo2) => {
                 return repo1.name.toLowerCase().localeCompare(repo2.name.toLowerCase());
             });
             this.fetchingRepos = false;
@@ -271,6 +292,64 @@ export class CreateApiFormComponent {
     }
 
 
+    /******************************************
+     * Bitbucket
+     ******************************************/
+
+    public bitbucketUser(): string {
+        return this._bb_user;
+    }
+
+    public bitbucketTeams(): any[] {
+        return this._bb_teams;
+    }
+
+    public setBitbucketTeam(team: any): void {
+        this.model.bitbucket.team = team;
+        this.model.bitbucket.project = null;
+        this.fetchingProjects = true;
+        this._bb_repos = [];
+        console.info("Setting the team to: %o", team);
+        this.accountsService.getAccountRepositories('Bitbucket', team.username).then( repos => {
+            let bbRepos: BitbucketRepository[] = repos as BitbucketRepository[];
+            this._bb_repos = bbRepos.sort( (repo1, repo2) => {
+                return repo1.name.toLowerCase().localeCompare(repo2.name.toLowerCase());
+            });
+            this.fetchingProjects = false;
+        }).catch( errorReason => {
+            console.error("[CreateApiFormComponent] Error getting projects: %o", errorReason)
+            this.error = errorReason;
+            this.fetchingProjects = false;
+        });
+    }
+
+    public bitbucketRepositories(): any[] {
+        return this._bb_repos;
+    }
+
+    public setBitbucketRepository(repository: any): void {
+        this.model.bitbucket.repository = repository;
+    }
+
+    private fetchBitbucketTeams(): void {
+        this.fetchingTeams = true;
+        this.accountsService.getAccountTeams("Bitbucket").then( teams => {
+            this._bb_teams = [];
+            teams.forEach( team => {
+                this._bb_teams.push(team);
+            });
+            this._bb_teams = this._bb_teams.sort( (team1, team2) => {
+                return team1.displayName.toLowerCase().localeCompare(team2.displayName.toLowerCase());
+            });
+            this.fetchingTeams = false;
+        }).catch( error => {
+            console.error("[CreateApiFormComponent] Error getting teams: %o", error)
+            this.error = error;
+            this.fetchingTeams = false;
+        });
+    }
+
+
     /**
      * Called when the user clicks the "Create API" submit button on the form.
      */
@@ -298,6 +377,14 @@ export class CreateApiFormComponent {
                 this.model.gitlab.project.path + "/blob/master" + sep +
                 this.model.gitlab.resource;
         } else if (this.model.accountType === "Bitbucket") {
+            let sep: string = "";
+            if (this.model.bitbucket.resource && this.model.bitbucket.resource[0] !== '/') {
+                sep = "/";
+            }
+            api.repositoryUrl = "https://bitbucket.org/" +
+                this.model.bitbucket.team.username + "/" +
+                this.model.bitbucket.repository.slug + "/src/master" + sep +
+                this.model.bitbucket.resource;
         }
 
         console.info("[CreateApiFormComponent] Firing 'create-api' event: %o", api);
@@ -313,7 +400,7 @@ export class CreateApiFormComponent {
      * @return {boolean}
      */
     public isFormComplete(): boolean {
-        return this.model.github.repository != null || this.model.gitlab.project != null;
+        return this.model.github.repository != null || this.model.gitlab.project != null || this.model.bitbucket.repository != null;
     }
 
     /**

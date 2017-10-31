@@ -23,6 +23,8 @@ import {GitHubOrganization} from "../models/github-organization";
 import {GitHubRepository} from "../models/github-repository";
 import {GitLabGroup} from "../models/gitlab-group";
 import {GitLabProject} from "../models/gitlab-project";
+import {BitbucketRepository} from "../models/bitbucket-repository";
+import {BitbucketTeam} from "../models/bitbucket-team";
 
 
 /**
@@ -77,10 +79,10 @@ export interface ILinkedAccountsService {
     /**
      * Gets all of the repositories found in a given organization.
      * @param {string} accountType
-     * @param {string} organization
+     * @param {string} organizationOrTeam
      * @return {Promise<string[]>}
      */
-    getAccountRepositories(accountType: string, organization: string): Promise<GitHubRepository[]>;
+    getAccountRepositories(accountType: string, organizationOrTeam: string): Promise<(GitHubRepository[]|BitbucketRepository[])>;
 
     /**
      * Gets a list of all groups the user belongs to.
@@ -91,6 +93,21 @@ export interface ILinkedAccountsService {
 
     /**
      * Gets all of the projects found in a given group.
+     * @param {string} accountType
+     * @param {string} group
+     * @return {Promise<GitLabProject[]>}
+     */
+    getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]>;
+
+    /**
+     * Gets a list of all teams the user belongs to.
+     * @param {string} accountType
+     * @return {Promise<any[]>}
+     */
+    getAccountTeams(accountType: string): Promise<BitbucketTeam[]>;
+
+    /**
+     * Gets all of the repositories found in a given group.
      * @param {string} accountType
      * @param {string} group
      * @return {Promise<GitLabProject[]>}

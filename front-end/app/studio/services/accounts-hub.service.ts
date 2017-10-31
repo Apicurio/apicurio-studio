@@ -31,6 +31,8 @@ import {GitHubOrganization} from "../models/github-organization";
 import {GitHubRepository} from "../models/github-repository";
 import {GitLabGroup} from "../models/gitlab-group";
 import {GitLabProject} from "../models/gitlab-project";
+import {BitbucketRepository} from "../models/bitbucket-repository";
+import {BitbucketTeam} from "../models/bitbucket-team";
 
 
 /**
@@ -161,17 +163,23 @@ export class HubLinkedAccountsService extends AbstractHubService implements ILin
     /**
      * @see ILinkedAccountsService.getAccountRepositories
      */
-    public getAccountRepositories(accountType: string, organization: string): Promise<GitHubRepository[]> {
+    public getAccountRepositories(accountType: string, organizationOrTeam: string): Promise<GitHubRepository[]|BitbucketRepository[]> {
         let repositoriesUrl: string = this.endpoint("/accounts/:accountType/organizations/:org/repositories", {
             accountType: accountType,
-            org: organization
+            org: organizationOrTeam
         });
+        if (accountType === "Bitbucket") {
+            repositoriesUrl = this.endpoint("/accounts/:accountType/teams/:team/repositories", {
+                accountType: accountType,
+                team: organizationOrTeam
+            });
+        }
         let options: RequestOptions = this.options({ "Accept": "application/json" });
 
         console.info("[HubLinkedAccountsService] Getting repositories: %s", repositoriesUrl);
 
         return this.http.get(repositoriesUrl, options).map( response => {
-            return response.json() as GitHubRepository[];
+            return response.json() as GitHubRepository[]|BitbucketRepository[];
         }).toPromise();
     }
 
@@ -205,6 +213,22 @@ export class HubLinkedAccountsService extends AbstractHubService implements ILin
 
         return this.http.get(projectsUrl, options).map( response => {
             return response.json() as GitLabProject[];
+        }).toPromise();
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountTeams
+     */
+    public getAccountTeams(accountType: string): Promise<BitbucketTeam[]> {
+        let teamsUrl: string = this.endpoint("/accounts/:accountType/teams", {
+            accountType: accountType
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting teams: %s", teamsUrl);
+
+        return this.http.get(teamsUrl, options).map( response => {
+            return response.json() as BitbucketTeam[];
         }).toPromise();
     }
 

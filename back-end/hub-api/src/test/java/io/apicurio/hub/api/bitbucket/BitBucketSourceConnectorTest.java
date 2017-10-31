@@ -16,61 +16,74 @@
 
 package io.apicurio.hub.api.bitbucket;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Properties;
+
+import org.apache.commons.codec.binary.Base64;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import io.apicurio.hub.api.beans.*;
+
+import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.BitBucketRepository;
+import io.apicurio.hub.api.beans.BitBucketTeam;
+import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.gitlab.GitLabException;
-import io.apicurio.hub.api.gitlab.GitLabSourceConnector;
-import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
-import org.junit.*;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.TestUtil;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Map;
-
-import static java.awt.SystemColor.info;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class BitBucketSourceConnectorTest {
 
-    private static String basicAut = null;
-
     private IBitBucketSourceConnector service;
     private HubApiConfiguration config;
-
+    
+    private static String basicAuth = null;
+    
+    @BeforeClass
+    public static void globalSetUp() {
+        File credsFile = new File(".bitbucket");
+        if (!credsFile.isFile()) {
+            throw new RuntimeException("Missing BitBucket credentials.  Expected a Java properties file with BitBucket 'username' and 'password' (personal or App password) located here: " + credsFile.getAbsolutePath());
+        }
+        System.out.println("Loading Bitbucket credentials from: " + credsFile.getAbsolutePath());
+        try (Reader reader = new FileReader(credsFile)) {
+            Properties props = new Properties();
+            props.load(reader);
+            String userPass = props.getProperty("username") + ":" + props.getProperty("password");
+            basicAuth = Base64.encodeBase64String(userPass.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     @Before
     public void setUp() {
         service = new BitBucketSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
-                try {
-                    if (basicAut == null) {
-                        // Read the Personal Access Token from standard input so we don't accidentally check it in.
-                        // This is a PITA because we have to copy/paste our PAT every time we run this test.  But it's
-                        // better than accidentally checking in a GitLab PAT!!
-                        System.out.println("Enter your GitLab Personal Access Token:");
-                        basicAut = new BufferedReader(new InputStreamReader(System.in)).readLine();
-                    }
-                    return basicAut;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                return basicAuth;
             }
 
             /**
@@ -92,59 +105,110 @@ public class BitBucketSourceConnectorTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testGetTeams() throws SourceConnectorException, BitBucketException {
         Collection<BitBucketTeam> teams = service.getTeams();
-        assertNotNull(teams);
-        assertFalse(teams.isEmpty());
-
+        Assert.assertNotNull(teams);
+        Assert.assertFalse(teams.isEmpty());
+        teams.forEach(team -> {
+            System.out.println("Found team: " + team.getName() + " -- " + team.getUuid());
+        });
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testGetRepositories() throws SourceConnectorException, BitBucketException {
-        String team = "innodays";
+        String team = "apicurio";
 
         Collection<BitBucketRepository> repos = service.getRepositories(team);
-        assertNotNull(repos);
-        assertFalse(repos.isEmpty());
+        Assert.assertNotNull(repos);
+        Assert.assertFalse(repos.isEmpty());
+        
+        repos.forEach( repo -> {
+            System.out.println("Found repository: " + repo.getName() + " -- " + repo.getUuid());
+        });
     }
 
 
     @Test
-    @Ignore
+    //@Ignore
     public void testGetResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException {
-        String url = "https://bitbucket.org/innodays/apicurio_test/src/730d4c6f9d330b8e5a496f1041a7982d9613429e/api/firstAPI.json";
+        String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
 
         ResourceContent content = service.getResourceContent(url);
-        assertNotNull(content);
-
+        Assert.assertNotNull(content);
+        Assert.assertNotNull(content.getSha());
+        Assert.assertNotNull(content.getContent());
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testValidateResourceExists() throws SourceConnectorException, BitBucketException, NotFoundException {
-        String url = "https://bitbucket.org/innodays/apicurio_test/src/730d4c6f9d330b8e5a496f1041a7982d9613429e/api/firstAPI.json";
-
+        String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
         ApiDesignResourceInfo info = service.validateResourceExists(url);
-        assertNotNull(info);
+        Assert.assertNotNull(info);
+
+        url = "https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json";
+        info = service.validateResourceExists(url);
+        Assert.assertNotNull(info);
+
+        url = "https://bitbucket.org/apicurio/apicurio-test/src/master/apis/NOT-FOUND.json";
+        try {
+            service.validateResourceExists(url);
+            Assert.fail("Expected a NotFoundException!");
+        } catch (NotFoundException e) {
+            // This is what we expect
+        }
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testGetCollaborators() throws SourceConnectorException, BitBucketException, NotFoundException, UnirestException {
-        String url = "https://bitbucket.org/innodays/apicurio_test/src/730d4c6f9d330b8e5a496f1041a7982d9613429e/api/firstAPI.json";
+        String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
 
         Collection<Collaborator> collaborators = service.getCollaborators(url);
-        assertNotNull(collaborators);
+        Assert.assertNotNull(collaborators);
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void testCreateResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException, UnirestException {
-        String url = "https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.json";
+        String url = "https://bitbucket.org/apicurio/apicurio-test/src/master/junit-apis/api-" + System.currentTimeMillis() + ".json";
         String content = "{\"swagger\":\"2.0\",\"info\":{\"title\":\"hello\",\"description\":\"hello\",\"version\":\"1.0.0\"}}";
-
         service.createResourceContent(url, "testing new message commit message for all", content);
+
+        // Already exists - should error out.
+        url = "https://bitbucket.org/apicurio/apicurio-test/src/master/junit-apis/already-exists.json";
+        content = "{\"swagger\":\"2.0\",\"info\":{\"title\":\"hello\",\"description\":\"hello\",\"version\":\"1.0.0\"}}";
+        try {
+            service.createResourceContent(url, "testing new message commit message for all", content);
+        } catch (SourceConnectorException e) {
+            // Expected this
+            Assert.assertTrue(e.getMessage().contains("already exists"));
+        }
+    }
+    
+    @Test
+    //@Ignore
+    public void testUpdateResourceContent() throws SourceConnectorException, BitBucketException, NotFoundException,
+            UnirestException, JsonProcessingException, IOException {
+        String repositoryUrl = "https://bitbucket.org/apicurio/apicurio-test/src/1b684236c6434bc5c6644cbf62c46bbd8d40f3d1/junit-apis/test-update-content.json?at=master&fileviewer=file-view-default";
+        
+        ResourceContent content = service.getResourceContent(repositoryUrl);
+        Assert.assertTrue(content.getContent().contains("Animation API"));
+        Assert.assertNotNull(content.getSha());
+        
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(content.getContent());
+        ObjectNode info = (ObjectNode) root.get("info");
+        long newVersion = System.currentTimeMillis();
+        info.set("version", TextNode.valueOf(String.valueOf(newVersion)));
+        
+        System.out.println("Setting new version to: " + newVersion);
+        
+        String newContent = mapper.writeValueAsString(root);
+        content.setContent(newContent);
+        String newSha = service.updateResourceContent(repositoryUrl, "Unit Test: Update Content", "Updated the version of: " + repositoryUrl, content);
+        System.out.println("New SHA: " + newSha);
     }
 }

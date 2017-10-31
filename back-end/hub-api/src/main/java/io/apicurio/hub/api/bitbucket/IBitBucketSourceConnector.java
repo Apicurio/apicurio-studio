@@ -16,15 +16,12 @@
 
 package io.apicurio.hub.api.bitbucket;
 
+import java.util.Collection;
+
 import io.apicurio.hub.api.beans.BitBucketRepository;
 import io.apicurio.hub.api.beans.BitBucketTeam;
-import io.apicurio.hub.api.beans.GitLabGroup;
-import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.gitlab.GitLabException;
-
-import java.util.Collection;
 
 /**
  * A BitBucket specific source connector.

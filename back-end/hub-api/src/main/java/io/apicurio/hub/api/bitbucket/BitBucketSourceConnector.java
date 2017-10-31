@@ -16,43 +16,43 @@
 
 package io.apicurio.hub.api.bitbucket;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
-import com.mashape.unirest.request.body.MultipartBody;
-import io.apicurio.hub.api.beans.*;
-import io.apicurio.hub.api.connectors.AbstractSourceConnector;
-import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.gitlab.GitLabResource;
-import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
+
+import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.api.beans.BitBucketRepository;
+import io.apicurio.hub.api.beans.BitBucketTeam;
+import io.apicurio.hub.api.beans.Collaborator;
+import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.api.beans.OpenApi3Document;
+import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.connectors.AbstractSourceConnector;
+import io.apicurio.hub.api.connectors.SourceConnectorException;
+import io.apicurio.hub.api.exceptions.NotFoundException;
 
 /**
- * Implementation of the GitLab source connector.
+ * Implementation of the BitBucket source connector.
  *
  * @author eric.wittmann@gmail.com
  */
@@ -144,12 +144,12 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
                     .url());
             return info;
         } catch (IOException e) {
-            throw new SourceConnectorException("Error checking that a GitLab resource exists.", e);
+            throw new SourceConnectorException("Error checking that a BitBucket resource exists.", e);
         }
     }
 
     /**
-     * Gets the content of the given GitLab resource.  This is done by querying for the
+     * Gets the content of the given BitBucket resource.  This is done by querying for the
      * content using the GH API.
      *
      * @param resource
@@ -173,7 +173,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
         BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
 
         try {
-            String teamsUrl = endpoint("teams/:group/members").bind("group", resource.getTeam()).url();
+            String teamsUrl = endpoint("/teams/:group/members").bind("group", resource.getTeam()).url();
 
             HttpRequest request = Unirest.get(teamsUrl);
             addSecurityTo(request);
@@ -185,12 +185,13 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
                 throw new SourceConnectorException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
-            Collection<Collaborator> rVal = new HashSet();
+            Collection<Collaborator> rVal = new HashSet<>();
 
             responseObj.getJSONArray("values").forEach(obj -> {
                 Collaborator bbc = new Collaborator();
                 JSONObject collaborator = (JSONObject) obj;
                 bbc.setName(collaborator.getString("username"));
+                bbc.setCommits(1);
                 rVal.add(bbc);
             });
 
@@ -215,7 +216,8 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
                                         ResourceContent content) throws SourceConnectorException {
-        throw new SourceConnectorException("BitBucket does not support editing a commit via the API");
+        commitToBitBucket(repositoryUrl, content.getContent(), commitMessage, false);
+        return null;
     }
 
     /**
@@ -223,7 +225,13 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
      */
     @Override
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
-        commitToGitLab(repositoryUrl, content, commitMessage, true);
+        try {
+            this.validateResourceExists(repositoryUrl);
+            throw new SourceConnectorException("Cannot create resource (already exists): " + repositoryUrl);
+        } catch (NotFoundException e) {
+            // This is what we want!
+        }
+        commitToBitBucket(repositoryUrl, content, commitMessage, true);
     }
 
     /**
@@ -233,9 +241,8 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     public Collection<BitBucketTeam> getTeams() throws BitBucketException, SourceConnectorException {
         logger.debug("Getting the BitBucket teams for current user");
 
-
         try {
-            String teamsUrl = endpoint("teams?role=member").url();
+            String teamsUrl = endpoint("/teams?role=member").url();
 
             HttpRequest request = Unirest.get(teamsUrl);
             addSecurityTo(request);
@@ -247,8 +254,9 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
                 throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
-            Collection<BitBucketTeam> rVal =  new HashSet();
+            Collection<BitBucketTeam> rVal =  new HashSet<>();
 
+            // TODO response is paged - make sure we consume and return all data!
             responseObj.getJSONArray("values").forEach(obj -> {
                 BitBucketTeam bbt = new BitBucketTeam();
                 JSONObject team = (JSONObject) obj;
@@ -268,7 +276,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
     public Collection<BitBucketRepository> getRepositories(String teamName) throws BitBucketException, SourceConnectorException {
         try {
             //@formatter:off
-            String teamsUrl = endpoint("repositories/:uname")
+            String teamsUrl = endpoint("/repositories/:uname")
                     .bind("uname", teamName)
                     .url();
             //@formatter:on;
@@ -283,8 +291,9 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
                 throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
-            Collection<BitBucketRepository> rVal =  new HashSet();
+            Collection<BitBucketRepository> rVal =  new HashSet<>();
 
+            // TODO response is paged - make sure we consume and return all data!
             responseObj.getJSONArray("values").forEach(obj -> {
                 BitBucketRepository bbr = new BitBucketRepository();
                 JSONObject rep = (JSONObject) obj;
@@ -314,47 +323,21 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
         }
     }
 
-    private BitBucketUser getUser() throws BitBucketException, SourceConnectorException {
-        try {
-            String userUrl = endpoint("user").url();
-
-            HttpRequest request = Unirest.get(userUrl);
-            addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
-
-            JSONObject responseObj = response.getBody().getObject();
-
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
-
-            BitBucketUser rVal = new BitBucketUser();
-
-            rVal.setName(responseObj.getString("username"));
-            rVal.setUuid(responseObj.getString("uuid"));
-
-            return rVal;
-
-        } catch (UnirestException e) {
-            throw new BitBucketException("Error getting BitBucket teams.", e);
-        }
-    }
-
     /**
-     * Commits new repository file content to GitLab.
+     * Commits new repository file content to BitBucket.
      * @param repositoryUrl
      * @param content
      * @param commitMessage
      * @param create
      * @throws SourceConnectorException
      */
-    private String commitToGitLab(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
+    private String commitToBitBucket(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
 
         BitBucketResource resource = BitBucketResourceResolver.resolve(repositoryUrl);
 
         try {
             //@formatter:off
-            String contentUrl = endpoint("repositories/:team/:repo/src")
+            String contentUrl = endpoint("/repositories/:team/:repo/src")
                     .bind("team", resource.getTeam())
                     .bind("repo", resource.getRepository())
                     .url();
@@ -374,12 +357,13 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
             HttpResponse<com.mashape.unirest.http.JsonNode> response = request
                     .field(resource.getResourcePath(), filesStream, resource.getResourcePath())
                     .field("message", commitMessage)
-                    .field("branch", resource.getSlug())
+                    /*.field("branch", resource.getSlug())*/ // for now, just put the content on master
                     .asJson();
             //@formatter:on
 
-            if (response.getStatus() != 201) {
-                throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
+            int responseStatus = response.getStatus();
+            if (responseStatus != 201) {
+                throw new UnirestException("Unexpected response from BitBucket: " + responseStatus + "::" + response.getStatusText());
             }
         } catch (UnirestException e) {
             throw new SourceConnectorException(e);
@@ -388,10 +372,16 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
         return null;
     }
 
-    private String getShaByResource(BitBucketResource resource) throws SourceConnectorException {
+    /**
+     * Retrieves the SHA hash for a given bitbucket resource.
+     * @param resource
+     * @throws SourceConnectorException
+     * @throws NotFoundException
+     */
+    private String getShaByResource(BitBucketResource resource) throws SourceConnectorException, NotFoundException {
         try {
             //@formatter:off
-            String contentUrl = endpoint("repositories/:team/:repo/src/:branch/:path?format=meta")
+            String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path?format=meta")
                     .bind("team", resource.getTeam())
                     .bind("repo", resource.getRepository())
                     .bind("branch", resource.getSlug())
@@ -401,19 +391,21 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
 
             HttpRequest request = Unirest.get(contentUrl);
             addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+            HttpResponse<String> response = request.asString();
 
+            // Note: as of 10/31/2017 the BitBucket API responded with a 500 error (and an error HTML page)
+            // when asking for meta-data for a resource that doesn't exist.
+            if (response.getStatus() == 404 || response.getStatus() == 500) {
+                throw new NotFoundException();
+            }
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
             }
-
-            JSONObject responseObj = response.getBody().getObject();
-            JSONObject bbc = (JSONObject) responseObj.get("commit");
-
-            return bbc.getString("hash");
-        } catch (UnirestException e) {
-            throw new SourceConnectorException(e);
-        } catch (SourceConnectorException e) {
+            
+            String responseData = response.getBody();
+            JsonNode node = mapper.reader().readTree(responseData);
+            return node.get("commit").get("hash").asText();
+        } catch (SourceConnectorException | IOException | UnirestException e) {
             throw new SourceConnectorException("Error creating BitBucket resource content.", e);
         }
     }
@@ -424,7 +416,7 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
 
         try {
             //@formatter:off
-            String contentUrl = endpoint("repositories/:team/:repo/src/:branch/:path")
+            String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path")
                     .bind("team", resource.getTeam())
                     .bind("repo", resource.getRepository())
                     .bind("branch", resource.getSlug())
@@ -434,19 +426,23 @@ public class BitBucketSourceConnector extends AbstractSourceConnector implements
 
             HttpRequest request = Unirest.get(contentUrl);
             addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+            HttpResponse<InputStream> response = request.asBinary();
 
             ResourceContent rVal = new ResourceContent();
+            
+            if (response.getStatus() == 404) {
+                throw new NotFoundException();
+            }
 
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from BitBucket: " + response.getStatus() + "::" + response.getStatusText());
             }
 
             String content = null;
-            try {
-                content = IOUtils.toString(response.getRawBody(), StandardCharsets.UTF_8);
+            try (InputStream cstream = response.getBody()) {
+                content = IOUtils.toString(cstream, StandardCharsets.UTF_8);
             } catch (IOException e) {
-                throw new SourceConnectorException("Error parsing file stream from BitBuckert");
+                throw new SourceConnectorException("Error parsing file stream from BitBucket");
             }
 
             rVal.setSha(sha);

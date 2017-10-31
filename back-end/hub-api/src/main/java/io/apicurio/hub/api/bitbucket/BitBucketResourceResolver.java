@@ -16,21 +16,40 @@
 
 package io.apicurio.hub.api.bitbucket;
 
-import io.apicurio.hub.api.gitlab.GitLabResource;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BitBucketResourceResolver {
 
-    private static Pattern pattern = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/src/([^/]+)/(.*.json)");
+    // https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json
+    private static Pattern pattern1 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/src/([^/]+)/(.*.json)");
+    // https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default
+    private static Pattern pattern2 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/src/([^/]+)/(.*.json)\\?at=([^&]+).(fileviewer=file-view-default)?");
+    // https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json
+    private static Pattern pattern3 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/raw/([^/]+)/(.*.json)");
 
     /**
      * Resolves a bitbucket URL into a resource object.  The URL must be of the proper format.
-     * @param glUrl
+     * @param url
      */
-    public static BitBucketResource resolve(String glUrl) {
-        Matcher matcher = pattern.matcher(glUrl);
+    public static BitBucketResource resolve(String url) {
+        Matcher matcher = pattern2.matcher(url);
+        if (matcher.matches()) {
+            BitBucketResource resource = new BitBucketResource();
+            String team = matcher.group(1);
+            String repo = matcher.group(2);
+            String slug = matcher.group(3);
+            String path = matcher.group(4);
+            String branch = matcher.group(5);
+            resource.setTeam(team);
+            resource.setRepository(repo);
+            resource.setBranch(branch);
+            resource.setSlug(slug);
+            resource.setResourcePath(path);
+            return resource;
+        }
+        
+        matcher = pattern1.matcher(url);
         if (matcher.matches()) {
             BitBucketResource resource = new BitBucketResource();
             String team = matcher.group(1);
@@ -43,6 +62,21 @@ public class BitBucketResourceResolver {
             resource.setResourcePath(path);
             return resource;
         }
+        
+        matcher = pattern3.matcher(url);
+        if (matcher.matches()) {
+            BitBucketResource resource = new BitBucketResource();
+            String team = matcher.group(1);
+            String repo = matcher.group(2);
+            String slug = matcher.group(3);
+            String path = matcher.group(4);
+            resource.setTeam(team);
+            resource.setRepository(repo);
+            resource.setSlug(slug);
+            resource.setResourcePath(path);
+            return resource;
+        }
+
         return null;
     }
 

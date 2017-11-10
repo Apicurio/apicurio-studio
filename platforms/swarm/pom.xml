@@ -12,6 +12,6 @@
     <name>apicurio-studio-platforms-swarm</name>
     <modules>
         <module>api</module>
-        <!-- <module>ui</module> -->
+        <module>ui</module>
     </modules>
 </project>

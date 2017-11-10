@@ -14,13 +14,13 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apicurio-studio-fe-wildfly</artifactId>
+            <artifactId>apicurio-studio-platforms-wildfly-ui</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apicurio-studio-be-hub-api</artifactId>
+            <artifactId>apicurio-studio-platforms-wildfly-api</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>

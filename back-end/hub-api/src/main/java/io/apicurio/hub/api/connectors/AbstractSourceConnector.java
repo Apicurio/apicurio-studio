@@ -97,7 +97,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             String provider = getType().alias();
 
             String externalTokenUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                    .path("/auth/realms/{realm}/broker/{provider}/token")
+                    .path("/realms/{realm}/broker/{provider}/token")
                     .build(realm, provider).toString();
             
             String token = this.security.getToken();

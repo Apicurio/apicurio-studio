@@ -3,14 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.apicurio</groupId>
-        <artifactId>apicurio-studio</artifactId>
+        <artifactId>apicurio-studio-platforms</artifactId>
         <version>0.1.11-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>apicurio-studio-distro</artifactId>
+    <artifactId>apicurio-studio-platforms-wildfly</artifactId>
     <packaging>pom</packaging>
-    <name>apicurio-studio-distro</name>
+    <name>apicurio-studio-platforms-wildfly</name>
     <modules>
-        <module>quickstart</module>
+        <module>api</module>
+        <module>ui</module>
     </modules>
 </project>

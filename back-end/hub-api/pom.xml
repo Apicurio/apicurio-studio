@@ -8,7 +8,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-be-hub-api</artifactId>
-    <packaging>war</packaging>
     <name>apicurio-studio-be-hub-api</name>
 
     <dependencies>

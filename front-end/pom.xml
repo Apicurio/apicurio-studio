@@ -12,6 +12,6 @@
   <name>apicurio-studio-fe</name>
   <modules>
     <module>app</module>
-    <module>wildfly</module>
+    <module>servlet</module>
   </modules>
 </project>

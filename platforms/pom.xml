@@ -7,10 +7,11 @@
         <version>0.1.11-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>apicurio-studio-distro</artifactId>
+    <artifactId>apicurio-studio-platforms</artifactId>
     <packaging>pom</packaging>
-    <name>apicurio-studio-distro</name>
+    <name>apicurio-studio-platforms</name>
     <modules>
-        <module>quickstart</module>
+        <module>swarm</module>
+        <module>wildfly</module>
     </modules>
 </project>

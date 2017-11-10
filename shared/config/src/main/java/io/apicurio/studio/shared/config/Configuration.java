@@ -59,6 +59,7 @@ public abstract class Configuration {
         if (rval == null) {
             rval = defaultValue;
         }
+        System.out.println("Config Property: " + envKey + "::" + sysPropKey + " = " + rval);
         return rval;
     }
 

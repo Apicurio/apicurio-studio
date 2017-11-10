@@ -57,11 +57,11 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
-        <!-- Tomcat Version -->
-        <version.tomcat>8.5.16</version.tomcat>
-
         <!-- Wildfly Version -->
         <version.wildfly>10.1.0.Final</version.wildfly>
+
+        <!-- Wildfly Swarm Version -->
+        <version.wildfly.swarm>2017.11.0</version.wildfly.swarm>
 
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>
@@ -111,11 +111,21 @@
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.1.Beta1</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
         <version.org.json>20160212</version.org.json>
         <version.org.keycloak>3.2.1.Final</version.org.keycloak>
+        <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Wildfly Swarm -->
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bom-all</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
 
             <!-- Third Party Libraries -->
             <dependency>
@@ -182,6 +192,11 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${version.com.h2database}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${version.org.postgresql}</version>
             </dependency>
             <dependency>
                 <groupId>com.mashape.unirest</groupId>
@@ -624,6 +639,7 @@
         <module>shared</module>
         <module>back-end</module>
         <module>front-end</module>
+        <module>platforms</module>
         <module>distro</module>
         <module>tools</module>
     </modules>

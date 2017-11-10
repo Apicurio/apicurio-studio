@@ -11,7 +11,7 @@
       <outputDirectory>apicurio-studio-${project.version}/standalone/deployments</outputDirectory>
       <outputFileNameMapping>apicurio-studio.war</outputFileNameMapping>
       <includes>
-        <include>*:apicurio-studio-fe-wildfly:war</include>
+        <include>*:apicurio-studio-platforms-wildfly-ui:war</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
@@ -25,7 +25,7 @@
       <outputDirectory>apicurio-studio-${project.version}/standalone/deployments</outputDirectory>
       <outputFileNameMapping>apicurio-studio-api.war</outputFileNameMapping>
       <includes>
-        <include>*:apicurio-studio-be-hub-api:war</include>
+        <include>*:apicurio-studio-platforms-wildfly-api:war</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

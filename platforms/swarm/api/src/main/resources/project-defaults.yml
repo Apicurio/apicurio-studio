@@ -1,0 +1,27 @@
+swarm:
+  port:
+    offset: 0
+  datasources:
+    data-sources:
+      ApicurioDS:
+        driver-name: h2
+        connection-url: jdbc:h2:mem:apicuriodb
+        user-name: sa
+        password: sa
+  undertow:
+    servers:
+      default-server:
+        http-listeners:
+          default:
+            proxy-address-forwarding: true
+            enable-http2: true
+apicurio:
+  kc:
+    auth:
+      rootUrl: http://localhost:8180/auth
+      realm: apicurio-local
+  hub:
+    storage:
+      jdbc:
+        type: h2
+        init: true

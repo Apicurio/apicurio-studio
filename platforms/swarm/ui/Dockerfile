@@ -31,5 +31,5 @@ ENV APICURIO_UI_HUB_API_URL=https://localhost:8443/api
 
 CMD java -jar /opt/apicurio/apicurio-studio-ui-swarm.jar \
     -Dswarm.port.offset=${APICURIO_PORT_OFFSET} \
-    -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL}
+    -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL} \
     -Dswarm.logging=${APICURIO_LOGGING_LEVEL}

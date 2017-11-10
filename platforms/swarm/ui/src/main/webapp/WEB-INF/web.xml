@@ -21,15 +21,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-<!--   <filter> -->
-<!--     <filter-name>BaseHrefFilter</filter-name> -->
-<!--     <filter-class>io.apicurio.studio.fe.servlet.filters.BaseHrefFilter</filter-class> -->
-<!--   </filter> -->
-<!--   <filter-mapping> -->
-<!--     <filter-name>BaseHrefFilter</filter-name> -->
-<!--     <url-pattern>/*</url-pattern> -->
-<!--   </filter-mapping> -->
-
   <servlet>
     <servlet-name>AngularServlet</servlet-name>
     <servlet-class>io.apicurio.studio.fe.servlet.servlets.AngularServlet</servlet-class>

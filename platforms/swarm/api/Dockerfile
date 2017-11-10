@@ -42,5 +42,5 @@ CMD java -jar /opt/apicurio/apicurio-studio-api-swarm.jar \
     -Dapicurio.hub.storage.jdbc.init=${APICURIO_DB_INITIALIZE} \
     -Dapicurio.hub.storage.jdbc.type=${APICURIO_DB_DRIVER_NAME} \
     -Dapicurio.kc.auth.rootUrl=${APICURIO_KC_AUTH_URL} \
-    -Dapicurio.kc.auth.realm=${APICURIO_KC_CLIENT_ID} \
+    -Dapicurio.kc.auth.realm=${APICURIO_KC_REALM} \
     -Dswarm.logging=${APICURIO_LOGGING_LEVEL}

@@ -14,8 +14,8 @@ ENV PROXY_ADDRESS_FORWARDING=true
 
 USER jboss
 
-COPY realm.json /tmp/apicurio-realm.json
-COPY auth-entrypoint.sh /opt/jboss/auth-entrypoint.sh
+ADD realm.json /tmp/apicurio-realm.json
+ADD auth-entrypoint.sh /opt/jboss/auth-entrypoint.sh
 COPY themes/apicurio /opt/jboss/keycloak/themes/apicurio
 
 ENV APICURIO_KEYCLOAK_USER=admin

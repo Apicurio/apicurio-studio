@@ -221,7 +221,7 @@ objects:
             persistentVolumeClaim:
               claimName: keycloak-data
         containers:
-        - image: ericwittmann/apicurio-studio-auth:latest
+        - image: apicurio/apicurio-studio-auth:latest
           imagePullPolicy: Always
           name: apicurio-studio-auth
           volumeMounts:
@@ -270,7 +270,7 @@ objects:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
-  parameters:
+parameters:
 - name: UI_ROUTE
   displayName: User Interface Route Name
   description: The route name to use for the UI.

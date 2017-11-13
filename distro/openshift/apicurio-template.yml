@@ -23,10 +23,46 @@ message: |-
          Keycloak URL: https://${AUTH_ROUTE}/auth
 
 objects:
+# Image Streams for the Apicurio components
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: api
+  spec:
+    tags:
+      - name: latest
+        from:
+          kind: DockerImage
+          name: apicurio/apicurio-studio-api
+        importPolicy:
+          scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ui
+  spec:
+    tags:
+      - name: latest
+        from:
+          kind: DockerImage
+          name: apicurio/apicurio-studio-ui
+        importPolicy:
+          scheduled: true
+# Persistent volumes: Keycloak and Postgresql
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
     name: keycloak-data
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: postgresql-data
   spec:
     accessModes:
     - ReadWriteOnce
@@ -43,6 +79,7 @@ objects:
   stringData:
     database-user: "${GENERATED_DB_USER}"
     database-password: "${GENERATED_DB_PASS}"
+# Secrets for: Keycloak and Postgresql
 - kind: Secret
   apiVersion: v1
   metadata:
@@ -73,6 +110,7 @@ objects:
     sessionAffinity: None
   status:
     loadBalancer: {}
+# Services for: Keycloak, API, UI
 - apiVersion: v1
   kind: Service
   metadata:
@@ -92,6 +130,46 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-api
+      template: apicurio-studio
+    name: apicurio-studio-api
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-studio-api
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ui
+      template: apicurio-studio
+    name: apicurio-studio-ui
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-studio-ui
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+# Postgresql Deployment Configuration
+# ###################################
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -130,7 +208,8 @@ objects:
       spec:
         volumes:
           - name: postgresql-data
-            emptyDir: {}
+            persistentVolumeClaim:
+              claimName: postgresql-data
         containers:
           - name: postgresql
             image: centos/postgresql-95-centos7
@@ -188,6 +267,8 @@ objects:
         dnsPolicy: ClusterFirst
         securityContext: {}
   status: {}
+# Keycloak Deployment Configuration
+# #################################
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -270,6 +351,141 @@ objects:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
+# Apicurio API Deployment Configuration
+# #####################################
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-api
+      template: apicurio-studio
+    name: apicurio-studio-api
+  spec:
+    replicas: 1
+    selector:
+      app: apicurio-studio-api
+      deploymentconfig: apicurio-studio-api
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: apicurio-studio-api
+          deploymentconfig: apicurio-studio-api
+          template: apicurio-studio
+      spec:
+        replicas: 1
+        containers:
+        - image: api:latest
+          imagePullPolicy: Always
+          name: apicurio-studio-api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          env:
+             - name: APICURIO_KC_AUTH_URL
+               value: https://${AUTH_ROUTE}/auth
+             - name: APICURIO_KC_REALM
+               value: ${KC_REALM}
+             - name: APICURIO_DB_DRIVER_NAME
+               value: postgresql
+             - name: APICURIO_DB_CONNECTION_URL
+               value: jdbc:postgresql://postgresql:5432/${DB_NAME}
+             - name: APICURIO_DB_TYPE
+               value: postgresql9
+             - name: APICURIO_DB_USER_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: postgresql
+                   key: database-user
+             - name: APICURIO_DB_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: postgresql
+                   key: database-password
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - apicurio-studio-api
+        from:
+          kind: ImageStreamTag
+          name: 'api:latest'
+    - type: ConfigChange
+  status: {}
+# Apicurio UI Deployment Configuration
+# ####################################
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ui
+      template: apicurio-studio
+    name: apicurio-studio-ui
+  spec:
+    replicas: 1
+    selector:
+      app: apicurio-studio-ui
+      deploymentconfig: apicurio-studio-ui
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: apicurio-studio-ui
+          deploymentconfig: apicurio-studio-ui
+          template: apicurio-studio
+      spec:
+        replicas: 1
+        containers:
+        - image: ui:latest
+          imagePullPolicy: Always
+          name: apicurio-studio-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          env:
+             - name: APICURIO_KC_AUTH_URL
+               value: https://${AUTH_ROUTE}/auth
+             - name: APICURIO_KC_REALM
+               value: ${KC_REALM}
+             - name: APICURIO_UI_HUB_API_URL
+               value: https://${API_ROUTE}
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - apicurio-studio-ui
+        from:
+          kind: ImageStreamTag
+          name: 'ui:latest'
+    - type: ConfigChange
+  status: {}
+# Template Parameters
 parameters:
 - name: UI_ROUTE
   displayName: User Interface Route Name
@@ -301,7 +517,7 @@ parameters:
 - name: DB_NAME
   displayName: Database Name
   description: The name of the Postgresql database.
-  value: ocpdb
+  value: apicuriodb
   required: true
 - name: KC_REALM
   displayName: Keycloak Realm

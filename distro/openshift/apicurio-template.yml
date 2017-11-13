@@ -351,6 +351,42 @@ objects:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
     wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-api
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-api
+      template: apicurio-studio
+  spec:
+    host: ${API_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-api
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-ui
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ui
+      template: apicurio-studio
+  spec:
+    host: ${UI_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-ui
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
 # Apicurio API Deployment Configuration
 # #####################################
 - apiVersion: v1
@@ -490,17 +526,17 @@ parameters:
 - name: UI_ROUTE
   displayName: User Interface Route Name
   description: The route name to use for the UI.
-  value: apicurio.staging.3sca.net
+  value: apicurio-studio.staging.3sca.net
   required: true
 - name: API_ROUTE
   displayName: API Route Name
   description: The route name to use for the API.
-  value: apicurio-api.staging.3sca.net
+  value: apicurio-studio-api.staging.3sca.net
   required: true
 - name: AUTH_ROUTE
   displayName: Authentication Route Name
   description: The route name to use for Keycloak Authentication.
-  value: apicurio-auth.staging.3sca.net
+  value: apicurio-studio-auth.staging.3sca.net
   required: true
 - name: GENERATED_DB_USER
   displayName: PostgreSQL Connection Username

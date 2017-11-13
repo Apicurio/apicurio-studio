@@ -324,7 +324,7 @@ objects:
                    name: apicurio-studio-auth
                    key: keycloak-password
              - name: APICURIO_UI_URL
-               value: https://${UI_ROUTE}/
+               value: https://${UI_ROUTE}
           resources: {}
           terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst

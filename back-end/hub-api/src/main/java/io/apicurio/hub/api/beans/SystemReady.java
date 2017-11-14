@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.rest;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
-import io.apicurio.hub.api.beans.SystemReady;
-import io.apicurio.hub.api.beans.SystemStatus;
+package io.apicurio.hub.api.beans;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-@Path("system")
-public interface ISystemResource {
+public class SystemReady {
 
-    @GET
-    @Path("/status")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SystemStatus getStatus();
-
-    @GET
-    @Path("/ready")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SystemReady getReady();
+    private boolean up;
     
+    /**
+     * Constructor.
+     */
+    public SystemReady() {
+    }
+
+    /**
+     * @return the up
+     */
+    public boolean isUp() {
+        return up;
+    }
+
+    /**
+     * @param up the up to set
+     */
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
 }

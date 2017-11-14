@@ -46,7 +46,6 @@ import io.apicurio.hub.api.exceptions.ServerError;
 @Path("designs")
 public interface IDesignsResource {
     
-    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ApiDesign> listDesigns() throws ServerError;

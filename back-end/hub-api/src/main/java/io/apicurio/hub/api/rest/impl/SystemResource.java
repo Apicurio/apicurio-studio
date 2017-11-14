@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.Version;
+import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -52,7 +53,10 @@ public class SystemResource implements ISystemResource {
         logger.debug("Getting system status.");
         
         SystemStatus status = new SystemStatus();
-        String user = this.security.getCurrentUser().getLogin();
+        String user = null;
+        if (this.security.getCurrentUser() != null) {
+            user = this.security.getCurrentUser().getLogin();
+        }
         try {
             status.setBuiltOn(version.getVersionDate());
             status.setDescription("The API to the Apicurio Studio Hub.");
@@ -67,6 +71,16 @@ public class SystemResource implements ISystemResource {
         }
 
         return status;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.ISystemResource#getReady()
+     */
+    @Override
+    public SystemReady getReady() {
+        SystemReady ready = new SystemReady();
+        ready.setUp(true);
+        return ready;
     }
 
 }

@@ -13,5 +13,6 @@
   <modules>
     <module>beans</module>
     <module>config</module>
+    <module>servlet</module>
   </modules>
 </project>

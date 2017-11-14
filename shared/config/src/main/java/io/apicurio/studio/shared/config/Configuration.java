@@ -16,10 +16,15 @@
 
 package io.apicurio.studio.shared.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author eric.wittmann@gmail.com
  */
 public abstract class Configuration {
+
+    private static Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     private static final String KC_AUTH_URL_ENV = "APICURIO_KC_AUTH_URL";
     private static final String KC_AUTH_URL_SYSPROP = "apicurio.kc.auth.rootUrl";
@@ -53,13 +58,14 @@ public abstract class Configuration {
      */
     protected static String getConfigurationProperty(String envKey, String sysPropKey, String defaultValue) {
         String rval = System.getenv(envKey);
-        if (rval == null) {
+        if (rval == null || rval.trim().isEmpty()) {
             rval = System.getProperty(sysPropKey);
         }
-        if (rval == null) {
+        if (rval == null || rval.trim().isEmpty()) {
             rval = defaultValue;
         }
-        System.out.println("Config Property: " + envKey + "::" + sysPropKey + " = " + rval);
+        logger.debug("Config Property: {}/{} = {}", envKey, sysPropKey, rval);
+
         return rval;
     }
 

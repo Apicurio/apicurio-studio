@@ -32,6 +32,9 @@ public class HubApiConfiguration extends Configuration {
     private static final String JDBC_INIT_ENV = "APICURIO_HUB_STORAGE_JDBC_INIT";
     private static final String JDBC_INIT_SYSPROP = "apicurio.hub.storage.jdbc.init";
 
+    private static final String KEYCLOAK_DISABLE_TRUST_MANAGER_ENV = "APICURIO_KC_DISABLE_TRUST_MANAGER";
+    private static final String KEYCLOAK_DISABLE_TRUST_MANAGER_SYSPROP = "apicurio.security.keycloak.disable-trust-manager";
+
     /**
      * @return the configured JDBC type (default: h2)
      */
@@ -44,6 +47,13 @@ public class HubApiConfiguration extends Configuration {
      */
     public boolean isJdbcInit() {
         return "true".equals(getConfigurationProperty(JDBC_INIT_ENV, JDBC_INIT_SYSPROP, "true"));
+    }
+
+    /**
+     * @return true if the trust manager should be disabled when communicating with Keycloak
+     */
+    public boolean isDisableKeycloakTrustManager() {
+        return "true".equals(getConfigurationProperty(KEYCLOAK_DISABLE_TRUST_MANAGER_ENV, KEYCLOAK_DISABLE_TRUST_MANAGER_SYSPROP, "false"));
     }
 
 }

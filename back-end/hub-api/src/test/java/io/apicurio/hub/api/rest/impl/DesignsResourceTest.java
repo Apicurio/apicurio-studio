@@ -44,6 +44,7 @@ import io.apicurio.hub.api.rest.IDesignsResource;
 import test.io.apicurio.hub.api.MockGitHubService;
 import test.io.apicurio.hub.api.MockHttpServletRequest;
 import test.io.apicurio.hub.api.MockHttpServletResponse;
+import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.TestUtil;
@@ -59,6 +60,7 @@ public class DesignsResourceTest {
     private MockSecurityContext security;
     private MockGitHubService github;
     private SourceConnectorFactory sourceConnectorFactory;
+    private MockMetrics metrics;
 
     @Before
     public void setUp() {
@@ -66,6 +68,7 @@ public class DesignsResourceTest {
 
         storage = new MockStorage();
         security = new MockSecurityContext();
+        metrics = new MockMetrics();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -74,6 +77,7 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
+        TestUtil.setPrivateField(resource, "metrics", metrics);
     }
     
     @After

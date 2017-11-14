@@ -51,6 +51,7 @@ import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.gitlab.GitLabException;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
+import io.apicurio.hub.api.metrics.IMetrics;
 import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -71,6 +72,8 @@ public class AccountsResource implements IAccountsResource {
     private ISecurityContext security;
     @Inject
     private ILinkedAccountsProvider linkedAccountsProvider;
+    @Inject
+    private IMetrics metrics;
 
     @Inject
     private IGitHubSourceConnector github;
@@ -95,6 +98,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<LinkedAccount> listLinkedAccounts() throws ServerError {
+        metrics.apiCall("/accounts", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Listing Linked Accounts for {}", user);
@@ -109,6 +114,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public InitiatedLinkedAccount createLinkedAccount(CreateLinkedAccount info) throws ServerError, AlreadyExistsException {
+        metrics.apiCall("/accounts", "POST");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Creating a linked {} account for user {}", info.getType().name(), user);
@@ -138,6 +145,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public LinkedAccount getLinkedAccount(String accountType) throws ServerError, NotFoundException {
         logger.debug("Getting a Linked Account of type {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             return this.storage.getLinkedAccount(user, LinkedAccountType.valueOf(accountType));
@@ -150,9 +159,10 @@ public class AccountsResource implements IAccountsResource {
      * @see io.apicurio.hub.api.rest.IAccountsResource#completeLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.CompleteLinkedAccount)
      */
     @Override
-    public void completeLinkedAccount(String accountType, CompleteLinkedAccount update)
-        throws ServerError, NotFoundException {
+    public void completeLinkedAccount(String accountType, CompleteLinkedAccount update) throws ServerError, NotFoundException {
         logger.debug("Completing account lingage for: {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "PUT");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             String nonce = update.getNonce();
@@ -180,6 +190,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public void deleteLinkedAccount(String accountType) throws ServerError, NotFoundException {
         logger.debug("Deleting a Linked Account of type {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "DELETE");
+
         try {
             LinkedAccountType type = LinkedAccountType.valueOf(accountType);
             String user = this.security.getCurrentUser().getLogin();
@@ -198,6 +210,7 @@ public class AccountsResource implements IAccountsResource {
      */
     private void deleteIdentityProvider(LinkedAccountType type) {
         logger.debug("Deleting identity provider from Keycloak: {}", type);
+
         try {
             this.linkedAccountsProvider.deleteLinkedAccount(type);
         } catch (IOException e) {
@@ -210,6 +223,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitHubOrganization> getOrganizations(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/organizations", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
@@ -226,6 +241,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitHubRepository> getRepositories(String accountType, String org) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/organizations/{org}/repositories", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
@@ -242,6 +259,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitLabGroup> getGroups(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/groups", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitLab) {
             throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
@@ -259,6 +278,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitLabProject> getProjects(String accountType, String group) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/groups/{group}/projects", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitLab) {
             throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
@@ -275,6 +296,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<BitbucketTeam> getTeams(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/teams", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.Bitbucket) {
             throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);
@@ -292,6 +315,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public Collection<BitbucketRepository> getBitbucketRepositories(String accountType, String group)
             throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/teams/{team}/repositories", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.Bitbucket) {
             throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);

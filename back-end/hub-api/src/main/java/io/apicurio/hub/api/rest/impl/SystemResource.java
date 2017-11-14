@@ -16,8 +16,12 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +29,13 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.hub.api.Version;
 import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
+import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.metrics.IMetrics;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
+import io.prometheus.client.exporter.common.TextFormat;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -44,6 +51,8 @@ public class SystemResource implements ISystemResource {
     private Version version;
     @Inject
     private ISecurityContext security;
+    @Inject
+    private IMetrics metrics;
 
     /**
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()
@@ -51,6 +60,8 @@ public class SystemResource implements ISystemResource {
     @Override
     public SystemStatus getStatus() {
         logger.debug("Getting system status.");
+        
+        metrics.apiCall("/system/status", "GET");
         
         SystemStatus status = new SystemStatus();
         String user = null;
@@ -81,6 +92,22 @@ public class SystemResource implements ISystemResource {
         SystemReady ready = new SystemReady();
         ready.setUp(true);
         return ready;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.ISystemResource#getMetrics()
+     */
+    @Override
+    public Response getMetrics() throws ServerError {
+        try {
+            String metricsInfo = metrics.getCurrentMetricsInfo();
+            ResponseBuilder builder = Response.ok().entity(metricsInfo)
+                    .header("Content-Type", TextFormat.CONTENT_TYPE_004)
+                    .header("Content-Length", metricsInfo.length());
+            return builder.build();
+        } catch (IOException e) {
+            throw new ServerError(e);
+        }
     }
 
 }

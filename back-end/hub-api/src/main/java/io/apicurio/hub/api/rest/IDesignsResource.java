@@ -75,7 +75,6 @@ public interface IDesignsResource {
     @DELETE
     @Path("{designId}")
     public void deleteDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
-
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)

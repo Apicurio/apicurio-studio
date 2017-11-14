@@ -20,9 +20,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
+import io.apicurio.hub.api.exceptions.ServerError;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -39,5 +41,10 @@ public interface ISystemResource {
     @Path("/ready")
     @Produces(MediaType.APPLICATION_JSON)
     public SystemReady getReady();
-    
+
+    @GET
+    @Path("/metrics")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getMetrics() throws ServerError;
+
 }

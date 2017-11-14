@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Random;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -61,6 +60,7 @@ import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.api.metrics.IMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
@@ -86,6 +86,8 @@ public class DesignsResource implements IDesignsResource {
     private SourceConnectorFactory sourceConnectorFactory;
     @Inject
     private ISecurityContext security;
+    @Inject
+    private IMetrics metrics;
 
     @Context
     private HttpServletRequest request;
@@ -97,6 +99,8 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public Collection<ApiDesign> listDesigns() throws ServerError {
+        metrics.apiCall("/designs", "GET");
+        
         try {
             logger.debug("Listing API Designs");
             String user = this.security.getCurrentUser().getLogin();
@@ -113,7 +117,8 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException, NotFoundException {
         logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
-        
+        metrics.apiCall("/designs", "PUT");
+
         try {
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
 			ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getRepositoryUrl());
@@ -154,6 +159,7 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException {
         logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
+        metrics.apiCall("/designs", "POST");
 
         // Null description not allowed
         if (info.getDescription() == null) {
@@ -211,6 +217,8 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign getDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Getting an API design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesign design = this.storage.getApiDesign(user, designId);
@@ -225,6 +233,8 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public ApiDesign updateDesign(String designId, UpdateApiDesign update) throws ServerError, NotFoundException {
+        metrics.apiCall("/designs/{designId}", "PUT");
+
         try {
             logger.debug("Updating an API Design with ID {}", designId);
             String user = this.security.getCurrentUser().getLogin();
@@ -250,8 +260,7 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Deleting an API Design with ID {}", designId);
-        
-        try { Thread.sleep(new Random(System.currentTimeMillis()).nextInt(2000)); } catch (InterruptedException e) { }
+        metrics.apiCall("/designs/{designId}", "DELETE");
         
         try {
             String user = this.security.getCurrentUser().getLogin();
@@ -267,6 +276,8 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public Collection<Collaborator> getCollaborators(String designId) throws ServerError, NotFoundException {
         logger.debug("Retrieving collaborators list for design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/collaborators", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesign design = this.storage.getApiDesign(user, designId);
@@ -285,6 +296,8 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public Response getContent(String designId) throws ServerError, NotFoundException {
         logger.debug("Getting content for API design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/content", "GET");
+
         try {
             ApiDesign design = this.getDesign(designId);
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
@@ -310,6 +323,8 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void updateContent(String designId) throws ServerError, NotFoundException {
         logger.debug("Updating content for API design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/content", "PUT");
+
         ApiDesign design = this.getDesign(designId);
 
         ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());

@@ -26,6 +26,7 @@ import org.junit.Test;
 import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.rest.IAccountsResource;
+import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.TestUtil;
@@ -39,6 +40,7 @@ public class AccountsResourceTest {
 
     private MockStorage storage;
     private MockSecurityContext security;
+    private MockMetrics metrics;
 
     @Before
     public void setUp() {
@@ -46,9 +48,11 @@ public class AccountsResourceTest {
 
         storage = new MockStorage();
         security = new MockSecurityContext();
+        metrics = new MockMetrics();
 
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "security", security);
+        TestUtil.setPrivateField(resource, "metrics", metrics);
     }
 
     @After

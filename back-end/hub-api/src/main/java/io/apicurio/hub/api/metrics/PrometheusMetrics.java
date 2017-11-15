@@ -26,7 +26,6 @@ import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;
-import io.prometheus.client.hotspot.DefaultExports;
 
 /**
  * An implementation of the metrics interface that exposes metrics to
@@ -52,7 +51,8 @@ public class PrometheusMetrics implements IMetrics {
 
     @PostConstruct
     void postConstruct() {
-        DefaultExports.initialize();
+        // The JVM metrics leak too much information!  Disable for now.
+        //DefaultExports.initialize();
     }
 
     /**

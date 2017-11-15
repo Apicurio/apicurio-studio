@@ -133,11 +133,13 @@ objects:
 - apiVersion: v1
   kind: Service
   metadata:
-    creationTimestamp: null
+    name: apicurio-studio-api
     labels:
       app: apicurio-studio-api
       template: apicurio-studio
-    name: apicurio-studio-api
+    annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/path: '/system/metrics'
   spec:
     ports:
     - port: 8080

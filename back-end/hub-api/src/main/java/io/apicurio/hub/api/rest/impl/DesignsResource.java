@@ -147,6 +147,8 @@ public class DesignsResource implements IDesignsResource {
 			    throw new ServerError(e);
 			}
 			
+            metrics.apiImport(connector.getType());
+			
 			return design;
 		} catch (SourceConnectorException e) {
 			throw new ServerError(e);
@@ -204,6 +206,8 @@ public class DesignsResource implements IDesignsResource {
             String oaiContent = mapper.writeValueAsString(doc);
             
             connector.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
+            
+            metrics.apiCreate(info.getSpecVersion());
             
             return design;
         } catch (JsonProcessingException | StorageException | SourceConnectorException | NotFoundException e) {

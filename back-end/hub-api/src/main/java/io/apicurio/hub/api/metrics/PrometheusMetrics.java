@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;
@@ -37,8 +38,18 @@ import io.prometheus.client.hotspot.DefaultExports;
 @ApplicationScoped
 public class PrometheusMetrics implements IMetrics {
     
-    static final Counter apiRequests = Counter.build().name("apicurio_api_calls_total").help("Total number of API calls made.").register();
-    
+    static final Counter apiRequests = Counter.build().labelNames("endpoint", "method")
+            .name("apicurio_api_calls_total").help("Total number of API calls made.").register();
+    static final Counter apisCreated = Counter.build().labelNames("version")
+            .name("apicurio_api_creates").help("Total number of APIs created.").register();
+    static final Counter apisImported = Counter.build().labelNames("from")
+            .name("apicurio_api_imports").help("Total number of APIs imported.").register();
+
+    static final Counter accountLinksInitiated = Counter.build().labelNames("type")
+            .name("apicurio_account_initiated").help("Total number of Linked Accounts initiated.").register();
+    static final Counter accountLinksCompleted = Counter.build().labelNames("type")
+            .name("apicurio_account_creates").help("Total number of Linked Accounts completed.").register();
+
     @PostConstruct
     void postConstruct() {
         DefaultExports.initialize();
@@ -61,7 +72,38 @@ public class PrometheusMetrics implements IMetrics {
      */
     @Override
     public void apiCall(String endpoint, String method) {
-        apiRequests.inc();
+        apiRequests.labels(endpoint, method).inc();;
     }
     
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#apiCreate(java.lang.String)
+     */
+    @Override
+    public void apiCreate(String specVersion) {
+        apisCreated.labels(specVersion).inc();
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void apiImport(LinkedAccountType from) {
+        apisImported.labels(from.name()).inc();
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void accountLinkInitiated(LinkedAccountType type) {
+        accountLinksInitiated.labels(type.name()).inc();
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void accountLinkCompleted(LinkedAccountType type) {
+        accountLinksCompleted.labels(type.name()).inc();
+    }
 }

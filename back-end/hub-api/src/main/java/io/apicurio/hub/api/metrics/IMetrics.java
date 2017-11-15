@@ -18,6 +18,8 @@ package io.apicurio.hub.api.metrics;
 
 import java.io.IOException;
 
+import io.apicurio.hub.api.beans.LinkedAccountType;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -28,6 +30,35 @@ public interface IMetrics {
      */
     public String getCurrentMetricsInfo() throws IOException;
 
+    /**
+     * Indicates an API call was made.
+     * @param endpoint
+     * @param method
+     */
     public void apiCall(String endpoint, String method);
+
+    /**
+     * Indicates that an API was created.
+     * @param specVersion
+     */
+    public void apiCreate(String specVersion);
+
+    /**
+     * Indicates that an API was imported.
+     * @param type
+     */
+    public void apiImport(LinkedAccountType from);
+
+    /**
+     * Indicates a linked account creation was initiated.
+     * @param type
+     */
+    public void accountLinkInitiated(LinkedAccountType type);
+
+    /**
+     * Indicates that a linked account was successfully created.
+     * @param type
+     */
+    public void accountLinkCompleted(LinkedAccountType type);
 
 }

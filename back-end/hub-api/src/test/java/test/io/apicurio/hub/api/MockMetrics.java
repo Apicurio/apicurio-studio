@@ -18,6 +18,7 @@ package test.io.apicurio.hub.api;
 
 import java.io.IOException;
 
+import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.metrics.IMetrics;
 
 /**
@@ -38,6 +39,34 @@ public class MockMetrics implements IMetrics {
      */
     @Override
     public void apiCall(String endpoint, String method) {
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void accountLinkCompleted(LinkedAccountType type) {
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void accountLinkInitiated(LinkedAccountType type) {
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#apiCreate(java.lang.String)
+     */
+    @Override
+    public void apiCreate(String specVersion) {
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.metrics.IMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
+     */
+    @Override
+    public void apiImport(LinkedAccountType from) {
     }
 
 }

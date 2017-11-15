@@ -133,6 +133,9 @@ public class AccountsResource implements IAccountsResource {
             // Step #2 - initiate account linking with e.g. Keycloak
             InitiatedLinkedAccount rval = linkedAccountsProvider.initiateLinkedAccount(info.getType(), info.getRedirectUrl(), nonce);
             logger.debug("Sending browser redirect URL: {}", rval.getAuthUrl());
+            
+            metrics.accountLinkInitiated(info.getType());
+            
             return rval;
         } catch (StorageException | IOException e) {
             throw new ServerError(e);
@@ -179,6 +182,8 @@ public class AccountsResource implements IAccountsResource {
             account.setNonce(null);
 
             this.storage.updateLinkedAccount(user, account);
+            
+            metrics.accountLinkCompleted(account.getType());
         } catch (StorageException | IllegalArgumentException e) {
             throw new ServerError(e);
         }

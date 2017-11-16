@@ -29,10 +29,20 @@ public class StudioUiConfiguration extends Configuration {
     private static final String HUB_API_URL_ENV = "APICURIO_UI_HUB_API_URL";
     private static final String HUB_API_URL_SYSPROP = "apicurio-ui.hub-api.url";
 
+    private static final String LOGOUT_REDIRECT_URI_ENV = "APICURIO_UI_LOGOUT_REDIRECT_URI";
+    private static final String LOGOUT_REDIRECT_URI_SYSPROP = "apicurio-ui.logout-redirect-uri";
+
     /**
      * Returns the URL of the Apicurio Hub API.
      */
     public String getHubApiUrl() {
         return getConfigurationProperty(HUB_API_URL_ENV, HUB_API_URL_SYSPROP, null);
+    }
+
+    /**
+     * Returns the URI of where to redirect after the user logs out of the application.
+     */
+    public String getLogoutRedirectUri() {
+        return getConfigurationProperty(LOGOUT_REDIRECT_URI_ENV, LOGOUT_REDIRECT_URI_SYSPROP, "/studio");
     }
 }

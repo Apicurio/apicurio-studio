@@ -17,10 +17,13 @@ package io.apicurio.studio.fe.servlet.servlets;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import io.apicurio.studio.fe.servlet.config.StudioUiConfiguration;
 
 /**
  * A simple servlet that forwards everything to /index.html.
@@ -30,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 public class KeycloakLogoutServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1095811654448544162L;
+    
+    @Inject
+    protected StudioUiConfiguration config;
 
     /**
      * Constructor.
@@ -43,7 +49,8 @@ public class KeycloakLogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.logout();
-        resp.sendRedirect("/studio");
+        String logoutRedirect = config.getLogoutRedirectUri();
+        resp.sendRedirect(logoutRedirect);
     }
 
 }

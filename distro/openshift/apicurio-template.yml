@@ -27,10 +27,22 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    name: auth
+  spec:
+    tags:
+      - name: latest-release
+        from:
+          kind: DockerImage
+          name: apicurio/apicurio-studio-auth
+        importPolicy:
+          scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     name: api
   spec:
     tags:
-      - name: latest
+      - name: latest-release
         from:
           kind: DockerImage
           name: apicurio/apicurio-studio-api
@@ -42,7 +54,7 @@ objects:
     name: ui
   spec:
     tags:
-      - name: latest
+      - name: latest-release
         from:
           kind: DockerImage
           name: apicurio/apicurio-studio-ui
@@ -304,7 +316,7 @@ objects:
             persistentVolumeClaim:
               claimName: keycloak-data
         containers:
-        - image: apicurio/apicurio-studio-auth:latest
+        - image: auth:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-auth
           volumeMounts:
@@ -354,61 +366,15 @@ objects:
         terminationGracePeriodSeconds: 30
     triggers:
     - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - apicurio-studio-auth
+        from:
+          kind: ImageStreamTag
+          name: 'auth:latest-release'
   status: {}
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: apicurio-studio-auth
-    creationTimestamp: null
-    labels:
-      app: apicurio-studio-auth
-      template: apicurio-studio
-  spec:
-    host: ${AUTH_ROUTE}
-    to:
-      kind: Service
-      name: apicurio-studio-auth
-      weight: 100
-    tls:
-      termination: edge
-      insecureEdgeTerminationPolicy: Redirect
-    wildcardPolicy: None
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: apicurio-studio-api
-    creationTimestamp: null
-    labels:
-      app: apicurio-studio-api
-      template: apicurio-studio
-  spec:
-    host: ${API_ROUTE}
-    to:
-      kind: Service
-      name: apicurio-studio-api
-      weight: 100
-    tls:
-      termination: edge
-      insecureEdgeTerminationPolicy: Redirect
-    wildcardPolicy: None
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: apicurio-studio-ui
-    creationTimestamp: null
-    labels:
-      app: apicurio-studio-ui
-      template: apicurio-studio
-  spec:
-    host: ${UI_ROUTE}
-    to:
-      kind: Service
-      name: apicurio-studio-ui
-      weight: 100
-    tls:
-      termination: edge
-      insecureEdgeTerminationPolicy: Redirect
-    wildcardPolicy: None
 # Apicurio API Deployment Configuration
 # #####################################
 - apiVersion: v1
@@ -440,7 +406,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: api:latest
+        - image: api:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-api
           ports:
@@ -500,7 +466,7 @@ objects:
           - apicurio-studio-api
         from:
           kind: ImageStreamTag
-          name: 'api:latest'
+          name: 'api:latest-release'
     - type: ConfigChange
   status: {}
 # Apicurio UI Deployment Configuration
@@ -534,7 +500,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: ui:latest
+        - image: ui:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-ui
           ports:
@@ -580,25 +546,80 @@ objects:
           - apicurio-studio-ui
         from:
           kind: ImageStreamTag
-          name: 'ui:latest'
+          name: 'ui:latest-release'
     - type: ConfigChange
   status: {}
+# The Routes: auth, api, ui (no route needed for postgresql)
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-auth
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-auth
+      template: apicurio-studio
+  spec:
+    host: ${AUTH_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-auth
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-api
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-api
+      template: apicurio-studio
+  spec:
+    host: ${API_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-api
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-ui
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ui
+      template: apicurio-studio
+  spec:
+    host: ${UI_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-ui
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
 # Template Parameters
 parameters:
 - name: UI_ROUTE
   displayName: User Interface Route Name
   description: The route name to use for the UI.
-  value: apicurio-studio.staging.3sca.net
+  value: apicurio-studio.example.com
   required: true
 - name: API_ROUTE
   displayName: API Route Name
   description: The route name to use for the API.
-  value: apicurio-studio-api.staging.3sca.net
+  value: apicurio-studio-api.example.com
   required: true
 - name: AUTH_ROUTE
   displayName: Authentication Route Name
   description: The route name to use for Keycloak Authentication.
-  value: apicurio-studio-auth.staging.3sca.net
+  value: apicurio-studio-auth.example.com
   required: true
 - name: GENERATED_DB_USER
   displayName: PostgreSQL Connection Username

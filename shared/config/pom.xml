@@ -1,13 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>io.apicurio</groupId>
-		<artifactId>apicurio-studio-shared</artifactId>
-		<version>0.1.11-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<artifactId>apicurio-studio-shared-config</artifactId>
-	<packaging>jar</packaging>
-	<name>apicurio-studio-be-shared-config</name>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apicurio</groupId>
+        <artifactId>apicurio-studio-shared</artifactId>
+        <version>0.1.11-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>apicurio-studio-shared-config</artifactId>
+    <packaging>jar</packaging>
+    <name>apicurio-studio-be-shared-config</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

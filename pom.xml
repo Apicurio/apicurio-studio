@@ -57,11 +57,11 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
-        <!-- Tomcat Version -->
-        <version.tomcat>8.5.16</version.tomcat>
-
         <!-- Wildfly Version -->
         <version.wildfly>10.1.0.Final</version.wildfly>
+
+        <!-- Wildfly Swarm Version -->
+        <version.wildfly.swarm>2017.11.0</version.wildfly.swarm>
 
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>
@@ -101,21 +101,31 @@
         <version.commons-io>2.4</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-pool>1.6</version.commons-pool>
+        <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
         <version.junit>4.11</version.junit>
         <version.org.apache.httpcomponents>4.5.3</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
-        <version.org.jboss.arquillian>1.1.13.Final</version.org.jboss.arquillian>
         <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.1.Beta1</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
         <version.org.json>20160212</version.org.json>
         <version.org.keycloak>3.2.1.Final</version.org.keycloak>
+        <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Wildfly Swarm -->
+            <dependency>
+                <groupId>org.wildfly.swarm</groupId>
+                <artifactId>bom-all</artifactId>
+                <version>${version.wildfly.swarm}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
 
             <!-- Third Party Libraries -->
             <dependency>
@@ -184,6 +194,11 @@
                 <version>${version.com.h2database}</version>
             </dependency>
             <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${version.org.postgresql}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.mashape.unirest</groupId>
                 <artifactId>unirest-java</artifactId>
                 <version>${version.com.mashape.unirest}</version>
@@ -218,6 +233,21 @@
                 <artifactId>httpclient</artifactId>
                 <version>${version.org.apache.httpcomponents}</version>
             </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>${version.io.prometheus}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_hotspot</artifactId>
+                <version>${version.io.prometheus}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_common</artifactId>
+                <version>${version.io.prometheus}</version>
+            </dependency>
 
             <!-- Spec Libraries -->
             <dependency>
@@ -241,13 +271,6 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${version.junit}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.org.jboss.arquillian}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -624,6 +647,7 @@
         <module>shared</module>
         <module>back-end</module>
         <module>front-end</module>
+        <module>platforms</module>
         <module>distro</module>
         <module>tools</module>
     </modules>

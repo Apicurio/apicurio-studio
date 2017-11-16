@@ -24,20 +24,16 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 
 import org.keycloak.common.util.Encode;
-import org.keycloak.common.util.KeycloakUriBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.config.HubApiConfiguration;
+import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
 
 /**
@@ -45,8 +41,6 @@ import io.apicurio.hub.api.security.ISecurityContext;
  * @author eric.wittmann@gmail.com
  */
 public abstract class AbstractSourceConnector implements ISourceConnector {
-
-    private static Logger logger = LoggerFactory.getLogger(AbstractSourceConnector.class);
 
     protected static final ObjectMapper mapper = new ObjectMapper();
     static {
@@ -74,6 +68,8 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     protected HubApiConfiguration config;
     @Inject
     protected ISecurityContext security;
+    @Inject
+    protected ILinkedAccountsProvider linkedAccountsProvider;
 
     /**
      * Returns the base URL for the source connector's API.
@@ -92,26 +88,14 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
      */
     protected String getExternalToken() throws SourceConnectorException {
         try {
-            String authServerRootUrl = config.getKeycloakAuthUrl();
-            String realm = config.getKeycloakRealm();
-            String provider = getType().alias();
-
-            String externalTokenUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                    .path("/auth/realms/{realm}/broker/{provider}/token")
-                    .build(realm, provider).toString();
-            
-            String token = this.security.getToken();
-            HttpRequest request = Unirest.get(externalTokenUrl).header("Accept", "application/json").header("Authorization", "Bearer " + token);
-            
-            HttpResponse<String> response = request.asString();
-            if (response.getStatus() != 200) {
-                logger.error("{CONNECTOR ERROR} Failed to access External IDP Access Token: {}", response.getBody());
-                throw new UnirestException("Unexpected response from Keycloak: " + response.getStatus() + "::" + response.getStatusText());
+            String externalAccessToken = linkedAccountsProvider.getLinkedAccountToken(getType());
+            if (externalAccessToken == null) {
+                return null;
             }
             
-            Map<String, String> data = parseExternalTokenResponse(response.getBody());
+            Map<String, String> data = parseExternalTokenResponse(externalAccessToken);
             return data.get("access_token");
-        } catch (IllegalArgumentException | UnirestException e) {
+        } catch (IOException e) {
             throw new SourceConnectorException(e);
         }
     }

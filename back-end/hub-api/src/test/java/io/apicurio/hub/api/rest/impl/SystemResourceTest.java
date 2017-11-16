@@ -22,8 +22,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.apicurio.hub.api.Version;
+import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
 import io.apicurio.hub.api.rest.ISystemResource;
+import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
 import test.io.apicurio.hub.api.TestUtil;
@@ -35,16 +37,21 @@ public class SystemResourceTest {
     
     private MockStorage storage;
     private ISystemResource resource;
+    private MockMetrics metrics;
 
     @Before
     public void setUp() {
         storage = new MockStorage();
         resource = new SystemResource();
+        metrics = new MockMetrics();
+        
         Version version = new Version();
         version.load();
+        
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "version", version);
         TestUtil.setPrivateField(resource, "security", new MockSecurityContext());
+        TestUtil.setPrivateField(resource, "metrics", metrics);
     }
     
     @After
@@ -57,6 +64,13 @@ public class SystemResourceTest {
         Assert.assertNotNull(status);
         Assert.assertEquals("Apicurio Studio Hub API", status.getName());
         Assert.assertEquals(true, status.isUp());
+    }
+
+    @Test
+    public void testReady() {
+        SystemReady ready = resource.getReady();
+        Assert.assertNotNull(ready);
+        Assert.assertEquals(true, ready.isUp());
     }
 
 }

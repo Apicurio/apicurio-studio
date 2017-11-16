@@ -16,9 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -29,16 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.common.util.Base64Url;
-import org.keycloak.common.util.KeycloakUriBuilder;
-import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
@@ -53,7 +43,6 @@ import io.apicurio.hub.api.beans.LinkedAccount;
 import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.bitbucket.BitbucketException;
 import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
-import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.exceptions.AlreadyExistsException;
 import io.apicurio.hub.api.exceptions.NotFoundException;
@@ -62,7 +51,9 @@ import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.gitlab.GitLabException;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
+import io.apicurio.hub.api.metrics.IMetrics;
 import io.apicurio.hub.api.rest.IAccountsResource;
+import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.api.storage.IStorage;
 import io.apicurio.hub.api.storage.StorageException;
@@ -80,7 +71,9 @@ public class AccountsResource implements IAccountsResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private HubApiConfiguration config;
+    private ILinkedAccountsProvider linkedAccountsProvider;
+    @Inject
+    private IMetrics metrics;
 
     @Inject
     private IGitHubSourceConnector github;
@@ -99,12 +92,14 @@ public class AccountsResource implements IAccountsResource {
      */
     public AccountsResource() {
     }
-
+    
     /**
      * @see io.apicurio.hub.api.rest.IAccountsResource#listLinkedAccounts()
      */
     @Override
     public Collection<LinkedAccount> listLinkedAccounts() throws ServerError {
+        metrics.apiCall("/accounts", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Listing Linked Accounts for {}", user);
@@ -118,8 +113,9 @@ public class AccountsResource implements IAccountsResource {
      * @see io.apicurio.hub.api.rest.IAccountsResource#createLinkedAccount(io.apicurio.hub.api.beans.CreateLinkedAccount)
      */
     @Override
-    public InitiatedLinkedAccount createLinkedAccount(CreateLinkedAccount info)
-        throws ServerError, AlreadyExistsException {
+    public InitiatedLinkedAccount createLinkedAccount(CreateLinkedAccount info) throws ServerError, AlreadyExistsException {
+        metrics.apiCall("/accounts", "POST");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Creating a linked {} account for user {}", info.getType().name(), user);
@@ -134,39 +130,14 @@ public class AccountsResource implements IAccountsResource {
 
             logger.debug("Linked Account created in DB.");
 
-            // Step #2 - initiate account linking with Keycloak
-            String redirectUri = info.getRedirectUrl();
-            String authServerRootUrl = config.getKeycloakAuthUrl();
-            String realm = config.getKeycloakRealm();
-            String provider = info.getType().alias();
-
-            KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
-            AccessToken token = session.getToken();
-
-            String clientId = token.getIssuedFor();
-            MessageDigest md = null;
-            try {
-                md = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-            String input = nonce + token.getSessionState() + clientId + provider;
-            byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            String hash = Base64Url.encode(check);
-            String accountLinkUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
-
-                .path("/auth/realms/{realm}/broker/{provider}/link").queryParam("nonce", nonce)
-                .queryParam("hash", hash).queryParam("client_id", clientId)
-                .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();
-
-            logger.debug("Account Link URL: {}", accountLinkUrl);
-
-            // Return the URL that the browser should use to initiate the account linking
-            InitiatedLinkedAccount rval = new InitiatedLinkedAccount();
-            rval.setAuthUrl(accountLinkUrl);
-            rval.setNonce(nonce);
+            // Step #2 - initiate account linking with e.g. Keycloak
+            InitiatedLinkedAccount rval = linkedAccountsProvider.initiateLinkedAccount(info.getType(), info.getRedirectUrl(), nonce);
+            logger.debug("Sending browser redirect URL: {}", rval.getAuthUrl());
+            
+            metrics.accountLinkInitiated(info.getType());
+            
             return rval;
-        } catch (StorageException e) {
+        } catch (StorageException | IOException e) {
             throw new ServerError(e);
         }
     }
@@ -177,6 +148,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public LinkedAccount getLinkedAccount(String accountType) throws ServerError, NotFoundException {
         logger.debug("Getting a Linked Account of type {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "GET");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             return this.storage.getLinkedAccount(user, LinkedAccountType.valueOf(accountType));
@@ -189,9 +162,10 @@ public class AccountsResource implements IAccountsResource {
      * @see io.apicurio.hub.api.rest.IAccountsResource#completeLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.CompleteLinkedAccount)
      */
     @Override
-    public void completeLinkedAccount(String accountType, CompleteLinkedAccount update)
-        throws ServerError, NotFoundException {
+    public void completeLinkedAccount(String accountType, CompleteLinkedAccount update) throws ServerError, NotFoundException {
         logger.debug("Completing account lingage for: {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "PUT");
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             String nonce = update.getNonce();
@@ -208,6 +182,8 @@ public class AccountsResource implements IAccountsResource {
             account.setNonce(null);
 
             this.storage.updateLinkedAccount(user, account);
+            
+            metrics.accountLinkCompleted(account.getType());
         } catch (StorageException | IllegalArgumentException e) {
             throw new ServerError(e);
         }
@@ -219,6 +195,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public void deleteLinkedAccount(String accountType) throws ServerError, NotFoundException {
         logger.debug("Deleting a Linked Account of type {}", accountType);
+        metrics.apiCall("/accounts/{accountType}", "DELETE");
+
         try {
             LinkedAccountType type = LinkedAccountType.valueOf(accountType);
             String user = this.security.getCurrentUser().getLogin();
@@ -232,37 +210,16 @@ public class AccountsResource implements IAccountsResource {
     }
 
     /**
-     * Removes the identity provider from Keycloak.
-     *
+     * Removes the linked account from the provider.
      * @param type
      */
     private void deleteIdentityProvider(LinkedAccountType type) {
         logger.debug("Deleting identity provider from Keycloak: {}", type);
+
         try {
-            KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
-
-            String authServerRootUrl = config.getKeycloakAuthUrl();
-            String realm = config.getKeycloakRealm();
-            String provider = type.alias();
-
-            session.getToken().getSessionState();
-
-            String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                .path("/auth/realms/{realm}/account/federated-identity-update")
-                .queryParam("action", "REMOVE").queryParam("provider_id", provider).build(realm)
-                .toString();
-            logger.debug("Deleting identity provider using URL: {}", url);
-
-            HttpRequest request = Unirest.get(url).header("Accept", "application/json")
-                .header("Authorization", "Bearer " + session.getTokenString());
-            HttpResponse<String> response = request.asString();
-            if (response.getStatus() != 200) {
-                logger.debug("HTTP Response Status Code when deleting identity provider: {}",
-                    response.getStatus());
-                logger.debug("HTTP Response Body when deleting identity provider: {}", response.getBody());
-            }
-        } catch (Exception e) {
-            logger.error("Error deleting identity provider from Keycloak.", e);
+            this.linkedAccountsProvider.deleteLinkedAccount(type);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -271,6 +228,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitHubOrganization> getOrganizations(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/organizations", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
@@ -287,6 +246,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitHubRepository> getRepositories(String accountType, String org) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/organizations/{org}/repositories", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitHub) {
             throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
@@ -303,6 +264,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitLabGroup> getGroups(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/groups", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitLab) {
             throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
@@ -320,6 +283,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<GitLabProject> getProjects(String accountType, String group) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/groups/{group}/projects", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitLab) {
             throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
@@ -336,6 +301,8 @@ public class AccountsResource implements IAccountsResource {
      */
     @Override
     public Collection<BitbucketTeam> getTeams(String accountType) throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/teams", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.Bitbucket) {
             throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);
@@ -353,6 +320,8 @@ public class AccountsResource implements IAccountsResource {
     @Override
     public Collection<BitbucketRepository> getBitbucketRepositories(String accountType, String group)
             throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/teams/{team}/repositories", "GET");
+
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.Bitbucket) {
             throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);

@@ -39,8 +39,6 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.bitbucket.BitbucketException;
 import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -54,7 +52,6 @@ import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -77,8 +74,6 @@ public class AccountsResource implements IAccountsResource {
     private ILinkedAccountsProvider linkedAccountsProvider;
     @Inject
     private IMetrics metrics;
-    @Inject
-    private HubConfiguration config;
 
     @Inject
     private IGitHubSourceConnector github;

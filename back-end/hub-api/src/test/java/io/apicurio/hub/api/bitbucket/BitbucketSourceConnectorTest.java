@@ -39,16 +39,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -56,7 +55,7 @@ import test.io.apicurio.hub.api.TestUtil;
 public class BitbucketSourceConnectorTest {
 
     private IBitbucketSourceConnector service;
-    private HubApiConfiguration config;
+    private HubConfiguration config;
     
     private static String basicAuth = null;
     
@@ -98,7 +97,7 @@ public class BitbucketSourceConnectorTest {
                 return BitbucketSourceConnector.TOKEN_TYPE_BASIC;
             }
         };
-        config = new HubApiConfiguration();
+        config = new HubConfiguration();
 
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);
@@ -163,15 +162,6 @@ public class BitbucketSourceConnectorTest {
         } catch (NotFoundException e) {
             // This is what we expect
         }
-    }
-
-    @Test
-    @Ignore
-    public void testGetCollaborators() throws SourceConnectorException, BitbucketException, NotFoundException, UnirestException {
-        String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
-
-        Collection<Collaborator> collaborators = service.getCollaborators(url);
-        Assert.assertNotNull(collaborators);
     }
 
     @Test

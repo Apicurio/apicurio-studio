@@ -49,8 +49,6 @@ import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockEditingSessionManager;
 import test.io.apicurio.hub.api.MockGitHubService;
-import test.io.apicurio.hub.api.MockHttpServletRequest;
-import test.io.apicurio.hub.api.MockHttpServletResponse;
 import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;

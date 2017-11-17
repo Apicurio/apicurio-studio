@@ -19,10 +19,8 @@ package io.apicurio.hub.api.connectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
 import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
-import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.gitlab.GitLabResourceResolver;

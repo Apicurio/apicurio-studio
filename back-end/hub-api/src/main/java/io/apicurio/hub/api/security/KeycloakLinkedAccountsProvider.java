@@ -45,8 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.config.HubApiConfiguration;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
  * An implementation of {@link ILinkedAccountsProvider} that used Keycloak to manage
@@ -64,7 +64,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
     @Inject
     private ISecurityContext security;
     @Inject
-    private HubApiConfiguration config;
+    private HubConfiguration config;
 
     @Inject
     private HttpServletRequest request;

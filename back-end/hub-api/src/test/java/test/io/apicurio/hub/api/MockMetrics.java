@@ -18,8 +18,8 @@ package test.io.apicurio.hub.api;
 
 import java.io.IOException;
 
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
  * @author eric.wittmann@gmail.com

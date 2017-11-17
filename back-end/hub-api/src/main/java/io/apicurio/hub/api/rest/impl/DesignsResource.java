@@ -45,11 +45,7 @@ import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.metrics.IMetrics;
-import io.apicurio.hub.api.js.OaiCommandException;
-import io.apicurio.hub.api.js.OaiCommandExecutor;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesign;
@@ -241,7 +237,7 @@ public class DesignsResource implements IDesignsResource {
             String sessionId = this.editingSessionManager.createSessionUuid(designId, user, this.security.getToken(), contentVersion);
 
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-            String ct = "application/json; charset=utf-8";
+            String ct = "application/json; charset=" + StandardCharsets.UTF_8;
             String cl = String.valueOf(bytes.length);
 
             ResponseBuilder builder = Response.ok().entity(content)
@@ -305,7 +301,7 @@ public class DesignsResource implements IDesignsResource {
             }
             String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-            String ct = "application/json; charset=utf-8";
+            String ct = "application/json; charset=" + StandardCharsets.UTF_8;
             String cl = String.valueOf(bytes.length);
             
             ResponseBuilder builder = Response.ok().entity(content)

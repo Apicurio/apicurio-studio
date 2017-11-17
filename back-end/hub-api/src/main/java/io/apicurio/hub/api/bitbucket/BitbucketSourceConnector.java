@@ -40,16 +40,15 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
-import io.apicurio.hub.api.beans.Collaborator;
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * Implementation of the Bitbucket source connector.
@@ -159,44 +158,6 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         ResourceContent content = getResourceContentFromBitbucket(resource);
 
         return content.getContent();
-    }
-
-    /**
-     * @see io.apicurio.hub.api.connectors.ISourceConnector#getCollaborators(String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
-
-        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
-
-        try {
-            String teamsUrl = endpoint("/teams/:group/members").bind("group", resource.getTeam()).url();
-
-            HttpRequest request = Unirest.get(teamsUrl);
-            addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
-
-            JSONObject responseObj = response.getBody().getObject();
-
-            if (response.getStatus() != 200) {
-                throw new SourceConnectorException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
-
-            Collection<Collaborator> rVal = new HashSet<>();
-
-            responseObj.getJSONArray("values").forEach(obj -> {
-                Collaborator bbc = new Collaborator();
-                JSONObject collaborator = (JSONObject) obj;
-                bbc.setName(collaborator.getString("username"));
-                bbc.setCommits(1);
-                rVal.add(bbc);
-            });
-
-            return  rVal;
-        } catch (UnirestException ex) {
-            throw new SourceConnectorException("Error getting collaborators from Bitbucket", ex);
-        }
     }
 
     /**

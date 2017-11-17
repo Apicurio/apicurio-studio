@@ -22,7 +22,7 @@ import java.io.StringWriter;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;

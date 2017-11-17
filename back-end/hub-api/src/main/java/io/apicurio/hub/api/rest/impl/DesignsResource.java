@@ -87,6 +87,7 @@ public class DesignsResource implements IDesignsResource {
     private ISecurityContext security;
     @Inject
     private IMetrics metrics;
+    @Inject
     private OaiCommandExecutor oaiCommandExecutor;
     @Inject
     private IEditingSessionManager editingSessionManager;

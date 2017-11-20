@@ -164,11 +164,6 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Creating an API Design: {}", info.getName());
         metrics.apiCall("/designs", "POST");
 
-        // Null description not allowed (TODO just change the DDL to allow nulls)
-        if (info.getDescription() == null) {
-            info.setDescription("");
-        }
-
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
@@ -227,9 +222,10 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public Response editDesign(String designId) throws ServerError, NotFoundException {
-    metrics.apiCall("/designs/{designId}", "PUT");
+        logger.debug("Editing an API Design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}", "PUT");
+        
         try {
-            logger.debug("Editing an API Design with ID {}", designId);
             String user = this.security.getCurrentUser().getLogin();
 
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
@@ -260,6 +256,7 @@ public class DesignsResource implements IDesignsResource {
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Deleting an API Design with ID {}", designId);
         metrics.apiCall("/designs/{designId}", "DELETE");
+        
         try {
             String user = this.security.getCurrentUser().getLogin();
             this.storage.deleteApiDesign(user, designId);

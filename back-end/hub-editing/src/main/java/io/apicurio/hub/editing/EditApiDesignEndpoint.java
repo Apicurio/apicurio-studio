@@ -82,8 +82,8 @@ public class EditApiDesignEndpoint {
     @OnOpen
     public void onOpenSession(Session session) {
         String designId = session.getPathParameters().get("designId");
-        logger.debug("WebSocket opened: " + session.getId());
-        logger.debug("\tdesignId: " + designId);
+        logger.debug("WebSocket opened: {}", session.getId());
+        logger.debug("\tdesignId: {}", designId);
 
         String queryString = session.getQueryString();
         Map<String, String> queryParams = parseQueryString(queryString);
@@ -91,13 +91,13 @@ public class EditApiDesignEndpoint {
         String userId = queryParams.get("user");
         String secret = queryParams.get("secret");
 
-        logger.debug("\tuuid:" + uuid);
-        logger.debug("\tuser:" + userId);
+        logger.debug("\tuuid: {}", uuid);
+        logger.debug("\tuser: {}", userId);
 
         try {
             long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
 
-            // Create mapping between the session ID and the user associated with it.
+            // Create mapping between the websocket session ID and the user associated with it.
             this.users.put(session.getId(), userId);
 
             // TODO find all commands since the above content version and send them to the client
@@ -135,7 +135,7 @@ public class EditApiDesignEndpoint {
     public void onMessage(Session session, JsonNode message) {
         String designId = session.getPathParameters().get("designId");
         logger.debug("Received a 'command' message from a client.");
-        logger.debug("\tdesignId:" + designId);
+        logger.debug("\tdesignId: {}", designId);
 
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
@@ -163,7 +163,7 @@ public class EditApiDesignEndpoint {
             editingSession.sendCommandToOthers(session, user, content);
             return;
         }
-        logger.error("Unknown message type: " + msgType);
+        logger.error("Unknown message type: {}", msgType);
         // TODO something went wrong if we got here - report an error of some kind
     }
 
@@ -171,8 +171,14 @@ public class EditApiDesignEndpoint {
     public void onCloseSession(Session session, CloseReason reason) {
         String designId = session.getPathParameters().get("designId");
         logger.debug("Closing a WebSocket due to " + reason.getReasonPhrase());
-        logger.debug("\tdesignId:" + designId);
+        logger.debug("\tdesignId: {}", designId);
+        
+        // Remove the mapping between user and websocket session id
+        String userId = this.users.remove(session.getId());
+        
+        logger.debug("\tuser: {}", userId);
 
+        // Call 'leave' on the concurrent editing session for this user
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         editingSession.leave(session);
         if (editingSession.isEmpty()) {

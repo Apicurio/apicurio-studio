@@ -16,12 +16,18 @@
 
 package io.apicurio.hub.api.github;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -41,17 +47,38 @@ import test.io.apicurio.hub.api.TestUtil;
  */
 public class GitHubSourceConnectorTest {
     
-    private static final String GITHUB_PAT = "";
+    private static String githubToken = null;
 
     private IGitHubSourceConnector service;
     private HubApiConfiguration config;
 
+    @BeforeClass
+    public static void globalSetUp() {
+        File credsFile = new File(".github");
+        if (!credsFile.isFile()) {
+            return;
+        }
+        System.out.println("Loading GitHub credentials from: " + credsFile.getAbsolutePath());
+        try (Reader reader = new FileReader(credsFile)) {
+            Properties props = new Properties();
+            props.load(reader);
+            githubToken = props.getProperty("pat");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     @Before
     public void setUp() {
+    	if (githubToken == null) {
+            File credsFile = new File(".github");
+            throw new RuntimeException("Missing GitHub credentials.  Expected a Java properties file with GitHub Personal Access Token 'pat' located here: " + credsFile.getAbsolutePath());
+    	}
         service = new GitHubSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
-                return GITHUB_PAT;
+                return githubToken;
             }
         };
         config = new HubApiConfiguration();
@@ -144,6 +171,15 @@ public class GitHubSourceConnectorTest {
         Collection<GitHubOrganization> organizations = service.getOrganizations();
         Assert.assertNotNull(organizations);
         Assert.assertTrue(organizations.size() > 0);
+        System.out.println("Found " + organizations.size() + " organizations!");
+        organizations.forEach( org -> {
+        	System.out.print("\t" + org.getId());
+        	if (org.isUserOrg()) {
+        		System.out.println(" ***");
+        	} else {
+        		System.out.println("");
+        	}
+        });
     }
 
     /**

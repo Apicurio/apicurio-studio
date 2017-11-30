@@ -71,13 +71,13 @@ public class GitHubSourceConnectorTest {
 
     @Before
     public void setUp() {
-    	if (githubToken == null) {
-            File credsFile = new File(".github");
-            throw new RuntimeException("Missing GitHub credentials.  Expected a Java properties file with GitHub Personal Access Token 'pat' located here: " + credsFile.getAbsolutePath());
-    	}
         service = new GitHubSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
+            	if (githubToken == null) {
+                    File credsFile = new File(".github");
+                    throw new SourceConnectorException("Missing GitHub credentials.  Expected a Java properties file with GitHub Personal Access Token 'pat' located here: " + credsFile.getAbsolutePath());
+            	}
                 return githubToken;
             }
         };

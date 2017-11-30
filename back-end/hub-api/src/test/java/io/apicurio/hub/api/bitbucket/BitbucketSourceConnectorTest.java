@@ -80,13 +80,13 @@ public class BitbucketSourceConnectorTest {
 
     @Before
     public void setUp() {
-        if (basicAuth == null) {
-            File credsFile = new File(".bitbucket");
-            throw new RuntimeException("Missing Bitbucket credentials.  Expected a Java properties file with Bitbucket 'username' and 'password' (personal or App password) located here: " + credsFile.getAbsolutePath());
-        }
         service = new BitbucketSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
+                if (basicAuth == null) {
+                    File credsFile = new File(".bitbucket");
+                    throw new SourceConnectorException("Missing Bitbucket credentials.  Expected a Java properties file with Bitbucket 'username' and 'password' (personal or App password) located here: " + credsFile.getAbsolutePath());
+                }
                 return basicAuth;
             }
 

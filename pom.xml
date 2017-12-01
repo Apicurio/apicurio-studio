@@ -90,7 +90,7 @@
         <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
 
         <!-- Dependency Versions -->
-        <version.com.fasterxml.jackson>2.5.4</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.9.2</version.com.fasterxml.jackson>
         <version.com.google.inject>4.1.0</version.com.google.inject>
         <version.com.h2database>1.3.173</version.com.h2database>
         <version.com.mashape.unirest>1.4.9</version.com.mashape.unirest>

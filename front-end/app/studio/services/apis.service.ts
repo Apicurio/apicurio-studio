@@ -18,12 +18,46 @@
 import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
-import {Api, ApiDefinition} from "../models/api.model";
+import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
 import {NewApi} from "../models/new-api.model";
 import {AddApi} from "../models/add-api.model";
+import {ICommand} from "oai-ts-commands";
 
 
+export interface IConnectionHandler {
+    onConnected(): void;
+    onDisconnected(): void;
+}
+
+export interface ICommandHandler {
+    onCommand(command: ICommand): void;
+}
+
+
+/**
+ * An interface representing an API editing session.  Whenever an API Design is opened
+ * in the designer, an editing session will be created.  This is basically a connection
+ * to the back-end, allowing commands created locally to be sent in real-time to the
+ * server for sequencing and distribution to peers.
+ */
+export interface IApiEditingSession {
+
+    connect(handler: IConnectionHandler): void;
+
+    commandHandler(handler: ICommandHandler): void;
+
+    sendCommand(command: ICommand): void;
+
+    close();
+
+}
+
+
+/**
+ * Service used to manage, list, get, create, edit APIs.  This is the meat and potatoes
+ * of the Apicurio UI.
+ */
 export interface IApisService {
 
     /**
@@ -87,18 +121,24 @@ export interface IApisService {
     getApi(apiId: string): Promise<Api>;
 
     /**
+     * Starts a new (or connects to an existing) editing session for the given API Design (by ID).
+     * @param {string} apiId
+     * @return {Promise<EditableApiDefinition>}
+     */
+    editApi(apiId: string): Promise<EditableApiDefinition>;
+
+    /**
+     * Opens an API editing session for the given Api.
+     * @param {EditableApiDefinition} api
+     * @return {ApiEditingSession}
+     */
+    openEditingSession(api: EditableApiDefinition): IApiEditingSession;
+
+    /**
      * Gets a single API definition by its ID.
      * @param apiId
      */
     getApiDefinition(apiId: string): Promise<ApiDefinition>;
-
-    /**
-     * Updates an api definition by saving a new version back to the source repository.
-     * @param definition
-     * @param saveMessage
-     * @param saveComment
-     */
-    updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition>;
 
     /**
      * Gets the list of collaborators for the API with the given id.

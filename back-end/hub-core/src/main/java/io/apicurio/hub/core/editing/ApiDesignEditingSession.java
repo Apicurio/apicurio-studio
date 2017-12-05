@@ -17,6 +17,8 @@
 package io.apicurio.hub.core.editing;
 
 import java.io.Closeable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.websocket.Session;
 
@@ -27,6 +29,7 @@ import javax.websocket.Session;
 public class ApiDesignEditingSession implements Closeable {
     
     private final String designId;
+    private final Map<String, Session> sessions = new HashMap<>();
     
     /**
      * Constructor.
@@ -37,27 +40,28 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
+     * Join the websocket session to this design editing session.
      * @param session
      */
     public void join(Session session) {
-        // TODO Auto-generated method stub
-        
+        // TODO notify other sessions that the user has joined?  or handle that elsewhere?
+        this.sessions.put(session.getId(), session);
     }
 
     /**
+     * Removes a websocket session from this design editing session.
      * @param session
      */
     public void leave(Session session) {
-        // TODO Auto-generated method stub
-        
+        // TODO notify other sessions that the user has left?  or handle that elsewhere?
+        this.sessions.remove(session.getId());
     }
 
     /**
-     * @return
+     * @return true if the editing session has no more websocket sessions
      */
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.sessions.isEmpty();
     }
 
     /**
@@ -65,8 +69,7 @@ public class ApiDesignEditingSession implements Closeable {
      */
     @Override
     public void close() {
-        // TODO Auto-generated method stub
-        
+        // TODO anything to do here?
     }
 
     /**
@@ -75,8 +78,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param content
      */
     public void sendCommandToOthers(Session session, String user, String content) {
-        // TODO Auto-generated method stub
-        
+        // TODO Send the command message to everyone *except* the session that generated it
     }
 
     /**

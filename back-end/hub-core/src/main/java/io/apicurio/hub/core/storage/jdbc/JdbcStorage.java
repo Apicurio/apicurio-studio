@@ -449,7 +449,7 @@ public class JdbcStorage implements IStorage {
     @Override
     public List<ApiDesignCommand> getContentCommands(String userId, String designId, long sinceVersion)
             throws StorageException {
-        logger.debug("Selecting the most recent api_content row of type 'document' for: {}", designId);
+        logger.debug("Selecting the content 'command' rows for API {} since content version {}", designId, sinceVersion);
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectContentCommands();

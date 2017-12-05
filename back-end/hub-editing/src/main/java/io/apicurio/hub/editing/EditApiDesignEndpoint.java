@@ -18,6 +18,7 @@ package io.apicurio.hub.editing;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +43,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 
@@ -66,7 +72,9 @@ public class EditApiDesignEndpoint {
     private IEditingSessionManager editingSessionManager;
     @Inject
     private IStorage storage;
-    
+    @Inject
+    private OaiCommandExecutor oaiCommandExecutor;
+
     private Map<String, String> users = new HashMap<>();
 
     /**
@@ -95,17 +103,37 @@ public class EditApiDesignEndpoint {
         logger.debug("\tuser: {}", userId);
 
         try {
-            long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
-
             // Create mapping between the websocket session ID and the user associated with it.
             this.users.put(session.getId(), userId);
 
-            // TODO find all commands since the above content version and send them to the client
+            long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
+
+            List<ApiDesignCommand> commands = this.storage.getContentCommands(userId, designId, contentVersion);
+            for (ApiDesignCommand command : commands) {
+                String cmdData = command.getCommand();
+
+                StringBuilder builder = new StringBuilder();
+                builder.append("{");
+                builder.append("\"contentVersion\": ");
+                builder.append(command.getContentVersion());
+                builder.append(", ");
+                builder.append("\"type\": \"command\", ");
+                builder.append("\"command\": ");                
+                builder.append(cmdData);
+                builder.append("}");
+                
+                logger.debug("Sending command to client (onOpenSession): {}", builder.toString());
+                
+                session.getBasicRemote().sendText(builder.toString());
+            }
             
+            // TODO Fix race condition:  commands might come in after the SQL SELECT above but before joining the session
+            // TODO Note: this might not matter if propery sequencing is done on the client.  Instead, join the session first and THEN query for all commands
+
             // Join the editing session (or create a new one) for the API Design
             ApiDesignEditingSession editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
             editingSession.join(session);
-        } catch (ServerError e) {
+        } catch (ServerError | StorageException | IOException e) {
             logger.error("Error validating editing session UUID for API Design ID: " + designId, e);
             try {
                 session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Error opening editing session: " + e.getMessage()));
@@ -150,16 +178,16 @@ public class EditApiDesignEndpoint {
             } catch (JsonProcessingException e) {
                 logger.error("Error writing command as string.", e);
                 // TODO do something sensible here - send a msg to the client?
-                throw new RuntimeException(e);
+                return;
             }
             try {
                 cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, content);
             } catch (StorageException e) {
                 logger.error("Error storing the command.", e);
                 // TODO do something sensible here - send a msg to the client?
-                throw new RuntimeException(e);
+                return;
             }
-            // TODO send the new content version back to the originating user (with some sort of correlation)
+            // TODO send the new content version back to the originating user (with some sort of correlation) so the command can be properly sequenced
             editingSession.sendCommandToOthers(session, user, content);
             return;
         }
@@ -170,7 +198,7 @@ public class EditApiDesignEndpoint {
     @OnClose
     public void onCloseSession(Session session, CloseReason reason) {
         String designId = session.getPathParameters().get("designId");
-        logger.debug("Closing a WebSocket due to " + reason.getReasonPhrase());
+        logger.debug("Closing a WebSocket due to: {}", reason.getReasonPhrase());
         logger.debug("\tdesignId: {}", designId);
         
         // Remove the mapping between user and websocket session id
@@ -182,8 +210,43 @@ public class EditApiDesignEndpoint {
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         editingSession.leave(session);
         if (editingSession.isEmpty()) {
+            // TODO race condition - the session may no longer be empty here!
             editingSessionManager.closeEditingSession(editingSession);
+            
+            try {
+                rollupCommands(userId, designId);
+            } catch (NotFoundException | StorageException | OaiCommandException e) {
+                logger.error("Failed to rollup commands for API with id: " + designId, "Rollup error: ", e);
+            }
+            // TODO: apply all hanging commands and insert a new content row
         }
+    }
+
+    /**
+     * Finds all commands executed since the last full content rollup and applies
+     * them to the API design.  This produces a "latest" version of the API
+     * and stores that as a new content entry in the storage.
+     * @param userId
+     * @param designId
+     * @throws StorageException 
+     * @throws NotFoundException 
+     * @throws OaiCommandException 
+     */
+    private void rollupCommands(String userId, String designId) throws NotFoundException, StorageException, OaiCommandException {
+        logger.debug("Rolling up commands for API with ID: {}", designId);
+        ApiDesignContent designContent = this.storage.getLatestContentDocument(userId, designId);
+        List<ApiDesignCommand> apiCommands = this.storage.getContentCommands(userId, designId, designContent.getContentVersion());
+        if (apiCommands.isEmpty()) {
+            logger.debug("No hanging commands found, rollup of API {} canceled.", designId);
+            return;
+        }
+        List<String> commands = new ArrayList<>(apiCommands.size());
+        for (ApiDesignCommand apiCommand : apiCommands) {
+            commands.add(apiCommand.getCommand());
+        }
+        String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+        long contentVersion = this.storage.addContent(userId, designId, ApiContentType.Document, content);
+        logger.debug("Rollup of {} commands complete with new content version: {}", commands.size(), contentVersion);
     }
 
     /**

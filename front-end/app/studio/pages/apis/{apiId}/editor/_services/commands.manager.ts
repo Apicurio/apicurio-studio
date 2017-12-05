@@ -15,52 +15,8 @@
  * limitations under the License.
  */
 
-import {OasDocument, OasLibraryUtils} from "oai-ts-core";
-import {ObjectUtils} from "../_util/object.util";
-
-/**
- * A base class for all command implementations.
- */
-export abstract class AbstractCommand {
-
-    protected static _oasLibrary: OasLibraryUtils = new OasLibraryUtils();
-
-    /**
-     * Returns true of the argument is either null or undefined.
-     * @param object
-     */
-    protected isNullOrUndefined(object: any): boolean {
-        return ObjectUtils.isNullOrUndefined(object);
-    }
-
-    /**
-     * Gets access to the static OAS library.
-     * @return {OasLibraryUtils}
-     */
-    protected oasLibrary(): OasLibraryUtils {
-        return AbstractCommand._oasLibrary;
-    }
-
-}
-
-/**
- * All editor commands must implement this interface.
- */
-export interface ICommand {
-
-    /**
-     * Called to execute the command against the given document.
-     * @param document
-     */
-    execute(document: OasDocument): void;
-
-    /**
-     * Called to undo the command (restore the document to a previous state).
-     * @param document
-     */
-    undo(document: OasDocument): void;
-
-}
+import {OasDocument} from "oai-ts-core";
+import {ICommand} from "oai-ts-commands";
 
 /**
  * A manager class used to track commands, apply them to documents, undo previous commands,
@@ -120,14 +76,6 @@ export class CommandsManager {
      */
     public isEmpty(): boolean {
         return this._commandStack.length === 0;
-    }
-
-    /**
-     * Resets the command stack.
-     */
-    public reset(): void {
-        this._commandStack = [];
-        this._undoneCommands = [];
     }
 
 }

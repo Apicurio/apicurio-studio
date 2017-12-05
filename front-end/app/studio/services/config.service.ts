@@ -25,7 +25,8 @@ let DEFAULT_CONFIG: any = {
     },
     apis: {
         type: "hub",
-        hubUrl: "http://localhost:8080/api-hub"
+        hubUrl: "http://localhost:8080/api-hub",
+        editingUrl: "http://localhost:8080/api-editing",
     }
 };
 
@@ -99,5 +100,12 @@ export class ConfigService {
             return null;
         }
         return this.config.apis.hubUrl;
+    }
+
+    public editingUrl(): string {
+        if (!this.config.apis) {
+            return null;
+        }
+        return this.config.apis.editingUrl;
     }
 }

@@ -17,7 +17,6 @@
 
 import {EventEmitter, Output, ViewChild} from "@angular/core";
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
-import {ICommand} from "../../_services/commands.manager";
 
 import "brace/theme/eclipse";
 import "brace/mode/json";
@@ -26,6 +25,7 @@ import {AceEditorDirective} from "ng2-ace-editor";
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
 import {NodeSelectionEvent} from "../../_events/node-selection.event";
+import {ICommand} from "oai-ts-commands";
 
 
 /**

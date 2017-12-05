@@ -29,7 +29,7 @@
     <filter-name>KeycloakAuthenticationFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All</web-resource-name>

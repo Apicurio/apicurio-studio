@@ -64,10 +64,9 @@ public interface IDesignsResource {
     @Path("{designId}")
     public ApiDesign getDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{designId}")
+    @Path("{designId}/session")
     public Response editDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
     @DELETE

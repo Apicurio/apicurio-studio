@@ -227,11 +227,16 @@ public class DesignsResource implements IDesignsResource {
         
         try {
             String user = this.security.getCurrentUser().getLogin();
+            logger.debug("\tUSER: {}", user);
 
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
             String content = designContent.getOaiDocument();
             long contentVersion = designContent.getContentVersion();
-            String sessionId = this.editingSessionManager.createSessionUuid(designId, user, this.security.getToken(), contentVersion);
+            String secret = this.security.getToken().substring(0, Math.min(64, this.security.getToken().length() - 1));
+            String sessionId = this.editingSessionManager.createSessionUuid(designId, user, secret, contentVersion);
+
+            logger.debug("\tCreated Session ID: {}", sessionId);
+            logger.debug("\t            Secret: {}", secret);
 
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             String ct = "application/json; charset=" + StandardCharsets.UTF_8;

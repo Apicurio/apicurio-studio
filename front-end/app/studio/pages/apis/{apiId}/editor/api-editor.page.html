@@ -6,14 +6,13 @@
         <li breadcrumb label="Editor" icon="pencil" class="active"></li>
     </breadcrumbs>
     <div class="pull-right">
-        <api-commit [disabled]="!isDirty" [saving]="isSaving" (onSave)="saveChange($event)"></api-commit>
     </div>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
-<div id="api-editor" *ngIf="!pageError" [ngSwitch]="isLoaded('def')">
+<div id="api-editor" *ngIf="!pageError" [ngSwitch]="loadingState()">
 
     <!-- "Data Loading" spinner -->
-    <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="false">
+    <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="'loading-def'">
         <div class="row row-cards-pf">
             <div class="">
                 <div class="card-pf card-pf-accented">
@@ -27,26 +26,21 @@
         </div>
     </div>
 
-    <!-- The API Editor -->
-    <api-editor #apiEditor [api]="apiDefinition" (onDirty)="onEditorDirty($event)" *ngSwitchCase="true"></api-editor>
-</div>
-
-<!-- Discard Changes Confirmation Dialog -->
-<div bsModal #discardChangesModal="bs-modal" class="modal fade" id="discardChangesModal" tabindex="-1" role="dialog"
-     aria-labelledby="discardChangesModalLabel" role="dialog" aria-hidden="true"
-     [config]="{backdrop: 'static', ignoreBackdropClick: true, keyboard: false}">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="discardChangesModalLabel">Discard Changes?</h4>
-            </div>
-            <div class="modal-body">
-                <p>You have unsaved changes, if you navigate away now you will lose them!  Navigate away and lose changes?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="allowNavigate()">Yes</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelNavigate()">No</button>
+    <!-- "Data Loading" spinner -->
+    <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="'loading-session'">
+        <div class="row row-cards-pf">
+            <div class="">
+                <div class="card-pf card-pf-accented">
+                    <div class="card-pf-heading">
+                        <h1 class="card-pf-title">
+                            <p><span class="spinner spinner-xs spinner-inline"></span> Opening an API Design editing session...</p>
+                        </h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- The API Editor -->
+    <api-editor #apiEditor [api]="apiDefinition" (onCommandExecuted)="onCommandExecuted($event)" *ngSwitchCase="'loaded'"></api-editor>
 </div>

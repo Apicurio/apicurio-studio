@@ -29,6 +29,7 @@ public class StudioConfigApis {
     
     private StudioConfigApisType type;
     private String hubUrl;
+    private String editingUrl;
     
     /**
      * Constructor.
@@ -62,6 +63,20 @@ public class StudioConfigApis {
      */
     public void setHubUrl(String hubUrl) {
         this.hubUrl = hubUrl;
+    }
+
+    /**
+     * @return the editingUrl
+     */
+    public String getEditingUrl() {
+        return editingUrl;
+    }
+
+    /**
+     * @param editingUrl the editingUrl to set
+     */
+    public void setEditingUrl(String editingUrl) {
+        this.editingUrl = editingUrl;
     }
 
 }

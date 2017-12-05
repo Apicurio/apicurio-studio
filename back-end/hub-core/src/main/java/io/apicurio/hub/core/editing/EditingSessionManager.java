@@ -103,7 +103,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     public synchronized ApiDesignEditingSession getEditingSession(String designId) {
         return editingSessions.get(designId);
     }
-    
+
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.ApiDesignEditingSession)
      */

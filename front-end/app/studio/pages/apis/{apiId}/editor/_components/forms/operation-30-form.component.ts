@@ -33,9 +33,8 @@ import {
     createDeleteOperationCommand,
     createDeleteAllResponsesCommand,
     createDeleteRequestBodyCommand,
-    SimplifiedParameterType
+    SimplifiedParameterType, ICommand
 } from "oai-ts-commands";
-import {ICommand} from "../../_services/commands.manager";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";

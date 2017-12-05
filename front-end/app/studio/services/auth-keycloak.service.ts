@@ -46,6 +46,7 @@ export class KeycloakAuthenticationService implements IAuthenticationService {
 
         console.info("Token: %s", JSON.stringify(this.keycloak.tokenParsed, null, 2));
         console.info("ID Token: %s", JSON.stringify(this.keycloak.idTokenParsed, null, 2));
+        console.info("Access Token: %s", this.keycloak.token);
 
         let user: User = new User();
         user.name = this.keycloak.tokenParsed.name;
@@ -101,6 +102,14 @@ export class KeycloakAuthenticationService implements IAuthenticationService {
     public injectAuthHeaders(headers: Headers): void {
         let authHeader: string = "bearer " + this.keycloak.token;
         headers.set("Authorization", authHeader);
+    }
+
+    /**
+     * Called to return the keycloak access token.
+     * @return {string}
+     */
+    public getAuthenticationSecret(): string {
+        return this.keycloak.token;
     }
 
 }

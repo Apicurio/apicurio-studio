@@ -32,11 +32,21 @@ public class StudioUiConfiguration extends Configuration {
     private static final String LOGOUT_REDIRECT_URI_ENV = "APICURIO_UI_LOGOUT_REDIRECT_URI";
     private static final String LOGOUT_REDIRECT_URI_SYSPROP = "apicurio-ui.logout-redirect-uri";
 
+    private static final String EDITING_URL_ENV = "APICURIO_UI_EDITING_URL";
+    private static final String EDITING_URL_SYSPROP = "apicurio-ui.editing.url";
+
     /**
      * Returns the URL of the Apicurio Hub API.
      */
     public String getHubApiUrl() {
         return getConfigurationProperty(HUB_API_URL_ENV, HUB_API_URL_SYSPROP, null);
+    }
+
+    /**
+     * Returns the URL of the Apicurio Editing API.
+     */
+    public String getEditingUrl() {
+        return getConfigurationProperty(EDITING_URL_ENV, EDITING_URL_SYSPROP, null);
     }
 
     /**

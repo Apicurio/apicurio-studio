@@ -100,12 +100,12 @@
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.4</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
-        <version.commons-pool>1.6</version.commons-pool>
         <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
         <version.junit>4.11</version.junit>
         <version.org.apache.httpcomponents>4.5.3</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
+        <version.org.apache.commons.commons-pool2>2.4.3</version.org.apache.commons.commons-pool2>
         <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
         <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>1.1.1.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
@@ -145,6 +145,11 @@
                 <version>${version.commons-cli}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${version.org.apache.commons.commons-pool2}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${version.org.json}</version>
@@ -178,11 +183,6 @@
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>${version.commons-dbcp}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-pool</groupId>
-                <artifactId>commons-pool</artifactId>
-                <version>${version.commons-pool}</version>
             </dependency>
             <dependency>
                 <groupId>commons-lang</groupId>

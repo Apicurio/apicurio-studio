@@ -18,7 +18,7 @@
 import {Component, EventEmitter, HostListener, Input, Output, ViewChild} from "@angular/core";
 import {
     Oas20Document,
-    Oas20ResponseDefinition, Oas20Schema,
+    Oas20ResponseDefinition,
     Oas20SchemaDefinition,
     Oas30Document,
     Oas30ResponseDefinition,
@@ -37,7 +37,6 @@ import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.compone
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
 import {ObjectUtils} from "../_util/object.util";
-import {ICommand} from "../_services/commands.manager";
 import {AllNodeVisitor} from "../_visitors/base.visitor";
 import {NodeSelectionEvent} from "../_events/node-selection.event";
 import {
@@ -47,7 +46,7 @@ import {
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
     createNewSchemaDefinitionCommand,
-    createDeleteOperationCommand
+    createDeleteOperationCommand, ICommand
 } from "oai-ts-commands";
 
 

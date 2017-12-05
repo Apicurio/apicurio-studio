@@ -102,6 +102,14 @@ export class TokenAuthenticationService implements IAuthenticationService {
     }
 
     /**
+     * Returns the oauth access token.
+     * @return {string}
+     */
+    public getAuthenticationSecret(): string {
+        return this.accessToken;
+    }
+
+    /**
      * Refreshes the authentication token.
      */
     protected refreshToken(): void {

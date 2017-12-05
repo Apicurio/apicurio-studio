@@ -16,8 +16,8 @@
  */
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {OasValidationError} from "oai-ts-core";
-import {ICommand} from "../../_services/commands.manager";
 import {ProblemsService} from "../../_services/problems.service";
+import {ICommand} from "oai-ts-commands";
 
 
 @Component({

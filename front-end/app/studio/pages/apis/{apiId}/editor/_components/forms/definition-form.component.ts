@@ -24,10 +24,9 @@ import {
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
     createNewSchemaPropertyCommand,
-    createReplaceSchemaDefinitionCommand,
+    createReplaceSchemaDefinitionCommand, ICommand,
     SimplifiedPropertyType
 } from "oai-ts-commands";
-import {ICommand} from "../../_services/commands.manager";
 
 import "brace/theme/eclipse";
 import "brace/mode/json";

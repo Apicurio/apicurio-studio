@@ -153,4 +153,12 @@ export class OIDCDirectGrantAuthenticationService implements IAuthenticationServ
         return obj;
     }
 
+    /**
+     * Called to return the access token.
+     * @return {string}
+     */
+    public getAuthenticationSecret(): string {
+        return this.accessToken.access_token;
+    }
+
 }

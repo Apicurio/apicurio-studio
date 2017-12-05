@@ -20,8 +20,8 @@ import {Observable} from "rxjs/Observable";
 import 'rxjs/Rx';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-import {IApisService} from "./apis.service";
-import {Api, ApiDefinition} from "../models/api.model";
+import {IApiEditingSession, IApisService, ICommandHandler, IConnectionHandler} from "./apis.service";
+import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 import {ApiCollaborator, ApiCollaborators} from "../models/api-collaborators";
@@ -30,9 +30,94 @@ import {Headers, Http, RequestOptions} from "@angular/http";
 import {NewApi} from "../models/new-api.model";
 import {AddApi} from "../models/add-api.model";
 import {AbstractHubService} from "./hub";
+import {User} from "../models/user.model";
+import {ICommand, MarshallUtils} from "oai-ts-commands";
+import {OasLibraryUtils} from "oai-ts-core";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
+
+/**
+ * An implementation of an API editing session.  Uses a Web Socket to communicate with
+ * the server.
+ */
+class ApiEditingSession implements IApiEditingSession {
+
+    private _connectionHandler: IConnectionHandler;
+    private _commandHandler: ICommandHandler;
+    private _oasLibrary: OasLibraryUtils;
+
+    /**
+     * Constructor.
+     * @param {EditableApiDefinition} api
+     * @param {WebSocket} socket
+     */
+    constructor(private api: EditableApiDefinition, private socket: WebSocket) {
+        this._oasLibrary = new OasLibraryUtils();
+    }
+
+    /**
+     * Connects the websocket to the server.
+     * @param {IConnectionHandler} handler
+     */
+    connect(handler: IConnectionHandler): void {
+        this._connectionHandler = handler;
+        this.socket.onopen = () => {
+            console.info("[ApiEditingSession] WS connection to server OPEN.");
+            this._connectionHandler.onConnected();
+        };
+        this.socket.onmessage = (msgEvent) => {
+            console.info("[ApiEditingSession] Message received from server.");
+            let msg: any = JSON.parse(msgEvent.data);
+            console.info("                    Message type: %s", msg.type);
+            console.info("                    Content Version: %o", msg.contentVersion);
+            console.info("                    Command: %o", msg.command);
+            if (msg.type === "command") {
+                // Process a 'command' style message
+                let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
+                if (this._commandHandler) {
+                    this._commandHandler.onCommand(command);
+                }
+            } else {
+                console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
+            }
+        };
+        this.socket.onclose = () => {
+            console.info("[ApiEditingSession] WS connection to server CLOSED.");
+            this._connectionHandler.onDisconnected();
+        };
+    }
+
+    /**
+     * Called to set the command handler.
+     * @param {ICommandHandler} handler
+     */
+    commandHandler(handler: ICommandHandler): void {
+        this._commandHandler = handler;
+    }
+
+    /**
+     * Called to send a command to the server.
+     * @param {ICommand} command
+     */
+    sendCommand(command: ICommand): void {
+        let data: any = {
+            type: "command",
+            command: MarshallUtils.marshallCommand(command)
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to close the connection with the server.  Should only be called
+     * when the user leaves the editor.
+     */
+    close() {
+        this.socket.close();
+    }
+}
+
 
 /**
  * An implementation of the APIs service that uses the Apicurio Studio back-end (Hub API) service
@@ -45,6 +130,7 @@ export class HubApisService extends AbstractHubService implements IApisService {
     private recentApis: Observable<Api[]> = this._recentApis.asObservable();
 
     private cachedApis: Api[] = null;
+    private _user: User;
 
     /**
      * Constructor.
@@ -59,6 +145,9 @@ export class HubApisService extends AbstractHubService implements IApisService {
         } else {
             this._recentApis.next(this.theRecentApis);
         }
+        authService.getAuthenticatedUser().subscribe( user => {
+            this._user = user;
+        });
     }
 
     /**
@@ -175,6 +264,62 @@ export class HubApisService extends AbstractHubService implements IApisService {
     }
 
     /**
+     * @see IApisService.editApi
+     */
+    public editApi(apiId: string): Promise<EditableApiDefinition> {
+        return this.getApi(apiId).then( api => {
+            let editApiUrl: string = this.endpoint("/designs/:designId/session", {
+                designId: apiId
+            });
+            let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+            console.info("[HubApisService] Editing API Design: %s", editApiUrl);
+
+            return this.http.get(editApiUrl, options).map( response => {
+                let openApiSpec: any = response.json();
+                let rheaders: Headers = response.headers;
+                let editingSessionUuid: string = rheaders.get("X-Apicurio-EditingSessionUuid");
+                let contentVersion: string = rheaders.get("X-Apicurio-ContentVersion");
+
+                console.info("[HubApisService] Editing Session UUID: %s", editingSessionUuid);
+                console.info("[HubApisService] Content Version: %s", contentVersion);
+
+                let def: EditableApiDefinition = EditableApiDefinition.fromApi(api);
+                def.spec = openApiSpec;
+                def.editingSessionUuid = editingSessionUuid;
+                def.contentVersion = parseInt(contentVersion);
+
+                return def;
+            }).toPromise();
+        }, error => {
+            // TODO handle an error here!
+        });
+    }
+
+    /**
+     * @see IApisService.openEditingSession
+     */
+    public openEditingSession(api: EditableApiDefinition): IApiEditingSession {
+        let designId: string = api.id;
+        let uuid: string = api.editingSessionUuid;
+        let user: string = this._user.login;
+        let secret: string = this.authService.getAuthenticationSecret().substr(0, 64);
+        let url = this.editingEndpoint("/designs/:designId?uuid=:uuid&user=:user&secret=:secret", {
+            designId: designId,
+            uuid: uuid,
+            user: user,
+            secret: secret
+        });
+
+        console.info("[HubApisService] Opening editing session on URL: %s", url);
+
+        let websocket: WebSocket = new WebSocket(url);
+
+        let session: ApiEditingSession = new ApiEditingSession(api, websocket);
+        return session;
+    }
+
+    /**
      * @see IApisService.getApiDefinition
      */
     public getApiDefinition(apiId: string): Promise<ApiDefinition> {
@@ -188,41 +333,11 @@ export class HubApisService extends AbstractHubService implements IApisService {
 
             return this.http.get(getContentUrl, options).map( response => {
                 let openApiSpec: any = response.json();
-                let rheaders: Headers = response.headers;
-                let sha: string = rheaders.get("X-Content-SHA");
-                console.info("Received SHA: " + sha);
                 let apiDef: ApiDefinition = ApiDefinition.fromApi(api);
                 apiDef.spec = openApiSpec;
-                apiDef.version = sha;
                 return apiDef;
             }).toPromise();
         });
-    }
-
-    /**
-     * @see IApisService.updateApiDefinition
-     */
-    public updateApiDefinition(definition: ApiDefinition, saveMessage: string, saveComment: string): Promise<ApiDefinition> {
-        console.info("[HubApisService] Updating an API definition (content): %s", definition.name);
-        console.info("[HubApisService] SHA: %s", definition.version);
-
-        let updateContentUrl: string = this.endpoint("/designs/:designId/content", {
-            designId: definition.id
-        });
-        let options: RequestOptions = this.options({
-            "Content-Type": "application/json",
-            "X-Apicurio-CommitMessage": saveMessage,
-            "X-Apicurio-CommitComment": saveComment,
-            "X-Content-SHA": definition.version
-        });
-        let body: any = definition.spec;
-
-        return this.http.put(updateContentUrl, body, options).map( response => {
-            let newSha: string = response.headers.get("X-Content-SHA");
-            console.info("[HubApisService] New SHA found: %s", newSha);
-            definition.version = newSha;
-            return definition;
-        }).toPromise();
     }
 
     /**
@@ -240,17 +355,15 @@ export class HubApisService extends AbstractHubService implements IApisService {
             let items: any[] = response.json();
             let rval: ApiCollaborators = new ApiCollaborators();
             rval.collaborators = [];
-            rval.totalChanges = 0;
+            rval.totalEdits = 0;
             items.forEach( item => {
                 let name: string = item["name"];
-                let url: string = item["url"];
-                let commits: number = item["commits"];
+                let edits: number = item["edits"];
                 let collaborator: ApiCollaborator = new ApiCollaborator();
-                collaborator.numChanges = commits;
-                collaborator.userName = name;
-                collaborator.userUrl = url;
+                collaborator.edits = edits;
+                collaborator.name = name;
                 rval.collaborators.push(collaborator);
-                rval.totalChanges += commits;
+                rval.totalEdits += edits;
             });
             return rval;
         }).toPromise();
@@ -278,9 +391,6 @@ export class HubApisService extends AbstractHubService implements IApisService {
      */
     private getRecentFromAllApis(apis: Api[]): Api[] {
         return apis.slice().sort( (api1, api2) => {
-            if (api1.modifiedOn < api2.modifiedOn) {
-                return 1;
-            }
             return -1;
         }).slice(0, 3);
     }

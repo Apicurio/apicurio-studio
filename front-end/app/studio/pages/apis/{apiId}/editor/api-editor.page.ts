@@ -16,8 +16,8 @@
  */
 
 import {
-    Component, Inject, ViewChild, Injectable, HostListener, ViewChildren, QueryList,
-    AfterViewInit
+    Component, Inject, ViewChild, Injectable, ViewChildren, QueryList,
+    AfterViewInit, NgZone
 } from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
@@ -25,7 +25,6 @@ import {IApiEditingSession, IApisService} from "../../../../services/apis.servic
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {ICommand} from "oai-ts-commands";
-import {Subject} from "rxjs/Subject";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 
@@ -55,9 +54,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Constructor.
      * @param {Router} router
      * @param {ActivatedRoute} route
+     * @param {NgZone} zone
      * @param {IApisService} apis
      */
-    constructor(private router: Router, route: ActivatedRoute,
+    constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
                 @Inject(IApisService) private apis: IApisService) {
         super(route);
         this.apiDefinition = new EditableApiDefinition();
@@ -82,16 +82,21 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             this.editingSession = this.apis.openEditingSession(def);
             this.editingSession.commandHandler({
                 onCommand: (command) => {
-                    __component.executeCommand(command);
+                    this.zone.run(() => {
+                        __component.executeCommand(command);
+                    });
                 }
             });
             this.editingSession.connect({
                 onConnected: () => {
-                    console.info("Editing session connected.  Marking 'session' as loaded.");
-                    this.loaded("session");
+                    console.info("[ApiEditorPageComponent] Editing session connected.  Marking 'session' as loaded.");
+                    this.zone.run(() => {
+                        this.loaded("session");
+                    });
                 },
                 onDisconnected: () => {
                     // TODO what to do when an unexpected disconnect event happens??
+                    console.info("[ApiEditorPageComponent] **Notice** editing session disconnected!");
                 }
             });
         }).catch(error => {

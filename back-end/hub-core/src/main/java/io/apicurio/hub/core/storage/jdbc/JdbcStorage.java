@@ -383,7 +383,7 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.insertContent();
                 CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(data), data.length());
                 Long contentVersion = handle.createUpdate(statement)
-                      .bind(0, designId)
+                      .bind(0, Long.parseLong(designId))
                       .bind(1, type.getId())
                       .bind(2, contentClob)
                       .bind(3, userId)
@@ -394,7 +394,7 @@ public class JdbcStorage implements IStorage {
                 return contentVersion;
             });
         } catch (Exception e) {
-            throw new StorageException("Error inserting API design.", e);
+            throw new StorageException("Error adding content entry for API design.", e);
         }
     }
 

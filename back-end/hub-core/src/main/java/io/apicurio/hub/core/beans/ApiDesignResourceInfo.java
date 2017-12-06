@@ -19,17 +19,52 @@ package io.apicurio.hub.core.beans;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Represents some basic information extracted from an API Design resource (the 
  * content of an API design, typically an OpenAPI document).
  * @author eric.wittmann@gmail.com
  */
 public class ApiDesignResourceInfo {
+
+    protected static final ObjectMapper jsonMapper = new ObjectMapper();
+    static {
+        jsonMapper.setSerializationInclusion(Include.NON_NULL);
+        jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    public static ApiDesignResourceInfo fromContent(String content) throws Exception {
+        String name = null;
+        String description = null;
+        
+        OpenApi3Document document = jsonMapper.reader(OpenApi3Document.class).readValue(content);
+        if (document.getInfo() != null) {
+            if (document.getInfo().getTitle() != null) {
+                name = document.getInfo().getTitle();
+            }
+            if (document.getInfo().getDescription() != null) {
+                description = document.getInfo().getDescription();
+            }
+        }
+        
+        ApiDesignResourceInfo info = new ApiDesignResourceInfo();
+        info.setName(name);
+        info.setDescription(description);
+        if (document.getTags() != null) {
+            for (Tag tag : document.getTags()) {
+                info.getTags().add(tag.getName());
+            }
+        }
+        return info;
+    }
+    
     
     private String name;
     private String description;
     private Set<String> tags = new HashSet<>();
-    private String url;
     
     /**
      * Constructor.
@@ -63,20 +98,6 @@ public class ApiDesignResourceInfo {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @return the url
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * @param url the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     /**

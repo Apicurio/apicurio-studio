@@ -43,8 +43,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -247,6 +249,32 @@ public class EditApiDesignEndpoint {
         String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
         long contentVersion = this.storage.addContent(userId, designId, ApiContentType.Document, content);
         logger.debug("Rollup of {} commands complete with new content version: {}", commands.size(), contentVersion);
+        
+        try {
+            logger.debug("Updating meta-data for API design {} if necessary.", designId);
+            ApiDesign design = this.storage.getApiDesign(userId, designId);
+            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+            boolean dirty = false;
+            if (design.getName() == null || !design.getName().equals(info.getName())) {
+                design.setName(info.getName());
+                dirty = true;
+            }
+            if (design.getDescription() == null || !design.getDescription().equals(info.getDescription())) {
+                design.setDescription(info.getDescription());
+                dirty = true;
+            }
+            if (design.getTags() == null || !design.getTags().equals(info.getTags())) {
+                design.setTags(info.getTags());
+                dirty = true;
+            }
+            if (dirty) {
+                logger.debug("API design {} meta-data changed, updating in storage.", designId);
+                this.storage.updateApiDesign(userId, design);
+            }
+        } catch (Exception e) {
+            // TODO Not the end of the world if we fail to update the API's meta-data??
+            logger.error(e.getMessage(), e);
+        }
     }
 
     /**

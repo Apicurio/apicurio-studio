@@ -16,7 +16,6 @@
 
 package io.apicurio.hub.api.github;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -54,7 +53,6 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
@@ -117,34 +115,13 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(content);
             String b64Content = (String) jsonContent.get("content");
             
-            String name = resource.getResourcePath();
-            String description = "";
-            
             content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    name = document.getInfo().getTitle();
-                }
-                if (document.getInfo().getDescription() != null) {
-                    description = document.getInfo().getDescription();
-                }
-            }
-            
-            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(name);
-            info.setDescription(description);
-            info.setUrl("https://github.com/:org/:repo/blob/master/:path"
-                    .replace(":org", resource.getOrganization())
-                    .replace(":repo", resource.getRepository())
-                    .replace(":path", resource.getResourcePath()));
-            if (document.getTags() != null) {
-                for (int idx = 0; idx < document.getTags().length; idx++) {
-                    info.getTags().add(document.getTags()[idx].getName());
-                }
+            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+            if (info.getName() == null) {
+                info.setName(resource.getResourcePath());
             }
             return info;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
         }
     }

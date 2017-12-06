@@ -91,7 +91,6 @@ public class MockGitHubService implements IGitHubSourceConnector {
             info.setName(name);
             info.setDescription(repositoryUrl);
             info.setTags(new HashSet<String>(Arrays.asList("tag1", "tag2")));
-            info.setUrl(repositoryUrl);
             return info;
         } catch (URISyntaxException e) {
             throw new NotFoundException();

@@ -58,7 +58,6 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
@@ -124,29 +123,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             }
             String content = getResourceContent(resource);
             
-            String name = resource.getResourcePath();
-            String description = "";
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    name = document.getInfo().getTitle();
-                }
-                if (document.getInfo().getDescription() != null) {
-                    description = document.getInfo().getDescription();
-                }
+            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+            if (info.getName() == null) {
+                info.setName(resource.getResourcePath());
             }
-            
-            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(name);
-            info.setDescription(description);
-            info.setUrl(this.endpoint("/:group/:project/blob/:branch/:path")
-                    .bind("group", resource.getGroup())
-                    .bind("project", resource.getProject())
-                    .bind("branch", resource.getBranch())
-                    .bind("path", resource.getResourcePath())
-                    .url());
             return info;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitLab resource exists.", e);
         }
     }

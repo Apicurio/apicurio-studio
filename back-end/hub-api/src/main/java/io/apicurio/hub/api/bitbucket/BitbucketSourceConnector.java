@@ -47,7 +47,6 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
@@ -113,34 +112,17 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
             BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
-
             if (resource == null) {
                 throw new NotFoundException();
             }
             String content = getResourceContent(resource);
 
-            String name = resource.getResourcePath();
-            String description = "";
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    name = document.getInfo().getTitle();
-                }
-                if (document.getInfo().getDescription() != null) {
-                    description = document.getInfo().getDescription();
-                }
+            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+            if (info.getName() == null) {
+                info.setName(resource.getResourcePath());
             }
-
-            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(name);
-            info.setDescription(description);
-            info.setUrl("https://bitbucket.org/:team/:repo/src/:slug/:path"
-                    .replace(":team", resource.getTeam())
-                    .replace(":repo", resource.getRepository())
-                    .replace(":slug", resource.getSlug())
-                    .replace(":path", resource.getResourcePath()));
             return info;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a Bitbucket resource exists.", e);
         }
     }

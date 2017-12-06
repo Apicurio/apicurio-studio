@@ -55,6 +55,7 @@ import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.editing.metrics.IEditingMetrics;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -76,6 +77,8 @@ public class EditApiDesignEndpoint {
     private IStorage storage;
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
+    @Inject
+    private IEditingMetrics metrics;
 
     private Map<String, String> users = new HashMap<>();
 
@@ -100,6 +103,8 @@ public class EditApiDesignEndpoint {
         String uuid = queryParams.get("uuid");
         String userId = queryParams.get("user");
         String secret = queryParams.get("secret");
+        
+        this.metrics.socketConnected(designId, userId);
 
         logger.debug("\tuuid: {}", uuid);
         logger.debug("\tuser: {}", userId);
@@ -134,8 +139,12 @@ public class EditApiDesignEndpoint {
 
             // Join the editing session (or create a new one) for the API Design
             ApiDesignEditingSession editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
+            if (editingSession.isEmpty()) {
+                this.metrics.editingSessionCreated(designId);
+            }
             editingSession.join(session);
         } catch (ServerError | StorageException | IOException e) {
+            this.users.remove(session.getId());
             logger.error("Error validating editing session UUID for API Design ID: " + designId, e);
             try {
                 session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Error opening editing session: " + e.getMessage()));
@@ -173,6 +182,8 @@ public class EditApiDesignEndpoint {
             String user = this.users.get(session.getId());
             String content;
             long cmdContentVersion;
+            
+            this.metrics.contentCommand(designId);
             
             logger.debug("\tuser:" + user);
             try {

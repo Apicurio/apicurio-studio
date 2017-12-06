@@ -9,4 +9,13 @@
     <load-on-startup>true</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>MetricsServlet</servlet-name>
+    <servlet-class>io.apicurio.hub.editing.metrics.MetricsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MetricsServlet</servlet-name>
+    <url-pattern>/metrics</url-pattern>
+  </servlet-mapping>
+
 </web-app>

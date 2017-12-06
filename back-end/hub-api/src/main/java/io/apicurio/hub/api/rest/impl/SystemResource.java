@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.api.beans.SystemReady;
 import io.apicurio.hub.api.beans.SystemStatus;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.ISystemResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.Version;
@@ -52,7 +52,7 @@ public class SystemResource implements ISystemResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private IMetrics metrics;
+    private IApiMetrics metrics;
 
     /**
      * @see io.apicurio.hub.api.rest.ISystemResource#getStatus()

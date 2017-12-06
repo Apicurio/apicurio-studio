@@ -51,6 +51,18 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    name: ws
+  spec:
+    tags:
+      - name: latest-release
+        from:
+          kind: DockerImage
+          name: apicurio/apicurio-studio-ws
+        importPolicy:
+          scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     name: ui
   spec:
     tags:
@@ -159,6 +171,27 @@ objects:
       targetPort: 8080
     selector:
       app: apicurio-studio-api
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: apicurio-studio-ws
+    labels:
+      app: apicurio-studio-ws
+      template: apicurio-studio
+    annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/path: '/metrics'
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-studio-ws
     sessionAffinity: None
     type: ClusterIP
   status:
@@ -469,6 +502,96 @@ objects:
           name: 'api:latest-release'
     - type: ConfigChange
   status: {}
+# Apicurio WS Deployment Configuration
+# #####################################
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ws
+      template: apicurio-studio
+    name: apicurio-studio-ws
+  spec:
+    replicas: 1
+    selector:
+      app: apicurio-studio-ws
+      deploymentconfig: apicurio-studio-ws
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: apicurio-studio-ws
+          deploymentconfig: apicurio-studio-ws
+          template: apicurio-studio
+      spec:
+        replicas: 1
+        containers:
+        - image: api:latest-release
+          imagePullPolicy: Always
+          name: apicurio-studio-ws
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          env:
+             - name: APICURIO_DB_DRIVER_NAME
+               value: postgresql
+             - name: APICURIO_DB_CONNECTION_URL
+               value: jdbc:postgresql://postgresql:5432/${DB_NAME}
+             - name: APICURIO_DB_TYPE
+               value: postgresql9
+             - name: APICURIO_DB_USER_NAME
+               valueFrom:
+                 secretKeyRef:
+                   name: postgresql
+                   key: database-user
+             - name: APICURIO_DB_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: postgresql
+                   key: database-password
+          resources: {}
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - apicurio-studio-ws
+        from:
+          kind: ImageStreamTag
+          name: 'ws:latest-release'
+    - type: ConfigChange
+  status: {}
 # Apicurio UI Deployment Configuration
 # ####################################
 - apiVersion: v1
@@ -513,6 +636,8 @@ objects:
                value: ${KC_REALM}
              - name: APICURIO_UI_HUB_API_URL
                value: https://${API_ROUTE}
+             - name: APICURIO_UI_EDITING_URL
+               value: wss://${WS_ROUTE}
           resources: {}
           livenessProbe:
             httpGet:
@@ -549,7 +674,7 @@ objects:
           name: 'ui:latest-release'
     - type: ConfigChange
   status: {}
-# The Routes: auth, api, ui (no route needed for postgresql)
+# The Routes: auth, api, ws, ui (no route needed for postgresql)
 - apiVersion: v1
   kind: Route
   metadata:
@@ -589,6 +714,24 @@ objects:
 - apiVersion: v1
   kind: Route
   metadata:
+    name: apicurio-studio-ws
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-ws
+      template: apicurio-studio
+  spec:
+    host: ${WS_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-ws
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
     name: apicurio-studio-ui
     creationTimestamp: null
     labels:
@@ -615,6 +758,11 @@ parameters:
   displayName: API Route Name
   description: The route name to use for the API.
   value: apicurio-studio-api.example.com
+  required: true
+- name: WS_ROUTE
+  displayName: Editing Route Name
+  description: The route name to use for editing layer (websocket based).
+  value: apicurio-studio-ws.example.com
   required: true
 - name: AUTH_ROUTE
   displayName: Authentication Route Name

@@ -46,7 +46,7 @@ import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.gitlab.GitLabException;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -73,7 +73,7 @@ public class AccountsResource implements IAccountsResource {
     @Inject
     private ILinkedAccountsProvider linkedAccountsProvider;
     @Inject
-    private IMetrics metrics;
+    private IApiMetrics metrics;
 
     @Inject
     private IGitHubSourceConnector github;

@@ -19,6 +19,8 @@ package io.apicurio.hub.editing;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServlet;
 
 import org.slf4j.Logger;
@@ -47,6 +49,16 @@ public class StartupServlet extends HttpServlet {
         logger.info("\tVersion:  " + version.getVersionString());
         logger.info("\tBuilt On: " + version.getVersionDate().toString());
         logger.info("\tBuild:    " + version.getVersionInfo());
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        logger.info("\tNashorn:  " + (engine != null));
+        boolean hasClass = false;
+        try {
+            Class<?> c = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
+            hasClass = c != null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        logger.info("\tNashorn Class:  " + hasClass);
         logger.info("------------------------------------------------");
     }
 

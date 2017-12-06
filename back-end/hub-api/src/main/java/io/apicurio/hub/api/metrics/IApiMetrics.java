@@ -21,11 +21,14 @@ import java.io.IOException;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
+ * Interface used to report metrics information for the Hub API.
  * @author eric.wittmann@gmail.com
  */
-public interface IMetrics {
+public interface IApiMetrics {
 
     /**
+     * Returns the current state of the metrics.  This information is typically presented
+     * via a REST API or servlet.
      * @return metrics information
      */
     public String getCurrentMetricsInfo() throws IOException;

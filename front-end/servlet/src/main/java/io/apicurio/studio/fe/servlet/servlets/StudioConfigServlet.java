@@ -134,7 +134,7 @@ public class StudioConfigServlet extends HttpServlet {
      */
     private String generateEditingUrl(HttpServletRequest request) {
         try {
-            String url = this.uiConfig.getHubApiUrl();
+            String url = this.uiConfig.getEditingUrl();
             if (url == null) {
                 url = request.getRequestURL().toString().replaceFirst("http", "ws");
                 url = new URI(url).resolve("/api-editing").toString();

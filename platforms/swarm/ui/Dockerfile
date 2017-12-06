@@ -19,7 +19,7 @@ USER 1001
 EXPOSE 8080
 
 
-ENV APICURIO_KC_AUTH_URL=https://auth-apistudio.rhcloud.com/auth/
+ENV APICURIO_KC_AUTH_URL=https://studio-auth.apicur.io/auth/
 ENV APICURIO_KC_REALM=apicurio
 ENV APICURIO_KC_CLIENT_ID=apicurio-studio
 ENV APICURIO_KC_SSL_REQUIRED=NONE
@@ -27,9 +27,13 @@ ENV APICURIO_KC_DISABLE_TRUST_MANAGER=true
 ENV APICURIO_PORT_OFFSET=0
 ENV APICURIO_LOGGING_LEVEL=INFO
 ENV APICURIO_UI_HUB_API_URL=https://localhost:8443/api
+ENV APICURIO_UI_EDITING_URL=https://localhost:8443/ws
 
 
 CMD java -jar /opt/apicurio/apicurio-studio-ui-swarm.jar \
     -Dswarm.port.offset=${APICURIO_PORT_OFFSET} \
     -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL} \
+    -Dapicurio-ui.editing.url=${APICURIO_UI_EDITING_URL} \
+    -Dapicurio.kc.auth.rootUrl=${APICURIO_KC_AUTH_URL} \
+    -Dapicurio.kc.auth.realm=${APICURIO_KC_REALM} \
     -Dswarm.logging=${APICURIO_LOGGING_LEVEL}

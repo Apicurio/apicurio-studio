@@ -35,7 +35,7 @@ import io.prometheus.client.exporter.common.TextFormat;
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
-public class PrometheusMetrics implements IMetrics {
+public class PrometheusApiMetrics implements IApiMetrics {
     
     static final Counter apiRequests = Counter.build().labelNames("endpoint", "method")
             .name("apicurio_api_calls_total").help("Total number of API calls made.").register();
@@ -56,7 +56,7 @@ public class PrometheusMetrics implements IMetrics {
     }
 
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#getCurrentMetricsInfo()
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#getCurrentMetricsInfo()
      */
     @Override
     public String getCurrentMetricsInfo() throws IOException {
@@ -68,7 +68,7 @@ public class PrometheusMetrics implements IMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiCall(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCall(java.lang.String, java.lang.String)
      */
     @Override
     public void apiCall(String endpoint, String method) {
@@ -76,7 +76,7 @@ public class PrometheusMetrics implements IMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiCreate(java.lang.String)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(java.lang.String)
      */
     @Override
     public void apiCreate(String specVersion) {
@@ -84,7 +84,7 @@ public class PrometheusMetrics implements IMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void apiImport(LinkedAccountType from) {
@@ -92,7 +92,7 @@ public class PrometheusMetrics implements IMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkInitiated(LinkedAccountType type) {
@@ -100,7 +100,7 @@ public class PrometheusMetrics implements IMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkCompleted(LinkedAccountType type) {

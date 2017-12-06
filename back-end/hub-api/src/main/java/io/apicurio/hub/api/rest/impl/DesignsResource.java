@@ -45,7 +45,7 @@ import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesign;
@@ -86,7 +86,7 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private IMetrics metrics;
+    private IApiMetrics metrics;
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
     @Inject

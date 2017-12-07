@@ -88,6 +88,15 @@
     <url-pattern>/ready</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>DownloadServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.DownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadServlet</servlet-name>
+    <url-pattern>/download</url-pattern>
+  </servlet-mapping>
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All</web-resource-name>
@@ -97,6 +106,7 @@
       <url-pattern>/config.js</url-pattern>
       <url-pattern>/settings/*</url-pattern>
       <url-pattern>/apis/*</url-pattern>
+      <url-pattern>/download</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>*</role-name>

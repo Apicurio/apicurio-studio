@@ -18,6 +18,7 @@ package io.apicurio.studio.fe.servlet.config;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.apicurio.studio.fe.servlet.servlets.DownloadServlet;
 import io.apicurio.studio.shared.config.Configuration;
 
 /**
@@ -28,6 +29,9 @@ public class StudioUiConfiguration extends Configuration {
 
     private static final String HUB_API_URL_ENV = "APICURIO_UI_HUB_API_URL";
     private static final String HUB_API_URL_SYSPROP = "apicurio-ui.hub-api.url";
+
+    private static final String HUB_API_DISABLE_API_TRUST_ENV = "APICURIO_UI_HUB_API_DISABLE_TRUST_MANAGER";
+    private static final String HUB_API_DISABLE_API_TRUST_SYSPROP = "apicurio-ui.hub-api.disable-trust-manager";
 
     private static final String LOGOUT_REDIRECT_URI_ENV = "APICURIO_UI_LOGOUT_REDIRECT_URI";
     private static final String LOGOUT_REDIRECT_URI_SYSPROP = "apicurio-ui.logout-redirect-uri";
@@ -54,5 +58,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public String getLogoutRedirectUri() {
         return getConfigurationProperty(LOGOUT_REDIRECT_URI_ENV, LOGOUT_REDIRECT_URI_SYSPROP, "/studio");
+    }
+
+    /**
+     * Returns true if the trust manager should be disabled when making server-server API calls
+     * to the Hub API.  This happens, for example, in the {@link DownloadServlet}.
+     */
+    public boolean isDisableHubApiTrustManager() {
+        return "true".equals(getConfigurationProperty(HUB_API_DISABLE_API_TRUST_ENV, HUB_API_DISABLE_API_TRUST_SYSPROP, "true"));
     }
 }

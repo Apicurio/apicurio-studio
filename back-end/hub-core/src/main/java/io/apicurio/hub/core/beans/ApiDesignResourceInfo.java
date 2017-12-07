@@ -40,7 +40,7 @@ public class ApiDesignResourceInfo {
         String name = null;
         String description = null;
         
-        OpenApi3Document document = jsonMapper.reader(OpenApi3Document.class).readValue(content);
+        OpenApi3Document document = jsonMapper.readerFor(OpenApi3Document.class).readValue(content);
         if (document.getInfo() != null) {
             if (document.getInfo().getTitle() != null) {
                 name = document.getInfo().getTitle();

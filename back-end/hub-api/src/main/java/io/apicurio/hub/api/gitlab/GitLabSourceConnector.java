@@ -404,7 +404,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 }
     
                 try (InputStream contentStream = response.getEntity().getContent()) {
-                    Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(contentStream);
+                    Map<String, Object> jsonContent = mapper.readerFor(Map.class).readValue(contentStream);
                     String b64Content = jsonContent.get("content").toString();
                     String content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
                     ResourceContent rval = new ResourceContent();

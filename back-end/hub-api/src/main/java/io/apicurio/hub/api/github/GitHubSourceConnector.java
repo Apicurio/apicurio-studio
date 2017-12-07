@@ -112,7 +112,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 throw new NotFoundException();
             }
             String content = getResourceContent(resource);
-            Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(content);
+            Map<String, Object> jsonContent = mapper.readerFor(Map.class).readValue(content);
             String b64Content = (String) jsonContent.get("content");
             
             content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);

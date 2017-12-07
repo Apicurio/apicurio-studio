@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
@@ -64,6 +64,7 @@ import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.core.util.FormatUtils;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -75,7 +76,6 @@ public class DesignsResource implements IDesignsResource {
     private static ObjectMapper mapper = new ObjectMapper();
     static {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
     }
 
@@ -290,7 +290,7 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String)
      */
     @Override
-    public Response getContent(String designId) throws ServerError, NotFoundException {
+    public Response getContent(String designId, String format) throws ServerError, NotFoundException {
         logger.debug("Getting content for API design with ID: {}", designId);
         metrics.apiCall("/designs/{designId}/content", "GET");
 
@@ -303,15 +303,23 @@ public class DesignsResource implements IDesignsResource {
                 commands.add(apiCommand.getCommand());
             }
             String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
-            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
             String ct = "application/json; charset=" + StandardCharsets.UTF_8;
-            String cl = String.valueOf(bytes.length);
+            String cl = null;
+            
+            // Convert to yaml if necessary
+            if ("yaml".equals(format)) {
+                content = FormatUtils.jsonToYaml(content);
+                ct = "application/x-yaml; charset=" + StandardCharsets.UTF_8;
+            }
+            
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+            cl = String.valueOf(bytes.length);
             
             ResponseBuilder builder = Response.ok().entity(content)
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (StorageException | OaiCommandException e) {
+        } catch (StorageException | OaiCommandException | IOException e) {
             throw new ServerError(e);
         }
     }

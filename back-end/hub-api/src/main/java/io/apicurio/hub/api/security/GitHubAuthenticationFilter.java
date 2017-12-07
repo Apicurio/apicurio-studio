@@ -132,7 +132,7 @@ public class GitHubAuthenticationFilter implements Filter {
                 return null;
             } else {
                 String json = userResp.getBody();
-                User user = mapper.reader(User.class).readValue(json);
+                User user = mapper.readerFor(User.class).readValue(json);
                 return user;
             }
         } catch (Exception e) {

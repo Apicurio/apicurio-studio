@@ -42,7 +42,7 @@ public class TestOpenApiDocumentIO {
 
         URL contentUrl = getClass().getResource("simple-api-3.0.json");
         String content = IOUtils.toString(contentUrl);
-        OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
+        OpenApi3Document document = mapper.readerFor(OpenApi3Document.class).readValue(content);
         Assert.assertNotNull(document);
         Assert.assertEquals(2, document.getTags().length);
     }

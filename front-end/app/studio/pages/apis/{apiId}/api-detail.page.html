@@ -43,15 +43,15 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" class="disabled" aria-disabled="true">
-                                                        <span class="fa fa-fw fa-book"></span>
-                                                        <span>Documentation</span>
+                                                    <a href="download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">
+                                                        <span class="fa fa-fw fa-download"></span>
+                                                        <span>Download (YAML)</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#" class="disabled" aria-disabled="true">
-                                                        <span class="fa fa-fw fa-check-square-o"></span>
-                                                        <span>Tests</span>
+                                                    <a href="download?type=api&format=json&id={{ api.id }}" download="{{ api.name }}.json">
+                                                        <span class="fa fa-fw fa-download"></span>
+                                                        <span>Download (JSON)</span>
                                                     </a>
                                                 </li>
                                                 <li role="separator" class="divider"></li>
@@ -84,8 +84,7 @@
                                 </div>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Design API</a>
-                                    <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">View Documentation</a>
-                                    <a href="#" class="btn btn-default pull-right disabled" aria-disabled="true">Manage Tests</a>
+                                    <a href="download?type=api&format=yaml&id={{ api.id }}" class="btn btn-default pull-right" download="{{ api.name }}.yaml"><span class="fa fa-fw fa-download"></span> Download</a>
                                 </div>
                             </div>
                         </div>

@@ -293,7 +293,7 @@ public class DesignsResourceTest {
 
         // Now ask for the content - the most recent Document should be mutated
         // by the two commands above to give a final value.
-        Response content = resource.getContent(design.getId());
+        Response content = resource.getContent(design.getId(), null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
         
@@ -312,6 +312,15 @@ public class DesignsResourceTest {
                 "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
+        
+        content = resource.getContent(design.getId(), "yaml");
+        Assert.assertNotNull(content);
+        Assert.assertEquals(new MediaType("application", "x-yaml", StandardCharsets.UTF_8.name()), content.getMediaType());
+        String actualYaml = content.getEntity().toString();
+        Assert.assertNotNull(actualYaml);
+        // TODO need a better test to assert that the content is really the expected YAML
+        Assert.assertFalse(actualYaml.charAt(0) == '{');
+        Assert.assertTrue(actualYaml.startsWith("---"));
     }
 
     /**

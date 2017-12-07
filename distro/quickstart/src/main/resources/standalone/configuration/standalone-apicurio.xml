@@ -413,7 +413,7 @@
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
             <realm name="apicurio-local">
-                <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNAqN6gTpgluPizQqEyqYyPht83XBGV0yaBBXQChIfwOG27hs4lt3utY4ynFNLZluhcss7Fbec6ZykZbQTqJmoFVBo0leD2okZj2jvFSwyQ3hXOwar01aNxEezeauz0zH+34bdr+UP5DoqdSPnwoKfEs1Mk+q1KNNqgnuJgYn0xsB4lTQKOV2uLN89y2sWKzz6LJI6z0+KcRXS2MUFIc2uUmuCitC+X7jrOAPs0G0dyeyeqkYTdJbKJ/AuMyfsCF8i3KHcsdRET8xx7JWz5y8Nh1hvIBmUtps7jHn5cGgU5kpv1Lk2xCzjcsB872A3WqJBKCyqe5DO+Kj5fyuRHMyQIDAQAB</realm-public-key>
+                <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmOxZoxTShVJt2hB8emM3OHuhqkiHThZdd6SjRaLQBwmZPb0gwCta0UjcFJv+j+B1DO/SeBzenFaVW72EDvDaoCjndW8t4PfXsVO3HHfb69DQCOx68nxrYdUIGB5xHjF5e5tas6BhaJV1kWkSvS7Sb7A6F8vKCdcDyBHHLpEEPmKj0VFfsvJu4JXQGmmcwh41re+c1xZz0eYBho8T0z/AESDrPorFq4OCwlLGoBj6/118/fm2Qs4xLIfE27FismpVtMxRwPju9k3hUijtG7a3+LYkkWOPV8KUJVz/+8d+abuRm4k4HVJL+XxCxjgJPKMGRo8Gww1uWwMCnLmw4YxgewIDAQAB</realm-public-key>
                 <auth-server-url>${apicurio.kc.auth.rootUrl}</auth-server-url>
                 <ssl-required>NONE</ssl-required>
                 <enable-cors>true</enable-cors>

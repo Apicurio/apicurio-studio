@@ -33,7 +33,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-auth
+          name: apicurio/apicurio-studio-auth:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -45,7 +45,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-api
+          name: apicurio/apicurio-studio-api:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -57,7 +57,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ws
+          name: apicurio/apicurio-studio-ws:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -69,7 +69,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ui
+          name: apicurio/apicurio-studio-ui:latest-release
         importPolicy:
           scheduled: true
 # Persistent volumes: Keycloak and Postgresql
@@ -533,7 +533,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: api:latest-release
+        - image: ws:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-ws
           ports:

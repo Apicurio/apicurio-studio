@@ -93,6 +93,7 @@ objects:
     resources:
       requests:
         storage: 1Gi
+# Secrets for: Keycloak and Postgresql
 - kind: Secret
   apiVersion: v1
   metadata:
@@ -103,7 +104,6 @@ objects:
   stringData:
     database-user: "${GENERATED_DB_USER}"
     database-password: "${GENERATED_DB_PASS}"
-# Secrets for: Keycloak and Postgresql
 - kind: Secret
   apiVersion: v1
   metadata:
@@ -114,6 +114,7 @@ objects:
   stringData:
     keycloak-user: "${GENERATED_KC_USER}"
     keycloak-password: "${GENERATED_KC_PASS}"
+# Services for: Keycloak, API, WS, UI
 - apiVersion: v1
   kind: Service
   metadata:
@@ -134,7 +135,6 @@ objects:
     sessionAffinity: None
   status:
     loadBalancer: {}
-# Services for: Keycloak, API, UI
 - apiVersion: v1
   kind: Service
   metadata:

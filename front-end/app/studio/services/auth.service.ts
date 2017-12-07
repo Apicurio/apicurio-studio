@@ -51,6 +51,12 @@ export interface IAuthenticationService {
      * @param headers
      */
     injectAuthHeaders(headers: Headers): void;
+
+    /**
+     * Called to return an authentication secret (e.g. the auth access token).
+     * @return {string}
+     */
+    getAuthenticationSecret(): string;
 }
 
 export const IAuthenticationService = new InjectionToken("IAuthenticationService");

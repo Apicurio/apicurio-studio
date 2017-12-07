@@ -31,16 +31,15 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.config.HubApiConfiguration;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
-import test.io.apicurio.hub.api.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -50,7 +49,7 @@ public class GitHubSourceConnectorTest {
     private static String githubToken = null;
 
     private IGitHubSourceConnector service;
-    private HubApiConfiguration config;
+    private HubConfiguration config;
 
     @BeforeClass
     public static void globalSetUp() {
@@ -81,7 +80,7 @@ public class GitHubSourceConnectorTest {
                 return githubToken;
             }
         };
-        config = new HubApiConfiguration();
+        config = new HubConfiguration();
         
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);
@@ -119,28 +118,6 @@ public class GitHubSourceConnectorTest {
         try {
 			info = service.validateResourceExists("https://raw.githubusercontent.com/Apicurio/api-samples/master/not-available/not-available.json");
 			Assert.fail("Expected a NotFoundException");
-		} catch (NotFoundException e) {
-		}
-    }
-
-    /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getCollaborators(String)}.
-     */
-    @Test
-    @Ignore
-    public void testGetCollaborators() throws NotFoundException, SourceConnectorException {
-        Collection<Collaborator> collaborators = service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(1, collaborators.size());
-        Collaborator collaborator = collaborators.iterator().next();
-        Assert.assertEquals(5, collaborator.getCommits());
-        Assert.assertEquals("EricWittmann", collaborator.getName());
-        Assert.assertEquals("https://github.com/EricWittmann", collaborator.getUrl());
-        
-        try {
-			service.getCollaborators("https://raw.githubusercontent.com/Apicurio/api-samples/master/not-available/not-available.json");
-			Assert.fail("Expected NotFoundException");
 		} catch (NotFoundException e) {
 		}
     }

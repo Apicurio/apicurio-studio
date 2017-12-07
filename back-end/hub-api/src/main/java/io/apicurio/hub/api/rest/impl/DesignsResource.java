@@ -16,13 +16,11 @@
 
 package io.apicurio.hub.api.rest.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,7 +30,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,28 +40,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.beans.OpenApi2Document;
-import io.apicurio.hub.api.beans.OpenApi3Document;
-import io.apicurio.hub.api.beans.OpenApiDocument;
-import io.apicurio.hub.api.beans.OpenApiInfo;
 import io.apicurio.hub.api.beans.ResourceContent;
-import io.apicurio.hub.api.beans.Tag;
-import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.api.storage.IStorage;
-import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.OpenApi2Document;
+import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.hub.core.beans.OpenApiDocument;
+import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -87,7 +86,11 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private ISecurityContext security;
     @Inject
-    private IMetrics metrics;
+    private IApiMetrics metrics;
+    @Inject
+    private OaiCommandExecutor oaiCommandExecutor;
+    @Inject
+    private IEditingSessionManager editingSessionManager;
 
     @Context
     private HttpServletRequest request;
@@ -115,13 +118,14 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#addDesign(io.apicurio.hub.api.beans.AddApiDesign)
      */
     @Override
-    public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException, NotFoundException {
+    public ApiDesign addDesign(AddApiDesign info) throws ServerError, NotFoundException {
         logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
         metrics.apiCall("/designs", "PUT");
 
         try {
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
 			ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getRepositoryUrl());
+            ResourceContent initialApiContent = connector.getResourceContent(info.getRepositoryUrl());
 			
 			Date now = new Date();
 			String user = this.security.getCurrentUser().getLogin();
@@ -133,15 +137,12 @@ public class DesignsResource implements IDesignsResource {
 			ApiDesign design = new ApiDesign();
 			design.setName(resourceInfo.getName());
             design.setDescription(description);
-			design.setRepositoryUrl(resourceInfo.getUrl());
 			design.setCreatedBy(user);
 			design.setCreatedOn(now);
-			design.setModifiedBy(user);
-			design.setModifiedOn(now);
 			design.setTags(resourceInfo.getTags());
 			
 			try {
-			    String id = this.storage.createApiDesign(user, design);
+			    String id = this.storage.createApiDesign(user, design, initialApiContent.getContent());
 			    design.setId(id);
 			} catch (StorageException e) {
 			    throw new ServerError(e);
@@ -159,40 +160,22 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#createDesign(io.apicurio.hub.api.beans.NewApiDesign)
      */
     @Override
-    public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException {
-        logger.debug("Creating an API Design: {} :: {}", info.getName(), info.getRepositoryUrl());
+    public ApiDesign createDesign(NewApiDesign info) throws ServerError {
+        logger.debug("Creating an API Design: {}", info.getName());
         metrics.apiCall("/designs", "POST");
-
-        // Null description not allowed
-        if (info.getDescription() == null) {
-            info.setDescription("");
-        }
 
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
-
-            ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
-
-            try {
-                connector.validateResourceExists(info.getRepositoryUrl());
-                throw new StorageException("Resource already exists: " + info.getRepositoryUrl());
-            } catch (NotFoundException e) {
-                // This is what we want!
-            }
-
+            
+            // The API Design meta-data
             ApiDesign design = new ApiDesign();
             design.setName(info.getName());
             design.setDescription(info.getDescription());
-            design.setRepositoryUrl(info.getRepositoryUrl());
             design.setCreatedBy(user);
             design.setCreatedOn(now);
-            design.setModifiedBy(user);
-            design.setModifiedOn(now);
-            
-            String designId = storage.createApiDesign(user, design);
-            design.setId(designId);
-            
+
+            // The API Design content (OAI document)
             OpenApiDocument doc;
             if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
                 doc = new OpenApi2Document();
@@ -204,13 +187,15 @@ public class DesignsResource implements IDesignsResource {
             doc.getInfo().setDescription(info.getDescription());
             doc.getInfo().setVersion("1.0.0");
             String oaiContent = mapper.writeValueAsString(doc);
-            
-            connector.createResourceContent(info.getRepositoryUrl(), "Initial creation of API: " + info.getName(), oaiContent);
+
+            // Create the API Design in the database
+            String designId = storage.createApiDesign(user, design, oaiContent);
+            design.setId(designId);
             
             metrics.apiCreate(info.getSpecVersion());
             
             return design;
-        } catch (JsonProcessingException | StorageException | SourceConnectorException | NotFoundException e) {
+        } catch (JsonProcessingException | StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -233,26 +218,37 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#updateDesign(java.lang.String, io.apicurio.hub.api.beans.UpdateApiDesign)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#editDesign(java.lang.String)
      */
     @Override
-    public ApiDesign updateDesign(String designId, UpdateApiDesign update) throws ServerError, NotFoundException {
+    public Response editDesign(String designId) throws ServerError, NotFoundException {
+        logger.debug("Editing an API Design with ID {}", designId);
         metrics.apiCall("/designs/{designId}", "PUT");
-
+        
         try {
-            logger.debug("Updating an API Design with ID {}", designId);
             String user = this.security.getCurrentUser().getLogin();
-            ApiDesign design = this.storage.getApiDesign(user, designId);
-            if (update.getDescription() != null) {
-                design.setDescription(update.getDescription());
-            }
-            if (update.getName() != null) {
-                design.setName(update.getName());
-            }
-            design.setModifiedBy(this.security.getCurrentUser().getLogin());
-            design.setModifiedOn(new Date());
-            this.storage.updateApiDesign(user, design);
-            return design;
+            logger.debug("\tUSER: {}", user);
+
+            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+            String content = designContent.getOaiDocument();
+            long contentVersion = designContent.getContentVersion();
+            String secret = this.security.getToken().substring(0, Math.min(64, this.security.getToken().length() - 1));
+            String sessionId = this.editingSessionManager.createSessionUuid(designId, user, secret, contentVersion);
+
+            logger.debug("\tCreated Session ID: {}", sessionId);
+            logger.debug("\t            Secret: {}", secret);
+
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+            String ct = "application/json; charset=" + StandardCharsets.UTF_8;
+            String cl = String.valueOf(bytes.length);
+
+            ResponseBuilder builder = Response.ok().entity(content)
+                    .header("X-Apicurio-EditingSessionUuid", sessionId)
+                    .header("X-Apicurio-ContentVersion", contentVersion)
+                    .header("Content-Type", ct)
+                    .header("Content-Length", cl);
+
+            return builder.build();
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -284,12 +280,8 @@ public class DesignsResource implements IDesignsResource {
 
         try {
             String user = this.security.getCurrentUser().getLogin();
-            ApiDesign design = this.storage.getApiDesign(user, designId);
-            String repoUrl = design.getRepositoryUrl();
-            
-            ISourceConnector connector = this.sourceConnectorFactory.createConnector(repoUrl);
-            return connector.getCollaborators(repoUrl);
-        } catch (StorageException | SourceConnectorException e) {
+            return this.storage.getCollaborators(user, designId);
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -303,101 +295,23 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/content", "GET");
 
         try {
-            ApiDesign design = this.getDesign(designId);
-            ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
-            ResourceContent content = connector.getResourceContent(design.getRepositoryUrl());
-            
-            byte[] bytes = content.getContent().getBytes("UTF-8");
-            String ct = "application/json; charset=utf-8";
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+            List<ApiDesignCommand> apiCommands = this.storage.getContentCommands(user, designId, designContent.getContentVersion());
+            List<String> commands = new ArrayList<>(apiCommands.size());
+            for (ApiDesignCommand apiCommand : apiCommands) {
+                commands.add(apiCommand.getCommand());
+            }
+            String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+            byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+            String ct = "application/json; charset=" + StandardCharsets.UTF_8;
             String cl = String.valueOf(bytes.length);
             
-            ResponseBuilder builder = Response.ok().entity(content.getContent())
-                    .header("X-Content-SHA", content.getSha())
+            ResponseBuilder builder = Response.ok().entity(content)
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (UnsupportedEncodingException | SourceConnectorException e) {
-            throw new ServerError(e);
-        }
-    }
-    
-    /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#updateContent(java.lang.String)
-     */
-    @Override
-    public void updateContent(String designId) throws ServerError, NotFoundException {
-        logger.debug("Updating content for API design with ID: {}", designId);
-        metrics.apiCall("/designs/{designId}/content", "PUT");
-
-        ApiDesign design = this.getDesign(designId);
-
-        ISourceConnector connector = this.sourceConnectorFactory.createConnector(design.getRepositoryUrl());
-
-        String contentType = request.getContentType();
-        if (!contentType.equals("application/json")) {
-            throw new ServerError("Unexpected content-type: " + contentType);
-        }
-        
-        String sha = request.getHeader("X-Content-SHA");
-        if (sha == null) {
-            throw new ServerError("Missing request Header: 'X-Content-SHA'");
-        }
-        
-        String commitMessage = request.getHeader("X-Apicurio-CommitMessage");
-        String commitComment = request.getHeader("X-Apicurio-CommitComment");
-        try {
-            if (commitMessage == null) {
-                commitMessage = "Updating API design: " + new URI(design.getRepositoryUrl()).getPath();
-            }
-        } catch (URISyntaxException e1) {
-            commitMessage = "Updating API design";
-        }
-        
-        String content = null;
-        try (Reader data = request.getReader()) {
-            content = IOUtils.toString(data);
-
-            ResourceContent rc = new ResourceContent();
-            rc.setContent(content);
-            rc.setSha(sha);
-            
-            String newSha = connector.updateResourceContent(design.getRepositoryUrl(), commitMessage, commitComment, rc);
-            this.response.setHeader("X-Content-SHA", newSha);
-            
-            this.updateDesignMetaData(design, content);
-            design.setModifiedBy(this.security.getCurrentUser().getLogin());
-            design.setModifiedOn(new Date());
-
-        	this.storage.updateApiDesign(this.security.getCurrentUser().getLogin(), design);
-        } catch (StorageException | SourceConnectorException | IOException e) {
-            throw new ServerError(e);
-        }
-    }
-
-    /**
-     * Parses the content and extracts the name and description.  Sets them on the
-     * given API Design object.
-     * @param design
-     * @param content
-     */
-    private void updateDesignMetaData(ApiDesign design, String content) throws ServerError {
-        try {
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    design.setName(document.getInfo().getTitle());
-                }
-                if (document.getInfo().getDescription() != null) {
-                    design.setDescription(document.getInfo().getDescription());
-                }
-            }
-            if (document.getTags() != null) {
-                Tag[] tags = document.getTags();
-                for (Tag tag : tags) {
-                    design.getTags().add(tag.getName());
-                }
-            }
-        } catch (IOException e) {
+        } catch (StorageException | OaiCommandException e) {
             throw new ServerError(e);
         }
     }

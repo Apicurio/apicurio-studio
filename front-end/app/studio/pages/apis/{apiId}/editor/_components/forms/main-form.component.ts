@@ -40,9 +40,8 @@ import {
     createNewSecuritySchemeCommand,
     createNewTagCommand,
     createDeleteContactCommand,
-    createDeleteLicenseCommand
+    createDeleteLicenseCommand, ICommand
 } from "oai-ts-commands";
-import {ICommand} from "../../_services/commands.manager";
 import {ILicense, LicenseService} from "../../_services/license.service";
 import {
     Scope,

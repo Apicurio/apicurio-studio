@@ -71,48 +71,6 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
     }
 
     /**
-     * Returns a full URL for the repository resource, for display purposes.
-     * @return {string}
-     */
-    public getResourceUrlLabel(): string {
-        if (this.api.repositoryUrl.indexOf("github.com") > 0) {
-            return "View on GitHub";
-        }
-        if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
-            return "View on GitLab";
-        }
-        if (this.api.repositoryUrl.indexOf("bitbucket.org") > 0) {
-            return "View on Bitbucket";
-        }
-        return "View Source";
-    }
-
-    /**
-     * Returns a type that can be used to e.g. display an appropriate icon.
-     * @return {string}
-     */
-    public getResourceType(): string {
-        if (this.api.repositoryUrl.indexOf("github.com") > 0) {
-            return "github";
-        }
-        if (this.api.repositoryUrl.indexOf("gitlab.com") > 0) {
-            return "gitlab";
-        }
-        if (this.api.repositoryUrl.indexOf("bitbucket.org") > 0) {
-            return "bitbucket";
-        }
-        return "code";
-    }
-
-    /**
-     * Returns a full URL for the repository resource, for link purposes.
-     * @return {string}
-     */
-    public getResourceUrlHref(): string {
-        return this.api.repositoryUrl;
-    }
-
-    /**
      * Called to delete the API from the studio (unmanage it).
      */
     public deleteApi(): void {

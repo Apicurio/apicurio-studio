@@ -98,6 +98,7 @@ public class StudioConfigServlet extends HttpServlet {
             config.setApis(new StudioConfigApis());
             config.getApis().setType(StudioConfigApisType.hub);
             config.getApis().setHubUrl(generateHubApiUrl(request));
+            config.getApis().setEditingUrl(generateEditingUrl(request));
             
             config.setUser(user);
             
@@ -120,6 +121,23 @@ public class StudioConfigServlet extends HttpServlet {
             if (url == null) {
                 url = request.getRequestURL().toString();
                 url = new URI(url).resolve("/api-hub").toString();
+            }
+            return url;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Generates a URL that the caller can use to access the editing API.
+     * @param request
+     */
+    private String generateEditingUrl(HttpServletRequest request) {
+        try {
+            String url = this.uiConfig.getEditingUrl();
+            if (url == null) {
+                url = request.getRequestURL().toString().replaceFirst("http", "ws");
+                url = new URI(url).resolve("/api-editing").toString();
             }
             return url;
         } catch (URISyntaxException e) {

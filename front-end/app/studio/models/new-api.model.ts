@@ -20,13 +20,11 @@ export class NewApi {
     specVersion: string;
     name: string;
     description: string;
-    repositoryUrl: string;
 
     constructor() {
         this.specVersion = null;
         this.name = "";
         this.description = "";
-        this.repositoryUrl = "";
     }
 
 }

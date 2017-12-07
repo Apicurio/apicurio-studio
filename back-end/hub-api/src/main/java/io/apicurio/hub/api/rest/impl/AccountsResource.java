@@ -39,24 +39,24 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.bitbucket.BitbucketException;
 import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.api.gitlab.GitLabException;
 import io.apicurio.hub.api.gitlab.IGitLabSourceConnector;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IAccountsResource;
 import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.api.storage.IStorage;
-import io.apicurio.hub.api.storage.StorageException;
+import io.apicurio.hub.core.beans.LinkedAccount;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -73,7 +73,7 @@ public class AccountsResource implements IAccountsResource {
     @Inject
     private ILinkedAccountsProvider linkedAccountsProvider;
     @Inject
-    private IMetrics metrics;
+    private IApiMetrics metrics;
 
     @Inject
     private IGitHubSourceConnector github;

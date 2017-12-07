@@ -69,29 +69,13 @@
                             <div class="card-pf-body">
                                 <h3 class="api-description">{{ api.description }}</h3>
                                 <div class="api-created-info">
-                                    <div class="info-left">
+                                    <div class="info-full">
                                         <span class="fa fa-fw fa-clock-o"></span>
                                         <span>Created on <em>{{ api.createdOn | date }}</em></span>
                                     </div>
-                                    <div class="info-right">
-                                        <span class="fa fa-fw fa-clock-o"></span>
-                                        <span>Modified on <em>{{ api.modifiedOn | date }}</em></span>
-                                    </div>
-                                    <div class="info-left">
+                                    <div class="info-full">
                                         <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
-                                    </div>
-                                    <div class="info-right">
-                                        <span class="fa fa-fw fa-user"></span>
-                                        <span>Modified by <em>{{ api.modifiedBy }}</em></span>
-                                    </div>
-                                    <div>
-                                        <span class="fa fa-fw fa-{{ getResourceType() }}"></span>
-                                        <a class="api-resource-url-value" target="_blank"
-                                           href="{{ getResourceUrlHref() }}">
-                                            <span>{{ getResourceUrlLabel() }}</span>
-                                            <span class="fa fa-external-link"></span>
-                                        </a>
                                     </div>
                                 </div>
                                 <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
@@ -119,10 +103,10 @@
                                 </div>
                                 <div class="api-collaborators" *ngIf="isLoaded('collaborators')">
                                     <div class="progress-container progress-description-left" *ngFor="let c of collaborators.collaborators">
-                                        <div class="progress-description"><a href="{{ c.userUrl }}" target="_blank">{{ c.userName }}</a></div>
+                                        <div class="progress-description">{{ c.name }}</div>
                                         <div class="progress">
-                                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.numChanges / collaborators.totalChanges) * 100) + '%'">
-                                                <span><strong>{{ c.numChanges }} of {{ collaborators.totalChanges }}</strong> commits</span>
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.edits / collaborators.totalEdits) * 100) + '%'">
+                                                <span><strong>{{ c.edits }} of {{ collaborators.totalEdits }}</strong> edits</span>
                                             </div>
                                         </div>
                                     </div>
@@ -137,9 +121,9 @@
 </div>
 <confirm-delete-dialog #confirmDeleteModal (onDelete)="deleteApi()">
     <p>Do you really want to delete this API?</p>
-    <div class="alert alert-info">
-        <span class="pficon pficon-info"></span>
+    <div class="alert alert-danger">
+        <span class="pficon pficon-error-circle-o"></span>
         <strong>NOTE:</strong>
-        <span>This will not delete the API definition file from source control - it will only remove it from Apicurio Studio.</span>
+        <span>This will <strong>permanently</strong> delete the API definition from Apicurio Studio.  This operation cannot be undone.</span>
     </div>
 </confirm-delete-dialog>

@@ -26,6 +26,7 @@ import {Headers, Http, RequestOptions} from "@angular/http";
 export abstract class AbstractHubService {
 
     private apiBaseHref: string;
+    private editingBaseHref: string;
 
     /**
      * Constructor.
@@ -34,10 +35,11 @@ export abstract class AbstractHubService {
      */
     constructor(protected http: Http, protected authService: IAuthenticationService, protected config: ConfigService) {
         this.apiBaseHref = this.config.hubUrl();
+        this.editingBaseHref = this.config.editingUrl();
     }
 
     /**
-     * Creates a github API endpoint from the api path and params.
+     * Creates a hub API endpoint from the api path and params.
      * @param {string} path
      * @param params
      * @return {string}
@@ -67,6 +69,22 @@ export abstract class AbstractHubService {
             this.authService.injectAuthHeaders(options.headers);
         }
         return options;
+    }
+
+    /**
+     * Creates an editing endpoint from the given relative path and params.
+     * @param {string} path
+     * @param params
+     * @return {string}
+     */
+    protected editingEndpoint(path: string, params?: any): string {
+        if (params) {
+            for (let key in params) {
+                let value: string = params[key];
+                path = path.replace(":" + key, value);
+            }
+        }
+        return this.editingBaseHref + path;
     }
 
 }

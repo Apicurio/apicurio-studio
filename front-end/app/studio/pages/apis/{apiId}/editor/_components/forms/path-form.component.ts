@@ -17,7 +17,6 @@
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
-import {ICommand} from "../../_services/commands.manager";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
 import {
@@ -30,7 +29,7 @@ import {
     createNewOperationCommand,
     createNewParamCommand,
     createNewPathCommand,
-    createReplacePathItemCommand,
+    createReplacePathItemCommand, ICommand,
     SimplifiedParameterType
 } from "oai-ts-commands";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";

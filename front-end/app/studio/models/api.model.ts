@@ -21,22 +21,16 @@ export class Api {
     id: string;
     name: string;
     description: string;
-    repositoryUrl: string;
     createdOn: Date;
     createdBy: string;
-    modifiedOn: Date;
-    modifiedBy: string;
     tags: string[];
 
     constructor() {
         this.id = "";
         this.name = "";
         this.description = "";
-        this.repositoryUrl = "";
         this.createdOn = new Date();
         this.createdBy = "";
-        this.modifiedOn = new Date();
-        this.modifiedBy = "";
         this.tags = null;
     }
 
@@ -45,7 +39,6 @@ export class Api {
 
 export class ApiDefinition extends Api {
 
-    version: any;
     spec: any;
 
     constructor() {
@@ -58,11 +51,33 @@ export class ApiDefinition extends Api {
         apiDef.id = api.id;
         apiDef.name = api.name;
         apiDef.description = api.description;
-        apiDef.repositoryUrl = api.repositoryUrl;
         apiDef.createdOn = api.createdOn;
         apiDef.createdBy = api.createdBy;
-        apiDef.modifiedOn = api.modifiedOn;
-        apiDef.modifiedBy = api.modifiedBy;
+
+        return apiDef;
+    }
+
+}
+
+
+export class EditableApiDefinition extends ApiDefinition {
+
+    editingSessionUuid: string;
+    contentVersion: number;
+
+    constructor() {
+        super();
+        this.editingSessionUuid = null;
+        this.contentVersion = 0;
+    }
+
+    public static fromApi(api: Api): EditableApiDefinition {
+        let apiDef: EditableApiDefinition = new EditableApiDefinition();
+        apiDef.id = api.id;
+        apiDef.name = api.name;
+        apiDef.description = api.description;
+        apiDef.createdOn = api.createdOn;
+        apiDef.createdBy = api.createdBy;
 
         return apiDef;
     }

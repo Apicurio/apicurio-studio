@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, Inject} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
-import {Api} from "../../../models/api.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
+import {AddApi} from "../../../models/add-api.model";
 
 @Component({
     moduleId: module.id,
@@ -43,9 +43,9 @@ export class AddApiPageComponent extends AbstractPageComponent {
     /**
      * Called when the Add API form (component) emits a "add-api" event.  This is bound to
      * from the addapi.page.html template.
-     * @param {Api} api
+     * @param {AddApi} api
      */
-    public onAddApi(api: Api) {
+    public onAddApi(api: AddApi) {
         console.log("[AddApiPageComponent] onAddApi(): " + JSON.stringify(api))
         this.apis.addApi(api).then(updatedApi => {
             let link: string[] = [ "/apis", updatedApi.id ];

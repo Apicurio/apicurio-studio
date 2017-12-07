@@ -17,23 +17,21 @@
 
 
 export class ApiCollaborator {
-    userName: string;
-    userUrl: string;
-    numChanges: number;
+    name: string;
+    edits: number;
 
     constructor() {
-        this.userName = "";
-        this.userUrl = "";
-        this.numChanges = 0;
+        this.name = "";
+        this.edits = 0;
     }
 }
 
 export class ApiCollaborators {
-    public totalChanges: number;
+    public totalEdits: number;
     public collaborators: ApiCollaborator[];
 
     constructor() {
-        this.totalChanges = 0;
+        this.totalEdits = 0;
         this.collaborators = [];
     }
 }

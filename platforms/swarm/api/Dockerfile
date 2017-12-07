@@ -19,7 +19,7 @@ USER 1001
 EXPOSE 8080
 
 
-ENV APICURIO_KC_AUTH_URL=https://auth-apistudio.rhcloud.com/auth/
+ENV APICURIO_KC_AUTH_URL=https://studio-auth.apicur.io/auth/
 ENV APICURIO_KC_REALM=apicurio
 ENV APICURIO_KC_CLIENT_ID=apicurio-api
 ENV APICURIO_KC_SSL_REQUIRED=NONE

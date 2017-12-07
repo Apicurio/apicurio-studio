@@ -34,6 +34,20 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
+    <!-- Studio Hub Editing (WS) -->
+    <dependencySet>
+      <outputDirectory>apicurio-studio-${project.version}/standalone/deployments</outputDirectory>
+      <outputFileNameMapping>apicurio-studio-ws.war</outputFileNameMapping>
+      <includes>
+        <include>*:apicurio-studio-platforms-wildfly-ws:war</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>
@@ -58,7 +72,7 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${basedir}/../../back-end/hub-api/src/main/resources/io/apicurio/hub/api/storage/jdbc</directory>
+      <directory>${basedir}/../../back-end/hub-core/src/main/resources/io/apicurio/hub/core/storage/jdbc</directory>
       <outputDirectory>apicurio-studio-${project.version}/ddls</outputDirectory>
       <filtered>false</filtered>
       <directoryMode>0755</directoryMode>

@@ -16,11 +16,11 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
@@ -31,34 +31,41 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.beans.UpdateApiDesign;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
 import io.apicurio.hub.api.rest.IDesignsResource;
+import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.test.core.TestUtil;
+import test.io.apicurio.hub.api.MockEditingSessionManager;
 import test.io.apicurio.hub.api.MockGitHubService;
-import test.io.apicurio.hub.api.MockHttpServletRequest;
-import test.io.apicurio.hub.api.MockHttpServletResponse;
 import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
 import test.io.apicurio.hub.api.MockStorage;
-import test.io.apicurio.hub.api.TestUtil;
+import test.io.apicurio.hub.api.MockStorage.MockContentRow;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class DesignsResourceTest {
-    
+
     private IDesignsResource resource;
     
     private MockStorage storage;
     private MockSecurityContext security;
     private MockGitHubService github;
+    private MockEditingSessionManager editingSessionManager;
+    private OaiCommandExecutor commandExecutor;
     private SourceConnectorFactory sourceConnectorFactory;
     private MockMetrics metrics;
 
@@ -69,6 +76,8 @@ public class DesignsResourceTest {
         storage = new MockStorage();
         security = new MockSecurityContext();
         metrics = new MockMetrics();
+        commandExecutor = new OaiCommandExecutor();
+        editingSessionManager = new MockEditingSessionManager();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -78,6 +87,8 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
         TestUtil.setPrivateField(resource, "metrics", metrics);
+        TestUtil.setPrivateField(resource, "oaiCommandExecutor", commandExecutor);
+        TestUtil.setPrivateField(resource, "editingSessionManager", editingSessionManager);
     }
     
     @After
@@ -126,7 +137,9 @@ public class DesignsResourceTest {
         Assert.assertEquals(
                 "---\n" + 
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" + 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" + 
                 "---", 
                 ghLog);
     }
@@ -137,25 +150,15 @@ public class DesignsResourceTest {
         info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.addDesign(info);
         Assert.assertNotNull(design);
-        Assert.assertEquals(info.getRepositoryUrl(), design.getRepositoryUrl());
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        Assert.assertEquals("user", design.getModifiedBy());
-        Assert.assertEquals(design.getCreatedOn(), design.getModifiedOn());
-        
-        try {
-            resource.addDesign(info);
-            Assert.fail("Expected an error: AlreadyExistsException");
-        } catch (AlreadyExistsException e) {
-            // OK, expected
-        }
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
                 "---\n" + 
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
     }
@@ -166,32 +169,17 @@ public class DesignsResourceTest {
         info.setSpecVersion("2.0");
         info.setName("My API");
         info.setDescription("Description of my API.");
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
-        Assert.assertEquals(info.getRepositoryUrl(), design.getRepositoryUrl());
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        Assert.assertEquals("user", design.getModifiedBy());
-        Assert.assertEquals(design.getCreatedOn(), design.getModifiedOn());
-        
-        try {
-            resource.createDesign(info);
-            Assert.fail("Expected an error: AlreadyExistsException");
-        } catch (AlreadyExistsException e) {
-            // OK, expected
-        }
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
-        String expectedContent = "{\"info\":{\"title\":\"My API\",\"description\":\"Description of my API.\",\"version\":\"1.0.0\"},\"swagger\":\"2.0\"}";
         Assert.assertEquals(
                 "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" +
-                "createResourceContent::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json::Initial creation of API: My API::" + expectedContent.hashCode() + "\n" +
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/my-api/new-api.json\n" +
                 "---",
                 ghLog);
     }
@@ -217,94 +205,30 @@ public class DesignsResourceTest {
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
                 "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
     }
 
     @Test
-    public void testUpdateDesign() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testEditDesign() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
         AddApiDesign info = new AddApiDesign();
         info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.addDesign(info);
-        Assert.assertEquals(info.getRepositoryUrl(), design.getRepositoryUrl());
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        Assert.assertEquals("user", design.getModifiedBy());
-        Assert.assertEquals(design.getCreatedOn(), design.getModifiedOn());
         
         String designId = design.getId();
         
-        UpdateApiDesign update = new UpdateApiDesign();
-        update.setName("API Name");
-        update.setDescription("API description.");
-        
-        // Slight delay to ensure that the modified time actually changes!
-        Thread.sleep(10);
-        resource.updateDesign(designId, update);
-        
-        ApiDesign updatedDesign = resource.getDesign(designId);
-        Assert.assertEquals(info.getRepositoryUrl(), updatedDesign.getRepositoryUrl());
-        Assert.assertEquals("1", updatedDesign.getId());
-        Assert.assertEquals("user", updatedDesign.getCreatedBy());
-        Assert.assertEquals("user", updatedDesign.getModifiedBy());
-        Assert.assertEquals("API Name", updatedDesign.getName());
-        Assert.assertEquals("API description.", updatedDesign.getDescription());
-        Assert.assertNotEquals(updatedDesign.getCreatedOn().getTime(), updatedDesign.getModifiedOn().getTime());
-        
-        try {
-            resource.updateDesign("n/a", update);
-            Assert.fail("Expected a NotFoundException");
-        } catch (NotFoundException e) {
-            // should get here
-        }
-
-        String ghLog = github.auditLog();
-        Assert.assertNotNull(ghLog);
-        Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
-                ghLog);
-    }
-
-    @Test
-    public void testGetCollaborators() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        resource.addDesign(info);
-
-        Collection<Collaborator> collaborators = resource.getCollaborators("1");
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(2, collaborators.size());
-        Collaborator collaborator = collaborators.iterator().next();
-        Assert.assertEquals(7, collaborator.getCommits());
-        Assert.assertEquals("user1", collaborator.getName());
-        Assert.assertEquals("urn:user1", collaborator.getUrl());
-
-        String ghLog = github.auditLog();
-        Assert.assertNotNull(ghLog);
-        Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getCollaborators::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
-                ghLog);
-    }
-
-    @Test
-    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
-        
-        Response content = resource.getContent(design.getId());
+        Response content = resource.editDesign(designId);
         Assert.assertNotNull(content);
-        Assert.assertEquals(new MediaType("application", "json", "utf-8"), content.getMediaType());
+        Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
         Assert.assertEquals(703, content.getLength());
         Assert.assertEquals(MockGitHubService.STATIC_CONTENT, content.getEntity());
-        
+        Assert.assertNotNull(content.getHeaderString("X-Apicurio-EditingSessionUuid"));
+        Assert.assertNotNull(content.getHeaderString("X-Apicurio-ContentVersion"));
+
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
@@ -316,32 +240,91 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testUpdateContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testGetCollaborators() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+        AddApiDesign info = new AddApiDesign();
+        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.addDesign(info);
+
+        Collection<Collaborator> collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertFalse(collaborators.isEmpty());
+        Assert.assertEquals(1, collaborators.size());
+        Collaborator collaborator = collaborators.iterator().next();
+        Assert.assertEquals(1, collaborator.getEdits());
+        Assert.assertEquals("user", collaborator.getName());
+
+        String ghLog = github.auditLog();
+        Assert.assertNotNull(ghLog);
+        Assert.assertEquals(
+                "---\n" + 
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
+                "---", 
+                ghLog);
+    }
+
+    @Test
+    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException {
         AddApiDesign info = new AddApiDesign();
         info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.addDesign(info);
         
-        String content = MockGitHubService.STATIC_CONTENT;
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("X-Content-SHA", "0123456789");
-        headers.put("X-Apicurio-CommitMessage", "UpdateApiNow!");
-        headers.put("X-Apicurio-CommitComment", "Just a comment.");
-        MockHttpServletRequest request = new MockHttpServletRequest(headers, content);
-        TestUtil.setPrivateField(resource, "request", request);
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        TestUtil.setPrivateField(resource, "response", response);
-        resource.updateContent(design.getId());
+        // Add a command to change the title
+        MockContentRow contentRow = new MockContentRow();
+        contentRow.createdBy = "user";
+        contentRow.data = "{\r\n" + 
+                "  \"__type\": \"ChangeTitleCommand_20\",\r\n" + 
+                "  \"_newTitle\": \"testGetContent\"\r\n" + 
+                "}";
+        contentRow.designId = design.getId();
+        contentRow.type = ApiContentType.Command;
+        this.storage.addContentRow(design.getId(), contentRow);
+
+        // Add a command to change the description
+        contentRow = new MockContentRow();
+        contentRow.createdBy = "user";
+        contentRow.data = "{\r\n" + 
+                "  \"__type\": \"ChangeDescriptionCommand_20\",\r\n" + 
+                "  \"_newDescription\": \"Ut enim ad minim veniam.\"\r\n" + 
+                "}";
+        contentRow.designId = design.getId();
+        contentRow.type = ApiContentType.Command;
+        this.storage.addContentRow(design.getId(), contentRow);
+
+        // Now ask for the content - the most recent Document should be mutated
+        // by the two commands above to give a final value.
+        Response content = resource.getContent(design.getId());
+        Assert.assertNotNull(content);
+        Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
+        
+        String expectedOaiDoc = MockGitHubService.STATIC_CONTENT.replace("Swagger Sample App", "testGetContent")
+                .replace("This is a sample server Petstore server.", "Ut enim ad minim veniam.");
+        String actualOaiDoc = content.getEntity().toString();
+        String expected = normalizeJson(expectedOaiDoc);
+        String actual = normalizeJson(actualOaiDoc);
+        Assert.assertEquals(expected, actual);
         
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
                 "---\n" + 
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "updateResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json::UpdateApiNow!::Just a comment.::0123456789::-1073691667\n" + 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
-        Assert.assertNotNull(response.getHeader("X-Content-SHA"));
+    }
+
+    /**
+     * Normalizes JSON into a standard format.
+     * @param jsonContent
+     * @throws IOException 
+     * @throws JsonProcessingException 
+     */
+    private String normalizeJson(String jsonContent) throws JsonProcessingException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode expectedJson = mapper.readTree(jsonContent);
+        String njson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJson);
+        return njson;
     }
 
 }

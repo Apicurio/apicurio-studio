@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com

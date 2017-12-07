@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.api.beans;
 
+import io.apicurio.hub.core.beans.LinkedAccountType;
+
 /**
  * @author eric.wittmann@gmail.com
  */

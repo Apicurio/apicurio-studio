@@ -40,10 +40,11 @@ import {
     OasValidationError,
     OasVisitorUtil
 } from "oai-ts-core";
-import {CommandsManager, ICommand} from "./_services/commands.manager";
+import {CommandsManager} from "./_services/commands.manager";
 import {EditorMasterComponent} from "./_components/master.component";
 import {AbstractCombinedVisitorAdapter, AllNodeVisitor} from "./_visitors/base.visitor";
 import {NodeSelectionEvent} from "./_events/node-selection.event";
+import {ICommand} from "oai-ts-commands";
 
 
 @Component({
@@ -56,7 +57,7 @@ import {NodeSelectionEvent} from "./_events/node-selection.event";
 export class ApiEditorComponent implements OnChanges {
 
     @Input() api: ApiDefinition;
-    @Output() onDirty: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onCommandExecuted: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
@@ -110,16 +111,12 @@ export class ApiEditorComponent implements OnChanges {
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
             this._commands.undoLastCommand(this.document());
-            if (this._commands.isEmpty()) {
-                this.onDirty.emit(false);
-            }
             this.master.validateSelection();
             this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
             this._commands.redoLastCommand(this.document());
-            this.onDirty.emit(true);
             this.master.validateSelection();
             this.validateModel();
         }
@@ -130,12 +127,20 @@ export class ApiEditorComponent implements OnChanges {
      * @param command
      */
     public onCommand(command: ICommand): void {
-        console.info("[ApiEditorComponent] Executing a command.");
-        this._commands.executeCommand(command, this.document());
-        this.onDirty.emit(true);
+        this.executeCommand(command);
+        this.onCommandExecuted.emit(command);
 
         // After changing the model, we should re-validate it
         this.validateModel();
+    }
+
+    /**
+     * Executes a command.
+     * @param {ICommand} command
+     */
+    public executeCommand(command: ICommand): void {
+        console.info("[ApiEditorComponent] Executing a command.");
+        this._commands.executeCommand(command, this.document());
     }
 
     /**
@@ -156,31 +161,6 @@ export class ApiEditorComponent implements OnChanges {
     }
 
     /**
-     * Gets the current API information (content and meta-data) and
-     * @return {ApiDefinition}
-     */
-    public getUpdatedApiDefinition(): ApiDefinition {
-        let updatedApiDef: ApiDefinition = ApiDefinition.fromApi(this.api);
-        if (this.document().info && this.document().info.title) {
-            updatedApiDef.name = this.document().info.title;
-        }
-        if (this.document().info && this.document().info.description) {
-            updatedApiDef.description = this.document().info.description;
-        }
-        updatedApiDef.spec = this._library.writeNode(this.document());
-        updatedApiDef.version = this.api.version;
-        return updatedApiDef;
-    }
-
-    /**
-     * Called to reset the editor's internal state.
-     */
-    public reset(): void {
-        this._commands.reset();
-        this.onDirty.emit(false);
-    }
-
-    /**
      * Called to validate the model.
      */
     public validateModel(): void {
@@ -188,9 +168,10 @@ export class ApiEditorComponent implements OnChanges {
         let resetVisitor: ResetProblemsVisitor = new ResetProblemsVisitor();
         OasVisitorUtil.visitTree(doc, resetVisitor);
 
-        // TODO also validate 3.0.x documents once the oai-ts-core library supports that
         if (doc.getSpecVersion() === "2.0") {
             this.validationErrors = this._library.validate(doc, true);
+        } else if (doc.getSpecVersion() === "3.0.0") {
+            // TODO also validate 3.0.x documents once the oai-ts-core library supports that
         }
     }
 

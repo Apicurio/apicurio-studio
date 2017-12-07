@@ -16,9 +16,8 @@
 
 package io.apicurio.hub.api.github;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,20 +42,18 @@ import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
 import io.apicurio.hub.api.beans.GitHubGetContentsResponse;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.beans.OpenApi3Document;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * Implementation of the GitHub source connector.
@@ -118,34 +115,13 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             Map<String, Object> jsonContent = mapper.reader(Map.class).readValue(content);
             String b64Content = (String) jsonContent.get("content");
             
-            String name = resource.getResourcePath();
-            String description = "";
-            
-            content = new String(Base64.decodeBase64(b64Content), "UTF-8");
-            OpenApi3Document document = mapper.reader(OpenApi3Document.class).readValue(content);
-            if (document.getInfo() != null) {
-                if (document.getInfo().getTitle() != null) {
-                    name = document.getInfo().getTitle();
-                }
-                if (document.getInfo().getDescription() != null) {
-                    description = document.getInfo().getDescription();
-                }
-            }
-            
-            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-            info.setName(name);
-            info.setDescription(description);
-            info.setUrl("https://github.com/:org/:repo/blob/master/:path"
-                    .replace(":org", resource.getOrganization())
-                    .replace(":repo", resource.getRepository())
-                    .replace(":path", resource.getResourcePath()));
-            if (document.getTags() != null) {
-                for (int idx = 0; idx < document.getTags().length; idx++) {
-                    info.getTags().add(document.getTags()[idx].getName());
-                }
+            content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
+            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+            if (info.getName() == null) {
+                info.setName(resource.getResourcePath());
             }
             return info;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
         }
     }
@@ -177,61 +153,6 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             throw new SourceConnectorException("Error getting GitHub resource content.", e);
         }
     }
-    
-    /**
-     * @see io.apicurio.hub.api.connectors.ISourceConnector#getCollaborators(java.lang.String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        logger.debug("Getting collaborator information for repository url: {}", repositoryUrl);
-        try {
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
-            if (resource == null) {
-                throw new NotFoundException();
-            }
-            
-            String commitsUrl = endpoint("/repos/:org/:repo/commits")
-                    .bind("org", resource.getOrganization())
-                    .bind("repo", resource.getRepository())
-                    .url();
-            HttpRequest request = Unirest.get(commitsUrl).header("Accept", "application/json")
-                    .queryString("path", resource.getResourcePath());
-            addSecurityTo(request);
-            HttpResponse<JsonNode> response = request.asJson();
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
-            }
-            
-            Map<String, Collaborator> cidx = new HashMap<>();
-            JsonNode node = response.getBody();
-            if (node.isArray()) {
-                JSONArray array = node.getArray();
-                if (array.length() == 0) {
-                	throw new NotFoundException();
-                }
-                array.forEach( obj -> {
-                    JSONObject jobj = (JSONObject) obj;
-                    JSONObject authorObj = (JSONObject) jobj.get("author");
-                    String user = authorObj.getString("login");
-                    Collaborator collaborator = cidx.get(user);
-                    if (collaborator == null) {
-                        collaborator = new Collaborator();
-                        collaborator.setName(user);
-                        collaborator.setUrl(authorObj.getString("html_url"));
-                        collaborator.setCommits(1);
-                        cidx.put(user, collaborator);
-                    } else {
-                        collaborator.setCommits(collaborator.getCommits() + 1);
-                    }
-                });
-            } else {
-            	throw new NotFoundException();
-            }
-            return cidx.values();
-        } catch (UnirestException e) {
-            throw new SourceConnectorException("Error getting collaborator information for a GitHub resource.", e);
-        }
-    }
 
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getResourceContent(java.lang.String)
@@ -257,12 +178,12 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             
             GitHubGetContentsResponse body = response.getBody();
             String b64Content = body.getContent();
-            String content = new String(Base64.decodeBase64(b64Content), "utf-8");
+            String content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
             ResourceContent rval = new ResourceContent();
             rval.setContent(content);
             rval.setSha(body.getSha());
             return rval;
-        } catch (UnirestException | UnsupportedEncodingException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error getting Github resource content.", e);
         }
     }
@@ -274,7 +195,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public String updateResourceContent(String repositoryUrl, String commitMessage, String commitComment,
             ResourceContent content) throws SourceConnectorException {
         try {
-            String b64Content = Base64.encodeBase64String(content.getContent().getBytes("utf-8"));
+            String b64Content = Base64.encodeBase64String(content.getContent().getBytes(StandardCharsets.UTF_8));
             
             GitHubUpdateFileRequest requestBody = new GitHubUpdateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -303,7 +224,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             }
             
             return newSha;
-        } catch (UnsupportedEncodingException | UnirestException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error updating Github resource content.", e);
         }
     }
@@ -343,7 +264,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     @Override
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
         try {
-            String b64Content = Base64.encodeBase64String(content.getBytes("utf-8"));
+            String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
             
             GitHubCreateFileRequest requestBody = new GitHubCreateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -362,7 +283,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             if (response.getStatus() != 201) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
-        } catch (UnsupportedEncodingException | UnirestException e) {
+        } catch (UnirestException e) {
             throw new SourceConnectorException("Error creating Github resource content.", e);
         }
     }

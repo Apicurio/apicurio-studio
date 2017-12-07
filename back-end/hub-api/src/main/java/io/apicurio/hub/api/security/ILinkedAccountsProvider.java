@@ -19,7 +19,7 @@ package io.apicurio.hub.api.security;
 import java.io.IOException;
 
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
  * Provides account linking functionality to the application.  This is used to actually

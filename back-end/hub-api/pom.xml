@@ -22,6 +22,11 @@
             <artifactId>apicurio-studio-shared-config</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-be-hub-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Third Party Libraries -->
         <dependency>
@@ -123,6 +128,12 @@
         </dependency>
 
         <!-- Test Only Dependencies -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-be-test-core</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>

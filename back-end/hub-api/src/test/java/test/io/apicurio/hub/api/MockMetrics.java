@@ -18,16 +18,16 @@ package test.io.apicurio.hub.api;
 
 import java.io.IOException;
 
-import io.apicurio.hub.api.beans.LinkedAccountType;
-import io.apicurio.hub.api.metrics.IMetrics;
+import io.apicurio.hub.api.metrics.IApiMetrics;
+import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class MockMetrics implements IMetrics {
+public class MockMetrics implements IApiMetrics {
 
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#getCurrentMetricsInfo()
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#getCurrentMetricsInfo()
      */
     @Override
     public String getCurrentMetricsInfo() throws IOException {
@@ -35,35 +35,35 @@ public class MockMetrics implements IMetrics {
     }
 
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiCall(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCall(java.lang.String, java.lang.String)
      */
     @Override
     public void apiCall(String endpoint, String method) {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkCompleted(LinkedAccountType type) {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkInitiated(LinkedAccountType type) {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiCreate(java.lang.String)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(java.lang.String)
      */
     @Override
     public void apiCreate(String specVersion) {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void apiImport(LinkedAccountType from) {

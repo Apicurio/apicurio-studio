@@ -32,7 +32,7 @@
     </extensions>
 
     <system-properties>
-        <property name="apicurio.kc.auth.rootUrl" value="https://auth-apistudio.rhcloud.com/auth"/>
+        <property name="apicurio.kc.auth.rootUrl" value="https://studio-auth.apicur.io/auth"/>
         <property name="apicurio.kc.auth.realm" value="apicurio-local"/>
         <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
         <property name="apicurio.hub.storage.jdbc.init" value="true"/>

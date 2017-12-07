@@ -37,10 +37,10 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.api.beans.LinkedAccount;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.core.beans.LinkedAccount;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
 
 /**
  * The interface that defines how to interact with Linked Accounts in the Hub API.

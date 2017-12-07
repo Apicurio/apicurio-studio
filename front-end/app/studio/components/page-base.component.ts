@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import {OnInit} from "@angular/core";
+import {OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 
-export abstract class AbstractPageComponent implements OnInit {
+export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     public dataLoaded: Map<string, boolean> = new Map<string, boolean>();
     public pageError: any;
@@ -36,10 +36,17 @@ export abstract class AbstractPageComponent implements OnInit {
      * page data.
      */
     public ngOnInit(): void {
+        // Extract route params and query params and pass them to "loadAsyncPageData"
         let combined = Observable.combineLatest(this.route.params, this.route.queryParams, (params, qparams) => ({params, qparams}));
         combined.subscribe( ap => {
             this.loadAsyncPageData(ap.params, ap.qparams);
         });
+    }
+
+    /**
+     * Called when the page is destroyed.
+     */
+    public ngOnDestroy(): void {
     }
 
     /**

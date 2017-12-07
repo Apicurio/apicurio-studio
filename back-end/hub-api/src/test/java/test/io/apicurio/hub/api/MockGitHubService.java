@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import io.apicurio.hub.api.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
-import io.apicurio.hub.api.beans.LinkedAccountType;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
+import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -92,34 +91,10 @@ public class MockGitHubService implements IGitHubSourceConnector {
             info.setName(name);
             info.setDescription(repositoryUrl);
             info.setTags(new HashSet<String>(Arrays.asList("tag1", "tag2")));
-            info.setUrl(repositoryUrl);
             return info;
         } catch (URISyntaxException e) {
             throw new NotFoundException();
         }
-    }
-    
-    /**
-     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getCollaborators(java.lang.String)
-     */
-    @Override
-    public Collection<Collaborator> getCollaborators(String repositoryUrl) {
-        getAudit().add("getCollaborators::" + repositoryUrl);
-        Set<Collaborator> rval = new HashSet<>();
-
-        Collaborator c1 = new Collaborator();
-        c1.setCommits(7);
-        c1.setName("user1");
-        c1.setUrl("urn:user1");
-        rval.add(c1);
-        
-        Collaborator c2 = new Collaborator();
-        c2.setCommits(7);
-        c2.setName("user1");
-        c2.setUrl("urn:user1");
-        rval.add(c2);
-        
-        return rval;
     }
     
     /**

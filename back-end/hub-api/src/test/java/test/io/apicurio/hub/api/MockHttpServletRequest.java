@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,7 +81,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     @Override
     public String getCharacterEncoding() {
-        return "utf-8";
+        return StandardCharsets.UTF_8.name();
     }
 
     /**
@@ -95,11 +96,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     @Override
     public int getContentLength() {
-        try {
-            return this.content.getBytes("utf-8").length;
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return this.content.getBytes(StandardCharsets.UTF_8).length;
     }
 
     /**

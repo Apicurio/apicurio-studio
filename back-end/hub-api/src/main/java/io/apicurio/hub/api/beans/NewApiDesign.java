@@ -24,7 +24,6 @@ public class NewApiDesign {
     private String specVersion;
     private String name;
     private String description;
-    private String repositoryUrl;
     
     /**
      * @return the name
@@ -52,20 +51,6 @@ public class NewApiDesign {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @return the repositoryUrl
-     */
-    public String getRepositoryUrl() {
-        return repositoryUrl;
-    }
-
-    /**
-     * @param repositoryUrl the repositoryUrl to set
-     */
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
     }
 
     /**

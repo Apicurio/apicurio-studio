@@ -30,13 +30,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.AddApiDesign;
-import io.apicurio.hub.api.beans.ApiDesign;
-import io.apicurio.hub.api.beans.Collaborator;
 import io.apicurio.hub.api.beans.NewApiDesign;
-import io.apicurio.hub.api.beans.UpdateApiDesign;
-import io.apicurio.hub.api.exceptions.AlreadyExistsException;
-import io.apicurio.hub.api.exceptions.NotFoundException;
-import io.apicurio.hub.api.exceptions.ServerError;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
 
 /**
  * The interface that defines how to interact with API Designs in the hub API.
@@ -53,12 +51,12 @@ public interface IDesignsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiDesign addDesign(AddApiDesign info) throws ServerError, AlreadyExistsException, NotFoundException;
+    public ApiDesign addDesign(AddApiDesign info) throws ServerError, NotFoundException;
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiDesign createDesign(NewApiDesign info) throws ServerError, AlreadyExistsException;
+    public ApiDesign createDesign(NewApiDesign info) throws ServerError;
 
     
     @GET
@@ -66,11 +64,10 @@ public interface IDesignsResource {
     @Path("{designId}")
     public ApiDesign getDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{designId}")
-    public ApiDesign updateDesign(@PathParam("designId") String designId, UpdateApiDesign update) throws ServerError, NotFoundException;
+    @Path("{designId}/session")
+    public Response editDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
     @DELETE
     @Path("{designId}")
@@ -86,10 +83,5 @@ public interface IDesignsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/content")
     public Response getContent(@PathParam("designId") String designId) throws ServerError, NotFoundException;
-    
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{designId}/content")
-    public void updateContent(@PathParam("designId") String designId) throws ServerError, NotFoundException;
     
 }

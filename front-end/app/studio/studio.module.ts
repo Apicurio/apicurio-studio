@@ -68,7 +68,6 @@ import {AddApiFormComponent} from "./pages/apis/add/_components/add-form.compone
 import {ApisListComponent} from "./pages/apis/_components/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
-import {ApiCommitComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.component";
 import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
 
 /** Directives **/
@@ -107,7 +106,6 @@ import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/form
 import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
 import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-icon.component";
 import {ProblemFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/problem-form.component";
-import {ApiCommitFormComponent} from "./pages/apis/{apiId}/editor/_components/api-commit.form";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
 import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
@@ -123,7 +121,7 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent,
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
         CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
-        ApisCardsComponent, ApiEditorComponent, ApiCommitComponent, PathItemComponent, DefinitionItemComponent,
+        ApisCardsComponent, ApiEditorComponent, PathItemComponent, DefinitionItemComponent,
         ResponseItemComponent, Main20FormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
         TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
@@ -131,7 +129,7 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         ContextHelpComponent, SetContactDialogComponent, SecurityScheme20DialogComponent, SecurityScheme30DialogComponent,
         DropDownComponent, ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
-        ApiCommitFormComponent, PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
+        PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
         ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize

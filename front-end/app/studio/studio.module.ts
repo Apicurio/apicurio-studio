@@ -69,6 +69,8 @@ import {ApisListComponent} from "./pages/apis/_components/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
+import {EditorDisconnectedDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component";
+
 
 /** Directives **/
 import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/autosize.directive";
@@ -129,7 +131,7 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         ContextHelpComponent, SetContactDialogComponent, SecurityScheme20DialogComponent, SecurityScheme30DialogComponent,
         DropDownComponent, ResponseRowComponent, SchemaTypeComponent, ParamRowComponent, AddFormDataParamDialogComponent,
         PropertyRowComponent, AddSchemaPropertyDialogComponent, ValidationIconComponent, ProblemFormComponent,
-        PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent,
+        PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent, EditorDisconnectedDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
         ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize

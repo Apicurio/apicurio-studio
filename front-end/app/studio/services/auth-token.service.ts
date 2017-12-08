@@ -141,6 +141,10 @@ export class TokenAuthenticationService implements IAuthenticationService {
             }
         }).catch( error => {
             console.info("[TokenAuthenticationService] Error refreshing auth token.  Will try again in 30s.");
+            console.info("[TokenAuthenticationService]     %o", error);
+            if (error.status === 0) {
+                // TODO an error 0 may indicate that the user is logged out
+            }
             setTimeout(() => {
                 this.refreshToken();
             }, 30 * 1000);

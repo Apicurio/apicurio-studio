@@ -50,7 +50,7 @@ public class StartupServlet extends HttpServlet {
         logger.info("\tBuilt On: " + version.getVersionDate().toString());
         logger.info("\tBuild:    " + version.getVersionInfo());
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        logger.info("\tNashorn:  " + (engine != null));
+        logger.debug("\tNashorn:  " + (engine != null));
         boolean hasClass = false;
         try {
             Class<?> c = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
@@ -58,7 +58,7 @@ public class StartupServlet extends HttpServlet {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        logger.info("\tNashorn Class:  " + hasClass);
+        logger.debug("\tNashorn Class:  " + hasClass);
         logger.info("------------------------------------------------");
     }
 

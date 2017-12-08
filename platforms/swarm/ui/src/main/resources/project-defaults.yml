@@ -1,6 +1,10 @@
 swarm:
   port:
     offset: 0
+  logging:
+    loggers:
+      io.apicurio:
+        level: DEBUG
   undertow:
     servers:
       default-server:

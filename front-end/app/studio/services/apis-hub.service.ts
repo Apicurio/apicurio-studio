@@ -82,9 +82,14 @@ class ApiEditingSession implements IApiEditingSession {
                 console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
             }
         };
-        this.socket.onclose = () => {
-            console.info("[ApiEditingSession] WS connection to server CLOSED.");
-            this._connectionHandler.onDisconnected();
+        this.socket.onclose = (event) => {
+            // TODO handle unexpected closure here somehow
+            console.info("[ApiEditingSession] WS connection to server CLOSED: %o", event);
+            if (event.code === 1000) {
+                this._connectionHandler.onClosed();
+            } else {
+                this._connectionHandler.onDisconnected(event.code);
+            }
         };
     }
 

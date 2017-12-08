@@ -27,6 +27,7 @@ import {AbstractPageComponent} from "../../../../components/page-base.component"
 import {ICommand} from "oai-ts-commands";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
+import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 
 @Component({
     moduleId: module.id,
@@ -41,8 +42,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected isDirty: boolean = false;
     protected isSaving: boolean = false;
 
-    @ViewChild("apiEditor") apiEditor: ApiEditorComponent;
     @ViewChildren("apiEditor") _apiEditor: QueryList<ApiEditorComponent>;
+    @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
 
     private editingSession: IApiEditingSession;
 
@@ -94,9 +95,15 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                         this.loaded("session");
                     });
                 },
-                onDisconnected: () => {
+                onClosed: () => {
+                    console.info("[ApiEditorPageComponent] **Notice** editing session disconnected normally.");
+                },
+                onDisconnected: (code) => {
                     // TODO what to do when an unexpected disconnect event happens??
-                    console.info("[ApiEditorPageComponent] **Notice** editing session disconnected!");
+                    console.info("[ApiEditorPageComponent] **Notice** editing session DROPPED!  Reason code: %o", code);
+                    this.zone.run(() => {
+                        this.editorDisconnectedModal.open();
+                    });
                 }
             });
         }).catch(error => {

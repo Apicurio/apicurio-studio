@@ -26,8 +26,12 @@ import {ICommand} from "oai-ts-commands";
 
 
 export interface IConnectionHandler {
+    // Called when the connection is established.
     onConnected(): void;
-    onDisconnected(): void;
+    // Called when the connection is closed properly.
+    onClosed(): void;
+    // Called when the connection drops unexpectedly.
+    onDisconnected(closeCode: number): void;
 }
 
 export interface ICommandHandler {

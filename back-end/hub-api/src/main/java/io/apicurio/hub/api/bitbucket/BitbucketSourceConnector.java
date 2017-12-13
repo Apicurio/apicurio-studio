@@ -122,6 +122,8 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                 info.setName(resource.getResourcePath());
             }
             return info;
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a Bitbucket resource exists.", e);
         }
@@ -315,48 +317,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         return null;
     }
 
-    /**
-     * Retrieves the SHA hash for a given bitbucket resource.
-     * @param resource
-     * @throws SourceConnectorException
-     * @throws NotFoundException
-     */
-    private String getShaByResource(BitbucketResource resource) throws SourceConnectorException, NotFoundException {
-        try {
-            //@formatter:off
-            String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path?format=meta")
-                    .bind("team", resource.getTeam())
-                    .bind("repo", resource.getRepository())
-                    .bind("branch", resource.getSlug())
-                    .bind("path", resource.getResourcePath())
-                    .url();
-            //@formatter:on
-
-            HttpRequest request = Unirest.get(contentUrl);
-            addSecurityTo(request);
-            HttpResponse<String> response = request.asString();
-
-            // Note: as of 10/31/2017 the Bitbucket API responded with a 500 error (and an error HTML page)
-            // when asking for meta-data for a resource that doesn't exist.
-            if (response.getStatus() == 404 || response.getStatus() == 500) {
-                throw new NotFoundException();
-            }
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
-            
-            String responseData = response.getBody();
-            JsonNode node = mapper.reader().readTree(responseData);
-            return node.get("commit").get("hash").asText();
-        } catch (SourceConnectorException | IOException | UnirestException e) {
-            throw new SourceConnectorException("Error creating Bitbucket resource content.", e);
-        }
-    }
-
     private ResourceContent getResourceContentFromBitbucket(BitbucketResource resource) throws NotFoundException, SourceConnectorException {
-
-        String sha = getShaByResource(resource);
-
         try {
             //@formatter:off
             String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path")
@@ -368,7 +329,12 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             //@formatter:on
 
             HttpRequest request = Unirest.get(contentUrl);
-            addSecurityTo(request);
+            try {
+                addSecurityTo(request);
+            } catch (Exception e) {
+                // If adding security fails, just go ahead and try without security.  If it's a public
+                // repository then this will work.  If not, then it will fail with a 404.
+            }
             HttpResponse<InputStream> response = request.asBinary();
 
             ResourceContent rVal = new ResourceContent();
@@ -388,7 +354,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                 throw new SourceConnectorException("Error parsing file stream from Bitbucket");
             }
 
-            rVal.setSha(sha);
+            rVal.setSha(null); // sha is no longer used
             rVal.setContent(content);
 
             return rVal;

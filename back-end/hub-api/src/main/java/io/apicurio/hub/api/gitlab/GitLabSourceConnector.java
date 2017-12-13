@@ -128,6 +128,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 info.setName(resource.getResourcePath());
             }
             return info;
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitLab resource exists.", e);
         }
@@ -394,7 +396,13 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             get.addHeader("DNT", "1");
             get.addHeader("Accept-Language", "en-US,en;q=0.8");
             
-            addSecurity(get);
+            try {
+                addSecurity(get);
+            } catch (Exception e) {
+                // If adding security fails, just go ahead and try without security.  If it's a public
+                // repository then this will work.  If not, then it will fail with a 404.
+            }
+            
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() == 404) {
                     throw new NotFoundException();
@@ -419,7 +427,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             throw new SourceConnectorException("Error getting GitLab resource content.", e);
         }
     }
-
 
     private String toEncodedId(GitLabResource resource) {
         String urlEncodedId;

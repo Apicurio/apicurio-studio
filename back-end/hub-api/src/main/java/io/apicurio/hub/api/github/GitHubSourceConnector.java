@@ -38,7 +38,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
@@ -111,46 +110,17 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             if (resource == null) {
                 throw new NotFoundException();
             }
-            String content = getResourceContent(resource);
-            Map<String, Object> jsonContent = mapper.readerFor(Map.class).readValue(content);
-            String b64Content = (String) jsonContent.get("content");
-            
-            content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
+            ResourceContent ctobj = getResourceContent(repositoryUrl);
+            String content = ctobj.getContent();
             ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
             if (info.getName() == null) {
                 info.setName(resource.getResourcePath());
             }
             return info;
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
-        }
-    }
-
-    /**
-     * Gets the content of the given GitHub resource.  This is done by querying for the
-     * content using the GH API.
-     * @param resource
-     */
-    private String getResourceContent(GitHubResource resource) throws NotFoundException, SourceConnectorException {
-        logger.debug("Getting resource content for: {}/{} - {}", 
-                resource.getOrganization(), resource.getRepository(), resource.getResourcePath());
-        try {
-            String contentUrl = this.endpoint("/repos/:owner/:repo/contents/:path")
-                    .bind("owner", resource.getOrganization())
-                    .bind("repo", resource.getRepository())
-                    .bind("path", resource.getResourcePath())
-                    .url();
-            GetRequest request = Unirest.get(contentUrl).header("Accept", "application/json");
-            addSecurityTo(request);
-            HttpResponse<String> userResp = request.asString();
-            if (userResp.getStatus() != 200) {
-                throw new NotFoundException();
-            } else {
-                String json = userResp.getBody();
-                return json;
-            }
-        } catch (UnirestException e) {
-            throw new SourceConnectorException("Error getting GitHub resource content.", e);
         }
     }
 
@@ -167,7 +137,12 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                     .bind("path", resource.getResourcePath())
                     .url();
             HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
-            addSecurityTo(request);
+            try {
+                addSecurityTo(request);
+            } catch (Exception e) {
+                // If adding security fails, just go ahead and try without security.  If it's a public
+                // repository then this will work.  If not, then it will fail with a 404.
+            }
             HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
             if (response.getStatus() == 404) {
             	throw new NotFoundException();

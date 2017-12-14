@@ -42,7 +42,7 @@ export class CreateApiFormComponent {
     @Output() onCreateApi = new EventEmitter<NewApi>();
 
     model: any = {
-        type: "3.0.0",
+        type: "3.0.1",
         name: null,
         description: null
     };
@@ -74,7 +74,7 @@ export class CreateApiFormComponent {
     public typeOptions(): DropDownOption[] {
         return [
             { name: "Open API 2.0 (Swagger)", value: "2.0"},
-            { name: "Open API 3.0.0", value: "3.0.0"}
+            { name: "Open API 3.0.1", value: "3.0.1"}
         ];
     }
 

@@ -168,9 +168,9 @@ export class ApiEditorComponent implements OnChanges {
         let resetVisitor: ResetProblemsVisitor = new ResetProblemsVisitor();
         OasVisitorUtil.visitTree(doc, resetVisitor);
 
-        if (doc.getSpecVersion() === "2.0") {
+        if (doc.is2xDocument()) {
             this.validationErrors = this._library.validate(doc, true);
-        } else if (doc.getSpecVersion() === "3.0.0") {
+        } else if (doc.is3xDocument()) {
             // TODO also validate 3.0.x documents once the oai-ts-core library supports that
         }
     }

@@ -4,6 +4,7 @@
   "files": [
     "./**/*.{html,css,js,png}"
   ],
+  "ghostMode": false,
   "watchOptions": {
     "ignored": "*"
   }

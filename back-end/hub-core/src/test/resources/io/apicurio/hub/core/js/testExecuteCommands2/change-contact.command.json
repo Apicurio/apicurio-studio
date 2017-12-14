@@ -1,0 +1,8 @@
+{
+	"__type": "ChangeContactCommand_30",
+	"_newName": "Company Name",
+	"_newEmail": "contact@company.com",
+	"_newUrl": "http://www.company.com",
+	"_oldContact": null,
+	"_nullInfo": false
+}

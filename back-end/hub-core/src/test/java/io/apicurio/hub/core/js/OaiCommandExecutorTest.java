@@ -58,6 +58,32 @@ public class OaiCommandExecutorTest {
         String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
         Assert.assertEquals(expectedNormalized, actualNormalized);
     }
+
+    @Test
+    public void testExecuteCommands2() throws Exception {
+        OaiCommandExecutor executor = new OaiCommandExecutor();
+        
+        String document = IOUtils.toString(getClass().getResource("testExecuteCommands2/__begin.json"));
+        // Load the commands
+        List<String> commands = new LinkedList<String>();
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-version.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-description.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-contact.command.json")));
+        
+        // Invoke the executeCommands function
+        String actual = executor.executeCommands(document, commands);
+        System.out.println("---");
+        System.out.println(actual);
+        System.out.println("---");
+        
+        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/__expected.json"));
+        
+        String actualNormalized = OaiCommandExecutorTest.normalizeString((String) actual);
+        String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
+        Assert.assertEquals(expectedNormalized, actualNormalized);
+    }
     
     protected static String normalizeString(String input) {
         return input.replaceAll("\\r\\n?", "\n");

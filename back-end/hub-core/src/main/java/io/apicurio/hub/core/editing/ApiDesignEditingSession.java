@@ -17,17 +17,25 @@
 package io.apicurio.hub.core.editing;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.websocket.Session;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.core.beans.ApiDesignCommand;
 
 /**
  * Models a single, shared editing session for an API Design.
  * @author eric.wittmann@gmail.com
  */
 public class ApiDesignEditingSession implements Closeable {
-    
+
+    private static Logger logger = LoggerFactory.getLogger(ApiDesignEditingSession.class);
+
     private final String designId;
     private final Map<String, Session> sessions = new HashMap<>();
     
@@ -73,12 +81,33 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
+     * Sends the given command to all other members of the editing session.
      * @param session
      * @param user
      * @param content
+     * @param contentVersion
      */
-    public void sendCommandToOthers(Session session, String user, String content) {
-        // TODO Send the command message to everyone *except* the session that generated it
+    public void sendCommandToOthers(Session session, String user, ApiDesignCommand command) {
+        for (Session otherSession : this.sessions.values()) {
+            if (otherSession != session) {
+                try {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("{");
+                    builder.append("\"contentVersion\": ");
+                    builder.append(command.getContentVersion());
+                    builder.append(", ");
+                    builder.append("\"type\": \"command\", ");
+                    builder.append("\"command\": ");
+                    builder.append(command.getCommand());
+                    builder.append("}");
+                    
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    // TODO what to do if this fails??
+                    logger.error("Error sending command to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
     }
 
     /**

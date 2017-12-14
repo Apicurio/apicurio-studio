@@ -200,8 +200,12 @@ public class EditApiDesignEndpoint {
                 // TODO do something sensible here - send a msg to the client?
                 return;
             }
+            ApiDesignCommand command = new ApiDesignCommand();
+            command.setCommand(content);
+            command.setContentVersion(cmdContentVersion);
+            
             // TODO send the new content version back to the originating user (with some sort of correlation) so the command can be properly sequenced
-            editingSession.sendCommandToOthers(session, user, content);
+            editingSession.sendCommandToOthers(session, user, command);
             return;
         }
         logger.error("Unknown message type: {}", msgType);
@@ -283,7 +287,7 @@ public class EditApiDesignEndpoint {
                 this.storage.updateApiDesign(userId, design);
             }
         } catch (Exception e) {
-            // TODO Not the end of the world if we fail to update the API's meta-data??
+            // Not the end of the world if we fail to update the API's meta-data
             logger.error(e.getMessage(), e);
         }
     }

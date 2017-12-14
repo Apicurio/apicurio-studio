@@ -1,7 +1,3 @@
-//
-// Library: oai-ts-commands
-// Version 0.2.10
-//
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('oai-ts-core')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'oai-ts-core'], factory) :
@@ -5376,12 +5372,18 @@ var DeleteNodeCommand = (function (_super) {
      * @param document
      */
     DeleteNodeCommand.prototype.execute = function (document) {
-        console.info("[" + this.type() + "] Executing.");
         var parent = this._parentPath.resolve(document);
-        if (!parent) {
+        if (this.isNullOrUndefined(parent)) {
             return;
         }
-        this._oldValue = this.oasLibrary().writeNode(parent[this._property]);
+        var propertyNode = parent[this._property];
+        if (this.isNullOrUndefined(propertyNode)) {
+            this._oldValue = null;
+            return;
+        }
+        else {
+            this._oldValue = this.oasLibrary().writeNode(propertyNode);
+        }
         parent[this._property] = null;
         delete parent[this._property];
     };
@@ -5392,7 +5394,7 @@ var DeleteNodeCommand = (function (_super) {
     DeleteNodeCommand.prototype.undo = function (document) {
         console.info("[" + this.type() + "] Reverting.");
         var parent = this._parentPath.resolve(document);
-        if (!parent) {
+        if (this.isNullOrUndefined(parent) || this.isNullOrUndefined(this._oldValue)) {
             return;
         }
         var restoredNode = this.readNode(document, this._oldValue);

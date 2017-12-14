@@ -1,0 +1,10 @@
+{
+	"__type": "DeleteContactCommand_30",
+	"_property": "contact",
+	"_parentPath": "/info",
+	"_oldValue": {
+		"name": "Example Org",
+		"url": "http://www.example.org",
+		"email": "contact@example.org"
+	}
+}	

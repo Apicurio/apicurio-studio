@@ -1,7 +1,3 @@
-//
-// Library: oai-ts-core
-// Version 0.2.5
-//
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -376,12 +372,18 @@ var OasNodePathSegment = (function () {
         return this._index;
     };
     OasNodePathSegment.prototype.resolve = function (node) {
+        if (node === null) {
+            return null;
+        }
         var childNode = null;
         if (this.isIndex() && node["__instanceof_IOasIndexedNode"]) {
             childNode = node.getItem(this.value());
         }
         else {
             childNode = node[this.value()];
+            if (childNode === undefined) {
+                childNode = null;
+            }
         }
         return childNode;
     };
@@ -10084,6 +10086,20 @@ var Oas30JS2ModelReader = (function (_super) {
             }
             schemaModel.anyOf = schemaModels;
         }
+        if (this.isDefined(not)) {
+            var notSchema = schemaModel.createNotSchema();
+            this.readSchema(not, notSchema);
+            schemaModel.not = notSchema;
+        }
+        if (this.isDefined(nullable)) {
+            schemaModel.nullable = nullable;
+        }
+        if (this.isDefined(writeOnly)) {
+            schemaModel.writeOnly = writeOnly;
+        }
+        if (this.isDefined(deprecated)) {
+            schemaModel.deprecated = deprecated;
+        }
     };
     /**
      * Reads a OAS 3.0 Server object from the given javascript data.
@@ -13211,6 +13227,140 @@ var Oas30CompositeVisitor = (function (_super) {
     Oas30CompositeVisitor.prototype.visitServerVariable = function (node) { this._acceptAll(node); };
     return Oas30CompositeVisitor;
 }(OasCompositeVisitor));
+var OasCombinedVisitorAdapter = (function () {
+    function OasCombinedVisitorAdapter() {
+    }
+    OasCombinedVisitorAdapter.prototype.visitDocument = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitInfo = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitContact = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLicense = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitPaths = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitPathItem = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitOperation = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitParameter = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitParameterDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitExternalDocumentation = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitSecurityRequirement = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitResponses = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitResponse = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitResponseDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitHeaders = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitHeader = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitExample = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitItems = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitTag = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitSecurityDefinitions = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitSecurityScheme = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitScopes = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitXML = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitSchemaDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitPropertySchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitAdditionalPropertiesSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitAllOfSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitItemsSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitDefinitions = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitParametersDefinitions = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitResponsesDefinitions = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitExtension = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitMediaType = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitEncoding = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLink = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLinkParameterExpression = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLinkRequestBodyExpression = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLinkServer = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitRequestBody = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitCallback = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitCallbackPathItem = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitServer = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitServerVariable = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitAnyOfSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitOneOfSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitNotSchema = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitComponents = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitExampleDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitRequestBodyDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitHeaderDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitOAuthFlows = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitImplicitOAuthFlow = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitPasswordOAuthFlow = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitClientCredentialsOAuthFlow = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitAuthorizationCodeOAuthFlow = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitLinkDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitCallbackDefinition = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitDiscriminator = function (node) { };
+    return OasCombinedVisitorAdapter;
+}());
+/**
+ * Base class for visitors that simply want to get called for *every* node
+ * in the model.
+ */
+var OasAllNodeVisitor = (function (_super) {
+    __extends$79(OasAllNodeVisitor, _super);
+    function OasAllNodeVisitor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    OasAllNodeVisitor.prototype.visitDocument = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitInfo = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitContact = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLicense = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitPaths = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitPathItem = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitOperation = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitParameter = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitParameterDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitExternalDocumentation = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitSecurityRequirement = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitResponses = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitResponse = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitResponseDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitHeaders = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitHeader = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitExample = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitItems = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitTag = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitSecurityDefinitions = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitSecurityScheme = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitScopes = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitXML = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitSchemaDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitPropertySchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitAdditionalPropertiesSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitAllOfSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitItemsSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitDefinitions = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitParametersDefinitions = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitResponsesDefinitions = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitExtension = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitMediaType = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitEncoding = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLink = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLinkParameterExpression = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLinkRequestBodyExpression = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLinkServer = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitRequestBody = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitCallback = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitCallbackPathItem = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitServer = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitServerVariable = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitAnyOfSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitOneOfSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitNotSchema = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitComponents = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitExampleDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitRequestBodyDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitHeaderDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitOAuthFlows = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitImplicitOAuthFlow = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitPasswordOAuthFlow = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitClientCredentialsOAuthFlow = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitAuthorizationCodeOAuthFlow = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitLinkDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitCallbackDefinition = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitDiscriminator = function (node) { this.doVisitNode(node); };
+    return OasAllNodeVisitor;
+}(OasCombinedVisitorAdapter));
 
 /**
  * @license
@@ -15353,6 +15503,8 @@ exports.Oas30NodeVisitorAdapter = Oas30NodeVisitorAdapter;
 exports.OasCompositeVisitor = OasCompositeVisitor;
 exports.Oas20CompositeVisitor = Oas20CompositeVisitor;
 exports.Oas30CompositeVisitor = Oas30CompositeVisitor;
+exports.OasCombinedVisitorAdapter = OasCombinedVisitorAdapter;
+exports.OasAllNodeVisitor = OasAllNodeVisitor;
 exports.OasVisitorUtil = OasVisitorUtil;
 exports.OasTraverser = OasTraverser;
 exports.Oas20Traverser = Oas20Traverser;

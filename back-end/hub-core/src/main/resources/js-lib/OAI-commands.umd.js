@@ -1120,7 +1120,7 @@ var ChangePropertyCommand = (function (_super) {
     ChangePropertyCommand.prototype.execute = function (document) {
         console.info("[ChangePropertyCommand] Executing.");
         var node = this._nodePath.resolve(document);
-        if (!node) {
+        if (this.isNullOrUndefined(node)) {
             return;
         }
         this._oldValue = node[this._property];
@@ -1133,7 +1133,7 @@ var ChangePropertyCommand = (function (_super) {
     ChangePropertyCommand.prototype.undo = function (document) {
         console.info("[ChangePropertyCommand] Reverting.");
         var node = this._nodePath.resolve(document);
-        if (!node) {
+        if (this.isNullOrUndefined(node)) {
             return;
         }
         node[this._property] = this._oldValue;
@@ -1363,7 +1363,7 @@ var ChangePropertyTypeCommand = (function (_super) {
     ChangePropertyTypeCommand.prototype.execute = function (document) {
         console.info("[ChangePropertyTypeCommand] Executing: " + this._newType);
         var prop = this._propPath.resolve(document);
-        if (!prop) {
+        if (this.isNullOrUndefined(prop)) {
             return;
         }
         var required = prop.parent()["required"];
@@ -1421,7 +1421,7 @@ var ChangePropertyTypeCommand = (function (_super) {
     ChangePropertyTypeCommand.prototype.undo = function (document) {
         console.info("[ChangePropertyTypeCommand] Reverting.");
         var prop = this._propPath.resolve(document);
-        if (!prop) {
+        if (this.isNullOrUndefined(prop)) {
             return;
         }
         var required = prop.parent()["required"];
@@ -1524,7 +1524,7 @@ function createChangeResponseTypeCommand(document, response, newType) {
         return new ChangeResponseTypeCommand_20(response, newType);
     }
     else {
-        throw new Error("ChangeResponseType is unsupported for OpenAPI 3.0.0 documents.");
+        throw new Error("ChangeResponseType is unsupported for OpenAPI 3.0.x documents.");
     }
 }
 /**
@@ -1535,7 +1535,7 @@ function createChangeResponseDefinitionTypeCommand(document, response, newType) 
         return new ChangeResponseDefinitionTypeCommand_20(response, newType);
     }
     else {
-        throw new Error("ChangeResponseDefinitionTypeCommand is unsupported for OpenAPI 3.0.0 documents.");
+        throw new Error("ChangeResponseDefinitionTypeCommand is unsupported for OpenAPI 3.0.x documents.");
     }
 }
 /**
@@ -5806,6 +5806,419 @@ var DeleteLicenseCommand_30 = (function (_super) {
     return DeleteLicenseCommand_30;
 }(AbstractDeleteLicenseCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+
+/**
+ * A command used to create a new server in a document.
+ */
+var NewServerCommand = (function (_super) {
+    __extends$44(NewServerCommand, _super);
+    /**
+     * C'tor.
+     * @param {Oas30Document | Oas30PathItem | Oas30Operation} parent
+     * @param {Oas30Server} server
+     */
+    function NewServerCommand(parent, server) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(parent)) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        if (!_this.isNullOrUndefined(server)) {
+            _this._server = _this.oasLibrary().writeNode(server);
+        }
+        return _this;
+    }
+    /**
+     * @return {string}
+     */
+    NewServerCommand.prototype.type = function () {
+        return "NewServerCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    NewServerCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    NewServerCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Adds the new server to the document.
+     * @param document
+     */
+    NewServerCommand.prototype.execute = function (document) {
+        console.info("[NewServerCommand] Executing.");
+        var parent = document;
+        if (!this.isNullOrUndefined(this._parentPath)) {
+            parent = this._parentPath.resolve(document);
+        }
+        // If the parent doesn't exist, abort!
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        if (this.isNullOrUndefined(parent.servers)) {
+            parent.servers = [];
+        }
+        var server = parent.createServer();
+        this.oasLibrary().readNode(this._server, server);
+        if (this.serverAlreadyExists(parent, server)) {
+            this._serverExisted = true;
+            return;
+        }
+        else {
+            parent.servers.push(server);
+            this._serverExisted = false;
+        }
+    };
+    /**
+     * Removes the security server.
+     * @param {Oas30Document} document
+     */
+    NewServerCommand.prototype.undo = function (document) {
+        console.info("[NewServerCommand] Reverting.");
+        if (this._serverExisted) {
+            return;
+        }
+        var parent = document;
+        if (!this.isNullOrUndefined(this._parentPath)) {
+            parent = this._parentPath.resolve(document);
+        }
+        // If the parent doesn't exist, abort!
+        if (this.isNullOrUndefined(parent) || this.isNullOrUndefined(parent.servers)) {
+            return;
+        }
+        var serverUrl = this._server.url;
+        var server = this.findServer(parent.servers, serverUrl);
+        if (this.isNullOrUndefined(server)) {
+            return;
+        }
+        parent.servers.splice(parent.servers.indexOf(server), 1);
+        if (parent.servers.length === 0) {
+            parent.servers = null;
+        }
+    };
+    /**
+     * Returns true if a server with the same url already exists in the parent.
+     * @param {Oas30Document | Oas30PathItem | Oas30Operation} parent
+     * @param {Oas30Server} server
+     */
+    NewServerCommand.prototype.serverAlreadyExists = function (parent, server) {
+        var rval = false;
+        parent.servers.forEach(function (pserver) {
+            if (pserver.url == server.url) {
+                rval = true;
+            }
+        });
+        return rval;
+    };
+    /**
+     * Finds a server by its URL from an array of servers.
+     * @param {Oas30Server[]} servers
+     * @param {string} serverUrl
+     */
+    NewServerCommand.prototype.findServer = function (servers, serverUrl) {
+        var rval = null;
+        if (this.isNullOrUndefined(servers)) {
+            return null;
+        }
+        servers.forEach(function (server) {
+            if (server.url == serverUrl) {
+                rval = server;
+            }
+        });
+        return rval;
+    };
+    return NewServerCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+
+/**
+ * A command used to delete a single server from an operation.
+ */
+var DeleteServerCommand = (function (_super) {
+    __extends$45(DeleteServerCommand, _super);
+    /**
+     * C'tor.
+     * @param {Oas30Server} server
+     */
+    function DeleteServerCommand(server) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(server)) {
+            _this._serverUrl = server.url;
+            _this._parentPath = _this.oasLibrary().createNodePath(server.parent());
+        }
+        return _this;
+    }
+    DeleteServerCommand.prototype.type = function () {
+        return "DeleteServerCommand";
+    };
+    /**
+     * Deletes the server.
+     * @param document
+     */
+    DeleteServerCommand.prototype.execute = function (document) {
+        console.info("[DeleteServerCommand] Executing.");
+        this._oldServer = null;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var server = this.findServer(parent.servers, this._serverUrl);
+        if (this.isNullOrUndefined(server)) {
+            return;
+        }
+        parent.servers.splice(parent.servers.indexOf(server), 1);
+        if (parent.servers.length === 0) {
+            parent.servers = null;
+        }
+        this._oldServer = this.oasLibrary().writeNode(server);
+    };
+    /**
+     * Restore the old (deleted) parameters.
+     * @param document
+     */
+    DeleteServerCommand.prototype.undo = function (document) {
+        console.info("[DeleteServerCommand] Reverting.");
+        if (this.isNullOrUndefined(this._oldServer)) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var server = parent.createServer();
+        this.oasLibrary().readNode(this._oldServer, server);
+        if (this.isNullOrUndefined(parent.servers)) {
+            parent.servers = [];
+        }
+        parent.servers.push(server);
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteServerCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteServerCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Finds a server by its URL from an array of servers.
+     * @param {Oas30Server[]} servers
+     * @param {string} serverUrl
+     */
+    DeleteServerCommand.prototype.findServer = function (servers, serverUrl) {
+        var rval = null;
+        if (this.isNullOrUndefined(servers)) {
+            return null;
+        }
+        servers.forEach(function (server) {
+            if (server.url == serverUrl) {
+                rval = server;
+            }
+        });
+        return rval;
+    };
+    return DeleteServerCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+
+/**
+ * A command used to modify a server.
+ */
+var ChangeServerCommand = (function (_super) {
+    __extends$46(ChangeServerCommand, _super);
+    /**
+     * C'tor.
+     * @param {Oas30Server} server
+     */
+    function ChangeServerCommand(server) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(server)) {
+            _this._parentPath = _this.oasLibrary().createNodePath(server.parent());
+            _this._serverUrl = server.url;
+            _this._serverObj = _this.oasLibrary().writeNode(server);
+        }
+        return _this;
+    }
+    ChangeServerCommand.prototype.type = function () {
+        return "ChangeServerCommand";
+    };
+    /**
+     * Modifies the server.
+     * @param document
+     */
+    ChangeServerCommand.prototype.execute = function (document) {
+        console.info("[ChangeServerCommand] Executing.");
+        this._oldServer = null;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var server = this.findServer(parent.servers, this._serverUrl);
+        if (this.isNullOrUndefined(server)) {
+            return;
+        }
+        // Back up the old server info (for undo)
+        this._oldServer = this.oasLibrary().writeNode(server);
+        // Replace with new server info
+        this.replaceServerWith(server, this._serverObj);
+    };
+    /**
+     * Resets the server back to the original value.
+     * @param document
+     */
+    ChangeServerCommand.prototype.undo = function (document) {
+        console.info("[ChangeServerCommand] Reverting.");
+        if (this.isNullOrUndefined(this._oldServer)) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var server = this.findServer(parent.servers, this._serverUrl);
+        if (this.isNullOrUndefined(server)) {
+            return;
+        }
+        this.replaceServerWith(server, this._oldServer);
+    };
+    /**
+     * Replaces the content of a server with the content from another server.
+     * @param {Oas30Server} toServer
+     * @param {Oas30Server} fromServer
+     */
+    ChangeServerCommand.prototype.replaceServerWith = function (toServer, fromServer) {
+        toServer.getServerVariables().forEach(function (var_) {
+            toServer.removeServerVariable(var_.name());
+        });
+        this.oasLibrary().readNode(fromServer, toServer);
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    ChangeServerCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    ChangeServerCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Finds a server by its URL from an array of servers.
+     * @param {Oas30Server[]} servers
+     * @param {string} serverUrl
+     */
+    ChangeServerCommand.prototype.findServer = function (servers, serverUrl) {
+        var rval = null;
+        if (this.isNullOrUndefined(servers)) {
+            return null;
+        }
+        servers.forEach(function (server) {
+            if (server.url == serverUrl) {
+                rval = server;
+            }
+        });
+        return rval;
+    };
+    return ChangeServerCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -5847,6 +6260,7 @@ var commandFactory = {
     "ChangeResponseDefinitionTypeCommand_20": function () { return new ChangeResponseDefinitionTypeCommand_20(null, null); },
     "ChangeSecuritySchemeCommand_20": function () { return new ChangeSecuritySchemeCommand_20(null); },
     "ChangeSecuritySchemeCommand_30": function () { return new ChangeSecuritySchemeCommand_30(null); },
+    "ChangeServerCommand": function () { return new ChangeServerCommand(null); },
     "ChangeTitleCommand_20": function () { return new ChangeTitleCommand_20(null); },
     "ChangeTitleCommand_30": function () { return new ChangeTitleCommand_30(null); },
     "ChangeVersionCommand_20": function () { return new ChangeVersionCommand_20(null); },
@@ -5870,6 +6284,7 @@ var commandFactory = {
     "DeleteSchemaDefinitionCommand_30": function () { return new DeleteSchemaDefinitionCommand_30(null); },
     "DeleteSecuritySchemeCommand_20": function () { return new DeleteSecuritySchemeCommand_20(null); },
     "DeleteSecuritySchemeCommand_30": function () { return new DeleteSecuritySchemeCommand_30(null); },
+    "DeleteServerCommand": function () { return new DeleteServerCommand(null); },
     "DeleteTagCommand_20": function () { return new DeleteTagCommand_20(null); },
     "DeleteTagCommand_30": function () { return new DeleteTagCommand_30(null); },
     "DeleteRequestBodyCommand_30": function () { return new DeleteRequestBodyCommand_30(null, null); },
@@ -5896,6 +6311,7 @@ var commandFactory = {
     "NewSchemaPropertyCommand_30": function () { return new NewSchemaPropertyCommand_30(null, null); },
     "NewSecuritySchemeCommand_20": function () { return new NewSecuritySchemeCommand_20(null); },
     "NewSecuritySchemeCommand_30": function () { return new NewSecuritySchemeCommand_30(null); },
+    "NewServerCommand": function () { return new NewServerCommand(null, null); },
     "NewTagCommand_20": function () { return new NewTagCommand_20(null); },
     "NewTagCommand_30": function () { return new NewTagCommand_30(null); },
     "ReplaceOperationCommand_20": function () { return new ReplaceOperationCommand_20(null, null); },

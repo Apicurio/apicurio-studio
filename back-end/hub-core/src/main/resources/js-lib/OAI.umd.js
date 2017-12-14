@@ -218,6 +218,20 @@ var OasDocument = (function (_super) {
     OasDocument.prototype.accept = function (visitor) {
         visitor.visitDocument(this);
     };
+    /**
+     * Returns true if the document is an OpenAPI/Swagger 2.0 document.
+     * @return {boolean}
+     */
+    OasDocument.prototype.is2xDocument = function () {
+        return this.getSpecVersion() === "2.0";
+    };
+    /**
+     * Returns true if the document is an OpenAPI 3.x document.
+     * @return {boolean}
+     */
+    OasDocument.prototype.is3xDocument = function () {
+        return this.getSpecVersion().indexOf("3.") === 0;
+    };
     return OasDocument;
 }(OasExtensibleNode));
 
@@ -4657,7 +4671,7 @@ var Oas30Example = (function (_super) {
     return Oas30Example;
 }(OasExtensibleNode));
 /**
- * Models an Example Definition (in the components section of the OpenAPI 3.0.0 document).
+ * Models an Example Definition (in the components section of the OpenAPI 3.0.x document).
  */
 var Oas30ExampleDefinition = (function (_super) {
     __extends$55(Oas30ExampleDefinition, _super);
@@ -7935,7 +7949,7 @@ var Oas30Document = (function (_super) {
     __extends$70(Oas30Document, _super);
     function Oas30Document() {
         var _this = _super.call(this) || this;
-        _this.openapi = "3.0.0";
+        _this.openapi = "3.0.1";
         _this._ownerDocument = _this;
         return _this;
     }
@@ -9382,7 +9396,7 @@ var Oas30JS2ModelReader = (function (_super) {
     }
     /**
      * Reads the given javascript data and returns an OAS 3.0 document.  Throws an error if
-     * the root 'openapi' property is not found or if its value is not "3.0.0".
+     * the root 'openapi' property is not found or if its value is not "3.0.x".
      * @param jsData
      */
     Oas30JS2ModelReader.prototype.read = function (jsData) {
@@ -9398,7 +9412,7 @@ var Oas30JS2ModelReader = (function (_super) {
     Oas30JS2ModelReader.prototype.readDocument = function (document, documentModel) {
         var _this = this;
         var openapi = document["openapi"];
-        if (openapi != "3.0.0") {
+        if (openapi.indexOf("3.") != 0) {
             throw Error("Unsupported specification version: " + openapi);
         }
         _super.prototype.readDocument.call(this, document, documentModel);
@@ -10196,7 +10210,7 @@ var OasDocumentFactory = (function () {
         if (oasVersion === "2.0") {
             return new Oas20Document();
         }
-        if (oasVersion === "3.0.0") {
+        if (oasVersion.indexOf("3.") === 0) {
             return new Oas30Document();
         }
         throw new Error("Unsupported OAS version: " + oasVersion);
@@ -10211,7 +10225,7 @@ var OasDocumentFactory = (function () {
             var reader = new Oas20JS2ModelReader();
             return reader.read(oasObject);
         }
-        else if (oasObject.openapi && oasObject.openapi === "3.0.0") {
+        else if (oasObject.openapi && oasObject.openapi.indexOf("3.") === 0) {
             var reader = new Oas30JS2ModelReader();
             return reader.read(oasObject);
         }
@@ -12924,7 +12938,7 @@ var OasVisitorUtil = (function () {
      */
     OasVisitorUtil.visitTree = function (node, visitor, direction) {
         if (direction === void 0) { direction = exports.OasTraverserDirection.down; }
-        if (node.ownerDocument().getSpecVersion() === "2.0") {
+        if (node.ownerDocument().is2xDocument()) {
             var traverser = void 0;
             if (direction === exports.OasTraverserDirection.up) {
                 traverser = new Oas20ReverseTraverser(visitor);
@@ -12934,7 +12948,7 @@ var OasVisitorUtil = (function () {
             }
             traverser.traverse(node);
         }
-        else if (node.ownerDocument().getSpecVersion() === "3.0.0") {
+        else if (node.ownerDocument().is3xDocument()) {
             var traverser = void 0;
             if (direction === exports.OasTraverserDirection.up) {
                 traverser = new Oas30ReverseTraverser(visitor);
@@ -15112,13 +15126,13 @@ var OasLibraryUtils = (function () {
         if (typeof source === "string") {
             source = JSON.parse(source);
         }
-        if (node.ownerDocument().getSpecVersion() === "2.0") {
+        if (node.ownerDocument().is2xDocument()) {
             var reader = new Oas20JS2ModelReader();
             var dispatcher = new Oas20JS2ModelReaderVisitor(reader, source);
             node.accept(dispatcher);
             return node;
         }
-        else if (node.ownerDocument().getSpecVersion() === "3.0.0") {
+        else if (node.ownerDocument().is3xDocument()) {
             var reader = new Oas30JS2ModelReader();
             var dispatcher = new Oas30JS2ModelReaderVisitor(reader, source);
             node.accept(dispatcher);
@@ -15134,12 +15148,12 @@ var OasLibraryUtils = (function () {
      * @param node
      */
     OasLibraryUtils.prototype.writeNode = function (node) {
-        if (node.ownerDocument().getSpecVersion() === "2.0") {
+        if (node.ownerDocument().is2xDocument()) {
             var visitor = new Oas20ModelToJSVisitor();
             OasVisitorUtil.visitTree(node, visitor);
             return visitor.getResult();
         }
-        else if (node.ownerDocument().getSpecVersion() === "3.0.0") {
+        else if (node.ownerDocument().is3xDocument()) {
             var visitor = new Oas30ModelToJSVisitor();
             OasVisitorUtil.visitTree(node, visitor);
             return visitor.getResult();
@@ -15156,7 +15170,7 @@ var OasLibraryUtils = (function () {
      */
     OasLibraryUtils.prototype.validate = function (node, recursive) {
         if (recursive === void 0) { recursive = true; }
-        if (node.ownerDocument().getSpecVersion() === "2.0") {
+        if (node.ownerDocument().is2xDocument()) {
             var visitor = new Oas20ValidationVisitor();
             if (recursive) {
                 OasVisitorUtil.visitTree(node, visitor);
@@ -15166,9 +15180,9 @@ var OasLibraryUtils = (function () {
             }
             return visitor.getValidationErrors();
         }
-        else if (node.ownerDocument().getSpecVersion() === "3.0.0") {
-            // TODO implement validation for OpenAPI 3.0.0
-            throw new Error("Validation rules not yet implemented for OpenAPI 3.0.0!");
+        else if (node.ownerDocument().is3xDocument()) {
+            // TODO implement validation for OpenAPI 3.x
+            throw new Error("Validation rules not yet implemented for OpenAPI 3.0.x!");
         }
         else {
             throw new Error("OAS version " + node.ownerDocument().getSpecVersion() + " not supported.");
@@ -15180,12 +15194,12 @@ var OasLibraryUtils = (function () {
      * @return {OasNodePath}
      */
     OasLibraryUtils.prototype.createNodePath = function (node) {
-        if (node.ownerDocument().getSpecVersion() === "2.0") {
+        if (node.ownerDocument().is2xDocument()) {
             var viz = new Oas20NodePathVisitor();
             OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
             return viz.path();
         }
-        else if (node.ownerDocument().getSpecVersion() === "3.0.0") {
+        else if (node.ownerDocument().is3xDocument()) {
             var viz = new Oas30NodePathVisitor();
             OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
             return viz.path();
@@ -15280,7 +15294,7 @@ var OasSchemaFactory = (function () {
                 }
             }
         };
-        if (document.getSpecVersion() === "2.0") {
+        if (document.is2xDocument()) {
             var doc = document;
             var definitions = doc.definitions;
             if (!definitions) {
@@ -15296,7 +15310,7 @@ var OasSchemaFactory = (function () {
             resolveAll(example, schema);
             return schema;
         }
-        else if (document.getSpecVersion() === "3.0.0") {
+        else if (document.is3xDocument()) {
             var doc = document;
             var components = doc.components;
             if (!components) {

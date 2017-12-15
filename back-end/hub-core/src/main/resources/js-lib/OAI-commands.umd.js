@@ -5830,7 +5830,14 @@ var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-
+function createNewServerCommand(document, parent, server) {
+    if (document.getSpecVersion() === "2.0") {
+        throw new Error("Servers were introduced in OpenAPI 3.0.0.");
+    }
+    else {
+        return new NewServerCommand(parent, server);
+    }
+}
 /**
  * A command used to create a new server in a document.
  */
@@ -5987,7 +5994,14 @@ var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-
+function createDeleteServerCommand(document, server) {
+    if (document.getSpecVersion() === "2.0") {
+        throw new Error("Servers are not supported in OpenAPI 2.0.");
+    }
+    else {
+        return new DeleteServerCommand(server);
+    }
+}
 /**
  * A command used to delete a single server from an operation.
  */
@@ -6110,7 +6124,14 @@ var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-
+function createChangeServerCommand(document, server) {
+    if (document.getSpecVersion() === "2.0") {
+        throw new Error("Servers are not supported in OpenAPI 2.0.");
+    }
+    else {
+        return new ChangeServerCommand(server);
+    }
+}
 /**
  * A command used to modify a server.
  */
@@ -6558,6 +6579,8 @@ exports.createChangeSecuritySchemeCommand = createChangeSecuritySchemeCommand;
 exports.ChangeSecuritySchemeCommand = ChangeSecuritySchemeCommand;
 exports.ChangeSecuritySchemeCommand_20 = ChangeSecuritySchemeCommand_20;
 exports.ChangeSecuritySchemeCommand_30 = ChangeSecuritySchemeCommand_30;
+exports.createChangeServerCommand = createChangeServerCommand;
+exports.ChangeServerCommand = ChangeServerCommand;
 exports.createChangeTitleCommand = createChangeTitleCommand;
 exports.ChangeTitleCommand = ChangeTitleCommand;
 exports.ChangeTitleCommand_20 = ChangeTitleCommand_20;
@@ -6619,6 +6642,8 @@ exports.createDeleteSecuritySchemeCommand = createDeleteSecuritySchemeCommand;
 exports.DeleteSecuritySchemeCommand = DeleteSecuritySchemeCommand;
 exports.DeleteSecuritySchemeCommand_20 = DeleteSecuritySchemeCommand_20;
 exports.DeleteSecuritySchemeCommand_30 = DeleteSecuritySchemeCommand_30;
+exports.createDeleteServerCommand = createDeleteServerCommand;
+exports.DeleteServerCommand = DeleteServerCommand;
 exports.createDeleteTagCommand = createDeleteTagCommand;
 exports.DeleteTagCommand = DeleteTagCommand;
 exports.DeleteTagCommand_20 = DeleteTagCommand_20;
@@ -6657,6 +6682,8 @@ exports.createNewSecuritySchemeCommand = createNewSecuritySchemeCommand;
 exports.NewSecuritySchemeCommand = NewSecuritySchemeCommand;
 exports.NewSecuritySchemeCommand_20 = NewSecuritySchemeCommand_20;
 exports.NewSecuritySchemeCommand_30 = NewSecuritySchemeCommand_30;
+exports.createNewServerCommand = createNewServerCommand;
+exports.NewServerCommand = NewServerCommand;
 exports.createNewTagCommand = createNewTagCommand;
 exports.NewTagCommand = NewTagCommand;
 exports.NewTagCommand_20 = NewTagCommand_20;

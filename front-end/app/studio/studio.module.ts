@@ -115,6 +115,8 @@ import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/fo
 import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
 import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
+import {AddServerDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-server.component";
+import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common/server-url.component";
 
 
 @NgModule({
@@ -134,7 +136,8 @@ import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         PageErrorComponent, CloneDefinitionDialogComponent, ClonePathDialogComponent, EditorDisconnectedDialogComponent,
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
-        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize
+        ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize,
+        AddServerDialogComponent, ServerUrlComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

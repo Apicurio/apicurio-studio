@@ -1,0 +1,1 @@
+<span class="server-url-segment" *ngFor="let segment of segments()" [class.server-variable]="segment.startsWith('{') && segment.endsWith('}')">{{ segment }}</span>

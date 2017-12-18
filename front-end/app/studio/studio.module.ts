@@ -117,6 +117,7 @@ import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/op
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 import {AddServerDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-server.component";
 import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common/server-url.component";
+import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/servers.component";
 
 
 @NgModule({
@@ -137,7 +138,7 @@ import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
         ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize,
-        AddServerDialogComponent, ServerUrlComponent
+        AddServerDialogComponent, ServerUrlComponent, ServersSectionComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

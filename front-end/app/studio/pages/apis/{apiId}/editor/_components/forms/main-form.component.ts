@@ -22,7 +22,6 @@ import {
     Oas20SecurityScheme,
     Oas30Document,
     Oas30SecurityScheme,
-    Oas30Server, Oas30ServerVariable,
     OasContact,
     OasDocument,
     OasSecurityScheme,
@@ -42,9 +41,6 @@ import {
     createDeleteTagCommand,
     createNewSecuritySchemeCommand,
     createNewTagCommand,
-    createDeleteServerCommand,
-    createNewServerCommand,
-    createChangeServerCommand,
     ICommand
 } from "oai-ts-commands";
 import {ILicense, LicenseService} from "../../_services/license.service";
@@ -56,7 +52,6 @@ import {
 import {ObjectUtils} from "../../_util/object.util";
 import {ContactInfo} from "../dialogs/set-contact.component";
 import {SecurityScheme30DialogComponent, SecurityScheme30EventData} from "../dialogs/security-scheme-30.component";
-import {ServerEventData} from "../dialogs/add-server.component";
 
 
 export abstract class MainFormComponent {
@@ -608,95 +603,6 @@ export class Main30FormComponent extends MainFormComponent {
         }
         if (scheme.type === "openIdConnect") {
             scheme.openIdConnectUrl = event.openIdConnectUrl;
-        }
-    }
-
-    /**
-     * Returns the list of global servers defined in the document.
-     * @return {Oas30Server[]}
-     */
-    public servers(): Oas30Server[] {
-        let servers: Oas30Server[] = (this.document as Oas30Document).servers;
-        if (ObjectUtils.isNullOrUndefined(servers)) {
-            servers = [];
-        }
-        // Clone the array
-        servers = servers.slice(0);
-        // Sort it
-        servers.sort( (obj1, obj2) => {
-            return obj1.url.toLowerCase().localeCompare(obj2.url.toLowerCase());
-        });
-        return servers;
-    }
-
-    /**
-     * Called when the user changes the description of a server.
-     * @param server
-     * @param description
-     */
-    public changeServerDescription(server: Oas30Server, description: string): void {
-        // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment
-        let command: ICommand = createChangePropertyCommand<string>(this.document, server, "description", description);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Called when the user chooses to delete a server.
-     * @param server
-     */
-    public deleteServer(server: Oas30Server): void {
-        let command: ICommand = createDeleteServerCommand(this.document, server);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Called when the user adds a new server.
-     * @param {Server30EventData} event
-     */
-    public addServer(event: ServerEventData): void {
-        console.info("[MainFormComponent] Adding a server: %s", event.url);
-
-        let doc30: Oas30Document = this.document as Oas30Document;
-        let newServer: Oas30Server = doc30.createServer();
-
-        this.copyServerToModel(event, newServer);
-
-        let command: ICommand = createNewServerCommand(this.document, doc30, newServer);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Called when the user edits an existing server.
-     * @param {ServerEventData} event
-     */
-    public changeServer(event: ServerEventData): void {
-        console.info("[MainFormComponent] Editing a server: %s", event.url);
-
-        let doc30: Oas30Document = this.document as Oas30Document;
-        let newServer: Oas30Server = doc30.createServer();
-
-        this.copyServerToModel(event, newServer);
-
-        let command: ICommand = createChangeServerCommand(this.document, newServer);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Copies the data from the event to the new server model.
-     * @param {ServerEventData} fromData
-     * @param {Oas30Server} toServer
-     */
-    private copyServerToModel(fromData: ServerEventData, toServer: Oas30Server): void {
-        toServer.url = fromData.url;
-        toServer.description = fromData.description;
-        if (fromData.variables) {
-            for (let varName in fromData.variables) {
-                let serverVar: Oas30ServerVariable = toServer.createServerVariable(varName);
-                serverVar.default = fromData.variables[varName].default;
-                serverVar.description = fromData.variables[varName].description;
-                serverVar.enum = fromData.variables[varName].enum;
-                toServer.addServerVariable(varName, serverVar);
-            }
         }
     }
 

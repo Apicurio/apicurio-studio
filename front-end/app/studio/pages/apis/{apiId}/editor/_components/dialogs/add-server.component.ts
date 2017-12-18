@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {Oas30Server} from "oai-ts-core";
 
@@ -63,7 +63,6 @@ export class AddServerDialogComponent {
      * @param {Oas30Server} server
      */
     public open(server?: Oas30Server): void {
-        this.mode = "create";
         if (server) {
             this.mode = "edit";
             this.model.url = server.url;
@@ -77,6 +76,13 @@ export class AddServerDialogComponent {
                 };
             });
             this.updateVariables();
+        } else {
+            this.mode = "create";
+            this.model = {
+                url: "",
+                description: "",
+                variables: {}
+            };
         }
         this._isOpen = true;
         this.addServerModal.changes.subscribe( () => {

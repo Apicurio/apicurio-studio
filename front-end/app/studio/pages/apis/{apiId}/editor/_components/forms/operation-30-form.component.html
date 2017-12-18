@@ -85,6 +85,9 @@
                     </div>
                 </div>
 
+                <!-- Servers -->
+                <servers-section [parent]="operation" (onCommand)="onCommand.emit($event)" [description]="'Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+
                 <!-- Path Parameters Section -->
                 <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
                     <div class="section-header panel-title">

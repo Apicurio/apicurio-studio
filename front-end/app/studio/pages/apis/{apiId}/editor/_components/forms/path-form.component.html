@@ -64,6 +64,9 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
 
+                <!-- Servers -->
+                <servers-section *ngIf="path.ownerDocument().is3xDocument()" [parent]="path" (onCommand)="onCommand.emit($event)" [description]="'Configure servers specific to this Path Item and all its Operations.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+
                 <!-- Path Parameters Section -->
                 <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
                     <div class="section-header panel-title">

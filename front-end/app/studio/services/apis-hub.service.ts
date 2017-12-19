@@ -47,6 +47,9 @@ class ApiEditingSession implements IApiEditingSession {
     private _commandHandler: ICommandHandler;
     private _oasLibrary: OasLibraryUtils;
 
+    private _connected: boolean;
+    private _pingIntervalId: number;
+
     /**
      * Constructor.
      * @param {EditableApiDefinition} api
@@ -54,6 +57,7 @@ class ApiEditingSession implements IApiEditingSession {
      */
     constructor(private api: EditableApiDefinition, private socket: WebSocket) {
         this._oasLibrary = new OasLibraryUtils();
+        this._connected = false;
     }
 
     /**
@@ -61,10 +65,14 @@ class ApiEditingSession implements IApiEditingSession {
      * @param {IConnectionHandler} handler
      */
     connect(handler: IConnectionHandler): void {
+        let me: ApiEditingSession = this;
         this._connectionHandler = handler;
         this.socket.onopen = () => {
             console.info("[ApiEditingSession] WS connection to server OPEN.");
+            this._connected = true;
             this._connectionHandler.onConnected();
+            // Start the 45s ping.
+            me.ping();
         };
         this.socket.onmessage = (msgEvent) => {
             console.info("[ApiEditingSession] Message received from server.");
@@ -83,13 +91,14 @@ class ApiEditingSession implements IApiEditingSession {
             }
         };
         this.socket.onclose = (event) => {
-            // TODO handle unexpected closure here somehow
             console.info("[ApiEditingSession] WS connection to server CLOSED: %o", event);
             if (event.code === 1000) {
                 this._connectionHandler.onClosed();
             } else {
                 this._connectionHandler.onDisconnected(event.code);
             }
+            this._connected = false;
+            window.clearInterval(this._pingIntervalId);
         };
     }
 
@@ -115,11 +124,30 @@ class ApiEditingSession implements IApiEditingSession {
     }
 
     /**
+     * Called to send a ping message to the server.
+     */
+    sendPing(): void {
+        console.info("[ApiEditingSession] Sending PING.");
+        let data: any = {
+            type: "ping"
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
      * Called to close the connection with the server.  Should only be called
      * when the user leaves the editor.
      */
-    close() {
+    close(): void {
         this.socket.close();
+    }
+
+    private ping(): void {
+        console.info("[ApiEditingSession] Starting the ping interval.");
+        this._pingIntervalId = window.setInterval(() => {
+            this.sendPing();
+        }, 45000);
     }
 }
 

@@ -207,6 +207,9 @@ public class EditApiDesignEndpoint {
             // TODO send the new content version back to the originating user (with some sort of correlation) so the command can be properly sequenced
             editingSession.sendCommandToOthers(session, user, command);
             return;
+        } else if (msgType.equals("ping")) {
+            logger.debug("PING message received.");
+            return;
         }
         logger.error("Unknown message type: {}", msgType);
         // TODO something went wrong if we got here - report an error of some kind

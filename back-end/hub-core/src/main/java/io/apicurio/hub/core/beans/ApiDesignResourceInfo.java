@@ -22,6 +22,8 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
 /**
  * Represents some basic information extracted from an API Design resource (the 
@@ -30,17 +32,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ApiDesignResourceInfo {
 
-    protected static final ObjectMapper jsonMapper = new ObjectMapper();
+    protected static final ObjectMapper jsonMapper;
+    protected static final ObjectMapper yamlMapper;
     static {
+        jsonMapper = new ObjectMapper();
         jsonMapper.setSerializationInclusion(Include.NON_NULL);
         jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        YAMLFactory factory = new YAMLFactory();
+        factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
+        yamlMapper = new ObjectMapper(factory);
+        yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public static ApiDesignResourceInfo fromContent(String content) throws Exception {
         String name = null;
         String description = null;
+        FormatType format = FormatType.JSON;
+        ObjectMapper mapper = jsonMapper;
         
-        OpenApi3Document document = jsonMapper.readerFor(OpenApi3Document.class).readValue(content);
+        if (!content.startsWith("{")) {
+            format = FormatType.YAML;
+            mapper = yamlMapper;
+        }
+        
+        OpenApi3Document document = mapper.readerFor(OpenApi3Document.class).readValue(content);
         if (document.getInfo() != null) {
             if (document.getInfo().getTitle() != null) {
                 name = document.getInfo().getTitle();
@@ -51,6 +66,7 @@ public class ApiDesignResourceInfo {
         }
         
         ApiDesignResourceInfo info = new ApiDesignResourceInfo();
+        info.setFormat(format);
         info.setName(name);
         info.setDescription(description);
         if (document.getTags() != null) {
@@ -65,6 +81,7 @@ public class ApiDesignResourceInfo {
     private String name;
     private String description;
     private Set<String> tags = new HashSet<>();
+    private FormatType format;
     
     /**
      * Constructor.
@@ -112,6 +129,20 @@ public class ApiDesignResourceInfo {
      */
     public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * @return the format
+     */
+    public FormatType getFormat() {
+        return format;
+    }
+
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(FormatType format) {
+        this.format = format;
     }
 
 }

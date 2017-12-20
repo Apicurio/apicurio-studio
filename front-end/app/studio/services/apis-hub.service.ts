@@ -28,7 +28,7 @@ import {ApiCollaborator, ApiCollaborators} from "../models/api-collaborators";
 
 import {Headers, Http, RequestOptions} from "@angular/http";
 import {NewApi} from "../models/new-api.model";
-import {AddApi} from "../models/add-api.model";
+import {ImportApi} from "../models/import-api.model";
 import {AbstractHubService} from "./hub";
 import {User} from "../models/user.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
@@ -239,18 +239,18 @@ export class HubApisService extends AbstractHubService implements IApisService {
     }
 
     /**
-     * @see IApisService.addApi
+     * @see IApisService.importApi
      */
-    public addApi(api: AddApi): Promise<Api> {
-        console.info("[HubApisService] Adding an API design via the hub API");
+    public importApi(api: ImportApi): Promise<Api> {
+        console.info("[HubApisService] Importing an API design via the hub API");
 
-        let addApiUrl: string = this.endpoint("/designs");
+        let importApiUrl: string = this.endpoint("/designs");
         let options: RequestOptions = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
         let body: any = api;
 
-        console.info("[HubApisService] Adding an API Design: %s", addApiUrl);
+        console.info("[HubApisService] Importing an API Design: %s", importApiUrl);
 
-        return this.http.put(addApiUrl, body, options).map( response => {
+        return this.http.put(importApiUrl, body, options).map( response => {
             let api: Api = response.json() as Api;
             return api;
         }).toPromise();

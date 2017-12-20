@@ -53,7 +53,7 @@ import {LoginPageComponent} from "./pages/login/login.page";
 import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {CreateApiPageComponent} from "./pages/apis/create/create.page";
-import {AddApiPageComponent} from "./pages/apis/add/add.page";
+import {ImportApiPageComponent} from "./pages/apis/import/import.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 import {ProfilePageComponent} from "./pages/settings/profile/profile.page";
@@ -64,7 +64,7 @@ import {CreatedLinkedAccountPageComponent} from "./pages/settings/accounts/{acco
 
 /* Page Components */
 import {CreateApiFormComponent} from "./pages/apis/create/_components/create-form.component";
-import {AddApiFormComponent} from "./pages/apis/add/_components/add-form.component";
+import {ImportApiFormComponent} from "./pages/apis/import/_components/import-form.component";
 import {ApisListComponent} from "./pages/apis/_components/apis-list.component";
 import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
@@ -123,9 +123,9 @@ import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), BsDropdownModule.forRoot()],
     declarations: [
-        StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, AddApiPageComponent,
+        StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
-        CreateApiFormComponent, AddApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
+        CreateApiFormComponent, ImportApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, PathItemComponent, DefinitionItemComponent,
         ResponseItemComponent, Main20FormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
         TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,

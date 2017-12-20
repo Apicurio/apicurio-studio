@@ -30,7 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.apicurio.hub.api.beans.AddApiDesign;
+import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.Collaborator;
@@ -52,7 +52,7 @@ public interface IDesignsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiDesign addDesign(AddApiDesign info) throws ServerError, NotFoundException;
+    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException;
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

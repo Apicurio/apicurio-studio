@@ -46,4 +46,14 @@ public class FormatUtils {
         return yamlMapper.writeValueAsString(tree);
     }
 
+    /**
+     * Converts the content from YAML to JSON format.
+     * @param content
+     * @throws IOException 
+     */
+    public static String yamlToJson(String content) throws IOException {
+        JsonNode tree = yamlMapper.reader().readTree(content);
+        return jsonMapper.writeValueAsString(tree);
+    }
+
 }

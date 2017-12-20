@@ -21,7 +21,7 @@ import {Observable} from "rxjs/Observable";
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
 import {NewApi} from "../models/new-api.model";
-import {AddApi} from "../models/add-api.model";
+import {ImportApi} from "../models/import-api.model";
 import {ICommand} from "oai-ts-commands";
 
 
@@ -101,16 +101,11 @@ export interface IApisService {
     createApi(api: NewApi): Promise<Api>;
 
     /**
-     * Adds an existing API to the Studio.  The assumption with this call is that the
-     * API's OpenAPI document already exists in the source repository.  All we're doing
-     * here is verifying that and then tracking it in the studio.
-     *
-     * This will store the API in whatever storage is used by this service impl.  It will
-     * return a Promise that the caller can use to be notified when the API has been successfully
-     * stored.
+     * Imports an existing API to the Studio.  The assumption with this call is that the
+     * API's OpenAPI document already exists in the source repository (or URL).
      * @param api
      */
-    addApi(api: AddApi): Promise<Api>;
+    importApi(api: ImportApi): Promise<Api>;
 
     /**
      * Called to delete an API.  This is done asynchronously and thus returns a promise.

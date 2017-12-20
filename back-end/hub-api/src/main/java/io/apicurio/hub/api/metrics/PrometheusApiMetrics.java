@@ -74,7 +74,7 @@ public class PrometheusApiMetrics implements IApiMetrics {
     public void apiCall(String endpoint, String method) {
         apiRequests.labels(endpoint, method).inc();;
     }
-    
+
     /**
      * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(java.lang.String)
      */
@@ -82,13 +82,17 @@ public class PrometheusApiMetrics implements IApiMetrics {
     public void apiCreate(String specVersion) {
         apisCreated.labels(specVersion).inc();
     }
-    
+
     /**
      * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
     public void apiImport(LinkedAccountType from) {
-        apisImported.labels(from.name()).inc();
+        if (from == null) {
+            apisImported.labels("url");
+        } else {
+            apisImported.labels(from.name()).inc();
+        }
     }
     
     /**

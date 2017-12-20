@@ -35,6 +35,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.result.ResultIterable;
@@ -477,7 +478,7 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.insertApiDesign();
                 String designId = handle.createUpdate(statement)
                       .bind(0, design.getName())
-                      .bind(1, design.getDescription())
+                      .bind(1, trimTo255(design.getDescription()))
                       .bind(2, design.getCreatedBy())
                       .bind(3, design.getCreatedOn())
                       .bind(4, asCsv(design.getTags()))
@@ -597,7 +598,7 @@ public class JdbcStorage implements IStorage {
                 statement = sqlStatements.updateApiDesign();
                 int rowCount = handle.createUpdate(statement)
                         .bind(0, design.getName())
-                        .bind(1, design.getDescription())
+                        .bind(1, trimTo255(design.getDescription()))
                         .bind(2, asCsv(design.getTags()))
                         .bind(3, Long.valueOf(design.getId()))
                         .execute();
@@ -611,6 +612,17 @@ public class JdbcStorage implements IStorage {
         } catch (Exception e) {
             throw new StorageException("Error updating an API design.", e);
         }
+    }
+
+    /**
+     * Trims the given string to a length of no more than 255 - for storing in the DB.
+     * @param description
+     */
+    private String trimTo255(String description) {
+        if (description == null || description.length() <= 255) {
+            return description;
+        }
+        return description.substring(0, 252) + "...";
     }
 
     /**

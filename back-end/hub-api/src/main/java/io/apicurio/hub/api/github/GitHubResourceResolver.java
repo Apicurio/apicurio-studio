@@ -32,7 +32,9 @@ public class GitHubResourceResolver {
     
     private static Pattern pattern1 = Pattern.compile("https://github.com/([^/]+)/([^/]+)/blob/[^/]+/(.*.json)");
     private static Pattern pattern2 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/[^/]+/(.*.json)");
-    
+    private static Pattern pattern3 = Pattern.compile("https://github.com/([^/]+)/([^/]+)/blob/[^/]+/(.*.ya?ml)");
+    private static Pattern pattern4 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/[^/]+/(.*.ya?ml)");
+
     /**
      * Resolves a github URL into a resource object.  The URL must be of the proper format.
      * @param ghUrl
@@ -61,7 +63,31 @@ public class GitHubResourceResolver {
             resource.setResourcePath(path);
             return resource;
         }
+
+        matcher = pattern3.matcher(ghUrl);
+        if (matcher.matches()) {
+            GitHubResource resource = new GitHubResource();
+            String org = matcher.group(1);
+            String repo = matcher.group(2);
+            String path = matcher.group(3);
+            resource.setOrganization(org);
+            resource.setRepository(repo);
+            resource.setResourcePath(path);
+            return resource;
+        }
         
+        matcher = pattern4.matcher(ghUrl);
+        if (matcher.matches()) {
+            GitHubResource resource = new GitHubResource();
+            String org = matcher.group(1);
+            String repo = matcher.group(2);
+            String path = matcher.group(3);
+            resource.setOrganization(org);
+            resource.setRepository(repo);
+            resource.setResourcePath(path);
+            return resource;
+        }
+
         return null;
     }
 

@@ -24,7 +24,27 @@ public class GitLabResourceResolverTest {
         Assert.assertEquals("api-samples", resource.getProject());
         Assert.assertEquals("jjackf", resource.getBranch());
         Assert.assertEquals("3.0/simple-api.json", resource.getResourcePath());
+    }
 
+    @Test
+    public void test_yaml() {
+        GitLabResource resource = GitLabResourceResolver.resolve("https://gitlab.com/innodays/apicurio-awesomeness/blob/master/newApi.yaml");
+        Assert.assertEquals("innodays", resource.getGroup());
+        Assert.assertEquals("apicurio-awesomeness", resource.getProject());
+        Assert.assertEquals("master", resource.getBranch());
+        Assert.assertEquals("newApi.yaml", resource.getResourcePath());
+
+        resource = GitLabResourceResolver.resolve("https://gitlab.com/Apicurio/api-samples/blob/master/pet-store.yml");
+        Assert.assertEquals("Apicurio", resource.getGroup());
+        Assert.assertEquals("api-samples", resource.getProject());
+        Assert.assertEquals("master", resource.getBranch());
+        Assert.assertEquals("pet-store.yml", resource.getResourcePath());
+
+        resource = GitLabResourceResolver.resolve("https://gitlab.com/Apicurio/api-samples/blob/jjackf/3.0/simple-api.yaml");
+        Assert.assertEquals("Apicurio", resource.getGroup());
+        Assert.assertEquals("api-samples", resource.getProject());
+        Assert.assertEquals("jjackf", resource.getBranch());
+        Assert.assertEquals("3.0/simple-api.yaml", resource.getResourcePath());
     }
 
 }

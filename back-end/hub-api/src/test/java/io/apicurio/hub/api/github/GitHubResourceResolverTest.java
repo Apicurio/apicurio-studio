@@ -54,4 +54,34 @@ public class GitHubResourceResolverTest {
         Assert.assertEquals("pet-store.json", resource.getResourcePath());
     }
 
+    /**
+     * Test method for {@link io.apicurio.hub.api.github.GitHubResourceResolver#resolve(java.lang.String)}.
+     */
+    @Test
+    public void testResolve_yaml() {
+        GitHubResource resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.yaml");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("Apicurio", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("pet-store/pet-store.yaml", resource.getResourcePath());
+
+        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.yaml");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("Apicurio", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.yaml", resource.getResourcePath());
+
+        resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.yml");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("Apicurio", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("apiman-rls/apiman-rls.yml", resource.getResourcePath());
+
+        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.yaml");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("Apicurio", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("pet-store.yaml", resource.getResourcePath());
+    }
+
 }

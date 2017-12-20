@@ -1,5 +1,4 @@
-/**
- * @license
+/*
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +14,13 @@
  * limitations under the License.
  */
 
-export class AddApi {
+package io.apicurio.hub.core.beans;
 
-    repositoryUrl: string;
-
-    constructor() {
-        this.repositoryUrl = "";
-    }
+/**
+ * @author eric.wittmann@gmail.com
+ */
+public enum FormatType {
+    
+    JSON, YAML
 
 }

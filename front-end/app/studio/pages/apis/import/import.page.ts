@@ -20,15 +20,15 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
-import {AddApi} from "../../../models/add-api.model";
+import {ImportApi} from "../../../models/import-api.model";
 
 @Component({
     moduleId: module.id,
-    selector: "addapi-page",
-    templateUrl: "add.page.html",
-    styleUrls: ["add.page.css"]
+    selector: "importapi-page",
+    templateUrl: "import.page.html",
+    styleUrls: ["import.page.css"]
 })
-export class AddApiPageComponent extends AbstractPageComponent {
+export class ImportApiPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
@@ -41,18 +41,18 @@ export class AddApiPageComponent extends AbstractPageComponent {
     }
 
     /**
-     * Called when the Add API form (component) emits a "add-api" event.  This is bound to
-     * from the addapi.page.html template.
-     * @param {AddApi} api
+     * Called when the Import API form (component) emits a "import-api" event.  This is bound to
+     * from the importapi.page.html template.
+     * @param {ImportApi} api
      */
-    public onAddApi(api: AddApi) {
-        console.log("[AddApiPageComponent] onAddApi(): " + JSON.stringify(api))
-        this.apis.addApi(api).then(updatedApi => {
+    public onImportApi(api: ImportApi) {
+        console.log("[ImportApiPageComponent] onImportApi(): " + JSON.stringify(api))
+        this.apis.importApi(api).then(updatedApi => {
             let link: string[] = [ "/apis", updatedApi.id ];
-            console.info("[AddApiPageComponent] Navigating to: %o", link);
+            console.info("[ImportApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {
-            console.error("[AddApiPageComponent] Error adding API: %o", error);
+            console.error("[ImportApiPageComponent] Error importing API: %o", error);
             this.error(error);
         })
     }

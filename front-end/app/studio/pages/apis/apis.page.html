@@ -25,7 +25,7 @@
                     <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="confirmDeleteDialog.open()">Delete</button>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-primary" [routerLink]="['add']">Add Existing API</a>
+                    <a class="btn btn-primary" [routerLink]="['import']">Import API</a>
                     <a class="btn btn-default" [routerLink]="['create']">Create New API</a>
                 </div>
                 <div class="form-group toolbar-pf-view-selector">
@@ -53,14 +53,14 @@
                 <h1>No APIs Found</h1>
                 <p>
                     It seems you have no APIs in the Studio yet.  This is probably the first time you've used it and haven't
-                    created or added any APIs yet!
+                    created or improted any APIs yet!
                 </p>
                 <p>
-                    Click below to either create a new API or add an existing API to the Studio.
+                    Click below to either create a new API or import an existing API to the Studio.
                 </p>
                 <div class="blank-slate-pf-main-action">
                     <div class="btn-group">
-                        <a routerLink="/apis/add" class="btn btn-primary btn-lg">Add Existing API</a>
+                        <a routerLink="/apis/import" class="btn btn-primary btn-lg">Import API</a>
                         <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>

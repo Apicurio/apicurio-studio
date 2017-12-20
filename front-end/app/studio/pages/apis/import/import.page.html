@@ -2,19 +2,23 @@
     <breadcrumbs>
         <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
         <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
-        <li breadcrumb label="Add API" icon="plus" class="active"></li>
+        <li breadcrumb label="Import API" icon="plus" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
 <div class="container-fluid" *ngIf="!pageError">
-    <div class="addapi-form row">
+    <div class="importapi-form row">
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
                 <strong>What is this page?</strong>
                 <p style="line-height: 18px">
-                    Hey there Here you can add an existing API to the Studio by telling us where the API's OpenAPI document is
-                    located.  Simply provide the GitHub URL of your OpenAPI document and we'll do the rest!
+                    Hey there! Here you can import an existing API to the Studio by telling us where the API's OpenAPI document is
+                    located.
+                </p>
+                <p style="line-height: 18px; margin-top: 12px">
+                    Simply provide the URL of your OpenAPI document and we'll do the rest!  The URL can point directly
+                    to the content, or it can be a source control URL (GitHub, GitLab, or Bitbucket).
                 </p>
             </div>
         </div>
@@ -27,13 +31,12 @@
                 <span class="pficon pficon-info"></span>
                 <strong>What do I do?</strong>
                 <p style="line-height: 18px">
-                    Simply copy/paste (<strong>or drag and drop!</strong>) the <a href="https://github.com/" target="_blank">GitHub</a>
-                    URL of your existing OpenAPI document from your browser into the form and then click "Add API".  Easy peasy,
-                    lemon squeezy!
+                    Simply copy/paste (<strong>or drag and drop!</strong>) the URL of your existing OpenAPI document
+                    from your browser into the form and then click "Import API".  Easy peasy, lemon squeezy!
                 </p>
             </div>
 
-            <addapi-form (onAddApi)="onAddApi($event)" #addApiForm></addapi-form>
+            <importapi-form (onImportApi)="onImportApi($event)" #importApiForm></importapi-form>
         </div>
     </div>
 </div>

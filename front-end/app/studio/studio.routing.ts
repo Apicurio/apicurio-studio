@@ -28,7 +28,7 @@ import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
 import {ApisPageComponent} from "./pages/apis/apis.page";
 import {CreateApiPageComponent} from "./pages/apis/create/create.page";
 import {ApiDetailPageComponent} from "./pages/apis/{apiId}/api-detail.page";
-import {AddApiPageComponent} from "./pages/apis/add/add.page";
+import {ImportApiPageComponent} from "./pages/apis/import/import.page";
 import {ApiEditorPageComponent} from "./pages/apis/{apiId}/editor/api-editor.page";
 import {ProfilePageComponent} from "./pages/settings/profile/profile.page";
 import {LinkedAccountsPageComponent} from "./pages/settings/accounts/accounts.page";
@@ -51,8 +51,8 @@ const _studioRoutes: any[] = [
         component: CreateApiPageComponent
     },
     {
-        path: "apis/add",
-        component: AddApiPageComponent
+        path: "apis/import",
+        component: ImportApiPageComponent
     },
     {
         path: "apis/:apiId",

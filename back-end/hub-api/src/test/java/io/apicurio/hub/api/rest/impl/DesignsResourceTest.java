@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
@@ -35,7 +36,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.apicurio.hub.api.beans.AddApiDesign;
+import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.rest.IDesignsResource;
@@ -103,12 +104,12 @@ public class DesignsResourceTest {
 
     @Test
     public void testListDesigns() throws ServerError, AlreadyExistsException, NotFoundException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        resource.addDesign(info);
-        info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
-        resource.addDesign(info);
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        resource.importDesign(info);
+        info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
+        resource.importDesign(info);
         
         Collection<ApiDesign> apis = resource.listDesigns();
         Assert.assertNotNull(apis);
@@ -145,10 +146,10 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testAddDesign() throws ServerError, AlreadyExistsException, NotFoundException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
+    public void testImportDesign_GitHub() throws ServerError, AlreadyExistsException, NotFoundException {
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.importDesign(info);
         Assert.assertNotNull(design);
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
@@ -161,6 +162,25 @@ public class DesignsResourceTest {
                 "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
+    }
+
+    @Test
+    public void testImportDesign_Url() throws ServerError, AlreadyExistsException, NotFoundException {
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
+        
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl(resourceUrl.toExternalForm());
+        ApiDesign design = resource.importDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        Assert.assertEquals("Rate Limiter API", design.getName());
+        Assert.assertEquals("A REST API used by clients to access the standalone Rate Limiter micro-service.", design.getDescription());
+
+        String ghLog = github.auditLog();
+        Assert.assertNotNull(ghLog);
+        Assert.assertEquals("---\n" + 
+                "---", ghLog);
     }
 
     @Test
@@ -186,9 +206,9 @@ public class DesignsResourceTest {
 
     @Test
     public void testDeleteDesign() throws ServerError, AlreadyExistsException, NotFoundException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.importDesign(info);
         String designId = design.getId();
         Assert.assertEquals("1", designId);
 
@@ -213,9 +233,9 @@ public class DesignsResourceTest {
 
     @Test
     public void testEditDesign() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.importDesign(info);
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
         
@@ -241,9 +261,9 @@ public class DesignsResourceTest {
 
     @Test
     public void testGetCollaborators() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.importDesign(info);
 
         Collection<Collaborator> collaborators = resource.getCollaborators(design.getId());
         Assert.assertNotNull(collaborators);
@@ -265,9 +285,9 @@ public class DesignsResourceTest {
 
     @Test
     public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException {
-        AddApiDesign info = new AddApiDesign();
-        info.setRepositoryUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
-        ApiDesign design = resource.addDesign(info);
+        ImportApiDesign info = new ImportApiDesign();
+        info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        ApiDesign design = resource.importDesign(info);
         
         // Add a command to change the title
         MockContentRow contentRow = new MockContentRow();

@@ -1,11 +1,11 @@
-<div class="addapi-form-panel panel panel-default" [class.dragging]="dragging"
+<div class="importapi-form-panel panel panel-default" [class.dragging]="dragging"
      (dragover)="onDragOver($event)" (drop)="onDrop($event)"
      (dragend)="onDragEnd()" (dragexit)="onDragEnd()" (dragleave)="onDragEnd()">
     <div class="panel-body">
-        <form id="addapi-form" class="form-horizontal" (submit)="addApi()" #apiForm="ngForm">
+        <form id="importapi-form" class="form-horizontal" (submit)="importApi()" #apiForm="ngForm">
             <div>&nbsp;</div>
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-repository-url">GitHub Url</label>
+                <label class="col-sm-2 control-label" for="api-repository-url">Url</label>
                 <div class="col-sm-10">
                     <input name="repository.url" type="url" id="api-repository-url" class="form-control"
                            placeholder="https://github.com/ORG/REPO/blob/master/path/to/open-api-doc.json" required
@@ -26,7 +26,7 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || addingApi">Add API</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || importingApi">Import API</button>
                 </div>
             </div>
         </form>

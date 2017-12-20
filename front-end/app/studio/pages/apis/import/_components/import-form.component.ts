@@ -15,24 +15,23 @@
  * limitations under the License.
  */
 
-import {Component, Inject, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
-import {Api} from "../../../../models/api.model";
-import {AddApi} from "../../../../models/add-api.model";
+import {ImportApi} from "../../../../models/import-api.model";
 
 
 @Component({
     moduleId: module.id,
-    selector: "addapi-form",
-    templateUrl: "add-form.component.html",
-    styleUrls: ["add-form.component.css"]
+    selector: "importapi-form",
+    templateUrl: "import-form.component.html",
+    styleUrls: ["import-form.component.css"]
 })
-export class AddApiFormComponent {
+export class ImportApiFormComponent {
 
-    @Output() onAddApi = new EventEmitter<AddApi>();
+    @Output() onImportApi = new EventEmitter<ImportApi>();
 
     model: string;
-    addingApi: boolean;
+    importingApi: boolean;
     dragging: boolean;
     error: string;
 
@@ -42,22 +41,22 @@ export class AddApiFormComponent {
      */
     constructor(@Inject(IApisService) private apis: IApisService) {
         this.model = null;
-        this.addingApi = false;
+        this.importingApi = false;
         this.dragging = false;
         this.error = null;
     }
 
     /**
-     * Called when the user clicks the "Add API" submit button on the form.
+     * Called when the user clicks the "Import API" submit button on the form.
      */
-    public addApi(): void {
+    public importApi(): void {
         this.error = null;
 
-        let addApi: AddApi = new AddApi();
-        addApi.repositoryUrl = this.model;
+        let importApi: ImportApi = new ImportApi();
+        importApi.url = this.model;
 
-        this.addingApi = true;
-        this.onAddApi.emit(addApi);
+        this.importingApi = true;
+        this.onImportApi.emit(importApi);
     }
 
     public onDragOver(event: DragEvent): void {

@@ -17,6 +17,8 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +42,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.apicurio.hub.api.beans.AddApiDesign;
+import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.connectors.ISourceConnector;
@@ -53,6 +56,7 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
@@ -115,45 +119,129 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#addDesign(io.apicurio.hub.api.beans.AddApiDesign)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#importDesign(io.apicurio.hub.api.beans.ImportApiDesign)
      */
     @Override
-    public ApiDesign addDesign(AddApiDesign info) throws ServerError, NotFoundException {
-        logger.debug("Adding an API Design: {}", info.getRepositoryUrl());
+    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException {
+        logger.debug("Importing an API Design: {}", info.getUrl());
         metrics.apiCall("/designs", "PUT");
-
+        
+        ISourceConnector connector = null;
+        
         try {
-            ISourceConnector connector = this.sourceConnectorFactory.createConnector(info.getRepositoryUrl());
-			ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getRepositoryUrl());
-            ResourceContent initialApiContent = connector.getResourceContent(info.getRepositoryUrl());
-			
-			Date now = new Date();
-			String user = this.security.getCurrentUser().getLogin();
+            connector = this.sourceConnectorFactory.createConnector(info.getUrl());
+        } catch (NotFoundException nfe) {
+            // This means it's not a source control URL.  So we'll treat it as a raw content URL.
+            connector = null;
+        }
+        
+        if (connector != null) {
+            return importDesignFromSource(info, connector);
+        } else {
+            return importDesignFromUrl(info);
+        }
+    }
+
+    /**
+     * Imports an API Design from one of the source control systems using its API.
+     * @param info
+     * @param connector
+     * @throws NotFoundException
+     * @throws ServerError 
+     */
+    private ApiDesign importDesignFromSource(ImportApiDesign info, ISourceConnector connector) throws NotFoundException, ServerError {
+        try {
+            ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getUrl());
+            ResourceContent initialApiContent = connector.getResourceContent(info.getUrl());
+            
+            Date now = new Date();
+            String user = this.security.getCurrentUser().getLogin();
             String description = resourceInfo.getDescription();
             if (description == null) {
                 description = "";
             }
 
-			ApiDesign design = new ApiDesign();
-			design.setName(resourceInfo.getName());
+            ApiDesign design = new ApiDesign();
+            design.setName(resourceInfo.getName());
             design.setDescription(description);
-			design.setCreatedBy(user);
-			design.setCreatedOn(now);
-			design.setTags(resourceInfo.getTags());
-			
-			try {
-			    String id = this.storage.createApiDesign(user, design, initialApiContent.getContent());
-			    design.setId(id);
-			} catch (StorageException e) {
-			    throw new ServerError(e);
-			}
-			
+            design.setCreatedBy(user);
+            design.setCreatedOn(now);
+            design.setTags(resourceInfo.getTags());
+            
+            try {
+                String content = initialApiContent.getContent();
+                if (resourceInfo.getFormat() == FormatType.YAML) {
+                    content = FormatUtils.yamlToJson(content);
+                }
+                String id = this.storage.createApiDesign(user, design, content);
+                design.setId(id);
+            } catch (StorageException e) {
+                throw new ServerError(e);
+            }
+            
             metrics.apiImport(connector.getType());
-			
-			return design;
-		} catch (SourceConnectorException e) {
-			throw new ServerError(e);
-		}
+            
+            return design;
+        } catch (SourceConnectorException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * Imports an API design from an arbitrary URL.  This simply opens a connection to that 
+     * URL and tries to consume its content as an OpenAPI document.
+     * @param info
+     * @throws NotFoundException
+     * @throws ServerError
+     */
+    private ApiDesign importDesignFromUrl(ImportApiDesign info) throws NotFoundException, ServerError {
+        try {
+            URL url = new URL(info.getUrl());
+            
+            try (InputStream is = url.openStream()) {
+                String content = IOUtils.toString(is);
+                ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
+                
+                String name = resourceInfo.getName();
+                if (name == null) {
+                    name = url.getPath();
+                    if (name != null && name.indexOf("/") >= 0) {
+                        name = name.substring(name.indexOf("/") + 1);
+                    }
+                }
+                if (name == null) {
+                    name = "Imported API Design";
+                }
+    
+                Date now = new Date();
+                String user = this.security.getCurrentUser().getLogin();
+    
+                ApiDesign design = new ApiDesign();
+                design.setName(name);
+                design.setDescription(resourceInfo.getDescription());
+                design.setCreatedBy(user);
+                design.setCreatedOn(now);
+                design.setTags(resourceInfo.getTags());
+    
+                try {
+                    if (resourceInfo.getFormat() == FormatType.YAML) {
+                        content = FormatUtils.yamlToJson(content);
+                    }
+                    String id = this.storage.createApiDesign(user, design, content);
+                    design.setId(id);
+                } catch (StorageException e) {
+                    throw new ServerError(e);
+                }
+                
+                metrics.apiImport(null);
+                
+                return design;
+            }
+        } catch (IOException e) {
+            throw new ServerError(e);
+        } catch (Exception e) {
+            throw new ServerError(e);
+        }
     }
 
     /**

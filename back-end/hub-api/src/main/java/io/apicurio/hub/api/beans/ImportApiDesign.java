@@ -19,22 +19,22 @@ package io.apicurio.hub.api.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class AddApiDesign {
+public class ImportApiDesign {
 
-    private String repositoryUrl;
+    private String url;
 
     /**
-     * @return the repositoryUrl
+     * @return the url
      */
-    public String getRepositoryUrl() {
-        return repositoryUrl;
+    public String getUrl() {
+        return url;
     }
 
     /**
-     * @param repositoryUrl the repositoryUrl to set
+     * @param url the url to set
      */
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
     
 }

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.apicurio</groupId>
 		<artifactId>apicurio-studio-shared</artifactId>
-		<version>0.2.1-SNAPSHOT</version>
+		<version>0.2.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>apicurio-studio-shared-beans</artifactId>

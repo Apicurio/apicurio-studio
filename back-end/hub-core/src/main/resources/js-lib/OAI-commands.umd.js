@@ -6658,6 +6658,17 @@ var OtEngine = (function () {
      */
     OtEngine.prototype.finalizeCommand = function (pendingCommandId, finalizedContentVersion) {
         console.info("[OtEngine] Finalizing command with contentId: %d  and new contentVersion: %d", pendingCommandId, finalizedContentVersion);
+        // Note: special case where the command being finalized is the first (or only) pending command in the list *AND* its
+        // finalizedContentVersion > than the most recent finalized command.  This represents the case where a single user
+        // is editing a document and results in a simple shifting of the pending command from one queue to another without
+        // doing the unnecessary work of unwinding the pending commands and re-applying them.
+        var isFirstPendingCmd = this.pendingCommands.length > 0 && this.pendingCommands[0].contentVersion === pendingCommandId;
+        var isLatestCmd = this.commands.length === 0 || (this.commands[this.commands.length - 1].contentVersion < finalizedContentVersion);
+        if (isFirstPendingCmd && isLatestCmd) {
+            console.info("[OtEngine] Pending command is 'next up', performing simple shift from pending to finalized.");
+            this.commands.push(this.pendingCommands.splice(0, 1)[0]);
+            return;
+        }
         // Rewind all pending commands.
         var pidx;
         for (pidx = this.pendingCommands.length - 1; pidx >= 0; pidx--) {

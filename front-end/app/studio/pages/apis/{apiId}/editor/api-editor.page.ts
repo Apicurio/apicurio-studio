@@ -24,10 +24,11 @@ import {EditableApiDefinition} from "../../../../models/api.model";
 import {IApiEditingSession, IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {ICommand} from "oai-ts-commands";
+import {ICommand, OtCommand} from "oai-ts-commands";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
+import {ApiDesignCommandAck} from "../../../../models/ack.model";
 
 @Component({
     moduleId: module.id,
@@ -47,9 +48,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private editingSession: IApiEditingSession;
 
-    private pendingCommands: ICommand[] = [];
-    private _pendingCommandsSubject: BehaviorSubject<ICommand[]> = new BehaviorSubject([]);
-    private _pendingCommands: Observable<ICommand[]> = this._pendingCommandsSubject.asObservable();
+    private pendingCommands: OtCommand[] = [];
+    private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
+    private _pendingCommands: Observable<OtCommand[]> = this._pendingCommandsSubject.asObservable();
 
     /**
      * Constructor.
@@ -85,6 +86,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 onCommand: (command) => {
                     this.zone.run(() => {
                         __component.executeCommand(command);
+                    });
+                },
+                onAck: (ack) => {
+                    this.zone.run(() => {
+                        __component.finalizeCommand(ack);
                     });
                 }
             });
@@ -147,7 +153,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Called when the editor fires this event.
      * @param {ICommand} command
      */
-    public onCommandExecuted(command: ICommand): void {
+    public onCommandExecuted(command: OtCommand): void {
         this.editingSession.sendCommand(command);
     }
 
@@ -155,9 +161,17 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Executes the given command in the editor.
      * @param {ICommand} command
      */
-    protected executeCommand(command: ICommand) {
+    protected executeCommand(command: OtCommand): void {
         this.pendingCommands.push(command);
         this._pendingCommandsSubject.next(this.pendingCommands);
+    }
+
+    /**
+     * Finalizes a given command after receiving an ack from the server.
+     * @param {ApiDesignCommandAck} ack
+     */
+    protected finalizeCommand(ack: ApiDesignCommandAck): void {
+        this._apiEditor.first.finalizeCommand(ack);
     }
 }
 

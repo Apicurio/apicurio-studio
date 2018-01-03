@@ -22,7 +22,8 @@ import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiCollaborators} from "../models/api-collaborators";
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
-import {ICommand} from "oai-ts-commands";
+import {OtCommand} from "oai-ts-commands";
+import {ApiDesignCommandAck} from "../models/ack.model";
 
 
 export interface IConnectionHandler {
@@ -35,7 +36,8 @@ export interface IConnectionHandler {
 }
 
 export interface ICommandHandler {
-    onCommand(command: ICommand): void;
+    onCommand(command: OtCommand): void;
+    onAck(ack: ApiDesignCommandAck): void;
 }
 
 
@@ -51,7 +53,7 @@ export interface IApiEditingSession {
 
     commandHandler(handler: ICommandHandler): void;
 
-    sendCommand(command: ICommand): void;
+    sendCommand(command: OtCommand): void;
 
     close();
 

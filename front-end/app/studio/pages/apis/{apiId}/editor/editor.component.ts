@@ -40,11 +40,11 @@ import {
     OasValidationError,
     OasVisitorUtil
 } from "oai-ts-core";
-import {CommandsManager} from "./_services/commands.manager";
 import {EditorMasterComponent} from "./_components/master.component";
 import {AbstractCombinedVisitorAdapter, AllNodeVisitor} from "./_visitors/base.visitor";
 import {NodeSelectionEvent} from "./_events/node-selection.event";
-import {ICommand} from "oai-ts-commands";
+import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
+import {ApiDesignCommandAck} from "../../../../models/ack.model";
 
 
 @Component({
@@ -57,11 +57,11 @@ import {ICommand} from "oai-ts-commands";
 export class ApiEditorComponent implements OnChanges {
 
     @Input() api: ApiDefinition;
-    @Output() onCommandExecuted: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
-    private _commands: CommandsManager = new CommandsManager();
+    private _otEngine: OtEngine = null;
 
     theme: string = "light";
 
@@ -103,22 +103,33 @@ export class ApiEditorComponent implements OnChanges {
     }
 
     /**
+     * Lazy getter for the OtEngine.
+     * @return {OtEngine}
+     */
+    public otEngine(): OtEngine {
+        if (this._otEngine === null) {
+            this._otEngine = new OtEngine(this.document());
+        }
+        return this._otEngine;
+    }
+
+    /**
      * Called whenever the user presses a key.
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
-            this._commands.undoLastCommand(this.document());
-            this.master.validateSelection();
-            this.validateModel();
+            console.info("[ApiEditorComponent] User wants to 'undo' the last command (not implemented).");
+            // this._commands.undoLastCommand(this.document());
+            // this.master.validateSelection();
+            // this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
-            this._commands.redoLastCommand(this.document());
-            this.master.validateSelection();
-            this.validateModel();
+            console.info("[ApiEditorComponent] User wants to 'redo' the last command (not implemented).");
+            // this._commands.redoLastCommand(this.document());
+            // this.master.validateSelection();
+            // this.validateModel();
         }
     }
 
@@ -127,8 +138,11 @@ export class ApiEditorComponent implements OnChanges {
      * @param command
      */
     public onCommand(command: ICommand): void {
-        this.executeCommand(command);
-        this.onCommandExecuted.emit(command);
+        let otCmd: OtCommand = new OtCommand();
+        otCmd.command = command;
+        otCmd.contentVersion = Date.now();
+        this.otEngine().executeCommand(otCmd, true);
+        this.onCommandExecuted.emit(otCmd);
 
         // After changing the model, we should re-validate it
         this.validateModel();
@@ -138,9 +152,17 @@ export class ApiEditorComponent implements OnChanges {
      * Executes a command.
      * @param {ICommand} command
      */
-    public executeCommand(command: ICommand): void {
+    public executeCommand(command: OtCommand): void {
         console.info("[ApiEditorComponent] Executing a command.");
-        this._commands.executeCommand(command, this.document());
+        this.otEngine().executeCommand(command);
+    }
+
+    /**
+     * Finalizes a command.
+     * @param {ApiDesignCommandAck} ack
+     */
+    public finalizeCommand(ack: ApiDesignCommandAck): void {
+        this.otEngine().finalizeCommand(ack.commandId, ack.contentVersion);
     }
 
     /**

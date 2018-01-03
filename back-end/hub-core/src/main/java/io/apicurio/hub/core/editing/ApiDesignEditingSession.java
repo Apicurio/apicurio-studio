@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 
 /**
  * Models a single, shared editing session for an API Design.
@@ -88,25 +89,48 @@ public class ApiDesignEditingSession implements Closeable {
      * @param contentVersion
      */
     public void sendCommandToOthers(Session session, String user, ApiDesignCommand command) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"command\", ");
+        builder.append("\"contentVersion\": ");
+        builder.append(command.getContentVersion());
+        builder.append(", ");
+        builder.append("\"command\": ");
+        builder.append(command.getCommand());
+        builder.append("}");
+        
         for (Session otherSession : this.sessions.values()) {
             if (otherSession != session) {
                 try {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("{");
-                    builder.append("\"contentVersion\": ");
-                    builder.append(command.getContentVersion());
-                    builder.append(", ");
-                    builder.append("\"type\": \"command\", ");
-                    builder.append("\"command\": ");
-                    builder.append(command.getCommand());
-                    builder.append("}");
-                    
                     otherSession.getBasicRemote().sendText(builder.toString());
                 } catch (IOException e) {
                     // TODO what to do if this fails??
                     logger.error("Error sending command to websocket with sessionId: " + otherSession.getId(), e);
                 }
             }
+        }
+    }
+
+    /**
+     * Sends an acknowledgement message to the given client.
+     * @param session
+     * @param ack
+     */
+    public void sendAck(Session session, ApiDesignCommandAck ack) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"ack\", ");
+        builder.append("\"contentVersion\": ");
+        builder.append(ack.getContentVersion());
+        builder.append(", ");
+        builder.append("\"commandId\": ");
+        builder.append(ack.getCommandId());
+        builder.append("}");
+        try {
+            session.getBasicRemote().sendText(builder.toString());
+        } catch (IOException e) {
+            // TODO what to do if this fails??
+            logger.error("Error sending ACK to websocket with sessionId: " + session.getId(), e);
         }
     }
 

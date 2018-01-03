@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
@@ -135,7 +136,7 @@ public class EditApiDesignEndpoint {
             }
             
             // TODO Fix race condition:  commands might come in after the SQL SELECT above but before joining the session
-            // TODO Note: this might not matter if propery sequencing is done on the client.  Instead, join the session first and THEN query for all commands
+            // TODO Note: this might not matter if proper sequencing is done on the client.  Instead, join the session first and THEN query for all commands
 
             // Join the editing session (or create a new one) for the API Design
             ApiDesignEditingSession editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
@@ -173,13 +174,18 @@ public class EditApiDesignEndpoint {
     @OnMessage
     public void onMessage(Session session, JsonNode message) {
         String designId = session.getPathParameters().get("designId");
-        logger.debug("Received a 'command' message from a client.");
-        logger.debug("\tdesignId: {}", designId);
-
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
+
+        logger.debug("Received a \"{}\" message from a client.", msgType);
+        logger.debug("\tdesignId: {}", designId);
+
         if (msgType.equals("command")) {
             String user = this.users.get(session.getId());
+            long localCommandId = -1;
+            if (message.has("commandId")) {
+                localCommandId = message.get("commandId").asLong();
+            }
             String content;
             long cmdContentVersion;
             
@@ -200,12 +206,21 @@ public class EditApiDesignEndpoint {
                 // TODO do something sensible here - send a msg to the client?
                 return;
             }
+            
+            // Send an ack message back to the user
+            ApiDesignCommandAck ack = new ApiDesignCommandAck();
+            ack.setCommandId(localCommandId);
+            ack.setContentVersion(cmdContentVersion);
+            editingSession.sendAck(session, ack);
+            logger.debug("ACK sent back to client.");
+            
+            // Now propagate the command to all other clients
             ApiDesignCommand command = new ApiDesignCommand();
             command.setCommand(content);
             command.setContentVersion(cmdContentVersion);
-            
-            // TODO send the new content version back to the originating user (with some sort of correlation) so the command can be properly sequenced
             editingSession.sendCommandToOthers(session, user, command);
+            logger.debug("Command propagated to 'other' clients.");
+
             return;
         } else if (msgType.equals("ping")) {
             logger.debug("PING message received.");

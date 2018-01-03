@@ -31,8 +31,9 @@ import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
 import {AbstractHubService} from "./hub";
 import {User} from "../models/user.model";
-import {ICommand, MarshallUtils} from "oai-ts-commands";
+import {ICommand, MarshallUtils, OtCommand} from "oai-ts-commands";
 import {OasLibraryUtils} from "oai-ts-core";
+import {ApiDesignCommandAck} from "../models/ack.model";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
@@ -79,12 +80,23 @@ class ApiEditingSession implements IApiEditingSession {
             let msg: any = JSON.parse(msgEvent.data);
             console.info("                    Message type: %s", msg.type);
             console.info("                    Content Version: %o", msg.contentVersion);
-            console.info("                    Command: %o", msg.command);
             if (msg.type === "command") {
+                console.info("                    Command: %o", msg.command);
                 // Process a 'command' style message
-                let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
                 if (this._commandHandler) {
-                    this._commandHandler.onCommand(command);
+                    let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
+                    let otCmd: OtCommand = new OtCommand();
+                    otCmd.contentVersion = msg.contentVersion;
+                    otCmd.command = command;
+                    this._commandHandler.onCommand(otCmd);
+                }
+            } else if (msg.type === "ack") {
+                console.info("                    Command Id: %o", msg.commandId);
+                if (this._commandHandler) {
+                    let ack: ApiDesignCommandAck = new ApiDesignCommandAck();
+                    ack.commandId = msg.commandId;
+                    ack.contentVersion = msg.contentVersion;
+                    this._commandHandler.onAck(ack);
                 }
             } else {
                 console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
@@ -114,10 +126,11 @@ class ApiEditingSession implements IApiEditingSession {
      * Called to send a command to the server.
      * @param {ICommand} command
      */
-    sendCommand(command: ICommand): void {
+    sendCommand(command: OtCommand): void {
         let data: any = {
             type: "command",
-            command: MarshallUtils.marshallCommand(command)
+            commandId: command.contentVersion,
+            command: MarshallUtils.marshallCommand(command.command)
         };
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);

@@ -6569,6 +6569,15 @@ var OtEngine = (function () {
         return this.document;
     };
     /**
+     * Returns true if there is at least one pending command in the engine.  A pending command is one
+     * that has not yet been finalized.  This typically means that the command has been applied to
+     * the local document but not persisted in some remote store.
+     * @return {boolean}
+     */
+    OtEngine.prototype.hasPendingCommands = function () {
+        return this.pendingCommands.length > 0;
+    };
+    /**
      * Executes the given command in the correct sequence.  This command must have a valid
      * finalized contentVersion property.  This property will determine where in the sequence
      * of commands this one falls.  The engine will revert the document to an appropriate state
@@ -6648,10 +6657,17 @@ var OtEngine = (function () {
      * @param {number} finalizedContentVersion
      */
     OtEngine.prototype.finalizeCommand = function (pendingCommandId, finalizedContentVersion) {
-        console.info("[OtEngine] Executing PENDING command with contentId: %s", pendingCommandId);
+        console.info("[OtEngine] Finalizing command with contentId: %d  and new contentVersion: %d", pendingCommandId, finalizedContentVersion);
+        // Rewind all pending commands.
+        var pidx;
+        for (pidx = this.pendingCommands.length - 1; pidx >= 0; pidx--) {
+            this.pendingCommands[pidx].command.undo(this.document);
+        }
+        // Temporarily detach the pending commands (so we don't undo them twice).
         var pending = this.pendingCommands;
         this.pendingCommands = [];
-        var idx = 0;
+        // Locate the pending command being finalized
+        var idx;
         var found = false;
         for (idx = 0; idx < pending.length; idx++) {
             if (pending[idx].contentVersion === pendingCommandId) {
@@ -6659,17 +6675,20 @@ var OtEngine = (function () {
                 break;
             }
         }
-        if (!found) {
-            console.info("[OtEngine] Attempted to finalize pending command %d but was not found.", pendingCommandId);
-            return;
+        // If found, remove the pending command being finalized from the pending array
+        if (found) {
+            var command = pending[idx];
+            pending.splice(idx, 1);
+            command.contentVersion = finalizedContentVersion;
+            this.executeCommand(command);
         }
-        var command = pending[idx];
-        pending.splice(idx, 1);
-        command.contentVersion = finalizedContentVersion;
-        this.executeCommand(command);
+        else {
+            console.info("[OtEngine] Attempted to finalize pending command %d but was not found.", pendingCommandId);
+        }
+        // Now re-apply and restore all remaining pending commands (if any)
         this.pendingCommands = pending;
-        for (var pidx = 0; pidx < this.pendingCommands.length; pidx++) {
-            this.pendingCommands[pidx].command.execute(this.document);
+        for (var pidx_1 = 0; pidx_1 < this.pendingCommands.length; pidx_1++) {
+            this.pendingCommands[pidx_1].command.execute(this.document);
         }
     };
     return OtEngine;

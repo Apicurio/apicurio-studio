@@ -30,6 +30,7 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
@@ -46,6 +47,7 @@ public class MockStorage implements IStorage {
     private Map<String, ApiDesign> designs = new HashMap<>();
     private Map<String, List<MockContentRow>> content = new HashMap<>();
     private Map<String, MockUuidRow> uuids = new HashMap<>();
+    private Map<String, MockInviteRow> invites = new HashMap<>();
     private int counter = 1;
     
     /**
@@ -339,6 +341,62 @@ public class MockStorage implements IStorage {
         list.add(row);
     }
     
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role)
+            throws StorageException {
+        MockInviteRow row = new MockInviteRow();
+        row.inviteId = inviteId;
+        row.createdBy = userId;
+        row.createdOn = new Date();
+        row.designId = designId;
+        row.modifiedBy = null;
+        row.role = role;
+        row.status = "pending";
+        this.invites.put(inviteId, row);
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateCollaborationInviteStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean updateCollaborationInviteStatus(String inviteId, String fromStatus, String toStatus, String userId)
+            throws StorageException {
+        MockInviteRow row = this.invites.get(inviteId);
+        if (row == null) {
+            return false;
+        }
+        if (!row.status.equals(fromStatus)) {
+            return false;
+        }
+        row.status = toStatus;
+        row.modifiedBy = userId;
+        return true;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listCollaborationInvites(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<Invitation> listCollaborationInvites(String designId, String userId) throws StorageException {
+        List<Invitation> invites = new ArrayList<>();
+        this.invites.values().forEach( row -> {
+            if (row.designId.equals(designId)) {
+                Invitation i = new Invitation();
+                i.setCreatedBy(row.createdBy);
+                i.setCreatedOn(row.createdOn);
+                i.setDesignId(designId);
+                i.setInviteId(row.inviteId);
+                i.setModifiedBy(row.modifiedBy);
+                i.setStatus(row.status);
+                invites.add(i);
+            }
+        });
+        return invites;
+    }
+    
     public static class MockContentRow {
         private static long CONTENT_COUNTER = 0;
         
@@ -357,6 +415,16 @@ public class MockStorage implements IStorage {
         public String secret;
         public long version;
         public long expiresOn;
+    }
+
+    public static class MockInviteRow {
+        public String createdBy;
+        public Date createdOn;
+        public String designId;
+        public String role;
+        public String inviteId;
+        public String status;
+        public String modifiedBy;
     }
 
 }

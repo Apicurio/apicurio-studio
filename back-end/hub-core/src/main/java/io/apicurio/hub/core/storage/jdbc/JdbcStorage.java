@@ -35,7 +35,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.result.ResultIterable;
@@ -48,6 +47,7 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -65,7 +65,7 @@ import io.apicurio.hub.core.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 2;
+    private static int DB_VERSION = 3;
     private static Object dbMutex = new Object();
 
     @Inject
@@ -368,7 +368,7 @@ public class JdbcStorage implements IStorage {
         } catch (IllegalStateException e) {
             throw new NotFoundException();
         } catch (Exception e) {
-            throw new StorageException("Error getting API design.", e);
+            throw new StorageException("Error getting collaborators.", e);
         }
     }
     
@@ -440,7 +440,7 @@ public class JdbcStorage implements IStorage {
         } catch (IllegalStateException e) {
             throw new NotFoundException();
         } catch (Exception e) {
-            throw new StorageException("Error getting API design.", e);
+            throw new StorageException("Error getting content document.", e);
         }
     }
     
@@ -462,7 +462,7 @@ public class JdbcStorage implements IStorage {
                         .list();
             });
         } catch (Exception e) {
-            throw new StorageException("Error getting API design.", e);
+            throw new StorageException("Error getting content commands.", e);
         }
     }
 
@@ -552,6 +552,10 @@ public class JdbcStorage implements IStorage {
 
                 // If OK then delete ACL entries
                 statement = sqlStatements.clearAcl();
+                handle.createUpdate(statement).bind(0, did).execute();
+
+                // And also delete any invitations
+                statement = sqlStatements.clearInvitations();
                 handle.createUpdate(statement).bind(0, did).execute();
 
                 // And also delete the api_content rows
@@ -725,6 +729,79 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error deleting a Linked Account", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role)
+            throws StorageException {
+        logger.debug("Inserting a collaboration invitation row: {}  for design: {}", inviteId, designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertCollaborationInvitation();
+                handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, new Date())
+                      .bind(2, username)
+                      .bind(3, Long.valueOf(designId))
+                      .bind(4, role)
+                      .bind(5, inviteId)
+                      .bind(6, "pending")
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting editing session UUID row.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateCollaborationInviteStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean updateCollaborationInviteStatus(String inviteId, String fromStatus, String toStatus, String userId)
+            throws StorageException {
+        logger.debug("Updating the status of an invitation: {}  from: {}  to: {}", inviteId, fromStatus, toStatus);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateCollaborationInvitationStatus();
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, toStatus)
+                        .bind(1, userId)
+                        .bind(2, new Date())
+                        .bind(3, inviteId)
+                        .bind(4, fromStatus)
+                        .execute();
+                if (rowCount == 0) {
+                    return false;
+                }
+                return true;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error updating an invitation status.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listCollaborationInvites(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<Invitation> listCollaborationInvites(String designId, String userId) throws StorageException {
+        logger.debug("Selecting all invitations for API Design: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectCollaborationInvitations();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, userId)
+                        .map(InvitationRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting invitations.", e);
+        }
+    }
 
     /**
      * A row mapper to read an api design from the DB (as a single row in a SELECT)
@@ -836,6 +913,32 @@ public class JdbcStorage implements IStorage {
             } catch (IOException e) {
                 throw new SQLException(e);
             }
+        }
+
+    }
+
+    /**
+     * A row mapper to read an invitation from a db row.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class InvitationRowMapper implements RowMapper<Invitation> {
+        
+        public static final InvitationRowMapper instance = new InvitationRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public Invitation map(ResultSet rs, StatementContext ctx) throws SQLException {
+            Invitation invite = new Invitation();
+            invite.setCreatedBy(rs.getString("created_by"));
+            invite.setCreatedOn(rs.getDate("created_on"));
+            invite.setDesignId(rs.getString("design_id"));
+            invite.setInviteId(rs.getString("invite_id"));
+            invite.setModifiedBy(rs.getString("modified_by"));
+            invite.setModifiedOn(rs.getDate("modified_on"));
+            invite.setStatus(rs.getString("status"));
+            return invite;
         }
 
     }

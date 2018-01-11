@@ -191,6 +191,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String clearAcl() {
         return "DELETE FROM acl WHERE design_id = ?";
     }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#clearInvitations()
+     */
+    @Override
+    public String clearInvitations() {
+        return "DELETE FROM acl_invites WHERE design_id = ?";
+    }
     
     /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#hasWritePermission()
@@ -199,7 +207,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String hasWritePermission() {
         return "SELECT COUNT(*) "
                 + "FROM acl a "
-                + "WHERE a.design_id = ? AND a.user_id = ? AND (a.role = 'owner' OR a.role = 'editor')";
+                + "WHERE a.design_id = ? AND a.user_id = ? AND (a.role = 'owner' OR a.role = 'collaborator')";
     }
     
     /**
@@ -255,6 +263,34 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         return "SELECT u.version "
                 + "FROM session_uuids u "
                 + "WHERE u.uuid = ? AND u.design_id = ? AND u.secret = ? AND u.expires_on > ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#updateCollaborationInvitationStatus()
+     */
+    @Override
+    public String updateCollaborationInvitationStatus() {
+        return "UPDATE acl_invites SET status = ?, modified_by = ?, modified_on = ? WHERE invite_id = ? AND status = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertCollaborationInvitation()
+     */
+    @Override
+    public String insertCollaborationInvitation() {
+        return "INSERT INTO acl_invites (created_by, created_on, created_by_display, design_id, role, invite_id, status) "
+                  + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectCollaborationInvitations()
+     */
+    @Override
+    public String selectCollaborationInvitations() {
+        return "SELECT i.* "
+                + "FROM acl_invites i "
+                + "JOIN acl a ON a.design_id = i.design_id "
+                + "WHERE i.design_id = ? AND a.user_id = ?";
     }
     
     /**

@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 2);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 3);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP WITHOUT TIME ZONE, used_on TIMESTAMP WITHOUT TIME ZONE, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -22,6 +22,11 @@ CREATE TABLE acl (user_id VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, role
 ALTER TABLE acl ADD PRIMARY KEY (user_id, design_id);
 ALTER TABLE acl ADD CONSTRAINT FK_acl_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_acl_1 ON acl(role);
+
+CREATE TABLE acl_invites (created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL, created_by_display VARCHAR(255), design_id BIGINT NOT NULL, role VARCHAR(16) NOT NULL, invite_id VARCHAR(64) NOT NULL, status VARCHAR(16) NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP WITHOUT TIME ZONE);
+ALTER TABLE acl_invites ADD PRIMARY KEY (invite_id);
+ALTER TABLE acl_invites ADD CONSTRAINT FK_invites_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
+CREATE INDEX IDX_invites_1 ON acl_invites(status);
 
 CREATE TABLE session_uuids (uuid VARCHAR(255) NOT NULL PRIMARY KEY, design_id BIGINT NOT NULL, user_id VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, version BIGINT NOT NULL, expires_on BIGINT NOT NULL);
 CREATE INDEX IDX_uuids_1 ON session_uuids(uuid, design_id, secret);

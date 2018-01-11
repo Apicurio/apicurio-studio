@@ -38,6 +38,7 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -573,7 +574,124 @@ public class JdbcStorageTest {
         // Try to consume the UUID row again - rval should be false
         consumed = storage.consumeEditingSessionUuid(uuid, designId, user, hash);
         Assert.assertFalse(consumed);
+    }
 
+    @Test
+    public void testCreateCollaborationInvite() throws Exception {
+        // First create an API design.
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+
+        // Now create a collaboration invite
+        String inviteId = UUID.randomUUID().toString();
+        String designId = id;
+        String userId = "user";
+        String username = "User";
+        String role = "collaborator";
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+    }
+
+    @Test
+    public void testListCollaborationInvites() throws Exception {
+        // First create an API design.
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+
+        String designId = id;
+        String userId = "user";
+        String username = "User";
+        String role = "collaborator";
+        
+        // Now create a few collaboration invites
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
+        
+        // Now get the list of invites
+        List<Invitation> invites = storage.listCollaborationInvites(designId, "user");
+        Assert.assertNotNull(invites);
+        Assert.assertEquals(3, invites.size());
+
+        // What if the user doesn't have access?
+        invites = storage.listCollaborationInvites(designId, "user2");
+        Assert.assertNotNull(invites);
+        Assert.assertTrue(invites.isEmpty());
+
+        // Now some extra data...
+        String designId2 = storage.createApiDesign("user", design, "{}");
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role);
+
+        // Same invite list
+        invites = storage.listCollaborationInvites(designId, "user");
+        Assert.assertNotNull(invites);
+        Assert.assertEquals(3, invites.size());
+        Assert.assertEquals(designId, invites.get(0).getDesignId());
+        Assert.assertEquals("user", invites.get(0).getCreatedBy());
+        Assert.assertNotNull(invites.get(0).getInviteId());
+        Assert.assertEquals("pending", invites.get(0).getStatus());
+    }
+    
+
+    @Test
+    public void testUpdateCollaborationInviteStatus() throws Exception {
+        // First create an API design.
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+
+        String designId = id;
+        String userId = "user";
+        String username = "User";
+        String role = "collaborator";
+        
+        // Now create an invite
+        String inviteId = UUID.randomUUID().toString();
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+        
+        // Now get the list of invites
+        List<Invitation> invites = storage.listCollaborationInvites(designId, "user");
+        Assert.assertNotNull(invites);
+        Assert.assertEquals(1, invites.size());
+        Assert.assertEquals(designId, invites.get(0).getDesignId());
+        Assert.assertEquals("user", invites.get(0).getCreatedBy());
+        Assert.assertNotNull(invites.get(0).getInviteId());
+        Assert.assertEquals("pending", invites.get(0).getStatus());
+        Assert.assertNull(invites.get(0).getModifiedBy());
+        Assert.assertNull(invites.get(0).getModifiedOn());
+        
+        // Now change the invite status
+        boolean b = storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", "user2");
+        Assert.assertTrue(b);
+
+        // Now get the list of invites again - the status should be updated
+        invites = storage.listCollaborationInvites(designId, "user");
+        Assert.assertNotNull(invites);
+        Assert.assertEquals(1, invites.size());
+        Assert.assertEquals(designId, invites.get(0).getDesignId());
+        Assert.assertEquals("user", invites.get(0).getCreatedBy());
+        Assert.assertNotNull(invites.get(0).getInviteId());
+        Assert.assertEquals("accepted", invites.get(0).getStatus());
+        Assert.assertEquals("user2", invites.get(0).getModifiedBy());
+        Assert.assertNotNull(invites.get(0).getModifiedOn());
+        
+        // Now try again to change the invite status - should fail! (can only accept once)
+        b = storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", "user3");
+        Assert.assertFalse(b);
     }
     
     /**

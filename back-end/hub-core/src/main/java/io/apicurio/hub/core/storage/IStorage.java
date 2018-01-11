@@ -24,6 +24,7 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
@@ -215,4 +216,33 @@ public interface IStorage {
      */
     public boolean consumeEditingSessionUuid(String uuid, String designId, String userId, String hash) throws StorageException;
 
+    /**
+     * Creates an invitation to collaborate on an API design.
+     * @param inviteId
+     * @param designId
+     * @param userId
+     * @param username
+     * @param role
+     * @throws StorageException
+     */
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role) throws StorageException;
+
+    /**
+     * Updates the status of an invitation.  This can be used to accept, reject, or cancel an invite.
+     * @param inviteId
+     * @param fromStatus
+     * @param toStatus
+     * @param userId
+     * @return true if the status was changed successfully
+     * @throws StorageException
+     */
+    public boolean updateCollaborationInviteStatus(String inviteId, String fromStatus, String toStatus, String userId) throws StorageException;
+    
+    /**
+     * Returns all of the invitations for a given API design.
+     * @param designId
+     * @throws StorageException
+     */
+    public List<Invitation> listCollaborationInvites(String designId, String userId) throws StorageException;
+    
 }

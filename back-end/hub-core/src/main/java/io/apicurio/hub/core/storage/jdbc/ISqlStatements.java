@@ -104,6 +104,11 @@ public interface ISqlStatements {
     public String updateApiDesign();
 
     /**
+     * A statement used to update the status of an invitation.
+     */
+    public String updateCollaborationInvitationStatus();
+
+    /**
      * A statement used to insert a row into the acl table.
      */
     public String insertAcl();
@@ -117,6 +122,11 @@ public interface ISqlStatements {
      * A statement used to delete all acl rows for an api design.
      */
     public String clearAcl();
+
+    /**
+     * A statement used to delete all acl_invites rows for an api design.
+     */
+    public String clearInvitations();
 
     /**
      * A statement used to delete all api_content rows for a given api design.
@@ -144,6 +154,16 @@ public interface ISqlStatements {
      * a given API Design.
      */
     public String selectContentCommands();
+
+    /**
+     * A statement used to return all of the collaboration invitations for a given API design.
+     */
+    public String selectCollaborationInvitations();
+
+    /**
+     * A statement used to insert a collaboration invitation row into the db.
+     */
+    public String insertCollaborationInvitation();
 
     /**
      * A statement used to insert a new row in the 'session_uuids' table.

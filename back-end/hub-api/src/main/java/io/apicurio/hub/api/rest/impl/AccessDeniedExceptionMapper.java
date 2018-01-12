@@ -14,47 +14,34 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.beans;
+package io.apicurio.hub.api.rest.impl;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+import io.apicurio.hub.core.exceptions.AccessDeniedException;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class Collaborator {
+@Provider
+public class AccessDeniedExceptionMapper implements ExceptionMapper<AccessDeniedException> {
 
-    private String name;
-    private int edits;
-    
     /**
      * Constructor.
      */
-    public Collaborator() {
+    public AccessDeniedExceptionMapper() {
+    }
+    
+    /**
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
+    @Override
+    public Response toResponse(AccessDeniedException data) {
+        ResponseBuilder builder = Response.status(403);
+        return builder.build();
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the commits
-     */
-    public int getEdits() {
-        return edits;
-    }
-
-    /**
-     * @param commits the commits to set
-     */
-    public void setEdits(int commits) {
-        this.edits = commits;
-    }
 }

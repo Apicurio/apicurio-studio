@@ -19,7 +19,7 @@ import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
-import {ApiCollaborators} from "../models/api-collaborators";
+import {ApiContributors} from "../models/api-contributors";
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
 import {OtCommand} from "oai-ts-commands";
@@ -142,10 +142,10 @@ export interface IApisService {
     getApiDefinition(apiId: string): Promise<ApiDefinition>;
 
     /**
-     * Gets the list of collaborators for the API with the given id.
+     * Gets the list of contributors for the API with the given id.
      * @param apiId
      */
-    getCollaborators(apiId: string): Promise<ApiCollaborators>;
+    getContributors(apiId: string): Promise<ApiContributors>;
 }
 
 export const IApisService = new InjectionToken("IApisService");

@@ -116,7 +116,7 @@ public class EditApiDesignEndpoint {
 
             long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
 
-            List<ApiDesignCommand> commands = this.storage.getContentCommands(userId, designId, contentVersion);
+            List<ApiDesignCommand> commands = this.storage.listContentCommands(userId, designId, contentVersion);
             for (ApiDesignCommand command : commands) {
                 String cmdData = command.getCommand();
 
@@ -270,7 +270,7 @@ public class EditApiDesignEndpoint {
     private void rollupCommands(String userId, String designId) throws NotFoundException, StorageException, OaiCommandException {
         logger.debug("Rolling up commands for API with ID: {}", designId);
         ApiDesignContent designContent = this.storage.getLatestContentDocument(userId, designId);
-        List<ApiDesignCommand> apiCommands = this.storage.getContentCommands(userId, designId, designContent.getContentVersion());
+        List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(userId, designId, designContent.getContentVersion());
         if (apiCommands.isEmpty()) {
             logger.debug("No hanging commands found, rollup of API {} canceled.", designId);
             return;

@@ -44,9 +44,10 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -205,7 +206,133 @@ public class JdbcStorage implements IStorage {
             }
         });
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#hasOwnerPermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean hasOwnerPermission(String userId, String designId) throws StorageException {
+        try {
+            return this.jdbi.withHandle( handle -> {
+                // Check for permissions first
+                String statement = sqlStatements.hasOwnerPermission();
+                Long did = Long.valueOf(designId);
+                int count = handle.createQuery(statement)
+                    .bind(0, did)
+                    .bind(1, userId)
+                    .mapTo(Integer.class).findOnly();
+                return count == 1;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error checking permission.", e);
+        }        
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#hasWritePermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean hasWritePermission(String userId, String designId) throws StorageException {
+        try {
+            return this.jdbi.withHandle( handle -> {
+                // Check for permissions first
+                String statement = sqlStatements.hasWritePermission();
+                Long did = Long.valueOf(designId);
+                int count = handle.createQuery(statement)
+                    .bind(0, did)
+                    .bind(1, userId)
+                    .mapTo(Integer.class).findOnly();
+                return count == 1;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error checking permission.", e);
+        }        
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listPermissions(java.lang.String)
+     */
+    @Override
+    public Collection<ApiDesignCollaborator> listPermissions(String designId) throws StorageException {
+        logger.debug("Getting a list of all permissions (collaborators) for API: {}.", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectPermissions();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .map(ApiDesignCollaboratorRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error listing linked accounts.", e);
+        }
+    }
 
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createPermission(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createPermission(String designId, String userId, String permission) throws StorageException {
+        logger.debug("Inserting an ACL row for: {}", designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertAcl();
+                Long did = Long.valueOf(designId);
+                handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, did)
+                      .bind(2, permission)
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting ACL row.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deletePermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deletePermission(String designId, String userId) throws StorageException {
+        logger.debug("Deleting an ACL row for: {}", designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteAcl();
+                Long did = Long.valueOf(designId);
+                handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, did)
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting ACL row.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updatePermission(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updatePermission(String designId, String userId, String permission) throws StorageException {
+        logger.debug("Updating an ACL row for: {}", designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateAcl();
+                Long did = Long.valueOf(designId);
+                handle.createUpdate(statement)
+                      .bind(0, permission)
+                      .bind(1, userId)
+                      .bind(2, did)
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting ACL row.", e);
+        }
+    }
+    
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
      */
@@ -350,25 +477,25 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#getCollaborators(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#listContributors(java.lang.String, java.lang.String)
      */
     @Override
-    public Collection<Collaborator> getCollaborators(String userId, String designId)
+    public Collection<Contributor> listContributors(String userId, String designId)
             throws NotFoundException, StorageException {
-        logger.debug("Selecting all collaborators for API Design: {}", designId);
+        logger.debug("Selecting all contributors for API Design: {}", designId);
         try {
             return this.jdbi.withHandle( handle -> {
-                String statement = sqlStatements.selectApiDesignCollaborators();
+                String statement = sqlStatements.selectApiDesignContributors();
                 return handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId))
                         .bind(1, userId)
-                        .map(CollaboratorRowMapper.instance)
+                        .map(ConstributorRowMapper.instance)
                         .list();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
         } catch (Exception e) {
-            throw new StorageException("Error getting collaborators.", e);
+            throw new StorageException("Error getting contributors.", e);
         }
     }
     
@@ -445,10 +572,10 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#getContentCommands(java.lang.String, java.lang.String, long)
+     * @see io.apicurio.hub.core.storage.IStorage#listContentCommands(java.lang.String, java.lang.String, long)
      */
     @Override
-    public List<ApiDesignCommand> getContentCommands(String userId, String designId, long sinceVersion)
+    public List<ApiDesignCommand> listContentCommands(String userId, String designId, long sinceVersion)
             throws StorageException {
         logger.debug("Selecting the content 'command' rows for API {} since content version {}", designId, sinceVersion);
         try {
@@ -802,6 +929,27 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting invitations.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getCollaborationInvite(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Invitation getCollaborationInvite(String designId, String inviteId)
+            throws StorageException, NotFoundException {
+        logger.debug("Selecting a single invitation for API Design: {}  with inviteId: {}", designId, inviteId);
+        try {
+            return (Invitation) this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectCollaborationInvitation();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, inviteId)
+                        .map(InvitationRowMapper.instance)
+                        .findOnly();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting invitations.", e);
+        }
+    }
 
     /**
      * A row mapper to read an api design from the DB (as a single row in a SELECT)
@@ -846,23 +994,23 @@ public class JdbcStorage implements IStorage {
     }
 
     /**
-     * A row mapper to read collaborator information from a result set.  Each row in 
+     * A row mapper to read contributor information from a result set.  Each row in 
      * the result set must have a 'created_by' column and an 'edits' column.
      * @author eric.wittmann@gmail.com
      */
-    private static class CollaboratorRowMapper implements RowMapper<Collaborator> {
+    private static class ConstributorRowMapper implements RowMapper<Contributor> {
         
-        public static final CollaboratorRowMapper instance = new CollaboratorRowMapper();
+        public static final ConstributorRowMapper instance = new ConstributorRowMapper();
 
         /**
          * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
          */
         @Override
-        public Collaborator map(ResultSet rs, StatementContext ctx) throws SQLException {
-            Collaborator collaborator = new Collaborator();
-            collaborator.setName(rs.getString("created_by"));
-            collaborator.setEdits(rs.getInt("edits"));
-            return collaborator;
+        public Contributor map(ResultSet rs, StatementContext ctx) throws SQLException {
+            Contributor contributor = new Contributor();
+            contributor.setName(rs.getString("created_by"));
+            contributor.setEdits(rs.getInt("edits"));
+            return contributor;
         }
 
     }
@@ -938,7 +1086,30 @@ public class JdbcStorage implements IStorage {
             invite.setModifiedBy(rs.getString("modified_by"));
             invite.setModifiedOn(rs.getDate("modified_on"));
             invite.setStatus(rs.getString("status"));
+            invite.setRole(rs.getString("role"));
             return invite;
+        }
+
+    }
+
+    /**
+     * A row mapper to read an collaborator from a db row.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiDesignCollaboratorRowMapper implements RowMapper<ApiDesignCollaborator> {
+        
+        public static final ApiDesignCollaboratorRowMapper instance = new ApiDesignCollaboratorRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiDesignCollaborator map(ResultSet rs, StatementContext ctx) throws SQLException {
+            ApiDesignCollaborator collaborator = new ApiDesignCollaborator();
+            collaborator.setUserName(rs.getString("user_id"));
+            collaborator.setUserId(rs.getString("user_id"));
+            collaborator.setRole(rs.getString("role"));
+            return collaborator;
         }
 
     }

@@ -175,6 +175,22 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String insertAcl() {
         return "INSERT INTO acl (user_id, design_id, role) VALUES (?, ?, ?)";
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteAcl()
+     */
+    @Override
+    public String deleteAcl() {
+        return "DELETE FROM acl WHERE user_id = ? AND design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#updateAcl()
+     */
+    @Override
+    public String updateAcl() {
+        return "UPDATE acl SET role = ? WHERE user_id = ? AND design_id = ?";
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#clearContent()
@@ -201,6 +217,16 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#hasOwnerPermission()
+     */
+    @Override
+    public String hasOwnerPermission() {
+        return "SELECT COUNT(*) "
+                + "FROM acl a "
+                + "WHERE a.design_id = ? AND a.user_id = ? AND a.role = 'owner'";
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#hasWritePermission()
      */
     @Override
@@ -211,10 +237,18 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesignCollaborators()
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectPermissions()
      */
     @Override
-    public String selectApiDesignCollaborators() {
+    public String selectPermissions() {
+        return "SELECT a.* FROM acl a WHERE a.design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesignContributors()
+     */
+    @Override
+    public String selectApiDesignContributors() {
         // TODO order by the # of edits and LIMIT the results to 5
         return "SELECT DISTINCT COUNT(c.created_by) as edits, c.created_by "
                 + "FROM api_content c "
@@ -291,6 +325,16 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "FROM acl_invites i "
                 + "JOIN acl a ON a.design_id = i.design_id "
                 + "WHERE i.design_id = ? AND a.user_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectCollaborationInvitation()
+     */
+    @Override
+    public String selectCollaborationInvitation() {
+        return "SELECT i.* "
+                + "FROM acl_invites i "
+                + "WHERE i.design_id = ? AND i.invite_id = ?";
     }
     
     /**

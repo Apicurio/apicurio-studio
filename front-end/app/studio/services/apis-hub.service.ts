@@ -24,7 +24,7 @@ import {IApiEditingSession, IApisService, ICommandHandler, IConnectionHandler} f
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
-import {ApiCollaborator, ApiCollaborators} from "../models/api-collaborators";
+import {ApiContributor, ApiContributors} from "../models/api-contributors";
 
 import {Headers, Http, RequestOptions} from "@angular/http";
 import {NewApi} from "../models/new-api.model";
@@ -387,28 +387,28 @@ export class HubApisService extends AbstractHubService implements IApisService {
     }
 
     /**
-     * @see IApisService.getCollaborators
+     * @see IApisService.getContributors
      */
-    public getCollaborators(apiId: string): Promise<ApiCollaborators> {
-        let collaboratorsUrl: string = this.endpoint("/designs/:designId/collaborators", {
+    public getContributors(apiId: string): Promise<ApiContributors> {
+        let contributorsUrl: string = this.endpoint("/designs/:designId/contributors", {
             designId: apiId
         });
         let options: RequestOptions = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Getting collaborators: %s", collaboratorsUrl);
+        console.info("[HubApisService] Getting contributors: %s", contributorsUrl);
 
-        return this.http.get(collaboratorsUrl, options).map( response => {
+        return this.http.get(contributorsUrl, options).map( response => {
             let items: any[] = response.json();
-            let rval: ApiCollaborators = new ApiCollaborators();
-            rval.collaborators = [];
+            let rval: ApiContributors = new ApiContributors();
+            rval.contributors = [];
             rval.totalEdits = 0;
             items.forEach( item => {
                 let name: string = item["name"];
                 let edits: number = item["edits"];
-                let collaborator: ApiCollaborator = new ApiCollaborator();
-                collaborator.edits = edits;
-                collaborator.name = name;
-                rval.collaborators.push(collaborator);
+                let contributor: ApiContributor = new ApiContributor();
+                contributor.edits = edits;
+                contributor.name = name;
+                rval.contributors.push(contributor);
                 rval.totalEdits += edits;
             });
             return rval;

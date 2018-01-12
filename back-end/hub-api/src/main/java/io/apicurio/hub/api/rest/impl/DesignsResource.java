@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -52,16 +54,19 @@ import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.FormatType;
+import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
 import io.apicurio.hub.core.beans.OpenApiInfo;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandException;
@@ -359,16 +364,16 @@ public class DesignsResource implements IDesignsResource {
     }
     
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#getCollaborators(java.lang.String)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getContributors(java.lang.String)
      */
     @Override
-    public Collection<Collaborator> getCollaborators(String designId) throws ServerError, NotFoundException {
-        logger.debug("Retrieving collaborators list for design with ID: {}", designId);
-        metrics.apiCall("/designs/{designId}/collaborators", "GET");
+    public Collection<Contributor> getContributors(String designId) throws ServerError, NotFoundException {
+        logger.debug("Retrieving contributors list for design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/contributors", "GET");
 
         try {
             String user = this.security.getCurrentUser().getLogin();
-            return this.storage.getCollaborators(user, designId);
+            return this.storage.listContributors(user, designId);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -385,7 +390,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-            List<ApiDesignCommand> apiCommands = this.storage.getContentCommands(user, designId, designContent.getContentVersion());
+            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
             List<String> commands = new ArrayList<>(apiCommands.size());
             for (ApiDesignCommand apiCommand : apiCommands) {
                 commands.add(apiCommand.getCommand());
@@ -408,6 +413,168 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Length", cl);
             return builder.build();
         } catch (StorageException | OaiCommandException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#createInvitation(java.lang.String)
+     */
+    @Override
+    public Invitation createInvitation(String designId) throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Creating a collaboration invitation for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/invitations", "POST");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            String username = this.security.getCurrentUser().getName();
+            String inviteId = UUID.randomUUID().toString();
+            
+            if (!this.storage.hasOwnerPermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            
+            this.storage.createCollaborationInvite(inviteId, designId, user, username, "collaborator");
+            Invitation invite = new Invitation();
+            invite.setCreatedBy(user);
+            invite.setCreatedOn(new Date());
+            invite.setDesignId(designId);
+            invite.setInviteId(inviteId);
+            invite.setStatus("pending");
+            return invite;
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getInvitation(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Invitation getInvitation(String designId, String inviteId) throws ServerError, NotFoundException {
+        logger.debug("Retrieving a collaboration invitation for API: {}  and inviteID: {}", designId, inviteId);
+        metrics.apiCall("/designs/{designId}/invitations/{inviteId}", "GET");
+
+        try {
+            return this.storage.getCollaborationInvite(designId, inviteId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getInvitations(java.lang.String)
+     */
+    @Override
+    public Collection<Invitation> getInvitations(String designId) throws ServerError, NotFoundException {
+        logger.debug("Retrieving all collaboration invitations for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/invitations", "GET");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            return this.storage.listCollaborationInvites(designId, user);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#acceptInvitation(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void acceptInvitation(String designId, String inviteId) throws ServerError, NotFoundException {
+        logger.debug("Accepting an invitation to collaborate on an API: {}", designId);
+        metrics.apiCall("/designs/{designId}/invitations", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            Invitation invite = this.storage.getCollaborationInvite(designId, inviteId);
+            boolean accepted = this.storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", user);
+            if (!accepted) {
+                throw new NotFoundException();
+            }
+            this.storage.createPermission(designId, user, invite.getRole());
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#rejectInvitation(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void rejectInvitation(String designId, String inviteId) throws ServerError, NotFoundException {
+        logger.debug("Rejecting an invitation to collaborate on an API: {}", designId);
+        metrics.apiCall("/designs/{designId}/invitations", "DELETE");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            // This will ensure that the invitation exists for this designId.
+            this.storage.getCollaborationInvite(designId, inviteId);
+            boolean accepted = this.storage.updateCollaborationInviteStatus(inviteId, "pending", "rejected", user);
+            if (!accepted) {
+                throw new NotFoundException();
+            }
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getCollaborators(java.lang.String)
+     */
+    @Override
+    public Collection<ApiDesignCollaborator> getCollaborators(String designId) throws ServerError, NotFoundException {
+        logger.debug("Retrieving all collaborators for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/collaborators", "GET");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            return this.storage.listPermissions(designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateCollaborator(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.UpdateCollaborator)
+     */
+    @Override
+    public void updateCollaborator(String designId, String userId,
+            UpdateCollaborator update) throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Updating collaborator for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/collaborators/{userId}", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasOwnerPermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            this.storage.updatePermission(designId, userId, update.getNewRole());
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCollaborator(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCollaborator(String designId, String userId)
+            throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Deleting/revoking collaborator for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/collaborators/{userId}", "DELETE");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasOwnerPermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            this.storage.deletePermission(designId, userId);
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }

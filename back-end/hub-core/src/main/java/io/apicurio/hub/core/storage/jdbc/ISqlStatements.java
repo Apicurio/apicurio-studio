@@ -114,6 +114,16 @@ public interface ISqlStatements {
     public String insertAcl();
 
     /**
+     * A statement used to update a row in the acl table.
+     */
+    public String updateAcl();
+
+    /**
+     * A statement used to delete a row from the acl table.
+     */
+    public String deleteAcl();
+
+    /**
      * A statement used to insert a content row.
      */
     public String insertContent();
@@ -132,16 +142,26 @@ public interface ISqlStatements {
      * A statement used to delete all api_content rows for a given api design.
      */
     public String clearContent();
+
+    /**
+     * A statement used to determine if a user has ownership permission on an API design.
+     */
+    public String hasOwnerPermission();
     
     /**
-     * A statement used to determine if a user has permission to write/delete an API design.
+     * A statement used to return all rows in the ACL table for a given API design.
+     */
+    public String selectPermissions();
+
+    /**
+     * A statement used to determine if a user has write permission on an API design.
      */
     public String hasWritePermission();
 
     /**
-     * A statement used to return all collaborators (editors) of a given API Design.
+     * A statement used to return all contributors (editors) of a given API Design.
      */
-    public String selectApiDesignCollaborators();
+    public String selectApiDesignContributors();
 
     /**
      * A statement used to return the latest 'document' style api_content row for
@@ -159,6 +179,12 @@ public interface ISqlStatements {
      * A statement used to return all of the collaboration invitations for a given API design.
      */
     public String selectCollaborationInvitations();
+    
+    /**
+     * A statement used to return a single collaboration invitation by its ID for a given API design.
+     */
+    public String selectCollaborationInvitation();
+
 
     /**
      * A statement used to insert a collaboration invitation row into the db.

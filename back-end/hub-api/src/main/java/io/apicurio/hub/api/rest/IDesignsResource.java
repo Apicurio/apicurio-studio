@@ -32,8 +32,12 @@ import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.core.beans.ApiDesign;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.Contributor;
+import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 
@@ -76,12 +80,49 @@ public interface IDesignsResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{designId}/collaborators")
-    public Collection<Collaborator> getCollaborators(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+    @Path("{designId}/contributors")
+    public Collection<Contributor> getContributors(@PathParam("designId") String designId) throws ServerError, NotFoundException;
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/content")
     public Response getContent(@PathParam("designId") String designId, @QueryParam("format") String format) throws ServerError, NotFoundException;
-    
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/invitations")
+    public Collection<Invitation> getInvitations(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/invitations")
+    public Invitation createInvitation(@PathParam("designId") String designId) throws ServerError, NotFoundException, AccessDeniedException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/invitations/{inviteId}")
+    public Invitation getInvitation(@PathParam("designId") String designId, @PathParam("inviteId") String inviteId) throws ServerError, NotFoundException;
+
+    @PUT
+    @Path("{designId}/invitations/{inviteId}")
+    public void acceptInvitation(@PathParam("designId") String designId, @PathParam("inviteId") String inviteId) throws ServerError, NotFoundException;
+
+    @DELETE
+    @Path("{designId}/invitations/{inviteId}")
+    public void rejectInvitation(@PathParam("designId") String designId, @PathParam("inviteId") String inviteId) throws ServerError, NotFoundException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/collaborators")
+    public Collection<ApiDesignCollaborator> getCollaborators(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/collaborators/{userId}")
+    public void updateCollaborator(@PathParam("designId") String designId, @PathParam("userId") String userId, UpdateCollaborator update) throws ServerError, NotFoundException, AccessDeniedException;
+
+    @DELETE
+    @Path("{designId}/collaborators/{userId}")
+    public void deleteCollaborator(@PathParam("designId") String designId, @PathParam("userId") String userId) throws ServerError, NotFoundException, AccessDeniedException;
+
 }

@@ -21,9 +21,10 @@ import java.util.List;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -34,6 +35,54 @@ import io.apicurio.hub.core.exceptions.NotFoundException;
  * @author eric.wittmann@gmail.com
  */
 public interface IStorage {
+
+    /**
+     * Returns true if the given user has ownership permission over the API design.
+     * @param userId
+     * @param designId
+     */
+    public boolean hasOwnerPermission(String userId, String designId) throws StorageException;
+
+    /**
+     * Returns true if the given user has write permission over the API design.
+     * @param userId
+     * @param designId
+     */
+    public boolean hasWritePermission(String userId, String designId) throws StorageException;
+    
+    /**
+     * Returns a collection of all collaborators for a given API design.
+     * @param designId
+     * @throws StorageException
+     */
+    public Collection<ApiDesignCollaborator> listPermissions(String designId) throws StorageException;
+    
+    /**
+     * Creates a permission for a single user for a given API design.
+     * @param designId
+     * @param userId
+     * @param permission
+     * @throws StorageException
+     */
+    public void createPermission(String designId, String userId, String permission) throws StorageException;
+    
+    /**
+     * Changes the permission of a given user.  For example, this might change a user's permission
+     * from 'collaborator' to 'owner'.
+     * @param designId
+     * @param userId
+     * @param permission
+     * @throws StorageException
+     */
+    public void updatePermission(String designId, String userId, String permission) throws StorageException;
+    
+    /**
+     * Deletes a permission.  This will typically revoke a user's access to an API design.
+     * @param designId
+     * @param userId
+     * @throws StorageException
+     */
+    public void deletePermission(String designId, String userId) throws StorageException;
     
     /**
      * Creates a linked account for the given user.
@@ -100,9 +149,9 @@ public interface IStorage {
      * Gets the list of users who have collaborated to edit the given API design.
      * @param userId
      * @param designId
-     * @return a collection of collaborators (editors) on a given API design
+     * @return a collection of contributors (editors) on a given API design
      */
-    public Collection<Collaborator> getCollaborators(String userId, String designId) throws NotFoundException, StorageException;
+    public Collection<Contributor> listContributors(String userId, String designId) throws NotFoundException, StorageException;
 
     /**
      * Creates a new API Design in the storage layer and returns a new unique Design ID.  This
@@ -166,7 +215,7 @@ public interface IStorage {
      * @param sinceVersion
      * @throws StorageException
      */
-    public List<ApiDesignCommand> getContentCommands(String userId, String designId, long sinceVersion) throws StorageException;
+    public List<ApiDesignCommand> listContentCommands(String userId, String designId, long sinceVersion) throws StorageException;
 
     /**
      * Adds a single content row to the DB and returns a unique content version number 
@@ -244,5 +293,12 @@ public interface IStorage {
      * @throws StorageException
      */
     public List<Invitation> listCollaborationInvites(String designId, String userId) throws StorageException;
+
+    /**
+     * Returns a single invitation for a given API design.  The invitation ID is required.
+     * @param designId
+     * @param inviteId
+     */
+    public Invitation getCollaborationInvite(String designId, String inviteId) throws StorageException, NotFoundException;
     
 }

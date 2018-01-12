@@ -20,7 +20,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
-import {ApiCollaborators} from "../../../models/api-collaborators";
+import {ApiContributors} from "../../../models/api-contributors";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 
 @Component({
@@ -32,7 +32,7 @@ import {AbstractPageComponent} from "../../../components/page-base.component";
 export class ApiDetailPageComponent extends AbstractPageComponent {
 
     public api: Api;
-    public collaborators: ApiCollaborators;
+    public contributors: ApiContributors;
 
     /**
      * Constructor.
@@ -60,12 +60,12 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             console.error("[ApiDetailPageComponent] Error getting API");
             this.error(error);
         });
-        this.apis.getCollaborators(apiId).then(collaborators => {
-            console.info("[ApiDetailPageComponent] Collaborators data loaded: %o", collaborators);
-            this.collaborators = collaborators;
-            this.dataLoaded["collaborators"] = true;
+        this.apis.getContributors(apiId).then(contributors => {
+            console.info("[ApiDetailPageComponent] Contributors data loaded: %o", contributors);
+            this.contributors = contributors;
+            this.dataLoaded["contributors"] = true;
         }).catch(error => {
-            console.error("[ApiDetailPageComponent] Error getting API collaborators");
+            console.error("[ApiDetailPageComponent] Error getting API contributors");
             this.error(error);
         });
     }

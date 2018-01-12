@@ -94,18 +94,18 @@
                     <div class="">
                         <div class="card-pf">
                             <div class="card-pf-heading">
-                                <h2 style="height: 18px;" class="card-pf-title">Top Collaborators</h2>
+                                <h2 style="height: 18px;" class="card-pf-title">Top Contributors</h2>
                             </div>
                             <div class="card-pf-body">
-                                <div class="api-data-loading" *ngIf="!isLoaded('collaborators')">
-                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading collaborators data...</p>
+                                <div class="api-data-loading" *ngIf="!isLoaded('contributors')">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading contributors data...</p>
                                 </div>
-                                <div class="api-collaborators" *ngIf="isLoaded('collaborators')">
-                                    <div class="progress-container progress-description-left" *ngFor="let c of collaborators.collaborators">
+                                <div class="api-contributors" *ngIf="isLoaded('contributors')">
+                                    <div class="progress-container progress-description-left" *ngFor="let c of contributors.contributors">
                                         <div class="progress-description">{{ c.name }}</div>
                                         <div class="progress">
-                                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.edits / collaborators.totalEdits) * 100) + '%'">
-                                                <span><strong>{{ c.edits }} of {{ collaborators.totalEdits }}</strong> edits</span>
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.edits / contributors.totalEdits) * 100) + '%'">
+                                                <span><strong>{{ c.edits }} of {{ contributors.totalEdits }}</strong> edits</span>
                                             </div>
                                         </div>
                                     </div>

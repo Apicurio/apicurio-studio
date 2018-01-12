@@ -38,11 +38,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.Contributor;
+import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -260,18 +264,18 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testGetCollaborators() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testGetConstributors() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
 
-        Collection<Collaborator> collaborators = resource.getCollaborators(design.getId());
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(1, collaborators.size());
-        Collaborator collaborator = collaborators.iterator().next();
-        Assert.assertEquals(1, collaborator.getEdits());
-        Assert.assertEquals("user", collaborator.getName());
+        Collection<Contributor> contributors = resource.getContributors(design.getId());
+        Assert.assertNotNull(contributors);
+        Assert.assertFalse(contributors.isEmpty());
+        Assert.assertEquals(1, contributors.size());
+        Contributor contributor = contributors.iterator().next();
+        Assert.assertEquals(1, contributor.getEdits());
+        Assert.assertEquals("user", contributor.getName());
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
@@ -341,6 +345,220 @@ public class DesignsResourceTest {
         // TODO need a better test to assert that the content is really the expected YAML
         Assert.assertFalse(actualYaml.charAt(0) == '{');
         Assert.assertTrue(actualYaml.startsWith("---"));
+    }
+
+    @Test
+    public void testCreateInvitation() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testCreateInvitation");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        Assert.assertNotNull(invite.getInviteId());
+        Assert.assertNotNull(invite.getCreatedOn());
+        Assert.assertEquals("user", invite.getCreatedBy());
+        Assert.assertEquals(design.getId(), invite.getDesignId());
+        Assert.assertEquals("pending", invite.getStatus());
+        
+        this.security.getCurrentUser().setLogin("user2");
+        try {
+            resource.createInvitation(design.getId());
+            Assert.fail("Expected an AccessDeniedException");
+        } catch (AccessDeniedException e) {
+            // Expected
+        } finally {
+            this.security.getCurrentUser().setLogin("user");
+        }
+    }
+
+    @Test
+    public void testGetInvitations() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testGetInvitations");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+
+        Invitation invite1 = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite1);
+        Invitation invite2 = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite2);
+        Invitation invite3 = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite3);
+        
+        Collection<Invitation> invitations = resource.getInvitations(design.getId());
+        Assert.assertNotNull(invitations);
+        Assert.assertEquals(3, invitations.size());
+    }
+
+    @Test
+    public void testGetInvitation() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testGetInvitation");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        
+        Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
+        Assert.assertNotNull(theInvite);
+        Assert.assertNotNull(theInvite.getInviteId());
+        Assert.assertNotNull(theInvite.getCreatedOn());
+        Assert.assertEquals("user", theInvite.getCreatedBy());
+        Assert.assertEquals(design.getId(), theInvite.getDesignId());
+        Assert.assertEquals("pending", theInvite.getStatus());
+    }
+
+    @Test
+    public void testAcceptInvitation() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testAcceptInvitation");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        
+        resource.acceptInvitation(design.getId(), invite.getInviteId());
+
+        Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
+        Assert.assertNotNull(theInvite);
+        Assert.assertEquals("accepted", theInvite.getStatus());
+    }
+
+    @Test
+    public void testRejectInvitation() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testRejectInvitation");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+
+        resource.rejectInvitation(design.getId(), invite.getInviteId());
+
+        Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
+        Assert.assertNotNull(theInvite);
+        Assert.assertEquals("rejected", theInvite.getStatus());
+    }
+
+    @Test
+    public void testGetCollaborators() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testGetCollaborators");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        
+        Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(1, collaborators.size());
+        Assert.assertEquals("user", collaborators.iterator().next().getUserId());
+        Assert.assertEquals("owner", collaborators.iterator().next().getRole());
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        
+        this.security.getCurrentUser().setLogin("user2");
+        try {
+            resource.acceptInvitation(design.getId(), invite.getInviteId());
+        } finally {
+            this.security.getCurrentUser().setLogin("user");
+        }
+
+        collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(2, collaborators.size());
+    }
+
+    @Test
+    public void testDeleteCollaborator() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testDeleteCollaborator");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        
+        Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(1, collaborators.size());
+        Assert.assertEquals("user", collaborators.iterator().next().getUserId());
+        Assert.assertEquals("owner", collaborators.iterator().next().getRole());
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        
+        this.security.getCurrentUser().setLogin("user2");
+        try {
+            resource.acceptInvitation(design.getId(), invite.getInviteId());
+        } finally {
+            this.security.getCurrentUser().setLogin("user");
+        }
+
+        collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(2, collaborators.size());
+        
+        resource.deleteCollaborator(design.getId(), "user2");
+
+        collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(1, collaborators.size());
+    }
+
+    @Test
+    public void testUpdateCollaborator() throws ServerError, NotFoundException, AccessDeniedException {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("API: testUpdateCollaborator");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        
+        Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(1, collaborators.size());
+        Assert.assertEquals("user", collaborators.iterator().next().getUserId());
+        Assert.assertEquals("owner", collaborators.iterator().next().getRole());
+
+        Invitation invite = resource.createInvitation(design.getId());
+        Assert.assertNotNull(invite);
+        
+        this.security.getCurrentUser().setLogin("user2");
+        try {
+            resource.acceptInvitation(design.getId(), invite.getInviteId());
+        } finally {
+            this.security.getCurrentUser().setLogin("user");
+        }
+
+        collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(2, collaborators.size());
+        Iterator<ApiDesignCollaborator> iterator = collaborators.iterator();
+        iterator.next();
+        ApiDesignCollaborator collaborator = iterator.next();
+        Assert.assertEquals("user2", collaborator.getUserId());
+        Assert.assertEquals("collaborator", collaborator.getRole());
+        
+        UpdateCollaborator update = new UpdateCollaborator();
+        update.setNewRole("owner");
+        resource.updateCollaborator(design.getId(), "user2", update);
+
+        collaborators = resource.getCollaborators(design.getId());
+        Assert.assertNotNull(collaborators);
+        Assert.assertEquals(2, collaborators.size());
+        iterator = collaborators.iterator();
+        iterator.next();
+        collaborator = iterator.next();
+        Assert.assertEquals("user2", collaborator.getUserId());
+        Assert.assertEquals("owner", collaborator.getRole());
     }
 
     /**

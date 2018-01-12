@@ -27,9 +27,10 @@ import java.util.Map.Entry;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -48,7 +49,68 @@ public class MockStorage implements IStorage {
     private Map<String, List<MockContentRow>> content = new HashMap<>();
     private Map<String, MockUuidRow> uuids = new HashMap<>();
     private Map<String, MockInviteRow> invites = new HashMap<>();
+    private Map<String, String> permissions = new HashMap<>();
     private int counter = 1;
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#hasOwnerPermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean hasOwnerPermission(String userId, String designId) throws StorageException {
+        String role = permissions.get(designId + ":" + userId);
+        return "owner".equals(role);
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#hasWritePermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean hasWritePermission(String userId, String designId) throws StorageException {
+        String role = permissions.get(designId + ":" + userId);
+        return role != null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createPermission(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createPermission(String designId, String userId, String permission) throws StorageException {
+        this.permissions.put(designId + ":" + userId, permission);
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deletePermission(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deletePermission(String designId, String userId) throws StorageException {
+        this.permissions.remove(designId + ":" + userId);
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listPermissions(java.lang.String)
+     */
+    @Override
+    public Collection<ApiDesignCollaborator> listPermissions(String designId) throws StorageException {
+        List<ApiDesignCollaborator> collaborators = new ArrayList<>();
+        this.permissions.keySet().forEach( key -> {
+            if (key.startsWith(designId + ":")) {
+                ApiDesignCollaborator collaborator = new ApiDesignCollaborator();
+                collaborator.setUserId(key.substring(key.indexOf(":") + 1));
+                collaborator.setRole(permissions.get(key));
+                collaborator.setUserName(collaborator.getUserId());
+                collaborators.add(collaborator);
+            }
+        });
+        return collaborators;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updatePermission(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void updatePermission(String designId, String userId, String permission) throws StorageException {
+        this.permissions.put(designId + ":" + userId, permission);
+    }
     
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
@@ -136,10 +198,10 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#getCollaborators(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#listContributors(java.lang.String, java.lang.String)
      */
     @Override
-    public Collection<Collaborator> getCollaborators(String user, String designId)
+    public Collection<Contributor> listContributors(String user, String designId)
             throws NotFoundException, StorageException {
         
         List<MockContentRow> list = this.content.get(designId);
@@ -159,14 +221,14 @@ public class MockStorage implements IStorage {
             }
         }
         
-        List<Collaborator> rval = new ArrayList<>();
+        List<Contributor> rval = new ArrayList<>();
         for (Entry<String, Integer> entry : collabCounters.entrySet()) {
             String collabUser = entry.getKey();
             int counter = entry.getValue();
-            Collaborator collaborator = new Collaborator();
-            collaborator.setName(collabUser);
-            collaborator.setEdits(counter);
-            rval.add(collaborator);
+            Contributor contributor = new Contributor();
+            contributor.setName(collabUser);
+            contributor.setEdits(counter);
+            rval.add(contributor);
         }
         return rval;
     }
@@ -196,10 +258,10 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#getContentCommands(java.lang.String, java.lang.String, long)
+     * @see io.apicurio.hub.core.storage.IStorage#listContentCommands(java.lang.String, java.lang.String, long)
      */
     @Override
-    public List<ApiDesignCommand> getContentCommands(String user, String designId, long sinceVersion)
+    public List<ApiDesignCommand> listContentCommands(String user, String designId, long sinceVersion)
             throws StorageException {
         List<ApiDesignCommand> rval = new ArrayList<>();
 
@@ -249,6 +311,8 @@ public class MockStorage implements IStorage {
         contentRow.data = initialContent;
         contentRow.createdBy = userId;
         this.addContentRow(designId, contentRow);
+        
+        this.createPermission(designId, userId, "owner");
         
         return designId;
     }
@@ -391,10 +455,25 @@ public class MockStorage implements IStorage {
                 i.setInviteId(row.inviteId);
                 i.setModifiedBy(row.modifiedBy);
                 i.setStatus(row.status);
+                i.setRole(row.role);
                 invites.add(i);
             }
         });
         return invites;
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getCollaborationInvite(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Invitation getCollaborationInvite(String designId, String inviteId) throws StorageException, NotFoundException {
+        List<Invitation> list = listCollaborationInvites(designId, inviteId);
+        for (Invitation invitation : list) {
+            if (invitation.getInviteId().equals(inviteId)) {
+                return invitation;
+            }
+        }
+        throw new NotFoundException();
     }
     
     public static class MockContentRow {

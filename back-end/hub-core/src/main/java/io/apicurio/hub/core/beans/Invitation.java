@@ -30,6 +30,7 @@ public class Invitation {
     private String status;
     private String modifiedBy;
     private Date modifiedOn;
+    private String role;
     
     /**
      * Constructor.
@@ -133,6 +134,20 @@ public class Invitation {
      */
     public void setModifiedOn(Date modifiedOn) {
         this.modifiedOn = modifiedOn;
+    }
+
+    /**
+     * @return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }

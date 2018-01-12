@@ -35,9 +35,10 @@ import org.junit.Test;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.Collaborator;
+import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -78,6 +79,98 @@ public class JdbcStorageTest {
     public void testReInitDb() throws Exception {
         storage.postConstruct();
         // Should not have thrown an error because the DB is already initialized!
+    }
+
+    @Test
+    public void testOwnerPermission() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        Assert.assertTrue(storage.hasOwnerPermission("user", id));
+        Assert.assertFalse(storage.hasOwnerPermission("user2", id));
+        Assert.assertFalse(storage.hasOwnerPermission("user3", id));
+        
+        storage.createPermission(id, "user2", "owner");
+        Assert.assertTrue(storage.hasOwnerPermission("user", id));
+        Assert.assertTrue(storage.hasOwnerPermission("user2", id));
+        Assert.assertFalse(storage.hasOwnerPermission("user3", id));
+        
+        storage.createPermission(id, "user3", "collaborator");
+        Assert.assertTrue(storage.hasOwnerPermission("user", id));
+        Assert.assertTrue(storage.hasOwnerPermission("user2", id));
+        Assert.assertFalse(storage.hasOwnerPermission("user3", id));
+        
+        storage.updatePermission(id, "user3", "owner");
+        Assert.assertTrue(storage.hasOwnerPermission("user", id));
+        Assert.assertTrue(storage.hasOwnerPermission("user2", id));
+        Assert.assertTrue(storage.hasOwnerPermission("user3", id));
+        
+        storage.deletePermission(id, "user2");
+        Assert.assertTrue(storage.hasOwnerPermission("user", id));
+        Assert.assertFalse(storage.hasOwnerPermission("user2", id));
+        Assert.assertTrue(storage.hasOwnerPermission("user3", id));
+    }
+
+    @Test
+    public void testWritePermission() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        Assert.assertTrue(storage.hasWritePermission("user", id));
+        Assert.assertFalse(storage.hasWritePermission("user2", id));
+        Assert.assertFalse(storage.hasWritePermission("user3", id));
+
+        storage.createPermission(id, "user2", "owner");
+        Assert.assertTrue(storage.hasWritePermission("user", id));
+        Assert.assertTrue(storage.hasWritePermission("user2", id));
+        Assert.assertFalse(storage.hasWritePermission("user3", id));
+
+        storage.createPermission(id, "user3", "collaborator");
+        Assert.assertTrue(storage.hasWritePermission("user", id));
+        Assert.assertTrue(storage.hasWritePermission("user2", id));
+        Assert.assertTrue(storage.hasWritePermission("user3", id));
+        
+    }
+
+    @Test
+    public void testListPermission() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        storage.createPermission(id, "user2", "owner");
+        storage.createPermission(id, "user3", "collaborator");
+        storage.updatePermission(id, "user3", "owner");
+
+        Collection<ApiDesignCollaborator> permissions = storage.listPermissions(id);
+        Assert.assertNotNull(permissions);
+        Assert.assertEquals(3, permissions.size());
+        Assert.assertEquals("owner", permissions.iterator().next().getRole());
+        Assert.assertEquals("user", permissions.iterator().next().getUserId());
+        Assert.assertEquals("user", permissions.iterator().next().getUserName());
     }
 
     @Test
@@ -413,7 +506,7 @@ public class JdbcStorageTest {
     }
 
     @Test
-    public void testGetCollaborators() throws Exception {
+    public void testGetContributors() throws Exception {
         ApiDesign design = new ApiDesign();
         Date now = new Date();
         design.setCreatedBy("user");
@@ -425,26 +518,26 @@ public class JdbcStorageTest {
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
         
-        Collection<Collaborator> collaborators = storage.getCollaborators("user", id);
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(1, collaborators.size());
-        Assert.assertEquals("user", collaborators.iterator().next().getName());
-        Assert.assertEquals(1, collaborators.iterator().next().getEdits());
+        Collection<Contributor> contributors = storage.listContributors("user", id);
+        Assert.assertNotNull(contributors);
+        Assert.assertFalse(contributors.isEmpty());
+        Assert.assertEquals(1, contributors.size());
+        Assert.assertEquals("user", contributors.iterator().next().getName());
+        Assert.assertEquals(1, contributors.iterator().next().getEdits());
         
         storage.addContent("user", id, ApiContentType.Command, "{1}");
         storage.addContent("user", id, ApiContentType.Command, "{2}");
         storage.addContent("user2", id, ApiContentType.Command, "{3}");
         storage.addContent("user2", id, ApiContentType.Command, "{4}");
 
-        collaborators = storage.getCollaborators("user", id);
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(2, collaborators.size());
+        contributors = storage.listContributors("user", id);
+        Assert.assertNotNull(contributors);
+        Assert.assertFalse(contributors.isEmpty());
+        Assert.assertEquals(2, contributors.size());
         
-        Iterator<Collaborator> iter = collaborators.iterator();
-        Collaborator c1 = iter.next();
-        Collaborator c2 = iter.next();
+        Iterator<Contributor> iter = contributors.iterator();
+        Contributor c1 = iter.next();
+        Contributor c2 = iter.next();
         
         Assert.assertTrue(c1.getName().startsWith("user"));
         Assert.assertTrue(c2.getName().startsWith("user"));
@@ -465,11 +558,11 @@ public class JdbcStorageTest {
         design.setName("Another API");
         storage.createApiDesign("user", design, "{}");
 
-        // The same collaborators data should get returned.
-        collaborators = storage.getCollaborators("user", id);
-        Assert.assertNotNull(collaborators);
-        Assert.assertFalse(collaborators.isEmpty());
-        Assert.assertEquals(2, collaborators.size());
+        // The same contributors data should get returned.
+        contributors = storage.listContributors("user", id);
+        Assert.assertNotNull(contributors);
+        Assert.assertFalse(contributors.isEmpty());
+        Assert.assertEquals(2, contributors.size());
     }
 
     @Test
@@ -517,7 +610,7 @@ public class JdbcStorageTest {
         storage.addContent("user2", id, ApiContentType.Command, "{4}");
         storage.addContent("user", id, ApiContentType.Command, "{5}");
         
-        List<ApiDesignCommand> commands = storage.getContentCommands("user", id, sinceVersion);
+        List<ApiDesignCommand> commands = storage.listContentCommands("user", id, sinceVersion);
         Assert.assertNotNull(commands);
         Assert.assertFalse(commands.isEmpty());
         Assert.assertEquals(2, commands.size());
@@ -692,6 +785,47 @@ public class JdbcStorageTest {
         // Now try again to change the invite status - should fail! (can only accept once)
         b = storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", "user3");
         Assert.assertFalse(b);
+    }
+
+    @Test
+    public void testGetCollaborationInvite() throws Exception {
+        // First create an API design.
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+
+        String inviteId = UUID.randomUUID().toString();
+        String designId = id;
+        String userId = "user";
+        String username = "User";
+        String role = "collaborator";
+        
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+        
+        Invitation invite = storage.getCollaborationInvite(designId, inviteId);
+        Assert.assertNotNull(invite);
+        Assert.assertEquals(userId, invite.getCreatedBy());
+        Assert.assertNotNull(invite.getCreatedOn());
+        Assert.assertEquals(designId, invite.getDesignId());
+        Assert.assertEquals(inviteId, invite.getInviteId());
+        Assert.assertNull(invite.getModifiedBy());
+        Assert.assertNull(invite.getModifiedOn());
+        Assert.assertEquals("pending", invite.getStatus());
+        
+        storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", userId);
+        invite = storage.getCollaborationInvite(designId, inviteId);
+        Assert.assertNotNull(invite);
+        Assert.assertEquals(userId, invite.getCreatedBy());
+        Assert.assertNotNull(invite.getCreatedOn());
+        Assert.assertEquals(designId, invite.getDesignId());
+        Assert.assertEquals(inviteId, invite.getInviteId());
+        Assert.assertEquals(userId, invite.getModifiedBy());
+        Assert.assertNotNull(invite.getModifiedOn());
+        Assert.assertEquals("accepted", invite.getStatus());
     }
     
     /**

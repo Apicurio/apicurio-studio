@@ -1,5 +1,4 @@
-/**
- * @license
+/*
  * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +14,19 @@
  * limitations under the License.
  */
 
+package io.apicurio.hub.core.exceptions;
 
-export class ApiCollaborator {
-    name: string;
-    edits: number;
+/**
+ * @author eric.wittmann@gmail.com
+ */
+public class AccessDeniedException extends Exception {
+    
+    private static final long serialVersionUID = -5386966635386862189L;
 
-    constructor() {
-        this.name = "";
-        this.edits = 0;
+    /**
+     * Constructor.
+     */
+    public AccessDeniedException() {
     }
-}
 
-export class ApiCollaborators {
-    public totalEdits: number;
-    public collaborators: ApiCollaborator[];
-
-    constructor() {
-        this.totalEdits = 0;
-        this.collaborators = [];
-    }
 }

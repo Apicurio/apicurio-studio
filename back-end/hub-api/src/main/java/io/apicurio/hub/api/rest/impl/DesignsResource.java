@@ -489,6 +489,9 @@ public class DesignsResource implements IDesignsResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             Invitation invite = this.storage.getCollaborationInvite(designId, inviteId);
+            if (this.storage.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
             boolean accepted = this.storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", user);
             if (!accepted) {
                 throw new NotFoundException();

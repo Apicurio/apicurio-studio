@@ -425,11 +425,25 @@ public class DesignsResourceTest {
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
         
-        resource.acceptInvitation(design.getId(), invite.getInviteId());
+        try {
+            resource.acceptInvitation(design.getId(), invite.getInviteId());
+            Assert.fail("Expected NotFound");
+        } catch (NotFoundException e) {
+            // Good
+        }
 
+        this.security.getCurrentUser().setLogin("user2");
+        try {
+            resource.acceptInvitation(design.getId(), invite.getInviteId());
+        } finally {
+            this.security.getCurrentUser().setLogin("user");
+        }
+
+        
         Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
         Assert.assertNotNull(theInvite);
         Assert.assertEquals("accepted", theInvite.getStatus());
+        Assert.assertEquals("user2", theInvite.getModifiedBy());
     }
 
     @Test

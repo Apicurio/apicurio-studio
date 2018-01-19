@@ -35,6 +35,13 @@ export interface IAuthenticationService {
     getAuthenticatedUser(): Observable<User>;
 
     /**
+     * Immediately gets the current authenticated user (if any).  Returns null if no user is
+     * currently authenticated.
+     * @return {User}
+     */
+    getAuthenticatedUserNow(): User;
+
+    /**
      * Called to authenticate a user.
      * @param user
      * @param credential

@@ -72,6 +72,14 @@ export class OIDCDirectGrantAuthenticationService implements IAuthenticationServ
     }
 
     /**
+     * Returns the currently authenticated user.
+     * @return {User}
+     */
+    public getAuthenticatedUserNow(): User {
+        return this._authenticatedUser.getValue();
+    }
+
+    /**
      * Not supported.
      * @param user
      * @param credential

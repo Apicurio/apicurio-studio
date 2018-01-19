@@ -34,6 +34,8 @@ import {User} from "../models/user.model";
 import {ICommand, MarshallUtils, OtCommand} from "oai-ts-commands";
 import {OasLibraryUtils} from "oai-ts-core";
 import {ApiDesignCommandAck} from "../models/ack.model";
+import {ApiCollaborator} from "../models/api-collaborator";
+import {Invitation} from "../models/invitation";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
@@ -414,6 +416,140 @@ export class HubApisService extends AbstractHubService implements IApisService {
             return rval;
         }).toPromise();
     }
+
+    /**
+     * @see IApisService.getCollaborators
+     */
+    public getCollaborators(apiId: string): Promise<ApiCollaborator[]> {
+        console.info("[HubApisService] Getting collaborators for API Design %s", apiId);
+
+        let getCollaboratorsUrl: string = this.endpoint("/designs/:designId/collaborators", {
+            designId: apiId
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Fetching collaborator list: %s", getCollaboratorsUrl);
+
+        return this.http.get(getCollaboratorsUrl, options).map( response => {
+            let collaborators: ApiCollaborator[] = response.json() as ApiCollaborator[];
+            return collaborators;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.deleteCollaborator
+     */
+    public deleteCollaborator(apiId: string, userId: string): Promise<void> {
+        console.info("[HubApisService] Deleting an API collaborator for API %s", apiId);
+
+        let deleteCollaboratorUrl: string = this.endpoint("/designs/:designId/collaborators/:userId", {
+            designId: apiId,
+            userId: userId
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Deleting an API collaborator: %s", deleteCollaboratorUrl);
+
+        return this.http.delete(deleteCollaboratorUrl, options).map( () => {
+            return null;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.getInvitations
+     */
+    public getInvitations(apiId: string): Promise<Invitation[]> {
+        console.info("[HubApisService] Getting all invitations for API %s", apiId);
+
+        let getInvitationsUrl: string = this.endpoint("/designs/:designId/invitations", {
+            designId: apiId
+        });
+
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Fetching collaboration invitations: %s", getInvitationsUrl);
+
+        return this.http.get(getInvitationsUrl, options).map( response => {
+            let invitations: Invitation[] = response.json() as Invitation[];
+            return invitations;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.getInvitation
+     */
+    public getInvitation(apiId: string, inviteId: string): Promise<Invitation> {
+        let getInviteUrl: string = this.endpoint("/designs/:designId/invitations/:inviteId", {
+            designId: apiId,
+            inviteId: inviteId
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Getting an Invitation: %s", getInviteUrl);
+
+        return this.http.get(getInviteUrl, options).map( response => {
+            let invite: Invitation = response.json() as Invitation;
+            return invite;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.createInvitation
+     */
+    public createInvitation(apiId: string): Promise<Invitation> {
+        console.info("[HubApisService] Creating a collaboration invitation for API %s", apiId);
+
+        let createInviteUrl: string = this.endpoint("/designs/:designId/invitations", {
+            designId: apiId
+        });
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Creating an API Design collaboration invite: %s", createInviteUrl);
+
+        return this.http.post(createInviteUrl, null, options).map( response => {
+            let invite: Invitation = response.json() as Invitation;
+            return invite;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.rejectInvitation
+     */
+    public rejectInvitation(apiId: string, inviteId: string): Promise<void> {
+        console.info("[HubApisService] Rejecting an API invitation to collaborate for API %s", apiId);
+
+        let deleteInviteUrl: string = this.endpoint("/designs/:designId/invitations/:inviteId", {
+            designId: apiId,
+            inviteId: inviteId
+        });
+        let options: RequestOptions = this.options({});
+
+        console.info("[HubApisService] Rejecting an API invitation: %s", deleteInviteUrl);
+
+        return this.http.delete(deleteInviteUrl, options).map( () => {
+            return null;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.acceptInvitation
+     */
+    public acceptInvitation(apiId: string, inviteId: string): Promise<void> {
+        console.info("[HubApisService] Accepting an API invitation to collaborate for API %s", apiId);
+
+        let acceptInviteUrl: string = this.endpoint("/designs/:designId/invitations/:inviteId", {
+            designId: apiId,
+            inviteId: inviteId
+        });
+        let options: RequestOptions = this.options({});
+
+        console.info("[HubApisService] Accepting an API invitation: %s", acceptInviteUrl);
+
+        return this.http.put(acceptInviteUrl, null, options).map( () => {
+            return null;
+        }).toPromise();
+    }
+
 
     /**
      * Loads the recent APIs from browser local storage.

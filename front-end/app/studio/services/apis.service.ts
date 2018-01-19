@@ -24,6 +24,8 @@ import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
 import {OtCommand} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../models/ack.model";
+import {ApiCollaborator} from "../models/api-collaborator";
+import {Invitation} from "../models/invitation";
 
 
 export interface IConnectionHandler {
@@ -146,6 +148,59 @@ export interface IApisService {
      * @param apiId
      */
     getContributors(apiId: string): Promise<ApiContributors>;
+
+    /**
+     * Gets the list of collaborators for the API with the given id.
+     * @param {string} apiId
+     * @return {Promise<ApiCollaborator[]>}
+     */
+    getCollaborators(apiId: string): Promise<ApiCollaborator[]>;
+
+    /**
+     * Deletes a collaborator of an API, removing access for that user.
+     * @param {string} apiId
+     * @param {string} userId
+     * @return {Promise<void>}
+     */
+    deleteCollaborator(apiId: string, userId: string): Promise<void>;
+
+    /**
+     * Gets the list of collaborator invitations for the API with the given id.
+     * @param {string} apiId
+     * @return {Promise<Invitation[]>}
+     */
+    getInvitations(apiId: string): Promise<Invitation[]>;
+
+    /**
+     * Gets a single invitation by its ID (for a given API design).
+     * @param {string} apiId
+     * @param {string} inviteId
+     * @return {Promise<Invitation>}
+     */
+    getInvitation(apiId:string, inviteId: string): Promise<Invitation>;
+
+    /**
+     * Creates a new invite-to-collaborate for the given API design.
+     * @param {string} apiId
+     * @return {Promise<Invitation>}
+     */
+    createInvitation(apiId: string): Promise<Invitation>;
+
+    /**
+     * Rejects an invitation to collaborate.
+     * @param {string} apiId
+     * @param {string} inviteId
+     * @return {Promise<void>}
+     */
+    rejectInvitation(apiId: string, inviteId: string): Promise<void>;
+
+    /**
+     * Accepts an invitation to collaborate.
+     * @param {string} apiId
+     * @param {string} inviteId
+     * @return {Promise<void>}
+     */
+    acceptInvitation(apiId: string, inviteId: string): Promise<void>;
 }
 
 export const IApisService = new InjectionToken("IApisService");

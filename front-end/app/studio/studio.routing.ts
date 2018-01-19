@@ -35,6 +35,8 @@ import {LinkedAccountsPageComponent} from "./pages/settings/accounts/accounts.pa
 import {SettingsPageComponent} from "./pages/settings/settings";
 import {NotFoundPageComponent} from "./pages/404.page";
 import {CreatedLinkedAccountPageComponent} from "./pages/settings/accounts/{accountType}/created/created.page";
+import {ApiCollaborationPageComponent} from "./pages/apis/{apiId}/collaboration/api-collaboration.page";
+import {ApiAcceptPageComponent} from "./pages/apis/{apiId}/collaboration/accept/api-accept.page";
 
 
 const _studioRoutes: any[] = [
@@ -57,6 +59,14 @@ const _studioRoutes: any[] = [
     {
         path: "apis/:apiId",
         component: ApiDetailPageComponent
+    },
+    {
+        path: "apis/:apiId/collaboration",
+        component: ApiCollaborationPageComponent
+    },
+    {
+        path: "apis/:apiId/collaboration/accept/:inviteId",
+        component: ApiAcceptPageComponent
     },
     {
         path: "apis/:apiId/editor",

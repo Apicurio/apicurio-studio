@@ -61,6 +61,8 @@ import {LinkedAccountsPageComponent} from "./pages/settings/accounts/accounts.pa
 import {SettingsPageComponent} from "./pages/settings/settings";
 import {NotFoundPageComponent} from "./pages/404.page";
 import {CreatedLinkedAccountPageComponent} from "./pages/settings/accounts/{accountType}/created/created.page";
+import {ApiCollaborationPageComponent} from "./pages/apis/{apiId}/collaboration/api-collaboration.page";
+import {ApiAcceptPageComponent} from "./pages/apis/{apiId}/collaboration/accept/api-accept.page";
 
 /* Page Components */
 import {CreateApiFormComponent} from "./pages/apis/create/_components/create-form.component";
@@ -70,6 +72,7 @@ import {ApisCardsComponent} from "./pages/apis/_components/apis-cards.component"
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
 import {EditorDisconnectedDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component";
+import {CopyUrlDialogComponent} from "./components/dialogs/copy-url.component";
 
 
 /** Directives **/
@@ -138,7 +141,8 @@ import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
         ProfilePageComponent, LinkedAccountsPageComponent, SettingsPageComponent, NotFoundPageComponent,
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
         ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize,
-        AddServerDialogComponent, ServerUrlComponent, ServersSectionComponent
+        AddServerDialogComponent, ServerUrlComponent, ServersSectionComponent, ApiCollaborationPageComponent,
+        CopyUrlDialogComponent, ApiAcceptPageComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

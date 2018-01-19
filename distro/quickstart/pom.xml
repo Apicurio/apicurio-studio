@@ -34,7 +34,57 @@
 
     <build>
         <plugins>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>download-wildfly</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>${version.wildfly}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                    <destFileName>wildfly-${version.wildfly}.zip</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>download-keycloak-wildfly-adapter</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.keycloak</groupId>
+                                    <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+                                    <version>${version.org.keycloak}</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+                
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -55,23 +105,18 @@
                                 <echo>Ant Version: ${antversion}</echo>
 
                                 <property name="wildfly.version" value="${version.wildfly}" />
-                                <property name="wildfly.download.url" value="http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip" />
-                                <property name="wildfly.download.zip" location="${project.build.directory}/wildfly-${wildfly.version}.zip" />
                                 <property name="wildfly.install.dir" value="${project.build.directory}" />
                                 <property name="wildfly.appserver.dir" value="${wildfly.install.dir}/wildfly-${wildfly.version}" />
 
-                                <!-- Download and unpack WildFly -->
+                                <!-- Unpack WildFly --> 
                                 <delete dir="${wildfly.appserver.dir}" />
-                                <get src="${wildfly.download.url}" dest="${wildfly.download.zip}" usetimestamp="true" skipexisting="true" />
-                                <unzip src="${wildfly.download.zip}" dest="${wildfly.install.dir}" overwrite="false" />
+                                <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip" dest="${wildfly.install.dir}" overwrite="false" />
+                                <delete file="${project.build.directory}/wildfly-${wildfly.version}.zip" />
 
-                                <!-- Download and unpack Keycloak OIDC adapter -->
-                                <get src="https://downloads.jboss.org/keycloak/${version.org.keycloak}/adapters/keycloak-oidc/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
-                                     dest="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
-                                     usetimestamp="true" skipexisting="true" />
-                                <unzip src="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" 
-                                       dest="${wildfly.appserver.dir}" overwrite="false" />
-
+                                <!-- Unpack Keycloak OIDC adapter -->
+                                <unzip src="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" dest="${wildfly.appserver.dir}" overwrite="false" />
+                                <delete file="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" />
+                                
                                 <!-- Make sure to chmod 755 the shell scripts -->
                                 <chmod perm="a+x" dir="${wildfly.appserver.dir}/bin">
                                     <include name="*.sh" />
@@ -81,7 +126,7 @@
                                 <delete dir="${wildfly.appserver.dir}/welcome-content" />
                                 
                                 <!-- Rename to 'apicurio-studio-$version' -->
-                                <move file="${wildfly.appserver.dir}" tofile="${project.build.directory}/apicurio-studio-${project.version}" />
+                                <move file="${wildfly.appserver.dir}" tofile="${project.build.directory}/apicurio-studio-${project.version}" /> 
                             </tasks>
                         </configuration>
                         <goals>

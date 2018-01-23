@@ -5,13 +5,17 @@ function executeCommands(oaiDoc, commands) {
     
     if (commands) {
         var numCmds = commands.length;
-        console.info("Executing " + numCmds + " OAS commands.");
+        console.debug("Executing " + numCmds + " OAS commands.");
         for (var i = 0; i < numCmds; i++) {
             var cmd = commands[i];
-            console.info("Executing cmd: " + cmd);
-            cmd = JSON.parse(cmd);
-            cmd = OAI_commands.MarshallUtils.unmarshallCommand(cmd);
-            cmd.execute(document);
+            console.debug("Executing [" + i + "] CMD: " + cmd);
+            try {
+                cmd = JSON.parse(cmd);
+                cmd = OAI_commands.MarshallUtils.unmarshallCommand(cmd);
+                cmd.execute(document);
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 

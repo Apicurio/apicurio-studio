@@ -81,6 +81,16 @@ public class OaiCommandExecutor {
             }
         });
     }
+    
+    public static void debug(String message) {
+        logger.debug(message);
+    }
+    public static void trace(String message) {
+        logger.trace(message);
+    }
+    public static void error(Object error) {
+        logger.error(error.toString());
+    }
 
     /**
      * Executes the given sequence of commands (as serialized JSON) against the

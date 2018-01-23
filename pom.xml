@@ -71,7 +71,7 @@
         <version.bundle.plugin>2.5.3</version.bundle.plugin>
         <version.clean.plugin>2.6</version.clean.plugin>
         <version.compiler.plugin>3.2</version.compiler.plugin>
-        <version.dependency.plugin>2.10</version.dependency.plugin>
+        <version.dependency.plugin>3.0.2</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
         <version.enforcer.plugin>1.4</version.enforcer.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>

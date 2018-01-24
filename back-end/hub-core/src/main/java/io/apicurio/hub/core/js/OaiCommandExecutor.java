@@ -113,6 +113,7 @@ public class OaiCommandExecutor {
             
             return mutatedOaiDoc;
         } catch (Exception e) {
+            logger.error("Error executing commands.", e);
             throw new OaiCommandException(e);
         } finally {
             if (engine != null) {

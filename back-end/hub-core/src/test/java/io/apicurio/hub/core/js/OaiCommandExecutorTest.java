@@ -36,6 +36,7 @@ public class OaiCommandExecutorTest {
 
     @Test
     public void testExecuteCommands() throws Exception {
+        OaiCommandExecutor.debug("::testExecuteCommands::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
         String document = OAI_DOC;
@@ -48,9 +49,9 @@ public class OaiCommandExecutorTest {
         
         // Invoke the executeCommands function
         String actual = executor.executeCommands(document, commands);
-        System.out.println("---");
-        System.out.println(actual);
-        System.out.println("---");
+//        System.out.println("---");
+//        System.out.println(actual);
+//        System.out.println("---");
         
         String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("__expected.json"));
         
@@ -61,6 +62,7 @@ public class OaiCommandExecutorTest {
 
     @Test
     public void testExecuteCommands2() throws Exception {
+        OaiCommandExecutor.debug("::testExecuteCommands2::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
         String document = IOUtils.toString(getClass().getResource("testExecuteCommands2/__begin.json"));
@@ -74,9 +76,9 @@ public class OaiCommandExecutorTest {
         
         // Invoke the executeCommands function
         String actual = executor.executeCommands(document, commands);
-        System.out.println("---");
-        System.out.println(actual);
-        System.out.println("---");
+//        System.out.println("---");
+//        System.out.println(actual);
+//        System.out.println("---");
         
         String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/__expected.json"));
         

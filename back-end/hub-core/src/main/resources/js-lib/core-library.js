@@ -1,9 +1,11 @@
 
 function executeCommands(oaiDoc, commands) {
     console.debug("[core-library] Entering executeCommands");
+    console.debug("[core-library] OAI Doc: " + oaiDoc);
     var library = new OAI.OasLibraryUtils();
     console.debug("[core-library] Library: " + library);
-    var document = library.createDocument(oaiDoc);
+    var oaiDocJSObj = JSON.parse(oaiDoc);
+    var document = library.createDocument(oaiDocJSObj);
     console.debug("[core-library] Document: " + library);
     
     if (commands) {

@@ -20,7 +20,10 @@ import {Observable} from "rxjs/Observable";
 import 'rxjs/Rx';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
-import {IApiEditingSession, IApisService, ICommandHandler, IConnectionHandler} from "./apis.service";
+import {
+    ApiEditorUser, IActivityHandler, IApiEditingSession, IApisService, ICommandHandler,
+    IConnectionHandler
+} from "./apis.service";
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
@@ -40,18 +43,22 @@ import {Invitation} from "../models/invitation";
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
 
+
 /**
  * An implementation of an API editing session.  Uses a Web Socket to communicate with
  * the server.
  */
-class ApiEditingSession implements IApiEditingSession {
+export class ApiEditingSession implements IApiEditingSession {
 
     private _connectionHandler: IConnectionHandler;
     private _commandHandler: ICommandHandler;
+    private _activityHandler: IActivityHandler;
     private _oasLibrary: OasLibraryUtils;
 
     private _connected: boolean;
     private _pingIntervalId: number;
+
+    private _users: any = {};
 
     /**
      * Constructor.
@@ -81,10 +88,10 @@ class ApiEditingSession implements IApiEditingSession {
             console.info("[ApiEditingSession] Message received from server.");
             let msg: any = JSON.parse(msgEvent.data);
             console.info("                    Message type: %s", msg.type);
-            console.info("                    Content Version: %o", msg.contentVersion);
             if (msg.type === "command") {
-                console.info("                    Command: %o", msg.command);
                 // Process a 'command' style message
+                console.info("                    Content Version: %o", msg.contentVersion);
+                console.info("                    Command: %o", msg.command);
                 if (this._commandHandler) {
                     let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
                     let otCmd: OtCommand = new OtCommand();
@@ -93,12 +100,35 @@ class ApiEditingSession implements IApiEditingSession {
                     this._commandHandler.onCommand(otCmd);
                 }
             } else if (msg.type === "ack") {
+                // Process an 'ack' style message
                 console.info("                    Command Id: %o", msg.commandId);
                 if (this._commandHandler) {
                     let ack: ApiDesignCommandAck = new ApiDesignCommandAck();
                     ack.commandId = msg.commandId;
                     ack.contentVersion = msg.contentVersion;
                     this._commandHandler.onAck(ack);
+                }
+            } else if (msg.type === "join") {
+                // Process a 'join' style message (user joined the session)
+                console.info("                    User: %s", msg.user);
+                console.info("                    ID: %s", msg.id);
+                let user: ApiEditorUser = new ApiEditorUser();
+                user.userId = msg.id;
+                user.userName = msg.user;
+                this._users[msg.id] = user;
+                if (this._activityHandler) {
+                    this._activityHandler.onJoin(user);
+                }
+            } else if (msg.type === "leave") {
+                // Process a 'leave' style message (user left the session)
+                console.info("                    User: %s", msg.user);
+                console.info("                    ID: %s", msg.id);
+                let user: ApiEditorUser = this._users[msg.id];
+                if (user) {
+                    delete this._users[msg.id];
+                    if (this._activityHandler) {
+                        this._activityHandler.onLeave(user);
+                    }
                 }
             } else {
                 console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
@@ -122,6 +152,14 @@ class ApiEditingSession implements IApiEditingSession {
      */
     commandHandler(handler: ICommandHandler): void {
         this._commandHandler = handler;
+    }
+
+    /**
+     * Called to set the activity handler.
+     * @param {IActivityHandler} handler
+     */
+    activityHandler(handler: IActivityHandler): void {
+        this._activityHandler = handler;
     }
 
     /**

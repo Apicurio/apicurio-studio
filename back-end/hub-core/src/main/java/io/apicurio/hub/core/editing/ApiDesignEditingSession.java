@@ -19,7 +19,9 @@ package io.apicurio.hub.core.editing;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.websocket.Session;
 
@@ -39,6 +41,7 @@ public class ApiDesignEditingSession implements Closeable {
 
     private final String designId;
     private final Map<String, Session> sessions = new HashMap<>();
+    private final Map<String, String> users = new HashMap<>();
     
     /**
      * Constructor.
@@ -49,12 +52,28 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
-     * Join the websocket session to this design editing session.
+     * @return the designId
+     */
+    public String getDesignId() {
+        return designId;
+    }
+    
+    /**
+     * Resolves the given session to a user name.
      * @param session
      */
-    public void join(Session session) {
-        // TODO notify other sessions that the user has joined?  or handle that elsewhere?
+    public String getUser(Session session) {
+        return users.get(session.getId());
+    }
+
+    /**
+     * Join the websocket session to this design editing session.
+     * @param session
+     * @param user
+     */
+    public void join(Session session, String user) {
         this.sessions.put(session.getId(), session);
+        this.users.put(session.getId(), user);
     }
 
     /**
@@ -62,8 +81,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param session
      */
     public void leave(Session session) {
-        // TODO notify other sessions that the user has left?  or handle that elsewhere?
         this.sessions.remove(session.getId());
+        this.users.remove(session.getId());
     }
 
     /**
@@ -80,15 +99,22 @@ public class ApiDesignEditingSession implements Closeable {
     public void close() {
         // TODO anything to do here?
     }
+    
+    /**
+     * Returns a set of all sessions currently connected.
+     */
+    public Set<Session> getSessions() {
+        return new HashSet<>(this.sessions.values());
+    }
 
     /**
      * Sends the given command to all other members of the editing session.
-     * @param session
+     * @param excludeSession
      * @param user
      * @param content
      * @param contentVersion
      */
-    public void sendCommandToOthers(Session session, String user, ApiDesignCommand command) {
+    public void sendCommandToOthers(Session excludeSession, String user, ApiDesignCommand command) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         builder.append("\"type\": \"command\", ");
@@ -100,11 +126,10 @@ public class ApiDesignEditingSession implements Closeable {
         builder.append("}");
         
         for (Session otherSession : this.sessions.values()) {
-            if (otherSession != session) {
+            if (otherSession != excludeSession) {
                 try {
                     otherSession.getBasicRemote().sendText(builder.toString());
                 } catch (IOException e) {
-                    // TODO what to do if this fails??
                     logger.error("Error sending command to websocket with sessionId: " + otherSession.getId(), e);
                 }
             }
@@ -113,10 +138,10 @@ public class ApiDesignEditingSession implements Closeable {
 
     /**
      * Sends an acknowledgement message to the given client.
-     * @param session
+     * @param toSession
      * @param ack
      */
-    public void sendAck(Session session, ApiDesignCommandAck ack) {
+    public void sendAckTo(Session toSession, ApiDesignCommandAck ack) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         builder.append("\"type\": \"ack\", ");
@@ -127,18 +152,94 @@ public class ApiDesignEditingSession implements Closeable {
         builder.append(ack.getCommandId());
         builder.append("}");
         try {
-            session.getBasicRemote().sendText(builder.toString());
+            toSession.getBasicRemote().sendText(builder.toString());
         } catch (IOException e) {
-            // TODO what to do if this fails??
-            logger.error("Error sending ACK to websocket with sessionId: " + session.getId(), e);
+            logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
         }
     }
 
     /**
-     * @return the designId
+     * Sends a message to the other users that userId has joined the session.
+     * @param joinedSession
+     * @param joinedUser
      */
-    public String getDesignId() {
-        return designId;
+    public void sendJoinToOthers(Session joinedSession, String joinedUser) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"join\", ");
+        builder.append("\"user\": \"");
+        builder.append(joinedUser);
+        builder.append("\", ");
+        builder.append("\"id\": \"");
+        builder.append(joinedSession.getId());
+        builder.append("\"");
+        builder.append("}");
+        
+        for (Session otherSession : this.sessions.values()) {
+            // Don't send the message to the user who is joining
+            if (otherSession != joinedSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    logger.error("Error sending 'join' to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sends a message to the other users that userId has joined the session.
+     * @param leftSession
+     * @param leftUser
+     */
+    public void sendLeaveToOthers(Session leftSession, String leftUser) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"leave\", ");
+        builder.append("\"user\": \"");
+        builder.append(leftUser);
+        builder.append("\", ");
+        builder.append("\"id\": \"");
+        builder.append(leftSession.getId());
+        builder.append("\"");
+        builder.append("}");
+        
+        for (Session otherSession : this.sessions.values()) {
+            // Don't send the message to the user who is leaving
+            if (otherSession != leftSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    logger.error("Error sending 'join' to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sends a "join" message to the given session.  The join message will include the user Id and 
+     * session ID of the user joining the session.
+     * @param toSession
+     * @param joinedUser
+     * @param joinedId
+     */
+    public void sendJoinTo(Session toSession, String joinedUser, String joinedId) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"join\", ");
+        builder.append("\"user\": \"");
+        builder.append(joinedUser);
+        builder.append("\", ");
+        builder.append("\"id\": \"");
+        builder.append(joinedId);
+        builder.append("\"");
+        builder.append("}");
+        
+        try {
+            toSession.getBasicRemote().sendText(builder.toString());
+        } catch (IOException e) {
+            logger.error("Error sending 'join' to websocket with sessionId: " + toSession.getId(), e);
+        }
     }
 
 }

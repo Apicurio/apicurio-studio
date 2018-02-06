@@ -5,7 +5,12 @@
         <li breadcrumb [label]="apiDefinition.name" icon="bolt" [route]="[ '/apis', apiDefinition.id ]"></li>
         <li breadcrumb label="Editor" icon="pencil" class="active"></li>
     </breadcrumbs>
-    <div class="pull-right">
+    <div class="pull-right activeCollaboratorIcons">
+        <!-- Information about current remote editor users (active collaborators) goes in here -->
+        <span *ngFor="let collaborator of activeCollaborators"
+              style.color="{{ collaborator.attributes['color'] }}"
+              class="fa fa-fw fa-{{ collaborator.attributes['icon'] }} activeCollaboratorIcon"
+              title="{{ collaborator.userName }}"></span>
     </div>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>

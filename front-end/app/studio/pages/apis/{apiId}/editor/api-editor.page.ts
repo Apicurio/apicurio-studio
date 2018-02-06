@@ -21,7 +21,7 @@ import {
 } from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
-import {IApiEditingSession, IApisService} from "../../../../services/apis.service";
+import {ApiEditorUser, IApiEditingSession, IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {ICommand, OtCommand} from "oai-ts-commands";
@@ -47,6 +47,13 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
 
     private editingSession: IApiEditingSession;
+    private activeCollaborators: ApiEditorUser[] = [];
+    private _activeCollaboratorIcons: string[] = [
+        "tree", "bus", "bomb", "university", "rocket", "taxi"
+    ];
+    private _activeCollaboratorColors: string[] = [
+        "#50A162", "#B65B80", "#D94C4C", "#477187", "#D4786A", "#B10DC9"
+    ];
 
     private pendingCommands: OtCommand[] = [];
     private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
@@ -91,6 +98,39 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 onAck: (ack) => {
                     this.zone.run(() => {
                         __component.finalizeCommand(ack);
+                    });
+                }
+            });
+            this.editingSession.activityHandler( {
+                onJoin: (user) => {
+                    this.zone.run(() => {
+                        if (this._activeCollaboratorIcons.length === 0) {
+                            user.attributes["icon"] = "user-secret";
+                            user.attributes["color"] = "crimson";
+                        } else {
+                            user.attributes["icon"] = this._activeCollaboratorIcons.splice(0, 1)[0];
+                            user.attributes["color"] = this._activeCollaboratorColors.splice(0, 1)[0];
+                        }
+                        this.activeCollaborators.push(user);
+                        this.activeCollaborators.sort((c1, c2) => {
+                            return c1.userName.localeCompare(c2.userName);
+                        });
+                    });
+                },
+                onLeave: (user) => {
+                    this.zone.run(() => {
+                        if (user.attributes["icon"]) {
+                            this._activeCollaboratorIcons.push(user.attributes["icon"]);
+                        }
+                        if (user.attributes["color"]) {
+                            this._activeCollaboratorColors.push(user.attributes["color"]);
+                        }
+                        for (let idx = this.activeCollaborators.length - 1; idx >= 0; idx--) {
+                            if (this.activeCollaborators[idx].userId === user.userId) {
+                                this.activeCollaborators.splice(idx, 1);
+                                return;
+                            }
+                        }
                     });
                 }
             });

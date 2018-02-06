@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -81,8 +82,6 @@ public class EditApiDesignEndpoint {
     @Inject
     private IEditingMetrics metrics;
 
-    private Map<String, String> users = new HashMap<>();
-
     /**
      * Called when a web socket connection is made.  The format for the web socket URL endpoint is:
      * 
@@ -109,13 +108,27 @@ public class EditApiDesignEndpoint {
 
         logger.debug("\tuuid: {}", uuid);
         logger.debug("\tuser: {}", userId);
+        
+        ApiDesignEditingSession editingSession = null;
 
         try {
-            // Create mapping between the websocket session ID and the user associated with it.
-            this.users.put(session.getId(), userId);
-
             long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
 
+            // Join the editing session (or create a new one) for the API Design
+            editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
+            Set<Session> otherSessions = editingSession.getSessions();
+            if (editingSession.isEmpty()) {
+                this.metrics.editingSessionCreated(designId);
+            }
+            editingSession.join(session, userId);
+            
+            // Send "join" messages for each user already in the session
+            for (Session otherSession : otherSessions) {
+                String otherUser = editingSession.getUser(otherSession);
+                editingSession.sendJoinTo(session, otherUser, otherSession.getId());
+            }
+            
+            // Send any commands that have been created since the user asked to join the editing session.
             List<ApiDesignCommand> commands = this.storage.listContentCommands(userId, designId, contentVersion);
             for (ApiDesignCommand command : commands) {
                 String cmdData = command.getCommand();
@@ -135,17 +148,11 @@ public class EditApiDesignEndpoint {
                 session.getBasicRemote().sendText(builder.toString());
             }
             
-            // TODO Fix race condition:  commands might come in after the SQL SELECT above but before joining the session
-            // TODO Note: this might not matter if proper sequencing is done on the client.  Instead, join the session first and THEN query for all commands
-
-            // Join the editing session (or create a new one) for the API Design
-            ApiDesignEditingSession editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
-            if (editingSession.isEmpty()) {
-                this.metrics.editingSessionCreated(designId);
-            }
-            editingSession.join(session);
+            editingSession.sendJoinToOthers(session, userId);
         } catch (ServerError | StorageException | IOException e) {
-            this.users.remove(session.getId());
+            if (editingSession != null) {
+                editingSession.leave(session);
+            }
             logger.error("Error validating editing session UUID for API Design ID: " + designId, e);
             try {
                 session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Error opening editing session: " + e.getMessage()));
@@ -181,7 +188,7 @@ public class EditApiDesignEndpoint {
         logger.debug("\tdesignId: {}", designId);
 
         if (msgType.equals("command")) {
-            String user = this.users.get(session.getId());
+            String user = editingSession.getUser(session);
             long localCommandId = -1;
             if (message.has("commandId")) {
                 localCommandId = message.get("commandId").asLong();
@@ -211,7 +218,7 @@ public class EditApiDesignEndpoint {
             ApiDesignCommandAck ack = new ApiDesignCommandAck();
             ack.setCommandId(localCommandId);
             ack.setContentVersion(cmdContentVersion);
-            editingSession.sendAck(session, ack);
+            editingSession.sendAckTo(session, ack);
             logger.debug("ACK sent back to client.");
             
             // Now propagate the command to all other clients
@@ -235,14 +242,10 @@ public class EditApiDesignEndpoint {
         String designId = session.getPathParameters().get("designId");
         logger.debug("Closing a WebSocket due to: {}", reason.getReasonPhrase());
         logger.debug("\tdesignId: {}", designId);
-        
-        // Remove the mapping between user and websocket session id
-        String userId = this.users.remove(session.getId());
-        
-        logger.debug("\tuser: {}", userId);
 
         // Call 'leave' on the concurrent editing session for this user
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
+        String userId = editingSession.getUser(session);
         editingSession.leave(session);
         if (editingSession.isEmpty()) {
             // TODO race condition - the session may no longer be empty here!
@@ -253,7 +256,8 @@ public class EditApiDesignEndpoint {
             } catch (NotFoundException | StorageException | OaiCommandException e) {
                 logger.error("Failed to rollup commands for API with id: " + designId, "Rollup error: ", e);
             }
-            // TODO: apply all hanging commands and insert a new content row
+        } else {
+            editingSession.sendLeaveToOthers(session, userId);
         }
     }
 

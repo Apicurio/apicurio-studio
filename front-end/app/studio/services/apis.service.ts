@@ -28,6 +28,17 @@ import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
 
 
+/**
+ * Represents a single user currently connected to the editor.  The local user
+ * is not represented by one of these - only remote collaborators.
+ */
+export class ApiEditorUser {
+    public userId: string;
+    public userName: string;
+    public attributes: any = {};
+}
+
+
 export interface IConnectionHandler {
     // Called when the connection is established.
     onConnected(): void;
@@ -42,6 +53,11 @@ export interface ICommandHandler {
     onAck(ack: ApiDesignCommandAck): void;
 }
 
+export interface IActivityHandler {
+    onJoin(user: ApiEditorUser): void;
+    onLeave(user: ApiEditorUser): void;
+}
+
 
 /**
  * An interface representing an API editing session.  Whenever an API Design is opened
@@ -54,6 +70,8 @@ export interface IApiEditingSession {
     connect(handler: IConnectionHandler): void;
 
     commandHandler(handler: ICommandHandler): void;
+
+    activityHandler(handler: IActivityHandler): void;
 
     sendCommand(command: OtCommand): void;
 

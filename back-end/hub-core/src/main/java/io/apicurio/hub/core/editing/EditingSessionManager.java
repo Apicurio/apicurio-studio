@@ -110,7 +110,6 @@ public class EditingSessionManager implements IEditingSessionManager {
     @Override
     public synchronized void closeEditingSession(ApiDesignEditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
-        // TODO perform rollup of any commands performed during the life of the editing session
     }
 
 }

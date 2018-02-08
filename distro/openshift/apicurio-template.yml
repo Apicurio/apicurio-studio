@@ -638,6 +638,8 @@ objects:
                value: https://${API_ROUTE}
              - name: APICURIO_UI_EDITING_URL
                value: wss://${WS_ROUTE}
+             - name: APICURIO_UI_LOGOUT_REDIRECT_URI
+               value: /
           resources: {}
           livenessProbe:
             httpGet:

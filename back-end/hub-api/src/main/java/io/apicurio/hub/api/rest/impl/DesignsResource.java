@@ -422,7 +422,7 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public Invitation createInvitation(String designId) throws ServerError, NotFoundException, AccessDeniedException {
-        logger.debug("Creating a collaboration invitation for API: {}", designId);
+        logger.debug("Creating a collaboration invitation for API: {} ", designId);
         metrics.apiCall("/designs/{designId}/invitations", "POST");
 
         try {
@@ -430,11 +430,12 @@ public class DesignsResource implements IDesignsResource {
             String username = this.security.getCurrentUser().getName();
             String inviteId = UUID.randomUUID().toString();
             
+            ApiDesign design = this.storage.getApiDesign(user, designId);
             if (!this.storage.hasOwnerPermission(user, designId)) {
                 throw new AccessDeniedException();
             }
             
-            this.storage.createCollaborationInvite(inviteId, designId, user, username, "collaborator");
+            this.storage.createCollaborationInvite(inviteId, designId, user, username, "collaborator", design.getName());
             Invitation invite = new Invitation();
             invite.setCreatedBy(user);
             invite.setCreatedOn(new Date());

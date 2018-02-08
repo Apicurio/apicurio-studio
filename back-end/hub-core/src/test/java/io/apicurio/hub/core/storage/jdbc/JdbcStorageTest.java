@@ -686,7 +686,8 @@ public class JdbcStorageTest {
         String userId = "user";
         String username = "User";
         String role = "collaborator";
-        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+        String subject = "Name of the King";
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role, subject);
     }
 
     @Test
@@ -704,11 +705,12 @@ public class JdbcStorageTest {
         String userId = "user";
         String username = "User";
         String role = "collaborator";
+        String subject = "Tale of Two Cities";
         
         // Now create a few collaboration invites
-        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
-        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
-        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role, subject);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role, subject);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId, userId, username, role, subject);
         
         // Now get the list of invites
         List<Invitation> invites = storage.listCollaborationInvites(designId, "user");
@@ -722,8 +724,8 @@ public class JdbcStorageTest {
 
         // Now some extra data...
         String designId2 = storage.createApiDesign("user", design, "{}");
-        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role);
-        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role, subject);
+        storage.createCollaborationInvite(UUID.randomUUID().toString(), designId2, userId, username, role, subject);
 
         // Same invite list
         invites = storage.listCollaborationInvites(designId, "user");
@@ -733,6 +735,7 @@ public class JdbcStorageTest {
         Assert.assertEquals("user", invites.get(0).getCreatedBy());
         Assert.assertNotNull(invites.get(0).getInviteId());
         Assert.assertEquals("pending", invites.get(0).getStatus());
+        Assert.assertEquals(subject, invites.get(0).getSubject());
     }
     
 
@@ -751,10 +754,11 @@ public class JdbcStorageTest {
         String userId = "user";
         String username = "User";
         String role = "collaborator";
+        String subject = "Jumping Jack Flash";
         
         // Now create an invite
         String inviteId = UUID.randomUUID().toString();
-        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role, subject);
         
         // Now get the list of invites
         List<Invitation> invites = storage.listCollaborationInvites(designId, "user");
@@ -766,6 +770,7 @@ public class JdbcStorageTest {
         Assert.assertEquals("pending", invites.get(0).getStatus());
         Assert.assertNull(invites.get(0).getModifiedBy());
         Assert.assertNull(invites.get(0).getModifiedOn());
+        Assert.assertEquals(subject, invites.get(0).getSubject());
         
         // Now change the invite status
         boolean b = storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", "user2");
@@ -803,8 +808,9 @@ public class JdbcStorageTest {
         String userId = "user";
         String username = "User";
         String role = "collaborator";
+        String subject = "Along Came a Spider";
         
-        storage.createCollaborationInvite(inviteId, designId, userId, username, role);
+        storage.createCollaborationInvite(inviteId, designId, userId, username, role, subject);
         
         Invitation invite = storage.getCollaborationInvite(designId, inviteId);
         Assert.assertNotNull(invite);
@@ -815,6 +821,7 @@ public class JdbcStorageTest {
         Assert.assertNull(invite.getModifiedBy());
         Assert.assertNull(invite.getModifiedOn());
         Assert.assertEquals("pending", invite.getStatus());
+        Assert.assertEquals(subject, invite.getSubject());
         
         storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", userId);
         invite = storage.getCollaborationInvite(designId, inviteId);

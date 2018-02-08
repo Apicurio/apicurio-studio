@@ -312,8 +312,8 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertCollaborationInvitation() {
-        return "INSERT INTO acl_invites (created_by, created_on, created_by_display, design_id, role, invite_id, status) "
-                  + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return "INSERT INTO acl_invites (created_by, created_on, created_by_display, design_id, role, invite_id, status, subject) "
+                  + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     }
     
     /**

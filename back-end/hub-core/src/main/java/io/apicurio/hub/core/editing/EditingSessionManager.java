@@ -32,6 +32,7 @@ import io.apicurio.hub.core.storage.StorageException;
 /**
  * A class used to manage the concurrent editing sessions used by clients to make
  * changes to API Design documents.
+ * 
  * @author eric.wittmann@gmail.com
  * 
  * TODO create a worker thread that will periodically check the storage layer for session UUIDs that have timed out

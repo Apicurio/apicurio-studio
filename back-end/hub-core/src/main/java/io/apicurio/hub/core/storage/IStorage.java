@@ -272,9 +272,11 @@ public interface IStorage {
      * @param userId
      * @param username
      * @param role
+     * @param subject
      * @throws StorageException
      */
-    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role) throws StorageException;
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role,
+            String subject) throws StorageException;
 
     /**
      * Updates the status of an invitation.  This can be used to accept, reject, or cancel an invite.
@@ -285,7 +287,8 @@ public interface IStorage {
      * @return true if the status was changed successfully
      * @throws StorageException
      */
-    public boolean updateCollaborationInviteStatus(String inviteId, String fromStatus, String toStatus, String userId) throws StorageException;
+    public boolean updateCollaborationInviteStatus(String inviteId, String fromStatus, String toStatus, String userId)
+            throws StorageException;
     
     /**
      * Returns all of the invitations for a given API design.

@@ -26,6 +26,7 @@ export class Invitation {
     modifiedBy: string;
     modifiedOn: Date;
     role: string;
+    subject: string;
 
     constructor() {
         this.inviteId = "";
@@ -34,6 +35,7 @@ export class Invitation {
         this.createdOn = new Date();
         this.status = "";
         this.role = "";
+        this.subject = "";
     }
 }
 

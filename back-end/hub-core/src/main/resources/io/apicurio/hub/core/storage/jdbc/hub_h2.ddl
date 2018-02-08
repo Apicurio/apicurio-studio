@@ -24,7 +24,7 @@ ALTER TABLE acl ADD PRIMARY KEY (user_id, design_id);
 ALTER TABLE acl ADD CONSTRAINT FK_acl_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_acl_1 ON acl(role);
 
-CREATE TABLE acl_invites (created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, created_by_display VARCHAR(255), design_id BIGINT NOT NULL, role VARCHAR(16) NOT NULL, invite_id VARCHAR(64) NOT NULL, status VARCHAR(16) NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP);
+CREATE TABLE acl_invites (created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, created_by_display VARCHAR(255), design_id BIGINT NOT NULL, role VARCHAR(16) NOT NULL, invite_id VARCHAR(64) NOT NULL, status VARCHAR(16) NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP, subject VARCHAR(1024));
 ALTER TABLE acl_invites ADD PRIMARY KEY (invite_id);
 ALTER TABLE acl_invites ADD CONSTRAINT FK_invites_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_invites_1 ON acl_invites(status);

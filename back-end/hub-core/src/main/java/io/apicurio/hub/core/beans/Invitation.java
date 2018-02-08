@@ -31,6 +31,7 @@ public class Invitation {
     private String modifiedBy;
     private Date modifiedOn;
     private String role;
+    private String subject;
     
     /**
      * Constructor.
@@ -148,6 +149,20 @@ public class Invitation {
      */
     public void setRole(String role) {
         this.role = role;
+    }
+
+    /**
+     * @return the subject
+     */
+    public String getSubject() {
+        return subject;
+    }
+
+    /**
+     * @param subject the subject to set
+     */
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
 }

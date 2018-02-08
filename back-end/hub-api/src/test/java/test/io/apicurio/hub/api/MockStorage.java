@@ -406,11 +406,11 @@ public class MockStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role)
-            throws StorageException {
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role,
+            String subject) throws StorageException {
         MockInviteRow row = new MockInviteRow();
         row.inviteId = inviteId;
         row.createdBy = userId;
@@ -419,6 +419,7 @@ public class MockStorage implements IStorage {
         row.modifiedBy = null;
         row.role = role;
         row.status = "pending";
+        row.subject = subject;
         this.invites.put(inviteId, row);
     }
     
@@ -504,6 +505,7 @@ public class MockStorage implements IStorage {
         public String inviteId;
         public String status;
         public String modifiedBy;
+        public String subject;
     }
 
 }

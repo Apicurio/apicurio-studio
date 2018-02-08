@@ -858,11 +858,11 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role)
-            throws StorageException {
+    public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role,
+            String subject) throws StorageException {
         logger.debug("Inserting a collaboration invitation row: {}  for design: {}", inviteId, designId);
         try {
             this.jdbi.withHandle( handle -> {
@@ -875,6 +875,7 @@ public class JdbcStorage implements IStorage {
                       .bind(4, role)
                       .bind(5, inviteId)
                       .bind(6, "pending")
+                      .bind(7, subject)
                       .execute();
                 return null;
             });
@@ -1087,6 +1088,7 @@ public class JdbcStorage implements IStorage {
             invite.setModifiedOn(rs.getDate("modified_on"));
             invite.setStatus(rs.getString("status"));
             invite.setRole(rs.getString("role"));
+            invite.setSubject(rs.getString("subject"));
             return invite;
         }
 

@@ -116,8 +116,9 @@ div.kc-logo-text span {
     color: #DCD7D7;
     background-image: url(../img/apicurio_logo_sm.png);
     background-repeat: no-repeat;
-    background-position: 0 -8px;
-    padding-left: 80px;
+    background-position: 0 5px;
+    padding-left: 70px;
+    background-size: 55px 55px;
     height: 80px;
 }
 

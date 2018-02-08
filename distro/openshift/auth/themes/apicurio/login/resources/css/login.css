@@ -1,19 +1,19 @@
 .login-pf body {
-    background-color: #15201b;
+    background-color: #231F20;
     background-image: none;
     background-size: cover;
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 
 .login-pf form input {
-    background-color: #B5FFDD;
+    background-color: #DCD7D7;
 }
 
 
 #kc-container .alert-error {
     background-color: #15201b;
     border-color: rgb(241, 78, 86);
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 
 #kc-container .pficon-error-circle-o::before {
@@ -53,7 +53,7 @@
 }
 
 #kc-locale-dropdown a {
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 
 #kc-locale-dropdown a:hover {
@@ -76,7 +76,7 @@ a#kc-current-locale-link::after {
 
 .login-pf .container {
     padding-top: 40px;
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 
 .login-pf a:hover {
@@ -102,7 +102,7 @@ div.kc-logo-text span {
 }
 
 #kc-header {
-    color: #B5FFDD;
+    color: #DCD7D7;
     overflow: visible;
     padding-left: 80px;
     white-space: nowrap;
@@ -113,11 +113,11 @@ div.kc-logo-text span {
     text-transform: capitalize;
     margin-bottom: 15px;
     font-family: Raleway;
-    color: rgb(123, 236, 185);
+    color: #DCD7D7;
     background-image: url(../img/apicurio_logo_sm.png);
     background-repeat: no-repeat;
     background-position: 0 -8px;
-    padding-left: 60px;
+    padding-left: 80px;
     height: 80px;
 }
 
@@ -224,7 +224,7 @@ ol#kc-totp-settings li:first-of-type {
 }
 
 .zocial:hover {
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 
 .zocial.facebook,
@@ -261,7 +261,7 @@ ol#kc-totp-settings li:first-of-type {
 /* Copy of zocial windows classes to be used for microsoft's social provider button */
 .zocial.microsoft {
 	background-color: #0052a4;
-    color: #B5FFDD;
+    color: #DCD7D7;
 }
 .zocial.microsoft:before { content: "\f15d"; }
 

@@ -35,6 +35,7 @@ import org.junit.Test;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
@@ -619,6 +620,71 @@ public class JdbcStorageTest {
         Assert.assertEquals("{5}", iter.next().getCommand());
     }
 
+    @Test
+    public void testGetActivity() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        // Note: the thread.sleep calls are needed to ensure time-based ordering of the content rows.  Without
+        // these calls the test would be somewhat non-deterministic (two rows with the same moment in time).
+        
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{1}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{2}");
+        Thread.sleep(5);
+        storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        Thread.sleep(5);
+        /*long sinceVersion = */storage.addContent("user2", id, ApiContentType.Document, "{ROLLUP:123}");
+        Thread.sleep(5);
+        storage.addContent("user2", id, ApiContentType.Command, "{4}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{5}");
+        
+        Collection<ApiDesignChange> activity = storage.listApiDesignActivity(id, 0, 2);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(2, activity.size());
+        Iterator<ApiDesignChange> iter = activity.iterator();
+        Assert.assertEquals("{5}", iter.next().getData());
+        Assert.assertEquals("{4}", iter.next().getData());
+        
+        activity = storage.listApiDesignActivity(id, 1, 3);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(2, activity.size());
+        iter = activity.iterator();
+        Assert.assertEquals("{4}", iter.next().getData());
+        Assert.assertEquals("{3}", iter.next().getData());
+        
+        activity = storage.listApiDesignActivity(id, 1, 5);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(4, activity.size());
+        iter = activity.iterator();
+        Assert.assertEquals("{4}", iter.next().getData());
+        Assert.assertEquals("{3}", iter.next().getData());
+        Assert.assertEquals("{2}", iter.next().getData());
+        Assert.assertEquals("{1}", iter.next().getData());
+
+        activity = storage.listApiDesignActivity(id, 1, 50);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(4, activity.size());
+        iter = activity.iterator();
+        Assert.assertEquals("{4}", iter.next().getData());
+        Assert.assertEquals("{3}", iter.next().getData());
+        Assert.assertEquals("{2}", iter.next().getData());
+        Assert.assertEquals("{1}", iter.next().getData());
+    }
     @Test
     public void testEditingSessionUuids() throws Exception {
         String user = "user1";

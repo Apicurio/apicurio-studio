@@ -1,6 +1,6 @@
 -- *********************************************************************
 -- DDL for the Apicurio Studio Hub API - Database: H2
--- Upgrades the DB schema from version 1 to version 2.
+-- Upgrades the DB schema from version 2 to version 3.
 -- *********************************************************************
 
 UPDATE apicurio SET prop_value = 3 WHERE prop_name = 'db_version';

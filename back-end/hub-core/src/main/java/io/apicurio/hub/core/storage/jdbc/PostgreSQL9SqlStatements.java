@@ -38,5 +38,5 @@ public class PostgreSQL9SqlStatements extends CommonSqlStatements {
     public String isDatabaseInitialized() {
         return "SELECT count(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs' LIMIT 1";
     }
-
+    
 }

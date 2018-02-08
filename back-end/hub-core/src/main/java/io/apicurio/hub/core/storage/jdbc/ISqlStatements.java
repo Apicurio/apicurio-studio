@@ -206,4 +206,9 @@ public interface ISqlStatements {
      */
     public String deleteEditingSessionUuid();
 
+    /**
+     * A statement used to select rows from the api_content table (limited by a range).
+     */
+    public String selectApiDesignActivity();
+
 }

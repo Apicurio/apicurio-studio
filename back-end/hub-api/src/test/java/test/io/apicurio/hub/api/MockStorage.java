@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
@@ -475,6 +476,16 @@ public class MockStorage implements IStorage {
             }
         }
         throw new NotFoundException();
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignActivity(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to)
+            throws StorageException {
+        // TODO implement this and add to unit tests?
+        return null;
     }
     
     public static class MockContentRow {

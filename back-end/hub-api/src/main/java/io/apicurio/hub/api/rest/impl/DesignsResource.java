@@ -54,6 +54,7 @@ import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
@@ -578,6 +579,32 @@ public class DesignsResource implements IDesignsResource {
                 throw new AccessDeniedException();
             }
             this.storage.deletePermission(designId, userId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getActivity(java.lang.String, java.lang.Integer, java.lang.Integer)
+     */
+    @Override
+    public Collection<ApiDesignChange> getActivity(String designId, Integer start, Integer end)
+            throws ServerError, NotFoundException {
+        int from = 0;
+        int to = 20;
+        if (start != null) {
+            from = start.intValue();
+        }
+        if (end != null) {
+            to = end.intValue();
+        }
+        
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            return this.storage.listApiDesignActivity(designId, from, to);
         } catch (StorageException e) {
             throw new ServerError(e);
         }

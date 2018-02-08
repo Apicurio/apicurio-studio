@@ -344,5 +344,13 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String deleteEditingSessionUuid() {
         return "DELETE FROM session_uuids WHERE uuid = ? AND design_id = ? AND secret = ? AND expires_on > ?";
     }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesignActivity()
+     */
+    @Override
+    public String selectApiDesignActivity() {
+        return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 1 ORDER BY created_on DESC LIMIT ? OFFSET ?";
+    }
     
 }

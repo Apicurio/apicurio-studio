@@ -34,6 +34,7 @@ import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
@@ -124,5 +125,11 @@ public interface IDesignsResource {
     @DELETE
     @Path("{designId}/collaborators/{userId}")
     public void deleteCollaborator(@PathParam("designId") String designId, @PathParam("userId") String userId) throws ServerError, NotFoundException, AccessDeniedException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/activity")
+    public Collection<ApiDesignChange> getActivity(@PathParam("designId") String designId,
+            @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
 
 }

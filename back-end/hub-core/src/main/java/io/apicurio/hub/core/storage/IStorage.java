@@ -21,6 +21,7 @@ import java.util.List;
 
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
@@ -303,5 +304,14 @@ public interface IStorage {
      * @param inviteId
      */
     public Invitation getCollaborationInvite(String designId, String inviteId) throws StorageException, NotFoundException;
+
+    /**
+     * Returns a collection of API design changes.  Since there can be many of these per API, 
+     * it is required to include a FROM and TO parameter to limit the result set.
+     * @param designId
+     * @param from
+     * @param to
+     */
+    public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to) throws StorageException;
     
 }

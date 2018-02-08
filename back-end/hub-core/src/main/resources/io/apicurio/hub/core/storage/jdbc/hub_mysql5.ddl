@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 3);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 4);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on DATETIME, used_on DATETIME, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -17,6 +17,8 @@ CREATE INDEX IDX_content_0 ON api_content(design_id, version);
 CREATE INDEX IDX_content_1 ON api_content(version);
 CREATE INDEX IDX_content_2 ON api_content(type);
 CREATE INDEX IDX_content_3 ON api_content(created_by);
+CREATE INDEX IDX_content_4 ON api_content(created_on);
+ALTER TABLE api_content ADD CONSTRAINT FK_content_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 
 CREATE TABLE acl (user_id VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, role VARCHAR(255) NOT NULL);
 ALTER TABLE acl ADD PRIMARY KEY (user_id, design_id);

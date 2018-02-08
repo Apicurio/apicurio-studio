@@ -229,6 +229,20 @@ public class EditApiDesignEndpoint {
             logger.debug("Command propagated to 'other' clients.");
 
             return;
+        } else if (msgType.equals("selection")) {
+            String user = editingSession.getUser(session);
+            String selection = null;
+            if (message.has("selection")) {
+                JsonNode node = message.get("selection");
+                if (node != null) {
+                    selection = node.asText();
+                }
+            }
+            logger.debug("\tuser:" + user);
+            logger.debug("\tselection:" + selection);
+            editingSession.sendUserSelectionToOthers(session, user, selection);
+            logger.debug("User selection propagated to 'other' clients.");
+            return;
         } else if (msgType.equals("ping")) {
             logger.debug("PING message received.");
             return;

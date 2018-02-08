@@ -26,17 +26,7 @@ import {OtCommand} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
-
-
-/**
- * Represents a single user currently connected to the editor.  The local user
- * is not represented by one of these - only remote collaborators.
- */
-export class ApiEditorUser {
-    public userId: string;
-    public userName: string;
-    public attributes: any = {};
-}
+import {ApiEditorUser} from "../models/editor-user.model";
 
 
 export interface IConnectionHandler {
@@ -56,6 +46,7 @@ export interface ICommandHandler {
 export interface IActivityHandler {
     onJoin(user: ApiEditorUser): void;
     onLeave(user: ApiEditorUser): void;
+    onSelection(user: ApiEditorUser, selection: string): void;
 }
 
 
@@ -74,6 +65,8 @@ export interface IApiEditingSession {
     activityHandler(handler: IActivityHandler): void;
 
     sendCommand(command: OtCommand): void;
+
+    sendSelection(selection: string): void;
 
     close();
 

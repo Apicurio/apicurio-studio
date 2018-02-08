@@ -8,8 +8,7 @@
     <div class="pull-right activeCollaboratorIcons">
         <!-- Information about current remote editor users (active collaborators) goes in here -->
         <span *ngFor="let collaborator of activeCollaborators"
-              style.color="{{ collaborator.attributes['color'] }}"
-              class="fa fa-fw fa-{{ collaborator.attributes['icon'] }} activeCollaboratorIcon"
+              class="fa fa-fw fa-{{ collaborator.attributes['id'] }} activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
               title="{{ collaborator.userName }}"></span>
     </div>
 </div>
@@ -47,6 +46,8 @@
     </div>
 
     <!-- The API Editor -->
-    <api-editor #apiEditor [api]="apiDefinition" (onCommandExecuted)="onCommandExecuted($event)" *ngSwitchCase="'loaded'"></api-editor>
+    <api-editor #apiEditor [api]="apiDefinition" *ngSwitchCase="'loaded'"
+                (onSelectionChanged)="onSelectionChanged($event)"
+                (onCommandExecuted)="onCommandExecuted($event)"></api-editor>
 </div>
 <editor-disconnected-dialog #editorDisconnectedModal></editor-disconnected-dialog>

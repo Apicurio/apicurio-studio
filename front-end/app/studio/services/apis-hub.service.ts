@@ -21,7 +21,7 @@ import 'rxjs/Rx';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {
-    ApiEditorUser, IActivityHandler, IApiEditingSession, IApisService, ICommandHandler,
+    IActivityHandler, IApiEditingSession, IApisService, ICommandHandler,
     IConnectionHandler
 } from "./apis.service";
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
@@ -39,6 +39,7 @@ import {OasLibraryUtils} from "oai-ts-core";
 import {ApiDesignCommandAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
+import {ApiEditorUser} from "../models/editor-user.model";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
@@ -130,6 +131,15 @@ export class ApiEditingSession implements IApiEditingSession {
                         this._activityHandler.onLeave(user);
                     }
                 }
+            } else if (msg.type === "selection") {
+                // Process a 'leave' style message (user left the session)
+                console.info("                    User: %s", msg.user);
+                console.info("                    ID: %s", msg.id);
+                console.info("                    Selection: %s", msg.selection);
+                let user: ApiEditorUser = this._users[msg.id];
+                if (user) {
+                    this._activityHandler.onSelection(user, msg.selection);
+                }
             } else {
                 console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
             }
@@ -171,6 +181,20 @@ export class ApiEditingSession implements IApiEditingSession {
             type: "command",
             commandId: command.contentVersion,
             command: MarshallUtils.marshallCommand(command.command)
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to send a selection event.  This is done whenever the local user
+     * changes her selection (e.g. in the master view).
+     * @param {string} selection
+     */
+    sendSelection(selection: string): void {
+        let data: any = {
+            type: "selection",
+            selection: selection
         };
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);

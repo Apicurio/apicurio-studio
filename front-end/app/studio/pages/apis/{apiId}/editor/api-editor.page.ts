@@ -21,7 +21,7 @@ import {
 } from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
-import {ApiEditorUser, IApiEditingSession, IApisService} from "../../../../services/apis.service";
+import {IApiEditingSession, IApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {ICommand, OtCommand} from "oai-ts-commands";
@@ -29,6 +29,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
+import {ApiEditorUser} from "../../../../models/editor-user.model";
 
 @Component({
     moduleId: module.id,
@@ -48,16 +49,15 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private editingSession: IApiEditingSession;
     private activeCollaborators: ApiEditorUser[] = [];
-    private _activeCollaboratorIcons: string[] = [
+    private _activeCollaboratorIds: string[] = [
         "tree", "bus", "bomb", "university", "rocket", "taxi"
-    ];
-    private _activeCollaboratorColors: string[] = [
-        "#50A162", "#B65B80", "#D94C4C", "#477187", "#D4786A", "#B10DC9"
     ];
 
     private pendingCommands: OtCommand[] = [];
     private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
     private _pendingCommands: Observable<OtCommand[]> = this._pendingCommandsSubject.asObservable();
+
+    private currentEditorSelection: string;
 
     /**
      * Constructor.
@@ -104,33 +104,37 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             this.editingSession.activityHandler( {
                 onJoin: (user) => {
                     this.zone.run(() => {
-                        if (this._activeCollaboratorIcons.length === 0) {
-                            user.attributes["icon"] = "user-secret";
-                            user.attributes["color"] = "crimson";
+                        if (this._activeCollaboratorIds.length === 0) {
+                            user.attributes["id"] = "user-secret";
                         } else {
-                            user.attributes["icon"] = this._activeCollaboratorIcons.splice(0, 1)[0];
-                            user.attributes["color"] = this._activeCollaboratorColors.splice(0, 1)[0];
+                            user.attributes["id"] = this._activeCollaboratorIds.splice(0, 1)[0];
                         }
                         this.activeCollaborators.push(user);
                         this.activeCollaborators.sort((c1, c2) => {
                             return c1.userName.localeCompare(c2.userName);
                         });
+                        __component.editingSession.sendSelection(__component.currentEditorSelection);
                     });
                 },
                 onLeave: (user) => {
                     this.zone.run(() => {
-                        if (user.attributes["icon"]) {
-                            this._activeCollaboratorIcons.push(user.attributes["icon"]);
+                        if (user.attributes["id"]) {
+                            this._activeCollaboratorIds.push(user.attributes["id"]);
                         }
-                        if (user.attributes["color"]) {
-                            this._activeCollaboratorColors.push(user.attributes["color"]);
-                        }
+                        console.info("User left the session, clearing their selection.");
+                        __component.updateSelection(user, null);
                         for (let idx = this.activeCollaborators.length - 1; idx >= 0; idx--) {
                             if (this.activeCollaborators[idx].userId === user.userId) {
                                 this.activeCollaborators.splice(idx, 1);
                                 return;
                             }
                         }
+                    });
+                },
+                onSelection: (user, selection) => {
+                    console.info("User %s selection changed to: %s", user.userName, selection);
+                    this.zone.run(() => {
+                        __component.updateSelection(user, selection);
                     });
                 }
             });
@@ -198,6 +202,15 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     /**
+     * Called when the user's selection changes.
+     * @param {string} selection
+     */
+    public onSelectionChanged(selection: string): void {
+        this.currentEditorSelection = selection;
+        this.editingSession.sendSelection(selection);
+    }
+
+    /**
      * Executes the given command in the editor.
      * @param {ICommand} command
      */
@@ -212,6 +225,18 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      */
     protected finalizeCommand(ack: ApiDesignCommandAck): void {
         this._apiEditor.first.finalizeCommand(ack);
+    }
+
+    /**
+     * Updates the selection state for the given user.
+     * @param {ApiEditorUser} user
+     * @param {string} selection
+     */
+    protected updateSelection(user: ApiEditorUser, selection: string) {
+        // TODO convert this to a pubsub model like pending commands - I think selection update events may arrive before the editor is initialized.
+        if (this._apiEditor.first) {
+            this._apiEditor.first.updateCollaboratorSelection(user, selection);
+        }
     }
 }
 

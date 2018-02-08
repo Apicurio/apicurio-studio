@@ -45,6 +45,7 @@ import {AbstractCombinedVisitorAdapter, AllNodeVisitor} from "./_visitors/base.v
 import {NodeSelectionEvent} from "./_events/node-selection.event";
 import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
+import {ApiEditorUser} from "../../../../models/editor-user.model";
 
 
 @Component({
@@ -58,6 +59,7 @@ export class ApiEditorComponent implements OnChanges {
 
     @Input() api: ApiDefinition;
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
+    @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
@@ -166,6 +168,15 @@ export class ApiEditorComponent implements OnChanges {
     }
 
     /**
+     * Called to update the selection state of the given remote API editor (i.e. an active collaborator).
+     * @param {ApiEditorUser} user
+     * @param {string} selection
+     */
+    public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
+        this.master.updateCollaboratorSelection(user, selection);
+    }
+
+    /**
      * Called when the user selects a node in some way.
      * @param {NodeSelectionEvent} event
      */
@@ -180,6 +191,13 @@ export class ApiEditorComponent implements OnChanges {
             this.formType += "30";
         }
         console.info("[ApiEditorComponent] Showing form: %s", this.formType);
+
+        let selection: string = "";
+        if (event.type != "problem" && event.node != null) {
+            selection = this._library.createNodePath(event.node as OasNode).toString();
+        }
+        console.info("[ApiEditorComponent] Firing selection changed event: %s", selection);
+        this.onSelectionChanged.emit(selection);
     }
 
     /**
@@ -330,3 +348,4 @@ class SelectedItemVisitor extends AbstractCombinedVisitorAdapter {
         this.selectedItem = node;
     }
 }
+

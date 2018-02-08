@@ -137,6 +137,38 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
+     * Sends the given selection change event to all other members of the editing session.
+     * @param excludeSession
+     * @param user
+     * @param newSelection
+     */
+    public void sendUserSelectionToOthers(Session excludeSession, String user, String newSelection) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"selection\", ");
+        builder.append("\"user\": \"");
+        builder.append(user);
+        builder.append("\", ");
+        builder.append("\"id\": \"");
+        builder.append(excludeSession.getId());
+        builder.append("\", ");
+        builder.append("\"selection\": \"");
+        // TODO may need to escape this string for JSON, or else build the payload using jackson instead of StringBuilder
+        builder.append(newSelection);
+        builder.append("\"}");
+        
+        for (Session otherSession : this.sessions.values()) {
+            if (otherSession != excludeSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    logger.error("Error sending selection event to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Sends an acknowledgement message to the given client.
      * @param toSession
      * @param ack

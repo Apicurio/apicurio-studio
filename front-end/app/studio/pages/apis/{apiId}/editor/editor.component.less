@@ -279,6 +279,32 @@
   font-size: 14px;
   border-left: 2px solid transparent;
 }
+
+.api-editor .editor-master .editor-outline .api-path.tree {
+  border-left: 2px dotted #50A162;
+  background-color: lighten(#50A162, 42%);
+}
+.api-editor .editor-master .editor-outline .api-path.bus {
+  border-left: 2px dotted #B65B80;
+  background-color: lighten(#B65B80, 42%);
+}
+.api-editor .editor-master .editor-outline .api-path.bomb {
+  border-left: 2px dotted #D94C4C;
+  background-color: lighten(#D94C4C, 42%);
+}
+.api-editor .editor-master .editor-outline .api-path.university {
+  border-left: 2px dotted #477187;
+  background-color: lighten(#477187, 42%);
+}
+.api-editor .editor-master .editor-outline .api-path.rocket {
+  border-left: 2px dotted #D4786A;
+  background-color: lighten(#D4786A, 42%);
+}
+.api-editor .editor-master .editor-outline .api-path.taxi {
+  border-left: 2px dotted #B10DC9;
+  background-color: lighten(#B10DC9, 42%);
+}
+
 .api-editor .editor-master .editor-outline .api-path:hover {
   cursor: pointer;
 }
@@ -299,7 +325,9 @@
 .api-editor .editor-master .editor-outline .api-path.selected .label:hover {
 }
 .api-editor .editor-master .editor-outline .api-path.selected .label.selected {
+
 }
+
 
 .api-editor .editor-master .editor-outline .api-path.problem-marker:before {
   top: 2px;
@@ -335,6 +363,32 @@
 .api-editor .editor-master .editor-outline .api-definition:hover {
   cursor: pointer;
 }
+
+.api-editor .editor-master .editor-outline .api-definition.tree {
+  border-left: 2px dotted #50A162;
+  background-color: lighten(#50A162, 42%);
+}
+.api-editor .editor-master .editor-outline .api-definition.bus {
+  border-left: 2px dotted #B65B80;
+  background-color: lighten(#B65B80, 42%);
+}
+.api-editor .editor-master .editor-outline .api-definition.bomb {
+  border-left: 2px dotted #D94C4C;
+  background-color: lighten(#D94C4C, 42%);
+}
+.api-editor .editor-master .editor-outline .api-definition.university {
+  border-left: 2px dotted #477187;
+  background-color: lighten(#477187, 42%);
+}
+.api-editor .editor-master .editor-outline .api-definition.rocket {
+  border-left: 2px dotted #D4786A;
+  background-color: lighten(#D4786A, 42%);
+}
+.api-editor .editor-master .editor-outline .api-definition.taxi {
+  border-left: 2px dotted #B10DC9;
+  background-color: lighten(#B10DC9, 42%);
+}
+
 .api-editor .editor-master .editor-outline .api-definition.selected {
   cursor: default;
 }
@@ -714,11 +768,7 @@
   box-shadow: 1px 1px 4px #aae;
 }
 
-.api-editor .editor-detail .property.required, .api-editor .editor-detail .row.parameter {
-  margin-left: 0;
-  margin-right: 0;
-}
-.api-editor .editor-detail .property.required, .api-editor .editor-detail .row.response {
+.api-editor .editor-detail .row.property, .api-editor .editor-detail .row.parameter, .api-editor .editor-detail .row.response {
   margin-left: 0;
   margin-right: 0;
 }

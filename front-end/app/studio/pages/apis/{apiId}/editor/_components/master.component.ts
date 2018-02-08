@@ -25,7 +25,7 @@ import {
     Oas30SchemaDefinition,
     OasDocument,
     OasLibraryUtils,
-    OasNode,
+    OasNode, OasNodePath,
     OasOperation,
     OasPathItem,
     OasValidationError,
@@ -48,6 +48,8 @@ import {
     createNewSchemaDefinitionCommand,
     createDeleteOperationCommand, ICommand
 } from "oai-ts-commands";
+import {ModelUtils} from "../_util/model.util";
+import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
 
 /**
@@ -72,6 +74,7 @@ export class EditorMasterComponent {
 
     selectedItem: any = null;
     selectedType: string = "main";
+    currentExternalSelections: ExternalSelections = new ExternalSelections();
 
     contextMenuItem: any = null;
     contextMenuType: string = null;
@@ -367,6 +370,44 @@ export class EditorMasterComponent {
     }
 
     /**
+     * Called to update the selection state of the given remote API editor (i.e. an active collaborator).
+     * @param {ApiEditorUser} user
+     * @param {string} selection
+     */
+    public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
+        this.currentExternalSelections.setSelection(user, selection, this.document);
+    }
+
+    /**
+     * Returns the selection style to use for the given (potentially selected) node.
+     * @param {OasNode} item
+     * @param {string} nodeType
+     * @return {string}
+     */
+    public collaboratorSelectionClasses(item: OasNode, nodeType: string): string {
+        if (item) {
+            let user: ApiEditorUser = ModelUtils.isSelectedByCollaborator(item);
+            if (user != null && user.attributes["id"]) {
+                return user.attributes["id"];
+            }
+            // pathItems - if a child operation is selected then the path is too
+            if (nodeType === "pathItem") {
+                let operationNames: string[] = [ "get", "put", "post", "delete", "options", "head", "patch", "trace" ];
+                for (let opName of operationNames) {
+                    let operation: OasOperation = item[opName] as OasOperation;
+                    if (operation) {
+                        user = ModelUtils.isSelectedByCollaborator(operation);
+                        if (user != null && user.attributes["id"]) {
+                            return user.attributes["id"];
+                        }
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
      * Called when the user fills out the Add Path modal dialog and clicks Add.
      * @param {string} path
      */
@@ -651,6 +692,63 @@ export class EditorMasterComponent {
         let event: NodeSelectionEvent = new NodeSelectionEvent(this.selectedItem, this.selectedType);
         this.onNodeSelected.emit(event);
     }
+
+    /**
+     * Returns the classes that should be applied to the path item in the master view.
+     * @param {OasPathItem} node
+     * @return {string}
+     */
+    public pathClasses(node: OasPathItem): string {
+        let classes: string[] = [];
+        if (this.hasValidationProblem(node)) {
+            classes.push("problem-marker");
+        }
+        if (this.isPathContexted(node)) {
+            classes.push("contexted");
+        }
+        if (this.isPathSelected(node)) {
+            classes.push("selected");
+        }
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'pathItem');
+    }
+
+    /**
+     * Returns the classes that should be applied to the operation in the master view.
+     * @param {OasOperation} node
+     * @return {string}
+     */
+    public operationClasses(node: OasOperation): string {
+        let classes: string[] = [];
+        if (this.hasValidationProblem(node)) {
+            classes.push("problem-marker");
+        }
+        if (this.contextMenuType === 'operation' && this.contextMenuItem === node) {
+            classes.push("contexted");
+        }
+        if (this.selectedItem === node) {
+            classes.push("selected");
+        }
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'operation');
+    }
+
+    /**
+     * Returns the classes that should be applied to the schema definition in the master view.
+     * @param {OasNode} node
+     * @return {string}
+     */
+    public definitionClasses(node: OasNode): string {
+        let classes: string[] = [];
+        if (this.hasValidationProblem(node)) {
+            classes.push("problem-marker");
+        }
+        if (this.contextMenuType === 'definition' && this.contextMenuItem === node) {
+            classes.push("contexted");
+        }
+        if (this.selectedItem === node) {
+            classes.push("selected");
+        }
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'schema');
+    }
 }
 
 
@@ -667,6 +765,40 @@ class HasProblemVisitor extends AllNodeVisitor {
             if (errors.length > 0) {
                 this.problemsFound = true;
             }
+        }
+    }
+
+}
+
+
+class ExternalSelections {
+
+    private selections: any = {};
+
+    /**
+     * Sets the selection for a given active collaborator.  Returns the user's previous selection.
+     * @param {ApiEditorUser} user
+     * @param {string} selection
+     * @return {OasNode | OasValidationError}
+     */
+    public setSelection(user: ApiEditorUser, selection: string, document: OasDocument): OasNode | OasValidationError {
+        let previousSelection: OasNode | OasValidationError = this.selections[user.userId];
+        if (previousSelection != null) {
+            console.info("[ExternalSelections] Clearing previous selection: %o", previousSelection);
+            ModelUtils.clearCollaboratorSelection(user, previousSelection);
+        }
+        // TODO support selecting validation problems
+        if (selection) {
+            let nodePath: OasNodePath = new OasNodePath(selection);
+            let newSelection: OasNode = nodePath.resolve(document);
+            if (newSelection != null) {
+                console.info("[ExternalSelections] Setting selection for user %o to node %o", user, newSelection);
+                ModelUtils.setCollaboratorSelection(user, newSelection);
+                this.selections[user.userId] = newSelection;
+            }
+            return previousSelection;
+        } else {
+            console.info("[ExternalSelections] Selection is null, skipping.");
         }
     }
 

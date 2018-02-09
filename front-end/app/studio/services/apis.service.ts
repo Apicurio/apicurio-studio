@@ -27,6 +27,7 @@ import {ApiDesignCommandAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
 import {ApiEditorUser} from "../models/editor-user.model";
+import {ApiDesignChange} from "../models/api-design-change";
 
 
 export interface IConnectionHandler {
@@ -212,6 +213,14 @@ export interface IApisService {
      * @return {Promise<void>}
      */
     acceptInvitation(apiId: string, inviteId: string): Promise<void>;
+
+    /**
+     * Gets the list of activity items for a given API design.
+     * @param {string} apiId
+     * @return {Promise<ApiDesignChange[]>}
+     */
+    getActivity(apiId: string, start: number, end: number): Promise<ApiDesignChange[]>;
+
 }
 
 export const IApisService = new InjectionToken("IApisService");

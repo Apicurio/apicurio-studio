@@ -73,6 +73,7 @@ import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {SettingsNavComponent} from "./pages/settings/_components/settings-nav.component";
 import {EditorDisconnectedDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component";
 import {CopyUrlDialogComponent} from "./components/dialogs/copy-url.component";
+import {ActivityItemComponent} from "./pages/apis/{apiId}/_components/activity-item.component";
 
 
 /** Directives **/
@@ -142,7 +143,7 @@ import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
         CreatedLinkedAccountPageComponent, SettingsNavComponent, EditorMasterComponent, Main30FormComponent,
         ResponseRow30Component, Operation30FormComponent, ContentComponent, AddMediaTypeDialogComponent, TextBoxAutosize,
         AddServerDialogComponent, ServerUrlComponent, ServersSectionComponent, ApiCollaborationPageComponent,
-        CopyUrlDialogComponent, ApiAcceptPageComponent
+        CopyUrlDialogComponent, ApiAcceptPageComponent, ActivityItemComponent
     ],
     providers: [ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard

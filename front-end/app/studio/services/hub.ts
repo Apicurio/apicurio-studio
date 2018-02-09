@@ -44,14 +44,30 @@ export abstract class AbstractHubService {
      * @param params
      * @return {string}
      */
-    protected endpoint(path: string, params?: any): string {
+    protected endpoint(path: string, params?: any, queryParams?: any): string {
         if (params) {
             for (let key in params) {
                 let value: string = params[key];
                 path = path.replace(":" + key, value);
             }
         }
-        return this.apiBaseHref + path;
+        let rval: string = this.apiBaseHref + path;
+        if (queryParams) {
+            let first: boolean = true;
+            for (let key in queryParams) {
+                let value: string = queryParams[key];
+                if (first) {
+                    rval = rval + "?" + key;
+                } else {
+                    rval = rval + "&" + key;
+                }
+                if (value != null && value != undefined) {
+                    rval = rval + "=" + value;
+                }
+                first = false;
+            }
+        }
+        return rval;
     }
 
     /**

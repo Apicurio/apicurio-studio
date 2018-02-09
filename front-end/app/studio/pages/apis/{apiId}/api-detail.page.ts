@@ -22,6 +22,7 @@ import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
 import {ApiContributors} from "../../../models/api-contributors";
 import {AbstractPageComponent} from "../../../components/page-base.component";
+import {ApiDesignChange} from "../../../models/api-design-change";
 
 @Component({
     moduleId: module.id,
@@ -33,6 +34,11 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     public api: Api;
     public contributors: ApiContributors;
+    public activity: ApiDesignChange[] = [];
+    public activityStart: number = 0;
+    public activityEnd: number = 10;
+    public hasMoreActivity: boolean = false;
+    public gettingMoreActivity: boolean = false;
 
     /**
      * Constructor.
@@ -68,6 +74,15 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             console.error("[ApiDetailPageComponent] Error getting API contributors");
             this.error(error);
         });
+        this.apis.getActivity(apiId, this.activityStart, this.activityEnd).then(activity => {
+            console.info("[ApiDetailPageComponent] Activity data loaded: %o", activity);
+            this.activity = activity;
+            this.dataLoaded["activity"] = true;
+            this.hasMoreActivity = activity && activity.length >= 10;
+        }).catch(error => {
+            console.error("[ApiDetailPageComponent] Error getting API activity");
+            this.error(error);
+        });
     }
 
     /**
@@ -79,6 +94,22 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             this.router.navigate([ "" ]);
         }).catch( reason => {
             this.error(reason);
+        });
+    }
+
+    /**
+     * Called when the user wishes to see more activity.
+     */
+    public showMoreActivity(): void {
+        this.activityStart += 10;
+        this.activityEnd += 10;
+
+        this.apis.getActivity(this.api.id, this.activityStart, this.activityEnd).then(activity => {
+            this.activity = this.activity.concat(activity);
+            this.hasMoreActivity = activity && activity.length >= 10;
+        }).catch(error => {
+            console.error("[ApiDetailPageComponent] Error getting API activity");
+            this.error(error);
         });
     }
 

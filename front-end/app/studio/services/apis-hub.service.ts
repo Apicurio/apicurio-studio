@@ -40,6 +40,7 @@ import {ApiDesignCommandAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
 import {ApiEditorUser} from "../models/editor-user.model";
+import {ApiDesignChange} from "../models/api-design-change";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
@@ -609,6 +610,29 @@ export class HubApisService extends AbstractHubService implements IApisService {
 
         return this.http.put(acceptInviteUrl, null, options).map( () => {
             return null;
+        }).toPromise();
+    }
+
+    /**
+     * @see IApisService.getActivity
+     */
+    getActivity(apiId: string, start: number, end: number): Promise<ApiDesignChange[]> {
+        console.info("[HubApisService] Getting all activity for API %s", apiId);
+
+        let activityUrl: string = this.endpoint("/designs/:designId/activity", {
+            designId: apiId
+        }, {
+            start: start,
+            end: end
+        });
+
+        let options: RequestOptions = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Fetching API design activity: %s", activityUrl);
+
+        return this.http.get(activityUrl, options).map( response => {
+            let invitations: ApiDesignChange[] = response.json() as ApiDesignChange[];
+            return invitations;
         }).toPromise();
     }
 

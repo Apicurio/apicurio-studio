@@ -151,6 +151,10 @@
                                         [disabled]="gettingMoreActivity"
                                         (click)="showMoreActivity()">Show More</button>
                             </div>
+                            <div class="alert alert-info" *ngIf="activity.length === 0">
+                                <span class="pficon pficon-info"></span>
+                                <strong>No Activity Found!</strong> No changes have been made to this API yet.
+                            </div>
                         </div>
                     </div>
                 </div>

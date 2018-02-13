@@ -32,7 +32,7 @@ export class DropDownOption {
 })
 export class DropDownComponent {
 
-    private _open: boolean = false;
+    public _open: boolean = false;
 
     @Input() id: string;
     @Input() value: string;

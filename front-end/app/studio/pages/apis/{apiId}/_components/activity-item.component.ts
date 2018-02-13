@@ -344,6 +344,7 @@ export class ActivityItemComponent {
                 rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
                 break;
             default:
+                console.info("[ActivityItemComponent] WARNING - unhandled change item type: %s", this.command()["type"]());
                 rval = "performed some unknown action...";
         }
         return rval;

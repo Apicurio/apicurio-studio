@@ -24,7 +24,7 @@ import {HttpModule} from "@angular/http";
 import {ModalModule, BsDropdownModule} from "ngx-bootstrap";
 
 /* ACE Editor */
-import { AceEditorComponent } from "ng2-ace-editor";
+import { AceEditorModule } from "ng2-ace-editor";
 
 /* Top level app stuff */
 import {StudioComponent} from "./studio.component";
@@ -125,14 +125,16 @@ import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
 
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), BsDropdownModule.forRoot()],
+    imports: [
+        BrowserModule, FormsModule, HttpModule, StudioRouting, ModalModule.forRoot(), BsDropdownModule.forRoot(),
+        AceEditorModule],
     declarations: [
         StudioComponent, DashboardPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
         LoginPageComponent, NavHeaderComponent, VerticalNavComponent, BreadcrumbsComponent, BreadcrumbComponent,
         CreateApiFormComponent, ImportApiFormComponent, ApiDetailPageComponent, ApiEditorPageComponent, ApisListComponent,
         ApisCardsComponent, ApiEditorComponent, PathItemComponent, DefinitionItemComponent,
         ResponseItemComponent, Main20FormComponent, InlineTextAreaComponent, PathFormComponent, OperationFormComponent,
-        TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, AceEditorComponent, DivAutoHeight,
+        TextAreaAutosize, InlineTextEditorComponent, DefinitionFormComponent, DivAutoHeight,
         SearchComponent, AddDefinitionDialogComponent, AddPathDialogComponent, ConfirmDeleteDialogComponent,
         AddQueryParamDialogComponent, AddResponseDialogComponent, AddTagDialogComponent, SetLicenseDialogComponent,
         ContextHelpComponent, SetContactDialogComponent, SecurityScheme20DialogComponent, SecurityScheme30DialogComponent,

@@ -404,6 +404,7 @@ export class HubApisService extends AbstractHubService implements IApisService {
             }).toPromise();
         }, error => {
             // TODO handle an error here!
+            return null;
         });
     }
 

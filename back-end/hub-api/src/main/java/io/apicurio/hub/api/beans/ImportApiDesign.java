@@ -22,6 +22,7 @@ package io.apicurio.hub.api.beans;
 public class ImportApiDesign {
 
     private String url;
+    private String data;
 
     /**
      * @return the url
@@ -35,6 +36,20 @@ public class ImportApiDesign {
      */
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    /**
+     * @return the data
+     */
+    public String getData() {
+        return data;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(String data) {
+        this.data = data;
     }
     
 }

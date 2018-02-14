@@ -18,9 +18,11 @@
 export class ImportApi {
 
     url: string;
+    data: string;
 
     constructor() {
-        this.url = "";
+        this.url = null;
+        this.data = null;
     }
 
 }

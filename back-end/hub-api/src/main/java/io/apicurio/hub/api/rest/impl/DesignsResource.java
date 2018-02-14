@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,22 +131,27 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException {
-        logger.debug("Importing an API Design: {}", info.getUrl());
         metrics.apiCall("/designs", "PUT");
         
-        ISourceConnector connector = null;
-        
-        try {
-            connector = this.sourceConnectorFactory.createConnector(info.getUrl());
-        } catch (NotFoundException nfe) {
-            // This means it's not a source control URL.  So we'll treat it as a raw content URL.
-            connector = null;
-        }
-        
-        if (connector != null) {
-            return importDesignFromSource(info, connector);
+        if (info.getData() != null && !info.getData().trim().isEmpty()) {
+            logger.debug("Importing an API Design (from data).");
+            return importDesignFromData(info);
         } else {
-            return importDesignFromUrl(info);
+            logger.debug("Importing an API Design: {}", info.getUrl());
+            ISourceConnector connector = null;
+            
+            try {
+                connector = this.sourceConnectorFactory.createConnector(info.getUrl());
+            } catch (NotFoundException nfe) {
+                // This means it's not a source control URL.  So we'll treat it as a raw content URL.
+                connector = null;
+            }
+            
+            if (connector != null) {
+                return importDesignFromSource(info, connector);
+            } else {
+                return importDesignFromUrl(info);
+            }
         }
     }
 
@@ -189,6 +196,57 @@ public class DesignsResource implements IDesignsResource {
             
             return design;
         } catch (SourceConnectorException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * Imports an API Design from base64 encoded content included in the request.  This supports
+     * the use-case where the UI allows the user to simply copy/paste the full API content.
+     * @param info
+     * @throws ServerError
+     */
+    private ApiDesign importDesignFromData(ImportApiDesign info) throws ServerError {
+        try {
+            String data = info.getData();
+            byte[] decodedData = Base64.decodeBase64(data);
+            
+            try (InputStream is = new ByteArrayInputStream(decodedData)) {
+                String content = IOUtils.toString(is);
+                ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
+                
+                String name = resourceInfo.getName();
+                if (name == null) {
+                    name = "Imported API Design";
+                }
+
+                Date now = new Date();
+                String user = this.security.getCurrentUser().getLogin();
+    
+                ApiDesign design = new ApiDesign();
+                design.setName(name);
+                design.setDescription(resourceInfo.getDescription());
+                design.setCreatedBy(user);
+                design.setCreatedOn(now);
+                design.setTags(resourceInfo.getTags());
+    
+                try {
+                    if (resourceInfo.getFormat() == FormatType.YAML) {
+                        content = FormatUtils.yamlToJson(content);
+                    }
+                    String id = this.storage.createApiDesign(user, design, content);
+                    design.setId(id);
+                } catch (StorageException e) {
+                    throw new ServerError(e);
+                }
+                
+                metrics.apiImport(null);
+                
+                return design;
+            }
+        } catch (IOException e) {
+            throw new ServerError(e);
+        } catch (Exception e) {
             throw new ServerError(e);
         }
     }

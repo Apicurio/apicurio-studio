@@ -27,6 +27,8 @@ import java.util.TreeSet;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -185,6 +187,35 @@ public class DesignsResourceTest {
         Assert.assertNotNull(ghLog);
         Assert.assertEquals("---\n" + 
                 "---", ghLog);
+    }
+
+    @Test
+    public void testImportDesign_Data() throws ServerError, AlreadyExistsException, NotFoundException, IOException {
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
+        String rawData = IOUtils.toString(resourceUrl);
+        String b64Data = Base64.encodeBase64String(rawData.getBytes());
+        
+        ImportApiDesign info = new ImportApiDesign();
+        info.setData(b64Data);
+        ApiDesign design = resource.importDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        Assert.assertEquals("Rate Limiter API", design.getName());
+        Assert.assertEquals("A REST API used by clients to access the standalone Rate Limiter micro-service.", design.getDescription());
+
+        String ghLog = github.auditLog();
+        Assert.assertNotNull(ghLog);
+        Assert.assertEquals("---\n" + 
+                "---", ghLog);
+        
+        info.setData("Invalid Data");
+        try {
+            resource.importDesign(info);
+            Assert.fail("Excepted a ServerError here.");
+        } catch (ServerError se) {
+            // OK!
+        }
     }
 
     @Test

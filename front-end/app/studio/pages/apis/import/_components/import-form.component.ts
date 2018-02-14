@@ -18,6 +18,7 @@
 import {Component, EventEmitter, Inject, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
+import {DropDownOption} from "../../{apiId}/editor/_components/common/drop-down.component";
 
 
 @Component({
@@ -30,7 +31,9 @@ export class ImportApiFormComponent {
 
     @Output() onImportApi = new EventEmitter<ImportApi>();
 
-    model: string;
+    importType: string;
+    textMode: string = "yaml";
+    model: any;
     importingApi: boolean;
     dragging: boolean;
     error: string;
@@ -40,7 +43,11 @@ export class ImportApiFormComponent {
      * @param apis
      */
     constructor(@Inject(IApisService) private apis: IApisService) {
-        this.model = null;
+        this.importType = "from-url";
+        this.model = {
+            url: "",
+            data: ""
+        };
         this.importingApi = false;
         this.dragging = false;
         this.error = null;
@@ -53,7 +60,11 @@ export class ImportApiFormComponent {
         this.error = null;
 
         let importApi: ImportApi = new ImportApi();
-        importApi.url = this.model;
+        if (this.model.url) {
+            importApi.url = this.model.url;
+        } else if (this.model.data) {
+            importApi.data = btoa(this.model.data);
+        }
 
         this.importingApi = true;
         this.onImportApi.emit(importApi);
@@ -67,12 +78,36 @@ export class ImportApiFormComponent {
     }
 
     public onDrop(event: DragEvent): void {
-        let dropData: string = event.dataTransfer.getData("text");
+        console.info("DROP DATA: %o", event.dataTransfer);
         this.dragging = false;
         event.preventDefault();
 
-        if (dropData && dropData.startsWith("http")) {
-            this.model = dropData;
+        let files: FileList = event.dataTransfer.files;
+        let dropData: string = event.dataTransfer.getData("text");
+        if (files && files.length == 1) {
+            let isJson: boolean = files[0].type === "application/json";
+            let isYaml: boolean = files[0].name.endsWith(".yaml") || files[0].name.endsWith(".yml");
+            if (isJson || isYaml) {
+                let reader: FileReader = new FileReader();
+                reader.onload = (fileLoadedEvent) => {
+                    let content: string = fileLoadedEvent.target["result"];
+                    this.model.data = content;
+                    this.model.url = null;
+                    this.importType = "from-text";
+                    this.textMode = "json";
+                    if (isYaml) {
+                        this.textMode = "yaml";
+                    }
+                };
+                reader.readAsText(files[0]);
+            }
+        } else if (dropData && dropData.startsWith("http")) {
+            this.model.url = dropData;
+            this.model.data = null;
+            this.importType = "from-url";
+            if (this.model.url.indexOf("github.com") > 0 || this.model.url.indexOf("gitlab.com") || this.model.url.indexOf("bitbucket.org") > 0) {
+                this.importType = "from-scs";
+            }
         }
     }
 
@@ -80,4 +115,25 @@ export class ImportApiFormComponent {
         this.dragging = false;
     }
 
+    public importTypeOptions(): DropDownOption[] {
+        return [
+            { name: "Import From URL", value: "from-url"},
+            { name: "Import From Source Control", value: "from-scs"},
+            { name: "Import From File/Clipboard", value: "from-text"}
+        ];
+    }
+
+    public changeImportType(value: string): void {
+        this.importType = value;
+        this.model.url = null;
+        this.model.data = null;
+    }
+
+    public urlPlaceholder(): string {
+        if (this.importType === "from-url") {
+            return "https://gist.githubusercontent.com/Tim/94445d/raw/5dba00/oai-import.json";
+        } else {
+            return "https://github.com/ORG/REPO/blob/master/path/to/open-api-doc.json";
+        }
+    }
 }

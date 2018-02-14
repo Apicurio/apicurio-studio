@@ -13,29 +13,20 @@
                 <span class="pficon pficon-info"></span>
                 <strong>What is this page?</strong>
                 <p style="line-height: 18px">
-                    Hey there! Here you can import an existing API to the Studio by telling us where the API's OpenAPI document is
-                    located.
+                    Hey there! Here you can import an existing API to the Studio by either giving us the OpenAPI document or
+                    telling us where we can get it.
                 </p>
                 <p style="line-height: 18px; margin-top: 12px">
-                    Simply provide the URL of your OpenAPI document and we'll do the rest!  The URL can point directly
-                    to the content, or it can be a source control URL (GitHub, GitLab, or Bitbucket).
+                    Choose from the following options:
                 </p>
+                <ul>
+                    <li>Import from Source Control URL</li>
+                    <li>Import raw content from URL</li>
+                    <li>Copy/Paste raw content directly</li>
+                </ul>
             </div>
         </div>
         <div class="col-md-7">
-
-            <div class="alert alert-info">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true" title="OK, I got it!">
-                    <span class="pficon pficon-close"></span>
-                </button>
-                <span class="pficon pficon-info"></span>
-                <strong>What do I do?</strong>
-                <p style="line-height: 18px">
-                    Simply copy/paste (<strong>or drag and drop!</strong>) the URL of your existing OpenAPI document
-                    from your browser into the form and then click "Import API".  Easy peasy, lemon squeezy!
-                </p>
-            </div>
-
             <importapi-form (onImportApi)="onImportApi($event)" #importApiForm></importapi-form>
         </div>
     </div>

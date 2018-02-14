@@ -4,29 +4,40 @@
     <div class="panel-body">
         <form id="importapi-form" class="form-horizontal" (submit)="importApi()" #apiForm="ngForm">
             <div>&nbsp;</div>
+
             <div class="form-group">
+                <label class="col-sm-2 control-label" for="api-import-type">Import Type</label>
+                <div class="col-sm-10">
+                    <drop-down id="api-import-type" [id]="'api-import-type'" [value]="importType" [options]="importTypeOptions()"
+                               (onValueChange)="changeImportType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="importType === 'from-url' || importType === 'from-scs'">
                 <label class="col-sm-2 control-label" for="api-repository-url">Url</label>
                 <div class="col-sm-10">
                     <input name="repository.url" type="url" id="api-repository-url" class="form-control"
-                           placeholder="https://github.com/ORG/REPO/blob/master/path/to/open-api-doc.json" required
-                           [(ngModel)]="model"
+                           placeholder="{{ urlPlaceholder() }}" required
+                           [(ngModel)]="model.url"
                            pattern="https?://.+">
                 </div>
             </div>
 
-            <div class="form-group" *ngIf="">
-                <label class="col-sm-2 control-label" for="api-repository-url-error"></label>
+            <div class="form-group" *ngIf="importType === 'from-text'">
+                <label class="col-sm-2">&nbsp;</label>
                 <div class="col-sm-10">
-                    <div class="alert alert-danger" id="api-repository-url-error">
-                        <span class="pficon pficon-error-circle-o"></span>
-                        <strong>API Problem Detected!</strong> Yeah this is really messed up and you should <a href="#" class="alert-link">know about it</a>.
-                    </div>
+                    <ace-editor #contentEditor
+                                [(text)]="model.data"
+                                [theme]="'eclipse'"
+                                [mode]="textMode"
+                                [durationBeforeCallback]="350"
+                                style="position: relative; height: 500px; border: 1px solid #ccc; width: 100%"></ace-editor>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || importingApi">Import API</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || importingApi || (importType === 'from-text' && !model.data)">Import API</button>
                 </div>
             </div>
         </form>

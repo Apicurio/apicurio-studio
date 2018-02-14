@@ -17,7 +17,7 @@ const config = {
   plugins: [
     includePaths({
       include: {},
-      paths: [join(Config.TMP_DIR, 'app')],
+      paths: [join(Config.TMP_DIR, 'studio')],
       external: [],
       extensions: ['.js', '.json', '.html', '.ts']
     }),

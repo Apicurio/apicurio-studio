@@ -133,10 +133,10 @@ export class SeedConfig {
 
   /**
    * The directory where the bootstrap file is located.
-   * The default directory is `app`.
+   * The default directory is `studio`.
    * @type {string}
    */
-  BOOTSTRAP_DIR = argv['app'] || 'app';
+  BOOTSTRAP_DIR = argv['studio'] || 'studio';
 
   /**
    * The directory where the client files are located.
@@ -321,7 +321,7 @@ export class SeedConfig {
    * The name of the bundle file to include all JavaScript application files.
    * @type {string}
    */
-  JS_PROD_APP_BUNDLE = 'app.js';
+  JS_PROD_APP_BUNDLE = 'studio.js';
 
   /**
    * The required NPM version to run the application.
@@ -345,12 +345,6 @@ export class SeedConfig {
   ) !== -1 ||
     argv['scss'] ||
     false;
-
-  /**
-   * Enable tslint emit error by setting env variable FORCE_TSLINT_EMIT_ERROR
-   * @type {boolean}
-   */
-  FORCE_TSLINT_EMIT_ERROR = !!process.env.FORCE_TSLINT_EMIT_ERROR;
 
   /**
    * Extra paths for the gulp process to watch for to trigger compilation.
@@ -500,7 +494,7 @@ export class SeedConfig {
         'node_modules/@angular/router/bundles/router-testing.umd.js',
       'rxjs/operators': 'node_modules/rxjs/operators/index.js',
 
-      'app/': `${this.APP_BASE}app/`,
+      'studio/': `${this.APP_BASE}studio/`,
       // For test config
       'dist/dev/': '/base/dist/dev/',
       '': 'node_modules/',

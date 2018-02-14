@@ -7,13 +7,13 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 // The app module
-import { AppModule } from './app.module';
+import { StudioModule } from './studio.module';
 
 if (String('<%= BUILD_TYPE %>') === 'prod') {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule /*, options*/);
+platformBrowserDynamic().bootstrapModule(StudioModule /*, options*/);
 
 // In order to start the Service Worker located at "/ngsw-worker.js"
 // uncomment this line. More about Service Workers here

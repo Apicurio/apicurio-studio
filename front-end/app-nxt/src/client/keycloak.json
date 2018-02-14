@@ -1,0 +1,7 @@
+{
+  "realm": "apicurio-local",
+  "auth-server-url": "http://bluejay.paalin.org:8180/auth",
+  "ssl-required": "none",
+  "resource": "apicurio-ui-dev",
+  "public-client": true
+}

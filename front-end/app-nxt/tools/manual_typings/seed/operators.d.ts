@@ -1,1 +1,1 @@
-import '../../../src/client/app/operators';
+import '../../../src/client/sutdio/operators';

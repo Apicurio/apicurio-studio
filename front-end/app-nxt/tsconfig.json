@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "sourceMap": true,
+    "pretty": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noFallthroughCasesInSwitch": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules"
+    ],
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "gulpfile.ts",
+    "tools/manual_typings/seed/autoprefixer.d.ts",
+    "tools/manual_typings/seed/cssnano.d.ts",
+    "tools/manual_typings/seed/express-history-api-fallback.d.ts",
+    "tools/manual_typings/seed/istream.d.ts",
+    "tools/manual_typings/seed/merge-stream.d.ts",
+    "tools/manual_typings/seed/open.d.ts",
+    "tools/manual_typings/seed/operators.d.ts",
+    "tools/manual_typings/seed/slash.d.ts",
+    "tools/manual_typings/seed/systemjs-builder.d.ts",
+    "tools/manual_typings/seed/tildify.d.ts",
+    "tools/tasks/seed/build.tools.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src"
+  ],
+  "compileOnSave": false
+}

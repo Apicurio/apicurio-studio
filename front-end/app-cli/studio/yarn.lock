@@ -129,12 +129,6 @@
   dependencies:
     tslib "^1.7.1"
 
-"@angular/http@^5.2.0":
-  version "5.2.5"
-  resolved "https://registry.yarnpkg.com/@angular/http/-/http-5.2.5.tgz#1208256e36f0e486d96d10a733fdc8424ffa16bf"
-  dependencies:
-    tslib "^1.7.1"
-
 "@angular/language-service@^5.2.0":
   version "5.2.5"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-5.2.5.tgz#7c3021f347dd4b28ae0a867700894f3de4930f48"
@@ -1177,6 +1171,10 @@ copy-webpack-plugin@^4.1.1:
     minimatch "^3.0.4"
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
+
+core-js@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
 
 core-js@^2.4.0, core-js@^2.4.1:
   version "2.5.3"
@@ -3685,6 +3683,19 @@ num2fraction@^1.2.2:
 number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
+
+oai-ts-commands@0.2.18:
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.18.tgz#dd0ccc1c4312405fce063bfaaefd0398201e22fd"
+  dependencies:
+    core-js "2.4.1"
+    oai-ts-core "0.2.9"
+
+oai-ts-core@0.2.9:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.9.tgz#29a3a8645bbaadd35a714bc7f05fdfec1bce5b4c"
+  dependencies:
+    core-js "2.4.1"
 
 oauth-sign@~0.8.1, oauth-sign@~0.8.2:
   version "0.8.2"

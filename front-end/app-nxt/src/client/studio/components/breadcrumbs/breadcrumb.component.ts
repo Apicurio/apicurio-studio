@@ -15,6 +15,19 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+import {Component, Input} from "@angular/core";
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+
+@Component({
+    moduleId: module.id,
+    selector: "[breadcrumb]",
+    templateUrl: "breadcrumb.component.html",
+    styleUrls: ["breadcrumb.component.css"]
+})
+export class BreadcrumbComponent {
+
+    @Input() label: string;
+    @Input() icon: string;
+    @Input() route: string[];
+
+}

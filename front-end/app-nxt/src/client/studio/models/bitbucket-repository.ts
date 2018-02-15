@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+export class BitbucketRepository {
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+    name: string;
+    slug: string;
+    uuid: boolean;
+
+    constructor() {
+        this.name = null;
+        this.slug = null;
+        this.uuid = false;
+    }
+
+}

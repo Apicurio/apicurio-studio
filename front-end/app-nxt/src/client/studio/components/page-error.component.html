@@ -1,0 +1,121 @@
+<div class="container-fluid">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-6" [ngSwitch]="errorCode()">
+
+            <!-- Error 500 -->
+            <div class="card-pf card-pf-accented card-pf-error" *ngSwitchCase="500">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-warning"></span>
+                        <span>Server Error Encountered</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        Uh oh!  It looks like there was an error either receiving data from the server or
+                        sending data to it.  You have a couple options at this point.  You can reload the
+                        page or we can shoot you back to the Dashboard.  Your choice!
+                    </p>
+                    <div class="actions">
+                        <a class="btn btn-primary" routerLink="/">Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                    </div>
+                    <div class="details" *ngIf="showDetails">
+                        <hr />
+                        <h3>Server Error Details</h3>
+                        <pre>{{ stackTrace() }}</pre>
+                    </div>
+                </div>
+                <div class="card-pf-footer" style="text-align: right">
+                    <button class="btn btn-default btn-xs" (click)="toggleDetails()">Toggle Details</button>
+                </div>
+            </div>
+
+            <!-- Error 404 -->
+            <div class="card-pf card-pf-accented" *ngSwitchCase="404">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-search-minus"></span>
+                        <span>Page Not Found</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        You attempted to navigate to a page that does not exist!  I guess you should either
+                        hit the back button or go back to the Dashboard (button below).
+                    </p>
+                    <div class="actions">
+                        <a class="btn btn-primary" routerLink="/">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error 409 -->
+            <div class="card-pf card-pf-accented card-pf-error" *ngSwitchCase="409">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-exclamation-triangle"></span>
+                        <span>Data Already Exists</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        It appears you attempted to add or create something that already exists
+                        in Apicurio Studio.  Instead of adding it again, try finding the resource
+                        that is already there and editing it!
+                    </p>
+                    <div class="actions">
+                        <a class="btn btn-primary" routerLink="/">Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connection Error -->
+            <div class="card-pf card-pf-accented card-pf-error" *ngSwitchCase="0">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-plug"></span>
+                        <span>Connection Error</span>
+                        <span>(Could Not Reach Server)</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        We couldn't reach the Apicurio Studio server!  Perhaps try reloading this
+                        page in a few minutes?  Maybe check your internet connection?
+                    </p>
+                    <div class="actions">
+                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Any Other Error -->
+            <div class="card-pf card-pf-accented card-pf-error" *ngSwitchDefault>
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-exclamation"></span>
+                        <span>Unexpected Error on Page</span>
+                        <span>(</span>
+                        <span>{{ errorMessage() }}</span>
+                        <span>)</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        Something unexpected happened and we aren't sure how to deal with it.
+                        You could try reloading the page, or you could just go back to the
+                        Dashboard.  See the buttons below...
+                    </p>
+                    <div class="actions">
+                        <a class="btn btn-primary" routerLink="/">Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

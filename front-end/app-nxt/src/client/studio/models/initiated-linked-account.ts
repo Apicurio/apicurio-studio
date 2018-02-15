@@ -15,6 +15,15 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+export class InitiatedLinkedAccount {
+
+    authUrl: string;
+    nonce: string;
+
+    constructor() {
+        this.authUrl = null;
+        this.nonce = null;
+    }
+
+}

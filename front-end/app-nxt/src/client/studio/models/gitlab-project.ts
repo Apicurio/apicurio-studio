@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+export class GitLabProject {
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+    id: number;
+    name: string;
+    path: string;
+
+    constructor() {
+        this.id = null;
+        this.name = null;
+        this.path = null;
+    }
+
+}

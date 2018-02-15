@@ -24,7 +24,7 @@
 </head>
 <body class="cards-pf">
 
-  <sd-app>
+  <apicurio-studio>
     <div class="container container-fluid" id="load-container">
       <div id="apicurio-holder">
         <svg xmlns="http://www.w3.org/2000/svg" id="apicurio-the-hero" width="407.23865" height="654.2533" viewBox="0 0 407.23865 654.2533">
@@ -58,7 +58,7 @@
         </svg>
       </div>
     </div>
-  </sd-app>
+  </apicurio-studio>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -84,11 +84,19 @@
 
   <% if (BUILD_TYPE === 'dev') { %>
   <script>
-  System.import('<%= BOOTSTRAP_MODULE %>')
-    .catch(function (e) {
-      console.error(e.stack || e,
-        'Not expecting this error? Report it at https://github.com/mgechev/angular-seed/issues');
-    });
+      var keycloak = Keycloak();
+      keycloak.init({ onLoad: 'login-required' }).success(function(authenticated) {
+          if (authenticated) {
+              window["keycloak"] = keycloak;
+              System.import('<%= BOOTSTRAP_MODULE %>')
+                  .catch(function (e) {
+                      console.error(e);
+                      $('#load-container').html("<h2>Error Detected</h2><pre>" + e + "</pre>");
+                  });
+          }
+      }).error(function() {
+          alert("Failed to initialize authentication subsystem.");
+      });
   </script>
   <% } %>
 

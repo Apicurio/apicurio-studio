@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+export class ApiDesignChange {
+
+    version: number;
+    type: string;
+    data: string;
+    by: string;
+    on: Date;
+
+}

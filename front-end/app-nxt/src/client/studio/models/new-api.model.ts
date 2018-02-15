@@ -15,6 +15,16 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+export class NewApi {
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+    specVersion: string;
+    name: string;
+    description: string;
+
+    constructor() {
+        this.specVersion = null;
+        this.name = "";
+        this.description = "";
+    }
+
+}

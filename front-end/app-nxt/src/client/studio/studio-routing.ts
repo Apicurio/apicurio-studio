@@ -16,24 +16,25 @@
  */
 import {ModuleWithProviders} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {HomeComponent} from "./home/home.component";
-import {AboutComponent} from "./about/about.component";
+import {DashboardPageComponent} from "./pages/dashboard/dashboard.page";
+import {AuthenticationCanActivateGuard} from "./guards/auth.guard";
 
 
 const _studioRoutes: any[] = [
     {
         path: "",
-        component: HomeComponent
-    },
-    {
-        path: "about",
-        component: AboutComponent
+        component: DashboardPageComponent
     }
 ];
 
 /* Add standard authentication guard to every route (except the login route). */
 const studioRoutes: Routes = _studioRoutes.map(item => {
+    if (item.path != "login") {
+        item["canActivate"] = [
+            AuthenticationCanActivateGuard
+        ];
+    }
     return item;
 });
 
-export const AppRouting: ModuleWithProviders = RouterModule.forRoot(studioRoutes);
+export const StudioRouting: ModuleWithProviders = RouterModule.forRoot(studioRoutes);

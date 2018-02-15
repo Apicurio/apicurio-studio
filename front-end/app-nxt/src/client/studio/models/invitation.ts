@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,27 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+export class Invitation {
+
+    inviteId: string;
+    designId: string;
+    createdBy: string;
+    createdOn: Date;
+    status: string;
+    modifiedBy: string;
+    modifiedOn: Date;
+    role: string;
+    subject: string;
+
+    constructor() {
+        this.inviteId = "";
+        this.designId = "";
+        this.createdBy = "";
+        this.createdOn = new Date();
+        this.status = "";
+        this.role = "";
+        this.subject = "";
+    }
+}
+

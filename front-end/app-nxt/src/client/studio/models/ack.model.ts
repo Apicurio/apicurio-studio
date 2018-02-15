@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+export class ApiDesignCommandAck {
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+    commandId: number;
+    contentVersion: number;
+
+}

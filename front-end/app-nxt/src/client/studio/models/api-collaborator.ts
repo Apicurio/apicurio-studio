@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,17 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+export class ApiCollaborator {
+
+    userId: string;
+    userName: string;
+    role: string;
+
+    constructor() {
+        this.userId = "";
+        this.userName = "";
+        this.role = "";
+    }
+}
+

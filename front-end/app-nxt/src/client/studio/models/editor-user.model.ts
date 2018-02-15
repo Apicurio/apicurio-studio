@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+/**
+ * Represents a single user currently connected to the editor.  The local user
+ * is not represented by one of these - only remote collaborators.
+ */
+export class ApiEditorUser {
+    public userId: string;
+    public userName: string;
+    public attributes: any = {};
+}
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');

@@ -1,0 +1,91 @@
+<div class="container-fluid">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-6">
+            <div class="card-pf card-pf-accented">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-comment"></span>
+                        <span>Welcome to the <strong>Apicurio Studio</strong> Dashboard!</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <p>
+                        Hey <strong>{{ (user() | async).name }}</strong>, thanks for logging into <strong>Apicurio Studio</strong>.  Hopefully
+                        you're finding it easy to use this tool to design and collaborate on new (and existing) APIs.
+                    </p>
+                    <div>
+                        <ul>
+                            <li><a href="http://www.apicur.io" target="_blank">More information about the project</a></li>
+                            <li><a href="http://www.apicur.io/roadmap" target="_blank">Apicurio Studio - Roadmap</a></li>
+                            <li><a href="http://www.apicur.io/contact" target="_blank">Contact the Apicurio Studio development team!</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent APIs (or empty state) -->
+    <div class="row row-cards-pf" *ngIf="isLoaded('apis')">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <!-- No APIs Found -->
+            <div class="card-pf blank-slate-card-pf" *ngIf="(recentApis() | async).length == 0">
+                <div class="blank-slate-pf">
+                    <div class="blank-slate-pf-icon">
+                        <span class="pficon pficon pficon-add-circle-o"></span>
+                    </div>
+                    <h1>No APIs Found</h1>
+                    <p>
+                        We couldn't find any APIs for you - it's possible that you have not yet created/imported any APIs to the studio.
+                        Or perhaps you have some APIs but haven't worked on them recently.  Pick an action below that makes sense
+                        for you!
+                    </p>
+                    <div class="blank-slate-pf-main-action">
+                        <div class="btn-group">
+                            <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="fa fa-fw fa-plus"></span> Create New API</a>
+                            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a routerLink="/apis/import"><span class="fa fa-fw fa-upload"></span> Import API</a></li>
+                            </ul>
+                        </div>
+                        <a routerLink="/apis" class="btn btn-lg btn-default" style="margin-left: 10px">List All APIs</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent APIs -->
+            <div class="card-pf" *ngIf="(recentApis() | async).length > 0">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">Your Recent APIs</h2>
+                </div>
+                <div class="card-pf-body api-recent-apis">
+                    <div class="api-item" *ngFor="let api of recentApis() | async">
+                        <a [routerLink]="['apis', api.id]">
+                            <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
+                        </a>
+                        <p>{{api.description}}</p>
+                    </div>
+                </div>
+                <div style="font-size: 14px" class="card-pf-footer">
+                    <p>
+                        <a routerLink="/apis" class="">
+                            <span class="fa fa-list"></span><span>List All</span>
+                        </a>
+                        <span></span>
+                        <a routerLink="/apis/import" class="pull-right" style="margin-left: 15px">
+                            <span class="fa fa-upload"></span><span>Import API</span>
+                        </a>
+                        <a routerLink="/apis/create" class="pull-right" style="margin-left: 15px">
+                            <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

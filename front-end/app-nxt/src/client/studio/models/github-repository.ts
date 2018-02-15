@@ -15,6 +15,14 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
+export class GitHubRepository {
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+    name: string;
+    priv: boolean;
+
+    constructor() {
+        this.name = null;
+        this.priv = false;
+    }
+
+}

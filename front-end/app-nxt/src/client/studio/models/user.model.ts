@@ -15,6 +15,18 @@
  * limitations under the License.
  */
 
-import { EnvConfig } from '../../../../../tools/env/env-config.interface';
 
-export const Config: EnvConfig = JSON.parse('<%= ENV_CONFIG %>');
+export class User {
+    login: string;
+    id: number;
+    name: string;
+    email: string;
+    avatar: string;
+
+    constructor() {
+        this.login = "";
+        this.name = "";
+        this.email = "";
+    }
+
+}

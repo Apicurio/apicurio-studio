@@ -2,6 +2,8 @@
   "name": "apicurio-design-studio",
   "version": "1.0.0",
   "description": "A web application to help design restful APIs.",
+  "author": "Eric Wittmann",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/apicurio/apicurio-studio"
@@ -30,8 +32,6 @@
     "start.deving": "gulp start.deving --color",
     "tasks.list": "gulp --tasks-simple --color"
   },
-  "author": "Eric Wittmann",
-  "license": "Apache-2.0",
   "engines": {
     "node": ">=6.9.0",
     "npm": ">=3.10.3"

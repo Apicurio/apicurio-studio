@@ -26,7 +26,7 @@ import {HttpClient} from "@angular/common/http";
  * A version of the authentication service that uses keycloak.js to provide
  * authentication services.
  */
-export class KeycloakAuthenticationService implements IAuthenticationService {
+export class KeycloakAuthenticationService extends IAuthenticationService {
 
     private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public authenticated: Observable<boolean> = this._authenticated.asObservable();
@@ -42,6 +42,7 @@ export class KeycloakAuthenticationService implements IAuthenticationService {
      * @param {ConfigService} config
      */
     constructor(private http: HttpClient, private config: ConfigService) {
+        super();
         let w: any = window;
         this.keycloak = w["keycloak"];
 

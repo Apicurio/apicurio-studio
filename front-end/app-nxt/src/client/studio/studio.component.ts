@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {IAuthenticationService} from "./services/auth.service";
 import './operators';
 
@@ -13,10 +13,10 @@ import './operators';
 })
 export class StudioComponent implements OnInit {
 
-    private routerOutletWrapperId: string;
-    private routerOutletWrapperClass: string;
+    public routerOutletWrapperId: string;
+    public routerOutletWrapperClass: string;
 
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
+    constructor(public authService: IAuthenticationService) {
         this.routerOutletWrapperId = "api-page-body";
         this.routerOutletWrapperClass = "";
 

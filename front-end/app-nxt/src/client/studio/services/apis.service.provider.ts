@@ -22,7 +22,7 @@ import {HubApisService} from "./apis-hub.service";
 import {HttpClient} from "@angular/common/http";
 
 
-function ApisServiceFactory(http: HttpClient, authService: IAuthenticationService, config: ConfigService): IApisService {
+export function ApisServiceFactory(http: HttpClient, authService: IAuthenticationService, config: ConfigService): IApisService {
     if (config.apisType() === "hub") {
         console.info("[ApisServiceFactory] Creating instance of HubApisService");
         return new HubApisService(http, authService, config);

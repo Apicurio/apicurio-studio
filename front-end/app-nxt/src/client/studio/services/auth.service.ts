@@ -15,54 +15,53 @@
  * limitations under the License.
  */
 
-import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
 import {User} from "../models/user.model";
 
 
-export interface IAuthenticationService {
+export abstract class IAuthenticationService {
 
     /**
      * A way for consumers to subscribe to the current authentication status of the user/app.
      */
-    isAuthenticated(): Observable<boolean>;
+    abstract isAuthenticated(): Observable<boolean>;
 
     /**
      * Get the currently authenticated user.  May be null if the user is not currently authenticated.
      */
-    getAuthenticatedUser(): Observable<User>;
+    abstract getAuthenticatedUser(): Observable<User>;
 
     /**
      * Immediately gets the current authenticated user (if any).  Returns null if no user is
      * currently authenticated.
      * @return {User}
      */
-    getAuthenticatedUserNow(): User;
+    abstract getAuthenticatedUserNow(): User;
 
     /**
      * Called to authenticate a user.
      * @param user
      * @param credential
      */
-    login(user:string, credential:any): Promise<User>;
+    abstract login(user:string, credential:any): Promise<User>;
 
     /**
      * Called to log out the current user.
      */
-    logout(): void;
+    abstract logout(): void;
 
     /**
      * Called to inject authentication headers into an API REST call.
      * @param headers
      */
-    injectAuthHeaders(headers: {[header: string]: string}): void;
+    abstract injectAuthHeaders(headers: {[header: string]: string}): void;
 
     /**
      * Called to return an authentication secret (e.g. the auth access token).
      * @return {string}
      */
-    getAuthenticationSecret(): string;
+    abstract getAuthenticationSecret(): string;
 }
 
-export const IAuthenticationService = new InjectionToken("IAuthenticationService");
+//export const IAuthenticationService = new InjectionToken("IAuthenticationService");

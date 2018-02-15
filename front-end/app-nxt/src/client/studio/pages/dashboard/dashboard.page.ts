@@ -49,7 +49,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
      */
     constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
                 @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                @Inject(IAuthenticationService) private authService: IAuthenticationService) {
+                protected authService: IAuthenticationService) {
         super(route);
     }
 

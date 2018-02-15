@@ -23,7 +23,7 @@ import {KeycloakAuthenticationService} from "./auth-keycloak.service";
 import {HttpClient} from "@angular/common/http";
 
 
-function AuthenticationServiceFactory(http: HttpClient, config: ConfigService): IAuthenticationService {
+export function AuthenticationServiceFactory(http: HttpClient, config: ConfigService): IAuthenticationService {
     if (config.authType() === "keycloakjs") {
         console.info("[AuthenticationServiceFactory] Creating keycloak.js auth service.");
         return new KeycloakAuthenticationService(http, config);

@@ -22,7 +22,7 @@ import {IApisService} from "../services/apis.service";
 /**
  * Models the sub-menus off the main left-hand vertical nav.
  */
-enum VerticalNavSubMenuType {
+export enum VerticalNavSubMenuType {
     None, Dashboard, APIs, Settings
 }
 

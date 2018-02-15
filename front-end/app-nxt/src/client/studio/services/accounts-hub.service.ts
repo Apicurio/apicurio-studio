@@ -20,7 +20,6 @@ import 'rxjs/Rx';
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 
-import {AbstractHubService} from "./hub";
 import {ILinkedAccountsService} from "./accounts.service";
 import {LinkedAccount} from "../models/linked-account";
 import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
@@ -39,7 +38,7 @@ import {HttpClient} from "@angular/common/http";
  * An implementation of the Linked Accounts service that uses the Apicurio Studio back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
-export class HubLinkedAccountsService extends AbstractHubService implements ILinkedAccountsService {
+export class HubLinkedAccountsService extends ILinkedAccountsService {
 
     /**
      * Constructor.

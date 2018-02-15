@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import {InjectionToken} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
@@ -28,6 +27,7 @@ import {ApiCollaborator} from "../models/api-collaborator";
 import {Invitation} from "../models/invitation";
 import {ApiEditorUser} from "../models/editor-user.model";
 import {ApiDesignChange} from "../models/api-design-change";
+import {AbstractHubService} from "./hub";
 
 
 export interface IConnectionHandler {
@@ -78,14 +78,14 @@ export interface IApiEditingSession {
  * Service used to manage, list, get, create, edit APIs.  This is the meat and potatoes
  * of the Apicurio UI.
  */
-export interface IApisService {
+export abstract class IApisService extends AbstractHubService {
 
     /**
      * Gets an array of the repository types supported by this apis service.
      *
      * @return string[]
      */
-    getSupportedRepositoryTypes(): string[];
+    abstract getSupportedRepositoryTypes(): string[];
 
     /**
      * Gets a promise over all of the APIs.  The list of APIs is not guaranteed
@@ -93,7 +93,7 @@ export interface IApisService {
      * changes to the list of APIs.  It is assumed that calling this will fetch
      * the list of APIs from the server.
      */
-    getApis(): Promise<Api[]>;
+    abstract getApis(): Promise<Api[]>;
 
     /**
      * Gets an observable over the recent APIs.  Callers can then subscribe to this
@@ -101,7 +101,7 @@ export interface IApisService {
      *
      * @return Observable<Api[]>
      */
-    getRecentApis(): Observable<Api[]>;
+    abstract getRecentApis(): Observable<Api[]>;
 
     /**
      * Creates a new API with the given information.  The assumption is that no OpenAPI
@@ -114,59 +114,59 @@ export interface IApisService {
      * @param api
      * @return Promise<Api>
      */
-    createApi(api: NewApi): Promise<Api>;
+    abstract createApi(api: NewApi): Promise<Api>;
 
     /**
      * Imports an existing API to the Studio.  The assumption with this call is that the
      * API's OpenAPI document already exists in the source repository (or URL).
      * @param api
      */
-    importApi(api: ImportApi): Promise<Api>;
+    abstract importApi(api: ImportApi): Promise<Api>;
 
     /**
      * Called to delete an API.  This is done asynchronously and thus returns a promise.
      * @param api
      */
-    deleteApi(api: Api): Promise<void>;
+    abstract deleteApi(api: Api): Promise<void>;
 
     /**
      * Gets a single Api by its ID.
      * @param apiId the ID of the api
      */
-    getApi(apiId: string): Promise<Api>;
+    abstract getApi(apiId: string): Promise<Api>;
 
     /**
      * Starts a new (or connects to an existing) editing session for the given API Design (by ID).
      * @param {string} apiId
      * @return {Promise<EditableApiDefinition>}
      */
-    editApi(apiId: string): Promise<EditableApiDefinition>;
+    abstract editApi(apiId: string): Promise<EditableApiDefinition>;
 
     /**
      * Opens an API editing session for the given Api.
      * @param {EditableApiDefinition} api
      * @return {ApiEditingSession}
      */
-    openEditingSession(api: EditableApiDefinition): IApiEditingSession;
+    abstract openEditingSession(api: EditableApiDefinition): IApiEditingSession;
 
     /**
      * Gets a single API definition by its ID.
      * @param apiId
      */
-    getApiDefinition(apiId: string): Promise<ApiDefinition>;
+    abstract getApiDefinition(apiId: string): Promise<ApiDefinition>;
 
     /**
      * Gets the list of contributors for the API with the given id.
      * @param apiId
      */
-    getContributors(apiId: string): Promise<ApiContributors>;
+    abstract getContributors(apiId: string): Promise<ApiContributors>;
 
     /**
      * Gets the list of collaborators for the API with the given id.
      * @param {string} apiId
      * @return {Promise<ApiCollaborator[]>}
      */
-    getCollaborators(apiId: string): Promise<ApiCollaborator[]>;
+    abstract getCollaborators(apiId: string): Promise<ApiCollaborator[]>;
 
     /**
      * Deletes a collaborator of an API, removing access for that user.
@@ -174,14 +174,14 @@ export interface IApisService {
      * @param {string} userId
      * @return {Promise<void>}
      */
-    deleteCollaborator(apiId: string, userId: string): Promise<void>;
+    abstract deleteCollaborator(apiId: string, userId: string): Promise<void>;
 
     /**
      * Gets the list of collaborator invitations for the API with the given id.
      * @param {string} apiId
      * @return {Promise<Invitation[]>}
      */
-    getInvitations(apiId: string): Promise<Invitation[]>;
+    abstract getInvitations(apiId: string): Promise<Invitation[]>;
 
     /**
      * Gets a single invitation by its ID (for a given API design).
@@ -189,14 +189,14 @@ export interface IApisService {
      * @param {string} inviteId
      * @return {Promise<Invitation>}
      */
-    getInvitation(apiId:string, inviteId: string): Promise<Invitation>;
+    abstract getInvitation(apiId:string, inviteId: string): Promise<Invitation>;
 
     /**
      * Creates a new invite-to-collaborate for the given API design.
      * @param {string} apiId
      * @return {Promise<Invitation>}
      */
-    createInvitation(apiId: string): Promise<Invitation>;
+    abstract createInvitation(apiId: string): Promise<Invitation>;
 
     /**
      * Rejects an invitation to collaborate.
@@ -204,7 +204,7 @@ export interface IApisService {
      * @param {string} inviteId
      * @return {Promise<void>}
      */
-    rejectInvitation(apiId: string, inviteId: string): Promise<void>;
+    abstract rejectInvitation(apiId: string, inviteId: string): Promise<void>;
 
     /**
      * Accepts an invitation to collaborate.
@@ -212,15 +212,13 @@ export interface IApisService {
      * @param {string} inviteId
      * @return {Promise<void>}
      */
-    acceptInvitation(apiId: string, inviteId: string): Promise<void>;
+    abstract acceptInvitation(apiId: string, inviteId: string): Promise<void>;
 
     /**
      * Gets the list of activity items for a given API design.
      * @param {string} apiId
      * @return {Promise<ApiDesignChange[]>}
      */
-    getActivity(apiId: string, start: number, end: number): Promise<ApiDesignChange[]>;
+    abstract getActivity(apiId: string, start: number, end: number): Promise<ApiDesignChange[]>;
 
 }
-
-export const IApisService = new InjectionToken("IApisService");

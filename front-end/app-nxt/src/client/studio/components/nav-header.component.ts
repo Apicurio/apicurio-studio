@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User} from "../models/user.model";
 import {IAuthenticationService} from "../services/auth.service";
 import {Observable} from "rxjs";
@@ -32,7 +32,7 @@ export class NavHeaderComponent implements OnInit {
     builtOn: Date = new Date();
     projectUrl: string = "http://www.apicur.io/";
 
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService) {
+    constructor(protected authService: IAuthenticationService) {
         let w: any = window;
         if (w["ApicurioStudioInfo"]) {
             console.info("[NavHeaderComponent] Found app info: %o", w["ApicurioStudioInfo"]);

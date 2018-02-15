@@ -234,7 +234,7 @@ export class ApiEditingSession implements IApiEditingSession {
  * An implementation of the APIs service that uses the Apicurio Studio back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
-export class HubApisService extends AbstractHubService implements IApisService {
+export class HubApisService extends IApisService {
 
     private theRecentApis: Api[];
     private _recentApis: BehaviorSubject<Api[]> = new BehaviorSubject([]);

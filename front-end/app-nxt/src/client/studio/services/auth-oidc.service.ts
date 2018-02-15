@@ -36,7 +36,7 @@ export class OIDCDirectGrantAccessToken {
  * A version of the authentication service that uses OpenID Connect Direct
  * Grant to obtain an access token.
  */
-export class OIDCDirectGrantAuthenticationService implements IAuthenticationService {
+export class OIDCDirectGrantAuthenticationService extends IAuthenticationService {
 
     private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public authenticated: Observable<boolean> = this._authenticated.asObservable();
@@ -52,6 +52,7 @@ export class OIDCDirectGrantAuthenticationService implements IAuthenticationServ
      * @param config
      */
     constructor(private http: HttpClient, private config: ConfigService) {
+        super();
         console.info("[OIDCDirectGrantAuthenticationService] C'tor");
     }
 

@@ -28,7 +28,7 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
  * on the server (for example via OAuth2 web flow).  The server will then pass the
  * token information down into the angular app.
  */
-export class TokenAuthenticationService implements IAuthenticationService {
+export class TokenAuthenticationService extends IAuthenticationService {
 
     private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public authenticated: Observable<boolean> = this._authenticated.asObservable();
@@ -44,6 +44,7 @@ export class TokenAuthenticationService implements IAuthenticationService {
      * @param config
      */
     constructor(private http: HttpClient, private config: ConfigService) {
+        super();
         this.accessToken = config.authToken();
 
         this._authenticated.next(true);

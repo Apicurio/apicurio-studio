@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Injectable, Inject} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {CanActivate, Router} from "@angular/router";
 import {IAuthenticationService} from "../services/auth.service";
 import {Subscription} from "rxjs";
@@ -26,7 +26,7 @@ export class AuthenticationCanActivateGuard implements CanActivate {
     private isAuthenticated: boolean;
     private sub: Subscription;
 
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, private router: Router) {
+    constructor(protected authService: IAuthenticationService, private router: Router) {
         this.sub = authService.isAuthenticated().subscribe(value => {
             this.isAuthenticated = value;
         });

@@ -22,7 +22,7 @@ import {HubLinkedAccountsService} from "./accounts-hub.service";
 import {HttpClient} from "@angular/common/http";
 
 
-function LinkedAccountsServiceFactory(http: HttpClient, authService: IAuthenticationService, config: ConfigService): ILinkedAccountsService {
+export function LinkedAccountsServiceFactory(http: HttpClient, authService: IAuthenticationService, config: ConfigService): ILinkedAccountsService {
     if (config.apisType() === "hub") {
         console.info("[LinkedAccountsServiceFactory] Creating instance of HubLinkedAccountsService");
         return new HubLinkedAccountsService(http, authService, config);

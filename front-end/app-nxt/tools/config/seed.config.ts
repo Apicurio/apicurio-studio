@@ -534,8 +534,15 @@ export class SeedConfig {
       'tslib': 'node_modules/tslib/tslib.js',
       'rxjs/operators': 'node_modules/rxjs/operators/index.js',
       'dist/tmp/node_modules/*': 'dist/tmp/node_modules/*',
+      'npm:': 'node_modules/',
       'node_modules/*': 'node_modules/*',
       '*': 'node_modules/*'
+    },
+    map: {
+      // OAI Library
+      'oai-ts-core': 'npm:oai-ts-core/bundles/OAI.umd.js',
+      // OAI Commands Library
+      'oai-ts-commands': 'npm:oai-ts-commands/bundles/OAI-commands.umd.js'
     },
     packages: {
       '@angular/animations': {

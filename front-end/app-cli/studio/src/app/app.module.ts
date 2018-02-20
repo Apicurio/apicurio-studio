@@ -15,15 +15,18 @@ import {PageErrorComponent} from './components/page-error.component';
 import {VerticalNavComponent} from './components/vertical-nav.component';
 import {NavHeaderComponent} from './components/nav-header.component';
 import {AppRoutingModule} from './app-routing.module';
+import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.component';
+import {CopyUrlDialogComponent} from './components/dialogs/copy-url.component';
+import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
 
 
 @NgModule({
+  imports: [
+    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot()
+  ],
   declarations: [
     AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-    VerticalNavComponent, NavHeaderComponent
-  ],
-  imports: [
-    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule
+    VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent
   ],
   providers: [
     ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

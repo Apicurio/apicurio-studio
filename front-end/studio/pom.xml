@@ -42,11 +42,11 @@
                     <execution>
                         <id>ng build</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>run-script build</arguments>
+                            <arguments>build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -67,6 +67,12 @@
                                 <resource>
                                     <directory>${basedir}/dist</directory>
                                     <filtering>false</filtering>
+                                    <excludes>
+                                        <exclude>config.js</exclude>
+                                        <exclude>keycloak.js</exclude>
+                                        <exclude>keycloak.json</exclude>
+                                        <exclude>version.js</exclude>
+                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>

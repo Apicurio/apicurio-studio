@@ -25,17 +25,29 @@ import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{acco
 import {LinkedAccountsPageComponent} from './pages/settings/accounts/accounts.page';
 import {ProfilePageComponent} from './pages/settings/profile/profile.page';
 import {SettingsPageComponent} from './pages/settings/settings';
+import {ApisPageComponent} from './pages/apis/apis.page';
+import {CreateApiPageComponent} from './pages/apis/create/create.page';
+import {ImportApiPageComponent} from './pages/apis/import/import.page';
+import {ImportApiFormComponent} from './pages/apis/import/_components/import-form.component';
+import {CreateApiFormComponent} from './pages/apis/create/_components/create-form.component';
+import {ApisListComponent} from './pages/apis/_components/apis-list.component';
+import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component';
+import {DropDownComponent} from './components/common/drop-down.component';
+import {AceEditorModule} from 'ng2-ace-editor';
 
 
 @NgModule({
   imports: [
-    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot()
+    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
+    AceEditorModule
   ],
   declarations: [
     AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
     VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
     TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
-    CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent
+    CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent,
+    ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent, ImportApiFormComponent, CreateApiFormComponent,
+    ApisListComponent, ApisCardsComponent, DropDownComponent
   ],
   providers: [
     ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

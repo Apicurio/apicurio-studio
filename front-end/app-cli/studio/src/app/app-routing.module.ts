@@ -23,6 +23,9 @@ import {SettingsPageComponent} from './pages/settings/settings';
 import {ProfilePageComponent} from './pages/settings/profile/profile.page';
 import {LinkedAccountsPageComponent} from './pages/settings/accounts/accounts.page';
 import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
+import {ApisPageComponent} from './pages/apis/apis.page';
+import {CreateApiPageComponent} from './pages/apis/create/create.page';
+import {ImportApiPageComponent} from './pages/apis/import/import.page';
 
 const routes: Routes = [
   {
@@ -48,6 +51,21 @@ const routes: Routes = [
   {
     path: "settings/accounts/:accountType/created",
     component: CreatedLinkedAccountPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis",
+    component: ApisPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/create",
+    component: CreateApiPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/import",
+    component: ImportApiPageComponent,
     canActivate: [ AuthenticationCanActivateGuard ]
   },
 ];

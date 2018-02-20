@@ -18,6 +18,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.component';
 import {CopyUrlDialogComponent} from './components/dialogs/copy-url.component';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
+import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from './directives/autosize.directive';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
   ],
   declarations: [
     AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-    VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent
+    VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
+    TextAreaAutosize, DivAutoHeight, TextBoxAutosize
   ],
   providers: [
     ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

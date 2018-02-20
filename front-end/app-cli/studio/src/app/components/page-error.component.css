@@ -1,0 +1,14 @@
+.card-pf-error {
+  border-top-color: red;
+}
+
+.card-pf-error .card-pf-title .fa {
+  color: red;
+}
+
+.card-pf-error .card-pf-body .details {
+}
+.card-pf-error .card-pf-body .details pre {
+  max-height: 350px;
+  overflow-y: auto;
+}

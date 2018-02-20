@@ -46,9 +46,9 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
         let w: any = window;
         this.keycloak = w["keycloak"];
 
-        console.info("Token: %s", JSON.stringify(this.keycloak.tokenParsed, null, 2));
-        console.info("ID Token: %s", JSON.stringify(this.keycloak.idTokenParsed, null, 2));
-        console.info("Access Token: %s", this.keycloak.token);
+        // console.info("Token: %s", JSON.stringify(this.keycloak.tokenParsed, null, 2));
+        // console.info("ID Token: %s", JSON.stringify(this.keycloak.idTokenParsed, null, 2));
+        // console.info("Access Token: %s", this.keycloak.token);
 
         let user: User = new User();
         user.name = this.keycloak.tokenParsed.name;

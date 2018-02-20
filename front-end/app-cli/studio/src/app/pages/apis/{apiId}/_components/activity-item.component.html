@@ -1,0 +1,5 @@
+<div class="activity-item row">
+    <div class="col-md-1 activity-item-icon"><span class="fa fa-fw fa-{{ icon() }}"></span></div>
+    <div class="col-md-9 activity-item-description"><strong class="by">{{ item.by }}</strong> <span>{{ description() }}</span></div>
+    <div class="col-md-2 activity-item-date">{{ item.on | date }}</div>
+</div>

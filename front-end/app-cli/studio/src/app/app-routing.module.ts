@@ -26,6 +26,9 @@ import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{acco
 import {ApisPageComponent} from './pages/apis/apis.page';
 import {CreateApiPageComponent} from './pages/apis/create/create.page';
 import {ImportApiPageComponent} from './pages/apis/import/import.page';
+import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
+import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
+import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
 
 const routes: Routes = [
   {
@@ -66,6 +69,21 @@ const routes: Routes = [
   {
     path: "apis/import",
     component: ImportApiPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/:apiId",
+    component: ApiDetailPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/:apiId/collaboration",
+    component: ApiCollaborationPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/:apiId/collaboration/accept/:inviteId",
+    component: ApiAcceptPageComponent,
     canActivate: [ AuthenticationCanActivateGuard ]
   },
 ];

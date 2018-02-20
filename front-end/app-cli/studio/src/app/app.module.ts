@@ -34,6 +34,10 @@ import {ApisListComponent} from './pages/apis/_components/apis-list.component';
 import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component';
 import {DropDownComponent} from './components/common/drop-down.component';
 import {AceEditorModule} from 'ng2-ace-editor';
+import {ActivityItemComponent} from './pages/apis/{apiId}/_components/activity-item.component';
+import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
+import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
+import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
 
 
 @NgModule({
@@ -47,7 +51,8 @@ import {AceEditorModule} from 'ng2-ace-editor';
     TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
     CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent,
     ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent, ImportApiFormComponent, CreateApiFormComponent,
-    ApisListComponent, ApisCardsComponent, DropDownComponent
+    ApisListComponent, ApisCardsComponent, DropDownComponent, ActivityItemComponent, ApiCollaborationPageComponent,
+    ApiAcceptPageComponent, ApiDetailPageComponent
   ],
   providers: [
     ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

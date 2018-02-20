@@ -1,0 +1,45 @@
+
+.account-link {
+  margin-bottom: 5px;
+}
+.account-link.not-created {
+  opacity: 0.5;
+}
+.account-link.not-created:hover {
+  opacity: 1.0;
+}
+.account-link.created {
+}
+.account-link.initiated {
+  border: 2px dashed grey;
+}
+.account-link .account-link-icon span.fa {
+  font-size: 38px;
+}
+.account-link .list-view-pf-additional-info {
+  font-size: 14px;
+}
+.account-link .account-link-date {
+  margin-left: 5px;
+  font-style: italic;
+}
+.account-link .list-view-pf-actions button {
+  min-width: 60px;
+}
+
+
+.account-link.list-view-pf-expand-active {
+  opacity: 1.0;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+}
+.account-link.list-view-pf-expand-active, .account-link.list-view-pf-expand-active .list-group-item-container {
+  border-color: #bbb;
+}
+.account-link.list-view-pf-expand-active .list-group-item-container .row {
+  padding: 10px;
+}
+.account-link.list-view-pf-expand-active .list-group-item-container .row .icon {
+  text-align: center;
+  font-size: 36px;
+}
+

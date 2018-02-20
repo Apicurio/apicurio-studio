@@ -1,0 +1,17 @@
+.panel-settings {
+}
+.panel-settings .panel-body {
+  padding: 0px;
+}
+.panel-settings .panel-body .nav-settings {
+}
+.panel-settings .panel-body .nav-settings li {
+}
+.panel-settings .panel-body .nav-settings li a {
+}
+.panel-settings .panel-body .nav-settings li.active {
+}
+.panel-settings .panel-body .nav-settings li.active a {
+  color: white;
+  background-color: #0088ce;
+}

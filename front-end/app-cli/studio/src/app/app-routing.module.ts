@@ -19,13 +19,37 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
 import {AuthenticationCanActivateGuard} from './guards/auth.guard';
+import {SettingsPageComponent} from './pages/settings/settings';
+import {ProfilePageComponent} from './pages/settings/profile/profile.page';
+import {LinkedAccountsPageComponent} from './pages/settings/accounts/accounts.page';
+import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardPageComponent,
-    canActivate: [AuthenticationCanActivateGuard]
-  }
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "settings",
+    component: SettingsPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "settings/profile",
+    component: ProfilePageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "settings/accounts",
+    component: LinkedAccountsPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "settings/accounts/:accountType/created",
+    component: CreatedLinkedAccountPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
 ];
 
 

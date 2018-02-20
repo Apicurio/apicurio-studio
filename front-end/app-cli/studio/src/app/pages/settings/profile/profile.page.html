@@ -1,0 +1,42 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+        <li breadcrumb label="Settings" icon="cogs" [route]="[ '/settings' ]"></li>
+        <li breadcrumb label="Profile" icon="user" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid" *ngIf="!pageError">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-2">
+            <settings-nav tab="profile"></settings-nav>
+        </div>
+        <div class="col-xs-12 col-sm-5">
+            <div class="card-pf card-pf-accented">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-user"></span>
+                        <span>{{(user() | async).name }}</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <div class="user-info">
+                        <div>
+                            <span class="user-info-label">Name:</span>
+                            <span>{{ (user() | async).name }}</span>
+                        </div>
+                        <div>
+                            <span class="user-info-label">Login:</span>
+                            <span>{{ (user() | async).login }}</span>
+                        </div>
+                        <div>
+                            <span class="user-info-label">Email:</span>
+                            <span>{{ (user() | async).email }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

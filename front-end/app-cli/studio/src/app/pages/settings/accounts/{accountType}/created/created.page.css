@@ -1,0 +1,10 @@
+.card-pf-error {
+  border-top-color: red;
+}
+.card-pf-error .card-pf-title .fa {
+  color: red;
+}
+
+p.in-progress {
+  font-size: 17px;
+}

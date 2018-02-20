@@ -19,6 +19,12 @@ import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.
 import {CopyUrlDialogComponent} from './components/dialogs/copy-url.component';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
 import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from './directives/autosize.directive';
+import {NotFoundPageComponent} from './pages/404.page';
+import {SettingsNavComponent} from './pages/settings/_components/settings-nav.component';
+import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
+import {LinkedAccountsPageComponent} from './pages/settings/accounts/accounts.page';
+import {ProfilePageComponent} from './pages/settings/profile/profile.page';
+import {SettingsPageComponent} from './pages/settings/settings';
 
 
 @NgModule({
@@ -28,7 +34,8 @@ import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from './directives/aut
   declarations: [
     AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
     VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
-    TextAreaAutosize, DivAutoHeight, TextBoxAutosize
+    TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
+    CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent
   ],
   providers: [
     ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

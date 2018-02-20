@@ -208,7 +208,7 @@ export abstract class AbstractHubService {
      */
     protected httpDelete(url: string, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
-        return this.http.put(url, options).map( () => {
+        return this.http.delete(url, options).map( () => {
             if (successCallback) {
                 successCallback();
             }

@@ -1,0 +1,31 @@
+<!-- Add Query Param Dialog -->
+<div bsModal #addQueryParamModal="bs-modal" class="modal fade" id="addQueryParamModal" tabindex="-1" role="dialog"
+     aria-labelledby="addQueryParamModalLabel" role="dialog" aria-hidden="true" (onShown)="queryParamNameInput.focus()"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addQueryParamModalLabel">Add Query Parameter</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter information about the new query parameter below and then click Add.</p>
+                <form id="addqueryparam-form" class="form-horizontal" (submit)="add()" #addQueryParamForm="ngForm">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="name">Name</label>
+                        <div class="col-sm-10">
+                            <input #queryParamNameInput name="name" type="text" id="name" class="form-control"
+                                   placeholder="Enter a Parameter Name" required [(ngModel)]="name">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addQueryParamForm.form.valid">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+<span class="path-segment" *ngFor="let pathSegment of pathSegments()" [class.path-param]="pathSegment.indexOf('{') === 0">{{ pathSegment }}</span>

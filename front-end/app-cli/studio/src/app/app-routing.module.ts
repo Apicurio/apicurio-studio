@@ -29,6 +29,7 @@ import {ImportApiPageComponent} from './pages/apis/import/import.page';
 import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
+import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
 
 const routes: Routes = [
   {
@@ -84,6 +85,11 @@ const routes: Routes = [
   {
     path: "apis/:apiId/collaboration/accept/:inviteId",
     component: ApiAcceptPageComponent,
+    canActivate: [ AuthenticationCanActivateGuard ]
+  },
+  {
+    path: "apis/:apiId/editor",
+    component: ApiEditorPageComponent,
     canActivate: [ AuthenticationCanActivateGuard ]
   },
 ];

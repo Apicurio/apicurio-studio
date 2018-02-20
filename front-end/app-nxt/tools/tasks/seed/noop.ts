@@ -1,3 +1,0 @@
-export = (done: any) => {
-  done();
-};

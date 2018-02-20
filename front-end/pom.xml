@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
   <name>apicurio-studio-fe</name>
   <modules>
-    <module>app</module>
+    <module>studio</module>
     <module>servlet</module>
   </modules>
 </project>

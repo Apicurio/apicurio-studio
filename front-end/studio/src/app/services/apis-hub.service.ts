@@ -339,6 +339,7 @@ export class HubApisService extends IApisService {
             this.cachedApis = null;
             this.removeFromRecent(api);
             this._recentApis.next(this.theRecentApis);
+            console.info("[HubApisService] Successfully deleted API %s", api.id);
         });
     }
 

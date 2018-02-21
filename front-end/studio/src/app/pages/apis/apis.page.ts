@@ -160,12 +160,10 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     }
 
     public onSelected(api: Api): void {
-        console.info("[ApisPageComponent] Caught the onApiSelected event!  Data: %o", api);
         this.selectedApis.push(api);
     }
 
     public onDeselected(api: Api): void {
-        console.info("[ApisPageComponent] Caught the onApiDeselected event!  Data: %o", api);
         this.selectedApis.splice(this.selectedApis.indexOf(api), 1);
     }
 
@@ -178,23 +176,31 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
      * Called to delete all selected APIs.
      */
     public deleteApis(): void {
-        // TODO deleting the APIs is done asynchronously - we need some sort of visual status (spinner) to watch progress, and then close the dialog when it's done
-
         // Note: we can only delete selected items that we can see in the UI.
         let itemsToDelete: Api[] = ArrayUtils.intersect(this.selectedApis, this.filteredApis);
         console.log("[ApisPageComponent] Deleting %s selected APIs.", itemsToDelete.length);
         this.numApisToDelete = itemsToDelete.length;
-        for (let api of itemsToDelete) {
-            this.apis.deleteApi(api).then( () => {
-                this.removeApiFromList(api);
-                this.filterApis();
-                this.numApisToDelete--;
-            }).catch( error => {
-                console.error("[ApisPageComponent] Error deleting an API with ID %s", api.id);
-                this.error(error);
-            });
-        }
+
         this.selectedApis = [];
+        this.deleteNextApi(itemsToDelete, 0);
+    }
+
+    private deleteNextApi(apisToDelete: Api[], fromIdx: number): void {
+        if (fromIdx >= apisToDelete.length) {
+            return;
+        }
+        let api: Api = apisToDelete[fromIdx];
+        this.apis.deleteApi(api).then( () => {
+            this.removeApiFromList(api);
+            this.filterApis();
+            this.numApisToDelete--;
+            console.info("Deleted API with id: %s - Number of APIs remaining to delete: %d", api.id, this.numApisToDelete);
+            this.deleteNextApi(apisToDelete, fromIdx + 1);
+        }).catch( error => {
+            console.error("[ApisPageComponent] Error deleting an API with ID %s", api.id);
+            this.error(error);
+        });
+
     }
 
     public onListLayout(): void {

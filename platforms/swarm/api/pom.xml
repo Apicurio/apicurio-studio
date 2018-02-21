@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-platforms-swarm</artifactId>
-        <version>0.2.3-SNAPSHOT</version>
+        <version>0.2.3.Final</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-platforms-swarm-api</artifactId>

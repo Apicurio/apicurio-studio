@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apicurio-studio-fe-app</artifactId>
+            <artifactId>apicurio-studio-fe-studio</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -48,13 +48,13 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>apicurio-studio-fe-app</artifactId>
+                                    <artifactId>apicurio-studio-fe-studio</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/fe-app</outputDirectory>
+                            <outputDirectory>${project.build.directory}/fe-studio</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -67,7 +67,7 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>target/fe-app</directory>
+                            <directory>target/fe-studio</directory>
                         </resource>
                         <resource>
                             <directory>src/main/filtered-resources</directory>

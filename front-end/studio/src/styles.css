@@ -1,0 +1,133 @@
+
+body {
+  font-size: 13px;
+}
+
+#api-page-body {
+  margin-left: 120px;
+}
+
+#api-page-body .modal-header {
+  background-color: rgb(57, 165, 220);
+  color: white;
+}
+#api-page-body .modal-header button.close {
+  color: white;
+}
+#api-page-body .modal-footer {
+  border-top: 1px solid rgb(221, 221, 221);
+  background-color: rgb(239, 239, 239);
+}
+
+#login-form {
+  background-color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal-dialog {
+  margin-top: 50px;
+}
+
+/**
+   PACE Theme:  minimal
+ */
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  background: #ef6366;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 100%;
+  width: 100%;
+  height: 3px;
+}
+
+form input.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.dropdown-menu > li > a {
+  cursor: pointer;
+}
+
+/* Loading Animations */
+#load-container {
+  padding-top: 60px; // Approx in content area rather than nav-bar.
+margin: auto;
+  animation: fadein 2s;
+}
+
+#apicurio-the-hero {
+  display: block;
+  height: auto;
+  margin: auto;
+  width: 200px;
+}
+#apicurio-the-hero #path3401,
+#apicurio-the-hero #path3397,
+#apicurio-the-hero #path3393 {
+  fill: white;
+  stroke: #bfbfbf;
+  stroke-width: 1;
+}
+
+#ball-holder {
+  width: 200px;
+  margin: auto;
+}
+#ball-holder #ball {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  fill: white;
+  stroke: #bfbfbf;
+  stroke-width: 2;
+  animation: loadball 3s infinite linear;
+}
+
+@keyframes loadball {
+  50% { transform: translate(170px, 0px);  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#api-breadcrumb-bar {
+  background: white;
+  border-bottom: 1px solid #ccc;
+  height: 37px;
+}
+#api-breadcrumb-bar .api-breadcrumbs {
+  height: 37px;
+}
+
+.dropdown-menu {
+  font-size: 13px;
+}

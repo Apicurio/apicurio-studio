@@ -1,0 +1,61 @@
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="" style="">
+            <div id="navbar-logo" class="navbar-brand-logo">Apicurio Studio</div>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-utility">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="pficon pficon-user"></span>
+                    <span>{{ (user() | async).name }}</span>
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" data-target="#about-modal">About</a></li>
+                    <li class="divider"></li>
+                    <li><a (click)="logout()">Logout</a></li>
+                </ul></li>
+        </ul>
+    </div>
+</nav>
+<div class="modal fade" id="about-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content about-modal-pf">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h1 class="about-title">Apicurio Studio</h1>
+                <div class="product-versions-pf">
+                    <table>
+                        <tr>
+                            <td><strong>Version</strong></td>
+                            <td>{{ version }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Built On</strong></td>
+                            <td>{{ builtOn | date }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Edition</strong></td>
+                            <td>CLI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Project URL</strong></td>
+                            <td><a href="{{ projectUrl }}" target="_blank">{{ projectUrl }} <span class="fa fa-external-link"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="trademark-pf">
+                    &copy; 2018 Red Hat, Inc (JBoss Middleware)
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+.api-editor.dark span.path-param {
+  color: #ff6a7c;
+}
+.api-editor.dark span.path-segment::before {
+  color: white;
+}
+.api-editor.dark div.api-item-description {
+  border-left: 2px solid #356c8c;
+}
+.api-editor.dark {
+  background-color: #1D2225;
+  color: #eee;
+}
+.api-editor.dark .editor-master {
+  background-color: #1D2225;
+  border-right: 1px solid #bbb;
+}
+.api-editor.dark .editor-detail {
+  background-color: #1D2225;
+}
+.api-editor.dark .editor-detail .hover-overlay {
+  border-color: #356c8c;
+}
+.api-editor.dark .editor-detail .hover-overlay .overlay-actions {
+  background: #356c8c;
+  border-left-color: #356c8c;
+}
+.api-editor.dark .editor-detail .hover-overlay .overlay-actions .overlay-action {
+  background-color: #356c8c;
+  color: white;
+}
+.api-editor.dark .editor-detail .edit-overlay {
+  border-color: #bbb;
+  background-color: white;
+}
+.api-editor.dark .editor-detail .edit-overlay.focus {
+  box-shadow: 3px 3px 3px rgba(0, 136, 206, 0.3), -3px 3px 3px rgba(0, 136, 206, 0.3);
+  border-color: #0088ce;
+}
+.api-editor.dark .editor-detail .edit-overlay.hover {
+  border-color: #7dc3e8;
+}
+.api-editor.dark .editor-master .editor-main {
+  background-color: #3f4950;
+}
+.api-editor.dark .editor-master .editor-main:hover {
+  background-color: #274f67;
+}
+.api-editor.dark .editor-master .editor-main.selected {
+  background-color: #356c8c;
+}
+.api-editor.dark .editor-master .editor-search {
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+}
+.api-editor.dark .section .section-header {
+  border-bottom: 1px dotted #bbb;
+}
+.api-editor.dark .section .section-header a {
+  color: #fff;
+}
+.api-editor.dark .editor-master .editor-outline .api-path:hover {
+  background-color: #274f67;
+}
+.api-editor.dark .editor-master .editor-outline .api-path.selected {
+  background-color: #356c8c;
+  border-left: 2px solid #76accb;
+}
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label.empty {
+  background-color: #ccc;
+}
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label:hover {
+  border: 1px solid #274f67;
+}
+.api-editor.dark .editor-master .editor-outline .api-path.selected .label.selected {
+  border: 1px solid white;
+}
+.api-editor.dark .editor-master .editor-outline .api-definition:hover {
+  background-color: #274f67;
+}
+.api-editor.dark .editor-master .editor-outline .api-definition.selected {
+  background-color: #356c8c;
+  border-left: 2px solid #76accb;
+}
+.api-editor.dark .editor-master .editor-outline .api-response:hover {
+  background-color: #274f67;
+}
+.api-editor.dark .editor-master .editor-outline .api-response.selected {
+  background-color: #356c8c;
+  border-left: 2px solid #76accb;
+}
+.api-editor.dark .editor-detail .detail-title {
+  border-bottom: 1px solid #bbb;
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions {
+  border-left: 1px solid #bbb;
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions .dropdown .btn {
+  color: #fff;
+}
+.api-editor.dark .editor-detail .detail-title .detail-actions:hover {
+  background-color: #274f67;
+}
+.api-editor.dark .editor-detail .detail-tabs ul {
+  border-bottom-color: #bbb;
+}
+.api-editor.dark .editor-detail .detail-content .info-section .api-md-entry .md-label {
+  color: #fff;
+}
+.api-editor.dark .api-operation-parameters td.parameter {
+  color: #ff6a7c;
+}
+.api-editor.dark .api-operation-parameters td.icons,
+.api-details table td.icons {
+  color: #666;
+}
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation {
+  border-bottom: 1px solid #bbb;
+}
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty {
+  color: #888;
+}
+.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
+  color: #888;
+  background-color: #444;
+}

@@ -1,0 +1,49 @@
+<div class="detail-title">
+    <div class="detail-label">
+        <span class="fa fa-fw fa-exclamation-circle"></span>
+        <span>{{ problem.errorCode }}</span>
+    </div>
+    <!--
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li>
+                    <a href="javascript:return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Path</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    -->
+</div>
+<div class="detail-content problem-form">
+
+    <!-- Info about the Problem -->
+    <div class="section info-section panel-group">
+        <div class="section-header panel-title">
+            <a data-toggle="collapse" data-target="#info-section-body">
+                <span class="section-label">INFO</span>
+            </a>
+            <context-help>
+                <p>This section provides additional information about the Validation Problem we found.</p>
+            </context-help>
+        </div>
+        <div class="section-body collapse in" id="info-section-body">
+            <h1>{{ problem.message }}</h1>
+            <label>Node Path:</label>
+            <pre>{{ problem.nodePath.toString() }}</pre>
+            <label>Explanation:</label>
+            <div class="panel panel-default">
+                <div class="panel-body explanation">{{ explanation() }}</div>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn btn-default" (click)="goToProblem()">Go To Problem</button>
+            </div>
+        </div>
+    </div>
+</div>

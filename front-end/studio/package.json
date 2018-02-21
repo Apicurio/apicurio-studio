@@ -1,0 +1,43 @@
+{
+  "name": "apicurio-design-studio",
+  "version": "1.0.0",
+  "description": "A web application to help design restful APIs.",
+  "author": "Eric Wittmann",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apicurio/apicurio-studio"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --port 8888 --aot",
+    "build": "ng build -prod"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^5.2.0",
+    "@angular/common": "^5.2.0",
+    "@angular/compiler": "^5.2.0",
+    "@angular/core": "^5.2.0",
+    "@angular/forms": "^5.2.0",
+    "@angular/platform-browser": "^5.2.0",
+    "@angular/platform-browser-dynamic": "^5.2.0",
+    "@angular/router": "^5.2.0",
+    "oai-ts-core": "0.2.9",
+    "oai-ts-commands": "0.2.18",
+    "core-js": "^2.4.1",
+    "ngx-bootstrap": "2.0.2",
+    "ng2-ace-editor": "0.3.4",
+    "yamljs": "0.3.0",
+    "rxjs": "^5.5.6",
+    "zone.js": "^0.8.19"
+  },
+  "devDependencies": {
+    "@angular/cli": "1.6.8",
+    "@angular/compiler-cli": "^5.2.0",
+    "@angular/language-service": "^5.2.0",
+    "@types/node": "~6.0.60",
+    "ts-node": "~4.1.0",
+    "typescript": "~2.5.3"
+  }
+}

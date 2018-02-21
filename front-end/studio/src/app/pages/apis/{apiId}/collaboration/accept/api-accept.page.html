@@ -1,0 +1,38 @@
+<div id="api-breadcrumb-bar">
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-accept-invite" *ngIf="!pageError">
+    <div class="row-fluid">
+        <div class="col-sm-12 col-md-8 col-lg-6">
+
+            <div *ngIf="!dataLoaded['invitation']">
+                <p><span class="spinner spinner-lg spinner-inline"></span> Loading invitation, please wait...</p>
+            </div>
+
+            <div class="blank-slate-pf api-invitation" id="" *ngIf="dataLoaded['invitation']">
+                <div class="blank-slate-pf-icon">
+                    <span class="pficon pficon pficon-users"></span>
+                </div>
+                <h1>Invitation to Collaborate</h1>
+                <h3 class="subject">"{{ invitation.subject }}"</h3>
+                <p>
+                    You have been invited by <strong>{{ invitation.createdBy }}</strong> to collaborate on an
+                    API Design.  Would you like to accept?
+                </p>
+                <p class="created-on">
+                    (Invitation created on <span>{{ invitation.createdOn | date }}</span>)
+                </p>
+                <div class="blank-slate-pf-main-action" *ngIf="!_accepting">
+                    <button (click)="acceptInvitation()" class="btn btn-primary btn-lg">Accept</button>
+                </div>
+                <div class="blank-slate-pf-secondary-action" *ngIf="!_accepting">
+                    <button (click)="rejectInvitation()" class="btn btn-default">No Thanks</button>
+                </div>
+                <div *ngIf="_accepting" class="accepting-spinner">
+                    <p><span class="spinner spinner-sm spinner-inline"></span> <span class="spinner-label">Accepting invitation, please wait...</span></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

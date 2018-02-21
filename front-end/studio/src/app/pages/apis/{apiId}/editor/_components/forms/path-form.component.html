@@ -1,0 +1,296 @@
+<div class="detail-title">
+    <div path-item class="detail-label" [path]="path.path()"></div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li>
+                    <a href="#" onclick="return false" (click)="newPath()">
+                        <span class="pficon pficon-add-circle-o"></span>
+                        <span>New Sub-Path</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Path</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="javascript:return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Path</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="canRevertSource()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="sourceFormat() === 'yaml'">As JSON</span>
+        <span *ngIf="sourceFormat() === 'json'">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <ace-editor #sourceEditor
+                [text]="source()"
+                [theme]="'eclipse'"
+                [mode]="sourceFormat()"
+                [durationBeforeCallback]="350"
+                (textChanged)="updateSource($event)"
+                style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin-top: 1px"></ace-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+
+                <!-- Servers -->
+                <servers-section *ngIf="path.ownerDocument().is3xDocument()" [parent]="path" (onCommand)="onCommand.emit($event)" [description]="'Configure servers specific to this Path Item and all its Operations.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+
+                <!-- Path Parameters Section -->
+                <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
+                    <div class="section-header panel-title">
+                        <a data-toggle="collapse" data-target="#path-parameters-section-body">
+                            <span class="section-label">PATH PARAMETERS</span>
+                        </a>
+                        <context-help>
+                            <p>
+                                This section is visible because this path has at least one dynamic path parameter.
+                                Here you can configure information about the path parameter, such as its description
+                                and type.  This information will be inherited by all operations in the path (but can
+                                optionally be overridden by each respective operation).
+                            </p>
+                        </context-help>
+                    </div>
+                    <div class="section-body collapse in" id="path-parameters-section-body">
+                        <!-- The list of path parameters -->
+                        <div class="container-fluid path-parameters typed-item-list">
+                            <param-row *ngFor="let param of pathParameters()"
+                                       [param]="param" [parameterClass]="'path-parameter'"
+                                       (onCreate)="createPathParam(param.name)"
+                                       (onDelete)="deleteParam(param)"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Query Parameters Section -->
+                <div class="section query-parameters-section panel-group">
+                    <div class="section-header panel-title">
+                        <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
+                            <span class="section-label">QUERY PARAMETERS</span>
+                        </a>
+                        <context-help>
+                            <p>
+                                Use this section to define <strong>HTTP Query Parameters</strong> for all of the
+                                Operations in this path.  These query parameters will apply to all operations and
+                                can be overridden (though not removed) at the operation level.
+                            </p>
+                        </context-help>
+                        <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
+                                title="Add a new query parameter"><span class="fa fa-plus"></span></button>
+                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
+                                title="Delete all query parameters."
+                                [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
+                    </div>
+                    <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
+
+                        <div class="alert alert-info" *ngIf="!hasParameters('query')">
+                            <span class="pficon pficon-info"></span>
+                            <strong>None Found</strong>
+                            <span>No query parameters have been declared.</span>
+                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddQueryParamModal()">Add Query Parameter</button>
+                        </div>
+
+                        <!-- The list of query parameters -->
+                        <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">
+                            <param-row *ngFor="let param of queryParameters()"
+                                       [param]="param" [parameterClass]="'query-parameter'"
+                                       (onDelete)="deleteParam(param)"
+                                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operations Section -->
+                <div class="section operations-section panel-group">
+                    <div class="section-header panel-title">
+                        <a data-toggle="collapse" data-target="#operations-section-body">
+                            <span class="section-label">OPERATIONS</span>
+                        </a>
+                        <context-help>
+                            <p>
+                                Below you will find a list of all possible <strong>Operations</strong> that could be
+                                supported by this path.  You can quickly indicate that this path supports these operations
+                                by clicking the appropriate <strong>Create Operation</strong> button.  You can also quickly
+                                edit the <strong>Name</strong> and <strong>Description</strong> of each operation directly
+                                from this list.
+                            </p>
+                            <br>
+                            <p>
+                                <strong>Note:</strong> to configure a single operation (inputs, outputs, etc) simply
+                                click the colored operation name such as <strong>GET</strong> or <strong>PUT</strong>.
+                            </p>
+                        </context-help>
+                    </div>
+                    <div class="section-body collapse in" id="operations-section-body">
+
+                        <div class="api-operation" [class.empty]="!hasGet()">
+                            <div class="">
+                                <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
+                                <inline-text-editor [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.get)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.get)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasGet()">
+                                <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPut()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
+                                <inline-text-editor [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.put)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.put)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasPut()">
+                                <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPost()">
+                            <div class="">
+                                <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
+                                <inline-text-editor [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.post)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.post)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasPost()">
+                                <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasDelete()">
+                            <div class="">
+                                <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
+                                <inline-text-editor [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.delete)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.delete)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasDelete()">
+                                <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasOptions()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
+                                <inline-text-editor [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.options)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.options)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasOptions()">
+                                <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasHead()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
+                                <inline-text-editor [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.head)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.head)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasHead()">
+                                <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
+                            </div>
+                        </div>
+                        <div class="api-operation" [class.empty]="!hasPatch()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
+                                <inline-text-editor [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, path.patch)"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, path.patch)"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasPatch()">
+                                <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>
+<add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
+<clone-path-dialog #clonePathDialog (onClone)="clone($event)"></clone-path-dialog>

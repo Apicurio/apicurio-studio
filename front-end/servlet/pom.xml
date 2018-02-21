@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>apicurio-studio-fe-app</artifactId>
+            <artifactId>apicurio-studio-fe-studio</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

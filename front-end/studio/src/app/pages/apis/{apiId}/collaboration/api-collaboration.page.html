@@ -1,0 +1,149 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+        <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" icon="bolt" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Collaboration" icon="users" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-collaboration" *ngIf="!pageError">
+    <div class="row-fluid">
+        <!-- Left Column (Collaborators) -->
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="container-fluid container-cards-pf">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <!-- Loading Collaborators Card -->
+                        <div class="card-pf card-pf-accented" *ngIf="!isLoaded('collaborators')">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading collaborator information...</p>
+                                </h1>
+                            </div>
+                        </div>
+
+                        <!-- Collaborators Card -->
+                        <div class="card-pf card-pf-accented" *ngIf="isLoaded('collaborators')">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <span class="fa fa-fw fa-users"></span>
+                                    <span>Collaborators</span>
+                                </h1>
+                            </div>
+                            <div class="card-pf-body">
+                                <div class="collaborator-list-group list-group list-view-pf">
+                                    <div class="list-group-item list-view-pf-stacked collaborator-list-item" *ngFor="let collaborator of collaborators" [class.owner]="collaborator.role === 'owner'">
+                                        <div class="list-view-pf-actions">
+                                            <button (click)="removeCollaborator(collaborator)" class="btn btn-default" *ngIf="collaborator.role != 'owner' && isOwner()"><span class="fa fa-fw fa-trash"></span></button>
+                                        </div>
+                                        <div class="list-view-pf-main-info">
+                                            <div class="list-view-pf-left">
+                                                <span class="fa fa-user list-view-pf-icon-md"></span>
+                                            </div>
+                                            <div class="list-view-pf-body">
+                                                <div class="list-view-pf-description">
+                                                    <div class="list-group-item-heading">
+                                                        {{ collaborator.userName }}
+                                                        <small>{{ collaborator.role }}</small>
+                                                    </div>
+                                                </div>
+                                                <div class="list-view-pf-additional-info">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right Column (Invitations) -->
+        <div class="col-xs-12 col-sm-12 col-md-6">
+            <div class="container-fluid container-cards-pf">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <!-- Loading Invitations Card -->
+                        <div class="card-pf card-pf-accented" *ngIf="!isLoaded('invitations')">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading invitations...</p>
+                                </h1>
+                            </div>
+                        </div>
+
+                        <!-- Invitations Card -->
+                        <div class="card-pf" *ngIf="isLoaded('invitations')">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <span class="fa fa-fw fa-envelope-o"></span>
+                                    <span>Invitations</span>
+                                    <button *ngIf="isOwner()" (click)="createInvitation()" class="btn btn-primary pull-right">Create Invite</button>
+                                </h1>
+                            </div>
+                            <div class="card-pf-body">
+                                <div class="alert alert-info" *ngIf="invitations.length == 0">
+                                    <span class="pficon pficon-info"></span>
+                                    <strong>No Invitations Found</strong>
+                                </div>
+
+                                <div class="invitation-list-group list-group list-view-pf" *ngIf="invitations.length > 0">
+                                    <div class="list-group-item list-view-pf-stacked invitation-list-item" *ngFor="let invitation of invitations"
+                                         [class.accepted]="invitation.status === 'accepted'"
+                                         [class.rejected]="invitation.status === 'rejected'"
+                                         [class.rejecting]="invitation.status === 'rejecting'"
+                                         [class.pending]="invitation.status === 'pending'">
+                                        <div class="list-view-pf-actions">
+                                            <button *ngIf="isOwner() && invitation.status === 'pending'" (click)="cancelInvitation(invitation)" class="btn btn-default" title="Cancel this invitation."><span class="fa fa-fw fa-trash"></span></button>
+                                            <button *ngIf="isOwner() && invitation.status === 'pending'" (click)="copyInvitationLink(invitation); copyUrlDialog.open()" class="btn btn-default" title="Copy invitation link to Clipboard."><span class="fa fa-fw fa-clipboard"></span></button>
+                                        </div>
+                                        <div class="list-view-pf-main-info">
+                                            <div class="list-view-pf-left">
+                                                <span *ngIf="invitation.status === 'creating'" class="spinner spinner-lg spinner-inline"></span>
+                                                <span *ngIf="invitation.status === 'rejecting'" class="spinner spinner-lg spinner-inline"></span>
+                                                <span *ngIf="invitation.status === 'pending'" class="fa fa-envelope-o list-view-pf-icon-sm"></span>
+                                                <span *ngIf="invitation.status === 'accepted'" class="fa fa-envelope-open-o list-view-pf-icon-sm"></span>
+                                                <span *ngIf="invitation.status === 'rejected'" class="fa fa-times list-view-pf-icon-sm"></span>
+                                            </div>
+                                            <div class="list-view-pf-body">
+                                                <div class="list-view-pf-description">
+                                                    <div class="list-group-item-heading">
+                                                        Created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em>
+                                                        <small *ngIf="invitation.status === 'creating'">Creating, please wait...</small>
+                                                        <small *ngIf="invitation.status === 'rejecting'">Deleting invitation, please wait...</small>
+                                                        <small *ngIf="invitation.status === 'pending'">Pending (copy the link and send it to someone!)</small>
+                                                        <small *ngIf="invitation.status === 'accepted'">Accepted by {{ invitation.modifiedBy }} on {{ invitation.modifiedOn | date }}</small>
+                                                        <small *ngIf="invitation.status === 'rejected'">Rejected by {{ invitation.modifiedBy }} on {{ invitation.modifiedOn | date }}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<confirm-delete-dialog #confirmDeleteCollaboratorModal (onDelete)="removeCollaborator($event)">
+    <p>Do you really want to remove this collaborator?</p>
+    <div class="alert alert-warning">
+        <span class="pficon pficon-warning-triangle-o"></span>
+        <strong>NOTE:</strong>
+        <span>
+            This will make it so the user can no longer access this API design.  If you wish to collaborate with the user again
+            in the future you will need to re-invite them.
+        </span>
+    </div>
+</confirm-delete-dialog>
+<copy-url-dialog #copyUrlDialog>
+    <p>Copy the following link to your clipboard and then send it to someone you want to collaborate with!</p>
+    <div>
+        <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="_copyLink">
+    </div>
+</copy-url-dialog>

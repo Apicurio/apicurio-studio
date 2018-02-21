@@ -1,0 +1,403 @@
+<!-- Security Scheme Dialog -->
+<div bsModal #securitySchemeModal="bs-modal" class="modal fade" id="securitySchemeModal" tabindex="-1" role="dialog"
+     aria-labelledby="securitySchemeModalLabel" role="dialog" (onHidden)="close()" *ngIf="isOpen()"
+     (onShown)="mode === 'edit' ? descriptionInput.focus() : securitySchemeNameInput.focus()" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="securitySchemeModalLabel">
+                    <span *ngIf="mode === 'create'">Add</span>
+                    <span *ngIf="mode === 'edit'">Edit</span>
+                    <span>Security Scheme</span>
+                    <span *ngIf="mode === 'edit'">: {{ model.schemeName }}</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <p>Configure the <strong *ngIf="mode === 'edit'">{{ model.schemeName }}</strong> security scheme below and then click <strong>OK</strong> when done.</p>
+                <hr />
+                <form id="securityscheme-form" class="form-horizontal" #securitySchemeForm="ngForm">
+                    <div class="form-group" [class.hidden]="mode === 'edit'">
+                        <label class="col-sm-3 control-label" for="schemeName">Name</label>
+                        <div class="col-sm-9">
+                            <input #securitySchemeNameInput name="schemeName" type="text" id="schemeName" class="form-control" required
+                                   placeholder="Security Scheme Name" [(ngModel)]="model.schemeName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="name">Description</label>
+                        <div class="col-sm-9">
+                            <textarea #descriptionInput name="description" type="text" id="description" class="form-control"
+                                      placeholder="Description of the security scheme (optional)." [(ngModel)]="model.description"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="type">Security</label>
+                        <div class="col-sm-9">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="type" data-toggle="dropdown">
+                                    <span *ngIf="!model.type"><i>Choose</i></span>
+                                    <span *ngIf="model.type === 'http'">HTTP</span>
+                                    <span *ngIf="model.type === 'apiKey'">API Key</span>
+                                    <span *ngIf="model.type === 'oauth2'">OAuth 2</span>
+                                    <span *ngIf="model.type === 'openIdConnect'">OpenID Connect</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <li role="presentation"><a role="menuitem" (click)="setType('http')">HTTP</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setType('apiKey')">API Key</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
+                                    <li role="presentation"><a role="menuitem" (click)="setType('openIdConnect')">OpenID Connect</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <hr *ngIf="model.type" />
+                    <!-- HTTP Auth Config -->
+                    <div class="http-auth" *ngIf="model.type === 'http'">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="scheme">Scheme</label>
+                            <div class="col-sm-9">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="scheme" data-toggle="dropdown">
+                                        <span *ngIf="!model.scheme"><i>Choose</i></span>
+                                        <span *ngIf="model.scheme === 'Basic'">BASIC</span>
+                                        <span *ngIf="model.scheme === 'Bearer'">Bearer</span>
+                                        <span *ngIf="model.scheme === 'Digest'">Digest</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Basic'">BASIC</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Bearer'">Bearer</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Digest'">Digest</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="model.scheme === 'Bearer'">
+                            <label class="col-sm-3 control-label" for="bearerFormat">Format (optional)</label>
+                            <div class="col-sm-9">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormat" data-toggle="dropdown">
+                                        <span *ngIf="model.bearerFormat === '' || !model.bearerFormat"><i>(Unspecified)</i></span>
+                                        <span *ngIf="model.bearerFormat === 'JWT'">JWT</span>
+                                        <span *ngIf="model.bearerFormat === 'OAuth'">OAuth</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'JWT'">JWT</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'OAuth'">OAuth</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = null"><i>None</i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- HTTP Auth Config -->
+                    <div class="openIdConnect-auth" *ngIf="model.type === 'openIdConnect'">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="openIdConnectUrl">OID Connect URL</label>
+                            <div class="col-sm-9">
+                                <input name="name" type="text" id="openIdConnectUrl" class="form-control" required
+                                       placeholder="OpenID Connect URL" [(ngModel)]="model.openIdConnectUrl">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- API Key Auth Config -->
+                    <div class="apiKey-auth" *ngIf="model.type === 'apiKey'">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="in">Key Location</label>
+                            <div class="col-sm-9">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="in" data-toggle="dropdown">
+                                        <span *ngIf="!model.in"><i>Choose</i></span>
+                                        <span *ngIf="model.in === 'header'">HTTP header</span>
+                                        <span *ngIf="model.in === 'query'">Query Parameter</span>
+                                        <span *ngIf="model.in === 'cookie'">Cookie</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model.in = 'header'">HTTP header</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.in = 'query'">Query Parameter</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.in = 'cookie'">Cookie</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="name">Name</label>
+                            <div class="col-sm-9">
+                                <input name="name" type="text" id="name" class="form-control" required
+                                       placeholder="Name of {{ model.in === 'query' ? 'query parameter' : (!model.in ? 'parameter' : model.in) }}" [(ngModel)]="model.name">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OAuth2 Auth Config -->
+                    <div class="oauth2-auth" *ngIf="model.type === 'oauth2'">
+                        <ul class="nav nav-tabs">
+                            <li [class.enabled]="model.flows.implicit.enabled" [class.active]="oauthTab === 'implicit'"><a (click)="oauthTab = 'implicit'">Implicit</a></li>
+                            <li [class.enabled]="model.flows.password.enabled" [class.active]="oauthTab === 'password'"><a (click)="oauthTab = 'password'">Password</a></li>
+                            <li [class.enabled]="model.flows.clientCredentials.enabled" [class.active]="oauthTab === 'clientCredentials'"><a (click)="oauthTab = 'clientCredentials'">Client Credentials</a></li>
+                            <li [class.enabled]="model.flows.authorizationCode.enabled" [class.active]="oauthTab === 'authorizationCode'"><a (click)="oauthTab = 'authorizationCode'">Authorization Code</a></li>
+                        </ul>
+                        <div class="panel panel-default tab-panel">
+                            <!-- Implicit Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'implicit'">
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9">
+                                        <input name="implicit_enabled" id="implicit_enabled" type="checkbox" [(ngModel)]="model.flows.implicit.enabled">
+                                        <label for="implicit_enabled">Enable this OAuth flow</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="implicit_authorizationUrl">Auth URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="implicit_authorizationUrl" type="text" id="implicit_authorizationUrl" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.implicit.authorizationUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="implicit_refreshUrl">Refresh URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="implicit_refreshUrl" type="text" id="implicit_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.implicit.refreshUrl">
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="scopes">Scopes</label>
+                                    <div class="col-sm-9">
+                                        <table class="table table-striped table-scopes" id="scopes">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th width="60%">Description</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let scope of model.flows.implicit.scopes">
+                                                <td nowrap="nowrap" class="scope-name">
+                                                    <inline-text-editor [noValueMessage]="'No Name'" [topIncrement]="2"
+                                                                        (onChange)="scope.name = $event"
+                                                                        [value]="scope.name"></inline-text-editor>
+                                                </td>
+                                                <td class="description">
+                                                    <inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                        (onChange)="scope.description = $event"
+                                                                        [value]="scope.description"></inline-text-editor>
+                                                </td>
+                                                <td class="actions">
+                                                    <div>
+                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope('implicit', scope)"
+                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('implicit')">Add Scope</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Password Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'password'">
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9">
+                                        <input name="password_enabled" id="password_enabled" type="checkbox" [(ngModel)]="model.flows.password.enabled">
+                                        <label for="password_enabled">Enable this OAuth flow</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="password_tokenUrl">Token URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="password_tokenUrl" type="text" id="password_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.password.tokenUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="password_refreshUrl">Refresh URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="password_refreshUrl" type="text" id="password_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.password.refreshUrl">
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="scopes">Scopes</label>
+                                    <div class="col-sm-9">
+                                        <table class="table table-striped table-scopes" id="scopes">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th width="60%">Description</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let scope of model.flows.password.scopes">
+                                                <td nowrap="nowrap" class="scope-name">
+                                                    <inline-text-editor [noValueMessage]="'No Name'" [topIncrement]="2"
+                                                                        (onChange)="scope.name = $event"
+                                                                        [value]="scope.name"></inline-text-editor>
+                                                </td>
+                                                <td class="description">
+                                                    <inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                        (onChange)="scope.description = $event"
+                                                                        [value]="scope.description"></inline-text-editor>
+                                                </td>
+                                                <td class="actions">
+                                                    <div>
+                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope('password', scope)"
+                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('password')">Add Scope</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Client Credentials Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'clientCredentials'">
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9">
+                                        <input name="clientCredentials_enabled" id="clientCredentials_enabled" type="checkbox" [(ngModel)]="model.flows.clientCredentials.enabled">
+                                        <label for="clientCredentials_enabled">Enable this OAuth flow</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="clientCredentials_tokenUrl">Token URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="clientCredentials_tokenUrl" type="text" id="clientCredentials_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.clientCredentials.tokenUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="clientCredentials_refreshUrl">Refresh URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="clientCredentials_refreshUrl" type="text" id="clientCredentials_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.clientCredentials.refreshUrl">
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="scopes">Scopes</label>
+                                    <div class="col-sm-9">
+                                        <table class="table table-striped table-scopes" id="scopes">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th width="60%">Description</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let scope of model.flows.clientCredentials.scopes">
+                                                <td nowrap="nowrap" class="scope-name">
+                                                    <inline-text-editor [noValueMessage]="'No Name'" [topIncrement]="2"
+                                                                        (onChange)="scope.name = $event"
+                                                                        [value]="scope.name"></inline-text-editor>
+                                                </td>
+                                                <td class="description">
+                                                    <inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                        (onChange)="scope.description = $event"
+                                                                        [value]="scope.description"></inline-text-editor>
+                                                </td>
+                                                <td class="actions">
+                                                    <div>
+                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope('clientCredentials', scope)"
+                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('clientCredentials')">Add Scope</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Authorization Code Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'authorizationCode'">
+                                <div class="form-group">
+                                    <div class="col-sm-3"></div>
+                                    <div class="col-sm-9">
+                                        <input name="authorizationCode_enabled" id="authorizationCode_enabled" type="checkbox" [(ngModel)]="model.flows.authorizationCode.enabled">
+                                        <label for="authorizationCode_enabled">Enable this OAuth flow</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="authorizationCode_authorizationUrl">Auth URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="authorizationCode_authorizationUrl" type="text" id="authorizationCode_authorizationUrl" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.authorizationCode.authorizationUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="authorizationCode_tokenUrl">Token URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="authorizationCode_tokenUrl" type="text" id="authorizationCode_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.authorizationCode.tokenUrl">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="authorizationCode_refreshUrl">Refresh URL</label>
+                                    <div class="col-sm-9">
+                                        <input name="authorizationCode_refreshUrl" type="text" id="authorizationCode_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.authorizationCode.refreshUrl">
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="scopes">Scopes</label>
+                                    <div class="col-sm-9">
+                                        <table class="table table-striped table-scopes" id="scopes">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th width="60%">Description</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let scope of model.flows.authorizationCode.scopes">
+                                                <td nowrap="nowrap" class="scope-name">
+                                                    <inline-text-editor [noValueMessage]="'No Name'" [topIncrement]="2"
+                                                                        (onChange)="scope.name = $event"
+                                                                        [value]="scope.name"></inline-text-editor>
+                                                </td>
+                                                <td class="description">
+                                                    <inline-text-editor [noValueMessage]="'No description.'" [topIncrement]="2"
+                                                                        (onChange)="scope.description = $event"
+                                                                        [value]="scope.description"></inline-text-editor>
+                                                </td>
+                                                <td class="actions">
+                                                    <div>
+                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope('authorizationCode', scope)"
+                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('authorizationCode')">Add Scope</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid">OK</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

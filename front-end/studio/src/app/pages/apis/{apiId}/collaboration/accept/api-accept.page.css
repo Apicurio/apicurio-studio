@@ -1,0 +1,23 @@
+
+
+.api-invitation {
+  margin-top: 30px;
+  background-color: white;
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+
+.api-invitation .accepting-spinner {
+  margin-top: 35px;
+}
+.api-invitation .accepting-spinner .spinner-label {
+  font-size: 18px;
+}
+
+.api-invitation .subject {
+  margin-top: 32px;
+  font-weight: bold;
+}
+
+.api-invitation .created-on {
+  font-size: 11px;
+}

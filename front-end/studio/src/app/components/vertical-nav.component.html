@@ -1,0 +1,68 @@
+<div id="api-vertical-nav-wrapper">
+
+    <div id="api-nav-menu-shade" *ngIf="currentSubMenu != subMenuTypes.None" (click)="onShadeClick()">
+    </div>
+
+    <div id="api-vertical-nav">
+        <div id="api-nav-item-dashboard" class="api-nav-item" [class.active]="isDashboardRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Dashboard" (click)="toggleSubMenu(subMenuTypes.Dashboard)">
+            <span class="fa fa-fw fa-dashboard"></span>
+            <div>Dashboard</div>
+        </div>
+        <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
+            <span class="fa fa-fw fa-bolt"></span>
+            <div>APIs</div>
+        </div>
+        <div id="api-nav-item-settings" class="api-nav-item" [class.active]="isSettingsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Settings" (click)="toggleSubMenu(subMenuTypes.Settings)">
+            <span class="fa fa-fw fa-cogs"></span>
+            <div>Settings</div>
+        </div>
+        <div class="api-nav-item-filler">
+        </div>
+    </div>
+
+    <div id="api-vertical-nav-details" [class.out]="subMenuOut">
+        <!-- Dashboard -->
+        <div id="api-nav-detail-dashboard" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Dashboard">
+            <h3>Dashboard</h3>
+            <p>Click below to navigate back to the default Apicurio Studio dashboard.</p>
+            <ul>
+                <li><a routerLink="/">Back to Dashboard</a></li>
+            </ul>
+        </div>
+        <!-- APIs -->
+        <div id="api-nav-detail-apis" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.APIs">
+            <h3>APIs</h3>
+            <p class="description">Choose from the actions below or jump directly to one of your starred/favorited APIs.</p>
+            <h4 class="heading">API Actions</h4>
+            <div class="action">
+                <a routerLink="/apis"><span class="fa fa-fw fa-search"></span><span>List All APIs</span></a>
+            </div>
+            <div class="action">
+                <a routerLink="/apis/create"><span class="fa fa-fw fa-plus"></span><span>Create New API</span></a>
+            </div>
+            <div class="action">
+                <a routerLink="/apis/import"><span class="fa fa-fw fa-upload"></span><span>Import API</span></a>
+            </div>
+
+            <h4 class="heading" *ngIf="(apis.getRecentApis() | async).length > 0">Recent APIs</h4>
+            <div *ngFor="let api of apis.getRecentApis() | async">
+                <a [routerLink]="['apis', api.id]"><span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span></a>
+            </div>
+        </div>
+        <!-- Settings -->
+        <div id="api-nav-detail-settings" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Settings">
+            <h3>Settings</h3>
+            <p class="description">Select one of the common Settings pages listed below.</p>
+            <div class="action">
+                <a routerLink="/settings/profile"><span class="fa fa-fw fa-user"></span><span>User Profile</span></a>
+            </div>
+            <div class="action">
+                <a routerLink="/settings/accounts"><span class="fa fa-fw fa-link"></span><span>Linked Accounts</span></a>
+            </div>
+        </div>
+    </div>
+
+</div>

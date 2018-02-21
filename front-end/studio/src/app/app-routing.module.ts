@@ -32,77 +32,77 @@ import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/
 import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: DashboardPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "settings",
-    component: SettingsPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "settings/profile",
-    component: ProfilePageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "settings/accounts",
-    component: LinkedAccountsPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "settings/accounts/:accountType/created",
-    component: CreatedLinkedAccountPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis",
-    component: ApisPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/create",
-    component: CreateApiPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/import",
-    component: ImportApiPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/:apiId",
-    component: ApiDetailPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/:apiId/collaboration",
-    component: ApiCollaborationPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/:apiId/collaboration/accept/:inviteId",
-    component: ApiAcceptPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
-  {
-    path: "apis/:apiId/editor",
-    component: ApiEditorPageComponent,
-    canActivate: [ AuthenticationCanActivateGuard ]
-  },
+    {
+        path: '',
+        component: DashboardPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "settings",
+        component: SettingsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "settings/profile",
+        component: ProfilePageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "settings/accounts",
+        component: LinkedAccountsPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "settings/accounts/:accountType/created",
+        component: CreatedLinkedAccountPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis",
+        component: ApisPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/create",
+        component: CreateApiPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/import",
+        component: ImportApiPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId",
+        component: ApiDetailPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId/collaboration",
+        component: ApiCollaborationPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId/collaboration/accept/:inviteId",
+        component: ApiAcceptPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId/editor",
+        component: ApiEditorPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
 ];
 
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes)
-  ],
-  exports: [
-    RouterModule
-  ],
-  declarations: []
+    imports: [
+        RouterModule.forRoot(routes)
+    ],
+    exports: [
+        RouterModule
+    ],
+    declarations: []
 })
 export class AppRoutingModule {
 }

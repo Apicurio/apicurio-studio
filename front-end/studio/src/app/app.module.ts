@@ -94,38 +94,41 @@ import {AddPathDialogComponent} from './pages/apis/{apiId}/editor/_components/di
 import {AddResponseDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-response.component';
 import {AddFormDataParamDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component';
 import {AddDefinitionDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-definition.component';
-import {Main20FormComponent, Main30FormComponent} from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
+import {
+    Main20FormComponent,
+    Main30FormComponent
+} from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
 import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component';
 
 
 @NgModule({
-  imports: [
-    BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
-    AceEditorModule
-  ],
-  declarations: [
-    AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-    VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
-    TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
-    CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent,
-    ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent, ImportApiFormComponent, CreateApiFormComponent,
-    ApisListComponent, ApisCardsComponent, DropDownComponent, ActivityItemComponent, ApiCollaborationPageComponent,
-    ApiAcceptPageComponent, ApiDetailPageComponent, ValidationIconComponent, ServerUrlComponent, SearchComponent,
-    SchemaTypeComponent, ResponseItemComponent, PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent,
-    ContextHelpComponent, SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
-    SecurityScheme20DialogComponent, EditorDisconnectedDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-    AddTagDialogComponent, AddServerDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, ResponseRowComponent,
-    ParamRowComponent, ContentComponent, PropertyRowComponent, ServersSectionComponent, ProblemFormComponent, PathFormComponent,
-    OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent, EditorMasterComponent,
-    ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
-    AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
-    Main30FormComponent
-  ],
-  providers: [
-    ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
-    AuthenticationCanActivateGuard
-  ],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
+        AceEditorModule
+    ],
+    declarations: [
+        AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
+        VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
+        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
+        CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent,
+        ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent, ImportApiFormComponent, CreateApiFormComponent,
+        ApisListComponent, ApisCardsComponent, DropDownComponent, ActivityItemComponent, ApiCollaborationPageComponent,
+        ApiAcceptPageComponent, ApiDetailPageComponent, ValidationIconComponent, ServerUrlComponent, SearchComponent,
+        SchemaTypeComponent, ResponseItemComponent, PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent,
+        ContextHelpComponent, SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
+        SecurityScheme20DialogComponent, EditorDisconnectedDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
+        AddTagDialogComponent, AddServerDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, ResponseRowComponent,
+        ParamRowComponent, ContentComponent, PropertyRowComponent, ServersSectionComponent, ProblemFormComponent, PathFormComponent,
+        OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent, EditorMasterComponent,
+        ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
+        AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
+        Main30FormComponent
+    ],
+    providers: [
+        ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
+        AuthenticationCanActivateGuard
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

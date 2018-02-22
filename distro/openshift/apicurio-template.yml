@@ -372,7 +372,13 @@ objects:
                    key: keycloak-password
              - name: APICURIO_UI_URL
                value: https://${UI_ROUTE}
-          resources: {}
+          resources:
+            limits:
+              cpu: ${AUTH_CPU_LIMIT}
+              memory: ${AUTH_MEM_LIMIT}
+            requests:
+              cpu: ${AUTH_CPU_REQUEST}
+              memory: ${AUTH_MEM_REQUEST}
           livenessProbe:
             httpGet:
               path: /auth
@@ -466,7 +472,13 @@ objects:
                  secretKeyRef:
                    name: postgresql
                    key: database-password
-          resources: {}
+          resources:
+            limits:
+              cpu: ${API_CPU_LIMIT}
+              memory: ${API_MEM_LIMIT}
+            requests:
+              cpu: ${API_CPU_REQUEST}
+              memory: ${API_MEM_REQUEST}
           livenessProbe:
             httpGet:
               path: /system/ready
@@ -556,7 +568,13 @@ objects:
                  secretKeyRef:
                    name: postgresql
                    key: database-password
-          resources: {}
+          resources:
+            limits:
+              cpu: ${WS_CPU_LIMIT}
+              memory: ${WS_MEM_LIMIT}
+            requests:
+              cpu: ${WS_CPU_REQUEST}
+              memory: ${WS_MEM_REQUEST}
           livenessProbe:
             httpGet:
               path: /metrics
@@ -640,7 +658,13 @@ objects:
                value: wss://${WS_ROUTE}
              - name: APICURIO_UI_LOGOUT_REDIRECT_URI
                value: /
-          resources: {}
+          resources:
+            limits:
+              cpu: ${UI_CPU_LIMIT}
+              memory: ${UI_MEM_LIMIT}
+            requests:
+              cpu: ${UI_CPU_REQUEST}
+              memory: ${UI_MEM_REQUEST}
           livenessProbe:
             httpGet:
               path: /ready
@@ -805,4 +829,83 @@ parameters:
   generate: expression
   from: "[a-zA-Z0-9]{16}"
   required: true
-  
+- name: UI_MEM_LIMIT
+  displayName: UI Max Memory Limit
+  description: UI Pods Max Memory Limit
+  value: 1500Mi
+  required: true
+- name: UI_MEM_REQUEST
+  displayName: UI Memory Request
+  description: UI Pods Memory Request
+  value: 700Mi
+  required: true
+- name: UI_CPU_LIMIT
+  displayName: UI Max CPU Limit
+  description: UI Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: UI_CPU_REQUEST
+  displayName: UI CPU Request
+  description: UI Pods CPU Request
+  value: 100m
+  required: true
+- name: API_MEM_LIMIT
+  displayName: API Max Memory Limit
+  description: API Pods Max Memory Limit
+  value: 1700Mi
+  required: true
+- name: API_MEM_REQUEST
+  displayName: API Memory Request
+  description: API Pods Memory Request
+  value: 800Mi
+  required: true
+- name: API_CPU_LIMIT
+  displayName: API Max CPU Limit
+  description: API Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: API_CPU_REQUEST
+  displayName: API CPU Request
+  description: API Pods CPU Request
+  value: 100m
+  required: true
+- name: WS_MEM_LIMIT
+  displayName: WS Max Memory Limit
+  description: WS Pods Max Memory Limit
+  value: 1800Mi
+  required: true
+- name: WS_MEM_REQUEST
+  displayName: WS Memory Request
+  description: WS Pods Memory Request
+  value: 900Mi
+  required: true
+- name: WS_CPU_LIMIT
+  displayName: WS Max CPU Limit
+  description: WS Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: WS_CPU_REQUEST
+  displayName: WS CPU Request
+  description: WS Pods CPU Request
+  value: 100m
+  required: true
+- name: AUTH_MEM_LIMIT
+  displayName: AUTH Max Memory Limit
+  description: AUTH Pods Max Memory Limit
+  value: 1300Mi
+  required: true
+- name: AUTH_MEM_REQUEST
+  displayName: AUTH Memory Request
+  description: AUTH Pods Memory Request
+  value: 600Mi
+  required: true
+- name: AUTH_CPU_LIMIT
+  displayName: AUTH Max CPU Limit
+  description: AUTH Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: AUTH_CPU_REQUEST
+  displayName: AUTH CPU Request
+  description: AUTH Pods CPU Request
+  value: 100m
+  required: true

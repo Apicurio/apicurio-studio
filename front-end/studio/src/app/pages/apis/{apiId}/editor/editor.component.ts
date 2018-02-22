@@ -148,15 +148,24 @@ export class ApiEditorComponent implements OnChanges {
 
         // After changing the model, we should re-validate it
         this.validateModel();
+        // And also validate the current selection
+        this.master.validateSelection();
     }
 
     /**
-     * Executes a command.
+     * Executes a command.  Called by the parent of this component when detecting that
+     * another user has executed a command.  In other words, this command is *not*
+     * performed by the local user.
      * @param {ICommand} command
      */
     public executeCommand(command: OtCommand): void {
         console.info("[ApiEditorComponent] Executing a command.");
         this.otEngine().executeCommand(command);
+
+        // After changing the model, we should re-validate it
+        this.validateModel();
+        // And also validate the current selection
+        this.master.validateSelection();
     }
 
     /**

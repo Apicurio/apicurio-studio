@@ -27,7 +27,13 @@
             </div>
         </div>
         <div class="col-md-7">
-            <importapi-form (onImportApi)="onImportApi($event)" #importApiForm></importapi-form>
+            <importapi-form (onImportApi)="onImportApi($event)" [importing]="importing" #importApiForm></importapi-form>
+            <div class="alert alert-warning" *ngIf="importError">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
+                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
+                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
+            </div>
         </div>
     </div>
 </div>

@@ -30,6 +30,9 @@ import {ImportApi} from "../../../models/import-api.model";
 })
 export class ImportApiPageComponent extends AbstractPageComponent {
 
+    public importing: boolean = false;
+    public importError: any;
+
     /**
      * Constructor.
      * @param {Router} router
@@ -46,6 +49,8 @@ export class ImportApiPageComponent extends AbstractPageComponent {
      * @param {ImportApi} api
      */
     public onImportApi(api: ImportApi) {
+        this.importing = true;
+        this.importError = null;
         console.log("[ImportApiPageComponent] onImportApi(): " + JSON.stringify(api))
         this.apis.importApi(api).then(updatedApi => {
             let link: string[] = [ "/apis", updatedApi.id ];
@@ -53,7 +58,12 @@ export class ImportApiPageComponent extends AbstractPageComponent {
             this.router.navigate(link);
         }).catch( error => {
             console.error("[ImportApiPageComponent] Error importing API: %o", error);
-            this.error(error);
+            this.importing = false;
+            if (error.status === 404) {
+                this.importError = error;
+            } else {
+                this.error(error);
+            }
         })
     }
 

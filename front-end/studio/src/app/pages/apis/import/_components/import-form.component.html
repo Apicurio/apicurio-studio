@@ -37,7 +37,11 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary" [disabled]="!apiForm.form.valid || importingApi || (importType === 'from-text' && !model.data)">Import API</button>
+                    <button type="submit" class="btn btn-primary"
+                            [disabled]="!apiForm.form.valid || importing || (importType === 'from-text' && !model.data)">
+                        <span *ngIf="!importing">Import API</span>
+                        <span *ngIf="importing"><span class="spinner spinner-xs spinner-inline"></span> Importing...</span>
+                    </button>
                 </div>
             </div>
         </form>

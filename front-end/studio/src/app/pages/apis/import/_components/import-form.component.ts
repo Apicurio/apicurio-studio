@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
@@ -29,12 +29,12 @@ import {DropDownOption} from '../../../../components/common/drop-down.component'
 })
 export class ImportApiFormComponent {
 
+    @Input() importing: boolean;
     @Output() onImportApi = new EventEmitter<ImportApi>();
 
     importType: string;
     textMode: string = "yaml";
     model: any;
-    importingApi: boolean;
     dragging: boolean;
     error: string;
 
@@ -48,7 +48,6 @@ export class ImportApiFormComponent {
             url: "",
             data: ""
         };
-        this.importingApi = false;
         this.dragging = false;
         this.error = null;
     }
@@ -66,7 +65,6 @@ export class ImportApiFormComponent {
             importApi.data = btoa(this.model.data);
         }
 
-        this.importingApi = true;
         this.onImportApi.emit(importApi);
     }
 
@@ -78,7 +76,6 @@ export class ImportApiFormComponent {
     }
 
     public onDrop(event: DragEvent): void {
-        console.info("DROP DATA: %o", event.dataTransfer);
         this.dragging = false;
         event.preventDefault();
 

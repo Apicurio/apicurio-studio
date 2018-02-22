@@ -283,7 +283,24 @@
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
                             </div>
                         </div>
-
+                        <div class="api-operation" [class.empty]="!hasTrace()" *ngIf="supportsTraceOperation()">
+                            <div class="">
+                                <div class="type"><span class="label label-info" (click)="selectOperation(trace())">TRACE</span></div>
+                                <inline-text-editor [value]="traceSummary()" [enabled]="hasTrace()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'name'"
+                                                    [formClass]="'api-summary-editor-form'"
+                                                    [inputClass]="'api-item-editor api-summary-editor name'"
+                                                    (onChange)="changeSummary($event, trace())"></inline-text-editor>
+                            </div>
+                            <inline-textarea-editor *ngIf="hasTrace()" [value]="traceDescription()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'description api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                    (onChange)="changeDescription($event, trace())"></inline-textarea-editor>
+                            <div class="actions" *ngIf="!hasTrace()">
+                                <button class="btn btn-default" (click)="createOperation('trace')">Create Operation</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
+import {Oas30PathItem, OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
 import {
@@ -74,6 +74,10 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return this.path.ownerDocument();
     }
 
+    public trace(): OasOperation {
+        return (this.path as Oas30PathItem).trace;
+    }
+
     public hasGet(): boolean {
         return this.path.get !== undefined && this.path.get !== null;
     }
@@ -94,6 +98,9 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     }
     public hasPatch(): boolean {
         return this.path.patch !== undefined && this.path.patch !== null;
+    }
+    public hasTrace(): boolean {
+        return this.trace() !== undefined && this.trace() !== null;
     }
 
     public getSummary(): string {
@@ -122,6 +129,10 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     public headSummary(): string {
         return this.summary(this.path.head);
+    }
+
+    public traceSummary(): string {
+        return this.summary(this.trace());
     }
 
     private summary(operation: OasOperation): string {
@@ -162,6 +173,10 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     public headDescription(): string {
         return this.description(this.path.head);
+    }
+
+    public traceDescription(): string {
+        return this.description(this.trace());
     }
 
     private description(operation: OasOperation): string {
@@ -315,4 +330,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         super.enableSourceMode();
     }
 
+    public supportsTraceOperation(): boolean {
+        return this.document().is3xDocument();
+    }
 }

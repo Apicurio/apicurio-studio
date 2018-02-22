@@ -17,10 +17,13 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {AceEditorDirective} from "ng2-ace-editor";
 import {Subject} from "rxjs/Subject";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasLibraryUtils, OasVisitorUtil} from "oai-ts-core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasVisitorUtil} from "oai-ts-core";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
+import {
+    CodeEditorComponent, CodeEditorMode,
+    CodeEditorTheme
+} from "../../../../../../components/common/code-editor.component";
 
 
 @Component({
@@ -34,13 +37,13 @@ export class AddDefinitionDialogComponent {
     @Output() onAdd: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren("addDefinitionModal") addDefinitionModal: QueryList<ModalDirective>;
-    @ViewChildren("exampleEditor") exampleEditor: QueryList<AceEditorDirective>;
+    @ViewChildren("exampleEditor") exampleEditor: QueryList<CodeEditorComponent>;
 
     protected _isOpen: boolean = false;
 
     protected name: string = "";
 
-    protected example: string = "";
+    protected _example: string;
     protected exampleValid: boolean = true;
     protected exampleFormattable: boolean = false;
 
@@ -118,18 +121,18 @@ export class AddDefinitionDialogComponent {
         return this._isOpen;
     }
 
-    /**
-     * Called when the user changes the example definition in the Add Definition modal dialog.
-     * @param definition
-     */
-    public setExampleDefinition(definition: string): void {
-        this.example = definition;
-        if (this.example === "") {
+    get example() {
+        return this._example;
+    }
+
+    set example(definition: string) {
+        this._example = definition;
+        if (this._example === "") {
             this.exampleValid = true;
             this.exampleFormattable = false;
         } else {
             try {
-                JSON.parse(this.example);
+                JSON.parse(this._example);
                 this.exampleValid = true;
                 this.exampleFormattable = true;
             } catch (e) {
@@ -161,11 +164,17 @@ export class AddDefinitionDialogComponent {
      * Called to format the example definition.
      */
     public formatExampleDefinition(): void {
-        if (this.exampleEditor.first) {
-            let jsObj: any = JSON.parse(this.example);
-            let nsrcStr: string = JSON.stringify(jsObj, null, 4);
-            this.exampleEditor.first.setText(nsrcStr);
-        }
+        let jsObj: any = JSON.parse(this.example);
+        let nsrcStr: string = JSON.stringify(jsObj, null, 4);
+        this.example = nsrcStr;
+    }
+
+    public exampleEditorTheme(): CodeEditorTheme {
+        return CodeEditorTheme.Light;
+    }
+
+    public exampleEditorMode(): CodeEditorMode {
+        return CodeEditorMode.JSON;
     }
 
 }

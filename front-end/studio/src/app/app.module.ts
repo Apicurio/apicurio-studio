@@ -99,6 +99,7 @@ import {
     Main30FormComponent
 } from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
 import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component';
+import {CodeEditorComponent} from "./components/common/code-editor.component";
 
 
 @NgModule({
@@ -122,7 +123,7 @@ import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_componen
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent, EditorMasterComponent,
         ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
-        Main30FormComponent
+        Main30FormComponent, CodeEditorComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

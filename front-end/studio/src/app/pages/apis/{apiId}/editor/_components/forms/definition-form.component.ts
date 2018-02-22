@@ -48,6 +48,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     set definition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition) {
         this._definition = definition;
         this.sourceNode = definition;
+        this.revertSource();
     }
 
     get definition(): Oas20SchemaDefinition | Oas30SchemaDefinition {

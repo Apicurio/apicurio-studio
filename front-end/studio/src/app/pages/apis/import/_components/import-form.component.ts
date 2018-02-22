@@ -19,6 +19,7 @@ import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import {IApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
+import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 
 
 @Component({
@@ -33,7 +34,8 @@ export class ImportApiFormComponent {
     @Output() onImportApi = new EventEmitter<ImportApi>();
 
     importType: string;
-    textMode: string = "yaml";
+    textMode: CodeEditorMode = CodeEditorMode.YAML;
+    textTheme: CodeEditorTheme = CodeEditorTheme.Light;
     model: any;
     dragging: boolean;
     error: string;
@@ -91,9 +93,9 @@ export class ImportApiFormComponent {
                     this.model.data = content;
                     this.model.url = null;
                     this.importType = "from-text";
-                    this.textMode = "json";
+                    this.textMode = CodeEditorMode.JSON;
                     if (isYaml) {
-                        this.textMode = "yaml";
+                        this.textMode = CodeEditorMode.YAML;
                     }
                 };
                 reader.readAsText(files[0]);

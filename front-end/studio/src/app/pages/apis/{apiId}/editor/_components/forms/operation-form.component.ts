@@ -55,6 +55,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     set operation(operation: Oas20Operation) {
         this._operation = operation;
         this.sourceNode = operation;
+        this.revertSource();
     }
     get operation(): Oas20Operation {
         return this._operation;

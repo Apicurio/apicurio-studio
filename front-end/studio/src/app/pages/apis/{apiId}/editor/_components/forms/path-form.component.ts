@@ -51,6 +51,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     set path(path: OasPathItem) {
         this._path = path;
         this.sourceNode = path;
+        this.revertSource();
     }
     get path(): OasPathItem {
         return this._path;

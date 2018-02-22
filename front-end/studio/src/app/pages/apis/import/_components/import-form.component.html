@@ -26,12 +26,11 @@
             <div class="form-group" *ngIf="importType === 'from-text'">
                 <label class="col-sm-2">&nbsp;</label>
                 <div class="col-sm-10">
-                    <ace-editor #contentEditor
-                                [(text)]="model.data"
-                                [theme]="'eclipse'"
-                                [mode]="textMode"
-                                [durationBeforeCallback]="350"
-                                style="position: relative; height: 500px; border: 1px solid #ccc; width: 100%"></ace-editor>
+                    <code-editor [(text)]="model.data"
+                                 [theme]="textTheme"
+                                 [mode]="textMode"
+                                 [debounceTime]="500"
+                                 [editorStyle]="{ position: 'relative', height: '500px', border: '1px solid #ccc', width: '100%' }"></code-editor>
                 </div>
             </div>
 

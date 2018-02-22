@@ -35,12 +35,11 @@
                                     based on the example.
                                 </div>
                                 <div class="example">
-                                    <ace-editor #exampleEditor
-                                                [theme]="'eclipse'"
-                                                [mode]="'json'"
-                                                [durationBeforeCallback]="350"
-                                                (textChanged)="setExampleDefinition($event)"
-                                                style="position: relative; height: 200px; border: 1px solid #ccc; width: 100%"></ace-editor>
+                                    <code-editor [theme]="exampleEditorTheme()"
+                                                 [mode]="exampleEditorMode()"
+                                                 [debounceTime]="350"
+                                                 [(text)]="example"
+                                                 [editorStyle]="{ position: 'relative', height: '200px', border: '1px solid #ccc', width: '100%' }"></code-editor>
                                     <button class="btn btn-default btn-xs" type="button"
                                             [disabled]="!isExampleDefinitionFormattable()" (click)="formatExampleDefinition()">
                                         <span class="fa fa-fw fa-indent"></span>

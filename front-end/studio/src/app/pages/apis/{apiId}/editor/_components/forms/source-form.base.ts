@@ -26,6 +26,8 @@ import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
 import {NodeSelectionEvent} from "../../_events/node-selection.event";
 import {ICommand} from "oai-ts-commands";
+import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
+import {ENTER_CLASSNAME} from "@angular/animations/browser/src/util";
 
 
 /**
@@ -39,7 +41,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
     @Output() onNodeSelected: EventEmitter<NodeSelectionEvent> = new EventEmitter<NodeSelectionEvent>();
 
     private _mode: string = "design";
-    private _sourceFormat: string = "yaml";
+    private _sourceFormat: CodeEditorMode = CodeEditorMode.YAML;
     private _sourceNode: T;
     private _sourceJsObj: any = null;
     set sourceNode(node: T) {
@@ -50,10 +52,9 @@ export abstract class SourceFormComponent<T extends OasNode> {
         return this._sourceNode;
     }
 
-    @ViewChild("sourceEditor") sourceEditor: AceEditorDirective;
-
     private _source: any = {
         dirty: false,
+        parseable: false,
         valid: false,
         value: null
     };
@@ -65,37 +66,44 @@ export abstract class SourceFormComponent<T extends OasNode> {
         return this._sourceJsObj;
     }
 
-    public source(): string {
-        if (this._sourceFormat === "yaml") {
-            return YAML.stringify(this.sourceJs(), 100, 4);
-        } else {
-            return JSON.stringify(this.sourceJs(), null, 4);
+    private _sourceText: string;
+    get source() {
+        if (this._sourceText === null || this._sourceText === undefined) {
+            if (this._sourceFormat === CodeEditorMode.YAML) {
+                this._sourceText = YAML.stringify(this.sourceJs(), 100, 4);
+            } else {
+                this._sourceText = JSON.stringify(this.sourceJs(), null, 4);
+            }
         }
+        return this._sourceText;
     }
 
-    public updateSource(newSource: any): void {
+    set source(newSource: string) {
+        this._sourceText = newSource;
+        this._source.dirty = true;
+        this._source.value = null;
+        this._source.parseable = false;
+        this._source.valid = false;
         try {
             let newJsObject: any;
-            if (this.sourceFormat() === "yaml") {
+            if (this._sourceFormat === CodeEditorMode.YAML) {
                 newJsObject = YAML.parse(newSource);
             } else {
                 newJsObject = JSON.parse(newSource);
             }
+            this._source.parseable = false;
             let currentJsObj: any = this.sourceJs();
             this._source.dirty = !ObjectUtils.objectEquals(currentJsObj, newJsObject);
             this._source.value = SourceFormComponent.library.readNode(newJsObject, this.createEmptyNodeForSource());
             this._source.valid = true;
         } catch (e) {
-            this._source.value = null;
-            this._source.valid = false;
-            this._source.dirty = true;
         }
     }
 
     protected abstract createEmptyNodeForSource(): T;
 
     public canFormatSource(): boolean {
-        return this._source.valid;
+        return this._source.parseable;
     }
 
     public canRevertSource(): boolean {
@@ -107,7 +115,15 @@ export abstract class SourceFormComponent<T extends OasNode> {
     }
 
     public revertSource(): void {
-        this.sourceEditor.setText(this.source());
+        console.info("Reverting source");
+        let originalSource: string;
+        if (this._sourceFormat === CodeEditorMode.YAML) {
+            originalSource = YAML.stringify(this.sourceJs(), 100, 4);
+        } else {
+            originalSource = JSON.stringify(this.sourceJs(), null, 4);
+        }
+        console.info("this.source = originalSource");
+        this.source = originalSource;
         this._source.dirty = false;
         this._source.value = null;
         this._source.valid = false;
@@ -125,31 +141,60 @@ export abstract class SourceFormComponent<T extends OasNode> {
 
     public abstract formType(): string;
 
-    public sourceFormat(): string {
-        return this._sourceFormat;
+    public isSourceFormatYaml(): boolean {
+        return this._sourceFormat === CodeEditorMode.YAML;
+    }
+
+    public isSourceFormatJson(): boolean {
+        return this._sourceFormat === CodeEditorMode.JSON;
     }
 
     public toggleSourceFormat(): void {
-        if (this._sourceFormat === "yaml") {
-            this.setSourceFormat("json");
+        // 1. parse the source in the editor (either yaml or json)
+        // 2. stringify the resulting object as the other format
+        // 3. this.source = result
+        let parsedSource: any;
+        if (this.isSourceFormatJson()) {
+            parsedSource = JSON.parse(this._sourceText);
+            this.setSourceFormat(CodeEditorMode.YAML);
         } else {
-            this.setSourceFormat("yaml");
+            parsedSource = YAML.parse(this._sourceText);
+            this.setSourceFormat(CodeEditorMode.JSON);
+        }
+        if (parsedSource) {
+            let newSource: string;
+            if (this.isSourceFormatJson()) {
+                newSource = JSON.stringify(parsedSource, null, 4);
+            } else {
+                newSource = YAML.stringify(parsedSource, 100, 4);
+            }
+            this.source = newSource;
         }
     }
 
-    public setSourceFormat(sourceFormat: string): void {
+    public setSourceFormat(sourceFormat: CodeEditorMode): void {
         this._sourceFormat = sourceFormat;
     }
 
     public formatSource(): void {
-        let nsrc: any = SourceFormComponent.library.writeNode(this._source.value);
-        let nsrcStr: string;
-        if (this._sourceFormat === "yaml") {
-            nsrcStr = YAML.stringify(this.sourceJs(), 100, 4);
+        // 1. parse the source in the editor (either yaml or json)
+        // 2. stringify the resulting object as either yaml or json
+        // 3. this.source = result
+        let parsedSource: any;
+        if (this.isSourceFormatJson()) {
+            parsedSource = JSON.parse(this._sourceText);
         } else {
-            nsrcStr = JSON.stringify(this.sourceJs(), null, 4);
+            parsedSource = YAML.parse(this._sourceText);
         }
-        this.sourceEditor.setText(nsrcStr);
+        if (parsedSource) {
+            let newSource: string;
+            if (this.isSourceFormatJson()) {
+                newSource = JSON.stringify(parsedSource, null, 4);
+            } else {
+                newSource = YAML.stringify(parsedSource, 100, 4);
+            }
+            this.source = newSource;
+        }
     }
 
     protected abstract createReplaceNodeCommand(node: T): ICommand;
@@ -176,5 +221,13 @@ export abstract class SourceFormComponent<T extends OasNode> {
 
     public oasLibrary(): OasLibraryUtils {
         return SourceFormComponent.library;
+    }
+
+    public sourceEditorTheme(): CodeEditorTheme {
+        return CodeEditorTheme.Light;
+    }
+
+    public sourceEditorMode(): CodeEditorMode {
+        return this._sourceFormat;
     }
 }

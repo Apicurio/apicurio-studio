@@ -261,6 +261,13 @@
   border-color: transparent;
   box-shadow: none;
 }
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .delete-operation {
+  visibility: hidden;
+}
+.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation:hover .delete-operation {
+  visibility: visible;
+}
+
 .api-editor.dark span.path-param {
   color: #ff6a7c;
 }

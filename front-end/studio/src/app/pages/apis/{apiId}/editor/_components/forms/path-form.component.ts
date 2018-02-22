@@ -23,7 +23,7 @@ import {
     createAddPathItemCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteAllParametersCommand,
+    createDeleteAllParametersCommand, createDeleteOperationCommand,
     createDeleteParameterCommand,
     createDeletePathCommand,
     createNewOperationCommand,
@@ -197,6 +197,11 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     public createOperation(operationType: string): void {
         let command: ICommand = createNewOperationCommand(this.path.ownerDocument(), this.path.path(), operationType);
+        this.onCommand.emit(command);
+    }
+
+    public deleteOperation(operationType: string): void {
+        let command: ICommand = createDeleteOperationCommand(this.document(), operationType, this.path);
         this.onCommand.emit(command);
     }
 

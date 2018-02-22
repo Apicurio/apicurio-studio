@@ -16,9 +16,11 @@
 
 package io.apicurio.hub.api.github;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Map;
@@ -73,10 +75,17 @@ public class GitHubSourceConnectorTest {
         service = new GitHubSourceConnector() {
             @Override
             protected String getExternalToken() throws SourceConnectorException {
-            	if (githubToken == null) {
-                    File credsFile = new File(".github");
-                    throw new SourceConnectorException("Missing GitHub credentials.  Expected a Java properties file with GitHub Personal Access Token 'pat' located here: " + credsFile.getAbsolutePath());
-            	}
+            	try {
+                    if (githubToken == null) {
+                        // Read the Personal Access Token from standard input so we don't accidentally check it in.
+                        // This is a PITA because we have to copy/paste our PAT every time we run this test.  But it's 
+                        // better than accidentally checking in a GitLab PAT!!
+                        System.out.println("Enter your GitLab Personal Access Token:");
+                        githubToken = new BufferedReader(new InputStreamReader(System.in)).readLine();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 return githubToken;
             }
         };
@@ -128,8 +137,8 @@ public class GitHubSourceConnectorTest {
     @Test
     @Ignore
     public void testGetResourceContent() throws NotFoundException, SourceConnectorException {
-        ResourceContent content = service.getResourceContent("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
-        Assert.assertTrue(content.getContent().contains("Rate Limiter API"));
+        ResourceContent content = service.getResourceContent("https://github.com/EricWittmann/api-samples/blob/other-branch/3.0-other/simple-api-other.json");
+        Assert.assertTrue(content.getContent().contains("Simple OAI 3.0.0 API (Other)"));
         Assert.assertNotNull(content.getSha());
         
         try {

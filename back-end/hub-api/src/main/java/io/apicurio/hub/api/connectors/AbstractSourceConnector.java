@@ -17,7 +17,7 @@
 package io.apicurio.hub.api.connectors;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -133,7 +133,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     public static class Endpoint {
         
         private String url;
-        private Map<String, String> queryParams = new HashMap<>();
+        private Map<String, String> queryParams = new LinkedHashMap<>();
         
         /**
          * Constructor.
@@ -194,7 +194,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
                 url.append(Encode.encodeQueryParamAsIs(value));
             }
             
-            return url.deleteCharAt(url.length() - 1).toString();
+            return url.toString();
         }
         
     }

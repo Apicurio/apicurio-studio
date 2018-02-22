@@ -19,15 +19,13 @@ package io.apicurio.hub.api.bitbucket;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.apicurio.hub.api.github.GitHubResourceResolver;
-
 /**
  * @author eric.wittmann@gmail.com
  */
 public class BitbucketResourceResolverTest {
 
     /**
-     * Test method for {@link GitHubResourceResolver#resolve(String)}.
+     * Test method for {@link BitbucketResourceResolver#resolve(String)}.
      */
     @Test
     public void testResolve() {
@@ -57,7 +55,7 @@ public class BitbucketResourceResolverTest {
     }
 
     /**
-     * Test method for {@link GitHubResourceResolver#resolve(String)}.
+     * Test method for {@link BitbucketResourceResolver#resolve(String)}.
      */
     @Test
     public void testResolve_yaml() {

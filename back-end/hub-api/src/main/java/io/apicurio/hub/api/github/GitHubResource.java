@@ -23,6 +23,7 @@ public class GitHubResource {
 
     private String organization;
     private String repository;
+    private String branch;
     private String resourcePath;
     
     /**
@@ -71,6 +72,20 @@ public class GitHubResource {
      */
     public void setResourcePath(String resourcePath) {
         this.resourcePath = resourcePath;
+    }
+
+    /**
+     * @return the branch
+     */
+    public String getBranch() {
+        return branch;
+    }
+
+    /**
+     * @param branch the branch to set
+     */
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
     
 }

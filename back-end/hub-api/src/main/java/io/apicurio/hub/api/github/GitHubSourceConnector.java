@@ -135,7 +135,8 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                     .bind("org", resource.getOrganization())
                     .bind("repo", resource.getRepository())
                     .bind("path", resource.getResourcePath())
-                    .url();
+                    .queryParam("ref", resource.getBranch())
+                    .toString();
             HttpRequest request = Unirest.get(getContentUrl).header("Accept", "application/json");
             try {
                 addSecurityTo(request);
@@ -182,7 +183,8 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
                 .bind("path", resource.getResourcePath())
-                .url();
+                .queryParam("branch", resource.getBranch())
+                .toString();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
             addSecurityTo(request);
@@ -223,7 +225,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             .bind("repo", resource.getRepository())
             .bind("path", resource.getResourcePath())
             .bind("sha", commitSha)
-            .url();
+            .toString();
 
         HttpRequestWithBody request = Unirest.post(addCommentUrl).header("Content-Type", "application/json; charset=utf-8");
         addSecurityTo(request);
@@ -250,7 +252,8 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
                 .bind("path", resource.getResourcePath())
-                .url();
+                .queryParam("branch", resource.getBranch())
+                .toString();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
             addSecurityTo(request);
@@ -273,7 +276,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             Collection<GitHubOrganization> rval = new HashSet<>();
 
             // Add the user's personal org
-            String userUrl = endpoint("/user").url();
+            String userUrl = endpoint("/user").toString();
             HttpRequest request = Unirest.get(userUrl).header("Accept", "application/json");
             addSecurityTo(request);
             HttpResponse<JsonNode> response = request.asJson();
@@ -287,7 +290,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             rval.add(ghorg);
 
             // Add all the orgs visible to the user
-            String orgsUrl = endpoint("/user/orgs").url();
+            String orgsUrl = endpoint("/user/orgs").toString();
             while (orgsUrl != null) {
                 request = Unirest.get(orgsUrl).header("Accept", "application/json");
                 addSecurityTo(request);
@@ -325,7 +328,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
         logger.debug("Getting the repositories from organization {}", org);
         try {
             // First get the user's login id
-            String userUrl = endpoint("/user").url();
+            String userUrl = endpoint("/user").toString();
             HttpRequest request = Unirest.get(userUrl).header("Accept", "application/json");
             addSecurityTo(request);
             HttpResponse<JsonNode> response = request.asJson();
@@ -337,9 +340,9 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             // Figure out if we're listing the user's repos or an org's repos
             String reposUrl;
             if (org.equals(userLogin)) {
-                reposUrl = endpoint("/users/:username/repos").bind("username", org).url();
+                reposUrl = endpoint("/users/:username/repos").bind("username", org).toString();
             } else {
-                reposUrl = endpoint("/orgs/:org/repos").bind("org", org).url();
+                reposUrl = endpoint("/orgs/:org/repos").bind("org", org).toString();
             }
 
             // Return all pages of repos

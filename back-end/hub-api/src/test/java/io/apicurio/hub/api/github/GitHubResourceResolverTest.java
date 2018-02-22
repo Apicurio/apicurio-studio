@@ -33,25 +33,36 @@ public class GitHubResourceResolverTest {
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store/pet-store.json", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.json", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/apiman-rls.json", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store.json", resource.getResourcePath());
+
+        resource = GitHubResourceResolver.resolve("https://github.com/EricWittmann/api-samples/blob/other-branch/3.0-other/simple-api-other.json");
+        Assert.assertNotNull(resource);
+        Assert.assertEquals("EricWittmann", resource.getOrganization());
+        Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("other-branch", resource.getBranch());
+        Assert.assertEquals("3.0-other/simple-api-other.json", resource.getResourcePath());
     }
 
     /**
@@ -63,24 +74,28 @@ public class GitHubResourceResolverTest {
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store/pet-store.yaml", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.yaml", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.yml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/apiman-rls.yml", resource.getResourcePath());
 
         resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
+        Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store.yaml", resource.getResourcePath());
     }
 

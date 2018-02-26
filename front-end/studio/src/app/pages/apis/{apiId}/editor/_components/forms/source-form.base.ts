@@ -21,6 +21,7 @@ import {OasLibraryUtils, OasNode} from "oai-ts-core";
 import "brace/theme/eclipse";
 import "brace/theme/twilight";
 import "brace/mode/json";
+import "brace/mode/markdown";
 import "brace/mode/yaml";
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";

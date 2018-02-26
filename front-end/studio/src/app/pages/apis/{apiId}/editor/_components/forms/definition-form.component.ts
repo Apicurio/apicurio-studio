@@ -28,8 +28,6 @@ import {
     SimplifiedPropertyType
 } from "oai-ts-commands";
 
-import "brace/theme/eclipse";
-import "brace/mode/json";
 import {SourceFormComponent} from "./source-form.base";
 import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";

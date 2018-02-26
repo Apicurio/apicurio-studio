@@ -15,19 +15,18 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Output, ViewChild} from "@angular/core";
+import {EventEmitter, Output} from "@angular/core";
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
 import "brace/theme/eclipse";
+import "brace/theme/twilight";
 import "brace/mode/json";
 import "brace/mode/yaml";
-import {AceEditorDirective} from "ng2-ace-editor";
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
 import {NodeSelectionEvent} from "../../_events/node-selection.event";
 import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
-import {ENTER_CLASSNAME} from "@angular/animations/browser/src/util";
 
 
 /**
@@ -91,7 +90,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
             } else {
                 newJsObject = JSON.parse(newSource);
             }
-            this._source.parseable = false;
+            this._source.parseable = true;
             let currentJsObj: any = this.sourceJs();
             this._source.dirty = !ObjectUtils.objectEquals(currentJsObj, newJsObject);
             this._source.value = SourceFormComponent.library.readNode(newJsObject, this.createEmptyNodeForSource());
@@ -103,6 +102,10 @@ export abstract class SourceFormComponent<T extends OasNode> {
     protected abstract createEmptyNodeForSource(): T;
 
     public canFormatSource(): boolean {
+        return this._source.parseable;
+    }
+
+    public canToggleSourceFormat(): boolean {
         return this._source.parseable;
     }
 

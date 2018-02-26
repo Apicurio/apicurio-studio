@@ -38,7 +38,7 @@
     <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
     <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
     <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
-    <button class="btn btn-default btn-xs" [disabled]="canFormatSource()" (click)="toggleSourceFormat()">
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
         <span class="fa fa-fw fa-code"></span>
         <span *ngIf="isSourceFormatYaml()">As JSON</span>
         <span *ngIf="isSourceFormatJson()">As YAML</span>
@@ -49,7 +49,7 @@
                  [(text)]="source"
                  [theme]="sourceEditorTheme()"
                  [mode]="sourceEditorMode()"
-                 [debounceTime]="350"
+                 [debounceTime]="250"
                  [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
 </div>
 

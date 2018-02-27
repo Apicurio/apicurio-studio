@@ -43,6 +43,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
@@ -245,6 +246,48 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                 bbr.setUuid(rep.getString("uuid"));
                 bbr.setSlug(rep.getString("slug"));
                 rVal.add(bbr);
+            });
+
+            return rVal;
+
+        } catch (UnirestException e) {
+            throw new BitbucketException("Error getting Bitbucket teams.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector#getBranches(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getBranches(String group, String repo)
+            throws BitbucketException, SourceConnectorException {
+        try {
+            //@formatter:off
+            String branchesUrl = endpoint("/repositories/:uname/:repo/refs/branches")
+                    .bind("uname", group)
+                    .bind("repo", repo)
+                    .toString();
+            //@formatter:on;
+
+            HttpRequest request = Unirest.get(branchesUrl);
+            addSecurityTo(request);
+            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+
+            JSONObject responseObj = response.getBody().getObject();
+
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
+            }
+
+            Collection<SourceCodeBranch> rVal =  new HashSet<>();
+
+            // TODO response is paged - make sure we consume and return all data!
+            responseObj.getJSONArray("values").forEach(obj -> {
+                JSONObject b = (JSONObject) obj;
+                SourceCodeBranch branch = new SourceCodeBranch();
+                branch.setName(b.getString("name"));
+                branch.setCommitId(b.getJSONObject("target").getString("hash"));
+                rVal.add(branch);
             });
 
             return rVal;

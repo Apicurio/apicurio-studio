@@ -25,7 +25,7 @@ import {User} from "../../models/user.model";
 import {IApisService} from "../../services/apis.service";
 import {AbstractPageComponent} from "../../components/page-base.component";
 import {ILinkedAccountsService} from "../../services/accounts.service";
-import {LinkedAccount} from "../../models/linked-account";
+import {LinkedAccount} from "../../models/linked-account.model";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.

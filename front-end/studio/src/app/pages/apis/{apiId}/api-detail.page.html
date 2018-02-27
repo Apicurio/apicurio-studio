@@ -47,6 +47,12 @@
                                                         <span>Collaborate</span>
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a [routerLink]="[ 'publish' ]">
+                                                        <span class="fa fa-fw fa-cloud-upload"></span>
+                                                        <span>Publish</span>
+                                                    </a>
+                                                </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li>
                                                     <a href="download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">

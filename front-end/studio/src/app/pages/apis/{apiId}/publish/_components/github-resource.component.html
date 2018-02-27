@@ -1,0 +1,32 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gh-organization">Organization</label>
+    <div class="col-sm-10">
+        <drop-down id="gh-organization" [id]="'gh-organization'" [value]="model.org" [options]="orgOptions()"
+                   [loading]="gettingOrgs"
+                   (onValueChange)="changeOrg($event)" [noSelectionLabel]="'Choose Organization'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gh-repo">Repository</label>
+    <div class="col-sm-10">
+        <drop-down id="gh-repo" [id]="'gh-repo'" [value]="model.repo" [options]="repoOptions()"
+                   [loading]="gettingRepos"
+                   (onValueChange)="changeRepo($event)" [noSelectionLabel]="'Choose Repository'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gh-branch">Branch</label>
+    <div class="col-sm-10">
+        <drop-down id="gh-branch" [id]="'gh-branch'" [value]="model.branch" [options]="branchOptions()"
+                   [loading]="gettingBranches"
+                   (onValueChange)="changeBranch($event)" [noSelectionLabel]="'Choose Branch'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gh-resource">Resource</label>
+    <div class="col-sm-10">
+        <input name="repository.resource" type="text" id="gh-resource" class="form-control"
+               placeholder="/path/to/apis/openapi.yaml"
+               [(ngModel)]="model.resource" (keyup)="resourceChanged()">
+    </div>
+</div>

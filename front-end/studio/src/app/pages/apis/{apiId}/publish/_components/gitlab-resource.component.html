@@ -1,0 +1,32 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gl-group">Group</label>
+    <div class="col-sm-10">
+        <drop-down id="gl-group" [id]="'gl-group'" [value]="model.group" [options]="groupOptions()"
+                   [loading]="gettingGroups"
+                   (onValueChange)="changeGroup($event)" [noSelectionLabel]="'Choose Group'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gl-project">Project</label>
+    <div class="col-sm-10">
+        <drop-down id="gl-project" [id]="'gl-project'" [value]="model.project" [options]="projectOptions()"
+                   [loading]="gettingProjects"
+                   (onValueChange)="changeProject($event)" [noSelectionLabel]="'Choose Project'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gl-branch">Branch</label>
+    <div class="col-sm-10">
+        <drop-down id="gl-branch" [id]="'gl-branch'" [value]="model.branch" [options]="branchOptions()"
+                   [loading]="gettingBranches"
+                   (onValueChange)="changeBranch($event)" [noSelectionLabel]="'Choose Branch'"></drop-down>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="gl-resource">Resource</label>
+    <div class="col-sm-10">
+        <input name="repository.resource" type="text" id="gl-resource" class="form-control"
+               placeholder="/path/to/apis/openapi.yaml"
+               [(ngModel)]="model.resource" (keyup)="resourceChanged()">
+    </div>
+</div>

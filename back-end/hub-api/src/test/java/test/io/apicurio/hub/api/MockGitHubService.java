@@ -30,7 +30,9 @@ import java.util.UUID;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
+import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -164,6 +166,30 @@ public class MockGitHubService implements IGitHubSourceConnector {
         repos.add(repo(org + "-Repo2"));
         repos.add(repo(org + "-Repo3"));
         return repos;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getBranches(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getBranches(String org, String repo)
+            throws GitHubException, SourceConnectorException {
+        getAudit().add("getBranches::" + org);
+        Set<SourceCodeBranch> branches = new HashSet<>();
+        branches.add(branch(org + "-" + repo + "-Branch1"));
+        branches.add(branch(org + "-" + repo +"-Branch2"));
+        branches.add(branch(org + "-" + repo +"-Branch3"));
+        return branches;
+    }
+
+    /**
+     * Creates a branch.
+     */
+    private SourceCodeBranch branch(String name) {
+        SourceCodeBranch branch = new SourceCodeBranch();
+        branch.setName(name);
+        branch.setCommitId(String.valueOf(name.hashCode()));
+        return branch;
     }
 
     /**

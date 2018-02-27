@@ -54,6 +54,7 @@ import io.apicurio.hub.api.beans.GitLabCreateFileRequest;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
@@ -318,6 +319,44 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             throw new GitLabException("Error getting GitLab repositories.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.api.gitlab.IGitLabSourceConnector#getBranches(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getBranches(String group, String project)
+            throws GitLabException, SourceConnectorException {
+        logger.debug("Getting the branches from {} / {}", group, project);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            String requestUrl = this.endpoint("/api/v4/projects/:id/repository/branches")
+                    .bind("id", toEncodedId(group, project)).toString();
+
+            HttpGet get = new HttpGet(requestUrl);
+            get.addHeader("Accept", "application/json");
+            addSecurity(get);
+
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                Collection<SourceCodeBranch> rval = new HashSet<>();
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    if (node.isArray()) {
+                        ArrayNode array = (ArrayNode) node;
+                        array.forEach(obj -> {
+                            JsonNode branch = (JsonNode) obj;
+                            SourceCodeBranch glBranch = new SourceCodeBranch();
+                            glBranch.setName(branch.get("name").asText());
+                            glBranch.setCommitId(branch.get("commit").get("id").asText());
+                            rval.add(glBranch);
+                        });
+                    }
+                    return rval;
+                }
+            }
+        } catch (IOException e) {
+            throw new GitLabException("Error getting GitLab branches.", e);
+        }
+    }
 
     /**
      * @see AbstractSourceConnector#addSecurityTo(HttpRequest)
@@ -429,10 +468,13 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     }
 
     private String toEncodedId(GitLabResource resource) {
+        return toEncodedId(resource.getGroup(), resource.getProject());
+    }
+
+    private String toEncodedId(String group, String project) {
         String urlEncodedId;
         try {
-            urlEncodedId = URLEncoder.encode(String.format("%s/%s", resource.getGroup(), resource.getProject()), 
-                    StandardCharsets.UTF_8.name());
+            urlEncodedId = URLEncoder.encode(String.format("%s/%s", group, project), StandardCharsets.UTF_8.name());
         } catch (Exception ex) {
             return "";
         }

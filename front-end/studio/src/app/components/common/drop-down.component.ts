@@ -38,6 +38,8 @@ export class DropDownComponent {
     @Input() value: string;
     @Input() options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";
+    @Input() loading: boolean = false;
+    @Input() loadingLabel: string = "Loading...";
 
     @Output() onValueChange: EventEmitter<string> = new EventEmitter<string>();
 

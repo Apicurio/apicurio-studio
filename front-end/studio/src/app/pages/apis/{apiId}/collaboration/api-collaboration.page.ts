@@ -21,8 +21,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {IApisService} from "../../../../services/apis.service";
 import {Api} from "../../../../models/api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {ApiCollaborator} from "../../../../models/api-collaborator";
-import {Invitation} from "../../../../models/invitation";
+import {ApiCollaborator} from "../../../../models/api-collaborator.model";
+import {Invitation} from "../../../../models/invitation.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {User} from "../../../../models/user.model";
 

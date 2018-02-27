@@ -27,7 +27,7 @@ import {
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
-import {ApiContributor, ApiContributors} from "../models/api-contributors";
+import {ApiContributor, ApiContributors} from "../models/api-contributors.model";
 
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
@@ -36,10 +36,10 @@ import {User} from "../models/user.model";
 import {ICommand, MarshallUtils, OtCommand} from "oai-ts-commands";
 import {OasLibraryUtils} from "oai-ts-core";
 import {ApiDesignCommandAck} from "../models/ack.model";
-import {ApiCollaborator} from "../models/api-collaborator";
-import {Invitation} from "../models/invitation";
+import {ApiCollaborator} from "../models/api-collaborator.model";
+import {Invitation} from "../models/invitation.model";
 import {ApiEditorUser} from "../models/editor-user.model";
-import {ApiDesignChange} from "../models/api-design-change";
+import {ApiDesignChange} from "../models/api-design-change.model";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 

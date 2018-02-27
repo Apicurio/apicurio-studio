@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 
@@ -43,5 +44,12 @@ public interface IGitLabSourceConnector extends ISourceConnector {
      * @throws SourceConnectorException
      */
     public Collection<GitLabProject> getProjects(String group) throws GitLabException, SourceConnectorException;
+
+    /**
+     * Lists all of the branches available in the given GitLab group/project.
+     * @param group
+     * @param project
+     */
+    public Collection<SourceCodeBranch> getBranches(String group, String project) throws GitLabException, SourceConnectorException;
 
 }

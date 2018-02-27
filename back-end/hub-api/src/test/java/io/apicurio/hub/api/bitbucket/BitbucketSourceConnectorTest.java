@@ -42,6 +42,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -132,6 +133,20 @@ public class BitbucketSourceConnectorTest {
         });
     }
 
+    @Test
+    @Ignore
+    public void testGetBranches() throws SourceConnectorException, BitbucketException {
+        String team = "apicurio";
+        String repo = "apicurio-test";
+
+        Collection<SourceCodeBranch> branches = service.getBranches(team, repo);
+        Assert.assertNotNull(branches);
+        Assert.assertFalse(branches.isEmpty());
+        
+        branches.forEach( branch -> {
+            System.out.println("Found branch: " + branch.getName() + " -- " + branch.getCommitId());
+        });
+    }
 
     @Test
     @Ignore

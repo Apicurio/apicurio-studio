@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
-import {LinkedAccount} from "../models/linked-account";
-import {GitHubOrganization} from "../models/github-organization";
-import {GitHubRepository} from "../models/github-repository";
-import {GitLabGroup} from "../models/gitlab-group";
-import {GitLabProject} from "../models/gitlab-project";
-import {BitbucketRepository} from "../models/bitbucket-repository";
-import {BitbucketTeam} from "../models/bitbucket-team";
+import {InitiatedLinkedAccount} from "../models/initiated-linked-account.model";
+import {LinkedAccount} from "../models/linked-account.model";
+import {GitHubOrganization} from "../models/github-organization.model";
+import {GitHubRepository} from "../models/github-repository.model";
+import {GitLabGroup} from "../models/gitlab-group.model";
+import {GitLabProject} from "../models/gitlab-project.model";
+import {BitbucketRepository} from "../models/bitbucket-repository.model";
+import {BitbucketTeam} from "../models/bitbucket-team.model";
 import {AbstractHubService} from "./hub";
+import {SourceCodeBranch} from "../models/source-code-branch.model";
 
 
 /**
@@ -105,5 +106,12 @@ export abstract class ILinkedAccountsService extends AbstractHubService {
      * @return {Promise<any[]>}
      */
     abstract getAccountTeams(accountType: string): Promise<BitbucketTeam[]>;
+
+    /**
+     * Gets a list of all branches for a org/repo or team/project.
+     * @param {string} accountType
+     * @return {Promise<any[]>}
+     */
+    abstract getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string): Promise<SourceCodeBranch[]>;
 
 }

@@ -39,6 +39,7 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.bitbucket.BitbucketException;
 import io.apicurio.hub.api.bitbucket.IBitbucketSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -328,6 +329,63 @@ public class AccountsResource implements IAccountsResource {
         }
         try {
             return this.bitbucket.getRepositories(group);
+        } catch (SourceConnectorException | BitbucketException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getRepositoryBranches(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getRepositoryBranches(String accountType, String org, String repo)
+            throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/organizations/{org}/repositories/{repo}/branches", "GET");
+
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitHub) {
+            throw new ServerError("Invalid account type.  Expected 'GitHub' but got: " + accountType);
+        }
+        try {
+            return this.github.getBranches(org, repo);
+        } catch (GitHubException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getProjectBranches(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getProjectBranches(String accountType, String group, String project)
+            throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/groups/{group}/projects/{project}/branches", "GET");
+
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.GitLab) {
+            throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
+        }
+        try {
+            return gitLab.getBranches(group, project);
+        } catch (GitLabException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getBitbucketBranches(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getBitbucketBranches(String accountType, String group, String repo)
+            throws ServerError {
+        metrics.apiCall("/accounts/{accountType}/teams/{team}/repositories/{repo}/branches", "GET");
+
+        LinkedAccountType at = LinkedAccountType.valueOf(accountType);
+        if (at != LinkedAccountType.Bitbucket) {
+            throw new ServerError("Invalid account type.  Expected 'Bitbucket' but got: " + accountType);
+        }
+        try {
+            return this.bitbucket.getBranches(group, repo);
         } catch (SourceConnectorException | BitbucketException e) {
             throw new ServerError(e);
         }

@@ -16,7 +16,7 @@
  */
 
 import {Component, Input} from "@angular/core";
-import {ApiDesignChange} from "../../../../models/api-design-change";
+import {ApiDesignChange} from "../../../../models/api-design-change.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
 
 

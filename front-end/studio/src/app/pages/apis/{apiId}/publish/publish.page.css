@@ -1,0 +1,42 @@
+
+.api-publish {
+}
+
+.api-publish .publishapi-form {
+  margin-top: 20px;
+}
+
+.api-publish .publishapi-form .publishapi-panel {
+}
+
+.api-publish .publishapi-form h2 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.api-publish .publishapi-form .publishapi-panel .publish-to-option {
+  font-size: 32px;
+  border: 2px solid;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-right: 5px;
+}
+.api-publish .publishapi-form .publishapi-panel .publish-to-option:hover {
+  border: 2px solid #0088ce;
+  color: #0088ce;
+  cursor: pointer;
+}
+.api-publish .publishapi-form .publishapi-panel .publish-to-option.disabled {
+  color: #999;
+  border: 2px solid #999;
+  cursor: default;
+}
+.api-publish .publishapi-form .publishapi-panel .publish-to-option.hover {
+  color: #999;
+  border: 2px solid #999;
+}
+.api-publish .publishapi-form .publishapi-panel .publish-to-option.selected {
+  color: #0088ce;
+  border: 2px solid #0088ce;
+  cursor: default;
+}

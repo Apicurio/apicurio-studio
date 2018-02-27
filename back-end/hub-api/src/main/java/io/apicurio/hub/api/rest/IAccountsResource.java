@@ -37,6 +37,7 @@ import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -83,12 +84,18 @@ public interface IAccountsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{accountType}/organizations")
     public Collection<GitHubOrganization> getOrganizations(@PathParam("accountType") String accountType) throws ServerError;
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{accountType}/organizations/{org}/repositories")
     public Collection<GitHubRepository> getRepositories(@PathParam("accountType") String accountType, 
             @PathParam("org") String org) throws ServerError;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/organizations/{org}/repositories/{repo}/branches")
+    public Collection<SourceCodeBranch> getRepositoryBranches(@PathParam("accountType") String accountType, 
+            @PathParam("org") String org, @PathParam("repo") String repo) throws ServerError;
 
 
     /*
@@ -99,12 +106,18 @@ public interface IAccountsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{accountType}/groups")
     public Collection<GitLabGroup> getGroups(@PathParam("accountType") String accountType) throws ServerError;
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{accountType}/groups/{group}/projects")
     public Collection<GitLabProject> getProjects(@PathParam("accountType") String accountType, 
             @PathParam("group") String group) throws ServerError;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/groups/{group}/projects/{project}/branches")
+    public Collection<SourceCodeBranch> getProjectBranches(@PathParam("accountType") String accountType, 
+            @PathParam("group") String group, @PathParam("project") String project) throws ServerError;
 
 
     /*
@@ -121,5 +134,11 @@ public interface IAccountsResource {
     @Path("{accountType}/teams/{team}/repositories")
     public Collection<BitbucketRepository> getBitbucketRepositories(@PathParam("accountType") String accountType, 
             @PathParam("team") String group) throws ServerError;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{accountType}/teams/{team}/repositories/{repo}/branches")
+    public Collection<SourceCodeBranch> getBitbucketBranches(@PathParam("accountType") String accountType, 
+            @PathParam("team") String group, @PathParam("repo") String repo) throws ServerError;
 
 }

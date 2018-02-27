@@ -18,15 +18,15 @@
 import {Observable} from "rxjs/Observable";
 
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
-import {ApiContributors} from "../models/api-contributors";
+import {ApiContributors} from "../models/api-contributors.model";
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
 import {OtCommand} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../models/ack.model";
-import {ApiCollaborator} from "../models/api-collaborator";
-import {Invitation} from "../models/invitation";
+import {ApiCollaborator} from "../models/api-collaborator.model";
+import {Invitation} from "../models/invitation.model";
 import {ApiEditorUser} from "../models/editor-user.model";
-import {ApiDesignChange} from "../models/api-design-change";
+import {ApiDesignChange} from "../models/api-design-change.model";
 import {AbstractHubService} from "./hub";
 
 

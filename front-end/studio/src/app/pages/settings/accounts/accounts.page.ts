@@ -18,7 +18,7 @@
 import {Component, Inject} from "@angular/core";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ILinkedAccountsService} from "../../../services/accounts.service";
-import {LinkedAccount} from "../../../models/linked-account";
+import {LinkedAccount} from "../../../models/linked-account.model";
 import {ActivatedRoute} from "@angular/router";
 
 export const ACCOUNT_LINK_NONCE_KEY = "apicurio.studio.linked-accounts.nonces";

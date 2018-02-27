@@ -100,6 +100,10 @@ import {
 } from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
 import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component';
 import {CodeEditorComponent} from "./components/common/code-editor.component";
+import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
+import {GitHubResourceComponent} from "./pages/apis/{apiId}/publish/_components/github-resource.component";
+import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/gitlab-resource.component";
+import {BitbucketResourceComponent} from "./pages/apis/{apiId}/publish/_components/bitbucket-resource.component";
 
 
 @NgModule({
@@ -123,7 +127,8 @@ import {CodeEditorComponent} from "./components/common/code-editor.component";
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent, EditorMasterComponent,
         ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
-        Main30FormComponent, CodeEditorComponent
+        Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
+        BitbucketResourceComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

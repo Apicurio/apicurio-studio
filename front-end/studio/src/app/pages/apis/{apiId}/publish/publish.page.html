@@ -1,0 +1,106 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
+        <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" icon="bolt" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Publish" icon="cloud-upload" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-publish" *ngIf="!pageError">
+
+    <!-- Loading API (spinner) -->
+    <div class="row-fluid" *ngIf="!isDataLoaded()">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="container-fluid container-cards-pf api-editor-overview">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <div class="card-pf card-pf-accented">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="publishapi-form row" *ngIf="isDataLoaded()">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What is this page?</strong>
+                <p style="line-height: 18px">
+                    Use this page to publish your API (when it's ready) to a source control system such as
+                    GitHub, GitLab, or Bitbucket.  You will need to link your Apicurio account to your
+                    source control system for this to work.
+                </p>
+                <p style="line-height: 18px; margin-top: 10px;">
+                    Account linking can be done from the <a routerLink="/settings/accounts">Settings -> Accounts</a> page.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="publishapi-panel panel panel-default">
+                <div class="panel-body">
+                    <h2>Publish API "{{ api.name }}"</h2>
+                    <form id="publish-form" class="form-horizontal" (submit)="publishApi()">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Publish To</label>
+                            <div class="col-sm-10">
+                                <span class="publish-to-option fa fa-github" (click)="setPublishTo('GitHub')"
+                                    title="Publish to GitHub" [class.disabled]="!hasAccount('GitHub')"
+                                    [class.selected]="isSelected('GitHub')"></span>
+                                <span class="publish-to-option fa fa-gitlab disabled" (click)="setPublishTo('GitLab')"
+                                    title="Publish to GitLab" [class.disabled]="!hasAccount('GitLab')"
+                                      [class.selected]="isSelected('GitLab')"></span>
+                                <span class="publish-to-option fa fa-bitbucket selected" (click)="setPublishTo('Bitbucket')"
+                                    title="Publish to Bitbucket" [class.disabled]="!hasAccount('Bitbucket')"
+                                      [class.selected]="isSelected('Bitbucket')"></span>
+                                <div class="alert alert-warning" *ngIf="!hasAtLeastOneAccount()" style="margin-top: 20px;">
+                                    <span class="pficon pficon-warning-triangle-o"></span>
+                                    <strong>Cannot Publish API</strong> You haven't linked your Apicurio account to a source
+                                    control system.  Do this first from the appropriate <a routerLink="/settings/accounts">Settings</a> page.
+                                </div>
+                            </div>
+                        </div>
+
+                        <github-resource *ngIf="isSelected('GitHub')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></github-resource>
+                        <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></gitlab-resource>
+                        <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></bitbucket-resource>
+
+                        <div class="form-group" *ngIf="_selectedType">
+                            <label class="col-sm-2 control-label" for="format">Branch</label>
+                            <div class="col-sm-10">
+                                <drop-down id="format" [id]="'format'" [value]="format" [options]="formatOptions()"
+                                           (onValueChange)="format = $event" [noSelectionLabel]="'Choose Format'"></drop-down>
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="_selectedType">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary" [disabled]="!modelValid || publishing">
+                                    <span *ngIf="!publishing">Publish API</span>
+                                    <span *ngIf="publishing"><span class="spinner spinner-xs spinner-inline"></span> Publishing...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <!--
+            <div class="alert alert-warning" *ngIf="publishError">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
+                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
+                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
+            </div>
+            -->
+        </div>
+    </div>
+
+</div>

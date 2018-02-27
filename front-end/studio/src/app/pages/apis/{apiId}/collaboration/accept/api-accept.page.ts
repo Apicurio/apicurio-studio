@@ -20,7 +20,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../../../services/apis.service";
 import {AbstractPageComponent} from "../../../../../components/page-base.component";
-import {Invitation} from "../../../../../models/invitation";
+import {Invitation} from "../../../../../models/invitation.model";
 
 @Component({
     moduleId: module.id,

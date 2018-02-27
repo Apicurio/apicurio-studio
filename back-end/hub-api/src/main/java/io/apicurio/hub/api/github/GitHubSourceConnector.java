@@ -48,6 +48,7 @@ import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.GitHubUpdateFileRequest;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
@@ -371,6 +372,45 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             return rval;
         } catch (UnirestException e) {
             throw new GitHubException("Error getting GitHub repositories.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.github.IGitHubSourceConnector#getBranches(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<SourceCodeBranch> getBranches(String org, String repo)
+            throws GitHubException, SourceConnectorException {
+        logger.debug("Getting the branches from {} / {}", org, repo);
+        try {
+            String branchesUrl = endpoint("/repos/:owner/:repo/branches").bind("owner", org).bind("repo", repo).toString();
+
+            // Return all pages of branches
+            Collection<SourceCodeBranch> rval = new HashSet<>();
+            while (branchesUrl != null) {
+                HttpRequest request = Unirest.get(branchesUrl).header("Accept", "application/json");
+                addSecurityTo(request);
+                HttpResponse<JsonNode> response = request.asJson();
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
+                }
+                
+                JSONArray array = response.getBody().getArray();
+                array.forEach( obj -> {
+                    JSONObject branch = (JSONObject) obj;
+                    SourceCodeBranch ghBranch = new SourceCodeBranch();
+                    ghBranch.setName(branch.getString("name"));
+                    ghBranch.setCommitId(branch.getJSONObject("commit").getString("sha"));
+                    rval.add(ghBranch);
+                });
+                
+                String linkHeader = response.getHeaders().getFirst("Link");
+                Map<String, String> links = parseLinkHeader(linkHeader);
+                branchesUrl = links.get("next");
+            }
+            return rval;
+        } catch (UnirestException e) {
+            throw new GitHubException("Error getting GitHub branches.", e);
         }
     }
 

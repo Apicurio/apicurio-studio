@@ -36,6 +36,7 @@ import org.junit.Test;
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -80,7 +81,7 @@ public class GitHubSourceConnectorTest {
                         // Read the Personal Access Token from standard input so we don't accidentally check it in.
                         // This is a PITA because we have to copy/paste our PAT every time we run this test.  But it's 
                         // better than accidentally checking in a GitLab PAT!!
-                        System.out.println("Enter your GitLab Personal Access Token:");
+                        System.out.println("Enter your GitHub Personal Access Token:");
                         githubToken = new BufferedReader(new InputStreamReader(System.in)).readLine();
                     }
                 } catch (IOException e) {
@@ -181,6 +182,21 @@ public class GitHubSourceConnectorTest {
             System.out.println("\t" + repo.getName());
         });
         Assert.assertTrue(repositories.size() > 0);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getBranches(String, String)}.
+     */
+    @Test
+    @Ignore
+    public void testGetBranches() throws GitHubException, SourceConnectorException {
+        Collection<SourceCodeBranch> branches = service.getBranches("EricWittmann", "api-samples");
+        Assert.assertNotNull(branches);
+        System.out.println("Found " + branches.size() + " branches!");
+        branches.forEach( branch -> {
+            System.out.println("\t" + branch.getName());
+        });
+        Assert.assertTrue(branches.size() > 0);
     }
 
     /**

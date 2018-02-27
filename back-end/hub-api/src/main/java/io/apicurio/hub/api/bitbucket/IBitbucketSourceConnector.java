@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 
@@ -42,5 +43,12 @@ public interface IBitbucketSourceConnector extends ISourceConnector {
      * @throws SourceConnectorException
      */
     public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException;
+
+    /**
+     * Lists all of the branches available in the given Bitbucket repository.
+     * @param group
+     * @param repo
+     */
+    public Collection<SourceCodeBranch> getBranches(String group, String repo) throws BitbucketException, SourceConnectorException;
 
 }

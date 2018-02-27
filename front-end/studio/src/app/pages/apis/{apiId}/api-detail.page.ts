@@ -20,9 +20,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {IApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
-import {ApiContributors} from "../../../models/api-contributors";
+import {ApiContributors} from "../../../models/api-contributors.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
-import {ApiDesignChange} from "../../../models/api-design-change";
+import {ApiDesignChange} from "../../../models/api-design-change.model";
 
 @Component({
     moduleId: module.id,

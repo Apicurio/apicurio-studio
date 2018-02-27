@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 
@@ -39,5 +40,12 @@ public interface IGitHubSourceConnector extends ISourceConnector {
      * @param org
      */
     public Collection<GitHubRepository> getRepositories(String org) throws GitHubException, SourceConnectorException;
+
+    /**
+     * Lists all of the branches available on the given GitHub repository in the given org.
+     * @param org
+     * @param repo
+     */
+    public Collection<SourceCodeBranch> getBranches(String org, String repo) throws GitHubException, SourceConnectorException;
 
 }

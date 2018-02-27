@@ -17,14 +17,19 @@
 package io.apicurio.hub.api.gitlab;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,6 +42,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import io.apicurio.hub.api.beans.GitLabGroup;
 import io.apicurio.hub.api.beans.GitLabProject;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -54,6 +60,22 @@ public class GitLabSourceConnectorTest {
     private IGitLabSourceConnector service;
     private HubConfiguration config;
     
+    @BeforeClass
+    public static void globalSetUp() {
+        File credsFile = new File(".gitlab");
+        if (!credsFile.isFile()) {
+            return;
+        }
+        System.out.println("Loading GitLab credentials from: " + credsFile.getAbsolutePath());
+        try (Reader reader = new FileReader(credsFile)) {
+            Properties props = new Properties();
+            props.load(reader);
+            pat = props.getProperty("pat");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     @Before
     public void setUp() {
@@ -173,6 +195,21 @@ public class GitLabSourceConnectorTest {
             System.out.println("\t" + project.getName());
         });
         Assert.assertTrue(projects.size() > 0);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getBranches(String, String)}.
+     */
+    @Test
+    @Ignore
+    public void testGetBranches() throws GitLabException, SourceConnectorException {
+        Collection<SourceCodeBranch> branches = service.getBranches("apicurio", "api-samples");
+        Assert.assertNotNull(branches);
+        System.out.println("Found " + branches.size() + " branches!");
+        branches.forEach( branch -> {
+            System.out.println("\t" + branch.getName());
+        });
+        Assert.assertTrue(branches.size() > 0);
     }
 
 

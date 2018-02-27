@@ -21,17 +21,18 @@ import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 
 import {ILinkedAccountsService} from "./accounts.service";
-import {LinkedAccount} from "../models/linked-account";
-import {InitiatedLinkedAccount} from "../models/initiated-linked-account";
-import {CreateLinkedAccount} from "../models/create-linked-account";
-import {CompleteLinkedAccount} from "../models/complete-linked-account";
-import {GitHubOrganization} from "../models/github-organization";
-import {GitHubRepository} from "../models/github-repository";
-import {GitLabGroup} from "../models/gitlab-group";
-import {GitLabProject} from "../models/gitlab-project";
-import {BitbucketRepository} from "../models/bitbucket-repository";
-import {BitbucketTeam} from "../models/bitbucket-team";
+import {LinkedAccount} from "../models/linked-account.model";
+import {InitiatedLinkedAccount} from "../models/initiated-linked-account.model";
+import {CreateLinkedAccount} from "../models/create-linked-account.model";
+import {CompleteLinkedAccount} from "../models/complete-linked-account.model";
+import {GitHubOrganization} from "../models/github-organization.model";
+import {GitHubRepository} from "../models/github-repository.model";
+import {GitLabGroup} from "../models/gitlab-group.model";
+import {GitLabProject} from "../models/gitlab-project.model";
+import {BitbucketRepository} from "../models/bitbucket-repository.model";
+import {BitbucketTeam} from "../models/bitbucket-team.model";
 import {HttpClient} from "@angular/common/http";
+import {SourceCodeBranch} from "../models/source-code-branch.model";
 
 
 /**
@@ -155,6 +156,27 @@ export class HubLinkedAccountsService extends ILinkedAccountsService {
 
         console.info("[HubLinkedAccountsService] Getting repositories: %s", repositoriesUrl);
         return this.httpGet<GitHubRepository[]|BitbucketRepository[]>(repositoriesUrl, options);
+    }
+
+    /**
+     * @see ILinkedAccountsService.getAccountBranches
+     */
+    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string): Promise<SourceCodeBranch[]> {
+        let urlTemplate: string = "/accounts/:accountType/organizations/:orgOrTeam/repositories/:projectOrRepo/branches";
+        if (accountType === "GitLab") {
+            urlTemplate = "/accounts/:accountType/groups/:orgOrTeam/projects/:projectOrRepo/branches";
+        } else if (accountType === "Bitbucket") {
+            urlTemplate = "/accounts/:accountType/teams/:orgOrTeam/repositories/:projectOrRepo/branches";
+        }
+        let branchesUrl: string = this.endpoint(urlTemplate, {
+            accountType: accountType,
+            orgOrTeam: orgOrTeam,
+            projectOrRepo: projectOrRepo
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting branches: %s", branchesUrl);
+        return this.httpGet<SourceCodeBranch[]>(branchesUrl, options);
     }
 
     /**

@@ -666,7 +666,7 @@ public class JdbcStorageTest {
         Assert.assertEquals(2, activity.size());
         iter = activity.iterator();
         Assert.assertEquals("{4}", iter.next().getData());
-        Assert.assertEquals("{3}", iter.next().getData());
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
         
         activity = storage.listApiDesignActivity(id, 1, 5);
         Assert.assertNotNull(activity);
@@ -674,16 +674,17 @@ public class JdbcStorageTest {
         Assert.assertEquals(4, activity.size());
         iter = activity.iterator();
         Assert.assertEquals("{4}", iter.next().getData());
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
         Assert.assertEquals("{3}", iter.next().getData());
         Assert.assertEquals("{2}", iter.next().getData());
-        Assert.assertEquals("{1}", iter.next().getData());
 
         activity = storage.listApiDesignActivity(id, 1, 50);
         Assert.assertNotNull(activity);
         Assert.assertFalse(activity.isEmpty());
-        Assert.assertEquals(4, activity.size());
+        Assert.assertEquals(5, activity.size());
         iter = activity.iterator();
         Assert.assertEquals("{4}", iter.next().getData());
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
         Assert.assertEquals("{3}", iter.next().getData());
         Assert.assertEquals("{2}", iter.next().getData());
         Assert.assertEquals("{1}", iter.next().getData());

@@ -24,6 +24,7 @@ public class GitHubUpdateFileRequest {
     private String message;
     private String content;
     private String sha;
+    private String branch;
     
     /**
      * Constructor.
@@ -71,6 +72,20 @@ public class GitHubUpdateFileRequest {
      */
     public void setSha(String sha) {
         this.sha = sha;
+    }
+
+    /**
+     * @return the branch
+     */
+    public String getBranch() {
+        return branch;
+    }
+
+    /**
+     * @param branch the branch to set
+     */
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 
 }

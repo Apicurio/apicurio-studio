@@ -18,6 +18,7 @@
 import {Component, Input} from "@angular/core";
 import {ApiDesignChange} from "../../../../models/api-design-change.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
+import {PublishApi} from "../../../../models/publish-api.model";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ActivityItemComponent {
 
     @Input() item: ApiDesignChange;
     _command: ICommand = null;
+    _publication: PublishApi;
 
     /**
      * Constructor.
@@ -47,11 +49,28 @@ export class ActivityItemComponent {
         return this._command;
     }
 
+    protected publication(): PublishApi {
+        if (this._publication == null) {
+            this._publication = JSON.parse(this.item.data);
+        }
+        return this._publication;
+    }
+
     /**
      * Returns an appropriate icon for the activity item, based on its type.
      * @return {string}
      */
     public icon(): string {
+        if (this.item.type == "Command") {
+            return this.commandIcon();
+        }
+        if (this.item.type == "Publish") {
+            return this.publicationIcon();
+        }
+        return "document";
+    }
+
+    protected commandIcon(): string {
         let rval: string = "user";
         switch (this.command()["type"]()) {
             case "AddPathItemCommand_20":
@@ -165,12 +184,26 @@ export class ActivityItemComponent {
         return rval;
     }
 
+    protected publicationIcon(): string {
+        return this.publication().type.toLowerCase();
+    }
+
     /**
      * Returns an appropriate description for the activity item, based on its type.
      * @return {string}
      */
     public description(): string {
-        let rval: string = "user";
+        if (this.item.type == "Command") {
+            return this.commandDescription();
+        }
+        if (this.item.type == "Publish") {
+            return this.publicationDescription();
+        }
+        return null;
+    }
+
+    protected commandDescription(): string {
+        let rval: string;
         switch (this.command()["type"]()) {
             case "AddPathItemCommand_20":
             case "AddPathItemCommand_30":
@@ -348,6 +381,10 @@ export class ActivityItemComponent {
                 rval = "performed some unknown action...";
         }
         return rval;
+    }
+
+    protected publicationDescription(): string {
+        return "published the API to " + this.publication().type + ".";
     }
 
 }

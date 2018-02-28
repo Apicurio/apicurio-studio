@@ -173,18 +173,19 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             ResourceContent content) throws SourceConnectorException {
         try {
             String b64Content = Base64.encodeBase64String(content.getContent().getBytes(StandardCharsets.UTF_8));
-            
+
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+
             GitHubUpdateFileRequest requestBody = new GitHubUpdateFileRequest();
             requestBody.setMessage(commitMessage);
             requestBody.setContent(b64Content);
             requestBody.setSha(content.getSha());
+            requestBody.setBranch(resource.getBranch());
 
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
                 .bind("path", resource.getResourcePath())
-                .queryParam("branch", resource.getBranch())
                 .toString();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
@@ -243,17 +244,18 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException {
         try {
             String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
-            
+
+            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+
             GitHubCreateFileRequest requestBody = new GitHubCreateFileRequest();
             requestBody.setMessage(commitMessage);
             requestBody.setContent(b64Content);
+            requestBody.setBranch(resource.getBranch());
 
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
             String createContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                 .bind("org", resource.getOrganization())
                 .bind("repo", resource.getRepository())
                 .bind("path", resource.getResourcePath())
-                .queryParam("branch", resource.getBranch())
                 .toString();
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");

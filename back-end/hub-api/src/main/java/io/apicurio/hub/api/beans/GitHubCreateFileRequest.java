@@ -23,6 +23,7 @@ public class GitHubCreateFileRequest {
     
     private String message;
     private String content;
+    private String branch;
     
     /**
      * Constructor.
@@ -56,6 +57,20 @@ public class GitHubCreateFileRequest {
      */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    /**
+     * @return the branch
+     */
+    public String getBranch() {
+        return branch;
+    }
+
+    /**
+     * @param branch the branch to set
+     */
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 
 }

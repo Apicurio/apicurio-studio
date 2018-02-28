@@ -211,4 +211,10 @@ public interface ISqlStatements {
      */
     public String selectApiDesignActivity();
 
+    /**
+     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * only the publication rows.
+     */
+    public String selectApiPublicationActivity();
+
 }

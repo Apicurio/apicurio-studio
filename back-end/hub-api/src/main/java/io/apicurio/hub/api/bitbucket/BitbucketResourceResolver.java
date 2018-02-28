@@ -35,6 +35,8 @@ public class BitbucketResourceResolver {
     // https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.yaml
     private static Pattern pattern6 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/raw/([^/]+)/(.*.ya?ml)");
 
+    private static String template = "https://bitbucket.org/:team/:repo/src/:branch/:resource";
+
     /**
      * Resolves a bitbucket URL into a resource object.  The URL must be of the proper format.
      * @param url
@@ -129,6 +131,24 @@ public class BitbucketResourceResolver {
         }
 
         return null;
+    }
+
+    /**
+     * Creates a resource url from the information provided.
+     * @param team
+     * @param repo
+     * @param branch
+     * @param resourcePath
+     */
+    public static String create(String team, String repo, String branch, String resourcePath) {
+        String resource = resourcePath;
+        if (resource == null) {
+            resource = "";
+        }
+        if (resource.startsWith("/")) {
+            resource = resource.substring(1);
+        }
+        return template.replace(":team", team).replace(":repo", repo).replace(":branch", branch).replace(":resource", resource);
     }
 
 }

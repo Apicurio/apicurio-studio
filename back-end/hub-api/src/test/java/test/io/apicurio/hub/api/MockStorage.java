@@ -31,6 +31,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -483,6 +484,16 @@ public class MockStorage implements IStorage {
      */
     @Override
     public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to)
+            throws StorageException {
+        // TODO implement this and add to unit tests?
+        return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignPublications(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) 
             throws StorageException {
         // TODO implement this and add to unit tests?
         return null;

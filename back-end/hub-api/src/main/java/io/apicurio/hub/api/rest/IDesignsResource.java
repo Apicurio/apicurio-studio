@@ -32,10 +32,12 @@ import javax.ws.rs.core.Response;
 
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.NewApiPublication;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
@@ -83,7 +85,18 @@ public interface IDesignsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/contributors")
     public Collection<Contributor> getContributors(@PathParam("designId") String designId) throws ServerError, NotFoundException;
-    
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/publications")
+    public Collection<ApiPublication> getPublications(@PathParam("designId") String designId,
+            @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/publications")
+    public void publishApi(@PathParam("designId") String designId, NewApiPublication info) throws ServerError, NotFoundException;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/content")

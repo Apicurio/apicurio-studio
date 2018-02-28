@@ -41,6 +41,7 @@ import {Invitation} from "../models/invitation.model";
 import {ApiEditorUser} from "../models/editor-user.model";
 import {ApiDesignChange} from "../models/api-design-change.model";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {PublishApi} from "../models/publish-api.model";
 
 
 const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
@@ -321,6 +322,21 @@ export class HubApisService extends IApisService {
 
         console.info("[HubApisService] Importing an API Design: %s", importApiUrl);
         return this.httpPutWithReturn<ImportApi, Api>(importApiUrl, api, options);
+    }
+
+    /**
+     * @see IApisService.publishApi
+     */
+    public publishApi(apiId: string, info: PublishApi): Promise<void> {
+        console.info("[HubApisService] Importing an API design via the hub API");
+
+        let publishApiUrl: string = this.endpoint("/designs/:designId/publications", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Content-Type": "application/json" });
+
+        console.info("[HubApisService] Publishing an API Design: %s", publishApiUrl);
+        return this.httpPost<PublishApi>(publishApiUrl, info, options);
     }
 
     /**

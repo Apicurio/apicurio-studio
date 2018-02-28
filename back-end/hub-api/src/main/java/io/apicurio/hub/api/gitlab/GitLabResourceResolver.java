@@ -25,6 +25,8 @@ public class GitLabResourceResolver {
     private static Pattern pattern2 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*.ya?ml)");
     // TODO support "raw" URLs.  Example:  https://gitlab.com/Apicurio/api-samples/raw/master/3.0/simple-api.json
 
+    private static String template = "https://gitlab.com/:group/:project/blob/:branch/:resource";
+
     /**
      * Resolves a github URL into a resource object.  The URL must be of the proper format.
      * @param glUrl
@@ -59,6 +61,24 @@ public class GitLabResourceResolver {
         }
         
         return null;
+    }
+    
+    /**
+     * Creates a resource url from the information provided.
+     * @param group
+     * @param project
+     * @param branch
+     * @param resourcePath
+     */
+    public static String create(String group, String project, String branch, String resourcePath) {
+        String resource = resourcePath;
+        if (resource == null) {
+            resource = "";
+        }
+        if (resource.startsWith("/")) {
+            resource = resource.substring(1);
+        }
+        return template.replace(":group", group).replace(":project", project).replace(":branch", branch).replace(":resource", resource);
     }
 
 }

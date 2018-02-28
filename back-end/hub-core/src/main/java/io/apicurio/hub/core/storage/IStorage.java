@@ -25,6 +25,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -313,5 +314,14 @@ public interface IStorage {
      * @param to
      */
     public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to) throws StorageException;
+
+    /**
+     * Returns a collection of API publications (recorded whenever a user publishes an API).  This
+     * is a paged method similar to listApiDesignActivity().
+     * @param designId
+     * @param from
+     * @param to
+     */
+    public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException;
     
 }

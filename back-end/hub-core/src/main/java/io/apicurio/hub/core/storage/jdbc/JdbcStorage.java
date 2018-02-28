@@ -48,6 +48,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -975,6 +976,28 @@ public class JdbcStorage implements IStorage {
     }
 
     /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignPublications(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException {
+        logger.debug("Selecting publication activity for API Design: {} from {} to {}", designId, from, to);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiPublicationActivity();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, to - from)
+                        .bind(2, from)
+                        .map(ApiPublicationRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting contributors.", e);
+        }
+    }
+
+    
+    /**
      * A row mapper to read an api design from the DB (as a single row in a SELECT)
      * and return an ApiDesign instance.
      * @author eric.wittmann@gmail.com
@@ -1158,6 +1181,32 @@ public class JdbcStorage implements IStorage {
                 change.setOn(rs.getDate("created_on"));
                 change.setType(ApiContentType.fromId(rs.getInt("type")));
                 change.setVersion(rs.getLong("version"));
+                return change;
+            } catch (IOException e) {
+                throw new SQLException(e);
+            }
+        }
+
+    }
+
+    /**
+     * A row mapper to read a single row from the content db as an {@link ApiDesignChange}.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiPublicationRowMapper implements RowMapper<ApiPublication> {
+        
+        public static final ApiPublicationRowMapper instance = new ApiPublicationRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiPublication map(ResultSet rs, StatementContext ctx) throws SQLException {
+            try {
+                ApiPublication change = new ApiPublication();
+                change.setBy(rs.getString("created_by"));
+                change.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
+                change.setOn(rs.getDate("created_on"));
                 return change;
             } catch (IOException e) {
                 throw new SQLException(e);

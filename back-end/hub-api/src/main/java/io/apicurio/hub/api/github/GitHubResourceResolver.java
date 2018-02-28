@@ -34,6 +34,8 @@ public class GitHubResourceResolver {
     private static Pattern pattern2 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*.json)");
     private static Pattern pattern3 = Pattern.compile("https://github.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*.ya?ml)");
     private static Pattern pattern4 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*.ya?ml)");
+    
+    private static String template = "https://github.com/:org/:repo/blob/:branch/:resource";
 
     /**
      * Resolves a github URL into a resource object.  The URL must be of the proper format.
@@ -65,6 +67,24 @@ public class GitHubResourceResolver {
         }
 
         return null;
+    }
+    
+    /**
+     * Creates a resource url from the information provided.
+     * @param org
+     * @param repo
+     * @param branch
+     * @param resourcePath
+     */
+    public static String create(String org, String repo, String branch, String resourcePath) {
+        String resource = resourcePath;
+        if (resource == null) {
+            resource = "";
+        }
+        if (resource.startsWith("/")) {
+            resource = resource.substring(1);
+        }
+        return template.replace(":org", org).replace(":repo", repo).replace(":branch", branch).replace(":resource", resource);
     }
 
 }

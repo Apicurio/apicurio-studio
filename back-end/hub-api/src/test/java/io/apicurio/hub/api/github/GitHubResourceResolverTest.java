@@ -99,4 +99,16 @@ public class GitHubResourceResolverTest {
         Assert.assertEquals("pet-store.yaml", resource.getResourcePath());
     }
 
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.github.GitHubResourceResolver#create(String, String, String, String)}.
+     */
+    @Test
+    public void testCreate() {
+        String actual = GitHubResourceResolver.create("ORG", "REPO", "BRANCH", "RESOURCE");
+        Assert.assertEquals("https://github.com/ORG/REPO/blob/BRANCH/RESOURCE", actual);
+        
+        actual = GitHubResourceResolver.create("apicurio", "apicurio-studio", "master", "/platforms/swarm/pom.xml");
+        Assert.assertEquals("https://github.com/apicurio/apicurio-studio/blob/master/platforms/swarm/pom.xml", actual);
+    }
 }

@@ -19,6 +19,11 @@ import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} fr
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
 import {AceEditorComponent} from "ng2-ace-editor";
+import "brace/theme/eclipse";
+import "brace/theme/twilight";
+import "brace/mode/json";
+import "brace/mode/markdown";
+import "brace/mode/yaml";
 
 
 export enum CodeEditorTheme {
@@ -26,7 +31,7 @@ export enum CodeEditorTheme {
 }
 
 export enum CodeEditorMode {
-    Text, JSON, YAML
+    Text, JSON, YAML, Markdown
 }
 
 
@@ -47,8 +52,8 @@ export class CodeEditorComponent {
     public _debounceTime: number;
     public _debouncerSubscription: Subscription;
 
-    @Input() theme: CodeEditorTheme;
-    @Input() mode: CodeEditorMode;
+    @Input() theme: CodeEditorTheme = CodeEditorTheme.Light;
+    @Input() mode: CodeEditorMode = CodeEditorMode.Text;
     @Input() editorStyle: any;
 
     @Input()
@@ -94,6 +99,8 @@ export class CodeEditorComponent {
                 return 'json';
             case CodeEditorMode.Text:
                 return 'text';
+            case CodeEditorMode.Markdown:
+                return 'markdown';
             default:
                 return 'text';
         }

@@ -44,13 +44,14 @@ public class StartupServlet extends HttpServlet {
 
     @PostConstruct
     public void postConstruct() {
-        logger.info("------------------------------------------------");
-        logger.info("Starting up Apicurio Editing API");
-        logger.info("\tVersion:  " + version.getVersionString());
-        logger.info("\tBuilt On: " + version.getVersionDate().toString());
-        logger.info("\tBuild:    " + version.getVersionInfo());
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n------------------------------------------------");
+        builder.append("\nStarting up Apicurio Editing API");
+        builder.append("\n\tVersion:  " + version.getVersionString());
+        builder.append("\n\tBuilt On: " + version.getVersionDate().toString());
+        builder.append("\n\tBuild:    " + version.getVersionInfo());
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        logger.debug("\tNashorn:  " + (engine != null));
+        builder.append("\n\tNashorn:  " + (engine != null));
         boolean hasClass = false;
         try {
             Class<?> c = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
@@ -58,8 +59,9 @@ public class StartupServlet extends HttpServlet {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        logger.debug("\tNashorn Class:  " + hasClass);
-        logger.info("------------------------------------------------");
+        builder.append("\n\tNashorn Class:  " + hasClass);
+        builder.append("\n------------------------------------------------");
+        logger.info(builder.toString());
     }
 
 }

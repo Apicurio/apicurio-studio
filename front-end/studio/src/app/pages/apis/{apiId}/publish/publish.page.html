@@ -45,8 +45,8 @@
         </div>
         <div class="col-md-7">
             <div class="publishapi-panel panel panel-default">
-                <div class="panel-body">
-                    <h2>Publish API "{{ api.name }}"</h2>
+                <div class="panel-body" *ngIf="!published">
+                    <h2>Publish API "{{ api.name }}"?</h2>
                     <form id="publish-form" class="form-horizontal" (submit)="publishApi()">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Publish To</label>
@@ -68,9 +68,9 @@
                             </div>
                         </div>
 
-                        <github-resource *ngIf="isSelected('GitHub')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></github-resource>
-                        <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></gitlab-resource>
-                        <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel(model)" (onValid)="modelValid = $event"></bitbucket-resource>
+                        <github-resource *ngIf="isSelected('GitHub')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></github-resource>
+                        <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></gitlab-resource>
+                        <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
                             <label class="col-sm-2 control-label" for="format">Branch</label>
@@ -81,8 +81,16 @@
                         </div>
 
                         <div class="form-group" *ngIf="_selectedType">
+                            <label class="col-sm-2 control-label">Commit Message</label>
+                            <div class="col-sm-10">
+                                <code-editor [mode]="commitMessageMode()" [(text)]="commitMessage"
+                                             [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="_selectedType">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-primary" [disabled]="!modelValid || publishing">
+                                <button type="submit" class="btn btn-primary" [disabled]="!isValid() || publishing">
                                     <span *ngIf="!publishing">Publish API</span>
                                     <span *ngIf="publishing"><span class="spinner spinner-xs spinner-inline"></span> Publishing...</span>
                                 </button>
@@ -91,15 +99,23 @@
                     </form>
                 </div>
 
+                <div class="panel-body" *ngIf="published">
+                    <div class="blank-slate-pf " id="">
+                        <div class="blank-slate-pf-icon">
+                            <span class="pficon pficon pficon-add-circle-o"></span>
+                        </div>
+                        <h1>API Published Successfully</h1>
+                        <p>
+                            Your API <strong>{{ api.name }}</strong> has been successfully published to {{ _selectedType }}.  No additional
+                            steps need to be taken.
+                        </p>
+                        <div class="blank-slate-pf-main-action">
+                            <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg">OK</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <!--
-            <div class="alert alert-warning" *ngIf="publishError">
-                <span class="pficon pficon-warning-triangle-o"></span>
-                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
-                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
-                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
-            </div>
-            -->
         </div>
     </div>
 

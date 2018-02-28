@@ -81,7 +81,7 @@ export class PageErrorComponent {
      */
     private errorObj(): any {
         if (this.eobj === null) {
-            this.eobj = this.error.json();
+            this.eobj = this.error.error;
         }
         return this.eobj;
     }

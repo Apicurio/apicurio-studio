@@ -21,7 +21,7 @@ package io.apicurio.hub.core.beans;
  */
 public enum ApiContentType {
     
-    Document(0), Command(1);
+    Document(0), Command(1), Publish(2);
 
     private final int id;
     
@@ -49,6 +49,9 @@ public enum ApiContentType {
         }
         if (id == 1) {
             return Command;
+        }
+        if (id == 2) {
+            return Publish;
         }
         return null;
     }

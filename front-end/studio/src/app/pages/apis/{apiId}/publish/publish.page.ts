@@ -25,6 +25,8 @@ import {IAuthenticationService} from "../../../../services/auth.service";
 import {ILinkedAccountsService} from "../../../../services/accounts.service";
 import {LinkedAccount} from "../../../../models/linked-account.model";
 import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {CodeEditorMode} from "../../../../components/common/code-editor.component";
+import {PublishApi} from "../../../../models/publish-api.model";
 
 @Component({
     moduleId: module.id,
@@ -40,9 +42,11 @@ export class PublishPageComponent extends AbstractPageComponent {
     public _selectedType: string;
     public model: any;
     public modelValid: any;
-    public format: string = "yaml";
+    public format: string = "YAML";
+    public commitMessage: string;
 
     public publishing: boolean = false;
+    public published: boolean = false;
 
     /**
      * Constructor.
@@ -108,8 +112,27 @@ export class PublishPageComponent extends AbstractPageComponent {
         if (!this.modelValid) {
             return;
         }
-        // TODO publish the API now!
+
         this.publishing = true;
+        let info: PublishApi = new PublishApi();
+        info.type = this._selectedType;
+        info.org = this.model.org;
+        info.repo = this.model.repo;
+        info.team = this.model.team;
+        info.group = this.model.group;
+        info.project = this.model.project;
+        info.branch = this.model.branch;
+        info.resource = this.model.resource;
+        info.format = this.format;
+        info.commitMessage = this.commitMessage;
+
+        this.apis.publishApi(this.api.id, info).then( () => {
+            this.publishing = false;
+            this.published = true;
+        }).catch( error => {
+            this.publishing = false;
+            this.error(error);
+        });
     }
 
     public setPublishTo(target: string): void {
@@ -121,20 +144,34 @@ export class PublishPageComponent extends AbstractPageComponent {
 
     public setModel(model: any): void {
         this.model = model;
-        if (this.model.resource && this.model.resource.endsWith(".json")) {
-            this.format = "json";
+        if (this.model && this.model.resource && this.model.resource.endsWith(".json")) {
+            this.format = "JSON";
         }
+        if (this.model && this.model.resource && this.model.resource.endsWith(".yaml")) {
+            this.format = "YAML";
+        }
+        if (this.model && this.model.resource && this.model.resource.endsWith(".yml")) {
+            this.format = "YAML";
+        }
+    }
+
+    public isValid(): boolean {
+        return this.modelValid && this.commitMessage && this.commitMessage.length > 0;
+    }
+
+    public commitMessageMode(): CodeEditorMode {
+        return CodeEditorMode.Markdown;
     }
 
     public formatOptions(): DropDownOption[] {
         return [
             {
                 name: "YAML",
-                value: "yaml"
+                value: "YAML"
             },
             {
                 name: "JSON",
-                value: "json"
+                value: "JSON"
             }
         ];
     }

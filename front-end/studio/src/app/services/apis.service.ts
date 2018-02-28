@@ -28,6 +28,7 @@ import {Invitation} from "../models/invitation.model";
 import {ApiEditorUser} from "../models/editor-user.model";
 import {ApiDesignChange} from "../models/api-design-change.model";
 import {AbstractHubService} from "./hub";
+import {PublishApi} from "../models/publish-api.model";
 
 
 export interface IConnectionHandler {
@@ -134,6 +135,14 @@ export abstract class IApisService extends AbstractHubService {
      * @param apiId the ID of the api
      */
     abstract getApi(apiId: string): Promise<Api>;
+
+    /**
+     * Publishes an API to a source control target.
+     * @param {string} apiId
+     * @param {PublishApi} info
+     * @return {Promise<void>}
+     */
+    abstract publishApi(apiId: string, info: PublishApi): Promise<void>;
 
     /**
      * Starts a new (or connects to an existing) editing session for the given API Design (by ID).

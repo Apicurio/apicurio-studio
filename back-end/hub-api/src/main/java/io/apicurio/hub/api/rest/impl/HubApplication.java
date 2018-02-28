@@ -21,6 +21,8 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -69,12 +71,24 @@ public class HubApplication extends Application {
 
     @PostConstruct
     public void postConstruct() {
-        logger.info("------------------------------------------------");
-        logger.info("Starting up Apicurio Hub API");
-        logger.info("\tVersion:  " + version.getVersionString());
-        logger.info("\tBuilt On: " + version.getVersionDate().toString());
-        logger.info("\tBuild:    " + version.getVersionInfo());
-        logger.info("------------------------------------------------");
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n------------------------------------------------");
+        builder.append("\nStarting up Apicurio Hub API");
+        builder.append("\n\tVersion:  " + version.getVersionString());
+        builder.append("\n\tBuilt On: " + version.getVersionDate().toString());
+        builder.append("\n\tBuild:    " + version.getVersionInfo());
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        builder.append("\n\tNashorn:  " + (engine != null));
+        boolean hasClass = false;
+        try {
+            Class<?> c = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
+            hasClass = c != null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        builder.append("\n\tNashorn Class:  " + hasClass);
+        builder.append("\n------------------------------------------------");
+        logger.info(builder.toString());
     }
 
 }

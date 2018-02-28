@@ -44,9 +44,12 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
+import io.apicurio.hub.api.beans.NewApiPublication;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.api.connectors.ISourceConnector;
@@ -55,15 +58,18 @@ import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
@@ -667,5 +673,117 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getPublications(java.lang.String, java.lang.Integer, java.lang.Integer)
+     */
+    @Override
+    public Collection<ApiPublication> getPublications(String designId, Integer start, Integer end)
+            throws ServerError, NotFoundException {
+        int from = 0;
+        int to = 20;
+        if (start != null) {
+            from = start.intValue();
+        }
+        if (end != null) {
+            to = end.intValue();
+        }
+        
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            return this.storage.listApiDesignPublications(designId, from, to);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#publishApi(java.lang.String, io.apicurio.hub.api.beans.NewApiPublication)
+     */
+    @Override
+    public void publishApi(String designId, NewApiPublication info) throws ServerError, NotFoundException {
+        LinkedAccountType type = info.getType();
+        
+        try {
+            // First step - publish the content to the soruce control system
+            ISourceConnector connector = this.sourceConnectorFactory.createConnector(type);
+            String resourceUrl = info.toResourceUrl();
+            String formattedContent = getApiContent(designId, info.getFormat());
+            try {
+                ResourceContent content = connector.getResourceContent(resourceUrl);
+                content.setContent(formattedContent);
+                connector.updateResourceContent(resourceUrl, info.getCommitMessage(), null, content);
+            } catch (NotFoundException nfe) {
+                connector.createResourceContent(resourceUrl, info.getCommitMessage(), formattedContent);
+            }
+            
+            // Followup step - store a row in the api_content table
+            try {
+                String user = this.security.getCurrentUser().getLogin();
+                String publicationData = createPublicationData(info);
+                storage.addContent(user, designId, ApiContentType.Publish, publicationData);
+            } catch (Exception e) {
+                logger.error("Failed to record API publication in database.", e);
+            }
+        } catch (SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
 
+    /**
+     * Creates the JSON data to be stored in the data row representing a "publish API" event
+     * (also known as an API publication).
+     * @param info
+     */
+    private String createPublicationData(NewApiPublication info) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode data = JsonNodeFactory.instance.objectNode();
+            data.set("type", JsonNodeFactory.instance.textNode(info.getType().name()));
+            data.set("org", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("repo", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("team", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("group", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("project", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("branch", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("resource", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("format", JsonNodeFactory.instance.textNode(info.getFormat().name()));
+            data.set("commitMessage", JsonNodeFactory.instance.textNode(info.getCommitMessage()));
+            return mapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Gets the current content of an API.
+     * @param designId
+     * @param format
+     * @throws ServerError
+     * @throws NotFoundException
+     */
+    private String getApiContent(String designId, FormatType format) throws ServerError, NotFoundException {
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
+            List<String> commands = new ArrayList<>(apiCommands.size());
+            for (ApiDesignCommand apiCommand : apiCommands) {
+                commands.add(apiCommand.getCommand());
+            }
+            String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+            
+            // Convert to yaml if necessary
+            if (format == FormatType.YAML) {
+                content = FormatUtils.jsonToYaml(content);
+            }
+            
+            return content;
+        } catch (StorageException | OaiCommandException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
 }

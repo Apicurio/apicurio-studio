@@ -31,8 +31,7 @@
         <!-- Third Party Libraries -->
         <dependency>
             <groupId>org.jdbi</groupId>
-            <artifactId>jdbi3</artifactId>
-            <version>3.0.0-beta1</version>
+            <artifactId>jdbi3-core</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

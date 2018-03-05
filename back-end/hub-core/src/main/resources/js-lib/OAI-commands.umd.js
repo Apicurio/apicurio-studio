@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('oai-ts-core')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'oai-ts-core'], factory) :
-	(factory((global.OAI_commands = global.OAI_commands || {}),global.OAI));
-}(this, (function (exports,oaiTsCore) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('oai-ts-core'), require('oai-ts-core/src/visitors/visitor.base')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'oai-ts-core', 'oai-ts-core/src/visitors/visitor.base'], factory) :
+	(factory((global.OAI_commands = global.OAI_commands || {}),global.OAI,global.oaiTsCore_src_visitors_visitor_base));
+}(this, (function (exports,oaiTsCore,oaiTsCore_src_visitors_visitor_base) { 'use strict';
 
 /**
  * @license
@@ -1587,8 +1587,15 @@ var ChangeResponseTypeCommand_20 = (function (_super) {
         if (this._newType.isArray()) {
             response.schema.type = "array";
             response.schema.items = response.schema.createItemsSchema();
-            response.schema.items.type = this._newType.of.type;
-            response.schema.items.format = this._newType.of.as;
+            if (this._newType.of) {
+                if (this._newType.of.isSimpleType()) {
+                    response.schema.items.type = this._newType.of.type;
+                    response.schema.items.format = this._newType.of.as;
+                }
+                if (this._newType.of.isRef()) {
+                    response.schema.items.$ref = this._newType.of.type;
+                }
+            }
         }
     };
     /**
@@ -6240,6 +6247,656 @@ var ChangeServerCommand = (function (_super) {
     return ChangeServerCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createSetExampleCommand(document, parent, example, nameOrContentType) {
+    if (document.getSpecVersion() === "2.0") {
+        return new SetExampleCommand_20(parent, example, nameOrContentType);
+    }
+    else {
+        return new SetExampleCommand_30(parent, example, nameOrContentType);
+    }
+}
+/**
+ * A command used to set the Example for a 3.0 MediaType or a 2.0 Response.
+ */
+var SetExampleCommand = (function (_super) {
+    __extends$47(SetExampleCommand, _super);
+    /**
+     * Constructor.
+     * @param {Oas30MediaType | Oas20Response} parent
+     * @param example
+     */
+    function SetExampleCommand(parent, example) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        _this._newExample = example;
+        return _this;
+    }
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    SetExampleCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    SetExampleCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    return SetExampleCommand;
+}(AbstractCommand));
+var SetExampleCommand_20 = (function (_super) {
+    __extends$47(SetExampleCommand_20, _super);
+    /**
+     * C'tor.
+     * @param {Oas20Response} parent
+     * @param example
+     * @param {string} contentType
+     */
+    function SetExampleCommand_20(parent, example, contentType) {
+        var _this = _super.call(this, parent, example) || this;
+        _this._nullExamples = false;
+        _this._newContentType = contentType;
+        return _this;
+    }
+    SetExampleCommand_20.prototype.type = function () {
+        return "SetExampleCommand_20";
+    };
+    /**
+     * Sets the example on the response object.
+     * @param document
+     */
+    SetExampleCommand_20.prototype.execute = function (document) {
+        console.info("[SetExampleCommand_20] Executing.");
+        this._oldValue = null;
+        var response = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(response)) {
+            return;
+        }
+        if (!response.examples) {
+            response.examples = response.createExample();
+            this._nullExamples = true;
+        }
+        this._oldValue = response.examples.example(this._newContentType);
+        response.examples.addExample(this._newContentType, this._newExample);
+    };
+    /**
+     * Reverts the example to the previous value.
+     * @param {OasDocument} document
+     */
+    SetExampleCommand_20.prototype.undo = function (document) {
+        console.info("[SetExampleCommand_20] Reverting.");
+        var response = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(response)) {
+            return;
+        }
+        if (!response.examples) {
+            return;
+        }
+        if (this._nullExamples) {
+            response.examples = null;
+            return;
+        }
+        if (this.isNullOrUndefined(this._oldValue)) {
+            response.examples.removeExample(this._newContentType);
+        }
+        else {
+            response.examples.addExample(this._newContentType, this._oldValue);
+        }
+    };
+    return SetExampleCommand_20;
+}(SetExampleCommand));
+var SetExampleCommand_30 = (function (_super) {
+    __extends$47(SetExampleCommand_30, _super);
+    /**
+     * Constructor.
+     * @param {Oas30MediaType} parent
+     * @param example
+     * @param exampleName
+     */
+    function SetExampleCommand_30(parent, example, exampleName) {
+        var _this = _super.call(this, parent, example) || this;
+        _this._newExampleName = exampleName;
+        return _this;
+    }
+    SetExampleCommand_30.prototype.type = function () {
+        return "SetExampleCommand_30";
+    };
+    /**
+     * Sets the example on the MediaType object.
+     * @param document
+     */
+    SetExampleCommand_30.prototype.execute = function (document) {
+        console.info("[SetExampleCommand_30] Executing.");
+        this._oldValue = null;
+        this._nullExample = false;
+        var mediaType = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(mediaType)) {
+            return;
+        }
+        if (!this.isNullOrUndefined(this._newExampleName)) {
+            if (this.isNullOrUndefined(mediaType.getExample(this._newExampleName))) {
+                mediaType.addExample(mediaType.createExample(this._newExampleName));
+                this._nullExample = true;
+            }
+            else {
+                this._oldValue = mediaType.getExample(this._newExampleName).value;
+            }
+            mediaType.getExample(this._newExampleName).value = this._newExample;
+        }
+        else {
+            this._oldValue = mediaType.example;
+            mediaType.example = this._newExample;
+        }
+    };
+    /**
+     * Reverts the example to the previous value.
+     * @param {OasDocument} document
+     */
+    SetExampleCommand_30.prototype.undo = function (document) {
+        console.info("[SetExampleCommand_30] Reverting.");
+        var mediaType = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(mediaType)) {
+            return;
+        }
+        if (!this.isNullOrUndefined(this._newExampleName)) {
+            if (this._nullExample) {
+                mediaType.removeExample(this._newExampleName);
+            }
+            else {
+                mediaType.getExample(this._newExampleName).value = this._oldValue;
+            }
+        }
+        else {
+            mediaType.example = this._oldValue;
+            this._oldValue = null;
+        }
+    };
+    return SetExampleCommand_30;
+}(SetExampleCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createRenameSchemaDefinitionCommand(document, oldName, newName) {
+    if (document.getSpecVersion() === "2.0") {
+        return new RenameSchemaDefinitionCommand_20(oldName, newName);
+    }
+    else {
+        return new RenameSchemaDefinitionCommand_30(oldName, newName);
+    }
+}
+/**
+ * A command used to rename a schema definition, along with all references to it.
+ */
+var RenameSchemaDefinitionCommand = (function (_super) {
+    __extends$48(RenameSchemaDefinitionCommand, _super);
+    /**
+     * C'tor.
+     * @param {string} pathItemName
+     * @param obj
+     */
+    function RenameSchemaDefinitionCommand(oldName, newName) {
+        var _this = _super.call(this) || this;
+        _this._oldName = oldName;
+        _this._newName = newName;
+        return _this;
+    }
+    /**
+     * Adds the new pathItem to the document.
+     * @param document
+     */
+    RenameSchemaDefinitionCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[RenameSchemaDefinitionCommand] Executing.");
+        this._references = [];
+        if (this._renameSchemaDefinition(document, this._oldName, this._newName)) {
+            var oldRef = this._nameToReference(this._oldName);
+            var newRef_1 = this._nameToReference(this._newName);
+            var schemaFinder = new SchemaRefFinder(oldRef);
+            var schemas = schemaFinder.findIn(document);
+            schemas.forEach(function (schema) {
+                _this._references.push(_this.oasLibrary().createNodePath(schema));
+                schema.$ref = newRef_1;
+            });
+        }
+    };
+    /**
+     * Removes the pathItem.
+     * @param document
+     */
+    RenameSchemaDefinitionCommand.prototype.undo = function (document) {
+        console.info("[RenameSchemaDefinitionCommand] Reverting.");
+        if (this._renameSchemaDefinition(document, this._newName, this._oldName)) {
+            var oldRef_1 = this._nameToReference(this._oldName);
+            if (this._references) {
+                this._references.forEach(function (ref) {
+                    var schema = ref.resolve(document);
+                    schema.$ref = oldRef_1;
+                });
+            }
+        }
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    RenameSchemaDefinitionCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._references = [];
+        if (this._references) {
+            this._references.forEach(function (refPath) {
+                obj._references.push(MarshallUtils.marshallNodePath(refPath));
+            });
+        }
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    RenameSchemaDefinitionCommand.prototype.unmarshall = function (obj) {
+        var _this = this;
+        _super.prototype.unmarshall.call(this, obj);
+        this._references = [];
+        if (obj._references) {
+            obj._references.forEach(function (refPathString) {
+                _this._references.push(MarshallUtils.unmarshallNodePath(refPathString));
+            });
+        }
+    };
+    return RenameSchemaDefinitionCommand;
+}(AbstractCommand));
+/**
+ * The OAI 2.0 impl.
+ */
+var RenameSchemaDefinitionCommand_20 = (function (_super) {
+    __extends$48(RenameSchemaDefinitionCommand_20, _super);
+    function RenameSchemaDefinitionCommand_20() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RenameSchemaDefinitionCommand_20.prototype._nameToReference = function (name) {
+        return "#/definitions/" + name;
+    };
+    RenameSchemaDefinitionCommand_20.prototype._renameSchemaDefinition = function (document, fromName, toName) {
+        if (!document.definitions) {
+            return false;
+        }
+        if (document.definitions.definition(toName)) {
+            return false;
+        }
+        var schemaDef = document.definitions.removeDefinition(fromName);
+        schemaDef["_definitionName"] = toName;
+        document.definitions.addDefinition(toName, schemaDef);
+        return true;
+    };
+    RenameSchemaDefinitionCommand_20.prototype.type = function () {
+        return "RenameSchemaDefinitionCommand_20";
+    };
+    return RenameSchemaDefinitionCommand_20;
+}(RenameSchemaDefinitionCommand));
+/**
+ * The OAI 3.0 impl.
+ */
+var RenameSchemaDefinitionCommand_30 = (function (_super) {
+    __extends$48(RenameSchemaDefinitionCommand_30, _super);
+    function RenameSchemaDefinitionCommand_30() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RenameSchemaDefinitionCommand_30.prototype._nameToReference = function (name) {
+        return "#/components/schemas/" + name;
+    };
+    RenameSchemaDefinitionCommand_30.prototype._renameSchemaDefinition = function (document, fromName, toName) {
+        if (!document.components || !document.components.schemas) {
+            return false;
+        }
+        if (document.components.schemas[toName]) {
+            return false;
+        }
+        var schemaDef = document.components.schemas[fromName];
+        document.components.schemas[fromName] = null;
+        delete document.components.schemas[fromName];
+        schemaDef["_name"] = toName;
+        document.components.schemas[toName] = schemaDef;
+        return true;
+    };
+    RenameSchemaDefinitionCommand_30.prototype.type = function () {
+        return "RenameSchemaDefinitionCommand_30";
+    };
+    return RenameSchemaDefinitionCommand_30;
+}(RenameSchemaDefinitionCommand));
+/**
+ * Class used to find all schemas that reference a particular schema definition.
+ */
+var SchemaRefFinder = (function (_super) {
+    __extends$48(SchemaRefFinder, _super);
+    function SchemaRefFinder(reference) {
+        var _this = _super.call(this) || this;
+        _this._schemas = [];
+        _this._reference = reference;
+        return _this;
+    }
+    SchemaRefFinder.prototype.findIn = function (document) {
+        oaiTsCore.OasVisitorUtil.visitTree(document, this);
+        return this._schemas;
+    };
+    SchemaRefFinder.prototype._accept = function (schema) {
+        return schema.$ref && schema.$ref == this._reference;
+    };
+    SchemaRefFinder.prototype.processSchema = function (schema) {
+        if (this._accept(schema)) {
+            this._schemas.push(schema);
+        }
+    };
+    SchemaRefFinder.prototype.visitSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitSchemaDefinition = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitPropertySchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitAdditionalPropertiesSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitAllOfSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitItemsSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitAnyOfSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitOneOfSchema = function (node) {
+        this.processSchema(node);
+    };
+    SchemaRefFinder.prototype.visitNotSchema = function (node) {
+        this.processSchema(node);
+    };
+    return SchemaRefFinder;
+}(oaiTsCore_src_visitors_visitor_base.OasCombinedVisitorAdapter));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createAddExampleCommand(document, parent, example, exampleName, exampleSummary, exampleDescription) {
+    if (document.getSpecVersion() === "2.0") {
+        throw new Error("Named examples were introduced in OpenAPI 3.0.0.");
+    }
+    else {
+        return new AddExampleCommand_30(parent, example, exampleName, exampleSummary, exampleDescription);
+    }
+}
+/**
+ * A command used to add an Example for a 3.0 MediaType.  If an example with the same name
+ * already exists, this command does nothing.
+ */
+var AddExampleCommand_30 = (function (_super) {
+    __extends$49(AddExampleCommand_30, _super);
+    /**
+     * Constructor.
+     * @param {Oas30MediaType} parent
+     * @param example
+     * @param {string} exampleName
+     * @param {string} exampleSummary
+     * @param {string} exampleDescription
+     */
+    function AddExampleCommand_30(parent, example, exampleName, exampleSummary, exampleDescription) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        _this._newExampleValue = example;
+        _this._newExampleName = exampleName;
+        _this._newExampleSummary = exampleSummary;
+        _this._newExampleDescription = exampleDescription;
+        return _this;
+    }
+    AddExampleCommand_30.prototype.type = function () {
+        return "AddExampleCommand_30";
+    };
+    /**
+     * Executes the command.
+     * @param {OasDocument} document
+     */
+    AddExampleCommand_30.prototype.execute = function (document) {
+        console.info("[AddExampleCommand_30] Executing.");
+        this._exampleAdded = false;
+        var mediaType = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(mediaType)) {
+            return;
+        }
+        if (this.isNullOrUndefined(mediaType.examples)) {
+            mediaType.examples = new oaiTsCore.Oas30ExampleItems();
+        }
+        if (!this.isNullOrUndefined(mediaType.examples[this._newExampleName])) {
+            return;
+        }
+        var example = mediaType.createExample(this._newExampleName);
+        example.summary = this._newExampleSummary;
+        example.description = this._newExampleDescription;
+        example.value = this._newExampleValue;
+        mediaType.examples[this._newExampleName] = example;
+        this._exampleAdded = true;
+    };
+    /**
+     * Undoes the command.
+     * @param {OasDocument} document
+     */
+    AddExampleCommand_30.prototype.undo = function (document) {
+        console.info("[AddExampleCommand_30] Reverting.");
+        if (!this._exampleAdded) {
+            return;
+        }
+        var mediaType = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(mediaType) || this.isNullOrUndefined(mediaType.examples)) {
+            return;
+        }
+        delete mediaType.examples[this._newExampleName];
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    AddExampleCommand_30.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    AddExampleCommand_30.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    return AddExampleCommand_30;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2018 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteExampleCommand(document, example) {
+    if (document.getSpecVersion() === "2.0") {
+        throw new Error("Media Types are not supported in OpenAPI 2.0.");
+    }
+    else {
+        return new DeleteExampleCommand_30(example);
+    }
+}
+/**
+ * A command used to delete a single mediaType from an operation.
+ */
+var DeleteExampleCommand_30 = (function (_super) {
+    __extends$50(DeleteExampleCommand_30, _super);
+    /**
+     * C'tor.
+     * @param {Oas30Example} example
+     */
+    function DeleteExampleCommand_30(example) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(example)) {
+            _this._exampleName = example.name();
+            _this._mediaTypePath = _this.oasLibrary().createNodePath(example.parent());
+        }
+        return _this;
+    }
+    DeleteExampleCommand_30.prototype.type = function () {
+        return "DeleteExampleCommand_30";
+    };
+    /**
+     * Deletes the example.
+     * @param document
+     */
+    DeleteExampleCommand_30.prototype.execute = function (document) {
+        console.info("[DeleteExampleCommand] Executing.");
+        this._oldExample = null;
+        var mediaType = this._mediaTypePath.resolve(document);
+        if (this.isNullOrUndefined(mediaType) || this.isNullOrUndefined(mediaType.getExample(this._exampleName))) {
+            console.debug("[DeleteExampleCommand] No example named: " + this._exampleName);
+            return;
+        }
+        console.info("[DeleteExampleCommand] Removing example.");
+        var example = mediaType.removeExample(this._exampleName);
+        this._oldExample = this.oasLibrary().writeNode(example);
+        console.info("[DeleteExampleCommand] Old Example: " + JSON.stringify(this._oldExample));
+    };
+    /**
+     * Restore the old (deleted) example.
+     * @param document
+     */
+    DeleteExampleCommand_30.prototype.undo = function (document) {
+        console.info("[DeleteExampleCommand] Reverting.");
+        if (this.isNullOrUndefined(this._oldExample)) {
+            return;
+        }
+        var mediaType = this._mediaTypePath.resolve(document);
+        if (this.isNullOrUndefined(mediaType)) {
+            console.info("[DeleteExampleCommand] No media type found.");
+            return;
+        }
+        var example = mediaType.createExample(this._exampleName);
+        this.oasLibrary().readNode(this._oldExample, example);
+        mediaType.addExample(example);
+        console.info("[DeleteExampleCommand] Example added: " + JSON.stringify(this.oasLibrary().writeNode(mediaType)));
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteExampleCommand_30.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._mediaTypePath = MarshallUtils.marshallNodePath(obj._mediaTypePath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteExampleCommand_30.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._mediaTypePath = MarshallUtils.unmarshallNodePath(this._mediaTypePath);
+    };
+    return DeleteExampleCommand_30;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -6258,6 +6915,7 @@ var ChangeServerCommand = (function (_super) {
  * limitations under the License.
  */
 var commandFactory = {
+    "AddExampleCommand_30": function () { return new AddExampleCommand_30(null, null, null, null, null); },
     "AddPathItemCommand_20": function () { return new AddPathItemCommand_20(null, null); },
     "AddPathItemCommand_30": function () { return new AddPathItemCommand_30(null, null); },
     "AddSchemaDefinitionCommand_20": function () { return new AddSchemaDefinitionCommand_20(null); },
@@ -6290,6 +6948,7 @@ var commandFactory = {
     "DeleteAllParametersCommand_30": function () { return new DeleteAllParametersCommand_30(null, null); },
     "DeleteAllPropertiesCommand_20": function () { return new DeleteAllPropertiesCommand_20(null); },
     "DeleteAllPropertiesCommand_30": function () { return new DeleteAllPropertiesCommand_30(null); },
+    "DeleteExampleCommand_30": function () { return new DeleteExampleCommand_30(null); },
     "DeleteMediaTypeCommand": function () { return new DeleteMediaTypeCommand(null); },
     "DeleteOperationCommand_20": function () { return new DeleteOperationCommand_20(null, null); },
     "DeleteOperationCommand_30": function () { return new DeleteOperationCommand_30(null, null); },
@@ -6335,12 +6994,16 @@ var commandFactory = {
     "NewServerCommand": function () { return new NewServerCommand(null, null); },
     "NewTagCommand_20": function () { return new NewTagCommand_20(null); },
     "NewTagCommand_30": function () { return new NewTagCommand_30(null); },
+    "RenameSchemaDefinitionCommand_20": function () { return new RenameSchemaDefinitionCommand_20(null, null); },
+    "RenameSchemaDefinitionCommand_30": function () { return new RenameSchemaDefinitionCommand_30(null, null); },
     "ReplaceOperationCommand_20": function () { return new ReplaceOperationCommand_20(null, null); },
     "ReplaceOperationCommand_30": function () { return new ReplaceOperationCommand_30(null, null); },
     "ReplacePathItemCommand_20": function () { return new ReplacePathItemCommand_20(null, null); },
     "ReplacePathItemCommand_30": function () { return new ReplacePathItemCommand_30(null, null); },
     "ReplaceSchemaDefinitionCommand_20": function () { return new ReplaceSchemaDefinitionCommand_20(null, null); },
     "ReplaceSchemaDefinitionCommand_30": function () { return new ReplaceSchemaDefinitionCommand_30(null, null); },
+    "SetExampleCommand_20": function () { return new SetExampleCommand_20(null, null, null); },
+    "SetExampleCommand_30": function () { return new SetExampleCommand_30(null, null); },
 };
 var MarshallUtils = (function () {
     function MarshallUtils() {
@@ -6750,6 +7413,8 @@ exports.MarshallUtils = MarshallUtils;
 exports.SimplifiedType = SimplifiedType;
 exports.SimplifiedParameterType = SimplifiedParameterType;
 exports.SimplifiedPropertyType = SimplifiedPropertyType;
+exports.createAddExampleCommand = createAddExampleCommand;
+exports.AddExampleCommand_30 = AddExampleCommand_30;
 exports.createAddPathItemCommand = createAddPathItemCommand;
 exports.AddPathItemCommand = AddPathItemCommand;
 exports.AddPathItemCommand_20 = AddPathItemCommand_20;
@@ -6821,6 +7486,8 @@ exports.createDeleteContactCommand = createDeleteContactCommand;
 exports.AbstractDeleteContactCommand = AbstractDeleteContactCommand;
 exports.DeleteContactCommand_20 = DeleteContactCommand_20;
 exports.DeleteContactCommand_30 = DeleteContactCommand_30;
+exports.createDeleteExampleCommand = createDeleteExampleCommand;
+exports.DeleteExampleCommand_30 = DeleteExampleCommand_30;
 exports.createDeleteLicenseCommand = createDeleteLicenseCommand;
 exports.AbstractDeleteLicenseCommand = AbstractDeleteLicenseCommand;
 exports.DeleteLicenseCommand_20 = DeleteLicenseCommand_20;
@@ -6904,6 +7571,11 @@ exports.createNewTagCommand = createNewTagCommand;
 exports.NewTagCommand = NewTagCommand;
 exports.NewTagCommand_20 = NewTagCommand_20;
 exports.NewTagCommand_30 = NewTagCommand_30;
+exports.createRenameSchemaDefinitionCommand = createRenameSchemaDefinitionCommand;
+exports.RenameSchemaDefinitionCommand = RenameSchemaDefinitionCommand;
+exports.RenameSchemaDefinitionCommand_20 = RenameSchemaDefinitionCommand_20;
+exports.RenameSchemaDefinitionCommand_30 = RenameSchemaDefinitionCommand_30;
+exports.SchemaRefFinder = SchemaRefFinder;
 exports.ReplaceNodeCommand = ReplaceNodeCommand;
 exports.createReplaceOperationCommand = createReplaceOperationCommand;
 exports.AbstractReplaceOperationCommand = AbstractReplaceOperationCommand;
@@ -6916,6 +7588,10 @@ exports.ReplacePathItemCommand_30 = ReplacePathItemCommand_30;
 exports.createReplaceSchemaDefinitionCommand = createReplaceSchemaDefinitionCommand;
 exports.ReplaceSchemaDefinitionCommand_20 = ReplaceSchemaDefinitionCommand_20;
 exports.ReplaceSchemaDefinitionCommand_30 = ReplaceSchemaDefinitionCommand_30;
+exports.createSetExampleCommand = createSetExampleCommand;
+exports.SetExampleCommand = SetExampleCommand;
+exports.SetExampleCommand_20 = SetExampleCommand_20;
+exports.SetExampleCommand_30 = SetExampleCommand_30;
 exports.OtCommand = OtCommand;
 exports.OtEngine = OtEngine;
 

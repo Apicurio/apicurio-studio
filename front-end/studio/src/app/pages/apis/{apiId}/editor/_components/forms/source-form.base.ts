@@ -212,6 +212,8 @@ export abstract class SourceFormComponent<T extends OasNode> {
             return;
         }
         this._mode = "design";
+        this._sourceText = null;
+        this._sourceJsObj = null;
     }
 
     public enableSourceMode(): void {

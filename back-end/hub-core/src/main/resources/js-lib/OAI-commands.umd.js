@@ -1,8 +1,8 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('oai-ts-core'), require('oai-ts-core/src/visitors/visitor.base')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'oai-ts-core', 'oai-ts-core/src/visitors/visitor.base'], factory) :
-	(factory((global.OAI_commands = global.OAI_commands || {}),global.OAI,global.oaiTsCore_src_visitors_visitor_base));
-}(this, (function (exports,oaiTsCore,oaiTsCore_src_visitors_visitor_base) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('oai-ts-core')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'oai-ts-core'], factory) :
+	(factory((global.OAI_commands = global.OAI_commands || {}),global.OAI));
+}(this, (function (exports,oaiTsCore) { 'use strict';
 
 /**
  * @license
@@ -6668,7 +6668,7 @@ var SchemaRefFinder = (function (_super) {
         this.processSchema(node);
     };
     return SchemaRefFinder;
-}(oaiTsCore_src_visitors_visitor_base.OasCombinedVisitorAdapter));
+}(oaiTsCore.OasCombinedVisitorAdapter));
 
 /**
  * @license

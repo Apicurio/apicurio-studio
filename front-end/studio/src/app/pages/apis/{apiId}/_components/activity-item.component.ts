@@ -362,7 +362,7 @@ export class ActivityItemComponent {
                 break;
             case "NewTagCommand_20":
             case "NewTagCommand_30":
-                rval = "added a new Security Scheme named '" + this.command()["_tagName"] + "'.";
+                rval = "added a new Tag named '" + this.command()["_tagName"] + "'.";
                 break;
             case "ReplaceOperationCommand_20":
             case "ReplaceOperationCommand_30":

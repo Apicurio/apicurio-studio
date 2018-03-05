@@ -25,7 +25,7 @@
     "@angular/router": "^5.2.0",
     "patternfly": "3.40.0",
     "oai-ts-core": "0.2.9",
-    "oai-ts-commands": "0.2.19",
+    "oai-ts-commands": "0.2.20",
     "core-js": "^2.4.1",
     "ngx-bootstrap": "2.0.2",
     "ng2-ace-editor": "0.3.4",

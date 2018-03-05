@@ -3831,9 +3831,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-oai-ts-commands@0.2.19:
-  version "0.2.19"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.19.tgz#bc27dff86a50c1029696a819d0c7bb0f6019d30f"
+oai-ts-commands@0.2.20:
+  version "0.2.20"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.20.tgz#51639949c1b316876aa98eea0fd62344f74a0b3c"
   dependencies:
     core-js "2.4.1"
     oai-ts-core "0.2.9"

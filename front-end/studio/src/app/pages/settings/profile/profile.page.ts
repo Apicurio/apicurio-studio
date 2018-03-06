@@ -22,6 +22,7 @@ import {IAuthenticationService} from "../../../services/auth.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {User} from "../../../models/user.model";
 import {ActivatedRoute} from "@angular/router";
+import {Title} from "@angular/platform-browser";
 
 /**
  * The Settings/Profile Page component.
@@ -38,9 +39,18 @@ export class ProfilePageComponent extends AbstractPageComponent {
      * C'tor.
      * @param {IAuthenticationService} authService
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, route: ActivatedRoute) {
-        super(route);
+    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, route: ActivatedRoute, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Settings - Profile";
     }
 
     public loadAsyncPageData(): void {

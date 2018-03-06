@@ -26,6 +26,7 @@ import {IApisService} from "../../services/apis.service";
 import {AbstractPageComponent} from "../../components/page-base.component";
 import {ILinkedAccountsService} from "../../services/accounts.service";
 import {LinkedAccount} from "../../models/linked-account.model";
+import {Title} from "@angular/platform-browser";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.
@@ -46,11 +47,20 @@ export class DashboardPageComponent extends AbstractPageComponent {
      * @param {ActivatedRoute} route
      * @param {ILinkedAccountsService} accountsService
      * @param {IAuthenticationService} authService
+     * @param {Title} titleService
      */
     constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
                 @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                protected authService: IAuthenticationService) {
-        super(route);
+                protected authService: IAuthenticationService, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Dashboard";
     }
 
     /**

@@ -21,6 +21,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {IApisService} from "../../../../../services/apis.service";
 import {AbstractPageComponent} from "../../../../../components/page-base.component";
 import {Invitation} from "../../../../../models/invitation.model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -38,10 +39,19 @@ export class ApiAcceptPageComponent extends AbstractPageComponent {
      * @param {Router} router
      * @param {ActivatedRoute} route
      * @param {IApisService} apis
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
-                @Inject(IApisService) private apis: IApisService) {
-        super(route);
+                @Inject(IApisService) private apis: IApisService, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Accept Collaboration Invite";
     }
 
     /**

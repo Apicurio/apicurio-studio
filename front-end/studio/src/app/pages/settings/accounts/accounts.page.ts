@@ -20,6 +20,7 @@ import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ILinkedAccountsService} from "../../../services/accounts.service";
 import {LinkedAccount} from "../../../models/linked-account.model";
 import {ActivatedRoute} from "@angular/router";
+import {Title} from "@angular/platform-browser";
 
 export const ACCOUNT_LINK_NONCE_KEY = "apicurio.studio.linked-accounts.nonces";
 
@@ -41,9 +42,19 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
      * C'tor.
      * @param {ILinkedAccountsService} accountsApi
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(@Inject(ILinkedAccountsService) private accountsApi: ILinkedAccountsService, route: ActivatedRoute) {
-        super(route);
+    constructor(@Inject(ILinkedAccountsService) private accountsApi: ILinkedAccountsService, route: ActivatedRoute,
+                titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Settings - Accounts";
     }
 
     /**

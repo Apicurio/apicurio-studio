@@ -18,6 +18,7 @@
 import {OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
+import {Title} from "@angular/platform-browser";
 
 export class DataMap {
     [key: string]: boolean;
@@ -31,8 +32,9 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     /**
      * C'tor.
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(protected route: ActivatedRoute) {
+    constructor(protected route: ActivatedRoute, protected titleService: Title) {
     }
 
     /**
@@ -45,7 +47,21 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
         combined.subscribe( ap => {
             this.loadAsyncPageData(ap.params, ap.qparams);
         });
+        this.updatePageTitle();
     }
+
+    /**
+     * Called to update the page title.
+     */
+    protected updatePageTitle(): void {
+        this.titleService.setTitle(this.pageTitle());
+    }
+
+    /**
+     * Returns the appropriate page title for this page.
+     * @return {string}
+     */
+    protected abstract pageTitle(): string;
 
     /**
      * Called when the page is destroyed.

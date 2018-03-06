@@ -23,6 +23,7 @@ import {Api} from "../../../models/api.model";
 import {ApiContributors} from "../../../models/api-contributors.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ApiDesignChange} from "../../../models/api-design-change.model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -45,11 +46,24 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
      * @param {Router} router
      * @param {ActivatedRoute} route
      * @param {IApisService} apis
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
-                @Inject(IApisService) private apis: IApisService) {
-        super(route);
+                @Inject(IApisService) private apis: IApisService, titleService: Title) {
+        super(route, titleService);
         this.api = new Api();
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        if (this.api.name) {
+            return "Apicurio Studio - API :: " + this.api.name;
+        } else {
+            return "Apicurio Studio - API Details";
+        }
     }
 
     /**
@@ -62,6 +76,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         this.apis.getApi(apiId).then(api => {
             this.api = api;
             this.dataLoaded["api"] = true;
+            this.updatePageTitle();
         }).catch(error => {
             console.error("[ApiDetailPageComponent] Error getting API");
             this.error(error);

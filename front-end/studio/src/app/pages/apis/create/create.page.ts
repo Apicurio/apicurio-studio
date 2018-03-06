@@ -23,6 +23,7 @@ import {Api} from "../../../models/api.model";
 import {CreateApiFormComponent} from "./_components/create-form.component";
 import {NewApi} from "../../../models/new-api.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -39,9 +40,18 @@ export class CreateApiPageComponent extends AbstractPageComponent {
      * @param {Router} router
      * @param {ActivatedRoute} route
      * @param {IApisService} apis
+     * @param {Title} titleService
      */
-    constructor(private router: Router, route: ActivatedRoute, @Inject(IApisService) private apis: IApisService) {
-        super(route);
+    constructor(private router: Router, route: ActivatedRoute, @Inject(IApisService) private apis: IApisService, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Create API";
     }
 
     /**

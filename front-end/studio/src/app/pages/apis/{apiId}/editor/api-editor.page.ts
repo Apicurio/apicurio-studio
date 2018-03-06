@@ -30,6 +30,7 @@ import {Observable} from "rxjs/Observable";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -65,11 +66,24 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param {ActivatedRoute} route
      * @param {NgZone} zone
      * @param {IApisService} apis
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
-                @Inject(IApisService) private apis: IApisService) {
-        super(route);
+                @Inject(IApisService) private apis: IApisService, titleService: Title) {
+        super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        if (this.apiDefinition.name) {
+            return "Apicurio Studio - API Editor :: " + this.apiDefinition.name;
+        } else {
+            return "Apicurio Studio - API Editor";
+        }
     }
 
     /**
@@ -88,6 +102,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             console.info("[ApiEditorPageComponent] Definition loaded.  Opening editing session.");
             this.apiDefinition = def;
             this.loaded("def");
+            this.updatePageTitle();
             this.editingSession = this.apis.openEditingSession(def);
             this.editingSession.commandHandler({
                 onCommand: (command) => {

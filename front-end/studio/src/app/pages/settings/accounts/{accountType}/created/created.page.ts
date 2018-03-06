@@ -20,6 +20,7 @@ import {AbstractPageComponent} from "../../../../../components/page-base.compone
 import {ILinkedAccountsService} from "../../../../../services/accounts.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ACCOUNT_LINK_NONCE_KEY} from "../../accounts.page";
+import {Title} from "@angular/platform-browser";
 
 /**
  * The page used to finalize the creation of an account link.
@@ -42,10 +43,19 @@ export class CreatedLinkedAccountPageComponent extends AbstractPageComponent {
      * @param {Router} router
      * @param {ActivatedRoute} route
      * @param {ILinkedAccountsService} accountsApi
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
-                @Inject(ILinkedAccountsService) private accountsApi: ILinkedAccountsService) {
-        super(route);
+                @Inject(ILinkedAccountsService) private accountsApi: ILinkedAccountsService, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Account Linking";
     }
 
     /**

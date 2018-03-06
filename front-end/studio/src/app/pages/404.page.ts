@@ -18,6 +18,7 @@
 import {Component} from "@angular/core";
 import {AbstractPageComponent} from "../components/page-base.component";
 import {ActivatedRoute} from "@angular/router";
+import {Title} from "@angular/platform-browser";
 
 /**
  * The Not Found (404) Page component - shown when navigating to a route that does not exist.
@@ -32,9 +33,18 @@ export class NotFoundPageComponent extends AbstractPageComponent {
     /**
      * C'tor.
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(route: ActivatedRoute) {
-        super(route);
+    constructor(route: ActivatedRoute, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Not Found";
     }
 
     /**

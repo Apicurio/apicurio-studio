@@ -25,6 +25,7 @@ import {ApiCollaborator} from "../../../../models/api-collaborator.model";
 import {Invitation} from "../../../../models/invitation.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {User} from "../../../../models/user.model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -48,12 +49,26 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
      * @param {ActivatedRoute} route
      * @param {IApisService} apis
      * @param {IAuthenticationService} authService
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService,
-                @Inject(IAuthenticationService) private authService: IAuthenticationService) {
-        super(route);
+                @Inject(IAuthenticationService) private authService: IAuthenticationService,
+                titleService: Title) {
+        super(route, titleService);
         this.api = new Api();
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        if (this.api.name) {
+            return "Apicurio Studio - API Collaborators :: " + this.api.name;
+        } else {
+            return "Apicurio Studio - API Collaborators";
+        }
     }
 
     /**
@@ -66,6 +81,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         this.apis.getApi(apiId).then(api => {
             this.api = api;
             this.dataLoaded["api"] = true;
+            this.updatePageTitle();
         }).catch(error => {
             console.error("[ApiCollaborationPageComponent] Error getting API");
             this.error(error);

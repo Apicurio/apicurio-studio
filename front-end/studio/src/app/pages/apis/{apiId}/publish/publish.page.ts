@@ -27,6 +27,7 @@ import {LinkedAccount} from "../../../../models/linked-account.model";
 import {DropDownOption} from "../../../../components/common/drop-down.component";
 import {CodeEditorMode} from "../../../../components/common/code-editor.component";
 import {PublishApi} from "../../../../models/publish-api.model";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     moduleId: module.id,
@@ -55,13 +56,26 @@ export class PublishPageComponent extends AbstractPageComponent {
      * @param {IApisService} apis
      * @param {ILinkedAccountsService} accounts
      * @param {IAuthenticationService} authService
+     * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
                 @Inject(IApisService) private apis: IApisService,
                 @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                @Inject(IAuthenticationService) private authService: IAuthenticationService) {
-        super(route);
+                @Inject(IAuthenticationService) private authService: IAuthenticationService, titleService: Title) {
+        super(route, titleService);
         this.api = new Api();
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        if (this.api.name) {
+            return "Apicurio Studio - Publish API :: " + this.api.name;
+        } else {
+            return "Apicurio Studio - Publish API";
+        }
     }
 
     /**
@@ -74,6 +88,7 @@ export class PublishPageComponent extends AbstractPageComponent {
         this.apis.getApi(apiId).then(api => {
             this.api = api;
             this.dataLoaded["api"] = true;
+            this.updatePageTitle();
         }).catch(error => {
             console.error("[PublishPageComponent] Error getting API");
             this.error(error);

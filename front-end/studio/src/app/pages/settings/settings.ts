@@ -18,6 +18,7 @@
 import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AbstractPageComponent} from "../../components/page-base.component";
+import {Title} from "@angular/platform-browser";
 
 /**
  * The Settings Page component.
@@ -33,9 +34,18 @@ export class SettingsPageComponent extends AbstractPageComponent {
      * C'tor.
      * @param {Router} router
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(private router: Router, route: ActivatedRoute) {
-        super(route);
+    constructor(private router: Router, route: ActivatedRoute, titleService: Title) {
+        super(route, titleService);
+    }
+
+    /**
+     * Returns the appropriate page title for this page.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - Settings";
     }
 
     /**

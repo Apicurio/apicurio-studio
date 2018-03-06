@@ -22,6 +22,7 @@ import {IApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
 import {ArrayUtils} from "../../util/common";
 import {AbstractPageComponent} from "../../components/page-base.component";
+import {Title} from "@angular/platform-browser";
 
 
 const API_FILTERS_KEY = "apicurio.studio.pages.apis.filters";
@@ -85,9 +86,10 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
      * C'tor.
      * @param {IApisService} apis
      * @param {ActivatedRoute} route
+     * @param {Title} titleService
      */
-    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute) {
-        super(route);
+    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute, titleService: Title) {
+        super(route, titleService);
         this.filteredApis = [];
         this.selectedApis = [];
 
@@ -95,6 +97,14 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
         if (fsaved) {
             this.filters = new Filters(JSON.parse(fsaved));
         }
+    }
+
+    /**
+     * The page title.
+     * @return {string}
+     */
+    protected pageTitle(): string {
+        return "Apicurio Studio - API Listing";
     }
 
     /**

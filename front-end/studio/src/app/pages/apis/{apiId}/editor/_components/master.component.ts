@@ -46,10 +46,11 @@ import {
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
     createNewSchemaDefinitionCommand,
-    createDeleteOperationCommand, ICommand
+    createDeleteOperationCommand, ICommand, createRenameSchemaDefinitionCommand
 } from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
+import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.component";
 
 
 /**
@@ -86,6 +87,7 @@ export class EditorMasterComponent {
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
 
     filterCriteria: string = null;
 
@@ -651,6 +653,24 @@ export class EditorMasterComponent {
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this._library.writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.document, modalData.name, cloneSrcObj);
+            this.onCommand.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Rename Definition" in the context-menu for a schema definition.
+     */
+    public renameDefinition(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.renameDefinitionDialog.open(this.document, this.contextMenuItem as any);
+        } else {
+            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
+            let oldName: string = definition["_definitionName"];
+            if (!oldName) {
+                oldName = definition["_name"];
+            }
+            console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
+            let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, modalData.name);
             this.onCommand.emit(command);
         }
     }

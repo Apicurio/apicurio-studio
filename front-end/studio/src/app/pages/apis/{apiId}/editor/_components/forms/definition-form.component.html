@@ -10,6 +10,12 @@
             </button>
             <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
                 <li>
+                    <a href="#" onclick="return false" (click)="rename()">
+                        <span class="fa fa-pencil-square-o"></span>
+                        <span>Rename Definition</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#" onclick="return false" (click)="clone()">
                         <span class="fa fa-clone"></span>
                         <span>Clone Definition</span>
@@ -101,3 +107,4 @@
 
 <add-schema-property-dialog #addSchemaPropertyDialog (onAdd)="addSchemaProperty($event)"></add-schema-property-dialog>
 <clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>
+<rename-definition-dialog #renameDefinitionDialog (onRename)="rename($event)"></rename-definition-dialog>

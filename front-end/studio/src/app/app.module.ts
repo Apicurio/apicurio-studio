@@ -104,6 +104,7 @@ import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 import {GitHubResourceComponent} from "./pages/apis/{apiId}/publish/_components/github-resource.component";
 import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/gitlab-resource.component";
 import {BitbucketResourceComponent} from "./pages/apis/{apiId}/publish/_components/bitbucket-resource.component";
+import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
 
 
 @NgModule({
@@ -128,7 +129,7 @@ import {BitbucketResourceComponent} from "./pages/apis/{apiId}/publish/_componen
         ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
-        BitbucketResourceComponent
+        BitbucketResourceComponent, RenameDefinitionDialogComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

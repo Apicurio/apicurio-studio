@@ -23,7 +23,7 @@ import {
     createDeleteAllPropertiesCommand,
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
-    createNewSchemaPropertyCommand,
+    createNewSchemaPropertyCommand, createRenameSchemaDefinitionCommand,
     createReplaceSchemaDefinitionCommand, ICommand,
     SimplifiedPropertyType
 } from "oai-ts-commands";
@@ -31,6 +31,7 @@ import {
 import {SourceFormComponent} from "./source-form.base";
 import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
+import {RenameDefinitionDialogComponent} from "../dialogs/rename-definition.component";
 
 
 @Component({
@@ -57,6 +58,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
 
     public definitionName(): string {
         if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
@@ -137,6 +139,22 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
             let cloneSrcObj: any = this.oasLibrary().writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.definition.ownerDocument(), modalData.name, cloneSrcObj);
             this.onCommand.emit(command);
+        }
+    }
+
+    public rename(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.renameDefinitionDialog.open(this.definition.ownerDocument(), this.definition);
+        } else {
+            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
+            let oldName: string = definition["_definitionName"];
+            if (!oldName) {
+                oldName = definition["_name"];
+            }
+            console.info("[DefinitionFormComponent] Rename definition to: %s", modalData.name);
+            let command: ICommand = createRenameSchemaDefinitionCommand(this.definition.ownerDocument(), oldName, modalData.name);
+            this.onCommand.emit(command);
+
         }
     }
 

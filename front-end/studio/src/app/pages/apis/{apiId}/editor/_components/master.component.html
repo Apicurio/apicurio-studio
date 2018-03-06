@@ -38,6 +38,12 @@
     <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
         [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
         <li>
+            <a href="#" onclick="return false" (click)="renameDefinition()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename Definition</span>
+            </a>
+        </li>
+        <li>
             <a href="#" onclick="return false" (click)="cloneDefinition()">
                 <span class="fa fa-clone"></span>
                 <span>Clone Definition</span>
@@ -201,4 +207,5 @@
     <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
     <add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
+    <rename-definition-dialog #renameDefinitionDialog (onRename)="renameDefinition($event)"></rename-definition-dialog>
 </div>

@@ -86,6 +86,29 @@ public class OaiCommandExecutorTest {
         String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
         Assert.assertEquals(expectedNormalized, actualNormalized);
     }
+
+    @Test
+    public void testExecuteCommands_Rename() throws Exception {
+        OaiCommandExecutor.debug("::testExecuteCommands2::");
+        OaiCommandExecutor executor = new OaiCommandExecutor();
+        
+        String document = IOUtils.toString(getClass().getResource("testExecuteCommands_Rename/__begin.json"));
+        // Load the commands
+        List<String> commands = new LinkedList<String>();
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/rename-definition.command.json")));
+        
+        // Invoke the executeCommands function
+        String actual = executor.executeCommands(document, commands);
+//        System.out.println("---");
+//        System.out.println(actual);
+//        System.out.println("---");
+        
+        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/__expected.json"));
+        
+        String actualNormalized = OaiCommandExecutorTest.normalizeString((String) actual);
+        String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
+        Assert.assertEquals(expectedNormalized, actualNormalized);
+    }
     
     protected static String normalizeString(String input) {
         return input.replaceAll("\\r\\n?", "\n");

@@ -178,6 +178,10 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand_30":
                 rval = "code";
                 break;
+            case "RenameSchemaDefinitionCommand_20":
+            case "RenameSchemaDefinitionCommand_30":
+                rval = "exchange";
+                break;
             default:
                 rval = "question";
         }
@@ -375,6 +379,14 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
                 rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
+                break;
+            case "ReplaceSchemaDefinitionCommand_20":
+            case "ReplaceSchemaDefinitionCommand_30":
+                rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
+                break;
+            case "RenameSchemaDefinitionCommand_20":
+            case "RenameSchemaDefinitionCommand_30":
+                rval = "renamed a schema definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
                 break;
             default:
                 console.info("[ActivityItemComponent] WARNING - unhandled change item type: %s", this.command()["type"]());

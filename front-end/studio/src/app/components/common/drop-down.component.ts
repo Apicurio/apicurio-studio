@@ -36,12 +36,24 @@ export class DropDownComponent {
 
     @Input() id: string;
     @Input() value: string;
-    @Input() options: DropDownOption[];
+    _options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";
     @Input() loading: boolean = false;
     @Input() loadingLabel: string = "Loading...";
 
     @Output() onValueChange: EventEmitter<string> = new EventEmitter<string>();
+
+    @Input()
+    get options(): DropDownOption[] {
+        return this._options;
+    }
+    set options(value: DropDownOption[]) {
+        console.info("Options MIGHT be changing");
+        if (this._options === null || JSON.stringify(value) !== JSON.stringify(this._options)) {
+            console.info("Options **totally** changed.");
+            this._options = value;
+        }
+    }
 
     public toggle(): void {
         this._open = !this._open;

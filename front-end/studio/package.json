@@ -11,6 +11,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8888 --aot",
+    "debug": "ng serve --port 8888 --sourcemap -dev -v",
     "build": "ng build -prod"
   },
   "private": true,

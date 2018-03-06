@@ -6,6 +6,6 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" [style.max-height]="'400px'" [style.overflow-y]="'auto'" role="menu" [attr.aria-labelledby]="id" *dropdownMenu>
-        <li role="presentation" *ngFor="let option of options" [class.divider]="option.divider"><a *ngIf="!option.divider" role="menuitem" tabindex="-1" (click)="setValue(option.value)">{{ option.name }}</a></li>
+        <li role="presentation" *ngFor="let option of _options" [class.divider]="option.divider"><a *ngIf="!option.divider" role="menuitem" tabindex="-1" (click)="setValue(option.value)">{{ option.name }}</a></li>
     </ul>
 </div>

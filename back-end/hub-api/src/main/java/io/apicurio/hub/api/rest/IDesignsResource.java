@@ -41,6 +41,7 @@ import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 
@@ -59,7 +60,7 @@ public interface IDesignsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException;
+    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException, ApiValidationException;
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

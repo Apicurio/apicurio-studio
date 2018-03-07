@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
+import io.apicurio.hub.core.exceptions.ApiValidationException;
+
 /**
  * Represents some basic information extracted from an API Design resource (the 
  * content of an API design, typically an OpenAPI document).
@@ -34,6 +36,7 @@ public class ApiDesignResourceInfo {
 
     protected static final ObjectMapper jsonMapper;
     protected static final ObjectMapper yamlMapper;
+    protected static final Set<String> SUPPORTED_OPENAPI_VERSIONS = new HashSet<>();
     static {
         jsonMapper = new ObjectMapper();
         jsonMapper.setSerializationInclusion(Include.NON_NULL);
@@ -42,9 +45,12 @@ public class ApiDesignResourceInfo {
         factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
         yamlMapper = new ObjectMapper(factory);
         yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        SUPPORTED_OPENAPI_VERSIONS.add("2.0");
+        SUPPORTED_OPENAPI_VERSIONS.add("3.0.0");
+        SUPPORTED_OPENAPI_VERSIONS.add("3.0.1");
     }
 
-    public static ApiDesignResourceInfo fromContent(String content) throws Exception {
+    public static ApiDesignResourceInfo fromContent(String content) throws Exception, ApiValidationException {
         String name = null;
         String description = null;
         FormatType format = FormatType.JSON;
@@ -55,7 +61,17 @@ public class ApiDesignResourceInfo {
             mapper = yamlMapper;
         }
         
-        OpenApi3Document document = mapper.readerFor(OpenApi3Document.class).readValue(content);
+        OpenApiSharedDocument document = mapper.readerFor(OpenApiSharedDocument.class).readValue(content);
+        String oaiVersion = document.getSwagger();
+        if (oaiVersion == null) {
+            oaiVersion = document.getOpenapi();
+        }
+        if (oaiVersion == null) {
+            throw new ApiValidationException("Unable to determine OpenAPI version.");
+        }
+        if (!SUPPORTED_OPENAPI_VERSIONS.contains(oaiVersion)) {
+            throw new ApiValidationException("OpenAPI version not supported: " + oaiVersion);
+        }
         if (document.getInfo() != null) {
             if (document.getInfo().getTitle() != null) {
                 name = document.getInfo().getTitle();

@@ -46,6 +46,7 @@ import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -137,7 +138,7 @@ public class GitLabSourceConnectorTest {
      */
     @Test
     @Ignore
-    public void testValidateResourceExists() throws NotFoundException, SourceConnectorException {
+    public void testValidateResourceExists() throws NotFoundException, SourceConnectorException, ApiValidationException {
         ApiDesignResourceInfo info = service.validateResourceExists("https://gitlab.com/Apicurio/api-samples/blob/master/3.0/simple-api.json");
         Assert.assertNotNull(info);
         Assert.assertEquals("Simple OAI 3.0.0 API", info.getName());

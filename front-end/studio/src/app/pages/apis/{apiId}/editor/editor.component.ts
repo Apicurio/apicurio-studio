@@ -98,7 +98,12 @@ export class ApiEditorComponent implements OnChanges {
      */
     public document(): OasDocument {
         if (this._document === null) {
-            this._document = this._library.createDocument(this.api.spec);
+            try {
+                this._document = this._library.createDocument(this.api.spec);
+            } catch (e) {
+                // If we can't process the document, then just create a new one
+                this._document = this._library.createDocument("3.0.1");
+            }
             this.validateModel();
         }
         return this._document;

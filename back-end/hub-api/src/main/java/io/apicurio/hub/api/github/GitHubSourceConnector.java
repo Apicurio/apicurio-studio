@@ -53,6 +53,7 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
@@ -104,7 +105,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
      * @see io.apicurio.hub.api.connectors.ISourceConnector#validateResourceExists(java.lang.String)
      */
     @Override
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException {
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException, ApiValidationException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
             GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
@@ -120,6 +121,8 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             return info;
         } catch (NotFoundException nfe) {
             throw nfe;
+        } catch (ApiValidationException ave) {
+            throw ave;
         } catch (Exception e) {
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
         }

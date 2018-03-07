@@ -50,6 +50,7 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
@@ -109,7 +110,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testListDesigns() throws ServerError, AlreadyExistsException, NotFoundException {
+    public void testListDesigns() throws ServerError, AlreadyExistsException, NotFoundException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         resource.importDesign(info);
@@ -152,7 +153,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testImportDesign_GitHub() throws ServerError, AlreadyExistsException, NotFoundException {
+    public void testImportDesign_GitHub() throws ServerError, AlreadyExistsException, NotFoundException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
@@ -171,7 +172,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testImportDesign_Url() throws ServerError, AlreadyExistsException, NotFoundException {
+    public void testImportDesign_Url() throws ServerError, AlreadyExistsException, NotFoundException, ApiValidationException {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
         
         ImportApiDesign info = new ImportApiDesign();
@@ -190,7 +191,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testImportDesign_Data() throws ServerError, AlreadyExistsException, NotFoundException, IOException {
+    public void testImportDesign_Data() throws ServerError, AlreadyExistsException, NotFoundException, IOException, ApiValidationException {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
         String rawData = IOUtils.toString(resourceUrl);
         String b64Data = Base64.encodeBase64String(rawData.getBytes());
@@ -240,7 +241,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testDeleteDesign() throws ServerError, AlreadyExistsException, NotFoundException {
+    public void testDeleteDesign() throws ServerError, AlreadyExistsException, NotFoundException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
@@ -267,7 +268,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testEditDesign() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testEditDesign() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
@@ -295,7 +296,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testGetConstributors() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException {
+    public void testGetConstributors() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
@@ -319,7 +320,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException {
+    public void testGetContent() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException, ApiValidationException {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);

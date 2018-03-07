@@ -19,6 +19,7 @@ package io.apicurio.hub.api.connectors;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
 /**
@@ -41,7 +42,7 @@ public interface ISourceConnector {
      * @param repositoryUrl
      * @throws NotFoundException
      */
-    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException;
+    public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException, ApiValidationException;
 
     /**
      * Fetchs the content of a github resource.  Uses the source control API to get access to

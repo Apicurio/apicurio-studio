@@ -76,6 +76,7 @@ import io.apicurio.hub.core.beans.OpenApiDocument;
 import io.apicurio.hub.core.beans.OpenApiInfo;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandException;
@@ -136,7 +137,7 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#importDesign(io.apicurio.hub.api.beans.ImportApiDesign)
      */
     @Override
-    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException {
+    public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException, ApiValidationException {
         metrics.apiCall("/designs", "PUT");
         
         if (info.getData() != null && !info.getData().trim().isEmpty()) {
@@ -167,8 +168,9 @@ public class DesignsResource implements IDesignsResource {
      * @param connector
      * @throws NotFoundException
      * @throws ServerError 
+     * @throws ApiValidationException
      */
-    private ApiDesign importDesignFromSource(ImportApiDesign info, ISourceConnector connector) throws NotFoundException, ServerError {
+    private ApiDesign importDesignFromSource(ImportApiDesign info, ISourceConnector connector) throws NotFoundException, ServerError, ApiValidationException {
         try {
             ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getUrl());
             ResourceContent initialApiContent = connector.getResourceContent(info.getUrl());
@@ -212,7 +214,7 @@ public class DesignsResource implements IDesignsResource {
      * @param info
      * @throws ServerError
      */
-    private ApiDesign importDesignFromData(ImportApiDesign info) throws ServerError {
+    private ApiDesign importDesignFromData(ImportApiDesign info) throws ServerError, ApiValidationException {
         try {
             String data = info.getData();
             byte[] decodedData = Base64.decodeBase64(data);
@@ -252,6 +254,8 @@ public class DesignsResource implements IDesignsResource {
             }
         } catch (IOException e) {
             throw new ServerError(e);
+        } catch (ApiValidationException ave) {
+            throw ave;
         } catch (Exception e) {
             throw new ServerError(e);
         }
@@ -263,8 +267,9 @@ public class DesignsResource implements IDesignsResource {
      * @param info
      * @throws NotFoundException
      * @throws ServerError
+     * @throws ApiValidationException
      */
-    private ApiDesign importDesignFromUrl(ImportApiDesign info) throws NotFoundException, ServerError {
+    private ApiDesign importDesignFromUrl(ImportApiDesign info) throws NotFoundException, ServerError, ApiValidationException {
         try {
             URL url = new URL(info.getUrl());
             
@@ -307,6 +312,8 @@ public class DesignsResource implements IDesignsResource {
                 
                 return design;
             }
+        } catch (ApiValidationException ave) {
+            throw ave;
         } catch (IOException e) {
             throw new ServerError(e);
         } catch (Exception e) {

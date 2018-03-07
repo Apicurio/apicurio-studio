@@ -46,6 +46,7 @@ import io.apicurio.hub.api.beans.SourceCodeBranch;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -161,7 +162,7 @@ public class BitbucketSourceConnectorTest {
 
     @Test
     @Ignore
-    public void testValidateResourceExists() throws SourceConnectorException, BitbucketException, NotFoundException {
+    public void testValidateResourceExists() throws SourceConnectorException, BitbucketException, NotFoundException, ApiValidationException {
         String url = "https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default";
         ApiDesignResourceInfo info = service.validateResourceExists(url);
         Assert.assertNotNull(info);

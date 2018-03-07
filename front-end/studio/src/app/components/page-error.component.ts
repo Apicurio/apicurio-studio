@@ -29,7 +29,7 @@ export class PageErrorComponent {
     @Input() error: any;
 
     private eobj: any = null;
-    private showDetails: boolean = false;
+    public showDetails: boolean = false;
 
     /**
      * Called to reload the browser page.
@@ -57,6 +57,9 @@ export class PageErrorComponent {
      * @return {()=>string}
      */
     public errorMessage(): string {
+        if (this.errorObj().message) {
+            return this.errorObj().message;
+        }
         return this.error.statusText;
     }
 

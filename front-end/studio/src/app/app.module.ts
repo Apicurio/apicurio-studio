@@ -50,7 +50,6 @@ import {CreateApiFormComponent} from './pages/apis/create/_components/create-for
 import {ApisListComponent} from './pages/apis/_components/apis-list.component';
 import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component';
 import {DropDownComponent} from './components/common/drop-down.component';
-import {AceEditorModule} from 'ng2-ace-editor';
 import {ActivityItemComponent} from './pages/apis/{apiId}/_components/activity-item.component';
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
@@ -105,12 +104,12 @@ import {GitHubResourceComponent} from "./pages/apis/{apiId}/publish/_components/
 import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/gitlab-resource.component";
 import {BitbucketResourceComponent} from "./pages/apis/{apiId}/publish/_components/bitbucket-resource.component";
 import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
+import {AceEditorComponent} from "./components/common/ace-editor.component";
 
 
 @NgModule({
     imports: [
-        BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
-        AceEditorModule
+        BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot()
     ],
     declarations: [
         AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
@@ -129,7 +128,7 @@ import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_comp
         ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
-        BitbucketResourceComponent, RenameDefinitionDialogComponent
+        BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

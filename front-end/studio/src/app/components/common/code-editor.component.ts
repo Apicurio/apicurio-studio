@@ -18,12 +18,7 @@
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
-import {AceEditorComponent} from "ng2-ace-editor";
-import "brace/theme/eclipse";
-import "brace/theme/twilight";
-import "brace/mode/json";
-import "brace/mode/markdown";
-import "brace/mode/yaml";
+import {AceEditorComponent} from "./ace-editor.component";
 
 
 export enum CodeEditorTheme {

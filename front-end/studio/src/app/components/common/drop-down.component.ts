@@ -48,9 +48,7 @@ export class DropDownComponent {
         return this._options;
     }
     set options(value: DropDownOption[]) {
-        console.info("Options MIGHT be changing");
         if (this._options === null || JSON.stringify(value) !== JSON.stringify(this._options)) {
-            console.info("Options **totally** changed.");
             this._options = value;
         }
     }

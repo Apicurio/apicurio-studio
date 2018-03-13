@@ -16,7 +16,10 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response, OasPathItem} from "oai-ts-core";
+import {
+    Oas20Response, Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response,
+    OasPathItem
+} from "oai-ts-core";
 import {
     createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
@@ -33,15 +36,19 @@ import {
     createDeleteOperationCommand,
     createDeleteAllResponsesCommand,
     createDeleteRequestBodyCommand,
-    SimplifiedParameterType, ICommand
+    SimplifiedParameterType, ICommand, createAddExampleCommand, createDeleteExampleCommand, createSetExampleCommand
 } from "oai-ts-commands";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
 import {ObjectUtils} from "../../_util/object.util";
-import {MediaTypeChangeEvent} from "./operation/content.component";
+import {
+    AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
+    MediaTypeChangeEvent
+} from "./operation/content.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
+import {EditExampleEvent} from "../dialogs/edit-example.component";
 
 
 @Component({
@@ -322,6 +329,38 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         console.info("[Operation30FormComponent] Changing request body media type: " + event.name);
         let mt: Oas30MediaType = this.operation.requestBody.getMediaType(event.name);
         let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
+        this.onCommand.emit(command);
+    }
+
+    public addMediaTypeExample(event: AddExampleEvent): void {
+        console.info("[Operation30FormComponent] Adding an example named: " + event.name);
+        let mt: Oas30MediaType = event.mediaType;
+        let command: ICommand = createAddExampleCommand(this.operation.ownerDocument(), mt, event.value, event.name);
+        this.onCommand.emit(command);
+    }
+
+    public deleteMediaTypeExample(event: DeleteExampleEvent): void {
+        console.info("[Operation30FormComponent] Deleting an example of a media type.");
+        let command: ICommand = createDeleteExampleCommand(this.operation.ownerDocument(), event.example);
+        this.onCommand.emit(command);
+    }
+
+    public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
+        console.info("[Operation30FormComponent] Changing the summary of a Media Type example.");
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "summary", event.value);
+        this.onCommand.emit(command);
+    }
+
+    public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
+        console.info("[Operation30FormComponent] Changing the description of a Media Type example.");
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "description", event.value);
+        this.onCommand.emit(command);
+    }
+
+    public changeMediaTypeExampleValue(event: EditExampleEvent): void {
+        console.info("[Operation30FormComponent] Changing the value of a Media Type example.");
+        let mt: Oas30MediaType = event.example.parent() as Oas30MediaType;
+        let command: ICommand = createSetExampleCommand(this.operation.ownerDocument(), mt, event.value, event.example.name());
         this.onCommand.emit(command);
     }
 

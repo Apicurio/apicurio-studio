@@ -42,6 +42,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
     set sourceNode(node: T) {
         this._sourceNode = node;
         this._sourceJsObj = null;
+        this._sourceText = null;
     }
     get sourceNode(): T {
         return this._sourceNode;

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import {Component, EventEmitter, Output, ElementRef, Input, forwardRef, OnInit, NgZone, OnDestroy} from "@angular/core";
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from "@angular/forms";
 import "brace";
@@ -23,6 +24,7 @@ import "brace/theme/twilight";
 import "brace/mode/json";
 import "brace/mode/html";
 import "brace/mode/markdown";
+import "brace/mode/xml";
 import "brace/mode/yaml";
 
 declare var ace: any;

@@ -18,7 +18,11 @@
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
 import {Oas30Document, Oas30Response} from "oai-ts-core";
-import {MediaTypeChangeEvent} from "./content.component";
+import {
+    AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
+    MediaTypeChangeEvent
+} from "./content.component";
+import {EditExampleEvent} from "../../dialogs/edit-example.component";
 
 
 @Component({
@@ -38,6 +42,11 @@ export class ResponseRow30Component {
     @Output() onCreateMediaType: EventEmitter<string> = new EventEmitter<string>();
     @Output() onDeleteMediaType: EventEmitter<string> = new EventEmitter<string>();
     @Output() onMediaTypeChange: EventEmitter<MediaTypeChangeEvent> = new EventEmitter<MediaTypeChangeEvent>();
+    @Output() onAddExample: EventEmitter<AddExampleEvent> = new EventEmitter<AddExampleEvent>();
+    @Output() onDeleteExample: EventEmitter<DeleteExampleEvent> = new EventEmitter<DeleteExampleEvent>();
+    @Output() onChangeExampleSummary: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
+    @Output() onChangeExampleDescription: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
+    @Output() onChangeExampleValue: EventEmitter<EditExampleEvent> = new EventEmitter<EditExampleEvent>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
@@ -129,6 +138,26 @@ export class ResponseRow30Component {
 
     public changeResponseMediaType(event: MediaTypeChangeEvent): void {
         this.onMediaTypeChange.emit(event);
+    }
+
+    public addMediaTypeExample(event: AddExampleEvent): void {
+        this.onAddExample.emit(event);
+    }
+
+    public deleteMediaTypeExample(event: DeleteExampleEvent): void {
+        this.onDeleteExample.emit(event);
+    }
+
+    public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
+        this.onChangeExampleSummary.emit(event);
+    }
+
+    public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
+        this.onChangeExampleDescription.emit(event);
+    }
+
+    public changeMediaTypeExampleValue(event: EditExampleEvent): void {
+        this.onChangeExampleValue.emit(event);
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

@@ -26,7 +26,7 @@ export enum CodeEditorTheme {
 }
 
 export enum CodeEditorMode {
-    Text, JSON, YAML, Markdown
+    Text, JSON, YAML, Markdown, XML
 }
 
 
@@ -94,6 +94,8 @@ export class CodeEditorComponent {
                 return 'json';
             case CodeEditorMode.Text:
                 return 'text';
+            case CodeEditorMode.XML:
+                return 'xml';
             case CodeEditorMode.Markdown:
                 return 'markdown';
             default:

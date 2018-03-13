@@ -167,6 +167,11 @@
                                          [document]="operation.ownerDocument()"
                                          (onNewMediaType)="createRequestBodyMediaType($event)"
                                          (onMediaTypeChange)="changeRequestBodyMediaType($event)"
+                                         (onAddExample)="addMediaTypeExample($event)"
+                                         (onDeleteExample)="deleteMediaTypeExample($event)"
+                                         (onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"
+                                         (onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"
+                                         (onExampleValueChange)="changeMediaTypeExampleValue($event)"
                                          (onRemoveMediaType)="deleteRequestBodyMediaType($event)"></content>
                             </div>
                         </div>
@@ -255,6 +260,11 @@
                                              (onCreateMediaType)="createResponseMediaType(response, $event)"
                                              (onDeleteMediaType)="deleteResponseMediaType(response, $event)"
                                              (onMediaTypeChange)="changeResponseMediaType(response, $event)"
+                                             (onAddExample)="addMediaTypeExample($event)"
+                                             (onDeleteExample)="deleteMediaTypeExample($event)"
+                                             (onChangeExampleSummary)="changeMediaTypeExampleSummary($event)"
+                                             (onChangeExampleDescription)="changeMediaTypeExampleDescription($event)"
+                                             (onChangeExampleValue)="changeMediaTypeExampleValue($event)"
                                              (onTypeChange)="changeResponseType(response, $event)"
                                              [document]="response.ownerDocument()"></response-row-30>
                         </div>

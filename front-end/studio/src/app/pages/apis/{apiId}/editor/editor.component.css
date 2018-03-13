@@ -1203,3 +1203,13 @@
   color: #c00;
   font-size: 12px;
 }
+
+.api-editor .content .panel .examples {
+  margin-top: 5px;
+}
+.api-editor .content .panel .examples a {
+  cursor: pointer;
+}
+.api-editor .content .panel .examples .table-examples {
+  margin-bottom: 0px;
+}

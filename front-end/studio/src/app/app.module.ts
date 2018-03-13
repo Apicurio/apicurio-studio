@@ -105,6 +105,8 @@ import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/
 import {BitbucketResourceComponent} from "./pages/apis/{apiId}/publish/_components/bitbucket-resource.component";
 import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
 import {AceEditorComponent} from "./components/common/ace-editor.component";
+import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
+import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
 
 
 @NgModule({
@@ -128,7 +130,8 @@ import {AceEditorComponent} from "./components/common/ace-editor.component";
         ApiEditorPageComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent, AddResponseDialogComponent,
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
-        BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent
+        BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
+        EditExampleDialogComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

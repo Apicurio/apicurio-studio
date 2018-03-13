@@ -21,6 +21,11 @@
                          [document]="response.ownerDocument()"
                          (onNewMediaType)="createResponseMediaType($event)"
                          (onMediaTypeChange)="changeResponseMediaType($event)"
+                         (onAddExample)="addMediaTypeExample($event)"
+                         (onDeleteExample)="deleteMediaTypeExample($event)"
+                         (onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"
+                         (onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"
+                         (onExampleValueChange)="changeMediaTypeExampleValue($event)"
                          (onRemoveMediaType)="deleteResponseMediaType($event)"></content>
             </div>
             <div class="form-group form-group-actions">

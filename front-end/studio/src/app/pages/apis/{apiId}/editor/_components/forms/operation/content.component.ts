@@ -20,10 +20,28 @@ import {Oas30Document, Oas30MediaType, Oas30RequestBodyContent, Oas30ResponseCon
 import {SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
+import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
+import {EditExampleEvent} from "../../dialogs/edit-example.component";
+import {CodeEditorMode} from "../../../../../../../components/common/code-editor.component";
 
 export interface MediaTypeChangeEvent {
     name: string;
     type: SimplifiedType;
+}
+
+export interface AddExampleEvent {
+    mediaType: Oas30MediaType;
+    name: string;
+    value: any;
+}
+
+export interface DeleteExampleEvent {
+    example: Oas30Example;
+}
+
+export interface ExamplePropertyChangeEvent {
+    example: Oas30Example;
+    value: string;
 }
 
 
@@ -41,6 +59,11 @@ export class ContentComponent implements OnInit {
     @Output() onNewMediaType: EventEmitter<string> = new EventEmitter<string>();
     @Output() onRemoveMediaType: EventEmitter<string> = new EventEmitter<string>();
     @Output() onMediaTypeChange: EventEmitter<MediaTypeChangeEvent> = new EventEmitter<MediaTypeChangeEvent>();
+    @Output() onAddExample: EventEmitter<AddExampleEvent> = new EventEmitter<AddExampleEvent>();
+    @Output() onDeleteExample: EventEmitter<DeleteExampleEvent> = new EventEmitter<DeleteExampleEvent>();
+    @Output() onExampleSummaryChange: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
+    @Output() onExampleDescriptionChange: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
+    @Output() onExampleValueChange: EventEmitter<EditExampleEvent> = new EventEmitter<EditExampleEvent>();
 
     protected mediaTypeName: string;
 
@@ -207,6 +230,51 @@ export class ContentComponent implements OnInit {
             ];
         }
         return options;
+    }
+
+    public mediaTypeExamples(): Oas30Example[] {
+        return this.mediaType().getExamples();
+    }
+
+    public mediaTypeHasExamples(): boolean {
+        return this.mediaTypeExamples().length > 0;
+    }
+
+    public addExample(exampleData: any): void {
+        let event: AddExampleEvent = {
+            mediaType: this.mediaType(),
+            name: exampleData.name,
+            value: exampleData.value
+        };
+        this.onAddExample.emit(event);
+    }
+
+    public changeExampleSummary(example: Oas30Example, summary: string): void {
+        let event: ExamplePropertyChangeEvent = {
+            example: example,
+            value: summary
+        };
+        this.onExampleSummaryChange.emit(event);
+    }
+
+    public changeExampleDescription(example: Oas30Example, description: string): void {
+        let event: ExamplePropertyChangeEvent = {
+            example: example,
+            value: description
+        };
+        this.onExampleDescriptionChange.emit(event);
+    }
+
+    public deleteExample(example: Oas30Example): void {
+        let event: DeleteExampleEvent = {
+            example: example
+        };
+        this.onDeleteExample.emit(event);
+    }
+
+    public editExample(event: EditExampleEvent): void {
+        console.info("**** editExample()");
+        this.onExampleValueChange.emit(event);
     }
 
     public changeMediaTypeType(newType: string): void {

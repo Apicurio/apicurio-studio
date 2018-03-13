@@ -52,7 +52,7 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
     moduleId: module.id,
     selector: "api-editor",
     templateUrl: "editor.component.html",
-    styleUrls: ["editor.component.css", "editor.component.light.css", "editor.component.dark.css"],
+    styleUrls: ["editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
 export class ApiEditorComponent implements OnChanges {

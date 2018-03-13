@@ -11,7 +11,8 @@ ADD ${RELEASE_PATH} /opt/apicurio
 
 RUN groupadd -r apicurio -g 1001 \
     && useradd -u 1001 -r -g apicurio -d /opt/apicurio/ -s /sbin/nologin -c "Docker image user" apicurio \
-    && chown -R apicurio:apicurio /opt/apicurio/
+    && chown -R apicurio:apicurio /opt/apicurio/ \
+    && chgrp -R 0 /opt/apicurio && chmod -R g=u /opt/apicurio
 
 USER 1001
 

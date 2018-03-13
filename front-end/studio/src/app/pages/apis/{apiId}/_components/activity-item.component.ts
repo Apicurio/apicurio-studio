@@ -112,6 +112,7 @@ export class ActivityItemComponent {
             case "ChangeTitleCommand_30":
             case "ChangeVersionCommand_20":
             case "ChangeVersionCommand_30":
+            case "SetExampleCommand_20":
             case "SetExampleCommand_30":
                 rval = "pencil";
                 break;
@@ -144,6 +145,7 @@ export class ActivityItemComponent {
             case "DeleteContactCommand_30":
             case "DeleteLicenseCommand_20":
             case "DeleteLicenseCommand_30":
+            case "DeleteExampleCommand_20":
             case "DeleteExampleCommand_30":
                 rval = "trash-o";
                 break;
@@ -391,11 +393,17 @@ export class ActivityItemComponent {
             case "RenameSchemaDefinitionCommand_30":
                 rval = "renamed a schema definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
                 break;
+            case "DeleteExampleCommand_20":
+                rval = "deleted an example for content-type '" + this.command()["_exampleContentType"] + "' from the Response at location " + this.command()["_responsePath"] + "."
+                break;
             case "DeleteExampleCommand_30":
                 rval = "deleted an example named '" + this.command()["_exampleName"] + "' from the MediaType at location " + this.command()["_mediaTypePath"] + "."
                 break;
             case "AddExampleCommand_30":
                 rval = "added an example named '" + this.command()["_newExampleName"] + "' to the MediaType at location " + this.command()["_parentPath"] + "."
+                break;
+            case "SetExampleCommand_20":
+                rval = "changed the value of the example for content-type '" + this.command()["_newContentType"] + "' for the Response at location " + this.command()["_parentPath"] + "."
                 break;
             case "SetExampleCommand_30":
                 rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the MediaType at location " + this.command()["_parentPath"] + "."

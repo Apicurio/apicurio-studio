@@ -17,12 +17,19 @@
 
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
-import {Oas30Document, Oas30Response} from "oai-ts-core";
+import {Oas30Document, Oas30MediaType, Oas30Response} from "oai-ts-core";
 import {
     AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
     MediaTypeChangeEvent
 } from "./content.component";
 import {EditExampleEvent} from "../../dialogs/edit-example.component";
+import {
+    createAddExampleCommand,
+    createChangeMediaTypeTypeCommand,
+    createChangePropertyCommand, createDeleteExampleCommand, createDeleteMediaTypeCommand, createNewMediaTypeCommand,
+    createSetExampleCommand,
+    ICommand
+} from "oai-ts-commands";
 
 
 @Component({
@@ -38,15 +45,7 @@ export class ResponseRow30Component {
     @Input() document: Oas30Document;
     @Input() response: Oas30Response;
 
-    @Output() onDescriptionChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onCreateMediaType: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onDeleteMediaType: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onMediaTypeChange: EventEmitter<MediaTypeChangeEvent> = new EventEmitter<MediaTypeChangeEvent>();
-    @Output() onAddExample: EventEmitter<AddExampleEvent> = new EventEmitter<AddExampleEvent>();
-    @Output() onDeleteExample: EventEmitter<DeleteExampleEvent> = new EventEmitter<DeleteExampleEvent>();
-    @Output() onChangeExampleSummary: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
-    @Output() onChangeExampleDescription: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
-    @Output() onChangeExampleValue: EventEmitter<EditExampleEvent> = new EventEmitter<EditExampleEvent>();
+    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
@@ -125,39 +124,52 @@ export class ResponseRow30Component {
     }
 
     public setDescription(description: string): void {
-        this.onDescriptionChange.emit(description);
+        let command: ICommand = createChangePropertyCommand<string>(this.document, this.response, "description", description);
+        this.onCommand.emit(command);
     }
 
     public createResponseMediaType(mediaType: string): void {
-        this.onCreateMediaType.emit(mediaType);
+        let command: ICommand = createNewMediaTypeCommand(this.document, this.response, mediaType);
+        this.onCommand.emit(command);
     }
 
     public deleteResponseMediaType(mediaType: string): void {
-        this.onDeleteMediaType.emit(mediaType);
+        let mt: Oas30MediaType = this.response.getMediaType(mediaType);
+        let command: ICommand = createDeleteMediaTypeCommand(this.document, mt);
+        this.onCommand.emit(command);
     }
 
     public changeResponseMediaType(event: MediaTypeChangeEvent): void {
-        this.onMediaTypeChange.emit(event);
+        let mt: Oas30MediaType = this.response.getMediaType(event.name);
+        let command: ICommand = createChangeMediaTypeTypeCommand(this.document, mt, event.type);
+        this.onCommand.emit(command);
     }
 
     public addMediaTypeExample(event: AddExampleEvent): void {
-        this.onAddExample.emit(event);
+        let mt: Oas30MediaType = event.mediaType;
+        let command: ICommand = createAddExampleCommand(this.document, mt, event.value, event.name);
+        this.onCommand.emit(command);
     }
 
     public deleteMediaTypeExample(event: DeleteExampleEvent): void {
-        this.onDeleteExample.emit(event);
+        let command: ICommand = createDeleteExampleCommand(this.document, event.example);
+        this.onCommand.emit(command);
     }
 
     public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
-        this.onChangeExampleSummary.emit(event);
+        let command: ICommand = createChangePropertyCommand<string>(this.document, event.example, "summary", event.value);
+        this.onCommand.emit(command);
     }
 
     public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
-        this.onChangeExampleDescription.emit(event);
+        let command: ICommand = createChangePropertyCommand<string>(this.document, event.example, "description", event.value);
+        this.onCommand.emit(command);
     }
 
     public changeMediaTypeExampleValue(event: EditExampleEvent): void {
-        this.onChangeExampleValue.emit(event);
+        let mt: Oas30MediaType = event.example.parent() as Oas30MediaType;
+        let command: ICommand = createSetExampleCommand(this.document, mt, event.value, event.example.name());
+        this.onCommand.emit(command);
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

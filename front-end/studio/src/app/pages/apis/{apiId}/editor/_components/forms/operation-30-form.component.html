@@ -256,16 +256,7 @@
                         <div class="container-fluid responses typed-item-list">
                             <response-row-30 *ngFor="let response of responses()" [response]="response"
                                              (onDelete)="deleteResponse(response)"
-                                             (onDescriptionChange)="changeResponseDescription(response, $event)"
-                                             (onCreateMediaType)="createResponseMediaType(response, $event)"
-                                             (onDeleteMediaType)="deleteResponseMediaType(response, $event)"
-                                             (onMediaTypeChange)="changeResponseMediaType(response, $event)"
-                                             (onAddExample)="addMediaTypeExample($event)"
-                                             (onDeleteExample)="deleteMediaTypeExample($event)"
-                                             (onChangeExampleSummary)="changeMediaTypeExampleSummary($event)"
-                                             (onChangeExampleDescription)="changeMediaTypeExampleDescription($event)"
-                                             (onChangeExampleValue)="changeMediaTypeExampleValue($event)"
-                                             (onTypeChange)="changeResponseType(response, $event)"
+                                             (onCommand)="onCommand.emit($event)"
                                              [document]="response.ownerDocument()"></response-row-30>
                         </div>
                     </div>

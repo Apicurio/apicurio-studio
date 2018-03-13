@@ -22,7 +22,6 @@ import {ObjectUtils} from "../../../_util/object.util";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
 import {EditExampleEvent} from "../../dialogs/edit-example.component";
-import {CodeEditorMode} from "../../../../../../../components/common/code-editor.component";
 
 export interface MediaTypeChangeEvent {
     name: string;

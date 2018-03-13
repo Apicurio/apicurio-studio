@@ -14,8 +14,8 @@
     </div>
 </div>
 <div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
-    <form  class="form-horizontal">
-        <div class="col-md-6">
+    <form class="form-horizontal">
+        <div class="col-md-5">
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="responseType">Type</label>
                 <div class="col-sm-8">
@@ -34,6 +34,7 @@
                     <drop-down id="responseTypeFormat" [id]="'api-response-type-as'" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>
                 </div>
             </div>
+
             <div class="form-group form-group-actions">
                 <div class="col-sm-offset-4 col-sm-8">
                     <button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>
@@ -41,8 +42,40 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-7">
+
+            <div class="examples">
+                <table *ngIf="hasExamples()" class="table table-striped table-examples">
+                    <thead>
+                    <tr>
+                        <th colspan="4">Examples</th>
+                    </tr>
+                    <tr>
+                        <th>Content Type</th>
+                        <th>Example</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let contentType of exampleContentTypes()">
+                        <td class="content-type">{{ contentType }}</td>
+                        <td class="value">{{ exampleValue(contentType) }}</td>
+                        <td class="actions">
+                            <div>
+                                <button class="btn btn-sm btn-default pull-right" (click)="deleteExample(contentType)"
+                                        type="button" title="Delete example."><span class="pficon pficon-delete"></span></button>
+                                <button class="btn btn-sm btn-default pull-right" (click)="editExampleDialog.open(contentType, exampleValue(contentType))"
+                                        type="button" title="Edit example."><span class="pficon pficon-edit"></span></button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a (click)="addExampleDialog.open()">Add an example</a>
+            </div>
 
         </div>
     </form>
 </div>
+<add-example-20-dialog #addExampleDialog (onAdd)="addExample($event)"></add-example-20-dialog>
+<edit-example-20-dialog #editExampleDialog (onEdit)="editExample($event)"></edit-example-20-dialog>

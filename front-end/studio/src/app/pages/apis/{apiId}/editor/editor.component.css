@@ -1213,3 +1213,28 @@
 .api-editor .content .panel .examples .table-examples {
   margin-bottom: 0px;
 }
+
+.api-editor .response-type .examples {
+  margin-top: 5px;
+}
+.api-editor .response-type .examples a {
+  cursor: pointer;
+}
+.api-editor .response-type .examples .table-examples {
+  margin-bottom: 0px;
+}
+.api-editor .response-type .examples .table-examples td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.api-editor .response-type .examples .table-examples .content-type {
+  width: 25%;
+}
+.api-editor .response-type .examples .table-examples .value {
+  width: 60%;
+}
+.api-editor .response-type .examples .table-examples .actions {
+  width: 15%;
+}

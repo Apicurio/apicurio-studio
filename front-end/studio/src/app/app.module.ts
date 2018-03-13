@@ -107,6 +107,8 @@ import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_comp
 import {AceEditorComponent} from "./components/common/ace-editor.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
+import {AddExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example-20.component";
+import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example-20.component";
 
 
 @NgModule({
@@ -131,7 +133,7 @@ import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_component
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
         BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
-        EditExampleDialogComponent
+        EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,

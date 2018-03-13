@@ -1,0 +1,43 @@
+<!-- Add Example Dialog -->
+<div>
+    <div bsModal #addExampleModal="bs-modal" class="modal fade" id="addExampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="addExampleModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()"
+         (onShown)="addExampleInput.focus()" (onHidden)="close()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="addExampleModalLabel">Add Example</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the example content-type (mime type) and value below and then click Add.</p>
+                    <form id="addexample-form" class="form-horizontal" #addExampleForm="ngForm" data-dismiss="modal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="exampleName">Name</label>
+                            <div class="col-sm-10">
+                                <input #addExampleInput name="exampleName" type="text" id="exampleName" class="form-control"
+                                       placeholder="Enter an Example Content Type"
+                                       required [(ngModel)]="model.contentType">
+                            </div>
+                        </div>
+
+                        <div class="example">
+                            <code-editor [theme]="valueEditorTheme()"
+                                         [mode]="valueEditorMode()"
+                                         [debounceTime]="150"
+                                         [(text)]="value"
+                                         [editorStyle]="{ position: 'relative', height: '300px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="add()"
+                            [disabled]="!addExampleForm.form.valid || !hasValue()">Add</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

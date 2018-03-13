@@ -6822,6 +6822,90 @@ function createDeleteExampleCommand(document, example) {
     }
 }
 /**
+ * Factory function.
+ */
+function createDelete20ExampleCommand(document, response, contentType) {
+    if (document.getSpecVersion() === "3.0") {
+        throw new Error("Response examples are not supported in OpenAPI 3.0.");
+    }
+    else {
+        return new DeleteExampleCommand_20(response, contentType);
+    }
+}
+/**
+ * A command used to delete a single mediaType from an operation.
+ */
+var DeleteExampleCommand_20 = (function (_super) {
+    __extends$50(DeleteExampleCommand_20, _super);
+    /**
+     * C'tor.
+     * @param {Oas20Response} response
+     * @param {string} contentType
+     */
+    function DeleteExampleCommand_20(response, contentType) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(response)) {
+            _this._exampleContentType = contentType;
+            _this._responsePath = _this.oasLibrary().createNodePath(response);
+        }
+        return _this;
+    }
+    DeleteExampleCommand_20.prototype.type = function () {
+        return "DeleteExampleCommand_20";
+    };
+    /**
+     * Deletes the example.
+     * @param document
+     */
+    DeleteExampleCommand_20.prototype.execute = function (document) {
+        console.info("[DeleteExampleCommand] Executing.");
+        this._oldExample = null;
+        var response = this._responsePath.resolve(document);
+        if (this.isNullOrUndefined(response) || this.isNullOrUndefined(response.examples) ||
+            this.isNullOrUndefined(response.examples.example(this._exampleContentType))) {
+            console.debug("[DeleteExampleCommand] No example with content-type: " + this._exampleContentType);
+            return;
+        }
+        this._oldExample = response.examples.removeExample(this._exampleContentType);
+    };
+    /**
+     * Restore the old (deleted) example.
+     * @param document
+     */
+    DeleteExampleCommand_20.prototype.undo = function (document) {
+        console.info("[DeleteExampleCommand] Reverting.");
+        if (this.isNullOrUndefined(this._oldExample)) {
+            return;
+        }
+        var response = this._responsePath.resolve(document);
+        if (this.isNullOrUndefined(response)) {
+            return;
+        }
+        if (this.isNullOrUndefined(response.examples)) {
+            response.examples = response.createExample();
+        }
+        response.examples.addExample(this._exampleContentType, this._oldExample);
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteExampleCommand_20.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._responsePath = MarshallUtils.marshallNodePath(obj._responsePath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteExampleCommand_20.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._responsePath = MarshallUtils.unmarshallNodePath(this._responsePath);
+    };
+    return DeleteExampleCommand_20;
+}(AbstractCommand));
+/**
  * A command used to delete a single mediaType from an operation.
  */
 var DeleteExampleCommand_30 = (function (_super) {
@@ -6853,10 +6937,8 @@ var DeleteExampleCommand_30 = (function (_super) {
             console.debug("[DeleteExampleCommand] No example named: " + this._exampleName);
             return;
         }
-        console.info("[DeleteExampleCommand] Removing example.");
         var example = mediaType.removeExample(this._exampleName);
         this._oldExample = this.oasLibrary().writeNode(example);
-        console.info("[DeleteExampleCommand] Old Example: " + JSON.stringify(this._oldExample));
     };
     /**
      * Restore the old (deleted) example.
@@ -6875,7 +6957,6 @@ var DeleteExampleCommand_30 = (function (_super) {
         var example = mediaType.createExample(this._exampleName);
         this.oasLibrary().readNode(this._oldExample, example);
         mediaType.addExample(example);
-        console.info("[DeleteExampleCommand] Example added: " + JSON.stringify(this.oasLibrary().writeNode(mediaType)));
     };
     /**
      * Marshall the command into a JS object.
@@ -6948,6 +7029,7 @@ var commandFactory = {
     "DeleteAllParametersCommand_30": function () { return new DeleteAllParametersCommand_30(null, null); },
     "DeleteAllPropertiesCommand_20": function () { return new DeleteAllPropertiesCommand_20(null); },
     "DeleteAllPropertiesCommand_30": function () { return new DeleteAllPropertiesCommand_30(null); },
+    "DeleteExampleCommand_20": function () { return new DeleteExampleCommand_20(null, null); },
     "DeleteExampleCommand_30": function () { return new DeleteExampleCommand_30(null); },
     "DeleteMediaTypeCommand": function () { return new DeleteMediaTypeCommand(null); },
     "DeleteOperationCommand_20": function () { return new DeleteOperationCommand_20(null, null); },
@@ -7487,6 +7569,8 @@ exports.AbstractDeleteContactCommand = AbstractDeleteContactCommand;
 exports.DeleteContactCommand_20 = DeleteContactCommand_20;
 exports.DeleteContactCommand_30 = DeleteContactCommand_30;
 exports.createDeleteExampleCommand = createDeleteExampleCommand;
+exports.createDelete20ExampleCommand = createDelete20ExampleCommand;
+exports.DeleteExampleCommand_20 = DeleteExampleCommand_20;
 exports.DeleteExampleCommand_30 = DeleteExampleCommand_30;
 exports.createDeleteLicenseCommand = createDeleteLicenseCommand;
 exports.AbstractDeleteLicenseCommand = AbstractDeleteLicenseCommand;

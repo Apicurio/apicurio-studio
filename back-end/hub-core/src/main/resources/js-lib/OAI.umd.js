@@ -1069,6 +1069,9 @@ var OasResponses = (function (_super) {
             var name_1 = names_1[_i];
             rval.push(this.response(name_1));
         }
+        if (this.default !== undefined && this.default !== null) {
+            rval.push(this.default);
+        }
         return rval;
     };
     /**
@@ -6788,19 +6791,26 @@ var __extends$68 = (undefined && undefined.__extends) || function (d, b) {
 var Oas30OAuthFlow = (function (_super) {
     __extends$68(Oas30OAuthFlow, _super);
     function Oas30OAuthFlow() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.scopes = {};
-        return _this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Oas30OAuthFlow.prototype.addScope = function (scope, description) {
+        if (!this.scopes) {
+            this.scopes = {};
+        }
         this.scopes[scope] = description;
     };
     Oas30OAuthFlow.prototype.removeScope = function (scope) {
-        delete this.scopes[scope];
+        if (this.scopes) {
+            delete this.scopes[scope];
+        }
     };
     Oas30OAuthFlow.prototype.getScopes = function () {
+        var scopes = this.scopes;
+        if (!scopes) {
+            scopes = {};
+        }
         var rval = [];
-        for (var scope in this.scopes) {
+        for (var scope in scopes) {
             rval.push(scope);
         }
         return rval;
@@ -10078,7 +10088,7 @@ var Oas30JS2ModelReader = (function (_super) {
         if (this.isDefined(discriminator)) {
             var discriminatorModel = schemaModel.createDiscriminator();
             this.readDiscriminator(discriminator, discriminatorModel);
-            schemaModel.discriminator = discriminator;
+            schemaModel.discriminator = discriminatorModel;
         }
         if (this.isDefined(oneOf)) {
             var schemaModels = [];
@@ -10174,6 +10184,7 @@ var Oas30JS2ModelReader = (function (_super) {
         if (this.isDefined(mapping)) {
             discriminatorModel.mapping = mapping;
         }
+        this.readExtensions(discriminator, discriminatorModel);
     };
     return Oas30JS2ModelReader;
 }(OasJS2ModelReader));
@@ -10556,6 +10567,10 @@ var Oas20ModelToJSVisitor = (function (_super) {
             consumes: node.consumes,
             produces: node.produces,
             paths: null,
+            definitions: null,
+            parameters: null,
+            responses: null,
+            securityDefinitions: null,
             security: null,
             tags: null,
             externalDocs: null
@@ -11018,8 +11033,8 @@ var Oas30ModelToJSVisitor = (function (_super) {
             head: null,
             patch: null,
             trace: null,
-            parameters: null,
-            servers: null
+            servers: null,
+            parameters: null
         };
         parentJS[node.path()] = pathItem;
         this.updateIndex(node, pathItem);
@@ -11037,11 +11052,11 @@ var Oas30ModelToJSVisitor = (function (_super) {
             externalDocs: null,
             operationId: node.operationId,
             parameters: null,
+            requestBody: null,
             responses: null,
+            callbacks: null,
             deprecated: node.deprecated,
             security: null,
-            requestBody: null,
-            callbacks: null,
             servers: null
         };
         parentJS[node.method()] = operation;
@@ -11065,16 +11080,17 @@ var Oas30ModelToJSVisitor = (function (_super) {
      * @param node
      */
     Oas30ModelToJSVisitor.prototype.createHeaderObject = function (node) {
+        // TODO missing the "content" property!
         var header = {
             $ref: node.$ref,
             description: node.description,
             required: node.required,
-            schema: null,
-            allowEmptyValue: node.allowEmptyValue,
             deprecated: node.deprecated,
+            allowEmptyValue: node.allowEmptyValue,
             style: node.style,
             explode: node.explode,
             allowReserved: node.allowReserved,
+            schema: null,
             example: node.example,
             examples: null
         };
@@ -11091,12 +11107,12 @@ var Oas30ModelToJSVisitor = (function (_super) {
             in: node.in,
             description: node.description,
             required: node.required,
-            schema: null,
-            allowEmptyValue: node.allowEmptyValue,
             deprecated: node.deprecated,
+            allowEmptyValue: node.allowEmptyValue,
             style: node.style,
             explode: node.explode,
             allowReserved: node.allowReserved,
+            schema: null,
             example: node.example,
             examples: null,
             content: null
@@ -11713,14 +11729,14 @@ var Oas30ModelToJSVisitor = (function (_super) {
             not: null,
             properties: null,
             additionalProperties: null,
-            discriminator: node.discriminator,
             nullable: node.nullable,
+            discriminator: null,
             readOnly: node.readOnly,
             writeOnly: node.writeOnly,
-            deprecated: node.deprecated,
             xml: null,
             externalDocs: null,
-            example: node.example
+            example: node.example,
+            deprecated: node.deprecated
         };
         if (typeof node.additionalProperties === "boolean") {
             schema.additionalProperties = node.additionalProperties;
@@ -12034,6 +12050,7 @@ var Oas20Traverser = (function (_super) {
         }
         this.traverseIfNotNull(node.xml);
         this.traverseIfNotNull(node.externalDocs);
+        this.traverseExtensions(node);
     };
     /**
      * Visit the schema.
@@ -12242,7 +12259,9 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.oneOf);
         this.traverseArray(node.anyOf);
         this.traverseIfNotNull(node.not);
+        this.traverseIfNotNull(node.discriminator);
         this.traverseIfNotNull(node.xml);
+        this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
     };
     /**
@@ -13426,6 +13445,193 @@ var OasValidationErrorAttributes = (function () {
     }
     return OasValidationErrorAttributes;
 }());
+/**
+ * Base class for all validation rules.
+ */
+var OasValidationRuleUtil = (function () {
+    function OasValidationRuleUtil() {
+    }
+    /**
+     * Check if a property was defined.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isDefined = function (propertyValue) {
+        if (propertyValue === undefined) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    };
+    /**
+     * Check if the property value exists (is not undefined and is not null).
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.hasValue = function (propertyValue) {
+        if (propertyValue === undefined) {
+            return false;
+        }
+        if (propertyValue === null) {
+            return false;
+        }
+        return true;
+    };
+    /**
+     * Returns true only if the given value is a valid URL.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidUrl = function (propertyValue) {
+        var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+        var url = new RegExp(urlRegex, 'i');
+        return propertyValue.length < 2083 && url.test(propertyValue);
+    };
+    /**
+     * Returns true only if the given value is a valid URL template.
+     * @param {string} propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidUrlTemplate = function (propertyValue) {
+        // TODO is there a regular expression we can use to validate a URL template??
+        return true;
+    };
+    /**
+     * Returns true only if the given value is valid GFM style markup.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidGFM = function (propertyValue) {
+        // TODO implement a regexp to test for a valid Github Flavored Markdown string
+        return true;
+    };
+    /**
+     * Returns true only if the given value is valid CommonMark style markup.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidCommonMark = function (propertyValue) {
+        // TODO implement a regexp to test for a valid CommonMark string
+        return true;
+    };
+    /**
+     * Returns true only if the given value is a valid email address.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidEmailAddress = function (propertyValue) {
+        var email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return email.test(propertyValue);
+    };
+    /**
+     * Returns true only if the given value is a valid mime-type.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidMimeType = function (propertyValue) {
+        var mt = /^.*\/.*(;.*)?$/;
+        for (var _i = 0, propertyValue_1 = propertyValue; _i < propertyValue_1.length; _i++) {
+            var v = propertyValue_1[_i];
+            if (!mt.test(v)) {
+                return false;
+            }
+        }
+        return true;
+    };
+    /**
+     * Returns true if the given value is an item in the enum list.
+     * @param value
+     * @param items
+     */
+    OasValidationRuleUtil.isValidEnumItem = function (value, items) {
+        return items.indexOf(value) != -1;
+    };
+    /**
+     * Resolves a reference from a relative position in the data model.
+     * @param $ref
+     * @param from
+     */
+    OasValidationRuleUtil.resolveRef = function ($ref, from) {
+        var _this = this;
+        // TODO implement a proper reference resolver including external file resolution: https://github.com/EricWittmann/oai-ts-core/issues/8
+        var split = $ref.split("/");
+        var cnode = null;
+        split.forEach(function (seg) {
+            if (seg === "#") {
+                cnode = from.ownerDocument();
+            }
+            else if (_this.hasValue(cnode)) {
+                if (cnode["__instanceof_IOasIndexedNode"]) {
+                    cnode = cnode["getItem"](seg);
+                }
+                else {
+                    cnode = cnode[seg];
+                }
+            }
+        });
+        return cnode;
+    };
+    /**
+     * Returns true only if the given reference can be resolved relative to the given document.  Examples
+     * of $ref values include:
+     *
+     * #/definitions/ExampleDefinition
+     * #/parameters/fooId
+     * #/responses/NotFoundResponse
+     *
+     * @param $ref
+     * @param oasDocument
+     */
+    OasValidationRuleUtil.canResolveRef = function ($ref, from) {
+        // Don't try to resolve e.g. external references.
+        if ($ref.indexOf('#/') !== 0) {
+            return true;
+        }
+        return this.hasValue(OasValidationRuleUtil.resolveRef($ref, from));
+    };
+    /**
+     * Returns true only if the given value is a valid host.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidHost = function (propertyValue) {
+        // TODO implement a regexp to test for a valid host plus optional port
+        if (propertyValue.indexOf("http:") === 0 || propertyValue.indexOf("https:") === 0) {
+            return false;
+        }
+        return true;
+    };
+    /**
+     * Returns true if the given value is valid according to the schema provided.
+     * @param value
+     * @param node
+     */
+    OasValidationRuleUtil.isValidForType = function (value, node) {
+        // TODO validate the value against the schema
+        return true;
+    };
+    /**
+     * Returns true if the given status code is a valid HTTP response code.
+     * @param statusCode
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isValidHttpCode = function (statusCode) {
+        return OasValidationRuleUtil.HTTP_STATUS_CODES.indexOf(statusCode) != -1;
+    };
+    return OasValidationRuleUtil;
+}());
+/**
+ * List of valid HTTP response status codes from:  https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+ */
+OasValidationRuleUtil.HTTP_STATUS_CODES = [
+    "100", "101", "102", "1XX", "10X",
+    "200", "201", "202", "203", "204", "205", "206", "207", "208", "226", "2XX", "20X", "21X", "22X",
+    "300", "301", "302", "303", "304", "305", "306", "307", "308", "3XX", "30X",
+    "400", "401", "402", "403", "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "4XX", "40X", "41X",
+    "421", "422", "423", "424", "426", "427", "428", "429", "431", "451", "42X", "43X", "44X", "45X",
+    "500", "501", "502", "503", "504", "505", "506", "507", "508", "510", "511", "5XX", "50X", "51X"
+];
 
 /**
  * @license
@@ -13464,12 +13670,7 @@ var Oas20ValidationRule = (function (_super) {
      * @return {boolean}
      */
     Oas20ValidationRule.prototype.isDefined = function (propertyValue) {
-        if (propertyValue === undefined) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return OasValidationRuleUtil.isDefined(propertyValue);
     };
     /**
      * Check if the property value exists (is not undefined and is not null).
@@ -13477,13 +13678,7 @@ var Oas20ValidationRule = (function (_super) {
      * @return {boolean}
      */
     Oas20ValidationRule.prototype.hasValue = function (propertyValue) {
-        if (propertyValue === undefined) {
-            return false;
-        }
-        if (propertyValue === null) {
-            return false;
-        }
-        return true;
+        return OasValidationRuleUtil.hasValue(propertyValue);
     };
     /**
      * Called by validation rules to report an error.
@@ -14105,70 +14300,6 @@ var Oas20InvalidPropertyFormatValidationRule = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     /**
-     * Returns true only if the given value is a valid URL.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidUrl = function (propertyValue) {
-        var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-        var url = new RegExp(urlRegex, 'i');
-        return propertyValue.length < 2083 && url.test(propertyValue);
-    };
-    /**
-     * Returns true only if the given value is valid GFM style markup.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidGFM = function (propertyValue) {
-        // TODO implement a regexp to test for a valid Github Flavored Markdown string
-        return true;
-    };
-    /**
-     * Returns true only if the given value is a valid email address.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidEmailAddress = function (propertyValue) {
-        var email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return email.test(propertyValue);
-    };
-    /**
-     * Returns true only if the given value is a valid mime-type.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidMimeType = function (propertyValue) {
-        var mt = /^.*\/.*(;.*)?$/;
-        for (var _i = 0, propertyValue_1 = propertyValue; _i < propertyValue_1.length; _i++) {
-            var v = propertyValue_1[_i];
-            if (!mt.test(v)) {
-                return false;
-            }
-        }
-        return true;
-    };
-    /**
-     * Returns true only if the given value is a valid host.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidHost = function (propertyValue) {
-        // TODO implement a regexp to test for a valid host plus optional port
-        if (propertyValue.indexOf("http:") === 0 || propertyValue.indexOf("https:") === 0) {
-            return false;
-        }
-        return true;
-    };
-    /**
-     * Returns true if the given value is valid according to the schema provided.
-     * @param value
-     * @param node
-     */
-    Oas20InvalidPropertyFormatValidationRule.prototype.isValidForType = function (value, node) {
-        // TODO validate the value against the schema
-        return true;
-    };
-    /**
      * Reports a validation error if the property is not valid.
      * @param code
      * @param isValid
@@ -14182,7 +14313,7 @@ var Oas20InvalidPropertyFormatValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitDocument = function (node) {
         if (this.hasValue(node.host)) {
-            this.reportIfInvalid("R-004", this.isValidHost(node.host), node, "Invalid format for \"host\" property - only the host name (and optionally port) should be specified.");
+            this.reportIfInvalid("R-004", OasValidationRuleUtil.isValidHost(node.host), node, "Invalid format for \"host\" property - only the host name (and optionally port) should be specified.");
         }
         if (this.hasValue(node.basePath)) {
             this.reportIfInvalid("R-005", node.basePath.indexOf("/") === 0, node, "The \"basePath\" property must start with a '/' character.");
@@ -14190,72 +14321,72 @@ var Oas20InvalidPropertyFormatValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitInfo = function (node) {
         if (this.hasValue(node.description)) {
-            this.reportIfInvalid("INF-003", this.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
+            this.reportIfInvalid("INF-003", OasValidationRuleUtil.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitContact = function (node) {
         if (this.hasValue(node.url)) {
-            this.reportIfInvalid("CTC-001", this.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+            this.reportIfInvalid("CTC-001", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
         }
         if (this.hasValue(node.email)) {
-            this.reportIfInvalid("CTC-002", this.isValidEmailAddress(node.email), node, "The \"email\" property must be a valid email address.");
+            this.reportIfInvalid("CTC-002", OasValidationRuleUtil.isValidEmailAddress(node.email), node, "The \"email\" property must be a valid email address.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitLicense = function (node) {
         if (this.hasValue(node.url)) {
-            this.reportIfInvalid("LIC-002", this.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+            this.reportIfInvalid("LIC-002", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitOperation = function (node) {
         if (this.hasValue(node.description)) {
-            this.reportIfInvalid("OP-002", this.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
+            this.reportIfInvalid("OP-002", OasValidationRuleUtil.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
         }
         if (this.hasValue(node.consumes)) {
-            this.reportIfInvalid("OP-005", this.isValidMimeType(node.consumes), node, "The \"consumes\" property value must be a valid mime type.");
+            this.reportIfInvalid("OP-005", OasValidationRuleUtil.isValidMimeType(node.consumes), node, "The \"consumes\" property value must be a valid mime type.");
         }
         if (this.hasValue(node.produces)) {
-            this.reportIfInvalid("OP-006", this.isValidMimeType(node.produces), node, "The \"produces\" property value must be a valid mime type.");
+            this.reportIfInvalid("OP-006", OasValidationRuleUtil.isValidMimeType(node.produces), node, "The \"produces\" property value must be a valid mime type.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitExternalDocumentation = function (node) {
         if (this.hasValue(node.description)) {
-            this.reportIfInvalid("ED-002", this.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
+            this.reportIfInvalid("ED-002", OasValidationRuleUtil.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
         }
         if (this.hasValue(node.url)) {
-            this.reportIfInvalid("ED-003", this.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+            this.reportIfInvalid("ED-003", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitParameter = function (node) {
         if (this.hasValue(node.description)) {
-            this.reportIfInvalid("PAR-010", this.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
+            this.reportIfInvalid("PAR-010", OasValidationRuleUtil.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitItems = function (node) {
         if (this.hasValue(node.default)) {
-            this.reportIfInvalid("IT-007", this.isValidForType(node.default, node), node, "The \"default\" property must conform to the \"type\" of the items.");
+            this.reportIfInvalid("IT-007", OasValidationRuleUtil.isValidForType(node.default, node), node, "The \"default\" property must conform to the \"type\" of the items.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitHeader = function (node) {
         if (this.hasValue(node.default)) {
-            this.reportIfInvalid("HEAD-005", this.isValidForType(node.default, node), node, "The \"default\" property must conform to the \"type\" of the items.");
+            this.reportIfInvalid("HEAD-005", OasValidationRuleUtil.isValidForType(node.default, node), node, "The \"default\" property must conform to the \"type\" of the items.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitTag = function (node) {
         if (this.hasValue(node.description)) {
-            this.reportIfInvalid("TAG-002", this.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
+            this.reportIfInvalid("TAG-002", OasValidationRuleUtil.isValidGFM(node.description), node, "The \"description\" property must be valid GFM syntax (or plain text).");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitSecurityScheme = function (node) {
         if (this.hasValue(node.authorizationUrl)) {
-            this.reportIfInvalid("SS-011", this.isValidUrl(node.authorizationUrl), node, "The \"authorizationUrl\" property must be a valid URL.");
+            this.reportIfInvalid("SS-011", OasValidationRuleUtil.isValidUrl(node.authorizationUrl), node, "The \"authorizationUrl\" property must be a valid URL.");
         }
         if (this.hasValue(node.tokenUrl)) {
-            this.reportIfInvalid("SS-012", this.isValidUrl(node.tokenUrl), node, "The \"tokenUrl\" property must be a valid URL.");
+            this.reportIfInvalid("SS-012", OasValidationRuleUtil.isValidUrl(node.tokenUrl), node, "The \"tokenUrl\" property must be a valid URL.");
         }
     };
     Oas20InvalidPropertyFormatValidationRule.prototype.visitXML = function (node) {
         if (this.hasValue(node.namespace)) {
-            this.reportIfInvalid("XML-001", this.isValidUrl(node.namespace), node, "The \"namespace\" property must be a valid URL.");
+            this.reportIfInvalid("XML-001", OasValidationRuleUtil.isValidUrl(node.namespace), node, "The \"namespace\" property must be a valid URL.");
         }
     };
     return Oas20InvalidPropertyFormatValidationRule;
@@ -14305,14 +14436,6 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
         }
     };
     /**
-     * Returns true if the given status code is a valid HTTP response code.
-     * @param statusCode
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyNameValidationRule.prototype.isValidHttpCode = function (statusCode) {
-        return Oas20InvalidPropertyNameValidationRule.HTTP_STATUS_CODES.indexOf(parseInt(statusCode)) != -1;
-    };
-    /**
      * Returns true if the definition name is valid.
      * @param name
      * @return {boolean}
@@ -14335,7 +14458,7 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
     Oas20InvalidPropertyNameValidationRule.prototype.visitResponse = function (node) {
         // The "default" response will have a statusCode of "null"
         if (this.hasValue(node.statusCode())) {
-            this.reportIfInvalid("RES-003", this.isValidHttpCode(node.statusCode()), node, "Response status code is not a valid HTTP response status code: " + node.statusCode());
+            this.reportIfInvalid("RES-003", OasValidationRuleUtil.isValidHttpCode(node.statusCode()), node, "Response status code is not a valid HTTP response status code: " + node.statusCode());
         }
     };
     Oas20InvalidPropertyNameValidationRule.prototype.visitExample = function (node) {
@@ -14373,17 +14496,6 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
     };
     return Oas20InvalidPropertyNameValidationRule;
 }(Oas20ValidationRule));
-/**
- * List of valid HTTP response status codes from:  https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
- */
-Oas20InvalidPropertyNameValidationRule.HTTP_STATUS_CODES = [
-    100, 101, 102,
-    200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
-    300, 301, 302, 303, 304, 305, 306, 307, 308,
-    400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417,
-    421, 422, 423, 424, 426, 427, 428, 429, 431, 451,
-    500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511
-];
 
 /**
  * @license
@@ -14429,29 +14541,6 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
         if (!isValid) {
             this.report(code, node, message);
         }
-    };
-    /**
-     * Returns true only if the given value is a valid mime-type.
-     * @param propertyValue
-     * @return {boolean}
-     */
-    Oas20InvalidPropertyValueValidationRule.prototype.isValidMimeType = function (propertyValue) {
-        var mt = /^.*\/.*(;.*)?$/;
-        for (var _i = 0, propertyValue_1 = propertyValue; _i < propertyValue_1.length; _i++) {
-            var v = propertyValue_1[_i];
-            if (!mt.test(v)) {
-                return false;
-            }
-        }
-        return true;
-    };
-    /**
-     * Returns true if the given value is an item in the enum list.
-     * @param value
-     * @param items
-     */
-    Oas20InvalidPropertyValueValidationRule.prototype.isValidEnumItem = function (value, items) {
-        return items.indexOf(value) != -1;
     };
     /**
      * Returns true if the given value is a valid operationId.
@@ -14511,14 +14600,14 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
         var _this = this;
         if (this.hasValue(node.schemes)) {
             node.schemes.forEach(function (scheme) {
-                _this.reportIfInvalid("R-006", _this.isValidEnumItem(scheme, ["http", "https", "ws", "wss"]), node, "Invalid property value.  Each \"schemes\" property value must be one of: http, https, ws, wss (Invalid value found: '" + scheme + "')");
+                _this.reportIfInvalid("R-006", OasValidationRuleUtil.isValidEnumItem(scheme, ["http", "https", "ws", "wss"]), node, "Invalid property value.  Each \"schemes\" property value must be one of: http, https, ws, wss (Invalid value found: '" + scheme + "')");
             });
         }
         if (this.hasValue(node.consumes)) {
-            this.reportIfInvalid("R-007", this.isValidMimeType(node.consumes), node, "Invalid property value.  The \"consumes\" property value must be a valid mime-type.");
+            this.reportIfInvalid("R-007", OasValidationRuleUtil.isValidMimeType(node.consumes), node, "Invalid property value.  The \"consumes\" property value must be a valid mime-type.");
         }
         if (this.hasValue(node.produces)) {
-            this.reportIfInvalid("R-008", this.isValidMimeType(node.produces), node, "Invalid property value.  The \"produces\" property value must be a valid mime-type.");
+            this.reportIfInvalid("R-008", OasValidationRuleUtil.isValidMimeType(node.produces), node, "Invalid property value.  The \"produces\" property value must be a valid mime-type.");
         }
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitOperation = function (node) {
@@ -14531,7 +14620,7 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
         }
         if (this.hasValue(node.schemes)) {
             node.schemes.forEach(function (scheme) {
-                _this.reportIfInvalid("OP-010", _this.isValidEnumItem(scheme, ["http", "https", "ws", "wss"]), node, "Invalid property value.  Each \"schemes\" property value must be one of: http, https, ws, wss (Invalid value found: '" + scheme + "')");
+                _this.reportIfInvalid("OP-010", OasValidationRuleUtil.isValidEnumItem(scheme, ["http", "https", "ws", "wss"]), node, "Invalid property value.  Each \"schemes\" property value must be one of: http, https, ws, wss (Invalid value found: '" + scheme + "')");
             });
         }
     };
@@ -14547,7 +14636,7 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
             }
             var path = pathItem.path();
             var pathVars = this.parsePathTemplate(path);
-            this.reportIfInvalid("PAR-007", this.isValidEnumItem(node.name, pathVars), node, "The \"name\" property value for a 'path' style parameter must match one of the items in the path template.  Invalid path property name found: " + node.name);
+            this.reportIfInvalid("PAR-007", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "The \"name\" property value for a 'path' style parameter must match one of the items in the path template.  Invalid path property name found: " + node.name);
         }
         if (node.in === "formData") {
             var consumes = (node.ownerDocument()).consumes;
@@ -14564,25 +14653,25 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
             this.reportIfInvalid("PAR-008", valid, node, "A parameter located in \"formData\" may only be used when the operation @consumes 'application/x-www-form-urlencoded' or 'multipart/form-data' data.");
         }
         if (this.hasValue(node.in)) {
-            this.reportIfInvalid("PAR-009", this.isValidEnumItem(node.in, ["query", "header", "path", "formData", "body"]), node, "Invalid property value.  The \"in\" property value must be one of: query, header, path, formData, body (Found value: '" + node.in + "')");
+            this.reportIfInvalid("PAR-009", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "header", "path", "formData", "body"]), node, "Invalid property value.  The \"in\" property value must be one of: query, header, path, formData, body (Found value: '" + node.in + "')");
         }
         if (this.hasValue(node.type)) {
-            this.reportIfInvalid("PAR-011", this.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array", "file"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array, file (Found value: '" + node.type + "')");
+            this.reportIfInvalid("PAR-011", OasValidationRuleUtil.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array", "file"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array, file (Found value: '" + node.type + "')");
         }
         if (this.hasValue(node.format)) {
-            this.reportIfInvalid("PAR-012", this.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
+            this.reportIfInvalid("PAR-012", OasValidationRuleUtil.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
         }
         if (this.hasValue(node.allowEmptyValue)) {
-            this.reportIfInvalid("PAR-013", this.isValidEnumItem(node.in, ["query", "formData"]), node, "The \"allowEmptyValue\" property is only allowed for 'query' or 'formData' parameters.");
+            this.reportIfInvalid("PAR-013", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "formData"]), node, "The \"allowEmptyValue\" property is only allowed for 'query' or 'formData' parameters.");
         }
         if (this.hasValue(node.collectionFormat)) {
             this.reportIfInvalid("PAR-014", node.type === "array", node, "The \"collectionFormat\" property is only allowed for 'array' type parameters.");
         }
         if (this.hasValue(node.collectionFormat)) {
-            this.reportIfInvalid("PAR-015", this.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes", "multi"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes, multi (Found value: '" + node.collectionFormat + "')");
+            this.reportIfInvalid("PAR-015", OasValidationRuleUtil.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes", "multi"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes, multi (Found value: '" + node.collectionFormat + "')");
         }
         if (node.collectionFormat === "multi") {
-            this.reportIfInvalid("PAR-016", this.isValidEnumItem(node.in, ["query", "formData"]), node, "Invalid property value.  The \"collectionFormat\" property value can only be 'multi' for 'query' or 'formData' parameters.");
+            this.reportIfInvalid("PAR-016", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "formData"]), node, "Invalid property value.  The \"collectionFormat\" property value can only be 'multi' for 'query' or 'formData' parameters.");
         }
         if (this.hasValue(node.default)) {
             this.reportIfInvalid("PAR-017", node.required === undefined || node.required === null || node.required === false, node, "Invalid property value.  The \"default\" property is not valid when the parameter is required.");
@@ -14590,13 +14679,13 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitItems = function (node) {
         if (this.hasValue(node.type)) {
-            this.reportIfInvalid("IT-003", this.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array (Found value: '" + node.type + "')");
+            this.reportIfInvalid("IT-003", OasValidationRuleUtil.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array (Found value: '" + node.type + "')");
         }
         if (this.hasValue(node.format)) {
-            this.reportIfInvalid("IT-004", this.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
+            this.reportIfInvalid("IT-004", OasValidationRuleUtil.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
         }
         if (this.hasValue(node.collectionFormat)) {
-            this.reportIfInvalid("IT-005", this.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes (Found value: '" + node.collectionFormat + "')");
+            this.reportIfInvalid("IT-005", OasValidationRuleUtil.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes (Found value: '" + node.collectionFormat + "')");
         }
         if (this.hasValue(node.collectionFormat)) {
             this.reportIfInvalid("IT-006", node.type === "array", node, "The \"collectionFormat\" property is only allowed for 'array' type parameters.");
@@ -14604,16 +14693,16 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitHeader = function (node) {
         if (this.hasValue(node.type)) {
-            this.reportIfInvalid("HEAD-003", this.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array (Found value: '" + node.type + "')");
+            this.reportIfInvalid("HEAD-003", OasValidationRuleUtil.isValidEnumItem(node.type, ["string", "number", "integer", "boolean", "array"]), node, "Invalid property value.  The \"type\" property value must be one of: string, number, integer, boolean, array (Found value: '" + node.type + "')");
         }
         if (this.hasValue(node.format)) {
-            this.reportIfInvalid("HEAD-004", this.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
+            this.reportIfInvalid("HEAD-004", OasValidationRuleUtil.isValidEnumItem(node.format, ["int32", "int64", "float", "double", "byte", "binary", "date", "date-time", "password"]), node, "Invalid property value.  The \"format\" property value must be one of: int32, int64, float, double, byte, binary, date, date-time, password (Found value: '" + node.format + "')");
         }
         if (this.hasValue(node.collectionFormat)) {
             this.reportIfInvalid("HEAD-006", node.type === "array", node, "The \"collectionFormat\" property is only allowed for 'array' type headers.");
         }
         if (this.hasValue(node.collectionFormat)) {
-            this.reportIfInvalid("HEAD-007", this.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes (Found value: '" + node.collectionFormat + "')");
+            this.reportIfInvalid("HEAD-007", OasValidationRuleUtil.isValidEnumItem(node.collectionFormat, ["csv", "ssv", "tsv", "pipes"]), node, "Invalid property value.  The \"collectionFormat\" property value must be one of: csv, ssv, tsv, pipes (Found value: '" + node.collectionFormat + "')");
         }
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitXML = function (node) {
@@ -14623,13 +14712,13 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitSecurityScheme = function (node) {
         if (this.hasValue(node.type)) {
-            this.reportIfInvalid("SS-008", this.isValidEnumItem(node.type, ["apiKey", "basic", "oauth2"]), node, "Invalid property value.  The \"type\" property value must be one of: basic, apiKey, oauth2 (Found value: '" + node.type + "')");
+            this.reportIfInvalid("SS-008", OasValidationRuleUtil.isValidEnumItem(node.type, ["apiKey", "basic", "oauth2"]), node, "Invalid property value.  The \"type\" property value must be one of: basic, apiKey, oauth2 (Found value: '" + node.type + "')");
         }
         if (this.hasValue(node.in)) {
-            this.reportIfInvalid("SS-009", this.isValidEnumItem(node.in, ["query", "header"]), node, "Invalid property value.  The \"in\" property value must be one of: query, header (Found value: '" + node.in + "')");
+            this.reportIfInvalid("SS-009", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "header"]), node, "Invalid property value.  The \"in\" property value must be one of: query, header (Found value: '" + node.in + "')");
         }
         if (this.hasValue(node.flow)) {
-            this.reportIfInvalid("SS-010", this.isValidEnumItem(node.flow, ["implicit", "password", "application", "accessCode"]), node, "Invalid property value.  The \"flow\" property value must be one of: implicit, password, application, accessCode (Found value: '" + node.flow + "')");
+            this.reportIfInvalid("SS-010", OasValidationRuleUtil.isValidEnumItem(node.flow, ["implicit", "password", "application", "accessCode"]), node, "Invalid property value.  The \"flow\" property value must be one of: implicit, password, application, accessCode (Found value: '" + node.flow + "')");
         }
     };
     Oas20InvalidPropertyValueValidationRule.prototype.visitSecurityRequirement = function (node) {
@@ -14867,63 +14956,24 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
     Oas20InvalidReferenceValidationRule.prototype.isValidSecurityRequirementName = function (securityReqName, doc) {
         return this.hasValue(doc.securityDefinitions) && this.isDefined(doc.securityDefinitions.securityScheme(securityReqName));
     };
-    /**
-     * Resolves a reference from a relative position in the data model.
-     * @param $ref
-     * @param from
-     */
-    Oas20InvalidReferenceValidationRule.prototype.resolveRef = function ($ref, from) {
-        var _this = this;
-        // TODO implement a proper reference resolver including external file resolution: https://github.com/EricWittmann/oai-ts-core/issues/8
-        var split = $ref.split("/");
-        var cnode = null;
-        split.forEach(function (seg) {
-            if (seg === "#") {
-                cnode = from.ownerDocument();
-            }
-            else if (_this.hasValue(cnode)) {
-                if (cnode["__instanceof_IOasIndexedNode"]) {
-                    cnode = cnode["getItem"](seg);
-                }
-                else {
-                    cnode = cnode[seg];
-                }
-            }
-        });
-        return cnode;
-    };
-    /**
-     * Returns true only if the given reference can be resolved relative to the given document.  Examples
-     * of $ref values include:
-     *
-     * #/definitions/ExampleDefinition
-     * #/parameters/fooId
-     * #/responses/NotFoundResponse
-     *
-     * @param $ref
-     * @param oasDocument
-     */
-    Oas20InvalidReferenceValidationRule.prototype.canResolveRef = function ($ref, from) {
-        return this.hasValue(this.resolveRef($ref, from));
-    };
     Oas20InvalidReferenceValidationRule.prototype.visitParameter = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("PAR-018", this.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Parameter Definition: " + node.$ref);
+            this.reportIfInvalid("PAR-018", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Parameter Definition: " + node.$ref);
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitPathItem = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("PATH-001", this.canResolveRef(node.$ref, node), node, "Reference to external path is either invalid or not found: " + node.$ref);
+            this.reportIfInvalid("PATH-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "Reference to external path is either invalid or not found: " + node.$ref);
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitResponse = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("RES-002", this.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Response Definition: " + node.$ref);
+            this.reportIfInvalid("RES-002", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Response Definition: " + node.$ref);
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("SCH-001", this.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Definition: " + node.$ref);
+            this.reportIfInvalid("SCH-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property must reference a valid Definition: " + node.$ref);
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitPropertySchema = function (node) {
@@ -14946,6 +14996,1080 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
     };
     return Oas20InvalidReferenceValidationRule;
 }(Oas20ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$90 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Base class for all 3.0 validation rules.
+ */
+var Oas30ValidationRule = (function (_super) {
+    __extends$90(Oas30ValidationRule, _super);
+    function Oas30ValidationRule(reporter) {
+        var _this = _super.call(this) || this;
+        _this._reporter = reporter;
+        return _this;
+    }
+    /**
+     * Reports a validation error if the property is not valid.
+     * @param code
+     * @param condition
+     * @param node
+     * @param message
+     */
+    Oas30ValidationRule.prototype.reportIf = function (code, condition, node, message) {
+        if (condition) {
+            this.report(code, node, message);
+        }
+    };
+    /**
+     * Reports a validation error if the property is not valid.
+     * @param code
+     * @param isValid
+     * @param node
+     * @param message
+     */
+    Oas30ValidationRule.prototype.reportIfInvalid = function (code, isValid, node, message) {
+        this.reportIf(code, !isValid, node, message);
+    };
+    /**
+     * Check if a property was defined.
+     * @param propertyValue
+     * @return {boolean}
+     */
+    Oas30ValidationRule.prototype.isDefined = function (propertyValue) {
+        return OasValidationRuleUtil.isDefined(propertyValue);
+    };
+    /**
+     * Check if a value is either null or undefined.
+     * @param value
+     * @return {boolean}
+     */
+    Oas30ValidationRule.prototype.isNullOrUndefined = function (value) {
+        return value === null || value === undefined;
+    };
+    /**
+     * Check if the property value exists (is not undefined and is not null).
+     * @param propertyValue
+     * @return {boolean}
+     */
+    Oas30ValidationRule.prototype.hasValue = function (propertyValue) {
+        return OasValidationRuleUtil.hasValue(propertyValue);
+    };
+    /**
+     * Called by validation rules to report an error.
+     * @param code
+     * @param node
+     * @param message
+     */
+    Oas30ValidationRule.prototype.report = function (code, node, message) {
+        this._reporter.report(code, node, message);
+    };
+    return Oas30ValidationRule;
+}(Oas30NodeVisitorAdapter));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$89 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Invalid Property Format validation rule.  This rule is responsible
+ * for reporting whenever the value of a property fails to conform to the required
+ * *format* for that property.
+ */
+var Oas30InvalidPropertyFormatValidationRule = (function (_super) {
+    __extends$89(Oas30InvalidPropertyFormatValidationRule, _super);
+    function Oas30InvalidPropertyFormatValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitInfo = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("INF-3-003", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+        if (this.hasValue(node.termsOfService)) {
+            this.reportIfInvalid("CTC-3-004", OasValidationRuleUtil.isValidUrl(node.termsOfService), node, "The \"termsOfService\" property must be a valid URL.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitResponseBase = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("RES-3-002", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitResponse = function (node) {
+        this.visitResponseBase(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitResponseDefinition = function (node) {
+        this.visitResponseBase(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitContact = function (node) {
+        if (this.hasValue(node.url)) {
+            this.reportIfInvalid("CTC-3-001", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+        }
+        if (this.hasValue(node.email)) {
+            this.reportIfInvalid("CTC-3-002", OasValidationRuleUtil.isValidEmailAddress(node.email), node, "The \"email\" property must be a valid email address.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitExample = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("EX-3-001", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitExampleDefinition = function (node) {
+        this.visitExample(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitLink = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("LINK-3-004", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitLinkDefinition = function (node) {
+        this.visitLink(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitFlow = function (node) {
+        if (this.hasValue(node.authorizationUrl)) {
+            this.reportIfInvalid("FLOW-3-003", OasValidationRuleUtil.isValidUrl(node.authorizationUrl), node, "The \"authorizationUrl\" property must be a valid URL.");
+        }
+        if (this.hasValue(node.tokenUrl)) {
+            this.reportIfInvalid("FLOW-3-004", OasValidationRuleUtil.isValidUrl(node.tokenUrl), node, "The \"tokenUrl\" property must be a valid URL.");
+        }
+        if (this.hasValue(node.refreshUrl)) {
+            this.reportIfInvalid("FLOW-3-005", OasValidationRuleUtil.isValidUrl(node.refreshUrl), node, "The \"refreshUrl\" property must be a valid URL.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitImplicitOAuthFlow = function (node) {
+        this.visitFlow(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitPasswordOAuthFlow = function (node) {
+        this.visitFlow(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitClientCredentialsOAuthFlow = function (node) {
+        this.visitFlow(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitAuthorizationCodeOAuthFlow = function (node) {
+        this.visitFlow(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitPathItem = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("PATH-3-003", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitRequestBody = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("RB-3-001", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitRequestBodyDefinition = function (node) {
+        this.visitRequestBody(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitLicense = function (node) {
+        if (this.hasValue(node.url)) {
+            this.reportIfInvalid("LIC-3-002", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitOperation = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("OP-3-001", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitExternalDocumentation = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("ED-3-001", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+        if (this.hasValue(node.url)) {
+            this.reportIfInvalid("ED-3-003", OasValidationRuleUtil.isValidUrl(node.url), node, "The \"url\" property must be a valid URL.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitParameter = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("PAR-3-005", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitParameterDefinition = function (node) {
+        this.visitParameter(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitHeader = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("HEAD-3-002", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitHeaderDefinition = function (node) {
+        this.visitHeader(node);
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitTag = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("TAG-3-002", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitSecurityScheme = function (node) {
+        if (this.hasValue(node.openIdConnectUrl)) {
+            this.reportIfInvalid("SS-3-007", OasValidationRuleUtil.isValidUrl(node.openIdConnectUrl), node, "The \"openIdConnectUrl\" property must be a valid URL.");
+        }
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("SS-3-009", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitServer = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("SRV-3-003", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+        if (this.hasValue(node.url)) {
+            this.reportIfInvalid("SRV-3-002", OasValidationRuleUtil.isValidUrlTemplate(node.url), node, "The \"url\" property must be a valid URL.");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitServerVariable = function (node) {
+        if (this.hasValue(node.description)) {
+            this.reportIfInvalid("SVAR-3-002", OasValidationRuleUtil.isValidCommonMark(node.description), node, "The \"description\" property must be valid CommonMark syntax (or plain text).");
+        }
+    };
+    Oas30InvalidPropertyFormatValidationRule.prototype.visitXML = function (node) {
+        if (this.hasValue(node.namespace)) {
+            this.reportIfInvalid("XML-3-002", OasValidationRuleUtil.isValidUrl(node.namespace), node, "The \"namespace\" property must be a valid URL.");
+        }
+    };
+    return Oas30InvalidPropertyFormatValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$91 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Ignored Property Name validation rule.  This rule is responsible
+ * for reporting whenever a property found in the data model is valid but will
+ * be ignored.
+ */
+var Oas30IgnoredPropertyNameValidationRule = (function (_super) {
+    __extends$91(Oas30IgnoredPropertyNameValidationRule, _super);
+    function Oas30IgnoredPropertyNameValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Oas30IgnoredPropertyNameValidationRule.prototype.visitHeader = function (node) {
+        if (node.headerName().toLowerCase() === "content-type") {
+            this.report("HEAD-3-001", node, "The \"Content-Type\" header will be ignored.");
+        }
+    };
+    Oas30IgnoredPropertyNameValidationRule.prototype.visitHeaderDefinition = function (node) {
+        this.visitHeader(node);
+    };
+    return Oas30IgnoredPropertyNameValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$92 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Invalid Property Name validation rule.  This rule is responsible
+ * for reporting whenever the **name** of a property fails to conform to the required
+ * format defined by the specification.
+ */
+var Oas30InvalidPropertyNameValidationRule = (function (_super) {
+    __extends$92(Oas30InvalidPropertyNameValidationRule, _super);
+    function Oas30InvalidPropertyNameValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Returns true if the definition name is valid.
+     * @param name
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyNameValidationRule.isValidDefinitionName = function (name) {
+        var definitionNamePattern = /^[a-zA-Z0-9\.\-_]+$/;
+        return definitionNamePattern.test(name);
+    };
+    /**
+     * Returns true if the given schema has a property defined with the given name.
+     * @param {Oas30Schema} schema
+     * @param {string} propertyName
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyNameValidationRule.prototype.isValidSchemaProperty = function (schema, propertyName) {
+        if (this.isNullOrUndefined(schema)) {
+            return false;
+        }
+        return !this.isNullOrUndefined(schema.property(propertyName));
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitPathItem = function (node) {
+        this.reportIfInvalid("PATH-3-004", node.path().indexOf("/") === 0, node, "The path must start with a '/' character.");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitResponse = function (node) {
+        // The "default" response will have a statusCode of "null"
+        if (this.hasValue(node.statusCode())) {
+            this.reportIfInvalid("RES-3-001", OasValidationRuleUtil.isValidHttpCode(node.statusCode()), node, "Response status code \"" + node.statusCode() + "\" is not a valid HTTP response status code.");
+        }
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitSecurityRequirement = function (node) {
+        var _this = this;
+        var srn = node.securityRequirementNames();
+        srn.forEach(function (name) {
+            var doc = node.ownerDocument();
+            var scheme = doc.components.getSecurityScheme(name);
+            _this.reportIfInvalid("SREQ-3-001", !(scheme === undefined || scheme === null), node, "Security Requirement \"" + name + "\" does not correspond to a declared Security Scheme.");
+        });
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitSchemaDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-001", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Schema Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitParameterDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-002", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.parameterName()), node, "The Parameter Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitResponseDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-003", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Response Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitSecurityScheme = function (node) {
+        this.reportIfInvalid("COMP-3-004", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.schemeName()), node, "The Security Scheme name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitExampleDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-005", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Example Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitRequestBodyDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-006", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Request Body Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitHeaderDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-007", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Header Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitLinkDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-008", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Link Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitCallbackDefinition = function (node) {
+        this.reportIfInvalid("COMP-3-009", Oas30InvalidPropertyNameValidationRule.isValidDefinitionName(node.name()), node, "The Callback Definition name must match the regular expression: ^[a-zA-Z0-9\\.\\-_]+$");
+    };
+    Oas30InvalidPropertyNameValidationRule.prototype.visitEncoding = function (node) {
+        var name = node.name();
+        var schema = node.parent().schema;
+        this.reportIfInvalid("ENC-3-006", this.isValidSchemaProperty(schema, name), node, "The encoding property \"" + name + "\" cannot be found in the associated schema.");
+    };
+    return Oas30InvalidPropertyNameValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$93 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Used to find an operation with a given operation id.
+ */
+var Oas30OperationFinder = (function (_super) {
+    __extends$93(Oas30OperationFinder, _super);
+    function Oas30OperationFinder(operationId) {
+        var _this = _super.call(this) || this;
+        _this.operationId = operationId;
+        return _this;
+    }
+    Oas30OperationFinder.prototype.visitOperation = function (node) {
+        if (node.operationId === this.operationId) {
+            this.foundOp = node;
+        }
+    };
+    Oas30OperationFinder.prototype.isFound = function () {
+        return OasValidationRuleUtil.hasValue(this.foundOp);
+    };
+    return Oas30OperationFinder;
+}(Oas30NodeVisitorAdapter));
+/**
+ * Implements the Invalid Property Value validation rule.  This rule is responsible
+ * for reporting whenever the **value** of a property fails to conform to requirements
+ * outlined by the specification.  This is typically things like enums, where the
+ * *format* of the value is fine (e.g. correct data-type) but the valid is somehow
+ * invalid.
+ */
+var Oas30InvalidPropertyValueValidationRule = (function (_super) {
+    __extends$93(Oas30InvalidPropertyValueValidationRule, _super);
+    function Oas30InvalidPropertyValueValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Returns true if the given value is a valid operationId.
+     * @param id
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.isValidOperationId = function (id) {
+        // TODO implement a regex for this? should be something like camelCase
+        return true;
+    };
+    /**
+     * Parses the given path template for segments.  For example, a path template might be
+     *
+     * /foo/{fooId}/resources/{resourceId}
+     *
+     * In this case, this method will return [ "fooId", "resourceId" ]
+     *
+     * @param pathTemplate
+     * @return {Array}
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.parsePathTemplate = function (pathTemplate) {
+        var segments = [];
+        var split = pathTemplate.split('/');
+        split.forEach(function (seg) {
+            if (seg.indexOf('{') === 0) {
+                var segment = seg.substring(1, seg.lastIndexOf('}')).trim();
+                segments.push(segment);
+            }
+        });
+        return segments;
+    };
+    /**
+     * Parses the given server template for variable names.  For example, a server template might be
+     *
+     * https://{username}.gigantic-server.com:{port}/{basePath}
+     *
+     * In this case, this method will return [ "username", "port", "basePath" ]
+     *
+     * @param serverTemplate
+     * @return {Array}
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.parseServerTemplate = function (serverTemplate) {
+        if (!this.hasValue(serverTemplate)) {
+            return [];
+        }
+        var vars = [];
+        var startIdx = serverTemplate.indexOf('{');
+        var endIdx = -1;
+        while (startIdx != -1) {
+            endIdx = serverTemplate.indexOf('}', startIdx);
+            if (endIdx != -1) {
+                vars.push(serverTemplate.substring(startIdx + 1, endIdx));
+                startIdx = serverTemplate.indexOf('{', endIdx);
+            }
+            else {
+                startIdx = -1;
+            }
+        }
+        return vars;
+    };
+    /**
+     * Returns true if it's OK to use "wrapped" in the XML node.  It's only OK to do this if
+     * the type being defined is an 'array' type.
+     * @param xml
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.isWrappedOK = function (xml) {
+        var schema = xml.parent();
+        return schema.type === "array";
+    };
+    /**
+     * Returns true if the given media type name is multipart/* or application/x-www-form-urlencoded
+     * @param {string} typeName
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.isValidMultipartType = function (typeName) {
+        return typeName === "application/x-www-form-urlencoded" || typeName.indexOf("multipart") == 0;
+    };
+    /**
+     * Returns true if the given operation is one of:  POST, PUT, OPTIONS
+     * @param {Oas30Operation} operation
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyValueValidationRule.prototype.isValidRequestBodyOperation = function (operation) {
+        var method = operation.method();
+        return method === "put" || method === "post" || method === "options";
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitEncoding = function (node) {
+        if (node.getHeaders().length > 0) {
+            var mediaType = node.parent();
+            this.reportIfInvalid("ENC-3-001", mediaType.name().indexOf("multipart") === 0, node, "The \"headers\" property is only allowed for \"multipart\" request body media type encodings.  Found media type \"" + mediaType.name() + "\" instead.");
+        }
+        if (this.hasValue(node.style)) {
+            var mediaType = node.parent();
+            this.reportIfInvalid("ENC-3-002", mediaType.name().indexOf("application/x-www-form-urlencoded") === 0, node, "The \"style\" property is only allowed for \"application/x-www-form-urlencoded\" request body media type encodings.  Found media type \"" + mediaType.name() + "\" instead.");
+            this.reportIfInvalid("ENC-3-005", OasValidationRuleUtil.isValidEnumItem(node.style, ["form", "spaceDelimited", "pipeDelimited", "deepObject"]), node, "The \"style\" property value must be one of: [\"form\", \"spaceDelimited\", \"pipeDelimited\", \"deepObject\"]  Found value \"" + node.style + "\".");
+        }
+        if (this.hasValue(node.explode)) {
+            var mediaType = node.parent();
+            this.reportIf("ENC-3-003", mediaType.name() != "application/x-www-form-urlencoded", node, "The \"explode\" property is only allowed for \"application/x-www-form-urlencoded\" request body media type encodings.");
+        }
+        if (this.hasValue(node.allowReserved)) {
+            var mediaType = node.parent();
+            this.reportIf("ENC-3-004", mediaType.name() != "application/x-www-form-urlencoded", node, "The \"allowReserved\" property is only allowed for \"application/x-www-form-urlencoded\" request body media type encodings.");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitHeader = function (node) {
+        if (this.hasValue(node.style)) {
+            this.reportIfInvalid("HEAD-3-003", OasValidationRuleUtil.isValidEnumItem(node.style, ["simple"]), node, "The \"style\" property value must be \"simple\".  Found value \"" + node.style + "\".");
+        }
+        // TODO implement once content is properly modeled!
+        // if (this.hasValue(node.content)) {
+        // TODO HEAD-3-3-004: Content property must contain at most one entry
+        // }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitHeaderDefinition = function (node) {
+        this.visitHeader(node);
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitLink = function (node) {
+        if (this.hasValue(node.operationId)) {
+            var opFinder = new Oas30OperationFinder(node.operationId);
+            OasVisitorUtil.visitTree(node.ownerDocument(), opFinder);
+            this.reportIfInvalid("LINK-3-002", opFinder.isFound(), node, "The \"operationId\" property must refer to an existing Operation.  Cannot find operation with ID \"" + node.operationId + "\".");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitLinkDefinition = function (node) {
+        this.visitLink(node);
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitMediaType = function (node) {
+        if (node.getEncodings().length > 0) {
+            this.reportIfInvalid("MT-3-003", this.isValidMultipartType(node.name()), node, "The \"encoding\" property is only allowed for \"multipart\" and \"application/x-www-form-urlencoded\" request body media types.  Found \"" + node.name() + "\" instead.");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitOperation = function (node) {
+        if (this.hasValue(node.requestBody)) {
+            this.reportIfInvalid("OP-3-003", this.isValidRequestBodyOperation(node), node, "The \"requestBody\" property is only supported for POST, PUT, and OPTIONS operations.");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitResponses = function (node) {
+        this.reportIfInvalid("OP-3-005", node.responses().length > 0, node.parent(), "There must be at least one Response documented.");
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitParameter = function (node) {
+        if (this.hasValue(node.in)) {
+            this.reportIfInvalid("PAR-3-002", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "header", "path", "cookie"]), node, "The \"in\" property value must be one of: [\"path\", \"query\", \"header\", \"cookie\"] (Found value: '" + node.in + "')");
+        }
+        if (this.hasValue(node.allowEmptyValue)) {
+            this.reportIfInvalid("PAR-3-007", OasValidationRuleUtil.isValidEnumItem(node.in, ["query"]), node, "The \"allowEmptyValue\" property is only allowed for \"query\" parameters.");
+        }
+        if (this.hasValue(node.style)) {
+            this.reportIfInvalid("PAR-3-009", OasValidationRuleUtil.isValidEnumItem(node.style, ["matrix", "label", "form", "simple", "spaceDelimited", "pipeDelimited", "deepObject"]), node, "The \"style\" property value must be one of: [\"matrix\", \"label\", \"form\", \"simple\", \"spaceDelimited\", \"pipeDelimited\", \"deepObject\"] (Found value \"" + node.style + "\").");
+            if (node.in === "query") {
+                this.reportIfInvalid("PAR-3-011", OasValidationRuleUtil.isValidEnumItem(node.style, ["form", "spaceDelimited", "pipeDelimited", "deepObject"]), node, "For \"query\" parameters, the \"style\" property value must be one of: [\"form\", \"spaceDelimited\", \"pipeDelimited\", \"deepObject\"] (Found value \"" + node.style + "\").");
+            }
+            if (node.in === "cookie") {
+                this.reportIfInvalid("PAR-3-012", OasValidationRuleUtil.isValidEnumItem(node.style, ["form"]), node, "For \"cookie\" parameters, the \"style\" property value must be \"form\". (Found value \"" + node.style + "\")");
+            }
+            if (node.in === "header") {
+                this.reportIfInvalid("PAR-3-013", OasValidationRuleUtil.isValidEnumItem(node.style, ["simple"]), node, "For \"header\" parameters, the \"style\" property value must be \"simple\". (Found value \"" + node.style + "\").");
+            }
+        }
+        if (node.in === "path") {
+            var pathItem = void 0;
+            if (node.parent()["_path"]) {
+                pathItem = (node.parent());
+            }
+            else {
+                pathItem = (node.parent().parent());
+            }
+            var path = pathItem.path();
+            var pathVars = this.parsePathTemplate(path);
+            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "The \"name\" property value for a 'path' style parameter must match one of the items in the path template.  Invalid path property name found: \"" + node.name + "\"");
+            this.reportIfInvalid("PAR-3-006", node.required === true, node, "The \"required\" property is required for \"path\" parameters, and must have a value of \"true\".");
+            if (this.hasValue(node.style)) {
+                this.reportIfInvalid("PAR-3-010", OasValidationRuleUtil.isValidEnumItem(node.style, ["matrix", "label", "simple"]), node, "For \"path\" parameters, the \"style\" property value must be one of: [\"matrix\", \"label\", \"simple\"]  (Found value \"" + node.style + "\").");
+            }
+        }
+        if (node.in === "header" && this.hasValue(node.name)) {
+            var hname = node.name.toLowerCase();
+            this.reportIf("PAR-3-019", hname === "accept" || hname === "content-type" || hname === "authorization", node, "Header parameters \"Accept\", \"Content-Type\", and \"Authorization\" are ignored.");
+        }
+        if (this.hasValue(node.allowReserved)) {
+            this.reportIfInvalid("PAR-3-014", node.in === "query", node, "The \"allowReserved\" property is only allowed for \"query\" parameters.");
+        }
+        if (this.hasValue(node.content)) {
+            this.reportIfInvalid("PAR-3-016", node.getMediaTypes().length < 2, node, "The \"content\" property must contain at most one entry.");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitParameterDefinition = function (node) {
+        this.visitParameter(node);
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitXML = function (node) {
+        if (this.hasValue(node.wrapped)) {
+            this.reportIfInvalid("XML-3-002", this.isWrappedOK(node), node, "The \"wrapped\" property is only valid for 'array' types.");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitDiscriminator = function (node) {
+        var schema = node.parent();
+        this.reportIfInvalid("SCH-3-001", this.hasValue(schema.oneOf) || this.hasValue(schema.anyOf) || this.hasValue(schema.allOf), node, "The \"discriminator\" property is only valid when using one of: [\"oneOf\", \"anyOf\", \"allOf\"]");
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitSecurityScheme = function (node) {
+        if (this.hasValue(node.type)) {
+            this.reportIfInvalid("SS-3-008", OasValidationRuleUtil.isValidEnumItem(node.type, ["apiKey", "http", "oauth2", "openIdConnect"]), node, "The \"type\" property value must be one of: [\"apiKey\", \"http\", \"oauth2\", \"openIdConnect\"] (Found value: '" + node.type + "')");
+        }
+        if (this.hasValue(node.in)) {
+            this.reportIfInvalid("SS-3-010", OasValidationRuleUtil.isValidEnumItem(node.in, ["query", "header", "cookie"]), node, "The \"in\" property value must be one of: [\"query\", \"header\", \"cookie\"] (Found value: '" + node.in + "')");
+        }
+        if (this.hasValue(node.scheme)) {
+            this.reportIfInvalid("SS-3-013", OasValidationRuleUtil.isValidEnumItem(node.scheme, ["basic", "bearer", "digest", "hoba", "mutual", "negotiate", "oauth", "vapid", "scram-sha-1", "scram-sha-256"]), node, "The \"scheme\" property value must be one of: [\"basic\", \"bearer\", \"digest\", \"hoba\", \"mutual\", \"negotiate\", \"oauth\", \"vapid\", \"scram-sha-1\", \"scram-sha-256\"] (Found value: '" + node.scheme + "')");
+        }
+        if (this.hasValue(node.bearerFormat)) {
+            this.reportIfInvalid("SS-3-011", node.type === "http" && node.scheme === "bearer", node, "The \"bearerFormat\" property is only valid for \"http\" security schemes of type \"bearer\".");
+        }
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitSecurityRequirement = function (node) {
+        var _this = this;
+        var snames = node.securityRequirementNames();
+        snames.forEach(function (sname) {
+            var scopes = node.scopes(sname);
+            _this.reportIfInvalid("SREQ-3-003", _this.hasValue(scopes) && Array.isArray(scopes), node, "The value for security requirement \"" + sname + "\" must be an array.");
+            // If the security requirement contains some scopes, then it must be pointing to an oauth2 or openIdConnect security scheme!
+            if (_this.hasValue(scopes) && scopes.length > 0) {
+                var scheme = node.ownerDocument().components.getSecurityScheme(sname);
+                if (_this.hasValue(scheme)) {
+                    _this.reportIfInvalid("SREQ-3-002", _this.hasValue(scheme) && (scheme.type === "oauth2" || scheme.type === "openIdConnect"), node, "The value for security requirement \"" + sname + "\" must be an empty array (required for Security Schemes of type other than \"oauth2\" and \"openIdConnect\").");
+                }
+            }
+        });
+    };
+    Oas30InvalidPropertyValueValidationRule.prototype.visitServerVariable = function (node) {
+        var varName = node.name();
+        var server = node.parent();
+        var vars = this.parseServerTemplate(server.url);
+        this.reportIfInvalid("SVAR-3-002", OasValidationRuleUtil.isValidEnumItem(varName, vars), node, "The server variable \"" + varName + "\" is not found in the server url template.");
+    };
+    return Oas30InvalidPropertyValueValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$94 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Invalid Reference validation rule.  This rule is responsible
+ * for reporting whenever a property references another node in the document
+ * but that reference is missing or invalid.
+ */
+var Oas30InvalidReferenceValidationRule = (function (_super) {
+    __extends$94(Oas30InvalidReferenceValidationRule, _super);
+    function Oas30InvalidReferenceValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Returns true if the security requirement name is valid.  It does this by looking up a declared
+     * security scheme definition in the document.  If no security scheme definition exists with the
+     * given name, then it is invalid.
+     * @param securityReqName
+     * @param doc
+     */
+    // private isValidSecurityRequirementName(securityReqName: string, doc: Oas30Document): boolean {
+    //     return this.hasValue(doc.components) && this.hasValue(doc.components.getSecurityScheme(securityReqName));
+    // }
+    Oas30InvalidReferenceValidationRule.prototype.visitCallback = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("CALL-3-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Callback.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitCallbackDefinition = function (node) { this.visitCallback(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitExample = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("EX-3-003", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Example.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitExampleDefinition = function (node) { this.visitExample(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitHeader = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("HEAD-3-005", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Header.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitHeaderDefinition = function (node) { this.visitHeader(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitLink = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("LINK-3-005", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Link.");
+        }
+        if (this.hasValue(node.operationRef)) {
+            this.reportIfInvalid("LINK-3-003", OasValidationRuleUtil.canResolveRef(node.operationRef, node), node, "The \"operationRef\" property value \"" + node.$ref + "\" must reference a valid Link.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitLinkDefinition = function (node) { this.visitLink(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitParameter = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("PAR-3-017", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Parameter.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitParameterDefinition = function (node) { this.visitParameter(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitRequestBody = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("RB-3-003", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Request Body.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitRequestBodyDefinition = function (node) { this.visitRequestBody(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitResponseBase = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("RES-3-004", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Response.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitResponse = function (node) { this.visitResponseBase(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitResponseDefinition = function (node) { this.visitResponseBase(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitSecurityScheme = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("SS-3-012", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Security Scheme.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
+        if (this.hasValue(node.$ref)) {
+            this.reportIfInvalid("SCH-3-002", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "The \"$ref\" property value \"" + node.$ref + "\" must reference a valid Schema.");
+        }
+    };
+    Oas30InvalidReferenceValidationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitAnyOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitOneOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitNotSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitPropertySchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitItemsSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.visitSchemaDefinition = function (node) { this.visitSchema(node); };
+    return Oas30InvalidReferenceValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$95 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Mutually Exclusive validation rule.  This rule is responsible
+ * for reporting whenever properties are used together when that is not allowed.
+ * In various places in the specification, some properties are mutually exclusive
+ * with each other.
+ */
+var Oas30MutuallyExclusiveValidationRule = (function (_super) {
+    __extends$95(Oas30MutuallyExclusiveValidationRule, _super);
+    function Oas30MutuallyExclusiveValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Oas30MutuallyExclusiveValidationRule.prototype.hasContent = function (contentParent) {
+        return contentParent.getMediaTypes().length > 0;
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitExample = function (node) {
+        this.reportIf("EX-3-002", this.hasValue(node.value) && this.hasValue(node.externalValue), node, "The \"value\" and \"externalValue\" properties are mutually exclusive.");
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitExampleDefinition = function (node) { this.visitExample(node); };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitHeader = function (node) {
+        // TODO implement this rule once 'content' is added to header
+        // this.reportIf("HEAD-3-006", this.hasValue(node.schema) && this.hasContent(node), node,
+        //     `The "schema" and "content" properties are mutually exclusive.`);
+        this.reportIf("HEAD-3-007", this.hasValue(node.example) && this.hasValue(node.examples), node, "The \"example\" and \"examples\" properties are mutually exclusive.");
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitHeaderDefinition = function (node) { this.visitHeader(node); };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitLink = function (node) {
+        this.reportIf("LINK-3-001", this.hasValue(node.operationRef) && this.hasValue(node.operationId), node, "The \"operationRef\" and \"operationId\" properties are mutually exclusive.");
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitLinkDefinition = function (node) { this.visitLink(node); };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitMediaType = function (node) {
+        this.reportIf("MT-3-001", this.hasValue(node.example) && this.hasValue(node.examples), node, "The \"example\" and \"examples\" properties are mutually exclusive.");
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitParameterBase = function (node) {
+        this.reportIf("PAR-3-008", this.hasValue(node.schema) && this.hasContent(node), node, "The \"schema\" and \"content\" properties are mutually exclusive.");
+        this.reportIf("PAR-3-015", this.hasValue(node.example) && this.hasValue(node.examples), node, "The \"example\" and \"examples\" properties are mutually exclusive.");
+    };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitParameter = function (node) { this.visitParameterBase(node); };
+    Oas30MutuallyExclusiveValidationRule.prototype.visitParameterDefinition = function (node) { this.visitParameterBase(node); };
+    return Oas30MutuallyExclusiveValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$96 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the required property validation rule.  Various model properties are either
+ * required or conditionally required.  For example, the "swagger" property MUST exist
+ * on the root (document) node.  This rule checks for all required and conditionally
+ * required properties on all model types.
+ */
+var Oas30RequiredPropertyValidationRule = (function (_super) {
+    __extends$96(Oas30RequiredPropertyValidationRule, _super);
+    function Oas30RequiredPropertyValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Called when a required property is missing.
+     * @param code
+     * @param node
+     * @param propertyName
+     */
+    Oas30RequiredPropertyValidationRule.prototype.requireProperty = function (code, node, propertyName) {
+        // No properties are required if we're dealing with a $ref
+        if (this.hasValue(node["$ref"])) {
+            return;
+        }
+        var propertyValue = node[propertyName];
+        if (!this.isDefined(propertyValue)) {
+            this.report(code, node, "Property \"" + propertyName + "\" is required.");
+        }
+    };
+    /**
+     * Called when a conditionally required property is missing.
+     * @param node
+     * @param propertyName
+     * @param dependentProperty
+     * @param dependentValue
+     */
+    Oas30RequiredPropertyValidationRule.prototype.requirePropertyWhen = function (code, node, propertyName, dependentProperty, dependentValue) {
+        var actualDependentValue = node[dependentProperty];
+        var dependentValueMatches = actualDependentValue == dependentValue;
+        if (dependentValueMatches) {
+            var propertyValue = node[propertyName];
+            if (!this.hasValue(propertyValue)) {
+                this.report(code, node, "Property \"" + propertyName + "\" is required when \"" + dependentProperty + "\" property is \"" + dependentValue + "\".");
+            }
+        }
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitDiscriminator = function (node) {
+        this.requireProperty("DISC-3-001", node, "propertyName");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitExternalDocumentation = function (node) {
+        this.requireProperty("ED-3-002", node, "url");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitOAuthFlow = function (node) {
+        this.requireProperty("FLOW-3-006", node, "scopes");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitImplicitOAuthFlow = function (node) {
+        this.visitOAuthFlow(node);
+        this.requireProperty("FLOW-3-001", node, "authorizationUrl");
+        this.requireProperty("FLOW-3-002", node, "tokenUrl");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitPasswordOAuthFlow = function (node) {
+        this.visitOAuthFlow(node);
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitClientCredentialsOAuthFlow = function (node) {
+        this.visitOAuthFlow(node);
+        this.requireProperty("FLOW-3-002", node, "tokenUrl");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitAuthorizationCodeOAuthFlow = function (node) {
+        this.visitOAuthFlow(node);
+        this.requireProperty("FLOW-3-001", node, "authorizationUrl");
+        this.requireProperty("FLOW-3-002", node, "tokenUrl");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitInfo = function (node) {
+        this.requireProperty("INF-3-001", node, "title");
+        this.requireProperty("INF-3-002", node, "version");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitLicense = function (node) {
+        this.requireProperty("LIC-3-001", node, "name");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitOperation = function (node) {
+        this.requireProperty("OP-3-004", node, "responses");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitParameter = function (node) {
+        this.requireProperty("PAR-3-003", node, "name");
+        this.requireProperty("PAR-3-004", node, "in");
+        // TODO the 'required' property is required for 'path' params
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitParameterDefinition = function (node) {
+        this.visitParameter(node);
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitDocument = function (node) {
+        this.requireProperty("R-3-001", node, "openapi");
+        this.requireProperty("R-3-002", node, "info");
+        this.requireProperty("R-3-003", node, "paths");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitRequestBody = function (node) {
+        this.requireProperty("RB-3-002", node, "content");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitRequestBodyDefinition = function (node) {
+        this.visitRequestBody(node);
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitServer = function (node) {
+        this.requireProperty("SRV-3-001", node, "url");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitSecurityScheme = function (node) {
+        this.requireProperty("SS-3-001", node, "type");
+        this.requirePropertyWhen("SS-3-002", node, "name", "type", "apiKey");
+        this.requirePropertyWhen("SS-3-003", node, "in", "type", "apiKey");
+        this.requirePropertyWhen("SS-3-004", node, "scheme", "type", "http");
+        this.requirePropertyWhen("SS-3-005", node, "flows", "type", "oauth2");
+        this.requirePropertyWhen("SS-3-006", node, "openIdConnectUrl", "type", "openIdConnect");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitServerVariable = function (node) {
+        this.requireProperty("SVAR-3-001", node, "default");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitTag = function (node) {
+        this.requireProperty("TAG-3-001", node, "name");
+    };
+    return Oas30RequiredPropertyValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$97 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Implements the Uniqueness validation rule.  This rule is responsible
+ * for reporting whenever properties whose values are required to be unique,
+ * fail that test.  Examples are scopes, tags, and operationId.
+ */
+var Oas30UniquenessValidationRule = (function (_super) {
+    __extends$97(Oas30UniquenessValidationRule, _super);
+    function Oas30UniquenessValidationRule() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.indexedOperations = {};
+        return _this;
+    }
+    Oas30UniquenessValidationRule.prototype.visitTag = function (node) {
+        var tags = node.ownerDocument().tags;
+        var tcount = tags.filter(function (tag) {
+            return tag.name === node.name;
+        }).length;
+        this.reportIfInvalid("TAG-3-003", tcount === 1, node, "Duplicate tag \"" + node.name + "\" found (every tag must have a unique name).");
+    };
+    Oas30UniquenessValidationRule.prototype.visitOperation = function (node) {
+        if (this.hasValue(node.operationId)) {
+            var dupes = this.indexedOperations[node.operationId];
+            if (this.hasValue(dupes)) {
+                this.reportIfInvalid("OP-3-002", dupes.length > 1, dupes[0], "The \"operationId\" property value '" + node.operationId + "' must be unique across ALL operations.");
+                this.report("OP-3-002", node, "The \"operationId\" property value '" + node.operationId + "' must be unique across ALL operations.");
+                dupes.push(node);
+            }
+            else {
+                this.indexedOperations[node.operationId] = [node];
+            }
+        }
+    };
+    Oas30UniquenessValidationRule.prototype.visitParameter = function (node) {
+        var params = node.parent().parameters;
+        this.reportIfInvalid("PAR-3-001", params.filter(function (param) {
+            return param.in === node.in && param.name === node.name;
+        }).length === 1, node, "Duplicate '" + node.in + "' parameter named '" + node.name + "' found (parameters must be unique by name and location).");
+    };
+    return Oas30UniquenessValidationRule;
+}(Oas30ValidationRule));
 
 /**
  * @license
@@ -15022,45 +16146,73 @@ var Oas20ValidationVisitor = (function (_super) {
      * Clears any previous validation errors from the node and re-validates.
      * @param node
      */
-    Oas20ValidationVisitor.prototype.clearAndAcceptAll = function (node) {
+    Oas20ValidationVisitor.prototype._acceptAll = function (node) {
         node.n_attribute("validation-errors", null);
-        this._acceptAll(node);
+        _super.prototype._acceptAll.call(this, node);
     };
-    Oas20ValidationVisitor.prototype.visitDocument = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitInfo = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitContact = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitLicense = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitPaths = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitPathItem = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitOperation = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitParameter = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitParameterDefinition = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitExternalDocumentation = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitSecurityRequirement = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitResponses = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitResponse = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitResponseDefinition = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitSchema = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitHeaders = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitHeader = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitExample = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitItems = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitTag = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitSecurityDefinitions = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitSecurityScheme = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitScopes = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitXML = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitSchemaDefinition = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitPropertySchema = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitAdditionalPropertiesSchema = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitAllOfSchema = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitItemsSchema = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitDefinitions = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitParametersDefinitions = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitResponsesDefinitions = function (node) { this.clearAndAcceptAll(node); };
-    Oas20ValidationVisitor.prototype.visitExtension = function (node) { this.clearAndAcceptAll(node); };
     return Oas20ValidationVisitor;
 }(Oas20CompositeVisitor));
+/**
+ * Visitor used to validate a OpenAPI document (or a subsection of the document).  The result
+ * of the validation will be a list of validation errors.  In addition, the validator will
+ * add the validation errors directly to the offending model nodes as attributes.
+ */
+var Oas30ValidationVisitor = (function (_super) {
+    __extends$78(Oas30ValidationVisitor, _super);
+    function Oas30ValidationVisitor() {
+        var _this = _super.call(this) || this;
+        _this.errors = [];
+        // Add a bunch of validation rules to the array of visitors.
+        _this.addVisitors([
+            new Oas30InvalidPropertyFormatValidationRule(_this),
+            new Oas30IgnoredPropertyNameValidationRule(_this),
+            new Oas30InvalidPropertyNameValidationRule(_this),
+            new Oas30InvalidPropertyValueValidationRule(_this),
+            new Oas30InvalidReferenceValidationRule(_this),
+            new Oas30MutuallyExclusiveValidationRule(_this),
+            new Oas30RequiredPropertyValidationRule(_this),
+            new Oas30UniquenessValidationRule(_this)
+        ]);
+        return _this;
+    }
+    /**
+     * Returns the array of validation errors found by the visitor.
+     * @return {OasValidationError[]}
+     */
+    Oas30ValidationVisitor.prototype.getValidationErrors = function () {
+        return this.errors;
+    };
+    /**
+     * Called by validation rules when an error is detected.
+     * @param code
+     * @param node
+     * @param message
+     */
+    Oas30ValidationVisitor.prototype.report = function (code, node, message) {
+        var viz = new Oas30NodePathVisitor();
+        OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
+        var path = viz.path();
+        var error = new OasValidationError(code, path, message);
+        // Include the error in the list of errors found by this visitor.
+        this.errors.push(error);
+        // Also make sure to add the error to the list of validation errors on the node model itself.
+        var errors = node.n_attribute("validation-errors");
+        if (errors === undefined || errors === null) {
+            errors = [];
+            node.n_attribute("validation-errors", errors);
+        }
+        errors.push(error);
+    };
+    /**
+     * Clears any previous validation errors from the node and re-validates.
+     * @param node
+     */
+    Oas30ValidationVisitor.prototype._acceptAll = function (node) {
+        node.n_attribute("validation-errors", null);
+        _super.prototype._acceptAll.call(this, node);
+    };
+    return Oas30ValidationVisitor;
+}(Oas30CompositeVisitor));
 
 /**
  * @license
@@ -15181,8 +16333,14 @@ var OasLibraryUtils = (function () {
             return visitor.getValidationErrors();
         }
         else if (node.ownerDocument().is3xDocument()) {
-            // TODO implement validation for OpenAPI 3.x
-            throw new Error("Validation rules not yet implemented for OpenAPI 3.0.x!");
+            var visitor = new Oas30ValidationVisitor();
+            if (recursive) {
+                OasVisitorUtil.visitTree(node, visitor);
+            }
+            else {
+                node.accept(visitor);
+            }
+            return visitor.getValidationErrors();
         }
         else {
             throw new Error("OAS version " + node.ownerDocument().getSpecVersion() + " not supported.");
@@ -15528,7 +16686,9 @@ exports.Oas20ReverseTraverser = Oas20ReverseTraverser;
 exports.Oas30ReverseTraverser = Oas30ReverseTraverser;
 exports.OasValidationError = OasValidationError;
 exports.OasValidationErrorAttributes = OasValidationErrorAttributes;
+exports.OasValidationRuleUtil = OasValidationRuleUtil;
 exports.Oas20ValidationVisitor = Oas20ValidationVisitor;
+exports.Oas30ValidationVisitor = Oas30ValidationVisitor;
 exports.OasSchemaFactory = OasSchemaFactory;
 
 Object.defineProperty(exports, '__esModule', { value: true });

@@ -258,7 +258,9 @@
             "authorizationUrl": "urn:auth:auth",
             "tokenUrl": "urn:token:auth",
             "refreshUrl": "urn:refresh:auth",
-            "scopes": {}
+            "scopes": {
+              "update": "do update"
+            }
           }
         }
       }

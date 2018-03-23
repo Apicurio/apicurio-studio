@@ -174,9 +174,6 @@
       },
       "put": {
         "summary": "Update API version details",
-        "responses": {
-          "200": {}
-        },
         "requestBody": {
           "description": "A description of the request body goes here.",
           "content": {
@@ -187,6 +184,9 @@
             }
           },
           "required": true
+        },
+        "responses": {
+          "200": {}
         }
       }
     }
@@ -258,7 +258,9 @@
             "authorizationUrl": "urn:auth:auth",
             "tokenUrl": "urn:token:auth",
             "refreshUrl": "urn:refresh:auth",
-            "scopes": {}
+            "scopes": {
+              "update": "do update"
+            }
           }
         }
       }

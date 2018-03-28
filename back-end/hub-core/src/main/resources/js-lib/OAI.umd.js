@@ -20,6 +20,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __extends$3 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __modelIdCounter = 0;
 /**
  * Base class for all OAS nodes.  Contains common fields and methods across all
@@ -29,6 +34,7 @@ var OasNode = (function () {
     function OasNode() {
         this._modelId = __modelIdCounter++;
         this._attributes = new OasNodeAttributes();
+        this._validationProblems = {}; // Really a map of string(errorCode)->OasValidationProblem
     }
     /**
      * Gets the owner document.
@@ -68,8 +74,59 @@ var OasNode = (function () {
             return pvalue;
         }
     };
+    OasNode.prototype.validationProblems = function () {
+        var problems = [];
+        for (var _i = 0, _a = this._validationProblems; _i < _a.length; _i++) {
+            var problem = _a[_i];
+            problems.push(problem);
+        }
+        return problems;
+    };
+    OasNode.prototype.validationProblemCodes = function () {
+        var codes = [];
+        for (var code in this._validationProblems) {
+            codes.push(code);
+        }
+        return codes;
+    };
+    OasNode.prototype.validationProblem = function (code) {
+        return this._validationProblems[code];
+    };
+    OasNode.prototype.addValidationProblem = function (errorCode, nodePath, message) {
+        var problem = new OasValidationProblem(errorCode, nodePath, message);
+        problem._ownerDocument = this._ownerDocument;
+        problem._parent = this;
+        this._validationProblems[errorCode] = problem;
+        return problem;
+    };
+    OasNode.prototype.clearValidationProblems = function () {
+        this._validationProblems = {};
+    };
     return OasNode;
 }());
+/**
+ * Represents a single validation error.
+ */
+var OasValidationProblem = (function (_super) {
+    __extends$3(OasValidationProblem, _super);
+    /**
+     * Constructor.
+     * @param {string} errorCode
+     * @param {OasNodePath} nodePath
+     * @param {string} message
+     */
+    function OasValidationProblem(errorCode, nodePath, message) {
+        var _this = _super.call(this) || this;
+        _this.errorCode = errorCode;
+        _this.nodePath = nodePath;
+        _this.message = message;
+        return _this;
+    }
+    OasValidationProblem.prototype.accept = function (visitor) {
+        visitor.visitValidationProblem(this);
+    };
+    return OasValidationProblem;
+}(OasNode));
 var OasNodeAttributes = (function () {
     function OasNodeAttributes() {
     }
@@ -336,14 +393,21 @@ var OasNodePath = (function () {
      * walks the tree according to the path segments until it reaches the node being
      * referenced.  If the path does not point to a valid node, then this method
      * returns undefined.
-     * @param document
-     * @return {undefined}
+     * @param document the document to resolve the path relative to
+     * @param visitor an optional visitor to invoke for each node in the path
+     * @return {OasNode}
      */
-    OasNodePath.prototype.resolve = function (document) {
+    OasNodePath.prototype.resolve = function (document, visitor) {
         var node = document;
+        if (visitor) {
+            node.accept(visitor);
+        }
         for (var _i = 0, _a = this._segments; _i < _a.length; _i++) {
             var segment = _a[_i];
             node = segment.resolve(node);
+            if (visitor && node && node["accept"]) {
+                node.accept(visitor);
+            }
         }
         return node;
     };
@@ -462,7 +526,7 @@ var OasNodePathSegment = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$3 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$4 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -471,7 +535,7 @@ var __extends$3 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Contact object.
  */
 var OasContact = (function (_super) {
-    __extends$3(OasContact, _super);
+    __extends$4(OasContact, _super);
     function OasContact() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -501,7 +565,7 @@ var OasContact = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$4 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$5 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -510,7 +574,7 @@ var __extends$4 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS External Documentation object.
  */
 var OasExternalDocumentation = (function (_super) {
-    __extends$4(OasExternalDocumentation, _super);
+    __extends$5(OasExternalDocumentation, _super);
     function OasExternalDocumentation() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -540,7 +604,7 @@ var OasExternalDocumentation = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$5 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$6 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -549,7 +613,7 @@ var __extends$5 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Header object.  Example:
  */
 var OasHeader = (function (_super) {
-    __extends$5(OasHeader, _super);
+    __extends$6(OasHeader, _super);
     /**
      * Constructor.
      * @param headerName
@@ -592,7 +656,7 @@ var OasHeader = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$6 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$7 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -601,7 +665,7 @@ var __extends$6 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Info object.
  */
 var OasInfo = (function (_super) {
-    __extends$6(OasInfo, _super);
+    __extends$7(OasInfo, _super);
     function OasInfo() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -631,7 +695,7 @@ var OasInfo = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$7 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$8 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -640,7 +704,7 @@ var __extends$7 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS License object.
  */
 var OasLicense = (function (_super) {
-    __extends$7(OasLicense, _super);
+    __extends$8(OasLicense, _super);
     function OasLicense() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -670,7 +734,7 @@ var OasLicense = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$8 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$9 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -679,7 +743,7 @@ var __extends$8 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Operation object.
  */
 var OasOperation = (function (_super) {
-    __extends$8(OasOperation, _super);
+    __extends$9(OasOperation, _super);
     /**
      * Constructor.
      * @param method
@@ -775,7 +839,7 @@ var OasOperation = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$9 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$10 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -784,7 +848,7 @@ var __extends$9 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Parameter object.
  */
 var OasParameterBase = (function (_super) {
-    __extends$9(OasParameterBase, _super);
+    __extends$10(OasParameterBase, _super);
     function OasParameterBase() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -807,7 +871,7 @@ var OasParameterBase = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$10 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$11 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -816,7 +880,7 @@ var __extends$10 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Path Item object.
  */
 var OasPathItem = (function (_super) {
-    __extends$10(OasPathItem, _super);
+    __extends$11(OasPathItem, _super);
     /**
      * Constructor.
      * @param path
@@ -901,7 +965,7 @@ var OasPathItem = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$11 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$12 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -911,7 +975,7 @@ var __extends$11 = (undefined && undefined.__extends) || function (d, b) {
  * paths, where the field name begins with '/'.
  */
 var OasPaths = (function (_super) {
-    __extends$11(OasPaths, _super);
+    __extends$12(OasPaths, _super);
     function OasPaths() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -1014,7 +1078,7 @@ var OasPathItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$12 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$13 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1023,7 +1087,7 @@ var __extends$12 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Response object.  Example:
  */
 var OasResponse = (function (_super) {
-    __extends$12(OasResponse, _super);
+    __extends$13(OasResponse, _super);
     function OasResponse() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1046,7 +1110,7 @@ var OasResponse = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$13 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$14 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1056,7 +1120,7 @@ var __extends$13 = (undefined && undefined.__extends) || function (d, b) {
  * responses, where the field names are either 'default' or an HTTP status code.
  */
 var OasResponses = (function (_super) {
-    __extends$13(OasResponses, _super);
+    __extends$14(OasResponses, _super);
     function OasResponses() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -1169,7 +1233,7 @@ var OasResponseItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$14 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$15 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1178,7 +1242,7 @@ var __extends$14 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Schema object.
  */
 var OasSchema = (function (_super) {
-    __extends$14(OasSchema, _super);
+    __extends$15(OasSchema, _super);
     function OasSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1276,7 +1340,7 @@ var OasSchemaProperties = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$15 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$16 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1285,7 +1349,7 @@ var __extends$15 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Security Requirement object.
  */
 var OasSecurityRequirement = (function (_super) {
-    __extends$15(OasSecurityRequirement, _super);
+    __extends$16(OasSecurityRequirement, _super);
     function OasSecurityRequirement() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this._items = new OasSecurityRequirementItems();
@@ -1352,7 +1416,7 @@ var OasSecurityRequirementItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$16 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$17 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1361,7 +1425,7 @@ var __extends$16 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Security Scheme object.
  */
 var OasSecurityScheme = (function (_super) {
-    __extends$16(OasSecurityScheme, _super);
+    __extends$17(OasSecurityScheme, _super);
     /**
      * Must construct this with a name.
      * @param name
@@ -1404,7 +1468,7 @@ var OasSecurityScheme = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$17 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$18 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1413,7 +1477,7 @@ var __extends$17 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS Tag object.
  */
 var OasTag = (function (_super) {
-    __extends$17(OasTag, _super);
+    __extends$18(OasTag, _super);
     function OasTag() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1443,7 +1507,7 @@ var OasTag = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$18 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$19 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1452,7 +1516,7 @@ var __extends$18 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS XML object.
  */
 var OasXML = (function (_super) {
-    __extends$18(OasXML, _super);
+    __extends$19(OasXML, _super);
     function OasXML() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1482,7 +1546,7 @@ var OasXML = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$19 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$20 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1497,7 +1561,7 @@ var __extends$19 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Contact = (function (_super) {
-    __extends$19(Oas20Contact, _super);
+    __extends$20(Oas20Contact, _super);
     function Oas20Contact() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1520,7 +1584,7 @@ var Oas20Contact = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$22 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$23 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1534,7 +1598,7 @@ var __extends$22 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20ExternalDocumentation = (function (_super) {
-    __extends$22(Oas20ExternalDocumentation, _super);
+    __extends$23(Oas20ExternalDocumentation, _super);
     function Oas20ExternalDocumentation() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1557,7 +1621,7 @@ var Oas20ExternalDocumentation = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$23 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$24 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1588,7 +1652,7 @@ var __extends$23 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20XML = (function (_super) {
-    __extends$23(Oas20XML, _super);
+    __extends$24(Oas20XML, _super);
     function Oas20XML() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1611,7 +1675,7 @@ var Oas20XML = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$21 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$22 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1639,7 +1703,7 @@ var __extends$21 = (undefined && undefined.__extends) || function (d, b) {
  *   }
  */
 var Oas20Schema = (function (_super) {
-    __extends$21(Oas20Schema, _super);
+    __extends$22(Oas20Schema, _super);
     function Oas20Schema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1713,7 +1777,7 @@ var Oas20Schema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas20PropertySchema = (function (_super) {
-    __extends$21(Oas20PropertySchema, _super);
+    __extends$22(Oas20PropertySchema, _super);
     /**
      * Constructor.
      * @param propertyName
@@ -1757,7 +1821,7 @@ var Oas20PropertySchema = (function (_super) {
  * }
  */
 var Oas20AllOfSchema = (function (_super) {
-    __extends$21(Oas20AllOfSchema, _super);
+    __extends$22(Oas20AllOfSchema, _super);
     function Oas20AllOfSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1788,7 +1852,7 @@ var Oas20AllOfSchema = (function (_super) {
  * }
  */
 var Oas20ItemsSchema = (function (_super) {
-    __extends$21(Oas20ItemsSchema, _super);
+    __extends$22(Oas20ItemsSchema, _super);
     function Oas20ItemsSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1810,7 +1874,7 @@ var Oas20ItemsSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas20AdditionalPropertiesSchema = (function (_super) {
-    __extends$21(Oas20AdditionalPropertiesSchema, _super);
+    __extends$22(Oas20AdditionalPropertiesSchema, _super);
     function Oas20AdditionalPropertiesSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1831,7 +1895,7 @@ var Oas20AdditionalPropertiesSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#definitionsObject
  */
 var Oas20SchemaDefinition = (function (_super) {
-    __extends$21(Oas20SchemaDefinition, _super);
+    __extends$22(Oas20SchemaDefinition, _super);
     /**
      * Constructor.
      * @param definitionName
@@ -1875,7 +1939,7 @@ var Oas20SchemaDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$20 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$21 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1912,7 +1976,7 @@ var __extends$20 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Definitions = (function (_super) {
-    __extends$20(Oas20Definitions, _super);
+    __extends$21(Oas20Definitions, _super);
     function Oas20Definitions() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -2027,7 +2091,7 @@ var Oas20DefinitionItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$26 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$27 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2041,7 +2105,7 @@ var __extends$26 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20License = (function (_super) {
-    __extends$26(Oas20License, _super);
+    __extends$27(Oas20License, _super);
     function Oas20License() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2064,7 +2128,7 @@ var Oas20License = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$26 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2089,7 +2153,7 @@ var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Info = (function (_super) {
-    __extends$25(Oas20Info, _super);
+    __extends$26(Oas20Info, _super);
     function Oas20Info() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2132,7 +2196,7 @@ var Oas20Info = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$27 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$28 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2146,7 +2210,7 @@ var __extends$27 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Tag = (function (_super) {
-    __extends$27(Oas20Tag, _super);
+    __extends$28(Oas20Tag, _super);
     function Oas20Tag() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2191,7 +2255,7 @@ var Oas20Tag = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$28 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2207,7 +2271,7 @@ var __extends$28 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20SecurityRequirement = (function (_super) {
-    __extends$28(Oas20SecurityRequirement, _super);
+    __extends$29(Oas20SecurityRequirement, _super);
     function Oas20SecurityRequirement() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2230,7 +2294,7 @@ var Oas20SecurityRequirement = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$31 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$32 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2244,7 +2308,7 @@ var __extends$31 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Scopes = (function (_super) {
-    __extends$31(Oas20Scopes, _super);
+    __extends$32(Oas20Scopes, _super);
     function Oas20Scopes() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this._items = new Oas20ScopeItems();
@@ -2320,7 +2384,7 @@ var Oas20ScopeItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$31 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2339,7 +2403,7 @@ var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20SecurityScheme = (function (_super) {
-    __extends$30(Oas20SecurityScheme, _super);
+    __extends$31(Oas20SecurityScheme, _super);
     /**
      * Must construct this with a name.
      * @param name
@@ -2375,7 +2439,7 @@ var Oas20SecurityScheme = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2401,7 +2465,7 @@ var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20SecurityDefinitions = (function (_super) {
-    __extends$29(Oas20SecurityDefinitions, _super);
+    __extends$30(Oas20SecurityDefinitions, _super);
     function Oas20SecurityDefinitions() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -2515,7 +2579,7 @@ var Oas20SecuritySchemeItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$36 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$37 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2524,7 +2588,7 @@ var __extends$36 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 2.0 Items object.  Example:
  */
 var Oas20Items = (function (_super) {
-    __extends$36(Oas20Items, _super);
+    __extends$37(Oas20Items, _super);
     function Oas20Items() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2565,7 +2629,7 @@ var Oas20Items = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$35 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$36 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2584,7 +2648,7 @@ var __extends$35 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20ParameterBase = (function (_super) {
-    __extends$35(Oas20ParameterBase, _super);
+    __extends$36(Oas20ParameterBase, _super);
     function Oas20ParameterBase() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2615,7 +2679,7 @@ var Oas20ParameterBase = (function (_super) {
  * object.
  */
 var Oas20ParameterDefinition = (function (_super) {
-    __extends$35(Oas20ParameterDefinition, _super);
+    __extends$36(Oas20ParameterDefinition, _super);
     /**
      * Constructor.
      * @param parameterName
@@ -2646,7 +2710,7 @@ var Oas20ParameterDefinition = (function (_super) {
  * Extends the base parameter to add support for references.
  */
 var Oas20Parameter = (function (_super) {
-    __extends$35(Oas20Parameter, _super);
+    __extends$36(Oas20Parameter, _super);
     function Oas20Parameter() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2677,7 +2741,7 @@ var Oas20Parameter = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$40 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$41 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2691,7 +2755,7 @@ var __extends$40 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Header = (function (_super) {
-    __extends$40(Oas20Header, _super);
+    __extends$41(Oas20Header, _super);
     /**
      * Constructor.
      * @param headerName
@@ -2728,7 +2792,7 @@ var Oas20Header = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$40 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2752,7 +2816,7 @@ var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Headers = (function (_super) {
-    __extends$39(Oas20Headers, _super);
+    __extends$40(Oas20Headers, _super);
     function Oas20Headers() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -2870,7 +2934,7 @@ var OasHeaderItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$41 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$42 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2889,7 +2953,7 @@ var __extends$41 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Example = (function (_super) {
-    __extends$41(Oas20Example, _super);
+    __extends$42(Oas20Example, _super);
     function Oas20Example() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2974,7 +3038,7 @@ var Oas20ExampleItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$38 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2993,7 +3057,7 @@ var __extends$38 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20ResponseBase = (function (_super) {
-    __extends$38(Oas20ResponseBase, _super);
+    __extends$39(Oas20ResponseBase, _super);
     function Oas20ResponseBase() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3035,7 +3099,7 @@ var Oas20ResponseBase = (function (_super) {
  * response appears as part of a path/operation.
  */
 var Oas20Response = (function (_super) {
-    __extends$38(Oas20Response, _super);
+    __extends$39(Oas20Response, _super);
     /**
      * Constructor.
      * @param statusCode
@@ -3072,7 +3136,7 @@ var Oas20Response = (function (_super) {
  * is used when the response is a globally defined, named response.
  */
 var Oas20ResponseDefinition = (function (_super) {
-    __extends$38(Oas20ResponseDefinition, _super);
+    __extends$39(Oas20ResponseDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -3121,7 +3185,7 @@ var Oas20ResponseDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$37 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$38 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3146,7 +3210,7 @@ var __extends$37 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Responses = (function (_super) {
-    __extends$37(Oas20Responses, _super);
+    __extends$38(Oas20Responses, _super);
     function Oas20Responses() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3180,7 +3244,7 @@ var Oas20Responses = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$35 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3244,7 +3308,7 @@ var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20Operation = (function (_super) {
-    __extends$34(Oas20Operation, _super);
+    __extends$35(Oas20Operation, _super);
     /**
      * Constructor.
      * @param method
@@ -3311,7 +3375,7 @@ var Oas20Operation = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$33 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3363,7 +3427,7 @@ var __extends$33 = (undefined && undefined.__extends) || function (d, b) {
  *
  */
 var Oas20PathItem = (function (_super) {
-    __extends$33(Oas20PathItem, _super);
+    __extends$34(Oas20PathItem, _super);
     /**
      * Constructor.
      * @param path
@@ -3411,7 +3475,7 @@ var Oas20PathItem = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$32 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$33 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3444,7 +3508,7 @@ var __extends$32 = (undefined && undefined.__extends) || function (d, b) {
  *
  */
 var Oas20Paths = (function (_super) {
-    __extends$32(Oas20Paths, _super);
+    __extends$33(Oas20Paths, _super);
     function Oas20Paths() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3478,7 +3542,7 @@ var Oas20Paths = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$42 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$43 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3508,7 +3572,7 @@ var __extends$42 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20ParametersDefinitions = (function (_super) {
-    __extends$42(Oas20ParametersDefinitions, _super);
+    __extends$43(Oas20ParametersDefinitions, _super);
     function Oas20ParametersDefinitions() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -3623,7 +3687,7 @@ var Oas20ParametersDefinitionsItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$43 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3649,7 +3713,7 @@ var __extends$43 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas20ResponsesDefinitions = (function (_super) {
-    __extends$43(Oas20ResponsesDefinitions, _super);
+    __extends$44(Oas20ResponsesDefinitions, _super);
     function Oas20ResponsesDefinitions() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.__instanceof_IOasIndexedNode = true;
@@ -3764,7 +3828,7 @@ var Oas20ResponsesDefinitionsItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$24 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3773,7 +3837,7 @@ var __extends$24 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 2.0 document.
  */
 var Oas20Document = (function (_super) {
-    __extends$24(Oas20Document, _super);
+    __extends$25(Oas20Document, _super);
     function Oas20Document() {
         var _this = _super.call(this) || this;
         _this.swagger = "2.0";
@@ -3923,7 +3987,7 @@ var Oas20Document = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3932,7 +3996,7 @@ var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Server Variable object.
  */
 var Oas30ServerVariable = (function (_super) {
-    __extends$48(Oas30ServerVariable, _super);
+    __extends$49(Oas30ServerVariable, _super);
     function Oas30ServerVariable(name) {
         var _this = _super.call(this) || this;
         _this._name = name;
@@ -3972,7 +4036,7 @@ var Oas30ServerVariable = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4002,7 +4066,7 @@ var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
   * }
  */
 var Oas30Server = (function (_super) {
-    __extends$47(Oas30Server, _super);
+    __extends$48(Oas30Server, _super);
     function Oas30Server() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.variables = new Oas30ServerVariables();
@@ -4072,7 +4136,7 @@ var Oas30Server = (function (_super) {
  * A single server specified in a Link object.
  */
 var Oas30LinkServer = (function (_super) {
-    __extends$47(Oas30LinkServer, _super);
+    __extends$48(Oas30LinkServer, _super);
     function Oas30LinkServer() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4108,7 +4172,7 @@ var Oas30ServerVariables = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4139,7 +4203,7 @@ var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30XML = (function (_super) {
-    __extends$52(Oas30XML, _super);
+    __extends$53(Oas30XML, _super);
     function Oas30XML() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4162,7 +4226,7 @@ var Oas30XML = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4176,7 +4240,7 @@ var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30ExternalDocumentation = (function (_super) {
-    __extends$53(Oas30ExternalDocumentation, _super);
+    __extends$54(Oas30ExternalDocumentation, _super);
     function Oas30ExternalDocumentation() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4199,7 +4263,7 @@ var Oas30ExternalDocumentation = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$55 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4234,7 +4298,7 @@ var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Discriminator = (function (_super) {
-    __extends$54(Oas30Discriminator, _super);
+    __extends$55(Oas30Discriminator, _super);
     function Oas30Discriminator() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4287,7 +4351,7 @@ var Oas30Discriminator = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4315,7 +4379,7 @@ var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
  *   }
  */
 var Oas30Schema = (function (_super) {
-    __extends$51(Oas30Schema, _super);
+    __extends$52(Oas30Schema, _super);
     function Oas30Schema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4429,7 +4493,7 @@ var Oas30Schema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas30PropertySchema = (function (_super) {
-    __extends$51(Oas30PropertySchema, _super);
+    __extends$52(Oas30PropertySchema, _super);
     /**
      * Constructor.
      * @param propertyName
@@ -4473,7 +4537,7 @@ var Oas30PropertySchema = (function (_super) {
  * }
  */
 var Oas30AllOfSchema = (function (_super) {
-    __extends$51(Oas30AllOfSchema, _super);
+    __extends$52(Oas30AllOfSchema, _super);
     function Oas30AllOfSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4495,7 +4559,7 @@ var Oas30AllOfSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas30AnyOfSchema = (function (_super) {
-    __extends$51(Oas30AnyOfSchema, _super);
+    __extends$52(Oas30AnyOfSchema, _super);
     function Oas30AnyOfSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4517,7 +4581,7 @@ var Oas30AnyOfSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas30OneOfSchema = (function (_super) {
-    __extends$51(Oas30OneOfSchema, _super);
+    __extends$52(Oas30OneOfSchema, _super);
     function Oas30OneOfSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4539,7 +4603,7 @@ var Oas30OneOfSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas30NotSchema = (function (_super) {
-    __extends$51(Oas30NotSchema, _super);
+    __extends$52(Oas30NotSchema, _super);
     function Oas30NotSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4570,7 +4634,7 @@ var Oas30NotSchema = (function (_super) {
  * }
  */
 var Oas30ItemsSchema = (function (_super) {
-    __extends$51(Oas30ItemsSchema, _super);
+    __extends$52(Oas30ItemsSchema, _super);
     function Oas30ItemsSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4592,7 +4656,7 @@ var Oas30ItemsSchema = (function (_super) {
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#schemaObject
  */
 var Oas30AdditionalPropertiesSchema = (function (_super) {
-    __extends$51(Oas30AdditionalPropertiesSchema, _super);
+    __extends$52(Oas30AdditionalPropertiesSchema, _super);
     function Oas30AdditionalPropertiesSchema() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4611,7 +4675,7 @@ var Oas30AdditionalPropertiesSchema = (function (_super) {
  * the "components" section of the OpenAPI document).
  */
 var Oas30SchemaDefinition = (function (_super) {
-    __extends$51(Oas30SchemaDefinition, _super);
+    __extends$52(Oas30SchemaDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -4655,7 +4719,7 @@ var Oas30SchemaDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$55 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4669,7 +4733,7 @@ var Oas30ExampleItems = (function () {
  * Models an OAS 3.0 Example object.  Example:
  */
 var Oas30Example = (function (_super) {
-    __extends$55(Oas30Example, _super);
+    __extends$56(Oas30Example, _super);
     /**
      * Constructor.
      * @param name
@@ -4700,7 +4764,7 @@ var Oas30Example = (function (_super) {
  * Models an Example Definition (in the components section of the OpenAPI 3.0.x document).
  */
 var Oas30ExampleDefinition = (function (_super) {
-    __extends$55(Oas30ExampleDefinition, _super);
+    __extends$56(Oas30ExampleDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -4735,7 +4799,7 @@ var Oas30ExampleDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4759,7 +4823,7 @@ var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30ParameterBase = (function (_super) {
-    __extends$58(Oas30ParameterBase, _super);
+    __extends$59(Oas30ParameterBase, _super);
     function Oas30ParameterBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.content = new Oas30ParameterContent();
@@ -4892,7 +4956,7 @@ var Oas30ParameterBase = (function (_super) {
  * object.
  */
 var Oas30ParameterDefinition = (function (_super) {
-    __extends$58(Oas30ParameterDefinition, _super);
+    __extends$59(Oas30ParameterDefinition, _super);
     /**
      * Constructor.
      * @param parameterName
@@ -4923,7 +4987,7 @@ var Oas30ParameterDefinition = (function (_super) {
  * Extends the base parameter to add support for references.
  */
 var Oas30Parameter = (function (_super) {
-    __extends$58(Oas30Parameter, _super);
+    __extends$59(Oas30Parameter, _super);
     function Oas30Parameter() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4959,7 +5023,7 @@ var Oas30ParameterContent = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4976,7 +5040,7 @@ var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Header = (function (_super) {
-    __extends$57(Oas30Header, _super);
+    __extends$58(Oas30Header, _super);
     /**
      * Constructor.
      * @param headerName
@@ -5112,7 +5176,7 @@ var Oas30Header = (function (_super) {
  * Models a header definition found in the components section of an OAS document.
  */
 var Oas30HeaderDefinition = (function (_super) {
-    __extends$57(Oas30HeaderDefinition, _super);
+    __extends$58(Oas30HeaderDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -5154,7 +5218,7 @@ var Oas30HeaderDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5163,7 +5227,7 @@ var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Encoding object.
  */
 var Oas30Encoding = (function (_super) {
-    __extends$56(Oas30Encoding, _super);
+    __extends$57(Oas30Encoding, _super);
     /**
      * Constructor.
      * @param name
@@ -5259,7 +5323,7 @@ var Oas30EncodingHeaders = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5302,7 +5366,7 @@ var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30MediaType = (function (_super) {
-    __extends$50(Oas30MediaType, _super);
+    __extends$51(Oas30MediaType, _super);
     /**
      * Constructor.
      * @param name
@@ -5468,7 +5532,7 @@ var Oas30EncodingItems = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5522,7 +5586,7 @@ var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
  *
  */
 var Oas30RequestBody = (function (_super) {
-    __extends$49(Oas30RequestBody, _super);
+    __extends$50(Oas30RequestBody, _super);
     function Oas30RequestBody() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.content = new Oas30RequestBodyContent();
@@ -5592,7 +5656,7 @@ var Oas30RequestBody = (function (_super) {
  * Models a request body definition found in the components section of an OAS document.
  */
 var Oas30RequestBodyDefinition = (function (_super) {
-    __extends$49(Oas30RequestBodyDefinition, _super);
+    __extends$50(Oas30RequestBodyDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -5641,7 +5705,7 @@ var Oas30RequestBodyContent = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5650,7 +5714,7 @@ var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link Parameter Expression object.
  */
 var Oas30LinkParameterExpression = (function (_super) {
-    __extends$62(Oas30LinkParameterExpression, _super);
+    __extends$63(Oas30LinkParameterExpression, _super);
     /**
      * Constructor.
      * @param name
@@ -5717,7 +5781,7 @@ var Oas30LinkParameterExpression = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5726,7 +5790,7 @@ var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link Request Body Expression object.
  */
 var Oas30LinkRequestBodyExpression = (function (_super) {
-    __extends$63(Oas30LinkRequestBodyExpression, _super);
+    __extends$64(Oas30LinkRequestBodyExpression, _super);
     /**
      * Constructor.
      * @param value
@@ -5784,7 +5848,7 @@ var Oas30LinkRequestBodyExpression = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5793,7 +5857,7 @@ var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link object.
  */
 var Oas30Link = (function (_super) {
-    __extends$61(Oas30Link, _super);
+    __extends$62(Oas30Link, _super);
     /**
      * Constructor.
      * @param name
@@ -5909,7 +5973,7 @@ var Oas30Link = (function (_super) {
  * Models a link definition found in the components section of an OAS document.
  */
 var Oas30LinkDefinition = (function (_super) {
-    __extends$61(Oas30LinkDefinition, _super);
+    __extends$62(Oas30LinkDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -5949,7 +6013,7 @@ var Oas30LinkParameters = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5968,7 +6032,7 @@ var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30ResponseBase = (function (_super) {
-    __extends$60(Oas30ResponseBase, _super);
+    __extends$61(Oas30ResponseBase, _super);
     function Oas30ResponseBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.headers = new Oas30ResponseHeaders();
@@ -6134,7 +6198,7 @@ var Oas30ResponseBase = (function (_super) {
  * response appears as part of a path/operation.
  */
 var Oas30Response = (function (_super) {
-    __extends$60(Oas30Response, _super);
+    __extends$61(Oas30Response, _super);
     /**
      * Constructor.
      * @param statusCode
@@ -6171,7 +6235,7 @@ var Oas30Response = (function (_super) {
  * is used when the response is a globally defined, named response.
  */
 var Oas30ResponseDefinition = (function (_super) {
-    __extends$60(Oas30ResponseDefinition, _super);
+    __extends$61(Oas30ResponseDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -6235,7 +6299,7 @@ var Oas30Links = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6268,7 +6332,7 @@ var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Responses = (function (_super) {
-    __extends$59(Oas30Responses, _super);
+    __extends$60(Oas30Responses, _super);
     function Oas30Responses() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6302,7 +6366,7 @@ var Oas30Responses = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6318,7 +6382,7 @@ var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30SecurityRequirement = (function (_super) {
-    __extends$64(Oas30SecurityRequirement, _super);
+    __extends$65(Oas30SecurityRequirement, _super);
     function Oas30SecurityRequirement() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6341,7 +6405,7 @@ var Oas30SecurityRequirement = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6411,7 +6475,7 @@ var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Operation = (function (_super) {
-    __extends$46(Oas30Operation, _super);
+    __extends$47(Oas30Operation, _super);
     /**
      * Constructor.
      * @param method
@@ -6555,7 +6619,7 @@ var Oas30Callbacks = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6610,7 +6674,7 @@ var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
  *}
  */
 var Oas30PathItem = (function (_super) {
-    __extends$45(Oas30PathItem, _super);
+    __extends$46(Oas30PathItem, _super);
     /**
      * Constructor.
      * @param path
@@ -6655,7 +6719,7 @@ var Oas30PathItem = (function (_super) {
  * A path item defined within a callback.
  */
 var Oas30CallbackPathItem = (function (_super) {
-    __extends$45(Oas30CallbackPathItem, _super);
+    __extends$46(Oas30CallbackPathItem, _super);
     function Oas30CallbackPathItem() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6686,7 +6750,7 @@ var Oas30CallbackPathItem = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6695,7 +6759,7 @@ var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Callback object.
  */
 var Oas30Callback = (function (_super) {
-    __extends$44(Oas30Callback, _super);
+    __extends$45(Oas30Callback, _super);
     /**
      * Constructor.
      * @param name
@@ -6804,7 +6868,7 @@ var Oas30Callback = (function (_super) {
  * Models a callback definition found in the components section of an OAS document.
  */
 var Oas30CallbackDefinition = (function (_super) {
-    __extends$44(Oas30CallbackDefinition, _super);
+    __extends$45(Oas30CallbackDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -6839,7 +6903,7 @@ var Oas30CallbackDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$68 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$69 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6848,7 +6912,7 @@ var __extends$68 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 OAuth Flow object.
  */
 var Oas30OAuthFlow = (function (_super) {
-    __extends$68(Oas30OAuthFlow, _super);
+    __extends$69(Oas30OAuthFlow, _super);
     function Oas30OAuthFlow() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6880,7 +6944,7 @@ var Oas30OAuthFlow = (function (_super) {
  * Implicit OAuth flow.
  */
 var Oas30ImplicitOAuthFlow = (function (_super) {
-    __extends$68(Oas30ImplicitOAuthFlow, _super);
+    __extends$69(Oas30ImplicitOAuthFlow, _super);
     function Oas30ImplicitOAuthFlow() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6898,7 +6962,7 @@ var Oas30ImplicitOAuthFlow = (function (_super) {
  * Password OAuth flow.
  */
 var Oas30PasswordOAuthFlow = (function (_super) {
-    __extends$68(Oas30PasswordOAuthFlow, _super);
+    __extends$69(Oas30PasswordOAuthFlow, _super);
     function Oas30PasswordOAuthFlow() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6916,7 +6980,7 @@ var Oas30PasswordOAuthFlow = (function (_super) {
  * ClientCredentials OAuth flow.
  */
 var Oas30ClientCredentialsOAuthFlow = (function (_super) {
-    __extends$68(Oas30ClientCredentialsOAuthFlow, _super);
+    __extends$69(Oas30ClientCredentialsOAuthFlow, _super);
     function Oas30ClientCredentialsOAuthFlow() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6934,7 +6998,7 @@ var Oas30ClientCredentialsOAuthFlow = (function (_super) {
  * AuthorizationCode OAuth flow.
  */
 var Oas30AuthorizationCodeOAuthFlow = (function (_super) {
-    __extends$68(Oas30AuthorizationCodeOAuthFlow, _super);
+    __extends$69(Oas30AuthorizationCodeOAuthFlow, _super);
     function Oas30AuthorizationCodeOAuthFlow() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6965,7 +7029,7 @@ var Oas30AuthorizationCodeOAuthFlow = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$67 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$68 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6974,7 +7038,7 @@ var __extends$67 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 OAuth Flows object.
  */
 var Oas30OAuthFlows = (function (_super) {
-    __extends$67(Oas30OAuthFlows, _super);
+    __extends$68(Oas30OAuthFlows, _super);
     function Oas30OAuthFlows() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -7045,7 +7109,7 @@ var Oas30OAuthFlows = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$66 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$67 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7067,7 +7131,7 @@ var __extends$66 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30SecurityScheme = (function (_super) {
-    __extends$66(Oas30SecurityScheme, _super);
+    __extends$67(Oas30SecurityScheme, _super);
     /**
      * Must construct this with a name.
      * @param name
@@ -7103,7 +7167,7 @@ var Oas30SecurityScheme = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$66 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7201,7 +7265,7 @@ var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Components = (function (_super) {
-    __extends$65(Oas30Components, _super);
+    __extends$66(Oas30Components, _super);
     function Oas30Components() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.schemas = new Oas30SchemaComponents();
@@ -7737,7 +7801,7 @@ var Oas30CallbackComponents = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$69 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$70 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7752,7 +7816,7 @@ var __extends$69 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Contact = (function (_super) {
-    __extends$69(Oas30Contact, _super);
+    __extends$70(Oas30Contact, _super);
     function Oas30Contact() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -7775,7 +7839,7 @@ var Oas30Contact = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$72 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$73 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7789,7 +7853,7 @@ var __extends$72 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30License = (function (_super) {
-    __extends$72(Oas30License, _super);
+    __extends$73(Oas30License, _super);
     function Oas30License() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -7812,7 +7876,7 @@ var Oas30License = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$71 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$72 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7837,7 +7901,7 @@ var __extends$71 = (undefined && undefined.__extends) || function (d, b) {
  *  }
  */
 var Oas30Info = (function (_super) {
-    __extends$71(Oas30Info, _super);
+    __extends$72(Oas30Info, _super);
     function Oas30Info() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -7880,7 +7944,7 @@ var Oas30Info = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$73 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$74 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7894,7 +7958,7 @@ var __extends$73 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Tag = (function (_super) {
-    __extends$73(Oas30Tag, _super);
+    __extends$74(Oas30Tag, _super);
     function Oas30Tag() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -7939,7 +8003,7 @@ var Oas30Tag = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$74 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$75 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7972,7 +8036,7 @@ var __extends$74 = (undefined && undefined.__extends) || function (d, b) {
  *}
  */
 var Oas30Paths = (function (_super) {
-    __extends$74(Oas30Paths, _super);
+    __extends$75(Oas30Paths, _super);
     function Oas30Paths() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -8006,7 +8070,7 @@ var Oas30Paths = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$70 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$71 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8015,7 +8079,7 @@ var __extends$70 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0.x document.
  */
 var Oas30Document = (function (_super) {
-    __extends$70(Oas30Document, _super);
+    __extends$71(Oas30Document, _super);
     function Oas30Document() {
         var _this = _super.call(this) || this;
         _this.openapi = "3.0.1";
@@ -8161,7 +8225,7 @@ var Oas30Document = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$75 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$76 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8749,7 +8813,7 @@ var OasJS2ModelReader = (function () {
  * assumed that the javascript data actually does represent an OAS 2.0 document.
  */
 var Oas20JS2ModelReader = (function (_super) {
-    __extends$75(Oas20JS2ModelReader, _super);
+    __extends$76(Oas20JS2ModelReader, _super);
     function Oas20JS2ModelReader() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -9279,6 +9343,9 @@ var Oas20JS2ModelReaderVisitor = (function () {
     Oas20JS2ModelReaderVisitor.prototype.visitExtension = function (node) {
         // Not supported:  cannot read a single extension
     };
+    Oas20JS2ModelReaderVisitor.prototype.visitValidationProblem = function (node) {
+        // Not supported:  validation problems are transient
+    };
     return Oas20JS2ModelReaderVisitor;
 }());
 /**
@@ -9452,6 +9519,9 @@ var Oas30JS2ModelReaderVisitor = (function () {
     Oas30JS2ModelReaderVisitor.prototype.visitExtension = function (node) {
         // Not supported:  cannot read a single extension
     };
+    Oas30JS2ModelReaderVisitor.prototype.visitValidationProblem = function (node) {
+        // Not supported:  validation problems are transient
+    };
     return Oas30JS2ModelReaderVisitor;
 }());
 /**
@@ -9459,7 +9529,7 @@ var Oas30JS2ModelReaderVisitor = (function () {
  * assumed that the javascript data actually does represent an OAS 3.0 document.
  */
 var Oas30JS2ModelReader = (function (_super) {
-    __extends$75(Oas30JS2ModelReader, _super);
+    __extends$76(Oas30JS2ModelReader, _super);
     function Oas30JS2ModelReader() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -10347,7 +10417,7 @@ var OasDocumentFactory = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$76 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$77 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -10606,6 +10676,9 @@ var OasModelToJSVisitor = (function () {
         var jsObject = this.lookupParentJS(node);
         jsObject[node.name] = node.value;
     };
+    OasModelToJSVisitor.prototype.visitValidationProblem = function (node) {
+        // Validation problems are transient - they are not written to the JS.
+    };
     return OasModelToJSVisitor;
 }());
 /**
@@ -10614,7 +10687,7 @@ var OasModelToJSVisitor = (function () {
  * should be a valid OAS 2.0 document.
  */
 var Oas20ModelToJSVisitor = (function (_super) {
-    __extends$76(Oas20ModelToJSVisitor, _super);
+    __extends$77(Oas20ModelToJSVisitor, _super);
     /**
      * Constructor.
      */
@@ -11062,7 +11135,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
  * should be a valid OAS 3.0 document.
  */
 var Oas30ModelToJSVisitor = (function (_super) {
-    __extends$76(Oas30ModelToJSVisitor, _super);
+    __extends$77(Oas30ModelToJSVisitor, _super);
     function Oas30ModelToJSVisitor() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -11830,7 +11903,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$77 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$78 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -11897,6 +11970,14 @@ var OasTraverser = (function () {
         this.traverseArray(node.extensions());
     };
     /**
+     * Traverse the validation problems, if any exist.  Validation problems would
+     * only exist if validation has been performed on the data model.
+     * @param {OasNode} node
+     */
+    OasTraverser.prototype.traverseValidationProblems = function (node) {
+        this.traverseArray(node.validationProblems());
+    };
+    /**
      * Visit the info object.
      * @param node
      */
@@ -11905,6 +11986,7 @@ var OasTraverser = (function () {
         this.traverseIfNotNull(node.contact);
         this.traverseIfNotNull(node.license);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the contact object.
@@ -11913,6 +11995,7 @@ var OasTraverser = (function () {
     OasTraverser.prototype.visitContact = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the license object.
@@ -11921,6 +12004,7 @@ var OasTraverser = (function () {
     OasTraverser.prototype.visitLicense = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the paths.
@@ -11930,6 +12014,7 @@ var OasTraverser = (function () {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
  * Visit the responses.
@@ -11940,6 +12025,7 @@ var OasTraverser = (function () {
         this.traverseIndexedNode(node);
         this.traverseIfNotNull(node.default);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the scopes.
@@ -11948,6 +12034,7 @@ var OasTraverser = (function () {
     OasTraverser.prototype.visitXML = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the security requirement.
@@ -11955,6 +12042,7 @@ var OasTraverser = (function () {
      */
     OasTraverser.prototype.visitSecurityRequirement = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the tag.
@@ -11964,6 +12052,7 @@ var OasTraverser = (function () {
         node.accept(this.visitor);
         this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the external doc.
@@ -11972,6 +12061,7 @@ var OasTraverser = (function () {
     OasTraverser.prototype.visitExternalDocumentation = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the extension.
@@ -11979,6 +12069,15 @@ var OasTraverser = (function () {
      */
     OasTraverser.prototype.visitExtension = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
+    };
+    /**
+     * Visit the validation problem.
+     * @param {OasValidationProblem} node
+     */
+    OasTraverser.prototype.visitValidationProblem = function (node) {
+        node.accept(this);
+        // Don't traverse the validation problem's validation problems. :)
     };
     return OasTraverser;
 }());
@@ -11986,7 +12085,7 @@ var OasTraverser = (function () {
  * Used to traverse an OAS 2.0 tree and call an included visitor for each node.
  */
 var Oas20Traverser = (function (_super) {
-    __extends$77(Oas20Traverser, _super);
+    __extends$78(Oas20Traverser, _super);
     /**
      * Constructor.
      * @param visitor
@@ -12010,6 +12109,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseArray(node.tags);
         this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the path item.
@@ -12026,6 +12126,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseIfNotNull(node.patch);
         this.traverseArray(node.parameters);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the operation.
@@ -12038,6 +12139,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseIfNotNull(node.responses);
         this.traverseArray(node.security);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit a parameter.
@@ -12048,6 +12150,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseIfNotNull(node.schema);
         this.traverseIfNotNull(node.items);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the parameter.
@@ -12069,6 +12172,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseIfNotNull(node.headers);
         this.traverseIfNotNull(node.examples);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the response.
@@ -12084,6 +12188,7 @@ var Oas20Traverser = (function (_super) {
     Oas20Traverser.prototype.visitHeaders = function (node) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the response definition.
@@ -12119,6 +12224,7 @@ var Oas20Traverser = (function (_super) {
         this.traverseIfNotNull(node.xml);
         this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the schema.
@@ -12163,6 +12269,7 @@ var Oas20Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseIfNotNull(node.items);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the example.
@@ -12170,6 +12277,7 @@ var Oas20Traverser = (function (_super) {
      */
     Oas20Traverser.prototype.visitExample = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the items.
@@ -12179,6 +12287,7 @@ var Oas20Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseIfNotNull(node.items);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the security definitions.
@@ -12187,6 +12296,7 @@ var Oas20Traverser = (function (_super) {
     Oas20Traverser.prototype.visitSecurityDefinitions = function (node) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the security scheme.
@@ -12196,6 +12306,7 @@ var Oas20Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseIfNotNull(node.scopes);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the scopes.
@@ -12203,6 +12314,7 @@ var Oas20Traverser = (function (_super) {
      */
     Oas20Traverser.prototype.visitScopes = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the definitions.
@@ -12211,6 +12323,7 @@ var Oas20Traverser = (function (_super) {
     Oas20Traverser.prototype.visitDefinitions = function (node) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the definitions.
@@ -12219,6 +12332,7 @@ var Oas20Traverser = (function (_super) {
     Oas20Traverser.prototype.visitParametersDefinitions = function (node) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the responses.
@@ -12227,6 +12341,7 @@ var Oas20Traverser = (function (_super) {
     Oas20Traverser.prototype.visitResponsesDefinitions = function (node) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
+        this.traverseValidationProblems(node);
     };
     return Oas20Traverser;
 }(OasTraverser));
@@ -12234,7 +12349,7 @@ var Oas20Traverser = (function (_super) {
  * Used to traverse an OAS 3.0 tree and call an included visitor for each node.
  */
 var Oas30Traverser = (function (_super) {
-    __extends$77(Oas30Traverser, _super);
+    __extends$78(Oas30Traverser, _super);
     /**
      * Constructor.
      * @param visitor
@@ -12256,6 +12371,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.tags);
         this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12274,6 +12390,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.parameters);
         this.traverseArray(node.servers);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12289,6 +12406,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.security);
         this.traverseArray(node.servers);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12300,6 +12418,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.getExamples());
         this.traverseArray(node.getMediaTypes());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12332,6 +12451,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseIfNotNull(node.xml);
         this.traverseIfNotNull(node.externalDocs);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12339,6 +12459,7 @@ var Oas30Traverser = (function (_super) {
      */
     Oas30Traverser.prototype.visitDiscriminator = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12364,6 +12485,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.getExamples());
         this.traverseArray(node.getMediaTypes());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12389,6 +12511,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.getLinks());
         this.traverseArray(node.getHeaders());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12400,6 +12523,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseIfNotNull(node.requestBody);
         this.traverseIfNotNull(node.server);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12407,6 +12531,7 @@ var Oas30Traverser = (function (_super) {
      */
     Oas30Traverser.prototype.visitLinkParameterExpression = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12414,6 +12539,7 @@ var Oas30Traverser = (function (_super) {
      */
     Oas30Traverser.prototype.visitLinkRequestBodyExpression = function (node) {
         node.accept(this.visitor);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12430,6 +12556,7 @@ var Oas30Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseArray(node.getMediaTypes());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12441,6 +12568,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.getExamples());
         this.traverseArray(node.getEncodings());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12450,6 +12578,7 @@ var Oas30Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseArray(node.getHeaders());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12458,6 +12587,7 @@ var Oas30Traverser = (function (_super) {
     Oas30Traverser.prototype.visitExample = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12467,6 +12597,7 @@ var Oas30Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseIndexedNode(node);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12540,6 +12671,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseArray(node.getLinkDefinitions());
         this.traverseArray(node.getCallbackDefinitions());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12570,6 +12702,7 @@ var Oas30Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseIfNotNull(node.flows);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12582,6 +12715,7 @@ var Oas30Traverser = (function (_super) {
         this.traverseIfNotNull(node.clientCredentials);
         this.traverseIfNotNull(node.authorizationCode);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12618,6 +12752,7 @@ var Oas30Traverser = (function (_super) {
     Oas30Traverser.prototype.visitOAuthFlow = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12648,6 +12783,7 @@ var Oas30Traverser = (function (_super) {
         node.accept(this.visitor);
         this.traverseArray(node.getServerVariables());
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     /**
      * Visit the node.
@@ -12656,6 +12792,7 @@ var Oas30Traverser = (function (_super) {
     Oas30Traverser.prototype.visitServerVariable = function (node) {
         node.accept(this.visitor);
         this.traverseExtensions(node);
+        this.traverseValidationProblems(node);
     };
     return Oas30Traverser;
 }(OasTraverser));
@@ -12740,13 +12877,17 @@ var OasReverseTraverser = (function () {
         node.accept(this.visitor);
         this.traverse(node.parent());
     };
+    OasReverseTraverser.prototype.visitValidationProblem = function (node) {
+        node.accept(this.visitor);
+        this.traverse(node.parent());
+    };
     return OasReverseTraverser;
 }());
 /**
  * Used to traverse up an OAS 2.0 tree and call an included visitor for each node.
  */
 var Oas20ReverseTraverser = (function (_super) {
-    __extends$77(Oas20ReverseTraverser, _super);
+    __extends$78(Oas20ReverseTraverser, _super);
     /**
      * Constructor.
      * @param visitor
@@ -12828,7 +12969,7 @@ var Oas20ReverseTraverser = (function (_super) {
  * Used to traverse up an OAS 3.0 tree and call an included visitor for each node.
  */
 var Oas30ReverseTraverser = (function (_super) {
-    __extends$77(Oas30ReverseTraverser, _super);
+    __extends$78(Oas30ReverseTraverser, _super);
     /**
      * Constructor.
      * @param visitor
@@ -13050,6 +13191,15 @@ var OasVisitorUtil = (function () {
             throw new Error("OAS version " + node.ownerDocument().getSpecVersion() + " not supported.");
         }
     };
+    /**
+     * Convenience method for visiting all Nodes in a node path, relative to a given document.
+     * @param {OasNodePath} path
+     * @param {IOasNodeVisitor} visitor
+     * @param {OasDocument} document
+     */
+    OasVisitorUtil.visitPath = function (path, visitor, document) {
+        path.resolve(document, visitor);
+    };
     return OasVisitorUtil;
 }());
 
@@ -13069,7 +13219,7 @@ var OasVisitorUtil = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$79 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$80 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -13098,6 +13248,7 @@ var OasNodeVisitorAdapter = (function () {
     OasNodeVisitorAdapter.prototype.visitTag = function (node) { };
     OasNodeVisitorAdapter.prototype.visitExternalDocumentation = function (node) { };
     OasNodeVisitorAdapter.prototype.visitExtension = function (node) { };
+    OasNodeVisitorAdapter.prototype.visitValidationProblem = function (node) { };
     return OasNodeVisitorAdapter;
 }());
 /**
@@ -13106,7 +13257,7 @@ var OasNodeVisitorAdapter = (function () {
  * the subset of methods desired.
  */
 var Oas20NodeVisitorAdapter = (function (_super) {
-    __extends$79(Oas20NodeVisitorAdapter, _super);
+    __extends$80(Oas20NodeVisitorAdapter, _super);
     function Oas20NodeVisitorAdapter() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -13136,7 +13287,7 @@ var Oas20NodeVisitorAdapter = (function (_super) {
  * the subset of methods desired.
  */
 var Oas30NodeVisitorAdapter = (function (_super) {
-    __extends$79(Oas30NodeVisitorAdapter, _super);
+    __extends$80(Oas30NodeVisitorAdapter, _super);
     function Oas30NodeVisitorAdapter() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -13235,6 +13386,7 @@ var OasCompositeVisitor = (function () {
     OasCompositeVisitor.prototype.visitTag = function (node) { this._acceptAll(node); };
     OasCompositeVisitor.prototype.visitExternalDocumentation = function (node) { this._acceptAll(node); };
     OasCompositeVisitor.prototype.visitExtension = function (node) { this._acceptAll(node); };
+    OasCompositeVisitor.prototype.visitValidationProblem = function (node) { this._acceptAll(node); };
     return OasCompositeVisitor;
 }());
 /**
@@ -13242,7 +13394,7 @@ var OasCompositeVisitor = (function () {
  * a node at the same time.  It's basically just an array of visitors.
  */
 var Oas20CompositeVisitor = (function (_super) {
-    __extends$79(Oas20CompositeVisitor, _super);
+    __extends$80(Oas20CompositeVisitor, _super);
     /**
      * Constructor.
      * @param visitors
@@ -13279,7 +13431,7 @@ var Oas20CompositeVisitor = (function (_super) {
  * a node at the same time.  It's basically just an array of visitors.
  */
 var Oas30CompositeVisitor = (function (_super) {
-    __extends$79(Oas30CompositeVisitor, _super);
+    __extends$80(Oas30CompositeVisitor, _super);
     /**
      * Constructor.
      * @param visitors
@@ -13391,6 +13543,7 @@ var OasCombinedVisitorAdapter = (function () {
     OasCombinedVisitorAdapter.prototype.visitLinkDefinition = function (node) { };
     OasCombinedVisitorAdapter.prototype.visitCallbackDefinition = function (node) { };
     OasCombinedVisitorAdapter.prototype.visitDiscriminator = function (node) { };
+    OasCombinedVisitorAdapter.prototype.visitValidationProblem = function (node) { };
     return OasCombinedVisitorAdapter;
 }());
 /**
@@ -13398,7 +13551,7 @@ var OasCombinedVisitorAdapter = (function () {
  * in the model.
  */
 var OasAllNodeVisitor = (function (_super) {
-    __extends$79(OasAllNodeVisitor, _super);
+    __extends$80(OasAllNodeVisitor, _super);
     function OasAllNodeVisitor() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -13480,40 +13633,6 @@ var OasAllNodeVisitor = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Represents a single validation error.
- */
-var OasValidationError = (function () {
-    function OasValidationError(errorCode, nodePath, message) {
-        this._attributes = new OasValidationErrorAttributes();
-        this.errorCode = errorCode;
-        this.nodePath = nodePath;
-        this.message = message;
-    }
-    /**
-     * Gets or sets a problem attribute.  When setting the attribute, the previous value
-     * will be returned. Otherwise the current value is returned.
-     * @param name
-     * @param value
-     * @return {any}
-     */
-    OasValidationError.prototype.attribute = function (name, value) {
-        if (value === undefined) {
-            return this._attributes[name];
-        }
-        else {
-            var pvalue = this._attributes[name];
-            this._attributes[name] = value;
-            return pvalue;
-        }
-    };
-    return OasValidationError;
-}());
-var OasValidationErrorAttributes = (function () {
-    function OasValidationErrorAttributes() {
-    }
-    return OasValidationErrorAttributes;
-}());
 /**
  * Base class for all validation rules.
  */
@@ -13718,7 +13837,7 @@ OasValidationRuleUtil.HTTP_STATUS_CODES = [
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$81 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$82 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -13727,7 +13846,7 @@ var __extends$81 = (undefined && undefined.__extends) || function (d, b) {
  * Base class for all 2.0 validation rules.
  */
 var Oas20ValidationRule = (function (_super) {
-    __extends$81(Oas20ValidationRule, _super);
+    __extends$82(Oas20ValidationRule, _super);
     function Oas20ValidationRule(reporter) {
         var _this = _super.call(this) || this;
         _this._reporter = reporter;
@@ -13777,7 +13896,7 @@ var Oas20ValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$80 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$81 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -13789,7 +13908,7 @@ var __extends$80 = (undefined && undefined.__extends) || function (d, b) {
  * required properties on all model types.
  */
 var Oas20RequiredPropertyValidationRule = (function (_super) {
-    __extends$80(Oas20RequiredPropertyValidationRule, _super);
+    __extends$81(Oas20RequiredPropertyValidationRule, _super);
     function Oas20RequiredPropertyValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -13912,7 +14031,7 @@ var Oas20RequiredPropertyValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$82 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$83 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -13999,6 +14118,10 @@ var OasNodePathVisitor = (function () {
     OasNodePathVisitor.prototype.visitExtension = function (node) {
         this._path.prependSegment(node.name);
     };
+    OasNodePathVisitor.prototype.visitValidationProblem = function (node) {
+        this._path.prependSegment(node.errorCode, true);
+        this._path.prependSegment("_validationProblems");
+    };
     return OasNodePathVisitor;
 }());
 /**
@@ -14019,7 +14142,7 @@ var OasNodePathVisitor = (function () {
  *
  */
 var Oas20NodePathVisitor = (function (_super) {
-    __extends$82(Oas20NodePathVisitor, _super);
+    __extends$83(Oas20NodePathVisitor, _super);
     function Oas20NodePathVisitor() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14125,7 +14248,7 @@ var Oas20NodePathVisitor = (function (_super) {
  * The 3.0 version of a node path visitor (creates a node path from a node).
  */
 var Oas30NodePathVisitor = (function (_super) {
-    __extends$82(Oas30NodePathVisitor, _super);
+    __extends$83(Oas30NodePathVisitor, _super);
     function Oas30NodePathVisitor() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14357,7 +14480,7 @@ var Oas30NodePathVisitor = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$83 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$84 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -14368,7 +14491,7 @@ var __extends$83 = (undefined && undefined.__extends) || function (d, b) {
  * *format* for that property.
  */
 var Oas20InvalidPropertyFormatValidationRule = (function (_super) {
-    __extends$83(Oas20InvalidPropertyFormatValidationRule, _super);
+    __extends$84(Oas20InvalidPropertyFormatValidationRule, _super);
     function Oas20InvalidPropertyFormatValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14481,7 +14604,7 @@ var Oas20InvalidPropertyFormatValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$84 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$85 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -14492,7 +14615,7 @@ var __extends$84 = (undefined && undefined.__extends) || function (d, b) {
  * format defined by the specification.
  */
 var Oas20InvalidPropertyNameValidationRule = (function (_super) {
-    __extends$84(Oas20InvalidPropertyNameValidationRule, _super);
+    __extends$85(Oas20InvalidPropertyNameValidationRule, _super);
     function Oas20InvalidPropertyNameValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14586,7 +14709,7 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$85 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$86 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -14599,7 +14722,7 @@ var __extends$85 = (undefined && undefined.__extends) || function (d, b) {
  * invalid.
  */
 var Oas20InvalidPropertyValueValidationRule = (function (_super) {
-    __extends$85(Oas20InvalidPropertyValueValidationRule, _super);
+    __extends$86(Oas20InvalidPropertyValueValidationRule, _super);
     function Oas20InvalidPropertyValueValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14834,7 +14957,7 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$86 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$87 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -14845,7 +14968,7 @@ var __extends$86 = (undefined && undefined.__extends) || function (d, b) {
  * fail that test.  Examples are scopes, tags, and operationId.
  */
 var Oas20UniquenessValidationRule = (function (_super) {
-    __extends$86(Oas20UniquenessValidationRule, _super);
+    __extends$87(Oas20UniquenessValidationRule, _super);
     function Oas20UniquenessValidationRule() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.indexedOperations = {};
@@ -14915,7 +15038,7 @@ var Oas20UniquenessValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$87 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$88 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -14927,7 +15050,7 @@ var __extends$87 = (undefined && undefined.__extends) || function (d, b) {
  * with each other.
  */
 var Oas20MutuallyExclusiveValidationRule = (function (_super) {
-    __extends$87(Oas20MutuallyExclusiveValidationRule, _super);
+    __extends$88(Oas20MutuallyExclusiveValidationRule, _super);
     function Oas20MutuallyExclusiveValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -14992,7 +15115,7 @@ var Oas20MutuallyExclusiveValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$88 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$89 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15003,7 +15126,7 @@ var __extends$88 = (undefined && undefined.__extends) || function (d, b) {
  * but that reference is missing or invalid.
  */
 var Oas20InvalidReferenceValidationRule = (function (_super) {
-    __extends$88(Oas20InvalidReferenceValidationRule, _super);
+    __extends$89(Oas20InvalidReferenceValidationRule, _super);
     function Oas20InvalidReferenceValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15086,7 +15209,7 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$90 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$91 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15095,7 +15218,7 @@ var __extends$90 = (undefined && undefined.__extends) || function (d, b) {
  * Base class for all 3.0 validation rules.
  */
 var Oas30ValidationRule = (function (_super) {
-    __extends$90(Oas30ValidationRule, _super);
+    __extends$91(Oas30ValidationRule, _super);
     function Oas30ValidationRule(reporter) {
         var _this = _super.call(this) || this;
         _this._reporter = reporter;
@@ -15175,7 +15298,7 @@ var Oas30ValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$89 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$90 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15186,7 +15309,7 @@ var __extends$89 = (undefined && undefined.__extends) || function (d, b) {
  * *format* for that property.
  */
 var Oas30InvalidPropertyFormatValidationRule = (function (_super) {
-    __extends$89(Oas30InvalidPropertyFormatValidationRule, _super);
+    __extends$90(Oas30InvalidPropertyFormatValidationRule, _super);
     function Oas30InvalidPropertyFormatValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15353,7 +15476,7 @@ var Oas30InvalidPropertyFormatValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$91 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$92 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15364,7 +15487,7 @@ var __extends$91 = (undefined && undefined.__extends) || function (d, b) {
  * be ignored.
  */
 var Oas30IgnoredPropertyNameValidationRule = (function (_super) {
-    __extends$91(Oas30IgnoredPropertyNameValidationRule, _super);
+    __extends$92(Oas30IgnoredPropertyNameValidationRule, _super);
     function Oas30IgnoredPropertyNameValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15395,7 +15518,7 @@ var Oas30IgnoredPropertyNameValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$92 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$93 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15406,7 +15529,7 @@ var __extends$92 = (undefined && undefined.__extends) || function (d, b) {
  * format defined by the specification.
  */
 var Oas30InvalidPropertyNameValidationRule = (function (_super) {
-    __extends$92(Oas30InvalidPropertyNameValidationRule, _super);
+    __extends$93(Oas30InvalidPropertyNameValidationRule, _super);
     function Oas30InvalidPropertyNameValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15500,7 +15623,7 @@ var Oas30InvalidPropertyNameValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$93 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$94 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15509,7 +15632,7 @@ var __extends$93 = (undefined && undefined.__extends) || function (d, b) {
  * Used to find an operation with a given operation id.
  */
 var Oas30OperationFinder = (function (_super) {
-    __extends$93(Oas30OperationFinder, _super);
+    __extends$94(Oas30OperationFinder, _super);
     function Oas30OperationFinder(operationId) {
         var _this = _super.call(this) || this;
         _this.operationId = operationId;
@@ -15533,7 +15656,7 @@ var Oas30OperationFinder = (function (_super) {
  * invalid.
  */
 var Oas30InvalidPropertyValueValidationRule = (function (_super) {
-    __extends$93(Oas30InvalidPropertyValueValidationRule, _super);
+    __extends$94(Oas30InvalidPropertyValueValidationRule, _super);
     function Oas30InvalidPropertyValueValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15785,7 +15908,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$94 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$95 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15796,7 +15919,7 @@ var __extends$94 = (undefined && undefined.__extends) || function (d, b) {
  * but that reference is missing or invalid.
  */
 var Oas30InvalidReferenceValidationRule = (function (_super) {
-    __extends$94(Oas30InvalidReferenceValidationRule, _super);
+    __extends$95(Oas30InvalidReferenceValidationRule, _super);
     function Oas30InvalidReferenceValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15893,7 +16016,7 @@ var Oas30InvalidReferenceValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$95 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$96 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15905,7 +16028,7 @@ var __extends$95 = (undefined && undefined.__extends) || function (d, b) {
  * with each other.
  */
 var Oas30MutuallyExclusiveValidationRule = (function (_super) {
-    __extends$95(Oas30MutuallyExclusiveValidationRule, _super);
+    __extends$96(Oas30MutuallyExclusiveValidationRule, _super);
     function Oas30MutuallyExclusiveValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -15955,7 +16078,7 @@ var Oas30MutuallyExclusiveValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$96 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$97 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -15967,7 +16090,7 @@ var __extends$96 = (undefined && undefined.__extends) || function (d, b) {
  * required properties on all model types.
  */
 var Oas30RequiredPropertyValidationRule = (function (_super) {
-    __extends$96(Oas30RequiredPropertyValidationRule, _super);
+    __extends$97(Oas30RequiredPropertyValidationRule, _super);
     function Oas30RequiredPropertyValidationRule() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -16095,7 +16218,7 @@ var Oas30RequiredPropertyValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$97 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$98 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -16106,7 +16229,7 @@ var __extends$97 = (undefined && undefined.__extends) || function (d, b) {
  * fail that test.  Examples are scopes, tags, and operationId.
  */
 var Oas30UniquenessValidationRule = (function (_super) {
-    __extends$97(Oas30UniquenessValidationRule, _super);
+    __extends$98(Oas30UniquenessValidationRule, _super);
     function Oas30UniquenessValidationRule() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.indexedOperations = {};
@@ -16157,18 +16280,33 @@ var Oas30UniquenessValidationRule = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$78 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$79 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/**
+ * Visitor used to clear validation problems.  This is typically done just before
+ * validation is run so that the data model is clean.  Validation would then add new
+ * problem nodes to the model.
+ */
+var OasResetValidationProblemsVisitor = (function (_super) {
+    __extends$79(OasResetValidationProblemsVisitor, _super);
+    function OasResetValidationProblemsVisitor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    OasResetValidationProblemsVisitor.prototype.doVisitNode = function (node) {
+        node.clearValidationProblems();
+    };
+    return OasResetValidationProblemsVisitor;
+}(OasAllNodeVisitor));
 /**
  * Visitor used to validate a OpenAPI document (or a subsection of the document).  The result
  * of the validation will be a list of validation errors.  In addition, the validator will
  * add the validation errors directly to the offending model nodes as attributes.
  */
 var Oas20ValidationVisitor = (function (_super) {
-    __extends$78(Oas20ValidationVisitor, _super);
+    __extends$79(Oas20ValidationVisitor, _super);
     function Oas20ValidationVisitor() {
         var _this = _super.call(this) || this;
         _this.errors = [];
@@ -16186,7 +16324,7 @@ var Oas20ValidationVisitor = (function (_super) {
     }
     /**
      * Returns the array of validation errors found by the visitor.
-     * @return {OasValidationError[]}
+     * @return {OasValidationProblem[]}
      */
     Oas20ValidationVisitor.prototype.getValidationErrors = function () {
         return this.errors;
@@ -16201,24 +16339,9 @@ var Oas20ValidationVisitor = (function (_super) {
         var viz = new Oas20NodePathVisitor();
         OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
         var path = viz.path();
-        var error = new OasValidationError(code, path, message);
+        var error = node.addValidationProblem(code, path, message);
         // Include the error in the list of errors found by this visitor.
         this.errors.push(error);
-        // Also make sure to add the error to the list of validation errors on the node model itself.
-        var errors = node.n_attribute("validation-errors");
-        if (errors === undefined || errors === null) {
-            errors = [];
-            node.n_attribute("validation-errors", errors);
-        }
-        errors.push(error);
-    };
-    /**
-     * Clears any previous validation errors from the node and re-validates.
-     * @param node
-     */
-    Oas20ValidationVisitor.prototype._acceptAll = function (node) {
-        node.n_attribute("validation-errors", null);
-        _super.prototype._acceptAll.call(this, node);
     };
     return Oas20ValidationVisitor;
 }(Oas20CompositeVisitor));
@@ -16228,7 +16351,7 @@ var Oas20ValidationVisitor = (function (_super) {
  * add the validation errors directly to the offending model nodes as attributes.
  */
 var Oas30ValidationVisitor = (function (_super) {
-    __extends$78(Oas30ValidationVisitor, _super);
+    __extends$79(Oas30ValidationVisitor, _super);
     function Oas30ValidationVisitor() {
         var _this = _super.call(this) || this;
         _this.errors = [];
@@ -16247,7 +16370,7 @@ var Oas30ValidationVisitor = (function (_super) {
     }
     /**
      * Returns the array of validation errors found by the visitor.
-     * @return {OasValidationError[]}
+     * @return {OasValidationProblem[]}
      */
     Oas30ValidationVisitor.prototype.getValidationErrors = function () {
         return this.errors;
@@ -16262,24 +16385,9 @@ var Oas30ValidationVisitor = (function (_super) {
         var viz = new Oas30NodePathVisitor();
         OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
         var path = viz.path();
-        var error = new OasValidationError(code, path, message);
+        var error = node.addValidationProblem(code, path, message);
         // Include the error in the list of errors found by this visitor.
         this.errors.push(error);
-        // Also make sure to add the error to the list of validation errors on the node model itself.
-        var errors = node.n_attribute("validation-errors");
-        if (errors === undefined || errors === null) {
-            errors = [];
-            node.n_attribute("validation-errors", errors);
-        }
-        errors.push(error);
-    };
-    /**
-     * Clears any previous validation errors from the node and re-validates.
-     * @param node
-     */
-    Oas30ValidationVisitor.prototype._acceptAll = function (node) {
-        node.n_attribute("validation-errors", null);
-        _super.prototype._acceptAll.call(this, node);
     };
     return Oas30ValidationVisitor;
 }(Oas30CompositeVisitor));
@@ -16392,6 +16500,10 @@ var OasLibraryUtils = (function () {
      */
     OasLibraryUtils.prototype.validate = function (node, recursive) {
         if (recursive === void 0) { recursive = true; }
+        // Reset all problems first
+        var resetter = new OasResetValidationProblemsVisitor();
+        OasVisitorUtil.visitTree(node, resetter);
+        // Now validate the data model.
         if (node.ownerDocument().is2xDocument()) {
             var visitor = new Oas20ValidationVisitor();
             if (recursive) {
@@ -16599,6 +16711,7 @@ exports.OasDocument = OasDocument;
 exports.OasExtensibleNode = OasExtensibleNode;
 exports.OasExtension = OasExtension;
 exports.OasNode = OasNode;
+exports.OasValidationProblem = OasValidationProblem;
 exports.OasNodeAttributes = OasNodeAttributes;
 exports.OasNodePath = OasNodePath;
 exports.OasNodePathSegment = OasNodePathSegment;
@@ -16753,9 +16866,8 @@ exports.Oas30Traverser = Oas30Traverser;
 exports.OasReverseTraverser = OasReverseTraverser;
 exports.Oas20ReverseTraverser = Oas20ReverseTraverser;
 exports.Oas30ReverseTraverser = Oas30ReverseTraverser;
-exports.OasValidationError = OasValidationError;
-exports.OasValidationErrorAttributes = OasValidationErrorAttributes;
 exports.OasValidationRuleUtil = OasValidationRuleUtil;
+exports.OasResetValidationProblemsVisitor = OasResetValidationProblemsVisitor;
 exports.Oas20ValidationVisitor = Oas20ValidationVisitor;
 exports.Oas30ValidationVisitor = Oas30ValidationVisitor;
 exports.OasSchemaFactory = OasSchemaFactory;

@@ -13588,6 +13588,7 @@ var OasAllNodeVisitor = (function (_super) {
     OasAllNodeVisitor.prototype.visitParametersDefinitions = function (node) { this.doVisitNode(node); };
     OasAllNodeVisitor.prototype.visitResponsesDefinitions = function (node) { this.doVisitNode(node); };
     OasAllNodeVisitor.prototype.visitExtension = function (node) { this.doVisitNode(node); };
+    OasAllNodeVisitor.prototype.visitValidationProblem = function (node) { this.doVisitNode(node); };
     OasAllNodeVisitor.prototype.visitMediaType = function (node) { this.doVisitNode(node); };
     OasAllNodeVisitor.prototype.visitEncoding = function (node) { this.doVisitNode(node); };
     OasAllNodeVisitor.prototype.visitLink = function (node) { this.doVisitNode(node); };

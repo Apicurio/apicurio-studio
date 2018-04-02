@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {OasValidationError} from "oai-ts-core";
+import {OasValidationProblem} from "oai-ts-core";
 
 @Component({
     moduleId: module.id,
@@ -25,7 +25,7 @@ import {OasValidationError} from "oai-ts-core";
 })
 export class ValidationIconComponent {
 
-    @Input() validationErrors: OasValidationError[] = [];
+    @Input() validationErrors: OasValidationProblem[] = [];
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public message(): string {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Oas20Parameter, Oas20PathItem, OasNode, OasOperation, OasValidationError} from "oai-ts-core";
+import {Oas20Parameter, Oas20PathItem, OasNode, OasOperation, OasValidationProblem} from "oai-ts-core";
 import {ObjectUtils} from "./object.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
@@ -67,13 +67,41 @@ export class ModelUtils {
     }
 
     /**
+     * Clears any possible selection that may exist on the given node for the local user.
+     * @param {OasNode} node
+     */
+    public static clearSelection(node: OasNode): void {
+        node.n_attribute("local-selection", false);
+    }
+
+    /**
+     * Sets the local selection on the node.  Essentially this marks the node as "selected"
+     * for the local user.
+     * @param {OasNode} node
+     */
+    public static setSelection(node: OasNode): void {
+        node.n_attribute("local-selection", true);
+    }
+
+    /**
+     * Checks whether the given item is selected by the local user.
+     * @param {OasNode} node
+     * @return {ApiEditorUser}
+     */
+    public static isSelected(node: OasNode): boolean {
+        let rval: boolean = node.n_attribute("local-selection");
+        if (rval === undefined || rval === null) {
+            return false;
+        }
+        return rval;
+    }
+
+    /**
      * Clears any possible selection that may exist on the given node for the given user.
      * @param {ApiEditorUser} user
-     * @param {OasNode | OasValidationError} selection
+     * @param {OasNode} node
      */
-    public static clearCollaboratorSelection(user: ApiEditorUser, selection: OasNode | OasValidationError): void {
-        // TODO support validation errors as well
-        let node: OasNode = selection as OasNode;
+    public static clearCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
         let selections: any = node.n_attribute("collaborator-selections");
         if (selections) {
             delete selections[user.userId];
@@ -84,11 +112,9 @@ export class ModelUtils {
      * Sets the collaborator selection for the given user on the node.  Essentially this marks
      * the node as "selected" by the external (active) collaborator.
      * @param {ApiEditorUser} user
-     * @param {OasNode} selection
+     * @param {OasNode} node
      */
-    public static setCollaboratorSelection(user: ApiEditorUser, selection: OasNode | OasValidationError): void {
-        // TODO support validation errors as well
-        let node: OasNode = selection as OasNode;
+    public static setCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
         let selections: any = node.n_attribute("collaborator-selections");
         if (!selections) {
             selections = {};
@@ -100,12 +126,11 @@ export class ModelUtils {
     /**
      * Checks whether the given item is selected by an external collaborator.  Returns the collaborator
      * information if the item is selected or else null.
-     * @param {OasNode | OasValidationError} node
+     * @param {OasNode} node
      * @return {ApiEditorUser}
      */
-    public static isSelectedByCollaborator(node: OasNode | OasValidationError): ApiEditorUser {
-        // TODO support validation errors as well
-        let selections: any = (node as OasNode).n_attribute("collaborator-selections");
+    public static isSelectedByCollaborator(node: OasNode): ApiEditorUser {
+        let selections: any = node.n_attribute("collaborator-selections");
         if (selections) {
             let rval: ApiEditorUser = null;
             for (let key in selections) {

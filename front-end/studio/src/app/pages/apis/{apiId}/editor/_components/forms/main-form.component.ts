@@ -56,11 +56,10 @@ import {SecurityScheme30DialogComponent, SecurityScheme30EventData} from "../dia
 
 export abstract class MainFormComponent {
 
-    // TODO should be injected rather than instantiated?
-    private static licenseService: LicenseService = new LicenseService();
-
     @Input() document: OasDocument;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+
+    constructor(public licenseService: LicenseService) {}
 
     /**
      * returns the title.
@@ -241,7 +240,7 @@ export abstract class MainFormComponent {
      * Returns the resolved license or null if not found.
      */
     public license(): ILicense {
-        return MainFormComponent.licenseService.findLicense(this.licenseUrl());
+        return this.licenseService.findLicense(this.licenseUrl());
     }
 
     /**
@@ -264,14 +263,6 @@ export abstract class MainFormComponent {
         } else {
             return "";
         }
-    }
-
-    /**
-     * Returns the license service.
-     * @return {LicenseService}
-     */
-    public licenseService(): LicenseService {
-        return MainFormComponent.licenseService;
     }
 
     /**

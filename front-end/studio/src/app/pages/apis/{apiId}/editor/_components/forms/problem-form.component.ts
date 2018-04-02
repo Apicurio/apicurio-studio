@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
-import {OasValidationError} from "oai-ts-core";
+import {OasValidationProblem} from "oai-ts-core";
 import {ProblemsService} from "../../_services/problems.service";
 import {ICommand} from "oai-ts-commands";
+import {SelectionService} from "../../_services/selection.service";
 
 
 @Component({
@@ -28,18 +29,17 @@ import {ICommand} from "oai-ts-commands";
 })
 export class ProblemFormComponent  {
 
-    private static problems: ProblemsService = new ProblemsService();
-
-    @Input() problem: OasValidationError;
+    @Input() problem: OasValidationProblem;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
-    @Output() onGoToProblem: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    constructor(private problems: ProblemsService, private selectionService: SelectionService) {}
 
     explanation(): string {
-        return ProblemFormComponent.problems.explanation(this.problem);
+        return this.problems.explanation(this.problem);
     }
 
     goToProblem(): void {
-        this.onGoToProblem.emit(true);
+        this.selectionService.select(this.problem.nodePath, this.problem.ownerDocument());
     }
 
 }

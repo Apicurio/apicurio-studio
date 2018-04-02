@@ -59,7 +59,7 @@
     </ul>
 
     <!-- Main Editor Selector (name of API, select to show Main Form -->
-    <div class="editor-main" [class.selected]="selectedType === 'main'" [class.oai30]="isOAI30()" [class.oai20]="isSwagger2()" (click)="selectMain()">
+    <div class="editor-main {{ mainClasses() }}" (click)="selectMain()">
         <h2>{{ document.info.title }}</h2>
     </div>
 
@@ -77,8 +77,7 @@
             <span class="message">No validation problems found!</span>
         </div>
 
-        <div class="validation-problem" *ngFor="let problem of validationErrors"
-             [class.selected]="selectedItem === problem && selectedType === 'problem'"
+        <div class="validation-problem {{ problemClasses(problem) }}" *ngFor="let problem of validationErrors"
              (click)="selectProblem(problem)">
             <span class="icon fa fa-fw fa-exclamation-circle"></span>
             <span class="code">{{ problem.errorCode }}</span>
@@ -115,7 +114,7 @@
             <div class="section-body collapse in" id="path-section-body">
                 <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
                     <div path-item [path]="path.path()" (click)="selectPath(path)" (contextmenu)="showPathContextMenu($event, path)"></div>
-                    <div class="api-operations" *ngIf="isPathSelected(path) && hasAtLeastOneOperation(path)">
+                    <div class="api-operations" *ngIf="isSelected(path) && hasAtLeastOneOperation(path)">
                         <span *ngIf="hasOperation(path, 'get')" class="label label-success {{ operationClasses(path.get) }}" (click)="selectOperation(path.get)"
                               (contextmenu)="showOperationContextMenu($event, path.get)">GET</span>
                         <span *ngIf="hasOperation(path, 'put')" class="label label-info {{ operationClasses(path.put) }}" (click)="selectOperation(path.put)"
@@ -130,8 +129,8 @@
                               (contextmenu)="showOperationContextMenu($event, path.head)">HEAD</span>
                         <span *ngIf="hasOperation(path, 'patch')" class="label label-info {{ operationClasses(path.patch) }}" (click)="selectOperation(path.patch)"
                               (contextmenu)="showOperationContextMenu($event, path.patch)">PATCH</span>
-                        <span *ngIf="hasOperation(path, 'trace')" class="label label-info {{ operationClasses(path.trace) }}" (click)="selectOperation(path.trace)"
-                              (contextmenu)="showOperationContextMenu($event, path.trace)">TRACE</span>
+                        <span *ngIf="hasOperation(path, 'trace')" class="label label-info {{ operationClasses(path['trace']) }}" (click)="selectOperation(path['trace'])"
+                              (contextmenu)="showOperationContextMenu($event, path['trace'])">TRACE</span>
                         <span>&nbsp;</span>
                     </div>
                 </div>

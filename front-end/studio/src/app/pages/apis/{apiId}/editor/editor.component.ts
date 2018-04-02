@@ -20,6 +20,8 @@ import {
     EventEmitter,
     Input,
     OnChanges,
+    OnDestroy,
+    OnInit,
     Output,
     SimpleChanges,
     ViewChild,
@@ -27,25 +29,24 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    Oas20ResponseDefinition,
     Oas20SchemaDefinition,
-    Oas30ResponseDefinition,
     Oas30SchemaDefinition,
+    OasCombinedVisitorAdapter,
     OasDocument,
     OasLibraryUtils,
     OasNode,
+    OasNodePath,
     OasOperation,
     OasPathItem,
-    OasTraverserDirection,
-    OasValidationError,
+    OasValidationProblem,
     OasVisitorUtil
 } from "oai-ts-core";
 import {EditorMasterComponent} from "./_components/master.component";
-import {AbstractCombinedVisitorAdapter, AllNodeVisitor} from "./_visitors/base.visitor";
-import {NodeSelectionEvent} from "./_events/node-selection.event";
 import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
+import {SelectionService} from "./_services/selection.service";
+import {Subscription} from "rxjs/Subscription";
 
 
 @Component({
@@ -55,7 +56,7 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
     styleUrls: ["editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class ApiEditorComponent implements OnChanges {
+export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() api: ApiDefinition;
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
@@ -67,8 +68,12 @@ export class ApiEditorComponent implements OnChanges {
 
     theme: string = "light";
 
-    private currentSelection: NodeSelectionEvent;
-    public validationErrors: OasValidationError[] = [];
+    private currentSelection: OasNodePath;
+    private currentSelectionType: string;
+    private currentSelectionNode: OasNode;
+    public validationErrors: OasValidationProblem[] = [];
+
+    private _selectionSubscription: Subscription;
 
     @ViewChild("master") master: EditorMasterComponent;
 
@@ -77,7 +82,18 @@ export class ApiEditorComponent implements OnChanges {
     /**
      * Constructor.
      */
-    constructor() {}
+    constructor(private selectionService: SelectionService) {}
+
+    public ngOnInit(): void {
+        let me: ApiEditorComponent = this;
+        this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
+            me.onNodeSelected(selectedPath);
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._selectionSubscription.unsubscribe();
+    }
 
     /**
      * Called when the @Input changes.
@@ -90,7 +106,6 @@ export class ApiEditorComponent implements OnChanges {
         } else {
             this.formType = "main_30";
         }
-        console.info("****** just set the form type to: %s", this.formType);
     }
 
     /**
@@ -151,10 +166,11 @@ export class ApiEditorComponent implements OnChanges {
         this.otEngine().executeCommand(otCmd, true);
         this.onCommandExecuted.emit(otCmd);
 
+        // After changing the model, we need to ensure all selections are still valid
+        this.selectionService.select(this.selectionService.currentSelection(), this.document());
+
         // After changing the model, we should re-validate it
         this.validateModel();
-        // And also validate the current selection
-        this.master.validateSelection();
     }
 
     /**
@@ -167,10 +183,11 @@ export class ApiEditorComponent implements OnChanges {
         console.info("[ApiEditorComponent] Executing a command.");
         this.otEngine().executeCommand(command);
 
+        // After changing the model, we need to ensure all selections are still valid
+        this.selectionService.select(this.selectionService.currentSelection(), this.document());
+
         // After changing the model, we should re-validate it
         this.validateModel();
-        // And also validate the current selection
-        this.master.validateSelection();
     }
 
     /**
@@ -187,31 +204,25 @@ export class ApiEditorComponent implements OnChanges {
      * @param {string} selection
      */
     public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
-        this.master.updateCollaboratorSelection(user, selection);
+        this.selectionService.setCollaboratorSelection(user, selection, this.document());
     }
 
     /**
      * Called when the user selects a node in some way.
-     * @param {NodeSelectionEvent} event
+     * @param {OasNodePath} path
      */
-    public onNodeSelected(event: NodeSelectionEvent): void {
-        console.info("[ApiEditorComponent] Selection changed.  %s node selected", event.type);
-        this.currentSelection = event;
+    public onNodeSelected(path: OasNodePath): void {
+        console.info("[ApiEditorComponent] Selection changed to path: %s", path.toString());
 
-        this.formType = this.currentSelection.type + "_";
-        if (this.document().getSpecVersion() === "2.0") {
-            this.formType += "20";
-        } else {
-            this.formType += "30";
-        }
-        console.info("[ApiEditorComponent] Showing form: %s", this.formType);
+        let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().getSpecVersion() === "2.0" ? "20" : "30");
+        OasVisitorUtil.visitPath(path, visitor, this.document());
 
-        let selection: string = "";
-        if (event.type != "problem" && event.node != null) {
-            selection = this._library.createNodePath(event.node as OasNode).toString();
-        }
-        console.info("[ApiEditorComponent] Firing selection changed event: %s", selection);
-        this.onSelectionChanged.emit(selection);
+        this.currentSelection = path;
+        this.formType = visitor.formType();
+        this.currentSelectionNode = visitor.selection();
+        this.currentSelectionType = visitor.selectionType();
+
+        this.onSelectionChanged.emit(path.toString());
     }
 
     /**
@@ -219,9 +230,6 @@ export class ApiEditorComponent implements OnChanges {
      */
     public validateModel(): void {
         let doc: OasDocument = this.document();
-        let resetVisitor: ResetProblemsVisitor = new ResetProblemsVisitor();
-        OasVisitorUtil.visitTree(doc, resetVisitor);
-
         this.validationErrors = this._library.validate(doc, true);
     }
 
@@ -230,8 +238,8 @@ export class ApiEditorComponent implements OnChanges {
      * @return {OasPathItem}
      */
     public selectedPath(): OasPathItem {
-        if (this.currentSelection.type === "path") {
-            return this.currentSelection.node as OasPathItem;
+        if (this.currentSelectionType === "path") {
+            return this.currentSelectionNode as OasPathItem;
         } else {
             return null;
         }
@@ -241,8 +249,8 @@ export class ApiEditorComponent implements OnChanges {
      * Returns the currently selected operation.
      */
     public selectedOperation(): OasOperation {
-        if (this.currentSelection.type === "operation") {
-            return this.currentSelection.node as OasOperation;
+        if (this.currentSelectionType === "operation") {
+            return this.currentSelectionNode as OasOperation;
         } else {
             return null;
         }
@@ -253,8 +261,8 @@ export class ApiEditorComponent implements OnChanges {
      * @return {Oas20SchemaDefinition}
      */
     public selectedDefinition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
-        if (this.currentSelection.type === "definition") {
-            return this.currentSelection.node as Oas20SchemaDefinition;
+        if (this.currentSelectionType === "definition") {
+            return this.currentSelectionNode as Oas20SchemaDefinition;
         } else {
             return null;
         }
@@ -262,100 +270,72 @@ export class ApiEditorComponent implements OnChanges {
 
     /**
      * Returns the currently selected definition.
-     * @return {OasValidationError}
+     * @return {OasValidationProblem}
      */
-    public selectedProblem(): OasValidationError {
-        if (this.currentSelection.type === "problem") {
-            return this.currentSelection.node as OasValidationError;
+    public selectedProblem(): OasValidationProblem {
+        if (this.currentSelectionType === "problem") {
+            return this.currentSelectionNode as OasValidationProblem;
         } else {
             return null;
         }
     }
 
-    /**
-     * Called when the user does something to cause the selection to change.
-     * @param event
-     */
-    public selectNode(event: NodeSelectionEvent): void {
-        this.master.selectNode(event);
+    public deselectPath(): void {
+        this.master.deselectPath();
     }
 
-    /**
-     * Deselects the currently selected definition.
-     */
+    public deselectOperation(): void {
+        this.master.deselectOperation();
+    }
+
     public deselectDefinition(): void {
-        console.info("[ApiEditorComponent] Deselecting the current definition (selecting main).");
-        this.master.selectMain();
-    }
-
-    /**
-     * Called when the user clicks the "Go To Problem" button for a particular problem.
-     */
-    public goToProblem(): void {
-        // 1. get the node path from the problem
-        // 2. resolve to a node
-        // 3. use a visitor to reverse-traverse until one of the following is found:
-        //   3a. Path Item
-        //   3b. Operation
-        //   3c. Definition
-        //   3d. Response (tbd)
-
-        let problem: OasValidationError = this.currentSelection.node as OasValidationError;
-        let node: OasNode = problem.nodePath.resolve(this.document());
-        if (node === null) {
-            return;
-        }
-        let selectionVisitor: SelectedItemVisitor = new SelectedItemVisitor();
-        OasVisitorUtil.visitTree(node, selectionVisitor, OasTraverserDirection.up);
-
-        let event: NodeSelectionEvent = new NodeSelectionEvent(selectionVisitor.selectedItem, selectionVisitor.selectedType);
-        this.master.selectNode(event);
+        this.master.deselectDefinition();
     }
 
 }
 
 
 /**
- * Visitor used to clear out all the validation errors found in all nodes
- * in the model.
+ * Visitor used to determine what form should be displayed based on the selected node.
  */
-class ResetProblemsVisitor extends AllNodeVisitor {
+export class FormSelectionVisitor extends OasCombinedVisitorAdapter {
 
-    protected doVisitNode(node: OasNode): void {
-        node.n_attribute("validation-errors", null);
+    public _selectionType: string = "main";
+    public _selectedNode: OasNode = null;
+
+    constructor(private version: string) {
+        super();
     }
 
+    public selectionType(): string {
+        return this._selectionType;
+    }
+
+    public formType(): string {
+        return this._selectionType + "_" + this.version;
+    }
+
+    public selection(): OasNode {
+        return this._selectedNode;
+    }
+
+    public visitPathItem(node: OasPathItem): void {
+        this._selectedNode = node;
+        this._selectionType = "path";
+    }
+
+    public visitOperation(node: OasOperation): void {
+        this._selectedNode = node;
+        this._selectionType = "operation";
+    }
+
+    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
+        this._selectedNode = node;
+        this._selectionType = "definition";
+    }
+
+    public visitValidationProblem(node: OasValidationProblem): void {
+        this._selectedNode = node;
+        this._selectionType = "problem";
+    }
 }
-
-
-/**
- * Visitor used to determine what type of thing is selected.  Visits the node OAS
- * and sets the selectedItem and selectedType.
- */
-class SelectedItemVisitor extends AbstractCombinedVisitorAdapter {
-    public selectedItem: any = null;
-    public selectedType: string = null;
-
-    visitPathItem(node: OasPathItem): void {
-        if (this.selectedType === null) {
-            this.selectedItem = node;
-            this.selectedType = "path";
-        }
-    }
-
-    visitOperation(node: OasOperation): void {
-        this.selectedType = "operation";
-        this.selectedItem = node;
-    }
-
-    visitResponseDefinition(node: Oas20ResponseDefinition|Oas30ResponseDefinition): void {
-        this.selectedType = "response";
-        this.selectedItem = node;
-    }
-
-    visitDefinitionSchema(node: Oas20SchemaDefinition|Oas30SchemaDefinition): void {
-        this.selectedType = "definition";
-        this.selectedItem = node;
-    }
-}
-

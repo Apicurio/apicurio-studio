@@ -35,7 +35,6 @@ import {
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
-import {NodeSelectionEvent} from "../../_events/node-selection.event";
 
 
 @Component({
@@ -193,7 +192,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     }
 
     public selectOperation(operation: OasOperation): void {
-        this.onNodeSelected.emit(new NodeSelectionEvent(operation, "operation"));
+        this.selectionService.selectNode(operation, operation.ownerDocument());
     }
 
     public createOperation(operationType: string): void {
@@ -325,10 +324,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     public deleteAllQueryParams(): void {
         let command: ICommand = createDeleteAllParametersCommand(this.path.ownerDocument(), this.path as any, "query");
         this.onCommand.emit(command);
-    }
-
-    public formType(): string {
-        return "path";
     }
 
     public enableSourceMode(): void {

@@ -17,9 +17,8 @@
 
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {SimplifiedParameterType} from "oai-ts-commands";
-import {OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
+import {OasCombinedVisitorAdapter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {AbstractTypedItemComponent} from "./typed-item.component";
-import {AbstractCombinedVisitorAdapter} from "../../../_visitors/base.visitor";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 
 
@@ -127,7 +126,7 @@ export class ParamRowComponent extends AbstractTypedItemComponent<SimplifiedPara
 }
 
 
-class DetectOverrideVisitor extends AbstractCombinedVisitorAdapter {
+class DetectOverrideVisitor extends OasCombinedVisitorAdapter {
 
     public overriddenParam: OasParameterBase = null;
 

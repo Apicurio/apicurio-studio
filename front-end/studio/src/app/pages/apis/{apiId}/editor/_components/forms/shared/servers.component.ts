@@ -62,7 +62,7 @@ export class ServersSectionComponent {
      * @param description
      */
     public changeServerDescription(server: Oas30Server, description: string): void {
-        // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment
+        // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
         let command: ICommand = createChangePropertyCommand<string>(this.parent.ownerDocument(), server, "description", description);
         this.onCommand.emit(command);
     }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {Injectable} from "@angular/core";
 
 var LICENSE_DATA = [
     {
@@ -260,6 +261,7 @@ export interface ILicense {
  * A simple service providing convenient access to information about different
  * licenses commonly used to license APIs.
  */
+@Injectable()
 export class LicenseService {
 
     /**

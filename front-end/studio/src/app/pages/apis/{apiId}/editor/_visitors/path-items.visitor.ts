@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {OasPathItem} from "oai-ts-core";
-import {AbstractCombinedVisitorAdapter} from "./base.visitor";
+import {OasCombinedVisitorAdapter, OasPathItem} from "oai-ts-core";
 
 /**
  * Visitor used to find path items.
  */
-export class FindPathItemsVisitor extends AbstractCombinedVisitorAdapter {
+export class FindPathItemsVisitor extends OasCombinedVisitorAdapter {
 
     public pathItems: OasPathItem[] = [];
 

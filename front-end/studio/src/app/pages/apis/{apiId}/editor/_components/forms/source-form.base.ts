@@ -20,9 +20,9 @@ import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
-import {NodeSelectionEvent} from "../../_events/node-selection.event";
 import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
+import {SelectionService} from "../../_services/selection.service";
 
 
 /**
@@ -33,7 +33,6 @@ export abstract class SourceFormComponent<T extends OasNode> {
     private static library: OasLibraryUtils = new OasLibraryUtils();
 
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
-    @Output() onNodeSelected: EventEmitter<NodeSelectionEvent> = new EventEmitter<NodeSelectionEvent>();
 
     private _mode: string = "design";
     private _sourceFormat: CodeEditorMode = CodeEditorMode.YAML;
@@ -96,6 +95,8 @@ export abstract class SourceFormComponent<T extends OasNode> {
         }
     }
 
+    constructor(protected selectionService: SelectionService) {}
+
     protected abstract createEmptyNodeForSource(): T;
 
     public canFormatSource(): boolean {
@@ -132,14 +133,11 @@ export abstract class SourceFormComponent<T extends OasNode> {
     public saveSource(): void {
         let command: ICommand = this.createReplaceNodeCommand(<T>this._source.value);
         this.onCommand.emit(command);
-        this.onNodeSelected.emit(new NodeSelectionEvent(<T>this._source.value, this.formType()));
         this.sourceNode = this._source.value;
         this._source.dirty = false;
         this._source.value = null;
         this._source.valid = true;
     }
-
-    public abstract formType(): string;
 
     public isSourceFormatYaml(): boolean {
         return this._sourceFormat === CodeEditorMode.YAML;

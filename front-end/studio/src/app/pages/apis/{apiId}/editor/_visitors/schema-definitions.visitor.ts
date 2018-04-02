@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasPathItem} from "oai-ts-core";
-import {AbstractCombinedVisitorAdapter} from "./base.visitor";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasCombinedVisitorAdapter} from "oai-ts-core";
 
 /**
  * Visitor used to find schema definitions.
  */
-export class FindSchemaDefinitionsVisitor extends AbstractCombinedVisitorAdapter {
+export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
 
     schemaDefinitions: (Oas20SchemaDefinition|Oas30SchemaDefinition)[] = [];
 

@@ -109,6 +109,9 @@ import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
 import {AddExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example-20.component";
 import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example-20.component";
+import {ProblemsService} from "./pages/apis/{apiId}/editor/_services/problems.service";
+import {SelectionService} from "./pages/apis/{apiId}/editor/_services/selection.service";
+import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.service";
 
 
 @NgModule({
@@ -137,7 +140,7 @@ import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_compone
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
-        AuthenticationCanActivateGuard
+        AuthenticationCanActivateGuard, ProblemsService, SelectionService, LicenseService
     ],
     bootstrap: [AppComponent]
 })

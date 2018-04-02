@@ -102,6 +102,9 @@ export class ContentComponent implements OnInit {
     }
 
     public mediaType(): Oas30MediaType {
+        if (!this.mediaTypeName) {
+            this.selectDefaultMediaType();
+        }
         return this.content[this.mediaTypeName];
     }
 
@@ -272,7 +275,6 @@ export class ContentComponent implements OnInit {
     }
 
     public editExample(event: EditExampleEvent): void {
-        console.info("**** editExample()");
         this.onExampleValueChange.emit(event);
     }
 

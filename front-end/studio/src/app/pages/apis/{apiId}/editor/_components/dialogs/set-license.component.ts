@@ -27,13 +27,13 @@ import {LicenseService, ILicense} from "../../_services/license.service";
 })
 export class SetLicenseDialogComponent {
 
-    private static licenseService: LicenseService = new LicenseService();
-
     @Output() onLicenseChosen: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren("setLicenseModal") setLicenseModal: QueryList<ModalDirective>;
 
     protected _isOpen: boolean = false;
+
+    constructor(public licenseService: LicenseService) {}
 
     /**
      * Called to open the dialog.
@@ -81,14 +81,7 @@ export class SetLicenseDialogComponent {
      * Returns a list of possible licenses.
      */
     public licenses(): ILicense[] {
-        return SetLicenseDialogComponent.licenseService.getLicenses();
-    }
-
-    /**
-     * Returns the license service.
-     */
-    public licenseService(): LicenseService {
-        return SetLicenseDialogComponent.licenseService;
+        return this.licenseService.getLicenses();
     }
 
     /**

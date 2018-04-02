@@ -158,10 +158,6 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         }
     }
 
-    public formType(): string {
-        return "definition";
-    }
-
     public enableSourceMode(): void {
         this.sourceNode = this.definition;
         super.enableSourceMode();

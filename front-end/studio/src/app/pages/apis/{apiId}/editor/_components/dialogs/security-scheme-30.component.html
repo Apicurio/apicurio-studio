@@ -63,32 +63,32 @@
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="scheme" data-toggle="dropdown">
                                         <span *ngIf="!model.scheme"><i>Choose</i></span>
-                                        <span *ngIf="model.scheme === 'Basic'">BASIC</span>
-                                        <span *ngIf="model.scheme === 'Bearer'">Bearer</span>
-                                        <span *ngIf="model.scheme === 'Digest'">Digest</span>
+                                        <span *ngIf="model.scheme === 'basic'">BASIC</span>
+                                        <span *ngIf="model.scheme === 'bearer'">Bearer</span>
+                                        <span *ngIf="model.scheme === 'digest'">Digest</span>
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
-                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Basic'">BASIC</a></li>
-                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Bearer'">Bearer</a></li>
-                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'Digest'">Digest</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'basic'">BASIC</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'bearer'">Bearer</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.scheme = 'digest'">Digest</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group" *ngIf="model.scheme === 'Bearer'">
+                        <div class="form-group" *ngIf="model.scheme === 'bearer'">
                             <label class="col-sm-3 control-label" for="bearerFormat">Format (optional)</label>
                             <div class="col-sm-9">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormat" data-toggle="dropdown">
                                         <span *ngIf="model.bearerFormat === '' || !model.bearerFormat"><i>(Unspecified)</i></span>
-                                        <span *ngIf="model.bearerFormat === 'JWT'">JWT</span>
-                                        <span *ngIf="model.bearerFormat === 'OAuth'">OAuth</span>
+                                        <span *ngIf="model.bearerFormat === 'jwt'">JWT</span>
+                                        <span *ngIf="model.bearerFormat === 'oauth'">OAuth</span>
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
-                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'JWT'">JWT</a></li>
-                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'OAuth'">OAuth</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'jwt'">JWT</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = 'oauth'">OAuth</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model.bearerFormat = null"><i>None</i></a></li>
                                     </ul>
                                 </div>

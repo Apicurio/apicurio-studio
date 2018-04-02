@@ -23,19 +23,19 @@
                         <div class="col-md-2">
                             <h3>Permissions</h3>
                             <ul class="permissions">
-                                <li *ngFor="let permission of license.permissions"><span title="{{ licenseService().permissionDescription(permission) }}">{{ licenseService().permissionName(permission) }}</span></li>
+                                <li *ngFor="let permission of license.permissions"><span title="{{ licenseService.permissionDescription(permission) }}">{{ licenseService.permissionName(permission) }}</span></li>
                             </ul>
                         </div>
                         <div class="col-md-2">
                             <h3>Conditions</h3>
                             <ul class="conditions">
-                                <li *ngFor="let condition of license.conditions"><span title="{{ licenseService().conditionDescription(condition) }}">{{ licenseService().conditionName(condition) }}</span></li>
+                                <li *ngFor="let condition of license.conditions"><span title="{{ licenseService.conditionDescription(condition) }}">{{ licenseService.conditionName(condition) }}</span></li>
                             </ul>
                         </div>
                         <div class="col-md-2">
                             <h3>Limitations</h3>
                             <ul class="limitations">
-                                <li *ngFor="let limitation of license.limitations"><span title="{{ licenseService().limitationDescription(limitation) }}">{{ licenseService().limitationName(limitation) }}</span></li>
+                                <li *ngFor="let limitation of license.limitations"><span title="{{ licenseService.limitationDescription(limitation) }}">{{ licenseService.limitationName(limitation) }}</span></li>
                             </ul>
                         </div>
                     </div>

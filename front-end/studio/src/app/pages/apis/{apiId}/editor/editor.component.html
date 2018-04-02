@@ -15,44 +15,36 @@
 
         <path-form [path]="selectedPath()" class="editor-detail-form"
                    (onCommand)="onCommand($event)"
-                   (onNodeSelected)="selectNode($event)"
                    (onDeselect)="deselectPath()"
                    *ngSwitchCase="'path_20'"></path-form>
         <path-form [path]="selectedPath()" class="editor-detail-form"
                    (onCommand)="onCommand($event)"
-                   (onNodeSelected)="selectNode($event)"
                    (onDeselect)="deselectPath()"
                    *ngSwitchCase="'path_30'"></path-form>
 
         <operation-form [operation]="selectedOperation()" class="editor-detail-form"
                         (onCommand)="onCommand($event)"
-                        (onNodeSelected)="selectNode($event)"
                         (onDeselect)="deselectOperation()"
                         *ngSwitchCase="'operation_20'"></operation-form>
         <operation-30-form [operation]="selectedOperation()" class="editor-detail-form"
                            (onCommand)="onCommand($event)"
-                           (onNodeSelected)="selectNode($event)"
                            (onDeselect)="deselectOperation()"
                            *ngSwitchCase="'operation_30'"></operation-30-form>
 
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          (onCommand)="onCommand($event)"
-                         (onNodeSelected)="selectNode($event)"
                          (onDeselect)="deselectDefinition()"
                          *ngSwitchCase="'definition_20'"></definition-form>
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          (onCommand)="onCommand($event)"
-                         (onNodeSelected)="selectNode($event)"
                          (onDeselect)="deselectDefinition()"
                          *ngSwitchCase="'definition_30'"></definition-form>
 
         <problem-form [problem]="selectedProblem()" class="editor-detail-form"
                       (onCommand)="onCommand($event)"
-                      (onGoToProblem)="goToProblem()"
                       *ngSwitchCase="'problem_20'"></problem-form>
         <problem-form [problem]="selectedProblem()" class="editor-detail-form"
                       (onCommand)="onCommand($event)"
-                      (onGoToProblem)="goToProblem()"
                       *ngSwitchCase="'problem_30'"></problem-form>
     </div>
 

@@ -17,7 +17,7 @@
 
 
 import {Injectable} from "@angular/core";
-import {OasValidationError} from "oai-ts-core";
+import {OasValidationProblem} from "oai-ts-core";
 
 
 
@@ -126,8 +126,8 @@ var PROBLEM_EXPLANATIONS = {
     "ED-3-003"   : `If a URL is specified for the External Documentation, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
     "EX-3-001"   : `The description of the Example must be in either plain text or CommonMark (http://commonmark.org/) format.  Have a look at the value to make sure it's not something else (asciidoc, html, etc...).`,
     "FLOW-3-003" : `If an Authorization URL is specified for an OAuth Flow, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
-    "FLOW-3-004" : `If an Token URL is specified for an OAuth Flow, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
-    "FLOW-3-005" : `If an Refresh URL is specified for an OAuth Flow, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
+    "FLOW-3-004" : `If a Token URL is specified for an OAuth Flow, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
+    "FLOW-3-005" : `If a Refresh URL is specified for an OAuth Flow, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
     "HEAD-3-002" : `The description of the Header must be in either plain text or CommonMark (http://commonmark.org/) format.  Have a look at the value to make sure it's not something else (asciidoc, html, etc...).`,
     "INF-3-003"  : `The description of the API must be in either plain text or CommonMark (http://commonmark.org/) format.  Have a look at the value to make sure it's not something else (asciidoc, html, etc...).`,
     "INF-3-004"  : `If a URL for the API's "Terms & Services" is specified, it must be a valid URL format.  Double check the value of the URL and make sure there isn't a typo!`,
@@ -252,7 +252,7 @@ export class ProblemsService {
      * null if it doesn't have more information about it.
      * @param problem
      */
-    public explanation(problem: OasValidationError): string {
+    public explanation(problem: OasValidationProblem): string {
         let explanation: string = PROBLEM_EXPLANATIONS[problem.errorCode];
         if (!explanation) {
             explanation = "No additional information found.";

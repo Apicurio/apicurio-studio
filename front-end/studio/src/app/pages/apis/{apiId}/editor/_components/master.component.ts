@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, HostListener, Input, Output, ViewChild} from "@angular/core";
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {
     Oas20Document,
     Oas20ResponseDefinition,
@@ -23,12 +23,14 @@ import {
     Oas30Document,
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
+    OasAllNodeVisitor,
     OasDocument,
     OasLibraryUtils,
-    OasNode, OasNodePath,
+    OasNode,
+    OasNodePath,
     OasOperation,
     OasPathItem,
-    OasValidationError,
+    OasValidationProblem,
     OasVisitorUtil
 } from "oai-ts-core";
 import {AddPathDialogComponent} from "./dialogs/add-path.component";
@@ -37,20 +39,22 @@ import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.compone
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
 import {ObjectUtils} from "../_util/object.util";
-import {AllNodeVisitor} from "../_visitors/base.visitor";
-import {NodeSelectionEvent} from "../_events/node-selection.event";
 import {
     createAddPathItemCommand,
     createAddSchemaDefinitionCommand,
+    createDeleteOperationCommand,
     createDeletePathCommand,
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
     createNewSchemaDefinitionCommand,
-    createDeleteOperationCommand, ICommand, createRenameSchemaDefinitionCommand
+    createRenameSchemaDefinitionCommand,
+    ICommand
 } from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.component";
+import {SelectionService} from "../_services/selection.service";
+import {Subscription} from "rxjs/Subscription";
 
 
 /**
@@ -64,20 +68,17 @@ import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.compo
     selector: "master",
     templateUrl: "master.component.html"
 })
-export class EditorMasterComponent {
+export class EditorMasterComponent implements OnInit, OnDestroy {
 
     @Input() document: OasDocument;
-    @Input() validationErrors: OasValidationError[];
+    @Input() validationErrors: OasValidationProblem[];
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
-    @Output() onNodeSelected: EventEmitter<NodeSelectionEvent> = new EventEmitter<NodeSelectionEvent>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
-    selectedItem: any = null;
-    selectedType: string = "main";
-    currentExternalSelections: ExternalSelections = new ExternalSelections();
+    selectionSubscription: Subscription;
 
-    contextMenuItem: any = null;
+    contextMenuSelection: OasNodePath = null;
     contextMenuType: string = null;
     contextMenuPos: any = {
         left: "0px",
@@ -92,6 +93,18 @@ export class EditorMasterComponent {
     filterCriteria: string = null;
 
     validationPanelOpen = false;
+
+    constructor(private selectionService: SelectionService) {
+    }
+
+    public ngOnInit(): void {
+        this.selectionSubscription = this.selectionService.selection().subscribe( () => {});
+        this.selectionService.selectRoot(this.document);
+    }
+
+    public ngOnDestroy(): void {
+        this.selectionSubscription.unsubscribe();
+    }
 
     public isOAI30(): boolean {
         return this.document.getSpecVersion().indexOf("3.0") === 0;
@@ -140,38 +153,6 @@ export class EditorMasterComponent {
         // } else {
         //     return [];
         // }
-    }
-
-    /**
-     * Validates the current selected item.  If it does not exist, we'll force-select
-     * 'main' instead.
-     */
-    public validateSelection(): void {
-        if (this.selectedType === "path") {
-            let pathItem: OasPathItem = this.selectedItem as OasPathItem;
-            if (!this.isValidPathItem(pathItem)) {
-                this.selectMain();
-            }
-        } else if (this.selectedType === "operation") {
-            let operation: OasOperation = this.selectedItem as OasOperation;
-            if (!this.isValidOperation(operation)) {
-                this.selectMain();
-            }
-        } else if (this.selectedType === "definition") {
-            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = this.selectedItem;
-            if (!this.isValidDefinition(definition)) {
-                this.selectMain();
-            }
-        } else if (this.selectedType === "response") {
-            let response: Oas20ResponseDefinition | Oas30ResponseDefinition = this.selectedItem;
-            if (!this.isValidResponse(response)) {
-                this.selectMain();
-            }
-        } else if (this.selectedType === "problem") {
-            if (!(this.validationErrors && this.validationErrors.indexOf(this.selectedItem) !== -1)) {
-                this.selectMain();
-            }
-        }
     }
 
     /**
@@ -243,9 +224,7 @@ export class EditorMasterComponent {
      * Called when the user selects the main/default element from the master area.
      */
     public selectMain(): void {
-        this.selectedItem = null;
-        this.selectedType = "main";
-        this.fireNodeSelectedEvent();
+        this.selectionService.selectRoot(this.document);
     }
 
     /**
@@ -253,9 +232,7 @@ export class EditorMasterComponent {
      * @param {OasPathItem} path
      */
     public selectPath(path: OasPathItem): void {
-        this.selectedItem = path;
-        this.selectedType = "path";
-        this.fireNodeSelectedEvent();
+        this.selectionService.selectNode(path, this.document);
     }
 
     /**
@@ -270,13 +247,10 @@ export class EditorMasterComponent {
      * @param operation
      */
     public selectOperation(operation: OasOperation): void {
-        // Possible de-select the operation if it's clicked on but already selected.
-        if (this.selectedType === "operation" && this.selectedItem === operation) {
-            this.selectPath(operation.parent() as OasPathItem);
+        if (this.isSelected(operation)) {
+            this.selectionService.selectNode(operation.parent(), this.document);
         } else {
-            this.selectedItem = operation;
-            this.selectedType = "operation";
-            this.fireNodeSelectedEvent();
+            this.selectionService.selectNode(operation, this.document);
         }
     }
 
@@ -284,22 +258,10 @@ export class EditorMasterComponent {
      * Called to deselect the currently selected operation.
      */
     public deselectOperation(): void {
-        if (this.selectedType !== "operation") {
-            return;
+        let node: OasNode = this.selectionService.currentSelection().resolve(this.document);
+        if (node) {
+            this.selectionService.selectNode(node.parent(), this.document);
         }
-        this.selectedItem = this.selectedItem.parent();
-        this.selectedType = "path";
-        this.fireNodeSelectedEvent();
-    }
-
-    /**
-     * Called when the user does something to cause the selection to change.
-     * @param event
-     */
-    public selectNode(event: NodeSelectionEvent): void {
-        this.selectedItem = event.node;
-        this.selectedType = event.type;
-        this.fireNodeSelectedEvent();
     }
 
     /**
@@ -307,9 +269,7 @@ export class EditorMasterComponent {
      * @param def
      */
     public selectDefinition(def: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
-        this.selectedItem = def;
-        this.selectedType = "definition";
-        this.fireNodeSelectedEvent();
+        this.selectionService.selectNode(def, this.document);
     }
 
     /**
@@ -317,17 +277,14 @@ export class EditorMasterComponent {
      * area.
      * @param problem
      */
-    public selectProblem(problem: OasValidationError): void {
-        this.selectedItem = problem;
-        this.selectedType = "problem";
-        this.fireNodeSelectedEvent();
+    public selectProblem(problem: OasValidationProblem): void {
+        this.selectionService.selectNode(problem, this.document);
     }
 
     /**
      * Deselects the currently selected definition.
      */
     public deselectDefinition(): void {
-        console.info("[EditorMasterComponent] Deselecting the current definition (selecting main).");
         this.selectMain();
     }
 
@@ -336,9 +293,7 @@ export class EditorMasterComponent {
      * @param {Oas20ResponseDefinition | Oas30ResponseDefinition} response
      */
     public selectResponse(response: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
-        this.selectedItem = response;
-        this.selectedType = "response";
-        this.fireNodeSelectedEvent();
+        this.selectionService.selectNode(response, this.document);
     }
 
     /**
@@ -362,48 +317,26 @@ export class EditorMasterComponent {
      * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
     public getCurrentPathSelection(): string {
-        if (this.selectedType === "path") {
-            return (this.selectedItem as OasPathItem).path();
+        let node: OasNode = this.selectionService.currentSelection().resolve(this.document);
+        if (node && node["_path"]) {
+            return node["_path"] + "/";
         }
-        if (this.selectedType === "operation") {
-            return ((this.selectedItem as OasOperation).parent() as OasPathItem).path();
+        if (node && node.parent()["_path"]) {
+            return node.parent()["_path"] + "/";
         }
         return "/";
     }
 
     /**
-     * Called to update the selection state of the given remote API editor (i.e. an active collaborator).
-     * @param {ApiEditorUser} user
-     * @param {string} selection
-     */
-    public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
-        this.currentExternalSelections.setSelection(user, selection, this.document);
-    }
-
-    /**
      * Returns the selection style to use for the given (potentially selected) node.
      * @param {OasNode} item
-     * @param {string} nodeType
      * @return {string}
      */
-    public collaboratorSelectionClasses(item: OasNode, nodeType: string): string {
+    public collaboratorSelectionClasses(item: OasNode): string {
         if (item) {
             let user: ApiEditorUser = ModelUtils.isSelectedByCollaborator(item);
             if (user != null && user.attributes["id"]) {
                 return user.attributes["id"];
-            }
-            // pathItems - if a child operation is selected then the path is too
-            if (nodeType === "pathItem") {
-                let operationNames: string[] = [ "get", "put", "post", "delete", "options", "head", "patch", "trace" ];
-                for (let opName of operationNames) {
-                    let operation: OasOperation = item[opName] as OasOperation;
-                    if (operation) {
-                        user = ModelUtils.isSelectedByCollaborator(operation);
-                        if (user != null && user.attributes["id"]) {
-                            return user.attributes["id"];
-                        }
-                    }
-                }
             }
         }
         return "";
@@ -431,23 +364,33 @@ export class EditorMasterComponent {
     }
 
     /**
-     * Returns true if the given path is the currently selected item *or* is the parent
+     * Returns true if the given node is the currently selected item *or* is the parent
      * of the currently selected item.
-     * @param {OasPathItem} pathItem
+     * @param {OasNode} node
      * @return {boolean}
      */
-    public isPathSelected(pathItem: OasPathItem): boolean {
-        return this.selectedItem && (this.selectedItem === pathItem || (this.selectedItem.parent && this.selectedItem.parent() === pathItem));
+    public isSelected(node: OasNode): boolean {
+        return ModelUtils.isSelected(node);
     }
 
     /**
-     * Returns true if the given path is the current context menu item *or* is the parent
-     * of the current context menu item.
-     * @param {OasPathItem} pathItem
+     * Returns true if the main node should be selected.
      * @return {boolean}
      */
-    public isPathContexted(pathItem: OasPathItem): boolean {
-        return this.contextMenuItem && (this.contextMenuItem === pathItem || (this.contextMenuItem.parent && this.contextMenuItem.parent() === pathItem));
+    public isMainSelected(): boolean {
+        return ModelUtils.isSelected(this.document);
+    }
+
+    /**
+     * Returns true if the given node is the current context menu item.
+     * @param {OasNode} node
+     * @return {boolean}
+     */
+    public isContexted(node: OasNode): boolean {
+        if (this.contextMenuSelection === null) {
+            return false;
+        }
+        return this.contextMenuSelection.contains(node);
     }
 
     /**
@@ -527,8 +470,8 @@ export class EditorMasterComponent {
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = this._library.createNodePath(pathItem);
         this.contextMenuType = "path";
-        this.contextMenuItem = pathItem;
     }
 
     /**
@@ -541,8 +484,8 @@ export class EditorMasterComponent {
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = this._library.createNodePath(operation);
         this.contextMenuType = "operation";
-        this.contextMenuItem = operation;
     }
 
     /**
@@ -558,15 +501,16 @@ export class EditorMasterComponent {
      * Closes the context menu.
      */
     private closeContextMenu(): void {
-        this.contextMenuItem = null;
         this.contextMenuType = null;
+        this.contextMenuSelection = null;
     }
 
     /**
      * Called when the user clicks "New Path" in the context-menu for a path.
      */
     public newPath(): void {
-        this.addPathDialog.open(this.document, (this.contextMenuItem as OasPathItem).path());
+        let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
+        this.addPathDialog.open(this.document, pathItem.path());
         this.closeContextMenu();
     }
 
@@ -574,11 +518,9 @@ export class EditorMasterComponent {
      * Called when the user clicks "Delete Path" in the context-menu for a path.
      */
     public deletePath(): void {
-        let command: ICommand = createDeletePathCommand(this.document, (this.contextMenuItem as OasPathItem).path());
+        let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
+        let command: ICommand = createDeletePathCommand(this.document, pathItem.path());
         this.onCommand.emit(command);
-        if (this.contextMenuItem === this.selectedItem) {
-            this.selectMain();
-        }
         this.closeContextMenu();
     }
 
@@ -587,7 +529,8 @@ export class EditorMasterComponent {
      */
     public clonePath(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.clonePathDialog.open(this.document, this.contextMenuItem as OasPathItem);
+            let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
+            this.clonePathDialog.open(this.document, pathItem);
         } else {
             let pathItem: OasPathItem = modalData.object;
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
@@ -601,12 +544,9 @@ export class EditorMasterComponent {
      * Called when the user clicks "Delete Operation" in the context-menu for a operation.
      */
     public deleteOperation(): void {
-        let operation: OasOperation = this.contextMenuItem as OasOperation;
+        let operation: OasOperation = this.contextMenuSelection.resolve(this.document) as OasOperation;
         let command: ICommand = createDeleteOperationCommand(this.document, operation.method(), operation.parent() as OasPathItem);
         this.onCommand.emit(command);
-        if (this.contextMenuItem === this.selectedItem) {
-            this.selectPath((this.selectedItem as OasOperation).parent() as OasPathItem);
-        }
         this.closeContextMenu();
     }
 
@@ -620,8 +560,8 @@ export class EditorMasterComponent {
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = this._library.createNodePath(definition);
         this.contextMenuType = "definition";
-        this.contextMenuItem = definition;
     }
 
     /**
@@ -630,15 +570,14 @@ export class EditorMasterComponent {
     public deleteDefinition(): void {
         let schemaDefName: string = null;
         if (this.document.getSpecVersion() === "2.0") {
-            schemaDefName = (this.contextMenuItem as Oas20SchemaDefinition).definitionName();
+            let schemaDef: Oas20SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas20SchemaDefinition;
+            schemaDefName = schemaDef.definitionName();
         } else {
-            schemaDefName = (this.contextMenuItem as Oas30SchemaDefinition).name();
+            let schemaDef: Oas30SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas30SchemaDefinition;
+            schemaDefName = schemaDef.name();
         }
         let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, schemaDefName);
         this.onCommand.emit(command);
-        if (this.contextMenuItem === this.selectedItem) {
-            this.selectMain();
-        }
         this.closeContextMenu();
     }
 
@@ -647,7 +586,8 @@ export class EditorMasterComponent {
      */
     public cloneDefinition(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.cloneDefinitionDialog.open(this.document, this.contextMenuItem as any);
+            let schemaDef: any = this.contextMenuSelection.resolve(this.document);
+            this.cloneDefinitionDialog.open(this.document, schemaDef);
         } else {
             let definition: OasNode = modalData.definition;
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
@@ -662,7 +602,8 @@ export class EditorMasterComponent {
      */
     public renameDefinition(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.renameDefinitionDialog.open(this.document, this.contextMenuItem as any);
+            let schemaDef: any = this.contextMenuSelection.resolve(this.document);
+            this.renameDefinitionDialog.open(this.document, schemaDef);
         } else {
             let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
             let oldName: string = definition["_definitionName"];
@@ -706,11 +647,24 @@ export class EditorMasterComponent {
     }
 
     /**
-     * Called to fire a "selection changed" event.
+     * Returns the classes that should be applied to the "main" selection item.
+     * @return {string}
      */
-    private fireNodeSelectedEvent() {
-        let event: NodeSelectionEvent = new NodeSelectionEvent(this.selectedItem, this.selectedType);
-        this.onNodeSelected.emit(event);
+    public mainClasses(): string {
+        let classes: string[] = [];
+        if (this.hasValidationProblem(this.document)) {
+            classes.push("problem-marker");
+        }
+        if (this.isMainSelected()) {
+            classes.push("selected");
+        }
+        if (this.isOAI30()) {
+            classes.push("oai30");
+        }
+        if (this.isSwagger2()) {
+            classes.push("oai20");
+        }
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(this.document);
     }
 
     /**
@@ -723,13 +677,13 @@ export class EditorMasterComponent {
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
         }
-        if (this.isPathContexted(node)) {
+        if (this.isContexted(node)) {
             classes.push("contexted");
         }
-        if (this.isPathSelected(node)) {
+        if (this.isSelected(node)) {
             classes.push("selected");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'pathItem');
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
     }
 
     /**
@@ -742,13 +696,29 @@ export class EditorMasterComponent {
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
         }
-        if (this.contextMenuType === 'operation' && this.contextMenuItem === node) {
+        if (this.isContexted(node)) {
             classes.push("contexted");
         }
-        if (this.selectedItem === node) {
+        if (this.isSelected(node)) {
             classes.push("selected");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'operation');
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
+    }
+
+    /**
+     * Returns the classes that should be applied to the validation problem.
+     * @param {OasValidationProblem} node
+     * @return {string}
+     */
+    public problemClasses(node: OasValidationProblem): string {
+        let classes: string[] = [];
+        if (this.isContexted(node)) {
+            classes.push("contexted");
+        }
+        if (this.isSelected(node)) {
+            classes.push("selected");
+        }
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
     }
 
     /**
@@ -761,64 +731,27 @@ export class EditorMasterComponent {
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
         }
-        if (this.contextMenuType === 'definition' && this.contextMenuItem === node) {
+        if (this.isContexted(node)) {
             classes.push("contexted");
         }
-        if (this.selectedItem === node) {
+        if (this.isSelected(node)) {
             classes.push("selected");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node, 'schema');
+        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
     }
 }
 
 
 /**
- * Visitor used to search through the entire data model for validation problems.
+ * Visitor used to search through the data model for validation problems.
  */
-class HasProblemVisitor extends AllNodeVisitor {
+class HasProblemVisitor extends OasAllNodeVisitor {
 
     public problemsFound: boolean = false;
 
     protected doVisitNode(node: OasNode): void {
-        let errors: OasValidationError[] = node.n_attribute("validation-errors");
-        if (!ObjectUtils.isNullOrUndefined(errors)) {
-            if (errors.length > 0) {
-                this.problemsFound = true;
-            }
-        }
-    }
-
-}
-
-
-class ExternalSelections {
-
-    private selections: any = {};
-
-    /**
-     * Sets the selection for a given active collaborator.  Returns the user's previous selection.
-     * @param {ApiEditorUser} user
-     * @param {string} selection
-     * @return {OasNode | OasValidationError}
-     */
-    public setSelection(user: ApiEditorUser, selection: string, document: OasDocument): OasNode | OasValidationError {
-        let previousSelection: OasNode | OasValidationError = this.selections[user.userId];
-        if (previousSelection != null) {
-            console.info("[ExternalSelections] Clearing previous selection: %o", previousSelection);
-            ModelUtils.clearCollaboratorSelection(user, previousSelection);
-        }
-        // TODO support selecting validation problems
-        if (selection) {
-            let nodePath: OasNodePath = new OasNodePath(selection);
-            let newSelection: OasNode = nodePath.resolve(document);
-            if (newSelection != null) {
-                console.info("[ExternalSelections] Setting selection for user %o to node %o", user, newSelection);
-                ModelUtils.setCollaboratorSelection(user, newSelection);
-                this.selections[user.userId] = newSelection;
-            }
-            return previousSelection;
-        } else {
-            console.info("[ExternalSelections] Selection is null, skipping.");
+        if (node._validationProblems.length > 0) {
+            this.problemsFound = true;
         }
     }
 

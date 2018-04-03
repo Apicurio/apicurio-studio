@@ -73,7 +73,7 @@
                         <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label" for="format">Branch</label>
+                            <label class="col-sm-2 control-label" for="format">Format</label>
                             <div class="col-sm-10">
                                 <drop-down id="format" [id]="'format'" [value]="format" [options]="formatOptions()"
                                            (onValueChange)="format = $event" [noSelectionLabel]="'Choose Format'"></drop-down>

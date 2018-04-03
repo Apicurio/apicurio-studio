@@ -52,6 +52,10 @@ a.clear-filters {
   margin-top: 15px;
 }
 
+.api-list-apis ul.list-inline li.active a {
+  color: #0088ce;
+}
+
 .api-list-items .none-matched-state .alert {
   background-color: white;
 }

@@ -213,11 +213,11 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
 
     }
 
-    public onListLayout(): void {
+    public setListLayout(): void {
         this.filters.layout = "list";
     }
 
-    public onCardLayout(): void {
+    public setCardLayout(): void {
         this.filters.layout = "card";
     }
 

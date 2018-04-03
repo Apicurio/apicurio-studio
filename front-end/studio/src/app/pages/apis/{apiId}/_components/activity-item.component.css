@@ -6,7 +6,7 @@
 }
 .activity-item:hover {
   background-color: #ffe065;
-  background-image: linear-gradient(to bottom, #ffe065 0, #ffe580 100%);
+  background-image: linear-gradient(to bottom, #ddf3ff 0, #e8f7fe 100%);
 }
 
 .activity-item .activity-item-icon {

@@ -113,6 +113,14 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
     }
 
     /**
+     * Called when the user clicks on a Tag in the API details page.
+     * @param {string} tag
+     */
+    public selectTag(tag: string): void {
+        // TODO do something when the user clicks a tag?
+    }
+
+    /**
      * Called when the user wishes to see more activity.
      */
     public showMoreActivity(): void {

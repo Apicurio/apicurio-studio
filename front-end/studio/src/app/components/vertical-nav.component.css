@@ -100,6 +100,10 @@
 #api-vertical-nav-details .api-nav-detail-item .action a {
   color: white;
 }
+#api-vertical-nav-details .api-nav-detail-item .action a span:first-child {
+  width: 24px;
+  text-align: center;
+}
 #api-vertical-nav-details .api-nav-detail-item .action:hover {
   background-color: #4d5258;
 }

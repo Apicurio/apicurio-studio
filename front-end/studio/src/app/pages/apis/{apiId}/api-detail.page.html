@@ -38,7 +38,7 @@
                                                 <li>
                                                     <a [routerLink]="[ 'editor' ]">
                                                         <span class="fa fa-fw fa-pencil"></span>
-                                                        <span>Design</span>
+                                                        <span>Edit</span>
                                                     </a>
                                                 </li>
                                                 <li>
@@ -92,10 +92,10 @@
                                 </div>
                                 <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
                                     <span class="api-tags-label">Tags:</span>
-                                    <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
+                                    <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag)">{{ tag }}</span>
                                 </div>
                                 <div class="api-action-buttons">
-                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Design API</a>
+                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Edit API</a>
                                     <!--<a href="download?type=api&format=yaml&id={{ api.id }}" class="btn btn-default pull-right" download="{{ api.name }}.yaml"><span class="fa fa-fw fa-download"></span> Download</a>-->
                                     <a [routerLink]="[ 'collaboration' ]" class="btn btn-default pull-right"><span class="fa fa-fw fa-users"></span> Collaborate</a>
                                 </div>

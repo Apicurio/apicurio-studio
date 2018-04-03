@@ -30,13 +30,13 @@
             <p class="description">Choose from the actions below or jump directly to one of your starred/favorited APIs.</p>
             <h4 class="heading">API Actions</h4>
             <div class="action" [class.active]="isRouteActive('/apis', true)">
-                <a routerLink="/apis"><span class="fa fa-fw fa-search"></span><span>List All APIs</span></a>
+                <a routerLink="/apis"><span class="fa fa-fw fa-list"></span><span>List All APIs</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/apis/create')">
-                <a routerLink="/apis/create"><span class="fa fa-fw fa-plus"></span><span>Create New API</span></a>
+                <a routerLink="/apis/create"><span class="pficon pficon-add-circle-o"></span><span>Create New API</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/apis/import')">
-                <a routerLink="/apis/import"><span class="fa fa-fw fa-upload"></span><span>Import API</span></a>
+                <a routerLink="/apis/import"><span class="pficon pficon-import"></span><span>Import API</span></a>
             </div>
 
             <h4 class="heading" *ngIf="(apis.getRecentApis() | async).length > 0">Recent APIs</h4>

@@ -25,8 +25,8 @@
                     <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="confirmDeleteDialog.open()">Delete</button>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-primary" [routerLink]="['create']"><span class="fa fa-fw fa-plus"></span> Create New API</a>
-                    <a class="btn btn-default" [routerLink]="['import']"><span class="fa fa-fw fa-upload"></span> Import API</a>
+                    <a class="btn btn-primary" [routerLink]="['create']"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
+                    <a class="btn btn-default" [routerLink]="['import']"><span class="pficon pficon-import"></span> Import API</a>
                 </div>
                 <div class="form-group toolbar-pf-view-selector">
                     <ul class="list-inline">
@@ -60,14 +60,14 @@
                 </p>
                 <div class="blank-slate-pf-main-action">
                     <div class="btn-group">
-                        <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="fa fa-fw fa-plus"></span> Create New API</a>
+                        <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
                         <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a routerLink="/apis/import"><span class="fa fa-fw fa-upload"></span> Import API</a></li>
+                            <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> Import API</a></li>
                         </ul>
                     </div>
                 </div>

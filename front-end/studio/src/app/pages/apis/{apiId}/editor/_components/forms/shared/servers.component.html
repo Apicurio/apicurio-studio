@@ -15,18 +15,18 @@
             <span>No servers have been defined.</span>
             <button class="btn btn-primary btn-sm pull-right" (click)="addServerDialog.open()">Add Server</button>
         </div>
-        <table class="table table-striped api-servers" *ngIf="servers().length > 0">
+        <table class="table table-striped table-bordered api-servers" *ngIf="servers().length > 0">
             <thead>
             <tr>
                 <th>Server</th>
-                <th width="50%">Description</th>
-                <th width="1%"></th>
+                <th class="pre-actions" width="50%">Description</th>
+                <th class="actions" width="1%"></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let server of servers()">
                 <td class="server-name" server-url [url]="server.url"></td>
-                <td class="description"><inline-text-editor [noValueMessage]="'No description.'"
+                <td class="description pre-actions"><inline-text-editor [noValueMessage]="'No description.'"
                                                             [topIncrement]="2"
                                                             (onChange)="changeServerDescription(server, $event)"
                                                             [value]="server.description"></inline-text-editor></td>

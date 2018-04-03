@@ -45,21 +45,21 @@
         <div class="col-md-7">
 
             <div class="examples">
-                <table *ngIf="hasExamples()" class="table table-striped table-examples">
+                <table *ngIf="hasExamples()" class="table table-striped table-bordered table-examples">
                     <thead>
                     <tr>
-                        <th colspan="4">Examples</th>
+                        <th colspan="3">Examples</th>
                     </tr>
                     <tr>
                         <th>Content Type</th>
-                        <th>Example</th>
-                        <th></th>
+                        <th class="pre-actions">Example</th>
+                        <th class="actions"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr *ngFor="let contentType of exampleContentTypes()">
                         <td class="content-type">{{ contentType }}</td>
-                        <td class="value">{{ exampleValue(contentType) }}</td>
+                        <td class="value pre-actions">{{ exampleValue(contentType) }}</td>
                         <td class="actions">
                             <div>
                                 <button class="btn btn-sm btn-default pull-right" (click)="deleteExample(contentType)"

@@ -40,7 +40,7 @@
             </div>
 
             <div class="examples">
-                <table *ngIf="mediaTypeHasExamples()" class="table table-striped table-examples">
+                <table *ngIf="mediaTypeHasExamples()" class="table table-striped table-bordered table-examples">
                     <thead>
                     <tr>
                         <th colspan="4">Examples</th>
@@ -48,8 +48,8 @@
                     <tr>
                         <th>Name</th>
                         <th>Summary</th>
-                        <th>Description</th>
-                        <th></th>
+                        <th class="pre-actions">Description</th>
+                        <th class="actions"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,7 +62,7 @@
                                                 (onChange)="changeExampleSummary(example, $event)"
                                                 [value]="example.summary"></inline-text-editor>
                         </td>
-                        <td class="description">
+                        <td class="description pre-actions">
                             <inline-text-editor [noValueMessage]="'No Description'" [topIncrement]="2"
                                                 (onChange)="changeExampleDescription(example, $event)"
                                                 [value]="example.description"></inline-text-editor>

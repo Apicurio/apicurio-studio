@@ -1302,3 +1302,17 @@
 .api-editor .response-type .examples .table-examples .actions {
   width: 15%;
 }
+
+.api-editor table th.pre-actions, .api-editor table td.pre-actions {
+  border-right-width: 0px;
+}
+.api-editor table th.actions, .api-editor table td.actions {
+  border-left-width: 0px;
+}
+
+.api-editor .securityscheme-form {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+}

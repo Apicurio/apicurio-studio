@@ -39,7 +39,7 @@ export class VerticalNavComponent implements OnInit {
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
     public subMenuOut: boolean = false;
 
-    constructor(private router: Router, @Inject(IApisService) private apis: IApisService) {
+    constructor(private router: Router, @Inject(IApisService) public apis: IApisService) {
     }
 
     ngOnInit(): void {
@@ -52,11 +52,28 @@ export class VerticalNavComponent implements OnInit {
     }
 
     /**
+     * Navigates the user to the Dashboard.
+     */
+    public goToDashboard(): void {
+        this.router.navigate(["/"]);
+    }
+
+    /**
+     * Returns true if the given route is the active route.
+     * @param {string} route
+     * @param {boolean} exact
+     * @return {boolean}
+     */
+    public isRouteActive(route: string, exact: boolean = false): boolean {
+        return this.router.isActive(route, exact);
+    }
+
+    /**
      * Returns true if the currently active route is the dashboard.
      * @returns {boolean}
      */
     isDashboardRoute(): boolean {
-        return this.router.isActive("/", true);
+        return this.isRouteActive("/", true);
     }
 
     /**
@@ -64,7 +81,7 @@ export class VerticalNavComponent implements OnInit {
      * @returns {boolean}
      */
     isAPIsRoute(): boolean {
-        return this.router.isActive("/apis", false);
+        return this.isRouteActive("/apis");
     }
 
     /**
@@ -72,7 +89,7 @@ export class VerticalNavComponent implements OnInit {
      * @returns {boolean}
      */
     isSettingsRoute(): boolean {
-        return this.router.isActive("/settings", false);
+        return this.isRouteActive("/settings");
     }
 
     /**

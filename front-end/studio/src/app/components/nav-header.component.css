@@ -4,6 +4,7 @@
 }
 .navbar .navbar-header {
   height: 45px;
+  border-bottom-color: black;
 }
 
 .navbar .navbar-brand {
@@ -16,9 +17,12 @@
   font-weight: 300;
   color: #DCD7D7;
   padding-left: 40px;
-  background-image: url('../../assets/apicurio_icon_darkbkg_32px.png');
+  background-image: url('../../assets/apicurio_logo_darkbkg_200px.png');
   background-repeat: no-repeat;
-  background-position-y: 6px;
+  background-position-y: 3px;
+  background-size: 160px;
+  text-indent: -5000px;
+  width: 220px;
 }
 .navbar .navbar-brand .navbar-brand-logo:hover {
   color: rgb(203, 37, 38);

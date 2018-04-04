@@ -34,9 +34,11 @@
                 </div>
             </div>
 
+            <hr/>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary"
+                    <button type="submit" class="btn btn-primary pull-right"
                             [disabled]="!apiForm.form.valid || importing || (importType === 'from-text' && !model.data)">
                         <span *ngIf="!importing">Import API</span>
                         <span *ngIf="importing"><span class="spinner spinner-xs spinner-inline"></span> Importing...</span>

@@ -27,7 +27,7 @@
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary"
+                    <button type="submit" class="btn btn-primary pull-right"
                             [disabled]="!apiForm.form.valid || creatingApi">
                         <span *ngIf="!creatingApi">Create API</span>
                         <span *ngIf="creatingApi" class="spinner spinner-xs spinner-inline"></span>

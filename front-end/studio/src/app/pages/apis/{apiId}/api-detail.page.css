@@ -20,9 +20,12 @@
   color: white;
 }
 
-.api-description {
+.api-description, .no-description {
   margin-top: 30px;
   margin-bottom: 25px;
+}
+.no-description {
+  color: #aaaaaa;
 }
 
 .api-created-info {

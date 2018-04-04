@@ -9,7 +9,10 @@
                     <div class="list-group-item-heading">
                         <a [routerLink]="[api.id]">{{ api.name }}</a>
                     </div>
-                    <div class="list-group-item-text">{{ api.description }}</div>
+                    <div class="list-group-item-text">
+                        <span class="description">{{ api.description }}</span>
+                        <span class="no-description" *ngIf="!api.description">No description available.</span>
+                    </div>
                 </div>
                 <div class="list-view-pf-additional-info">
                     <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">

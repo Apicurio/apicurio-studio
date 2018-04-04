@@ -63,3 +63,7 @@
   border-color: #00659c;
   color: white;
 }
+
+span.no-description {
+  color: #aaaaaa;
+}

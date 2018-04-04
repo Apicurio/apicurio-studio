@@ -13,7 +13,10 @@
                         <span class="api-tags-label">Tags:</span>
                         <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
                     </div>
-                    <p class="api-description">{{api.description}}</p>
+                    <p class="api-description">
+                        <span class="description">{{api.description}}</span>
+                        <span class="no-description" *ngIf="!api.description">No description available.</span>
+                    </p>
                 </div>
             </div>
         </div>

@@ -37,7 +37,7 @@
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
                                                 <li>
                                                     <a [routerLink]="[ 'editor' ]">
-                                                        <span class="fa fa-fw fa-pencil"></span>
+                                                        <span class="fa fa-fw fa-edit"></span>
                                                         <span>Edit</span>
                                                     </a>
                                                 </li>
@@ -79,7 +79,8 @@
                                 </h1>
                             </div>
                             <div class="card-pf-body">
-                                <h3 class="api-description">{{ api.description }}</h3>
+                                <h3 *ngIf="api.description" class="api-description">{{ api.description }}</h3>
+                                <h3 *ngIf="!api.description" class="no-description">No description available.</h3>
                                 <div class="api-created-info">
                                     <div class="info-full">
                                         <span class="fa fa-fw fa-clock-o"></span>
@@ -95,7 +96,7 @@
                                     <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag)">{{ tag }}</span>
                                 </div>
                                 <div class="api-action-buttons">
-                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary">Edit API</a>
+                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <!--<a href="download?type=api&format=yaml&id={{ api.id }}" class="btn btn-default pull-right" download="{{ api.name }}.yaml"><span class="fa fa-fw fa-download"></span> Download</a>-->
                                     <a [routerLink]="[ 'collaboration' ]" class="btn btn-default pull-right"><span class="fa fa-fw fa-users"></span> Collaborate</a>
                                 </div>

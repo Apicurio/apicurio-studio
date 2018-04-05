@@ -16,11 +16,17 @@
 
 package io.apicurio.hub.api.rest;
 
+import java.util.Collection;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.apicurio.hub.core.beans.ApiDesignChange;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -32,5 +38,11 @@ public interface ICurrentUserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public User getCurrentUser();
-    
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("activity")
+    public Collection<ApiDesignChange> getActivity(@QueryParam("start") Integer start, @QueryParam("end") Integer end) 
+    		throws ServerError, NotFoundException;
+
 }

@@ -1,7 +1,11 @@
-<div class="container-fluid">
+<div class="container-fluid container-cards-pf ">
     <div class="row" style="min-height: 35px"></div>
     <div class="row row-cards-pf">
-        <div class="col-xs-12 col-sm-6">
+
+        <!-- Left Column -->
+        <div class="col-xs-12 col-sm-6 col-md-6">
+
+            <!-- Welcome Card -->
             <div class="card-pf card-pf-accented">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
@@ -23,13 +27,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Recent APIs (or empty state) -->
-    <div class="row row-cards-pf" *ngIf="isLoaded('apis')">
-        <div class="col-xs-12 col-sm-6 col-md-6">
             <!-- No APIs Found -->
+            <div  *ngIf="isLoaded('apis')">
             <div class="card-pf blank-slate-card-pf" *ngIf="(recentApis() | async).length == 0">
                 <div class="blank-slate-pf">
                     <div class="blank-slate-pf-icon">
@@ -57,6 +57,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Recent APIs -->
             <div class="card-pf" *ngIf="(recentApis() | async).length > 0">
                 <div class="card-pf-heading">
@@ -83,6 +84,43 @@
                             <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
                         </a>
                     </p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-xs-12 col-sm-6 col-md-6">
+
+            <!-- Loading API activity card -->
+            <div class="card-pf card-pf-accented" *ngIf="!isLoaded('activity')">
+                <div class="card-pf-heading">
+                    <h1 class="card-pf-title">
+                        <p><span class="spinner spinner-xs spinner-inline"></span> Loading User activity...</p>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Activity Card -->
+            <div class="card-pf card-activity" *ngIf="isLoaded('activity')">
+                <div class="card-pf-heading">
+                    <h1 class="card-pf-title">
+                        <span class="fa fa-fw fa-list"></span>
+                        <span>Your Most Recent Activity</span>
+                    </h1>
+                </div>
+                <div class="card-pf-body container-fluid">
+                    <activity-item *ngFor="let item of activity" [item]="item" [mode]="'user'"></activity-item>
+                    <div class="actions">
+                        <button class="btn btn-default"
+                                *ngIf="hasMoreActivity"
+                                [disabled]="gettingMoreActivity"
+                                (click)="showMoreActivity()">Show More</button>
+                    </div>
+                    <div class="alert alert-info" *ngIf="activity.length === 0">
+                        <span class="pficon pficon-info"></span>
+                        <strong>No Activity Found!</strong> You haven't made any API changes yet.
+                    </div>
                 </div>
             </div>
         </div>

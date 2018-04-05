@@ -16,11 +16,18 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.apicurio.hub.api.rest.ICurrentUserResource;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.core.beans.ApiDesignChange;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -31,6 +38,8 @@ public class CurrentUserResource implements ICurrentUserResource {
     
     @Inject
     private ISecurityContext security;
+    @Inject
+    private IStorage storage;
 
     /**
      * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
@@ -38,6 +47,28 @@ public class CurrentUserResource implements ICurrentUserResource {
     @Override
     public User getCurrentUser() {
         return security.getCurrentUser();
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.ICurrentUserResource#getActivity(java.lang.Integer, java.lang.Integer)
+     */
+    @Override
+    public Collection<ApiDesignChange> getActivity(Integer start, Integer end) throws ServerError, NotFoundException {
+    	int from = 0;
+        int to = 20;
+        if (start != null) {
+            from = start.intValue();
+        }
+        if (end != null) {
+            to = end.intValue();
+        }
+        
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            return this.storage.listUserActivity(user, from, to);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
 }

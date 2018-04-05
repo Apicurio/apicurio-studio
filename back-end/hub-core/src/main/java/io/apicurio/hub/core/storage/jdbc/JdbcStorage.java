@@ -974,6 +974,27 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting contributors.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listUserActivity(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiDesignChange> listUserActivity(String user, int from, int to) throws StorageException {
+        logger.debug("Selecting activity for User: {} from {} to {}", user, from, to);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectUserActivity();
+                return handle.createQuery(statement)
+                        .bind(0, user)
+                        .bind(1, to - from)
+                        .bind(2, from)
+                        .map(ApiDesignChangeRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting contributors.", e);
+        }
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listApiDesignPublications(java.lang.String, int, int)
@@ -1176,6 +1197,8 @@ public class JdbcStorage implements IStorage {
         public ApiDesignChange map(ResultSet rs, StatementContext ctx) throws SQLException {
             try {
                 ApiDesignChange change = new ApiDesignChange();
+                change.setApiId(rs.getString("design_id"));
+                change.setApiName(rs.getString("name"));
                 change.setBy(rs.getString("created_by"));
                 change.setData(IOUtils.toString(rs.getCharacterStream("data")));
                 change.setOn(rs.getDate("created_on"));

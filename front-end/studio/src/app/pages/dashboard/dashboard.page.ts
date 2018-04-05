@@ -27,6 +27,8 @@ import {AbstractPageComponent} from "../../components/page-base.component";
 import {ILinkedAccountsService} from "../../services/accounts.service";
 import {LinkedAccount} from "../../models/linked-account.model";
 import {Title} from "@angular/platform-browser";
+import {ApiDesignChange} from "../../models/api-design-change.model";
+import {CurrentUserService} from "../../services/current-user.service";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.
@@ -39,7 +41,12 @@ import {Title} from "@angular/platform-browser";
 })
 export class DashboardPageComponent extends AbstractPageComponent {
 
-    accounts: LinkedAccount[];
+    public accounts: LinkedAccount[];
+    public activity: ApiDesignChange[] = [];
+    public activityStart: number = 0;
+    public activityEnd: number = 10;
+    public hasMoreActivity: boolean = false;
+    public gettingMoreActivity: boolean = false;
 
     /**
      * C'tor.
@@ -48,10 +55,12 @@ export class DashboardPageComponent extends AbstractPageComponent {
      * @param {ILinkedAccountsService} accountsService
      * @param {IAuthenticationService} authService
      * @param {Title} titleService
+     * @param {CurrentUserService} currentUserService
      */
     constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
                 @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                protected authService: IAuthenticationService, titleService: Title) {
+                protected authService: IAuthenticationService, titleService: Title,
+                protected currentUserService: CurrentUserService) {
         super(route, titleService);
     }
 
@@ -81,6 +90,15 @@ export class DashboardPageComponent extends AbstractPageComponent {
             console.error("[DashboardPageComponent] Error fetching linked accounts.");
             this.error(error);
         });
+        this.currentUserService.getActivity(this.activityStart, this.activityEnd).then(activity => {
+            console.info("[DashboardPageComponent] Activity data loaded: %o", activity);
+            this.activity = activity;
+            this.dataLoaded["activity"] = true;
+            this.hasMoreActivity = activity && activity.length >= 10;
+        }).catch(error => {
+            console.error("[DashboardPageComponent] Error getting user activity");
+            this.error(error);
+        });
     }
 
     /**
@@ -98,4 +116,21 @@ export class DashboardPageComponent extends AbstractPageComponent {
     public recentApis(): Observable<Api[]> {
         return this.apis.getRecentApis();
     }
+
+    /**
+     * Called when the user wishes to see more activity.
+     */
+    public showMoreActivity(): void {
+        this.activityStart += 10;
+        this.activityEnd += 10;
+
+        this.currentUserService.getActivity(this.activityStart, this.activityEnd).then(activity => {
+            this.activity = this.activity.concat(activity);
+            this.hasMoreActivity = activity && activity.length >= 10;
+        }).catch(error => {
+            console.error("[DashboardPageComponent] Error getting user activity");
+            this.error(error);
+        });
+    }
+
 }

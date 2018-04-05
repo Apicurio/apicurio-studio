@@ -315,6 +315,14 @@ public interface IStorage {
      */
     public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to) throws StorageException;
 
+	/**
+	 * Returns a collection of API design changes made by a given user.
+	 * @param user
+	 * @param from
+	 * @param to
+	 */
+	public Collection<ApiDesignChange> listUserActivity(String user, int from, int to) throws StorageException;
+
     /**
      * Returns a collection of API publications (recorded whenever a user publishes an API).  This
      * is a paged method similar to listApiDesignActivity().

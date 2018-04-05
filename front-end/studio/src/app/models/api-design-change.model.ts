@@ -18,6 +18,8 @@
 
 export class ApiDesignChange {
 
+    apiId: string;
+    apiName: string;
     version: number;
     type: string;
     data: string;

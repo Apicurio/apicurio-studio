@@ -207,9 +207,14 @@ public interface ISqlStatements {
     public String deleteEditingSessionUuid();
 
     /**
-     * A statement used to select rows from the api_content table (limited by a range).
+     * A statement used to select rows from the api_content table (limited by a range) per API.
      */
     public String selectApiDesignActivity();
+
+    /**
+     * A statement used to select rows from the api_content table (limited by a range) per user.
+     */
+	public String selectUserActivity();
 
     /**
      * A statement used to select rows from the api_content table (limited by a range).  Selects 

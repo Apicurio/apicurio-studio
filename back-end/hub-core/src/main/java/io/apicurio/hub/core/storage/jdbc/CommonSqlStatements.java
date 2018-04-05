@@ -350,7 +350,22 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesignActivity() {
-        return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND (c.type = 1 OR c.type = 2) ORDER BY created_on DESC LIMIT ? OFFSET ?";
+        return "SELECT c.*, d.name "
+        		+ "FROM api_content c "
+                + "JOIN api_designs d ON d.id = c.design_id "
+        		+ "WHERE c.design_id = ? "
+        		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
+    }
+
+    @Override
+    public String selectUserActivity() {
+        return "SELECT c.*, d.name "
+        		+ "FROM api_content c "
+                + "JOIN api_designs d ON d.id = c.design_id "
+        		+ "WHERE c.created_by = ? "
+        		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
     
     /**

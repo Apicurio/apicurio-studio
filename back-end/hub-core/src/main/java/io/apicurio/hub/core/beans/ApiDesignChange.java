@@ -24,6 +24,8 @@ import java.util.Date;
  */
 public class ApiDesignChange {
     
+	private String apiName;
+	private String apiId;
     private long version;
     private ApiContentType type;
     private String data;
@@ -105,5 +107,21 @@ public class ApiDesignChange {
     public void setOn(Date on) {
         this.on = on;
     }
+
+	public String getApiId() {
+		return apiId;
+	}
+
+	public void setApiId(String apiId) {
+		this.apiId = apiId;
+	}
+
+	public String getApiName() {
+		return apiName;
+	}
+
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
+	}
 
 }

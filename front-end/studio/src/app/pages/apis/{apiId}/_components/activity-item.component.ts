@@ -29,6 +29,7 @@ import {PublishApi} from "../../../../models/publish-api.model";
 })
 export class ActivityItemComponent {
 
+    @Input() mode: string; // Note: can be "user" or "api"
     @Input() item: ApiDesignChange;
     _command: ICommand = null;
     _publication: PublishApi;

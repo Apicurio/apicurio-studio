@@ -622,7 +622,7 @@ public class JdbcStorageTest {
     }
 
     @Test
-    public void testGetActivity() throws Exception {
+    public void testGetApiDesignActivity() throws Exception {
         ApiDesign design = new ApiDesign();
         Date now = new Date();
         design.setCreatedBy("user");
@@ -688,6 +688,9 @@ public class JdbcStorageTest {
         Assert.assertEquals("{3}", iter.next().getData());
         Assert.assertEquals("{2}", iter.next().getData());
         Assert.assertEquals("{1}", iter.next().getData());
+        
+        Assert.assertEquals("API Name", activity.iterator().next().getApiName());
+        Assert.assertEquals(id, activity.iterator().next().getApiId());
     }
     
     @Test
@@ -906,6 +909,66 @@ public class JdbcStorageTest {
         Assert.assertEquals("accepted", invite.getStatus());
     }
 
+    @Test
+    public void testGetUserActivity() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user1");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        // Note: the thread.sleep calls are needed to ensure time-based ordering of the content rows.  Without
+        // these calls the test would be somewhat non-deterministic (two rows with the same moment in time).
+        
+        Thread.sleep(5);
+        storage.addContent("user1", id, ApiContentType.Command, "{1}");
+        Thread.sleep(5);
+        storage.addContent("user1", id, ApiContentType.Command, "{2}");
+        Thread.sleep(5);
+        storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        Thread.sleep(5);
+        storage.addContent("user2", id, ApiContentType.Document, "{ROLLUP:123}");
+        Thread.sleep(5);
+        storage.addContent("user1", id, ApiContentType.Publish, "{PUBLISH:1}");
+        Thread.sleep(5);
+        storage.addContent("user2", id, ApiContentType.Command, "{4}");
+        Thread.sleep(5);
+        storage.addContent("user1", id, ApiContentType.Command, "{5}");
+        
+        Collection<ApiDesignChange> activity = storage.listUserActivity("user1", 0, 2);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(2, activity.size());
+        Iterator<ApiDesignChange> iter = activity.iterator();
+        Assert.assertEquals("{5}", iter.next().getData());
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
+        
+        activity = storage.listUserActivity("user1", 1, 3);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(2, activity.size());
+        iter = activity.iterator();
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
+        Assert.assertEquals("{2}", iter.next().getData());
+        
+        activity = storage.listUserActivity("user1", 1, 50);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(3, activity.size());
+        iter = activity.iterator();
+        Assert.assertEquals("{PUBLISH:1}", iter.next().getData());
+        Assert.assertEquals("{2}", iter.next().getData());
+        Assert.assertEquals("{1}", iter.next().getData());
+        
+        Assert.assertEquals("API Name", activity.iterator().next().getApiName());
+        Assert.assertEquals(id, activity.iterator().next().getApiId());
+    }
+    
     @Test
     public void testGetPublications() throws Exception {
         ApiDesign design = new ApiDesign();

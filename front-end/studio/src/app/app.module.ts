@@ -112,6 +112,7 @@ import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_compone
 import {ProblemsService} from "./pages/apis/{apiId}/editor/_services/problems.service";
 import {SelectionService} from "./pages/apis/{apiId}/editor/_services/selection.service";
 import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.service";
+import {CurrentUserService} from "./services/current-user.service";
 
 
 @NgModule({
@@ -140,7 +141,7 @@ import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.serv
     ],
     providers: [
         ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
-        AuthenticationCanActivateGuard, ProblemsService, SelectionService, LicenseService
+        AuthenticationCanActivateGuard, ProblemsService, SelectionService, LicenseService, CurrentUserService
     ],
     bootstrap: [AppComponent]
 })

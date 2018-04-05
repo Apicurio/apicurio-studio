@@ -18,7 +18,7 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../models/user.model";
 import {IAuthenticationService} from "../services/auth.service";
-import {Observable} from "rxjs";
+import {Observable} from "rxjs/Observable";
 
 @Component({
     moduleId: module.id,

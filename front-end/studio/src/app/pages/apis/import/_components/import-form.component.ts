@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
-import {IApisService} from "../../../../services/apis.service";
+import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
@@ -44,7 +44,7 @@ export class ImportApiFormComponent {
      * Constructor.
      * @param apis
      */
-    constructor(@Inject(IApisService) private apis: IApisService) {
+    constructor(private apis: ApisService) {
         this.importType = "from-url";
         this.model = {
             url: "",

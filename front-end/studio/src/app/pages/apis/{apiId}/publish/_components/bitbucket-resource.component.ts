@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Inject, OnInit, Output} from "@angular/core";
-import {ILinkedAccountsService} from "../../../../../services/accounts.service";
+import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption} from "../../../../../components/common/drop-down.component";
 import {BitbucketRepository} from "../../../../../models/bitbucket-repository.model";
 
@@ -51,10 +51,9 @@ export class BitbucketResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param apis
+     * @param {LinkedAccountsService} linkedAcounts
      */
-    constructor(@Inject(ILinkedAccountsService) private linkedAcounts: ILinkedAccountsService) {
-    }
+    constructor( private linkedAcounts: LinkedAccountsService) {}
 
     public ngOnInit(): void {
         console.info("[BitbucketResourceComponent] ngOnInit()");

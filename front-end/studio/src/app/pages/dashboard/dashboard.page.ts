@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from "@angular/core";
+import {Component} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 
 import {Api} from "../../models/api.model";
 import {IAuthenticationService} from "../../services/auth.service";
-import {Observable} from "rxjs";
+import {Observable} from "rxjs/Observable";
 import {User} from "../../models/user.model";
-import {IApisService} from "../../services/apis.service";
+import {ApisService} from "../../services/apis.service";
 import {AbstractPageComponent} from "../../components/page-base.component";
-import {ILinkedAccountsService} from "../../services/accounts.service";
+import {LinkedAccountsService} from "../../services/accounts.service";
 import {LinkedAccount} from "../../models/linked-account.model";
 import {Title} from "@angular/platform-browser";
 import {ApiDesignChange} from "../../models/api-design-change.model";
@@ -50,16 +50,17 @@ export class DashboardPageComponent extends AbstractPageComponent {
 
     /**
      * C'tor.
-     * @param {IApisService} apis
+     * @param {ApisService} apis
      * @param {ActivatedRoute} route
-     * @param {ILinkedAccountsService} accountsService
+     * @param {LinkedAccountsService} accountsService
      * @param {IAuthenticationService} authService
      * @param {Title} titleService
      * @param {CurrentUserService} currentUserService
      */
-    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute,
-                @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                protected authService: IAuthenticationService, titleService: Title,
+    constructor(private apis: ApisService, route: ActivatedRoute,
+                private accountsService: LinkedAccountsService,
+                protected authService: IAuthenticationService,
+                protected titleService: Title,
                 protected currentUserService: CurrentUserService) {
         super(route, titleService);
     }

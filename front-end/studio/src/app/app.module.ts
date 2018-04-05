@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
+import 'rxjs/Rx';
+
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import {ApisServiceProvider} from './services/apis.service.provider';
-import {LinkedAccountsServiceProvider} from './services/accounts.service.provider';
 import {AuthenticationServiceProvider} from './services/auth.service.provider';
 import {ConfigService} from './services/config.service';
 import {AuthenticationCanActivateGuard} from './guards/auth.guard';
@@ -113,7 +113,8 @@ import {ProblemsService} from "./pages/apis/{apiId}/editor/_services/problems.se
 import {SelectionService} from "./pages/apis/{apiId}/editor/_services/selection.service";
 import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.service";
 import {CurrentUserService} from "./services/current-user.service";
-
+import {LinkedAccountsService} from "./services/accounts.service";
+import {ApisService} from "./services/apis.service";
 
 @NgModule({
     imports: [
@@ -140,7 +141,7 @@ import {CurrentUserService} from "./services/current-user.service";
         EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent
     ],
     providers: [
-        ApisServiceProvider, LinkedAccountsServiceProvider, AuthenticationServiceProvider, ConfigService,
+        ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,
         AuthenticationCanActivateGuard, ProblemsService, SelectionService, LicenseService, CurrentUserService
     ],
     bootstrap: [AppComponent]

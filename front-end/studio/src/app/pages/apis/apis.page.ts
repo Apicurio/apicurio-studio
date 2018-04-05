@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject, OnDestroy} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnDestroy} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
 
-import {IApisService} from "../../services/apis.service";
+import {ApisService} from "../../services/apis.service";
 import {Api} from "../../models/api.model";
 import {ArrayUtils} from "../../util/common";
 import {AbstractPageComponent} from "../../components/page-base.component";
@@ -84,11 +84,11 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
 
     /**
      * C'tor.
-     * @param {IApisService} apis
+     * @param {ApisService} apis
      * @param {ActivatedRoute} route
      * @param {Title} titleService
      */
-    constructor(@Inject(IApisService) private apis: IApisService, route: ActivatedRoute, titleService: Title) {
+    constructor(private apis: ApisService, route: ActivatedRoute, titleService: Title) {
         super(route, titleService);
         this.filteredApis = [];
         this.selectedApis = [];

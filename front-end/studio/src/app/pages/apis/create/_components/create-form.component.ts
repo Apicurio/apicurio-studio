@@ -16,12 +16,12 @@
  */
 
 import {Component, EventEmitter, Inject, Output} from "@angular/core";
-import {IApisService} from "../../../../services/apis.service";
 import {User} from "../../../../models/user.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {NewApi} from "../../../../models/new-api.model";
-import {ILinkedAccountsService} from "../../../../services/accounts.service";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
+import {ApisService} from "../../../../services/apis.service";
+import {LinkedAccountsService} from "../../../../services/accounts.service";
 
 
 @Component({
@@ -49,13 +49,13 @@ export class CreateApiFormComponent {
 
     /**
      * Constructor.
-     * @param {IApisService} apisService
+     * @param {ApisService} apisService
      * @param {IAuthenticationService} authService
-     * @param {ILinkedAccountsService} accountsService
+     * @param {LinkedAccountsService} accountsService
      */
-    constructor(@Inject(IApisService) private apisService: IApisService,
+    constructor(private apisService: ApisService,
             @Inject(IAuthenticationService) private authService: IAuthenticationService,
-            @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService)
+            private accountsService: LinkedAccountsService)
     {
         this.creatingApi = false;
 

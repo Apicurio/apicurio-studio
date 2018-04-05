@@ -21,7 +21,7 @@ import {
 } from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
-import {IApiEditingSession, IApisService} from "../../../../services/apis.service";
+import {IApiEditingSession, ApisService} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {ICommand, OtCommand} from "oai-ts-commands";
@@ -65,11 +65,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param {Router} router
      * @param {ActivatedRoute} route
      * @param {NgZone} zone
-     * @param {IApisService} apis
+     * @param {ApisService} apis
      * @param {Title} titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
-                @Inject(IApisService) private apis: IApisService, titleService: Title) {
+                private apis: ApisService, titleService: Title) {
         super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
     }

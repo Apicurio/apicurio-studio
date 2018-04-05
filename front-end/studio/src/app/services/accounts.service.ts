@@ -25,93 +25,195 @@ import {BitbucketRepository} from "../models/bitbucket-repository.model";
 import {BitbucketTeam} from "../models/bitbucket-team.model";
 import {AbstractHubService} from "./hub";
 import {SourceCodeBranch} from "../models/source-code-branch.model";
+import {HttpClient} from "@angular/common/http";
+import {ConfigService} from "./config.service";
+import {CompleteLinkedAccount} from "../models/complete-linked-account.model";
+import {CreateLinkedAccount} from "../models/create-linked-account.model";
+import {IAuthenticationService} from "./auth.service";
 
 
 /**
- * Used to access and manipulate the user's Linked Accounts.
+ * An implementation of the Linked Accounts service that uses the Apicurio Studio back-end (Hub API) service
+ * to store and retrieve relevant information for the user.
  */
-export abstract class ILinkedAccountsService extends AbstractHubService {
+export class LinkedAccountsService extends AbstractHubService {
 
     /**
-     * Gets a promise over all of the Linked Accounts for the current user.
-     * @return {Promise<Api[]>}
+     * Constructor.
+     * @param {HttpClient} http
+     * @param {IAuthenticationService} authService
+     * @param {ConfigService} config
      */
-    abstract getLinkedAccounts(): Promise<LinkedAccount[]>;
+    constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
+        super(http, authService, config);
+    }
 
     /**
-     * Initiates the process of creating a new linked account.  This begins the OIDC/OAuth
-     * process, which will ultimately result in a new linked account.
-     * @param {string} accountType
-     * @param {string} redirectUrl
-     * @return {Promise<InitiatedLinkedAccount>}
+     * @see LinkedAccountsService.getLinkedAccounts
      */
-    abstract createLinkedAccount(accountType: string, redirectUrl: string): Promise<InitiatedLinkedAccount>;
+    public getLinkedAccounts(): Promise<LinkedAccount[]> {
+        console.info("[HubLinkedAccountsService] Getting all linked accounts");
+
+        let url: string = this.endpoint("/accounts");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Fetching linked accounts: %s", url);
+        return this.httpGet<LinkedAccount[]>(url, options);
+    }
 
     /**
-     * Called to delete or cancel a Linked Account.
-     * @param {string} type
-     * @return {Promise<void>}
+     * @see LinkedAccountsService.createLinkedAccount
      */
-    abstract deleteLinkedAccount(type: string): Promise<void>;
+    public createLinkedAccount(accountType: string, redirectUrl: string): Promise<InitiatedLinkedAccount> {
+        console.info("[HubLinkedAccountsService] Creating a linked account via the hub API.  Type: %s", accountType);
+        let cla: CreateLinkedAccount = new CreateLinkedAccount();
+        cla.type = accountType;
+        cla.redirectUrl = redirectUrl;
+
+        let url: string = this.endpoint("/accounts");
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Creating a linked account: %s", url);
+        return this.httpPostWithReturn<CreateLinkedAccount, InitiatedLinkedAccount>(url, cla, options);
+    }
 
     /**
-     * Gets a single Api by its ID.
-     * @param {string} type
-     * @return {Promise<LinkedAccount>}
+     * @see LinkedAccountsService.deleteLinkedAccount
      */
-    abstract getLinkedAccount(type: string): Promise<LinkedAccount>;
+    public deleteLinkedAccount(type: string): Promise<void> {
+        console.info("[HubLinkedAccountsService] Deleting a linked account via the hub API");
+
+        let url: string = this.endpoint("/accounts/:accountType", {
+            accountType: type
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Deleting a linked account: %s", url);
+        return this.httpDelete(url, options);
+    }
 
     /**
-     * Finalizes/completes the account linking process for a particular account type.  This
-     * should get called once the account linking flow has been completed.
-     * @param {string} accountType
-     * @param {string} nonce
-     * @return {Promise<void>}
+     * @see LinkedAccountsService.getLinkedAccount
      */
-    abstract completeLinkedAccount(accountType: string, nonce: string): Promise<void>;
+    public getLinkedAccount(type: string): Promise<LinkedAccount> {
+        let url: string = this.endpoint("/accounts/:accountType", {
+            accountType: type
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting a linked account: %s", url);
+        return this.httpGet<LinkedAccount>(url, options);
+    }
 
     /**
-     * Gets a list of all organizations the user belongs to.
-     * @param {string} accountType
-     * @return {Promise<string[]>}
+     * @see LinkedAccountsService.completeLinkedAccount
      */
-    abstract getAccountOrganizations(accountType: string): Promise<GitHubOrganization[]>;
+    public completeLinkedAccount(accountType: string, nonce: string): Promise<void> {
+        console.info("[HubLinkedAccountsService] Completing a linked account via the hub API.  Type: %s", accountType);
+        let cla: CompleteLinkedAccount = new CompleteLinkedAccount();
+        cla.nonce = nonce;
+
+        let url: string = this.endpoint("/accounts/:accountType", {
+            accountType: accountType
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Finalizing/completing a linked account: %s", url);
+        return this.httpPut<CompleteLinkedAccount>(url, cla, options);
+    }
 
     /**
-     * Gets all of the repositories found in a given organization.
-     * @param {string} accountType
-     * @param {string} organizationOrTeam
-     * @return {Promise<string[]>}
+     * @see LinkedAccountsService.getAccountOrganizations
      */
-    abstract getAccountRepositories(accountType: string, organizationOrTeam: string): Promise<(GitHubRepository[]|BitbucketRepository[])>;
+    public getAccountOrganizations(accountType: string): Promise<GitHubOrganization[]> {
+        let organizationsUrl: string = this.endpoint("/accounts/:accountType/organizations", {
+            accountType: accountType
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting organizations: %s", organizationsUrl);
+        return this.httpGet<GitHubOrganization[]>(organizationsUrl, options);
+    }
 
     /**
-     * Gets a list of all groups the user belongs to.
-     * @param {string} accountType
-     * @return {Promise<any[]>}
+     * @see LinkedAccountsService.getAccountRepositories
      */
-    abstract getAccountGroups(accountType: string): Promise<GitLabGroup[]>;
+    public getAccountRepositories(accountType: string, organizationOrTeam: string): Promise<GitHubRepository[]|BitbucketRepository[]> {
+        let repositoriesUrl: string = this.endpoint("/accounts/:accountType/organizations/:org/repositories", {
+            accountType: accountType,
+            org: organizationOrTeam
+        });
+        if (accountType === "Bitbucket") {
+            repositoriesUrl = this.endpoint("/accounts/:accountType/teams/:team/repositories", {
+                accountType: accountType,
+                team: organizationOrTeam
+            });
+        }
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting repositories: %s", repositoriesUrl);
+        return this.httpGet<GitHubRepository[]|BitbucketRepository[]>(repositoriesUrl, options);
+    }
 
     /**
-     * Gets all of the projects found in a given group.
-     * @param {string} accountType
-     * @param {string} group
-     * @return {Promise<GitLabProject[]>}
+     * @see LinkedAccountsService.getAccountBranches
      */
-    abstract getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]>;
+    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string): Promise<SourceCodeBranch[]> {
+        let urlTemplate: string = "/accounts/:accountType/organizations/:orgOrTeam/repositories/:projectOrRepo/branches";
+        if (accountType === "GitLab") {
+            urlTemplate = "/accounts/:accountType/groups/:orgOrTeam/projects/:projectOrRepo/branches";
+        } else if (accountType === "Bitbucket") {
+            urlTemplate = "/accounts/:accountType/teams/:orgOrTeam/repositories/:projectOrRepo/branches";
+        }
+        let branchesUrl: string = this.endpoint(urlTemplate, {
+            accountType: accountType,
+            orgOrTeam: orgOrTeam,
+            projectOrRepo: projectOrRepo
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting branches: %s", branchesUrl);
+        return this.httpGet<SourceCodeBranch[]>(branchesUrl, options);
+    }
 
     /**
-     * Gets a list of all teams the user belongs to.
-     * @param {string} accountType
-     * @return {Promise<any[]>}
+     * @see LinkedAccountsService.getAccountGroups
      */
-    abstract getAccountTeams(accountType: string): Promise<BitbucketTeam[]>;
+    public getAccountGroups(accountType: string): Promise<GitLabGroup[]> {
+        let groupsUrl: string = this.endpoint("/accounts/:accountType/groups", {
+            accountType: accountType
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting groups: %s", groupsUrl);
+        return this.httpGet<GitLabGroup[]>(groupsUrl, options);
+    }
 
     /**
-     * Gets a list of all branches for a org/repo or team/project.
-     * @param {string} accountType
-     * @return {Promise<any[]>}
+     * @see LinkedAccountsService.getAccountProjects
      */
-    abstract getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string): Promise<SourceCodeBranch[]>;
+    public getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]> {
+        let projectsUrl: string = this.endpoint("/accounts/:accountType/groups/:group/projects", {
+            accountType: accountType,
+            group: group
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting projects: %s", projectsUrl);
+        return this.httpGet<GitLabProject[]>(projectsUrl, options);
+    }
+
+    /**
+     * @see LinkedAccountsService.getAccountTeams
+     */
+    public getAccountTeams(accountType: string): Promise<BitbucketTeam[]> {
+        let teamsUrl: string = this.endpoint("/accounts/:accountType/teams", {
+            accountType: accountType
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubLinkedAccountsService] Getting teams: %s", teamsUrl);
+        return this.httpGet<BitbucketTeam[]>(teamsUrl, options);
+    }
 
 }

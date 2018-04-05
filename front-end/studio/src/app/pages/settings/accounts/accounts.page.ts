@@ -17,7 +17,7 @@
 
 import {Component, Inject} from "@angular/core";
 import {AbstractPageComponent} from "../../../components/page-base.component";
-import {ILinkedAccountsService} from "../../../services/accounts.service";
+import {LinkedAccountsService} from "../../../services/accounts.service";
 import {LinkedAccount} from "../../../models/linked-account.model";
 import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
@@ -40,12 +40,11 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * C'tor.
-     * @param {ILinkedAccountsService} accountsApi
+     * @param {LinkedAccountsService} accountsApi
      * @param {ActivatedRoute} route
      * @param {Title} titleService
      */
-    constructor(@Inject(ILinkedAccountsService) private accountsApi: ILinkedAccountsService, route: ActivatedRoute,
-                titleService: Title) {
+    constructor(private accountsApi: LinkedAccountsService, route: ActivatedRoute, titleService: Title) {
         super(route, titleService);
     }
 

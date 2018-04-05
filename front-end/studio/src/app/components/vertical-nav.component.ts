@@ -17,7 +17,7 @@
 
 import {Component, OnInit, Inject} from "@angular/core";
 import {Router, NavigationStart} from "@angular/router";
-import {IApisService} from "../services/apis.service";
+import {ApisService} from "../services/apis.service";
 
 /**
  * Models the sub-menus off the main left-hand vertical nav.
@@ -39,8 +39,12 @@ export class VerticalNavComponent implements OnInit {
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
     public subMenuOut: boolean = false;
 
-    constructor(private router: Router, @Inject(IApisService) public apis: IApisService) {
-    }
+    /**
+     * C'tor.
+     * @param {Router} router
+     * @param {ApisService} apis
+     */
+    constructor(private router: Router,  public apis: ApisService) {}
 
     ngOnInit(): void {
         console.log("Subscribing to router events.");

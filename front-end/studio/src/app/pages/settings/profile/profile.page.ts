@@ -17,7 +17,7 @@
 
 import {Component, Inject} from "@angular/core";
 
-import {Observable} from "rxjs";
+import {Observable} from "rxjs/Observable";
 import {IAuthenticationService} from "../../../services/auth.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {User} from "../../../models/user.model";

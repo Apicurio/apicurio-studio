@@ -18,7 +18,7 @@
 import {Component, Inject} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {IApisService} from "../../../services/apis.service";
+import {ApisService} from "../../../services/apis.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ImportApi} from "../../../models/import-api.model";
 import {Title} from "@angular/platform-browser";
@@ -38,10 +38,10 @@ export class ImportApiPageComponent extends AbstractPageComponent {
      * Constructor.
      * @param {Router} router
      * @param {ActivatedRoute} route
-     * @param {IApisService} apis
+     * @param {ApisService} apis
      * @param {Title} titleService
      */
-    constructor(private router: Router, route: ActivatedRoute, @Inject(IApisService) private apis: IApisService, titleService: Title) {
+    constructor(private router: Router, route: ActivatedRoute, private apis: ApisService, titleService: Title) {
         super(route, titleService);
     }
 

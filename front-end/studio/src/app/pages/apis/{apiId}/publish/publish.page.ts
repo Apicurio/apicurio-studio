@@ -18,16 +18,16 @@
 import {Component, Inject} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {IApisService} from "../../../../services/apis.service";
 import {Api} from "../../../../models/api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {IAuthenticationService} from "../../../../services/auth.service";
-import {ILinkedAccountsService} from "../../../../services/accounts.service";
 import {LinkedAccount} from "../../../../models/linked-account.model";
 import {DropDownOption} from "../../../../components/common/drop-down.component";
 import {CodeEditorMode} from "../../../../components/common/code-editor.component";
 import {PublishApi} from "../../../../models/publish-api.model";
 import {Title} from "@angular/platform-browser";
+import {ApisService} from "../../../../services/apis.service";
+import {LinkedAccountsService} from "../../../../services/accounts.service";
 
 @Component({
     moduleId: module.id,
@@ -53,15 +53,15 @@ export class PublishPageComponent extends AbstractPageComponent {
      * Constructor.
      * @param {Router} router
      * @param {ActivatedRoute} route
-     * @param {IApisService} apis
-     * @param {ILinkedAccountsService} accounts
+     * @param {ApisService} apis
+     * @param {LinkedAccountsService} accounts
      * @param {IAuthenticationService} authService
      * @param {Title} titleService
      */
-    constructor(private router: Router, route: ActivatedRoute,
-                @Inject(IApisService) private apis: IApisService,
-                @Inject(ILinkedAccountsService) private accountsService: ILinkedAccountsService,
-                @Inject(IAuthenticationService) private authService: IAuthenticationService, titleService: Title) {
+    constructor(private router: Router, route: ActivatedRoute, private apis: ApisService,
+                private accountsService: LinkedAccountsService,
+                @Inject(IAuthenticationService) private authService: IAuthenticationService,
+                protected titleService: Title) {
         super(route, titleService);
         this.api = new Api();
     }

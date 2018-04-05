@@ -18,7 +18,7 @@
 import {Component, Inject} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
-import {IApisService} from "../../../../services/apis.service";
+import {ApisService} from "../../../../services/apis.service";
 import {Api} from "../../../../models/api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {ApiCollaborator} from "../../../../models/api-collaborator.model";
@@ -47,12 +47,11 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
      * Constructor.
      * @param {Router} router
      * @param {ActivatedRoute} route
-     * @param {IApisService} apis
+     * @param {ApisService} apis
      * @param {IAuthenticationService} authService
      * @param {Title} titleService
      */
-    constructor(private router: Router, route: ActivatedRoute,
-                @Inject(IApisService) private apis: IApisService,
+    constructor(private router: Router, route: ActivatedRoute, private apis: ApisService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService,
                 titleService: Title) {
         super(route, titleService);

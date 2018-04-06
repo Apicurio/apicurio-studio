@@ -45,3 +45,7 @@
 .api-publish .publishapi-form ::ng-deep .control-label {
   padding-right: 0px;
 }
+
+hr {
+  margin-top: 5px;
+}

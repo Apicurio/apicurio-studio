@@ -6,7 +6,7 @@
             <div>&nbsp;</div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-import-type">Import Type</label>
+                <label class="col-sm-2 control-label required" for="api-import-type">Import Type</label>
                 <div class="col-sm-10">
                     <drop-down id="api-import-type" [id]="'api-import-type'" [value]="importType" [options]="importTypeOptions()"
                                (onValueChange)="changeImportType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
@@ -14,12 +14,13 @@
             </div>
 
             <div class="form-group" *ngIf="importType === 'from-url' || importType === 'from-scs'">
-                <label class="col-sm-2 control-label" for="api-repository-url">Url</label>
+                <label class="col-sm-2 control-label required" for="api-repository-url">Url</label>
                 <div class="col-sm-10">
                     <input name="repository.url" type="url" id="api-repository-url" class="form-control"
-                           placeholder="{{ urlPlaceholder() }}" required
-                           [(ngModel)]="model.url"
-                           pattern="https?://.+">
+                           placeholder="{{ urlPlaceholder() }}" required pattern="https?://.+" #url="ngModel"
+                           [(ngModel)]="model.url">
+                    <form-error-message [inputModel]="url" [type]="'required'">URL is required.</form-error-message>
+                    <form-error-message [inputModel]="url" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                 </div>
             </div>
 
@@ -34,6 +35,7 @@
                 </div>
             </div>
 
+            <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <hr/>
 
             <div class="form-group">

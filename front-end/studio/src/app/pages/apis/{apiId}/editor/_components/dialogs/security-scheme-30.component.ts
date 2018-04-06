@@ -277,4 +277,8 @@ export class SecurityScheme30DialogComponent {
         return rval;
     }
 
+    public isValid(): boolean {
+        return this.model.type !== null && this.model.type !== undefined;
+    }
+
 }

@@ -15,11 +15,12 @@
                     <p>Enter the example content-type (mime type) and value below and then click Add.</p>
                     <form id="addexample-form" class="form-horizontal" #addExampleForm="ngForm" data-dismiss="modal">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="exampleName">Name</label>
+                            <label class="col-sm-2 control-label required" for="exampleName">Name</label>
                             <div class="col-sm-10">
                                 <input #addExampleInput name="exampleName" type="text" id="exampleName" class="form-control"
-                                       placeholder="Enter an Example Content Type"
+                                       placeholder="Enter an Example Content Type" #name="ngModel"
                                        required [(ngModel)]="model.contentType">
+                                <form-error-message [inputModel]="name" [type]="'required'">Name is required.</form-error-message>
                             </div>
                         </div>
 
@@ -32,6 +33,7 @@
                         </div>
                     </form>
                 </div>
+                <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" (click)="add()"
                             [disabled]="!addExampleForm.form.valid || !hasValue()">Add</button>

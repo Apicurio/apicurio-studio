@@ -1263,10 +1263,6 @@
 .api-editor .editor-detail .problem-form .actions {
   margin-top: 15px;
 }
-.api-editor form .validation-error-label {
-  color: #c00;
-  font-size: 12px;
-}
 
 .api-editor .content .panel .examples {
   margin-top: 5px;

@@ -1,6 +1,7 @@
 <!-- Security Scheme Dialog -->
 <div bsModal #securitySchemeModal="bs-modal" class="modal fade" id="securitySchemeModal" tabindex="-1" role="dialog"
-     aria-labelledby="securitySchemeModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()">
+     aria-labelledby="securitySchemeModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()"
+     (onShown)="mode === 'edit' ? descriptionInput.focus() : securitySchemeNameInput.focus()">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,17 +19,19 @@
                 <p>Configure the <strong *ngIf="mode === 'edit'">{{ model.schemeName }}</strong> security scheme below and then click <strong>OK</strong> when done.</p>
                 <hr />
                 <form id="securityscheme-form" class="form-horizontal" #securitySchemeForm="ngForm">
-                    <div class="form-group" *ngIf="mode === 'create'">
-                        <label class="col-sm-3 control-label" for="schemeName">Name</label>
+                    <div class="form-group" [class.hidden]="mode === 'edit'">
+                        <label class="col-sm-3 control-label required" for="schemeName">Name</label>
                         <div class="col-sm-9">
-                            <input name="schemeName" type="text" id="schemeName" class="form-control" required
-                                   placeholder="Security Scheme Name" [(ngModel)]="model.schemeName">
+                            <input #securitySchemeNameInput #ssname="ngModel" name="schemeName" type="text" id="schemeName" class="form-control"
+                                   placeholder="Security Scheme Name" [(ngModel)]="model.schemeName" required pattern="[a-zA-Z0-9\.\-_]+">
+                            <form-error-message [inputModel]="ssname" [type]="'required'">Name is required.</form-error-message>
+                            <form-error-message [inputModel]="ssname" [type]="'pattern'">Please enter a valid name (allowed: a-Z 0-9 . - _).</form-error-message>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="name">Description</label>
                         <div class="col-sm-9">
-                            <textarea #securitySchemeNameInput name="description" type="text" id="description" class="form-control"
+                            <textarea #descriptionInput name="description" type="text" id="description" class="form-control"
                                       placeholder="Description of the security scheme (optional)." [(ngModel)]="model.description"></textarea>
                         </div>
                     </div>
@@ -156,6 +159,7 @@
                     </div>
                 </form>
             </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid || !scopesAreValid()">OK</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>

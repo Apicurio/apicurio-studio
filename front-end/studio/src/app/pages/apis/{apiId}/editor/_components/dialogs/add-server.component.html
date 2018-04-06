@@ -17,13 +17,14 @@
             <div class="modal-body">
                 <p *ngIf="mode === 'create'">Enter information about the new server below and then click <strong>OK</strong>.</p>
                 <p *ngIf="mode === 'edit'">Make changes to the server details below and click <strong>OK</strong>.</p>
-                <form id="addserver-form" class="form-horizontal" (submit)="add()" #addServerForm="ngForm" data-dismiss="modal">
+                <form id="addserver-form" class="form-horizontal" #addServerForm="ngForm" data-dismiss="modal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="server">Server URL</label>
+                        <label class="col-sm-2 control-label" [class.required]="mode === 'create'" for="server">Server URL</label>
                         <div class="col-sm-10" *ngIf="mode === 'create'">
-                            <input #urlInput name="server" type="text" id="server" class="form-control"
+                            <input #urlInput="ngModel" name="server" type="text" id="server" class="form-control"
                                    placeholder="Server URL (e.g. https://{stage}.example.com:{port}/api)"
                                    required [(ngModel)]="model.url" (change)="updateVariables()">
+                            <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
                         </div>
                         <div class="col-sm-10" *ngIf="mode === 'edit'">
                             <input name="server" type="text" id="server_ro" class="form-control" required
@@ -71,6 +72,7 @@
 
                 </form>
             </div>
+            <div *ngIf="mode === 'create'" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!addServerForm.form.valid">OK</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>

@@ -14,7 +14,7 @@
                 <form id="addResponse-form" class="form-horizontal" (submit)="add()" #addResponseForm="ngForm">
                     <input type="hidden" name="statusCode" required [(ngModel)]="statusCode">
                     <div class="form-group">
-                        <label class="col-sm-5 control-label" for="statusCodeMenu">Response Status Code</label>
+                        <label class="col-sm-5 control-label required" for="statusCodeMenu">Response Status Code</label>
                         <div class="col-sm-7">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="statusCodeMenu" data-toggle="dropdown">
@@ -108,6 +108,7 @@
                     </div>
                 </form>
             </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="add()">Add</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>

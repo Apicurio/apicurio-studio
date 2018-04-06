@@ -47,9 +47,9 @@
             <div class="publishapi-panel panel panel-default">
                 <div class="panel-body" *ngIf="!published">
                     <h2>Publish API "{{ api.name }}"?</h2>
-                    <form id="publish-form" class="form-horizontal" (submit)="publishApi()">
+                    <form id="publish-form" class="form-horizontal" (submit)="publishApi()" #publishForm="ngForm">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">Publish To</label>
+                            <label class="col-sm-2 control-label required">Publish To</label>
                             <div class="col-sm-10">
                                 <span class="publish-to-option fa fa-github" (click)="setPublishTo('GitHub')"
                                     title="Publish to GitHub" [class.disabled]="!hasAccount('GitHub')"
@@ -73,7 +73,7 @@
                         <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label" for="format">Format</label>
+                            <label class="col-sm-2 control-label required" for="format">Format</label>
                             <div class="col-sm-10">
                                 <drop-down id="format" [id]="'format'" [value]="format" [options]="formatOptions()"
                                            (onValueChange)="format = $event" [noSelectionLabel]="'Choose Format'"></drop-down>
@@ -81,16 +81,19 @@
                         </div>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label">Commit Message</label>
+                            <label class="col-sm-2 control-label required">Commit Message</label>
                             <div class="col-sm-10">
                                 <code-editor [mode]="commitMessageMode()" [(text)]="commitMessage"
                                              [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
                             </div>
                         </div>
 
-                        <div class="form-group" *ngIf="_selectedType">
+                        <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <hr />
+
+                        <div class="form-group" >
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-primary" [disabled]="!isValid() || publishing">
+                                <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || publishing">
                                     <span *ngIf="!publishing">Publish API</span>
                                     <span *ngIf="publishing"><span class="spinner spinner-xs spinner-inline"></span> Publishing...</span>
                                 </button>

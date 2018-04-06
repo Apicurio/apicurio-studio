@@ -10,3 +10,7 @@ select {
 .importapi-form-panel {
   padding-top: 25px;
 }
+
+hr {
+  margin-top: 5px;
+}

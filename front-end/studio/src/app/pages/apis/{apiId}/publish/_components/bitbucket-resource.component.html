@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="gh-team">Team</label>
+    <label class="col-sm-2 control-label required" for="gh-team">Team</label>
     <div class="col-sm-10">
         <drop-down id="gh-team" [id]="'gh-team'" [value]="model.team" [options]="teamOptions()"
                    [loading]="gettingTeams"
@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="gh-repo">Repository</label>
+    <label class="col-sm-2 control-label required" for="gh-repo">Repository</label>
     <div class="col-sm-10">
         <drop-down id="gh-repo" [id]="'gh-repo'" [value]="model.repo" [options]="repoOptions()"
                    [loading]="gettingRepos"
@@ -15,7 +15,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="gh-branch">Branch</label>
+    <label class="col-sm-2 control-label required" for="gh-branch">Branch</label>
     <div class="col-sm-10">
         <drop-down id="gh-branch" [id]="'gh-branch'" [value]="model.branch" [options]="branchOptions()"
                    [loading]="gettingBranches"
@@ -23,10 +23,11 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label" for="gh-resource">Resource</label>
+    <label class="col-sm-2 control-label required" for="gh-resource">Resource</label>
     <div class="col-sm-10">
         <input name="repository.resource" type="text" id="gh-resource" class="form-control"
-               placeholder="/path/to/apis/openapi.yaml"
+               placeholder="/path/to/apis/openapi.yaml" required #bbResource="ngModel"
                [(ngModel)]="model.resource" (keyup)="resourceChanged()">
+        <form-error-message [inputModel]="bbResource" [type]="'required'">Resource is required.</form-error-message>
     </div>
 </div>

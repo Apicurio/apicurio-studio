@@ -115,6 +115,7 @@ import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.serv
 import {CurrentUserService} from "./services/current-user.service";
 import {LinkedAccountsService} from "./services/accounts.service";
 import {ApisService} from "./services/apis.service";
+import {FormErrorMessageComponent} from "./components/common/form-error-message.component";
 
 @NgModule({
     imports: [
@@ -138,7 +139,7 @@ import {ApisService} from "./services/apis.service";
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
         BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
-        EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent
+        EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent, FormErrorMessageComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

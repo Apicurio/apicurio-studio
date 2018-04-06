@@ -318,13 +318,16 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      */
     public getCurrentPathSelection(): string {
         let node: OasNode = this.selectionService.currentSelection().resolve(this.document);
+        let rval: string = "/";
         if (node && node["_path"]) {
-            return node["_path"] + "/";
+            rval = node["_path"] + "/";
+        } else if (node && node.parent() && node.parent()["_path"]) {
+            rval = node.parent()["_path"] + "/";
         }
-        if (node && node.parent()["_path"]) {
-            return node.parent()["_path"] + "/";
+        if (rval.endsWith("//")) {
+            rval = rval.substring(0, rval.length - 1);
         }
-        return "/";
+        return rval;
     }
 
     /**

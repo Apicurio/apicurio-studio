@@ -32,7 +32,7 @@ export class AddResponseDialogComponent {
 
     protected _isOpen: boolean = false;
 
-    protected statusCode: string = "";
+    public statusCode: string = "";
 
     /**
      * Called to open the dialog.

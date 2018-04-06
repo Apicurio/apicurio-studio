@@ -20,10 +20,12 @@
                 <hr />
                 <form id="securityscheme-form" class="form-horizontal" #securitySchemeForm="ngForm">
                     <div class="form-group" [class.hidden]="mode === 'edit'">
-                        <label class="col-sm-3 control-label" for="schemeName">Name</label>
+                        <label class="col-sm-3 control-label required" for="schemeName">Name</label>
                         <div class="col-sm-9">
-                            <input #securitySchemeNameInput name="schemeName" type="text" id="schemeName" class="form-control" required
-                                   placeholder="Security Scheme Name" [(ngModel)]="model.schemeName">
+                            <input #securitySchemeNameInput #ssname="ngModel" name="schemeName" type="text" id="schemeName" class="form-control"
+                                   placeholder="Security Scheme Name" [(ngModel)]="model.schemeName" required pattern="[a-zA-Z0-9\.\-_]+">
+                            <form-error-message [inputModel]="ssname" [type]="'required'">Name is required.</form-error-message>
+                            <form-error-message [inputModel]="ssname" [type]="'pattern'">Please enter a valid name (allowed: a-Z 0-9 . - _).</form-error-message>
                         </div>
                     </div>
                     <div class="form-group">
@@ -34,7 +36,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="type">Security</label>
+                        <label class="col-sm-3 control-label required" for="type">Security</label>
                         <div class="col-sm-9">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="type" data-toggle="dropdown">
@@ -95,13 +97,14 @@
                             </div>
                         </div>
                     </div>
-                    <!-- HTTP Auth Config -->
+                    <!-- OpenID Connect Config -->
                     <div class="openIdConnect-auth" *ngIf="model.type === 'openIdConnect'">
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="openIdConnectUrl">OID Connect URL</label>
                             <div class="col-sm-9">
-                                <input name="name" type="text" id="openIdConnectUrl" class="form-control" required
-                                       placeholder="OpenID Connect URL" [(ngModel)]="model.openIdConnectUrl">
+                                <input name="name" type="text" id="openIdConnectUrl" class="form-control" pattern="https?://.+"
+                                       placeholder="OpenID Connect URL" [(ngModel)]="model.openIdConnectUrl" #oidConnectUrl="ngModel">
+                                <form-error-message [inputModel]="oidConnectUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                             </div>
                         </div>
                     </div>
@@ -129,8 +132,9 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">Name</label>
                             <div class="col-sm-9">
-                                <input name="name" type="text" id="name" class="form-control" required
-                                       placeholder="Name of {{ model.in === 'query' ? 'query parameter' : (!model.in ? 'parameter' : model.in) }}" [(ngModel)]="model.name">
+                                <input name="name" type="text" id="name" class="form-control"
+                                       placeholder="Name of {{ model.in === 'query' ? 'query parameter' : (!model.in ? 'parameter' : model.in) }}"
+                                       [(ngModel)]="model.name">
                             </div>
                         </div>
                     </div>
@@ -156,14 +160,18 @@
                                     <label class="col-sm-3 control-label" for="implicit_authorizationUrl">Auth URL</label>
                                     <div class="col-sm-9">
                                         <input name="implicit_authorizationUrl" type="text" id="implicit_authorizationUrl" class="form-control"
-                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.implicit.authorizationUrl">
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.implicit.authorizationUrl"
+                                               pattern="https?://.+" #implicitAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="implicit_refreshUrl">Refresh URL</label>
                                     <div class="col-sm-9">
                                         <input name="implicit_refreshUrl" type="text" id="implicit_refreshUrl" class="form-control"
-                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.implicit.refreshUrl">
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.implicit.refreshUrl"
+                                               pattern="https?://.+" #implicitRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <!-- Scopes -->
@@ -216,14 +224,18 @@
                                     <label class="col-sm-3 control-label" for="password_tokenUrl">Token URL</label>
                                     <div class="col-sm-9">
                                         <input name="password_tokenUrl" type="text" id="password_tokenUrl" class="form-control"
-                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.password.tokenUrl">
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.password.tokenUrl"
+                                               pattern="https?://.+" #passwordTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="password_refreshUrl">Refresh URL</label>
                                     <div class="col-sm-9">
                                         <input name="password_refreshUrl" type="text" id="password_refreshUrl" class="form-control"
-                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.password.refreshUrl">
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.password.refreshUrl"
+                                               pattern="https?://.+" #passwordRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <!-- Scopes -->
@@ -276,14 +288,18 @@
                                     <label class="col-sm-3 control-label" for="clientCredentials_tokenUrl">Token URL</label>
                                     <div class="col-sm-9">
                                         <input name="clientCredentials_tokenUrl" type="text" id="clientCredentials_tokenUrl" class="form-control"
-                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.clientCredentials.tokenUrl">
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.clientCredentials.tokenUrl"
+                                               pattern="https?://.+" #clientCredsTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="clientCredentials_refreshUrl">Refresh URL</label>
                                     <div class="col-sm-9">
                                         <input name="clientCredentials_refreshUrl" type="text" id="clientCredentials_refreshUrl" class="form-control"
-                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.clientCredentials.refreshUrl">
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.clientCredentials.refreshUrl"
+                                               pattern="https?://.+" #clientCredsRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <!-- Scopes -->
@@ -336,21 +352,27 @@
                                     <label class="col-sm-3 control-label" for="authorizationCode_authorizationUrl">Auth URL</label>
                                     <div class="col-sm-9">
                                         <input name="authorizationCode_authorizationUrl" type="text" id="authorizationCode_authorizationUrl" class="form-control"
-                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.authorizationCode.authorizationUrl">
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model.flows.authorizationCode.authorizationUrl"
+                                               pattern="https?://.+" #authCodeAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="authorizationCode_tokenUrl">Token URL</label>
                                     <div class="col-sm-9">
                                         <input name="authorizationCode_tokenUrl" type="text" id="authorizationCode_tokenUrl" class="form-control"
-                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.authorizationCode.tokenUrl">
+                                               placeholder="OAuth Token URL" [(ngModel)]="model.flows.authorizationCode.tokenUrl"
+                                               pattern="https?://.+" #authCodeTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="authorizationCode_refreshUrl">Refresh URL</label>
                                     <div class="col-sm-9">
                                         <input name="authorizationCode_refreshUrl" type="text" id="authorizationCode_refreshUrl" class="form-control"
-                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.authorizationCode.refreshUrl">
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model.flows.authorizationCode.refreshUrl"
+                                               pattern="https?://.+" #authCodeRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
                                     </div>
                                 </div>
                                 <!-- Scopes -->
@@ -394,8 +416,9 @@
                     </div>
                 </form>
             </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid">OK</button>
+                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!securitySchemeForm.form.valid || !isValid()">OK</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

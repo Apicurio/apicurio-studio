@@ -85,3 +85,27 @@ form input.ng-invalid.ng-touched {
 .dropdown-menu {
     font-size: 13px;
 }
+
+div.notice-of-required {
+    margin-top: 15px;
+    font-size: 11px;
+}
+div.notice-of-required .required-icon {
+    color: red;
+}
+div.modal-notice-of-required {
+    margin-bottom: -12px;
+    padding-left: 15px;
+}
+
+.form-group .control-label {
+    white-space: nowrap;
+}
+.form-group .control-label.required::after {
+    color: red;
+    content: '*'
+}
+
+.form-group .form-error-message {
+    color: red;
+}

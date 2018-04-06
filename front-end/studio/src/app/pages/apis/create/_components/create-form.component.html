@@ -2,17 +2,18 @@
     <div class="panel-body">
         <form id="createapi-form" class="form-horizontal" (submit)="createApi()" #apiForm="ngForm">
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-type">Type</label>
+                <label class="col-sm-2 control-label required" for="api-type">Type</label>
                 <div class="col-sm-10">
                     <drop-down id="api-type" [id]="'api-create-api-specVersion'" [value]="model.type" [options]="typeOptions()"
                                (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label" for="api-name">Name</label>
+                <label class="col-sm-2 control-label required" for="api-name">Name</label>
                 <div class="col-sm-10">
                     <input name="name" type="text" id="api-name" class="form-control" placeholder="Enter the new API's name"
-                           required [(ngModel)]="model.name">
+                           required [(ngModel)]="model.name" #name="ngModel">
+                    <form-error-message [inputModel]="name" [type]="'required'">Name is required.</form-error-message>
                 </div>
             </div>
             <div class="form-group">
@@ -23,6 +24,7 @@
                 </div>
             </div>
 
+            <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <hr/>
 
             <div class="form-group">

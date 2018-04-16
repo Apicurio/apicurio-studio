@@ -1074,6 +1074,14 @@
 .api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
   cursor: default;
 }
+
+.api-editor .editor-detail .api-operation-detail .operationId {
+  margin: -5px 0px 15px;
+}
+.api-editor .editor-detail .api-operation-detail .operationId strong {
+  font-size: 18px;
+}
+
 .api-editor .editor-detail .api-operation-detail .request-body-section .request-body-name {
   font-size: 15px;
   margin-left: 10px;

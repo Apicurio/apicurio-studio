@@ -91,6 +91,14 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         }
     }
 
+    public operationId(): string {
+        if (this.operation.operationId) {
+            return this.operation.operationId;
+        } else {
+            return null;
+        }
+    }
+
     public hasSummary(): boolean {
         if (this.operation.summary) {
             return true;
@@ -238,6 +246,11 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public changeSummary(newSummary: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"summary", newSummary);
+        this.onCommand.emit(command);
+    }
+
+    public changeOperationId(newId: string): void {
+        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"operationId", newId);
         this.onCommand.emit(command);
     }
 

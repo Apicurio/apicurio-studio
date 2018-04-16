@@ -14,3 +14,7 @@
   border: 0;
   background-color: white;
 }
+
+.card-activity .actions {
+  padding-top: 10px;
+}

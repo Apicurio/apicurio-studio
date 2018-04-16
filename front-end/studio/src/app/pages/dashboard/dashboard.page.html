@@ -112,7 +112,7 @@
                 <div class="card-pf-body container-fluid">
                     <activity-item *ngFor="let item of activity" [item]="item" [mode]="'user'"></activity-item>
                     <div class="actions">
-                        <button class="btn btn-default"
+                        <button class="btn btn-default show-more"
                                 *ngIf="hasMoreActivity"
                                 [disabled]="gettingMoreActivity"
                                 (click)="showMoreActivity()">Show More</button>

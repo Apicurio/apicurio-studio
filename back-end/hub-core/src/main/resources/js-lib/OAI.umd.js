@@ -276,6 +276,17 @@ var OasDocument = (function (_super) {
         visitor.visitDocument(this);
     };
     /**
+     * Adds a security requirement child.
+     * @param securityRequirement
+     */
+    OasDocument.prototype.addSecurityRequirement = function (securityRequirement) {
+        if (this.security == null) {
+            this.security = [];
+        }
+        this.security.push(securityRequirement);
+        return securityRequirement;
+    };
+    /**
      * Returns true if the document is an OpenAPI/Swagger 2.0 document.
      * @return {boolean}
      */
@@ -16140,10 +16151,10 @@ var Oas30RequiredPropertyValidationRule = (function (_super) {
     Oas30RequiredPropertyValidationRule.prototype.visitImplicitOAuthFlow = function (node) {
         this.visitOAuthFlow(node);
         this.requireProperty("FLOW-3-001", node, "authorizationUrl");
-        this.requireProperty("FLOW-3-002", node, "tokenUrl");
     };
     Oas30RequiredPropertyValidationRule.prototype.visitPasswordOAuthFlow = function (node) {
         this.visitOAuthFlow(node);
+        this.requireProperty("FLOW-3-002", node, "tokenUrl");
     };
     Oas30RequiredPropertyValidationRule.prototype.visitClientCredentialsOAuthFlow = function (node) {
         this.visitOAuthFlow(node);

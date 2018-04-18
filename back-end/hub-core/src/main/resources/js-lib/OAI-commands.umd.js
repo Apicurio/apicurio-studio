@@ -6978,6 +6978,269 @@ var DeleteExampleCommand_30 = (function (_super) {
     return DeleteExampleCommand_30;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createAddSecurityRequirementCommand(document, parent, requirement) {
+    return new AddSecurityRequirementCommand(parent, requirement);
+}
+/**
+ * A command used to create a new definition in a document.
+ */
+var AddSecurityRequirementCommand = (function (_super) {
+    __extends$51(AddSecurityRequirementCommand, _super);
+    /**
+     * C'tor.
+     * @param {OasOperation | OasDocument} parent
+     * @param {OasSecurityRequirement} requirement
+     */
+    function AddSecurityRequirementCommand(parent, requirement) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        if (requirement) {
+            _this._requirement = _this.oasLibrary().writeNode(requirement);
+        }
+        return _this;
+    }
+    AddSecurityRequirementCommand.prototype.type = function () {
+        return "AddSecurityRequirementCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    AddSecurityRequirementCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    AddSecurityRequirementCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Adds the new security scheme to the document.
+     * @param document
+     */
+    AddSecurityRequirementCommand.prototype.execute = function (document) {
+        console.info("[AddSecurityRequirementCommand] Executing.");
+        this._added = false;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var requirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._requirement, requirement);
+        parent.addSecurityRequirement(requirement);
+        this._added = true;
+    };
+    /**
+     * Removes the security scheme.
+     * @param document
+     */
+    AddSecurityRequirementCommand.prototype.undo = function (document) {
+        console.info("[AddSecurityRequirementCommand] Reverting.");
+        if (!this._added) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var security = parent.security;
+        var requirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._requirement, requirement);
+        var idx = this.indexOfRequirement(security, requirement);
+        if (idx !== -1) {
+            security.splice(idx, 1);
+        }
+    };
+    AddSecurityRequirementCommand.prototype.indexOfRequirement = function (requirements, requirement) {
+        var idx = 0;
+        for (var _i = 0, requirements_1 = requirements; _i < requirements_1.length; _i++) {
+            var r = requirements_1[_i];
+            if (this.isEqual(r, requirement)) {
+                return idx;
+            }
+            idx++;
+        }
+        return -1;
+    };
+    AddSecurityRequirementCommand.prototype.isEqual = function (req1, req2) {
+        var names1 = req1.securityRequirementNames();
+        var names2 = req2.securityRequirementNames();
+        if (names1.length !== names2.length) {
+            return false;
+        }
+        var rval = true;
+        names1.forEach(function (name1) {
+            if (names2.indexOf(name1) === -1) {
+                rval = false;
+            }
+        });
+        return rval;
+    };
+    return AddSecurityRequirementCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteSecurityRequirementCommand(document, parent, requirement) {
+    return new DeleteSecurityRequirementCommand(parent, requirement);
+}
+/**
+ * A command used to delete a single securityRequirement from an operation.
+ */
+var DeleteSecurityRequirementCommand = (function (_super) {
+    __extends$52(DeleteSecurityRequirementCommand, _super);
+    /**
+     * C'tor.
+     * @param {OasDocument | OasOperation} parent
+     * @param {OasSecurityRequirement} requirement
+     */
+    function DeleteSecurityRequirementCommand(parent, requirement) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        if (requirement) {
+            _this._requirement = _this.oasLibrary().writeNode(requirement);
+        }
+        return _this;
+    }
+    DeleteSecurityRequirementCommand.prototype.type = function () {
+        return "DeleteSecurityRequirementCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteSecurityRequirementCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteSecurityRequirementCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Deletes the security requirement.
+     * @param document
+     */
+    DeleteSecurityRequirementCommand.prototype.execute = function (document) {
+        console.info("[DeleteSecurityRequirementCommand] Executing.");
+        this._oldRequirement = null;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var requirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._requirement, requirement);
+        var idx = this.indexOfRequirement(parent.security, requirement);
+        if (idx !== -1) {
+            this._oldRequirement = this.oasLibrary().writeNode(parent.security[idx]);
+            parent.security.splice(idx, 1);
+        }
+    };
+    /**
+     * Restore the old (deleted) requirement.
+     * @param document
+     */
+    DeleteSecurityRequirementCommand.prototype.undo = function (document) {
+        console.info("[DeleteSecurityRequirementCommand] Reverting.");
+        if (this.isNullOrUndefined(this._oldRequirement)) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var restoredRequirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._oldRequirement, restoredRequirement);
+        parent.addSecurityRequirement(restoredRequirement);
+    };
+    DeleteSecurityRequirementCommand.prototype.indexOfRequirement = function (requirements, requirement) {
+        var idx = 0;
+        for (var _i = 0, requirements_1 = requirements; _i < requirements_1.length; _i++) {
+            var r = requirements_1[_i];
+            if (this.isEqual(r, requirement)) {
+                return idx;
+            }
+            idx++;
+        }
+        return -1;
+    };
+    DeleteSecurityRequirementCommand.prototype.isEqual = function (req1, req2) {
+        var names1 = req1.securityRequirementNames();
+        var names2 = req2.securityRequirementNames();
+        if (names1.length !== names2.length) {
+            return false;
+        }
+        var rval = true;
+        names1.forEach(function (name1) {
+            if (names2.indexOf(name1) === -1) {
+                rval = false;
+            }
+        });
+        return rval;
+    };
+    return DeleteSecurityRequirementCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -7001,6 +7264,7 @@ var commandFactory = {
     "AddPathItemCommand_30": function () { return new AddPathItemCommand_30(null, null); },
     "AddSchemaDefinitionCommand_20": function () { return new AddSchemaDefinitionCommand_20(null); },
     "AddSchemaDefinitionCommand_30": function () { return new AddSchemaDefinitionCommand_30(null); },
+    "AddSecurityRequirementCommand": function () { return new AddSecurityRequirementCommand(null, null); },
     "ChangeContactCommand_20": function () { return new ChangeContactCommand_20(null, null, null); },
     "ChangeContactCommand_30": function () { return new ChangeContactCommand_30(null, null, null); },
     "ChangeDescriptionCommand_20": function () { return new ChangeDescriptionCommand_20(null); },
@@ -7044,6 +7308,7 @@ var commandFactory = {
     "DeleteResponseCommand_30": function () { return new DeleteResponseCommand_30(null); },
     "DeleteSchemaDefinitionCommand_20": function () { return new DeleteSchemaDefinitionCommand_20(null); },
     "DeleteSchemaDefinitionCommand_30": function () { return new DeleteSchemaDefinitionCommand_30(null); },
+    "DeleteSecurityRequirementCommand": function () { return new DeleteSecurityRequirementCommand(null, null); },
     "DeleteSecuritySchemeCommand_20": function () { return new DeleteSecuritySchemeCommand_20(null); },
     "DeleteSecuritySchemeCommand_30": function () { return new DeleteSecuritySchemeCommand_30(null); },
     "DeleteServerCommand": function () { return new DeleteServerCommand(null); },
@@ -7505,6 +7770,8 @@ exports.createAddSchemaDefinitionCommand = createAddSchemaDefinitionCommand;
 exports.AddSchemaDefinitionCommand = AddSchemaDefinitionCommand;
 exports.AddSchemaDefinitionCommand_20 = AddSchemaDefinitionCommand_20;
 exports.AddSchemaDefinitionCommand_30 = AddSchemaDefinitionCommand_30;
+exports.createAddSecurityRequirementCommand = createAddSecurityRequirementCommand;
+exports.AddSecurityRequirementCommand = AddSecurityRequirementCommand;
 exports.createChangeContactCommand = createChangeContactCommand;
 exports.ChangeContactCommand = ChangeContactCommand;
 exports.ChangeContactCommand_20 = ChangeContactCommand_20;
@@ -7605,6 +7872,8 @@ exports.createDeleteSchemaDefinitionCommand = createDeleteSchemaDefinitionComman
 exports.DeleteSchemaDefinitionCommand = DeleteSchemaDefinitionCommand;
 exports.DeleteSchemaDefinitionCommand_20 = DeleteSchemaDefinitionCommand_20;
 exports.DeleteSchemaDefinitionCommand_30 = DeleteSchemaDefinitionCommand_30;
+exports.createDeleteSecurityRequirementCommand = createDeleteSecurityRequirementCommand;
+exports.DeleteSecurityRequirementCommand = DeleteSecurityRequirementCommand;
 exports.createDeleteSecuritySchemeCommand = createDeleteSecuritySchemeCommand;
 exports.DeleteSecuritySchemeCommand = DeleteSecuritySchemeCommand;
 exports.DeleteSecuritySchemeCommand_20 = DeleteSecuritySchemeCommand_20;

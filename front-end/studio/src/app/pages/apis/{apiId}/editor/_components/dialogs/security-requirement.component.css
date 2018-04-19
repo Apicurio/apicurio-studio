@@ -1,0 +1,28 @@
+
+.security-scheme-list {
+  max-height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.security-scheme-list .list-group-item-heading .name {
+
+}
+
+.security-scheme-list .list-group-item-heading .type::before {
+  content: '(';
+}
+.security-scheme-list .list-group-item-heading .type {
+  font-weight: normal;
+}
+.security-scheme-list .list-group-item-heading .type::after {
+  content: ')';
+}
+
+.security-scheme-list .list-group-item-container {
+  padding: 10px 15px;
+}
+.security-scheme-list .list-group-item-container .instructions {
+  text-decoration: underline;
+  margin-bottom: 5px;
+}

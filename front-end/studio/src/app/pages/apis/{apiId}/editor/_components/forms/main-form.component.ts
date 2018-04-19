@@ -24,10 +24,13 @@ import {
     Oas30SecurityScheme,
     OasContact,
     OasDocument,
+    OasLibraryUtils,
+    OasSecurityRequirement,
     OasSecurityScheme,
     OasTag
 } from "oai-ts-core";
 import {
+    createAddSecurityRequirementCommand,
     createChangeContactCommand,
     createChangeDescriptionCommand,
     createChangeLicenseCommand,
@@ -37,10 +40,12 @@ import {
     createChangeVersionCommand,
     createDeleteContactCommand,
     createDeleteLicenseCommand,
+    createDeleteSecurityRequirementCommand,
     createDeleteSecuritySchemeCommand,
     createDeleteTagCommand,
     createNewSecuritySchemeCommand,
     createNewTagCommand,
+    createReplaceSecurityRequirementCommand,
     ICommand
 } from "oai-ts-commands";
 import {ILicense, LicenseService} from "../../_services/license.service";
@@ -52,12 +57,19 @@ import {
 import {ObjectUtils} from "../../_util/object.util";
 import {ContactInfo} from "../dialogs/set-contact.component";
 import {SecurityScheme30DialogComponent, SecurityScheme30EventData} from "../dialogs/security-scheme-30.component";
+import {
+    ChangeSecurityRequirementEvent,
+    SecurityRequirementDialogComponent,
+    SecurityRequirementEventData
+} from "../dialogs/security-requirement.component";
 
 
 export abstract class MainFormComponent {
 
     @Input() document: OasDocument;
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+
+    @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
 
     constructor(public licenseService: LicenseService) {}
 
@@ -313,10 +325,18 @@ export abstract class MainFormComponent {
     }
 
     /**
+     * Returns true if there is at least one security requirement defined.
+     * @return {boolean}
+     */
+    public hasSecurityRequirements(): boolean {
+        return this.securityRequirements().length > 0;
+    }
+
+    /**
      * Returns true if there is at least one security scheme defined.
      * @return {boolean}
      */
-    public hasSecurity(): boolean {
+    public hasSecuritySchemes(): boolean {
         return this.securitySchemes().length > 0;
     }
 
@@ -325,6 +345,14 @@ export abstract class MainFormComponent {
      * @return {OasSecurityScheme[]}
      */
     public abstract securitySchemes(): OasSecurityScheme[];
+
+    /**
+     * Returns all defined security requirements.
+     * @return {OasSecurityRequirement[]}
+     */
+    public securityRequirements(): OasSecurityRequirement[] {
+        return this.document.security ? this.document.security : [];
+    }
 
     /**
      * Called when the user changes the description of a security scheme in the table of schemes.
@@ -343,25 +371,75 @@ export abstract class MainFormComponent {
     public abstract addSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
 
     /**
+     * Called when the user adds a new security requirement.
+     * @param {SecurityRequirementEventData} event
+     */
+    public addSecurityRequirement(event: SecurityRequirementEventData): void {
+        let requirement: OasSecurityRequirement = this.document.createSecurityRequirement();
+        let library: OasLibraryUtils = new OasLibraryUtils();
+        library.readNode(event, requirement);
+        let command: ICommand = createAddSecurityRequirementCommand(this.document, this.document, requirement);
+        this.onCommand.emit(command);
+    }
+
+    /**
      * Called when the user changes an existing security scheme.
      * @param {SecurityScheme20EventData | SecurityScheme30EventData} event
      */
     public abstract changeSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
 
     /**
-     * Deletes a security scheme.
-     * @param {Oas20SecurityScheme | Oas30SecurityScheme} scheme
+     * Called when the user changes an existing Security Requirement.
+     * @param {SecurityRequirementEventData} event
      */
-    public deleteSecurityScheme(scheme: Oas20SecurityScheme | Oas30SecurityScheme): void {
+    public changeSecurityRequirement(event: ChangeSecurityRequirementEvent): void {
+        let newRequirement: OasSecurityRequirement = this.document.createSecurityRequirement();
+        let library: OasLibraryUtils = new OasLibraryUtils();
+        library.readNode(event.data, newRequirement);
+        let command: ICommand = createReplaceSecurityRequirementCommand(this.document, event.requirement, newRequirement);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Deletes a security scheme.
+     * @param {OasSecurityScheme} scheme
+     */
+    public deleteSecurityScheme(scheme: OasSecurityScheme): void {
         let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
         this.onCommand.emit(command);
+    }
+
+    /**
+     * Deletes a security requirement.
+     * @param {OasSecurityRequirement} requirement
+     */
+    public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
+        let command: ICommand = createDeleteSecurityRequirementCommand(this.document, this.document, requirement);
+        this.onCommand.emit(command);
+    }
+
+    /**
+     * Returns a summary of the requirement.
+     * @param {OasSecurityRequirement} requirement
+     * @return {string}
+     */
+    public securityRequirementSummary(requirement: OasSecurityRequirement): string {
+        return requirement.securityRequirementNames().join(", ");
     }
 
     /**
      * Opens the security scheme dialog for adding or editing a security scheme.
      * @param {OasSecurityScheme} scheme
      */
-    public abstract openSecuritySchemeDialog(scheme?: OasSecurityScheme);
+    public abstract openSecuritySchemeDialog(scheme?: OasSecurityScheme): void;
+
+    /**
+     * Opens the security requirement dialog for adding or editing a security requirement.
+     * @param {OasSecurityRequirement} requirement
+     */
+    public openSecurityRequirementDialog(requirement?: OasSecurityRequirement): void {
+        this.securityRequirementDialog.open(this.document, requirement);
+    }
 
     /**
      * Returns true if the form is for an OpenAPI 3.x document.

@@ -209,11 +209,11 @@
     <!-- Global Servers -->
     <servers-section *ngIf="is3xForm()" [parent]="document" (onCommand)="onCommand.emit($event)" [description]="'Configure global servers for your API in this section.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
-    <!-- Security -->
+    <!-- Security Schemes -->
     <div class="section security-section panel-group">
         <div class="section-header panel-title">
-            <a [class.collapsed]="!hasContact()" data-toggle="collapse" data-target="#security-section-body">
-                <span class="section-label">SECURITY</span>
+            <a [class.collapsed]="!hasSecuritySchemes()" data-toggle="collapse" data-target="#security-section-body">
+                <span class="section-label">SECURITY SCHEMES</span>
             </a>
             <context-help>
                 <p>
@@ -228,16 +228,16 @@
             </context-help>
             <button class="btn btn-sm btn-default pull-right" (click)="openSecuritySchemeDialog()"><span class="fa fa-plus"></span></button>
         </div>
-        <div class="section-body collapse" id="security-section-body" [class.in]="hasSecurity()">
+        <div class="section-body collapse" id="security-section-body" [class.in]="hasSecuritySchemes()">
 
-            <div class="alert alert-info" *ngIf="!hasSecurity()">
+            <div class="alert alert-info" *ngIf="!hasSecuritySchemes()">
                 <span class="pficon pficon-info"></span>
                 <strong>None Found</strong>
                 <span>No security options have been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="openSecuritySchemeDialog()">Add Security</button>
+                <button class="btn btn-primary btn-sm pull-right" (click)="openSecuritySchemeDialog()">Add Scheme</button>
             </div>
 
-            <table class="table table-striped table-bordered api-operation-parameters" *ngIf="hasSecurity()">
+            <table class="table table-striped table-bordered" *ngIf="hasSecuritySchemes()">
                 <thead>
                 <tr>
                     <th width="20%">Name</th>
@@ -268,6 +268,60 @@
         </div>
     </div>
 
+    <!-- Security Requirements -->
+    <div class="section security-requirements-section panel-group">
+        <div class="section-header panel-title">
+            <a [class.collapsed]="!hasSecurityRequirements()" data-toggle="collapse" data-target="#security-requirements-section-body">
+                <span class="section-label">SECURITY REQUIREMENTS</span>
+            </a>
+            <context-help>
+                <p>
+                    Use this section to configure which of the Security Schemes are needed in order to invoke operations
+                    in the API.  You can add multiple security requirements, resulting in consumers being allowed to
+                    provided <strong>any one</strong> of them.  Each security requirement consists of one or more
+                    Security Scheme and (in the case of certain security types like OAuth) a list of the scopes the
+                    consumer must have.
+                </p>
+                <p>
+                    <i>Note</i>: security requirements can also be declared at the <strong>Operation</strong> level, which will
+                    override the settings configured here.
+                </p>
+            </context-help>
+            <button class="btn btn-sm btn-default pull-right" (click)="openSecurityRequirementDialog()"><span class="fa fa-plus"></span></button>
+        </div>
+        <div class="section-body collapse" id="security-requirements-section-body" [class.in]="hasSecurityRequirements()">
+
+            <div class="alert alert-info" *ngIf="!hasSecurityRequirements()">
+                <span class="pficon pficon-info"></span>
+                <strong>None Found</strong>
+                <span>No global security requirements have been configured for this API.</span>
+                <button class="btn btn-primary btn-sm pull-right" (click)="openSecurityRequirementDialog()">Add Requirement</button>
+            </div>
+
+            <table class="table table-striped table-bordered" *ngIf="hasSecurityRequirements()">
+                <thead>
+                <tr>
+                    <th width="90%" nowrap class="pre-actions">Security Requirement</th>
+                    <th class="actions" width="1%"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let requirement of securityRequirements()">
+                    <td class="requirement-name pre-actions">{{ securityRequirementSummary(requirement) }}</td>
+                    <td class="actions" nowrap>
+                        <div>
+                            <button class="btn btn-sm btn-default" (click)="openSecurityRequirementDialog(requirement)"
+                                    title="Edit security requirement."><span class="pficon pficon-edit"></span></button>
+                            <button class="btn btn-sm btn-default" (click)="deleteSecurityRequirement(requirement)"
+                                    title="Delete security requirement."><span class="pficon pficon-delete"></span></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>
     <set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>
     <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
@@ -275,5 +329,7 @@
                                (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-20-dialog>
     <security-scheme-30-dialog #securityScheme30Dialog (onSchemeAdded)="addSecurityScheme($event)"
                                (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-30-dialog>
+    <security-requirement-dialog #securityRequirementDialog (onAdded)="addSecurityRequirement($event)"
+                                 (onChanged)="changeSecurityRequirement($event)"></security-requirement-dialog>
 
 </div>

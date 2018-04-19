@@ -16,9 +16,9 @@
  */
 
 import {Component, Input} from "@angular/core";
-import {ApiDesignChange} from "../../../../models/api-design-change.model";
+import {ApiDesignChange} from "../../models/api-design-change.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
-import {PublishApi} from "../../../../models/publish-api.model";
+import {PublishApi} from "../../models/publish-api.model";
 
 
 @Component({
@@ -78,6 +78,7 @@ export class ActivityItemComponent {
             case "AddPathItemCommand_30":
             case "AddSchemaDefinitionCommand_20":
             case "AddSchemaDefinitionCommand_30":
+            case "AddSecurityRequirementCommand":
             case "AddExampleCommand_30":
                 rval = "plus";
                 break;
@@ -115,6 +116,7 @@ export class ActivityItemComponent {
             case "ChangeVersionCommand_30":
             case "SetExampleCommand_20":
             case "SetExampleCommand_30":
+            case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
                 break;
             case "DeleteAllParametersCommand_20":
@@ -136,6 +138,7 @@ export class ActivityItemComponent {
             case "DeleteSchemaDefinitionCommand_30":
             case "DeleteSecuritySchemeCommand_20":
             case "DeleteSecuritySchemeCommand_30":
+            case "DeleteSecurityRequirementCommand":
             case "DeleteServerCommand":
             case "DeleteTagCommand_20":
             case "DeleteTagCommand_30":
@@ -222,6 +225,9 @@ export class ActivityItemComponent {
             case "AddSchemaDefinitionCommand_20":
             case "AddSchemaDefinitionCommand_30":
                 rval = "added a Schema Definition named " + this.command()["_newDefinitionName"] + ".";
+                break;
+            case "AddSecurityRequirementCommand":
+                rval = `added a Security Requirement at location ${this.command()["_parentPath"]}.`;
                 break;
             case "ChangeContactCommand_20":
             case "ChangeContactCommand_30":
@@ -332,6 +338,9 @@ export class ActivityItemComponent {
             case "DeleteLicenseCommand_30":
                 rval = "deleted the API's License information.";
                 break;
+            case "DeleteSecurityRequirementCommand":
+                rval = `deleted a Security Requirement at location ${this.command()["_parentPath"]}.`;
+                break;
             case "NewMediaTypeCommand":
                 rval = "added a new Media Type named '" + this.command()["_newMediaType"] + "' at location " + this.command()["_nodePath"] + ".";
                 break;
@@ -389,6 +398,9 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
                 rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
+                break;
+            case "ReplaceSecurityRequirementCommand":
+                rval = `modified the details of a Security Requirement at location ${this.command()["_parentPath"]}.`;
                 break;
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":

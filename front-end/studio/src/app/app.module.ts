@@ -50,7 +50,6 @@ import {CreateApiFormComponent} from './pages/apis/create/_components/create-for
 import {ApisListComponent} from './pages/apis/_components/apis-list.component';
 import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component';
 import {DropDownComponent} from './components/common/drop-down.component';
-import {ActivityItemComponent} from './pages/apis/{apiId}/_components/activity-item.component';
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
 import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
@@ -116,6 +115,8 @@ import {CurrentUserService} from "./services/current-user.service";
 import {LinkedAccountsService} from "./services/accounts.service";
 import {ApisService} from "./services/apis.service";
 import {FormErrorMessageComponent} from "./components/common/form-error-message.component";
+import {SecurityRequirementDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-requirement.component";
+import {ActivityItemComponent} from "./components/common/activity-item.component";
 
 @NgModule({
     imports: [
@@ -139,7 +140,8 @@ import {FormErrorMessageComponent} from "./components/common/form-error-message.
         AddFormDataParamDialogComponent, AddDefinitionDialogComponent, AddMediaTypeDialogComponent, Main20FormComponent,
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
         BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
-        EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent, FormErrorMessageComponent
+        EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent, FormErrorMessageComponent,
+        SecurityRequirementDialogComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

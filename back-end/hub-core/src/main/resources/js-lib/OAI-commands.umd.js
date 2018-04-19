@@ -7241,6 +7241,150 @@ var DeleteSecurityRequirementCommand = (function (_super) {
     return DeleteSecurityRequirementCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createReplaceSecurityRequirementCommand(document, old, replacement) {
+    return new ReplaceSecurityRequirementCommand(old, replacement);
+}
+/**
+ * A command used to replace a definition schema with a newer version.
+ */
+var ReplaceSecurityRequirementCommand = (function (_super) {
+    __extends$53(ReplaceSecurityRequirementCommand, _super);
+    /**
+     * C'tor.
+     * @param {OasSecurityRequirement} old
+     * @param {OasSecurityRequirement} replacement
+     */
+    function ReplaceSecurityRequirementCommand(old, replacement) {
+        var _this = _super.call(this) || this;
+        if (old) {
+            _this._parentPath = _this.oasLibrary().createNodePath(old.parent());
+            _this._oldRequirement = _this.oasLibrary().writeNode(old);
+        }
+        if (replacement) {
+            _this._newRequirement = _this.oasLibrary().writeNode(replacement);
+        }
+        return _this;
+    }
+    /**
+     * @return {string}
+     */
+    ReplaceSecurityRequirementCommand.prototype.type = function () {
+        return "ReplaceSecurityRequirementCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    ReplaceSecurityRequirementCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    ReplaceSecurityRequirementCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Replaces the security requirement with a new one.
+     * @param document
+     */
+    ReplaceSecurityRequirementCommand.prototype.execute = function (document) {
+        console.info("[ReplaceSecurityRequirementCommand] Executing.");
+        this._replaced = false;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var oldRequirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._oldRequirement, oldRequirement);
+        var oldIdx = this.indexOfRequirement(parent.security, oldRequirement);
+        if (oldIdx === -1) {
+            return;
+        }
+        var newRequirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._newRequirement, newRequirement);
+        parent.security[oldIdx] = newRequirement;
+        this._replaced = true;
+    };
+    /**
+     * Restores the old security requirement.
+     * @param document
+     */
+    ReplaceSecurityRequirementCommand.prototype.undo = function (document) {
+        console.info("[ReplaceSecurityRequirementCommand] Reverting.");
+        if (!this._replaced) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        var replacementRequirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._newRequirement, replacementRequirement);
+        var idx = this.indexOfRequirement(parent.security, replacementRequirement);
+        if (idx === -1) {
+            return;
+        }
+        var originalRequirement = parent.createSecurityRequirement();
+        this.oasLibrary().readNode(this._oldRequirement, originalRequirement);
+        parent.security[idx] = originalRequirement;
+    };
+    ReplaceSecurityRequirementCommand.prototype.indexOfRequirement = function (requirements, requirement) {
+        var idx = 0;
+        for (var _i = 0, requirements_1 = requirements; _i < requirements_1.length; _i++) {
+            var r = requirements_1[_i];
+            if (this.isEqual(r, requirement)) {
+                return idx;
+            }
+            idx++;
+        }
+        return -1;
+    };
+    ReplaceSecurityRequirementCommand.prototype.isEqual = function (req1, req2) {
+        var names1 = req1.securityRequirementNames();
+        var names2 = req2.securityRequirementNames();
+        if (names1.length !== names2.length) {
+            return false;
+        }
+        var rval = true;
+        names1.forEach(function (name1) {
+            if (names2.indexOf(name1) === -1) {
+                rval = false;
+            }
+        });
+        return rval;
+    };
+    return ReplaceSecurityRequirementCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -7349,6 +7493,7 @@ var commandFactory = {
     "ReplacePathItemCommand_30": function () { return new ReplacePathItemCommand_30(null, null); },
     "ReplaceSchemaDefinitionCommand_20": function () { return new ReplaceSchemaDefinitionCommand_20(null, null); },
     "ReplaceSchemaDefinitionCommand_30": function () { return new ReplaceSchemaDefinitionCommand_30(null, null); },
+    "ReplaceSecurityRequirementCommand": function () { return new ReplaceSecurityRequirementCommand(null, null); },
     "SetExampleCommand_20": function () { return new SetExampleCommand_20(null, null, null); },
     "SetExampleCommand_30": function () { return new SetExampleCommand_30(null, null); },
 };
@@ -7941,6 +8086,8 @@ exports.ReplacePathItemCommand_30 = ReplacePathItemCommand_30;
 exports.createReplaceSchemaDefinitionCommand = createReplaceSchemaDefinitionCommand;
 exports.ReplaceSchemaDefinitionCommand_20 = ReplaceSchemaDefinitionCommand_20;
 exports.ReplaceSchemaDefinitionCommand_30 = ReplaceSchemaDefinitionCommand_30;
+exports.createReplaceSecurityRequirementCommand = createReplaceSecurityRequirementCommand;
+exports.ReplaceSecurityRequirementCommand = ReplaceSecurityRequirementCommand;
 exports.createSetExampleCommand = createSetExampleCommand;
 exports.SetExampleCommand = SetExampleCommand;
 exports.SetExampleCommand_20 = SetExampleCommand_20;

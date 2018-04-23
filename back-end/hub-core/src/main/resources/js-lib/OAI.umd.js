@@ -15755,7 +15755,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
      */
     Oas30InvalidPropertyValueValidationRule.prototype.isValidRequestBodyOperation = function (operation) {
         var method = operation.method();
-        return method === "put" || method === "post" || method === "options";
+        return method === "put" || method === "post" || method === "options" || method === "patch";
     };
     Oas30InvalidPropertyValueValidationRule.prototype.visitEncoding = function (node) {
         if (node.getHeaders().length > 0) {
@@ -15802,7 +15802,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
     };
     Oas30InvalidPropertyValueValidationRule.prototype.visitOperation = function (node) {
         if (this.hasValue(node.requestBody)) {
-            this.reportIfInvalid("OP-3-003", this.isValidRequestBodyOperation(node), node, "The \"requestBody\" property is only supported for POST, PUT, and OPTIONS operations.");
+            this.reportIfInvalid("OP-3-003", this.isValidRequestBodyOperation(node), node, "The \"requestBody\" property is only supported for POST, PUT, PATCH, and OPTIONS operations.");
         }
     };
     Oas30InvalidPropertyValueValidationRule.prototype.visitResponses = function (node) {

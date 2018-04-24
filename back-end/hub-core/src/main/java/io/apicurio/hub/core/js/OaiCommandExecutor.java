@@ -16,15 +16,12 @@
 
 package io.apicurio.hub.core.js;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.PooledObject;
@@ -56,31 +53,7 @@ public class OaiCommandExecutor {
 
             @Override
             public ScriptEngine create() throws Exception {
-                logger.debug("Creating and initializing a Nashorn script engine.");
-                long start = System.currentTimeMillis();
-                ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-                if (engine == null) {
-                    throw new Exception("Failed to create a Nashorn script engine!");
-                }
-                
-                URL consoleJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-console.js");
-                if (consoleJsUrl == null) { throw new Exception("Failed to load script: core-console.js"); }
-                URL oaiJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI.umd.js");
-                if (oaiJsUrl == null) { throw new Exception("Failed to load script: OAI.umd.js"); }
-                URL oaiCommandsJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI-commands.umd.js");
-                if (oaiCommandsJsUrl == null) { throw new Exception("Failed to load script: OAI-commands.umd.js"); }
-                URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
-                if (libraryJsUrl == null) { throw new Exception("Failed to load script: core-library.js"); }
-
-                // Load the JS libraries into the engine
-                engine.eval(IOUtils.toString(consoleJsUrl));
-                engine.eval(IOUtils.toString(oaiJsUrl));
-                engine.eval(IOUtils.toString(oaiCommandsJsUrl));
-                engine.eval(IOUtils.toString(libraryJsUrl));
-                long end = System.currentTimeMillis();
-                logger.debug("Initialized a Nashorn script engine in {} millis.", end - start);
-                
-                return engine;
+                return OaiScriptEngineFactory.createScriptEngine();
             }
 
             @Override

@@ -3818,16 +3818,16 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-oai-ts-commands@0.2.27:
-  version "0.2.27"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.27.tgz#79f1b1d832373f0505ca24f430572bb7e791b046"
+oai-ts-commands@0.2.28:
+  version "0.2.28"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.28.tgz#ad6b981c58a8b0e02cc0d7874ac05be2c7c9ee66"
   dependencies:
     core-js "2.4.1"
-    oai-ts-core "0.2.14"
+    oai-ts-core "0.2.15"
 
-oai-ts-core@0.2.14:
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.14.tgz#a7c5dba44987beae17793dbb7c9a205f8f78107b"
+oai-ts-core@0.2.15:
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.15.tgz#2a889e2d813c5fe5eb8430fd6333b92487743fd8"
   dependencies:
     core-js "2.4.1"
 

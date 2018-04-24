@@ -1,0 +1,119 @@
+{
+  "interfaces": [
+    {
+      "package": "org.example.api",
+      "name": "Beers",
+      "path": "/beers",
+      "imports": [
+        "org.example.api.beans.Beer"
+      ],
+      "methods": [
+        {
+          "name": "listAllBeers",
+          "path": null,
+          "method": "get",
+          "produces": [ "application/json" ],
+          "consumes": [],
+          "arguments": [
+            {
+            }
+          ],
+          "return": {
+            "collection": "list",
+            "type": "org.example.api.beans.Beer"
+          }
+        },
+        {
+          "name": "getBeer",
+          "path": "{beerId}",
+          "method": "get",
+          "produces": [ "application/json" ],
+          "consumes": [],
+          "arguments": [
+            {
+              "name": "beerId",
+              "in": "path",
+              "type": "int"
+            }
+          ],
+          "return": {
+            "collection": null,
+            "type": "org.example.api.beans.Beer"
+          }
+        }
+      ]
+    }
+  ],
+  "beans": [
+    {
+      "package": "org.example.api.beans",
+      "name": "Beer",
+      "$schema": {
+        "title": "Root Type for Beer",
+        "description": "The root of the Beer type's schema.",
+        "required": [
+          "abv",
+          "id",
+          "name",
+          "style",
+          "breweryId",
+          "ounces"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "abv": {
+            "format": "double",
+            "type": "number"
+          },
+          "ibu": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "style": {
+            "type": "string"
+          },
+          "breweryId": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "ounces": {
+            "format": "double",
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "package": "org.example.api.beans",
+      "name": "Brewery",
+      "$schema": {
+        "title": "Root Type for Brewery",
+        "description": "The root of the Brewery type's schema.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+
+}

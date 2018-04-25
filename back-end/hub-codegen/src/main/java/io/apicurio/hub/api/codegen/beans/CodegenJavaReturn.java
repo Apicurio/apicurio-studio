@@ -23,6 +23,7 @@ public class CodegenJavaReturn {
 
     private String collection;
     private String type;
+    private String format;
 
     /**
      * Constructor.
@@ -56,5 +57,19 @@ public class CodegenJavaReturn {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return the format
+     */
+    public String getFormat() {
+        return format;
+    }
+
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
     }
 }

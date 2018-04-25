@@ -4,27 +4,39 @@
       "package": "org.example.api",
       "name": "Beers",
       "path": "/beers",
-      "imports": [
-        "org.example.api.beans.Beer"
-      ],
       "methods": [
         {
           "name": "listAllBeers",
+          "description": "Returns all of the beers in the database.",
           "path": null,
           "method": "get",
           "produces": [ "application/json" ],
           "consumes": [],
-          "arguments": [
-            {
-            }
-          ],
+          "arguments": [],
           "return": {
             "collection": "list",
             "type": "org.example.api.beans.Beer"
           }
         },
         {
+          "name": "addBeer",
+          "description": "Adds a single beer to the dataset.",
+          "path": null,
+          "method": "post",
+          "produces": [],
+          "consumes": ["application/json"],
+          "arguments": [
+          	{
+          		"name": "body",
+          		"in": "body",
+          		"type": "org.example.api.beans.Beer",
+          		"required": true
+          	}
+          ]
+        },
+        {
           "name": "getBeer",
+          "description": "Returns full information about a single beer.",
           "path": "{beerId}",
           "method": "get",
           "produces": [ "application/json" ],
@@ -33,13 +45,55 @@
             {
               "name": "beerId",
               "in": "path",
-              "type": "int"
+              "type": "integer",
+              "format": "int32",
+              "required": true
             }
           ],
           "return": {
             "collection": null,
             "type": "org.example.api.beans.Beer"
           }
+        },
+        {
+          "name": "updateBeer",
+          "description": "Updates information about a single beer.",
+          "path": "{beerId}",
+          "method": "put",
+          "produces": [],
+          "consumes": ["application/json"],
+          "arguments": [
+            {
+              "name": "beerId",
+              "in": "path",
+              "type": "integer",
+              "format": "int32",
+              "required": true
+            },
+          	{
+          		"name": "body",
+          		"in": "body",
+          		"type": "org.example.api.beans.Beer",
+          		"required": true
+          	}
+          ]
+        },
+        {
+          "name": "deleteBeer",
+          "description": "Removes a single beer from the data set.",
+          "path": "{beerId}",
+          "method": "delete",
+          "produces": [],
+          "consumes": [],
+          "arguments": [
+            {
+              "name": "beerId",
+              "in": "path",
+              "type": "integer",
+              "format": "int32",
+              "required": true
+            }
+          ]
         }
       ]
     }

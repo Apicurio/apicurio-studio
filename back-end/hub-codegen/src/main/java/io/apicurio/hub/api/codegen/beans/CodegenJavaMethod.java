@@ -27,6 +27,7 @@ import java.util.Set;
 public class CodegenJavaMethod {
 
     private String name;
+    private String description;
     private String path;
     private String method;
     private Set<String> produces = new HashSet<>();
@@ -136,6 +137,20 @@ public class CodegenJavaMethod {
      */
     public void setReturn(CodegenJavaReturn _return) {
         this._return = _return;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
     
 }

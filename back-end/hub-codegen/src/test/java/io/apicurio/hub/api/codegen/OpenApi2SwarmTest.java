@@ -18,13 +18,15 @@ package io.apicurio.hub.api.codegen;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -52,17 +54,45 @@ public class OpenApi2SwarmTest {
         };
         generator.setOpenApiDocument(getClass().getResource("beer-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
-        FileUtils.writeByteArrayToFile(new File("C:\\Temp\\output.zip"), outputStream.toByteArray());
         
+//        FileUtils.writeByteArrayToFile(new File("C:\\Temp\\output.zip"), outputStream.toByteArray());
+        
+        Set<String> expectedFiles = new HashSet<>();
+        expectedFiles.add("generated-api/pom.xml");
+        expectedFiles.add("generated-api/src/main/java/org/example/api/JaxRsApplication.java");
+        expectedFiles.add("generated-api/src/main/java/org/example/api/Beers.java");
+        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Beer.java");
+        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Brewery.java");
+
+        // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
-                String name = zipEntry.getName();
-                System.out.println(name);
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+                    Assert.assertNotNull(name);
+                    Assert.assertTrue(expectedFiles.contains(name));
+                    
+                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
+                    System.out.println("-----");
+                    System.out.println(actual);
+                    System.out.println("-----");
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
                 zipEntry = zipInputStream.getNextEntry();
             }
         }
         
+    }
+
+    private static String normalizeString(String value) {
+        value = value.replaceAll("\\r\\n", "\n");
+        value = value.replaceAll("\\r", "\n");
+        return value;
     }
 
 }

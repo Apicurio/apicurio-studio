@@ -29,7 +29,6 @@ public class CodegenJavaInterface {
     private String _package;
     private String name;
     private String path;
-    private Set<String> imports = new HashSet<>();
     private List<CodegenJavaMethod> methods = new ArrayList<>();
     
     /**
@@ -78,20 +77,6 @@ public class CodegenJavaInterface {
      */
     public void setPath(String path) {
         this.path = path;
-    }
-
-    /**
-     * @return the imports
-     */
-    public Set<String> getImports() {
-        return imports;
-    }
-
-    /**
-     * @param imports the imports to set
-     */
-    public void setImports(Set<String> imports) {
-        this.imports = imports;
     }
 
     /**

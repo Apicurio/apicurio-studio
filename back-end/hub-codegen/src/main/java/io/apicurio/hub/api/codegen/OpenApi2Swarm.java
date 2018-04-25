@@ -54,6 +54,7 @@ import io.apicurio.hub.api.codegen.beans.CodegenJavaArgument;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
+import io.apicurio.hub.api.codegen.js.CodegenExecutor;
 import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 
 
@@ -129,7 +130,15 @@ public class OpenApi2Swarm {
             zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/pom.xml"));
             zos.write(generatePomXml().getBytes());
             zos.closeEntry();
-            
+
+            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/openapi.json"));
+            zos.write(this.openApiDoc.getBytes());
+            zos.closeEntry();
+
+            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/microprofile-config.properties"));
+            zos.write(generateMicroprofileConfigProperties().getBytes());
+            zos.closeEntry();
+
             zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java"));
             zos.write(generateJaxRsApplication().getBytes());
             zos.closeEntry();
@@ -166,8 +175,11 @@ public class OpenApi2Swarm {
      * deserialized into a {@link CodegenInfo} object.
      */
     protected String processApiDoc() throws IOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not yet implemented.");
+        try {
+            return CodegenExecutor.executeCodegen(openApiDoc);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -180,10 +192,19 @@ public class OpenApi2Swarm {
     }
 
     /**
+     * Generates the microprofile-config.properties file to include in the generated project.
+     */
+    private String generateMicroprofileConfigProperties() throws IOException {
+        String template = IOUtils.toString(getClass().getResource("microprofile-config.properties"));
+        return template;
+    }
+
+    /**
      * Generates the JaxRsApplication java class.
      */
     private String generateJaxRsApplication() throws IOException {
         TypeSpec jaxRsApp = TypeSpec.classBuilder(ClassName.get(this.settings.javaPackage, "JaxRsApplication"))
+                .addModifiers(Modifier.PUBLIC)
                 .superclass(ClassName.get("javax.ws.rs.core", "Application"))
                 .addAnnotation(ClassName.get("javax.enterprise.context", "ApplicationScoped"))
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "ApplicationPath"))
@@ -203,7 +224,8 @@ public class OpenApi2Swarm {
         // Create the JAX-RS interface spec itself.
         Builder interfaceBuilder = TypeSpec
                 .interfaceBuilder(ClassName.get(_interface.getPackage(), _interface.getName()));
-        interfaceBuilder.addAnnotation(ClassName.get("javax.enterprise.context", "ApplicationScoped"))
+        interfaceBuilder.addModifiers(Modifier.PUBLIC)
+                .addAnnotation(ClassName.get("javax.enterprise.context", "ApplicationScoped"))
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Path"))
                         .addMember("value", "$S", _interface.getPath()).build())
                 .addJavadoc("A JAX-RS interface.  An implementation of this interface must be provided.\n");

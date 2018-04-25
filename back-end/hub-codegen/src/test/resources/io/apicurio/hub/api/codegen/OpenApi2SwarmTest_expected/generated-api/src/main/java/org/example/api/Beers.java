@@ -17,7 +17,7 @@ import org.example.api.beans.Beer;
  */
 @ApplicationScoped
 @Path("/beers")
-interface Beers {
+public interface Beers {
   /**
    * Returns all of the beers in the database.
    */

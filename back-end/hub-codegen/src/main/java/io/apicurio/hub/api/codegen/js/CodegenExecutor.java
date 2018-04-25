@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.js;
+package io.apicurio.hub.api.codegen.js;
 
 import java.net.URL;
-import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 
@@ -31,30 +29,22 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.apicurio.hub.api.codegen.beans.CodegenInfo;
+import io.apicurio.hub.core.js.OaiScriptEngineFactory;
+
 /**
- * A service used to execute commands on an OAI document.  This executor uses 
- * Java's support for executing JavaScript code (via Nashorn) to leverage the
- * oai-ts-core and oai-ts-commands TypeScript libraries.  This libraries support
- * reading/writing (oai-ts-core) and manipulating (oai-ts-commands) OpenAPI
- * documents.
- * 
- * The executor requires an OAI document and a sequence of commands (serialized
- * as JSON).  The commands are executed in sequence against the document.  The
- * result is a (potentially) mutated OAI document as a string.
- * 
  * @author eric.wittmann@gmail.com
  */
-@ApplicationScoped
-public class OaiCommandExecutor {
+public class CodegenExecutor {
 
-    private static Logger logger = LoggerFactory.getLogger(OaiCommandExecutor.class);
+    private static Logger logger = LoggerFactory.getLogger(CodegenExecutor.class);
     private static ObjectPool<ScriptEngine> enginePool;
     static {
         enginePool = new GenericObjectPool<>(new BasePooledObjectFactory<ScriptEngine>() {
 
             @Override
             public ScriptEngine create() throws Exception {
-                URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
+                URL libraryJsUrl = CodegenExecutor.class.getClassLoader().getResource("js-lib/codegen-library.js");
                 return OaiScriptEngineFactory.createScriptEngine(libraryJsUrl);
             }
 
@@ -64,30 +54,21 @@ public class OaiCommandExecutor {
             }
         });
     }
-    
+
     /**
-     * Executes the given sequence of commands (as serialized JSON) against the
-     * given OAI document.  Returns the document after the commands have been
-     * executed.
+     * Executes the codegen logic on the given OAI document, returning a {@link CodegenInfo} object for it.
      * @param oaiDocument
-     * @param commands
      */
-    public String executeCommands(String oaiDocument, List<String> commands) throws OaiCommandException {
-        if (commands == null || commands.isEmpty()) {
-            return oaiDocument;
-        }
+    public static String executeCodegen(String oaiDocument) throws Exception {
         ScriptEngine engine = null;
         try {
             engine = enginePool.borrowObject();
             final Invocable invocable = (Invocable) engine;
             
-            String [] cmdList = commands.toArray(new String[commands.size()]);
-            String mutatedOaiDoc = invocable.invokeFunction("executeCommands", oaiDocument, cmdList).toString();
-            
-            return mutatedOaiDoc;
+            return invocable.invokeFunction("executeCodegen", oaiDocument).toString();
         } catch (Exception e) {
-            logger.error("Error executing commands.", e);
-            throw new OaiCommandException(e);
+            logger.error("Error executing codegen.", e);
+            throw new Exception(e);
         } finally {
             if (engine != null) {
                 try { enginePool.returnObject(engine); } catch (Exception e) {}

@@ -9,5 +9,5 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationScoped
 @ApplicationPath("/")
-class JaxRsApplication extends Application {
+public class JaxRsApplication extends Application {
 }

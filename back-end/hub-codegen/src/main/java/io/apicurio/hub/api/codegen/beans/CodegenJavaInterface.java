@@ -17,9 +17,7 @@
 package io.apicurio.hub.api.codegen.beans;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author eric.wittmann@gmail.com

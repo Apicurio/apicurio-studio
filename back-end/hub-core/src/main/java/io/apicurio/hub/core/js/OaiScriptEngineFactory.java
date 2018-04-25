@@ -33,7 +33,17 @@ public class OaiScriptEngineFactory {
 
     private static Logger logger = LoggerFactory.getLogger(OaiScriptEngineFactory.class);
 
-    public static final ScriptEngine createScriptEngine() throws Exception {
+    public static void debug(String message) {
+        logger.debug(message);
+    }
+    public static void trace(String message) {
+        logger.trace(message);
+    }
+    public static void error(Object error) {
+        logger.error(error.toString());
+    }
+
+    public static final ScriptEngine createScriptEngine(URL libraryJsUrl) throws Exception {
         logger.debug("Creating and initializing a Nashorn script engine.");
         long start = System.currentTimeMillis();
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
@@ -41,14 +51,14 @@ public class OaiScriptEngineFactory {
             throw new Exception("Failed to create a Nashorn script engine!");
         }
         
-        URL consoleJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-console.js");
+        URL consoleJsUrl = OaiScriptEngineFactory.class.getClassLoader().getResource("js-lib/core-console.js");
         if (consoleJsUrl == null) { throw new Exception("Failed to load script: core-console.js"); }
-        URL oaiJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI.umd.js");
+        URL oaiJsUrl = OaiScriptEngineFactory.class.getClassLoader().getResource("js-lib/OAI.umd.js");
         if (oaiJsUrl == null) { throw new Exception("Failed to load script: OAI.umd.js"); }
-        URL oaiCommandsJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/OAI-commands.umd.js");
+        URL oaiCommandsJsUrl = OaiScriptEngineFactory.class.getClassLoader().getResource("js-lib/OAI-commands.umd.js");
         if (oaiCommandsJsUrl == null) { throw new Exception("Failed to load script: OAI-commands.umd.js"); }
-        URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
-        if (libraryJsUrl == null) { throw new Exception("Failed to load script: core-library.js"); }
+//        URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
+        if (libraryJsUrl == null) { throw new Exception("Failed to load library script."); }
 
         // Load the JS libraries into the engine
         engine.eval(IOUtils.toString(consoleJsUrl));

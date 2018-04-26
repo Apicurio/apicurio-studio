@@ -66,6 +66,13 @@
                                                         <span>Download (JSON)</span>
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a (click)="generateProjectModal.open()">
+                                                        <span class="fa fa-fw fa-file-code-o"></span>
+                                                        <span>Generate Swarm Project</span>
+                                                    </a>
+                                                </li>
+
                                                 <li role="separator" class="divider"></li>
                                                 <li>
                                                     <a (click)="confirmDeleteModal.open()">
@@ -177,3 +184,4 @@
         <span>This will <strong>permanently</strong> delete the API definition from Apicurio Studio.  This operation cannot be undone.</span>
     </div>
 </confirm-delete-dialog>
+<generate-project-dialog #generateProjectModal [apiId]="api.id"></generate-project-dialog>

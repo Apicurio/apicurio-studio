@@ -146,4 +146,12 @@ public interface IDesignsResource {
     public Collection<ApiDesignChange> getActivity(@PathParam("designId") String designId,
             @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
 
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path("{designId}/codegen/swarm")
+    public Response generateSwarmProject(@PathParam("designId") String designId,
+            @QueryParam("groupId") String groupId,
+            @QueryParam("artifactId") String artifactId,
+            @QueryParam("package") String javaPackage) throws ServerError, NotFoundException;
+
 }

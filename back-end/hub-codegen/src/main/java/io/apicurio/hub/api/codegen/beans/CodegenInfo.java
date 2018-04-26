@@ -24,6 +24,9 @@ import java.util.List;
  */
 public class CodegenInfo {
 
+    private String name = "Generated Swarm API";
+    private String description = "A generated WildFly Swarm project with JAX-RS and Microprofile OpenAPI features enabled.";
+    private String version = "1.0.0";
     private List<CodegenJavaInterface> interfaces = new ArrayList<>();
     private List<CodegenJavaBean> beans = new ArrayList<>();
     
@@ -59,6 +62,48 @@ public class CodegenInfo {
      */
     public void setBeans(List<CodegenJavaBean> beans) {
         this.beans = beans;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
     }
     
 }

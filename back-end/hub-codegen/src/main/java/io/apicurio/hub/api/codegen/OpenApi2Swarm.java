@@ -93,7 +93,7 @@ public class OpenApi2Swarm {
      * @param content
      * @throws IOException
      */
-    public void setOpenApiDocument(String content) throws IOException {
+    public void setOpenApiDocument(String content) {
         this.openApiDoc = content;
     }
 
@@ -128,7 +128,7 @@ public class OpenApi2Swarm {
         
         try (ZipOutputStream zos = new ZipOutputStream(output)) {
             zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/pom.xml"));
-            zos.write(generatePomXml().getBytes());
+            zos.write(generatePomXml(info).getBytes());
             zos.closeEntry();
 
             zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/openapi.json"));
@@ -184,11 +184,15 @@ public class OpenApi2Swarm {
 
     /**
      * Generates the pom.xml file.
+     * @param info 
      */
-    private String generatePomXml() throws IOException {
+    private String generatePomXml(CodegenInfo info) throws IOException {
         String template = IOUtils.toString(getClass().getResource("pom.xml"));
         return template.replace("$GROUP_ID$", this.settings.groupId)
-                .replace("$ARTIFACT_ID$", this.settings.artifactId);
+                .replace("$ARTIFACT_ID$", this.settings.artifactId)
+                .replace("$VERSION$", info.getVersion())
+                .replace("$NAME$", info.getName())
+                .replace("$DESCRIPTION$", info.getDescription());
     }
 
     /**

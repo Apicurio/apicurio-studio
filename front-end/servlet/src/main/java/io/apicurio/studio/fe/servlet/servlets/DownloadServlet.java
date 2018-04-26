@@ -96,6 +96,24 @@ public class DownloadServlet extends HttpServlet {
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);
+        } else if ("codegen-swarm".equals(type)) {
+            String designId = params.get("id");
+            String groupId = params.get("groupId");
+            String artifactId = params.get("artifactId");
+            String javaPackage = params.get("package");
+            
+            String url = generateHubApiUrl(req);
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+            url += "/designs/{designId}/codegen/swarm?groupId={groupId}&artifactId={artifactId}&package={package}"
+                    .replace("{designId}", designId)
+                    .replace("{groupId}", groupId)
+                    .replace("{artifactId}", artifactId)
+                    .replace("{package}", javaPackage);
+            
+            disableHttpCaching(resp);
+            proxyUrlTo(url, req, resp);
         } else {
             resp.sendError(404);
         }
@@ -117,8 +135,13 @@ public class DownloadServlet extends HttpServlet {
             try (CloseableHttpResponse apiResponse = httpClient.execute(get)) {
                 Header ct = apiResponse.getFirstHeader("Content-Type");
                 Header cl = apiResponse.getFirstHeader("Content-Length");
-                response.setHeader("Content-Type", ct.getValue());
-                response.setHeader("Content-Length", cl.getValue());
+                Header cd = apiResponse.getFirstHeader("Content-Disposition");
+                if (ct != null)
+                    response.setHeader("Content-Type", ct.getValue());
+                if (cl != null)
+                    response.setHeader("Content-Length", cl.getValue());
+                if (cd != null)
+                    response.setHeader("Content-Disposition", cd.getValue());
                 InputStream stream = apiResponse.getEntity().getContent();
                 IOUtils.copy(stream, response.getOutputStream());
                 response.getOutputStream().flush();

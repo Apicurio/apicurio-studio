@@ -4,8 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.example.api</groupId>
     <artifactId>generated-api</artifactId>
-    <version>$VERSION$</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
+    <name>Beer API</name>
+    <description>The official Beer API!  Search for both beers and breweries.</description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

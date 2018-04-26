@@ -4,8 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.example.api</groupId>
     <artifactId>generated-api</artifactId>
-    <version>$VERSION$</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
+    <name>Generated Swarm API</name>
+    <description>A generated WildFly Swarm project with JAX-RS and Microprofile OpenAPI features enabled.</description>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

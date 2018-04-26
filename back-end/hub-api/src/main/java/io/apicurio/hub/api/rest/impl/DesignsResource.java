@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -52,6 +53,8 @@ import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.codegen.OpenApi2Swarm;
+import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -790,6 +793,41 @@ public class DesignsResource implements IDesignsResource {
             
             return content;
         } catch (StorageException | OaiCommandException | IOException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#generateSwarmProject(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public Response generateSwarmProject(String designId, String groupId,
+            String artifactId, String javaPackage) throws ServerError, NotFoundException {
+        logger.debug("Generating a Wildfly Swarm project for API Design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/swarm", "GET");
+
+        String oaiContent = this.getApiContent(designId, FormatType.JSON);
+
+        try {
+            SwarmProjectSettings settings = new SwarmProjectSettings();
+            settings.groupId = groupId != null ? groupId : "org.example.api";
+            settings.artifactId = artifactId != null ? artifactId : "generated-api";
+            settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+            
+            OpenApi2Swarm generator = new OpenApi2Swarm();
+            generator.setSettings(settings);
+            generator.setOpenApiDocument(oaiContent);
+            ByteArrayOutputStream stream = generator.generate();
+            byte[] data = stream.toByteArray();
+
+            String fname = settings.artifactId + ".zip";
+            ResponseBuilder builder = Response.ok().entity(data)
+                    .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
+                    .header("Content-Type", "application/zip")
+                    .header("Content-Length", String.valueOf(data.length));
+
+            return builder.build();
+        } catch (IOException e) {
             throw new ServerError(e);
         }
     }

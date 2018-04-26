@@ -118,6 +118,8 @@ var OpenApi2CodegenVisitor = (function (_super) {
         var _this = _super.call(this) || this;
         _this.interfacesIndex = {};
         _this.codegenInfo = {
+            name: "Wildfly Swarm API",
+            version: "1.0.0",
             interfaces: [],
             beans: []
         };
@@ -140,6 +142,17 @@ var OpenApi2CodegenVisitor = (function (_super) {
      */
     OpenApi2CodegenVisitor.prototype.getCodegenInfo = function () {
         return this.codegenInfo;
+    };
+    /**
+     * Visits the info model to extract some meta data.
+     * @param {OasInfo} node
+     */
+    OpenApi2CodegenVisitor.prototype.visitInfo = function (node) {
+        this.codegenInfo.name = node.title;
+        if (node.description) {
+            this.codegenInfo.description = node.description;
+        }
+        this.codegenInfo.version = node.version;
     };
     /**
      * Visits an operation to produce a CodegenJavaInterface.

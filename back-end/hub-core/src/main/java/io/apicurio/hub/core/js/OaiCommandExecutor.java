@@ -55,6 +55,9 @@ public class OaiCommandExecutor {
             @Override
             public ScriptEngine create() throws Exception {
                 URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
+
+                if (libraryJsUrl == null) { throw new Exception("Failed to load script: core-library.js"); }
+                
                 return OaiScriptEngineFactory.createScriptEngine(libraryJsUrl);
             }
 

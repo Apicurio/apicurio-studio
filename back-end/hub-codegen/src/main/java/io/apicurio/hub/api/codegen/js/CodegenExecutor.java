@@ -44,8 +44,13 @@ public class CodegenExecutor {
 
             @Override
             public ScriptEngine create() throws Exception {
+                URL codegenJsUrl = CodegenExecutor.class.getClassLoader().getResource("js-lib/OAI-codegen.umd.js");
                 URL libraryJsUrl = CodegenExecutor.class.getClassLoader().getResource("js-lib/codegen-library.js");
-                return OaiScriptEngineFactory.createScriptEngine(libraryJsUrl);
+                
+                if (codegenJsUrl == null) { throw new Exception("Failed to load script: OAI-codegen.umd.js"); }
+                if (libraryJsUrl == null) { throw new Exception("Failed to load script: codegen-library.js"); }
+                
+                return OaiScriptEngineFactory.createScriptEngine(codegenJsUrl, libraryJsUrl);
             }
 
             @Override
@@ -58,14 +63,16 @@ public class CodegenExecutor {
     /**
      * Executes the codegen logic on the given OAI document, returning a {@link CodegenInfo} object for it.
      * @param oaiDocument
+     * @param javaPackage
+     * @throws Exception
      */
-    public static String executeCodegen(String oaiDocument) throws Exception {
+    public static String executeCodegen(String oaiDocument, String javaPackage) throws Exception {
         ScriptEngine engine = null;
         try {
             engine = enginePool.borrowObject();
             final Invocable invocable = (Invocable) engine;
             
-            return invocable.invokeFunction("executeCodegen", oaiDocument).toString();
+            return invocable.invokeFunction("executeCodegen", oaiDocument, javaPackage).toString();
         } catch (Exception e) {
             logger.error("Error executing codegen.", e);
             throw new Exception(e);

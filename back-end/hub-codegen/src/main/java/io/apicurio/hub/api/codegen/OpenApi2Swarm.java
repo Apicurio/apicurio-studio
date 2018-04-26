@@ -176,7 +176,7 @@ public class OpenApi2Swarm {
      */
     protected String processApiDoc() throws IOException {
         try {
-            return CodegenExecutor.executeCodegen(openApiDoc);
+            return CodegenExecutor.executeCodegen(openApiDoc, this.settings.javaPackage);
         } catch (Exception e) {
             throw new IOException(e);
         }

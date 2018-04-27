@@ -1,7 +1,6 @@
 package org.example.api;
 
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,7 +14,6 @@ import org.example.api.beans.Beer;
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.
  */
-@ApplicationScoped
 @Path("/beers")
 public interface Beers {
   /**

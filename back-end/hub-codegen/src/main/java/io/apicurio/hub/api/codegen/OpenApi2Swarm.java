@@ -229,7 +229,6 @@ public class OpenApi2Swarm {
         Builder interfaceBuilder = TypeSpec
                 .interfaceBuilder(ClassName.get(_interface.getPackage(), _interface.getName()));
         interfaceBuilder.addModifiers(Modifier.PUBLIC)
-                .addAnnotation(ClassName.get("javax.enterprise.context", "ApplicationScoped"))
                 .addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Path"))
                         .addMember("value", "$S", _interface.getPath()).build())
                 .addJavadoc("A JAX-RS interface.  An implementation of this interface must be provided.\n");

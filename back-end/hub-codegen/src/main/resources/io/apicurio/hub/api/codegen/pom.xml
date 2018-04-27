@@ -33,7 +33,6 @@
     </dependencyManagement>
 
     <build>
-        <finalName>demo</finalName>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>

@@ -170,13 +170,15 @@ var OpenApi2CodegenVisitor = (function (_super) {
     OpenApi2CodegenVisitor.prototype.visitOperation = function (node) {
         var method = {
             name: this.methodName(node),
-            description: node.description,
             path: this.methodPath(node),
             method: node.method(),
             produces: [],
             consumes: [],
             arguments: []
         };
+        if (node.description) {
+            method.description = node.description;
+        }
         // Handle 2.0 "produces"
         if (node.ownerDocument().is2xDocument()) {
             method.produces = node.produces;
@@ -372,11 +374,15 @@ var OpenApi2CodegenVisitor = (function (_super) {
         return cgInterface;
     };
     OpenApi2CodegenVisitor.prototype.methodName = function (operation) {
+        var _this = this;
         if (operation.operationId !== null && operation.operationId !== undefined && operation.operationId.length > 0) {
             return operation.operationId;
         }
         if (operation.summary !== null && operation.summary !== undefined && operation.summary.length > 0) {
-            return operation.summary.replace(/^a-zA-Z0-9-_/g, "");
+            var nameSegments = operation.summary.split(" ");
+            return this.decapitalize(nameSegments.map(function (segment) {
+                return _this.capitalize(segment.replace(/\W/g, ''));
+            }).join(''));
         }
         return "generatedMethod" + this._methodCounter++;
     };
@@ -432,6 +438,22 @@ var OpenApi2CodegenVisitor = (function (_super) {
         var viz = new PathItemDetectionVisitor();
         oaiTsCore.OasVisitorUtil.visitNode(node, viz);
         return viz.isPathItem;
+    };
+    /**
+     * Capitalizes a word.
+     * @param {string} word
+     * @return {string}
+     */
+    OpenApi2CodegenVisitor.prototype.capitalize = function (word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    };
+    /**
+     * De-capitalizes a word.
+     * @param {string} word
+     * @return {string}
+     */
+    OpenApi2CodegenVisitor.prototype.decapitalize = function (word) {
+        return word.charAt(0).toLowerCase() + word.slice(1);
     };
     return OpenApi2CodegenVisitor;
 }(oaiTsCore.OasCombinedVisitorAdapter));

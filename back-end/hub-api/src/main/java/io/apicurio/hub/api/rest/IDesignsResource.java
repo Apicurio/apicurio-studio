@@ -99,7 +99,7 @@ public interface IDesignsResource {
     public void publishApi(@PathParam("designId") String designId, NewApiPublication info) throws ServerError, NotFoundException;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml" })
     @Path("{designId}/content")
     public Response getContent(@PathParam("designId") String designId, @QueryParam("format") String format) throws ServerError, NotFoundException;
 

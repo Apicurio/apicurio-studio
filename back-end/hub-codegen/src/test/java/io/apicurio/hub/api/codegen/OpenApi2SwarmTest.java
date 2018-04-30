@@ -18,13 +18,11 @@ package io.apicurio.hub.api.codegen;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -177,7 +175,7 @@ public class OpenApi2SwarmTest {
         generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/gateway-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
-        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_GatewayApi.zip"), outputStream.toByteArray());
+//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_GatewayApi.zip"), outputStream.toByteArray());
 
         // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {

@@ -18,16 +18,18 @@ package io.apicurio.hub.api.codegen;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -56,15 +58,6 @@ public class OpenApi2SwarmTest {
         ByteArrayOutputStream outputStream = generator.generate();
         
         //FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
-        
-        Set<String> expectedFiles = new HashSet<>();
-        expectedFiles.add("generated-api/pom.xml");
-        expectedFiles.add("generated-api/src/main/resources/META-INF/openapi.json");
-        expectedFiles.add("generated-api/src/main/resources/META-INF/microprofile-config.properties");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/JaxRsApplication.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/Beers.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Beer.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Brewery.java");
 
         // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -74,9 +67,57 @@ public class OpenApi2SwarmTest {
                     String name = zipEntry.getName();
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
-                    Assert.assertTrue("Unexpected file found in ZIP: " + name, expectedFiles.contains(name));
                     
                     URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
+//                    System.out.println("-----");
+//                    System.out.println(actual);
+//                    System.out.println("-----");
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        }
+        
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     */
+    @Test
+    public void testGenerateOnly_GatewayApiNoTypes() throws IOException {
+        OpenApi2Swarm generator = new OpenApi2Swarm() {
+            /**
+             * @see io.apicurio.hub.api.codegen.OpenApi2Swarm#processApiDoc()
+             */
+            @Override
+            protected String processApiDoc() {
+                try {
+                    return IOUtils.toString(OpenApi2SwarmTest.class.getResource("gateway-api-notypes.codegen.json"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        generator.setSettings(new SwarmProjectSettings("io.openapi.simple", "simple-api", "io.openapi.simple"));
+        generator.setOpenApiDocument(getClass().getResource("gateway-api.json"));
+        ByteArrayOutputStream outputStream = generator.generate();
+        
+//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
+
+        // Validate the result
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+//                    System.out.println(name);
+                    Assert.assertNotNull(name);
+                    
+                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-gatewayApiNoTypes/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -103,15 +144,40 @@ public class OpenApi2SwarmTest {
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
 
-        Set<String> expectedFiles = new HashSet<>();
-        expectedFiles.add("generated-api/pom.xml");
-        expectedFiles.add("generated-api/src/main/resources/META-INF/openapi.json");
-        expectedFiles.add("generated-api/src/main/resources/META-INF/microprofile-config.properties");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/JaxRsApplication.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/Beers.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/Breweries.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Beer.java");
-        expectedFiles.add("generated-api/src/main/java/org/example/api/beans/Brewery.java");
+        // Validate the result
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+//                    System.out.println(name);
+                    Assert.assertNotNull(name);
+                    
+                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-full/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
+//                    System.out.println("-----");
+//                    System.out.println(actual);
+//                    System.out.println("-----");
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        }
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     */
+    @Test
+    public void testGenerateFull_GatewayApi() throws IOException {
+        OpenApi2Swarm generator = new OpenApi2Swarm();
+        generator.setOpenApiDocument(getClass().getResource("gateway-api.json"));
+        ByteArrayOutputStream outputStream = generator.generate();
+        
+        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
 
         // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -121,9 +187,8 @@ public class OpenApi2SwarmTest {
                     String name = zipEntry.getName();
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
-                    Assert.assertTrue("Unexpected file found in ZIP: " + name, expectedFiles.contains(name));
                     
-                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-full/" + name);
+                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-gatewayApi-full/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
@@ -31,6 +32,12 @@ import com.sun.codemodel.JPackage;
 public class IndexedCodeWriter extends CodeWriter {
     
     private Map<String, ByteArrayOutputStream> index = new HashMap<>();
+    
+    /**
+     * Constructor.
+     */
+    public IndexedCodeWriter() {
+    }
 
     /**
      * @see com.sun.codemodel.CodeWriter#openBinary(com.sun.codemodel.JPackage, java.lang.String)
@@ -62,6 +69,13 @@ public class IndexedCodeWriter extends CodeWriter {
             return this.index.get(className).toString("UTF-8");
         }
         return null;
+    }
+
+    /**
+     * Gets the keys.
+     */
+    public Set<String> getKeys() {
+        return this.index.keySet();
     }
 
 }

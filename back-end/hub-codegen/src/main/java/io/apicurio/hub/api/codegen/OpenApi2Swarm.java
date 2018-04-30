@@ -19,6 +19,7 @@ package io.apicurio.hub.api.codegen;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
@@ -48,6 +50,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JType;
 
 import io.apicurio.hub.api.codegen.beans.CodegenInfo;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaArgument;
@@ -150,10 +153,13 @@ public class OpenApi2Swarm {
                 zos.closeEntry();
             }
             
+            IndexedCodeWriter codeWriter = new IndexedCodeWriter();
             for (CodegenJavaBean bean : info.getBeans()) {
-                String javaBean = generateJavaBean(bean);
-                zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaPackageToZipPath(bean.getPackage()) + bean.getName() + ".java"));
-                zos.write(javaBean.getBytes());
+                generateJavaBean(bean, info, codeWriter);
+            }
+            for (String key : codeWriter.getKeys()) {
+                zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaClassToZipPath(key)));
+                zos.write(codeWriter.get(key).getBytes());
                 zos.closeEntry();
             }
         }
@@ -161,6 +167,10 @@ public class OpenApi2Swarm {
         return output;
     }
     
+    private String javaClassToZipPath(String javaClass) {
+        return "/src/main/java/" + javaClass.replace('.', '/') + ".java";
+    }
+
     /**
      * Processes the OpenAPI document to produce a CodegenInfo object that contains everything
      * needed to generate appropriate Java class(es).
@@ -267,7 +277,7 @@ public class OpenApi2Swarm {
                 for (CodegenJavaArgument cgArgument : cgMethod.getArguments()) {
                     TypeName defaultParamType = ClassName.OBJECT;
                     if (cgArgument.getIn().equals("body")) {
-                        defaultParamType = ClassName.get("javax.ws.rs.core", "Response");
+                        defaultParamType = ClassName.get("javax.ws.rs.core", "Request");
                     }
                     TypeName paramType = generateTypeName(cgArgument.getCollection(), cgArgument.getType(),
                             cgArgument.getFormat(), cgArgument.getRequired(), defaultParamType);
@@ -308,10 +318,13 @@ public class OpenApi2Swarm {
      * @param required
      * @param defaultType
      */
-    private TypeName generateTypeName(String collection, String type, String format, boolean required,
+    private TypeName generateTypeName(String collection, String type, String format, Boolean required,
             TypeName defaultType) {
         if (type == null) {
             return defaultType;
+        }
+        if (required == null) {
+            required = Boolean.FALSE;
         }
         
         TypeName coreType = null;
@@ -395,9 +408,11 @@ public class OpenApi2Swarm {
      * have a name, package, and JSON Schema.  This information will be used to 
      * generate a POJO.
      * @param bean
+     * @param info 
+     * @param codeWriter
      * @throws IOException
      */
-    private String generateJavaBean(CodegenJavaBean bean) throws IOException {
+    private void generateJavaBean(CodegenJavaBean bean, CodegenInfo info, IndexedCodeWriter codeWriter) throws IOException {
         JCodeModel codeModel = new JCodeModel();
         GenerationConfig config = new DefaultGenerationConfig() {
             @Override
@@ -419,15 +434,45 @@ public class OpenApi2Swarm {
         };
 
         SchemaMapper schemaMapper = new SchemaMapper(
-                new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()),
+                new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore() {
+                    @Override
+                    public Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
+                        String beanClassname = schemaRefToFQCN(path);
+                        for (CodegenJavaBean cgBean : info.getBeans()) {
+                            String cgBeanFQCN = cgBean.getPackage() + "." + cgBean.getName();
+                            if (beanClassname.equals(cgBeanFQCN)) {
+                                Schema schema = new Schema(classnameToUri(beanClassname), cgBean.get$schema(), null);
+                                JType jclass = codeModel._getClass(beanClassname);
+                                if (jclass == null) {
+                                    jclass = codeModel.directClass(beanClassname);
+                                }
+                                schema.setJavaType(jclass);
+                                return schema;
+                            }
+                        }
+                        // TODO if we get here, we probably want to return an empty schema
+                        return super.create(parent, path, refFragmentPathDelimiters);
+                    }
+                }),
                 new SchemaGenerator());
         String source = mapper.writeValueAsString(bean.get$schema());
         schemaMapper.generate(codeModel, bean.getName(), bean.getPackage(), source);
-
-        IndexedCodeWriter codeWriter = new IndexedCodeWriter();
         codeModel.build(codeWriter);
-        
-        return codeWriter.get(bean.getPackage() + "." + bean.getName());
+    }
+
+    protected URI classnameToUri(String path) {
+        return URI.create(path.replace('.', '/') + ".java");
+    }
+
+    protected String schemaRefToFQCN(String path) {
+        String cname = "GeneratedClass_" + System.currentTimeMillis();
+        if (path.startsWith("#/definitions/")) {
+            cname = path.substring(14);
+        }
+        if (path.startsWith("#/components/schemas/")) {
+            cname = path.substring(21);
+        }
+        return this.settings.javaPackage + ".beans." + cname;
     }
 
     private static String javaPackageToZipPath(String javaPackage) {
@@ -446,14 +491,18 @@ public class OpenApi2Swarm {
         public String groupId;
         public String artifactId;
         public String javaPackage;
-    }
-    
-    public static void main(String[] args) {
-        Builder interfaceBuilder = TypeSpec
-                .interfaceBuilder(ClassName.get("org.example.foo", "MyInterface"));
-        TypeSpec iface = interfaceBuilder.build();
-        JavaFile javaFile = JavaFile.builder("org.example.foo", iface).build();
-        System.out.println(javaFile.toString());
+        
+        /**
+         * Constructor.
+         */
+        public SwarmProjectSettings() {
+        }
+        
+        public SwarmProjectSettings(String groupId, String artifactId, String javaPackage) {
+            this.groupId = groupId;
+            this.artifactId = artifactId;
+            this.javaPackage = javaPackage;
+        }
     }
 
 }

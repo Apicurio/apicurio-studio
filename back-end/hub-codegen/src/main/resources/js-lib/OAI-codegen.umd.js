@@ -181,22 +181,16 @@ var OpenApi2CodegenVisitor = (function (_super) {
         }
         // Handle 2.0 "produces"
         if (node.ownerDocument().is2xDocument()) {
-            var produces = node.produces;
-            if (produces === null || produces === undefined) {
-                produces = node.ownerDocument().produces;
-            }
-            if (produces) {
-                method.produces = produces;
+            method.produces = node.produces;
+            if (method.produces === null) {
+                method.produces = node.parent().produces;
             }
         }
         // Handle 2.0 "consumes"
         if (node.ownerDocument().is2xDocument()) {
-            var consumes = node.consumes;
-            if (consumes === null || consumes === undefined) {
-                consumes = node.ownerDocument().consumes;
-            }
-            if (consumes) {
-                method.consumes = consumes;
+            method.consumes = node.consumes;
+            if (method.consumes === null) {
+                method.consumes = node.parent().consumes;
             }
         }
         this._currentMethod = method;
@@ -224,13 +218,10 @@ var OpenApi2CodegenVisitor = (function (_super) {
         var cgArgument = {
             name: node.name,
             in: node.in,
-            required: true
+            required: node.required
         };
         this._currentMethod.arguments.push(cgArgument);
         this._currentArgument = cgArgument;
-        if (node.required !== undefined && node.required !== null) {
-            cgArgument.required = node.required;
-        }
         if (node.ownerDocument().is2xDocument()) {
             this.visit20Parameter(node);
         }
@@ -440,9 +431,6 @@ var OpenApi2CodegenVisitor = (function (_super) {
     OpenApi2CodegenVisitor.prototype.typeFromSchemaRef = function (schemaRef) {
         if (schemaRef.indexOf("#/components/schemas/") === 0) {
             return this.packageName + ".beans." + schemaRef.substring(21);
-        }
-        if (schemaRef.indexOf("#/definitions/") === 0) {
-            return this.packageName + ".beans." + schemaRef.substring(14);
         }
         return null;
     };

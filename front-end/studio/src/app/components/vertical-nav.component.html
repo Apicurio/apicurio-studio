@@ -27,8 +27,6 @@
         <!-- APIs -->
         <div id="api-nav-detail-apis" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.APIs">
             <h3>APIs</h3>
-            <p class="description">Choose from the actions below or jump directly to one of your <strong>Recent APIs</strong>.</p>
-            <h4 class="heading">API Actions</h4>
             <div class="action" [class.active]="isRouteActive('/apis', true)">
                 <a routerLink="/apis"><span class="fa fa-fw fa-list"></span><span>View All APIs</span></a>
             </div>
@@ -38,16 +36,10 @@
             <div class="action" [class.active]="isRouteActive('/apis/import')">
                 <a routerLink="/apis/import"><span class="pficon pficon-import"></span><span>Import API</span></a>
             </div>
-
-            <h4 class="heading" *ngIf="(apis.getRecentApis() | async).length > 0">Recent APIs</h4>
-            <div class="action" *ngFor="let api of apis.getRecentApis() | async">
-                <a [routerLink]="['apis', api.id]"><span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span></a>
-            </div>
         </div>
         <!-- Settings -->
         <div id="api-nav-detail-settings" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Settings">
             <h3>Settings</h3>
-            <p class="description">Select one of the common Settings pages listed below.</p>
             <div class="action" [class.active]="isRouteActive('/settings/profile')">
                 <a routerLink="/settings/profile"><span class="fa fa-fw fa-user"></span><span>User Profile</span></a>
             </div>

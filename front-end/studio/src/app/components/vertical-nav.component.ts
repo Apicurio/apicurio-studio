@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Router, NavigationStart} from "@angular/router";
 import {ApisService} from "../services/apis.service";
 
@@ -42,9 +42,8 @@ export class VerticalNavComponent implements OnInit {
     /**
      * C'tor.
      * @param {Router} router
-     * @param {ApisService} apis
      */
-    constructor(private router: Router,  public apis: ApisService) {}
+    constructor(private router: Router) {}
 
     ngOnInit(): void {
         console.log("Subscribing to router events.");

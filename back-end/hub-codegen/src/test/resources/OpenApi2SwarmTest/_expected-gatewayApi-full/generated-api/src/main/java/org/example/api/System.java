@@ -2,7 +2,7 @@ package org.example.api;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import org.example.api.beans.SystemStatus;
 
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.
@@ -14,5 +14,5 @@ public interface System {
    */
   @Path("/status")
   @GET
-  Response getGatewayStatus();
+  SystemStatus getGatewayStatus();
 }

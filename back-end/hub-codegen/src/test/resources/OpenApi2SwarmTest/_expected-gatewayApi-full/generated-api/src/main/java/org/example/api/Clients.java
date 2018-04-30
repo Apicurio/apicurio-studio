@@ -2,7 +2,7 @@ package org.example.api;
 
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Request;
+import org.example.api.beans.Client;
 
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.
@@ -13,5 +13,5 @@ public interface Clients {
    * Register a Client and make it immediately available on the gateway.
    */
   @PUT
-  void registerAClient(Request body);
+  void registerAClient(Client body);
 }

@@ -48,13 +48,13 @@ public class OpenApi2SwarmTest {
             @Override
             protected String processApiDoc() {
                 try {
-                    return IOUtils.toString(OpenApi2SwarmTest.class.getResource("beer-api.codegen.json"));
+                    return IOUtils.toString(OpenApi2SwarmTest.class.getClassLoader().getResource("OpenApi2SwarmTest/beer-api.codegen.json"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         };
-        generator.setOpenApiDocument(getClass().getResource("beer-api.json"));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/beer-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
         //FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
@@ -68,7 +68,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -96,14 +96,14 @@ public class OpenApi2SwarmTest {
             @Override
             protected String processApiDoc() {
                 try {
-                    return IOUtils.toString(OpenApi2SwarmTest.class.getResource("gateway-api-notypes.codegen.json"));
+                    return IOUtils.toString(OpenApi2SwarmTest.class.getClassLoader().getResource("OpenApi2SwarmTest/gateway-api-notypes.codegen.json"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         };
         generator.setSettings(new SwarmProjectSettings("io.openapi.simple", "simple-api", "io.openapi.simple"));
-        generator.setOpenApiDocument(getClass().getResource("gateway-api.json"));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/gateway-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
@@ -117,7 +117,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-gatewayApiNoTypes/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApiNoTypes/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -139,7 +139,7 @@ public class OpenApi2SwarmTest {
     @Test
     public void testGenerateFull() throws IOException {
         OpenApi2Swarm generator = new OpenApi2Swarm();
-        generator.setOpenApiDocument(getClass().getResource("beer-api.json"));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/beer-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
@@ -153,7 +153,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-full/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -174,10 +174,10 @@ public class OpenApi2SwarmTest {
     @Test
     public void testGenerateFull_GatewayApi() throws IOException {
         OpenApi2Swarm generator = new OpenApi2Swarm();
-        generator.setOpenApiDocument(getClass().getResource("gateway-api.json"));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/gateway-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
-        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
+        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_GatewayApi.zip"), outputStream.toByteArray());
 
         // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -188,7 +188,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getResource(getClass().getSimpleName() + "_expected-gatewayApi-full/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApi-full/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 

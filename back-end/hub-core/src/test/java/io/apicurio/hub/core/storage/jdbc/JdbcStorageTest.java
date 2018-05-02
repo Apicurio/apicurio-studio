@@ -1008,6 +1008,85 @@ public class JdbcStorageTest {
         Assert.assertEquals("{Publish-3}", second.getInfo());
     }
     
+
+    @Test
+    public void testGetRecentApiDesigns() throws Exception {
+        Collection<ApiDesign> designs = storage.listApiDesigns("user");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(0, designs.size());
+
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        
+        // Add 8 designs as user1
+        design.setName("API 1");
+        String did1 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 2");
+        String did2 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 3");
+        String did3 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 4");
+        String did4 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 5");
+        String did5 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 6");
+        String did6 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 7");
+        String did7 = storage.createApiDesign("user", design, "{}");
+        design.setName("API 8");
+        String did8 = storage.createApiDesign("user", design, "{}");
+
+        Thread.sleep(5);
+        storage.addContent("user", did1, ApiContentType.Command, "{1}");
+        Thread.sleep(5);
+        storage.addContent("user", did2, ApiContentType.Command, "{2}");
+        Thread.sleep(5);
+        storage.addContent("user", did1, ApiContentType.Command, "{3}");
+        Thread.sleep(5);
+        storage.addContent("user", did3, ApiContentType.Document, "{ROLLUP:123}");
+        Thread.sleep(5);
+        storage.addContent("user", did5, ApiContentType.Command, "{6}");
+        Thread.sleep(5);
+        storage.addContent("user", did4, ApiContentType.Command, "{4}");
+        Thread.sleep(5);
+        storage.addContent("user", did2, ApiContentType.Command, "{5}");
+
+        Thread.sleep(5);
+        storage.addContent("user", did6, ApiContentType.Command, "{7}");
+        Thread.sleep(5);
+        storage.addContent("user", did6, ApiContentType.Command, "{8}");
+        Thread.sleep(5);
+        storage.addContent("user", did7, ApiContentType.Command, "{9}");
+        Thread.sleep(5);
+        storage.addContent("user", did8, ApiContentType.Command, "{10}");
+        Thread.sleep(5);
+        storage.addContent("user", did7, ApiContentType.Command, "{11}");
+
+        Thread.sleep(5);
+        storage.addContent("user", did8, ApiContentType.Command, "{12}");
+        Thread.sleep(5);
+        storage.addContent("user", did5, ApiContentType.Command, "{13}");
+        Thread.sleep(5);
+        storage.addContent("user", did1, ApiContentType.Command, "{14}");
+
+        designs = storage.getRecentApiDesigns("user");
+        Assert.assertNotNull(designs);
+        Assert.assertEquals(5, designs.size());
+        
+        Iterator<ApiDesign> iter = designs.iterator();
+		ApiDesign first = iter.next();
+		ApiDesign second = iter.next();
+		ApiDesign third = iter.next();
+        
+		Assert.assertEquals("1", first.getId());
+		Assert.assertEquals("5", second.getId());
+		Assert.assertEquals("8", third.getId());
+    }
+
+    
     /**
      * Creates an in-memory datasource.
      * @throws SQLException

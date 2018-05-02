@@ -200,6 +200,14 @@ public interface IStorage {
     public Collection<ApiDesign> listApiDesigns(String userId) throws StorageException;
 
     /**
+     * Returns a collection of API Designs that represent the "recent" APIs edited by the 
+     * given user.
+     * @param userId
+     * @throws StorageException
+     */
+    public Collection<ApiDesign> getRecentApiDesigns(String userId) throws StorageException;
+
+    /**
      * Returns the most recent full content row for the given API Design.
      * @param userId
      * @param designId

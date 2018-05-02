@@ -42,6 +42,7 @@ import {CurrentUserService} from "../../services/current-user.service";
 export class DashboardPageComponent extends AbstractPageComponent {
 
     public accounts: LinkedAccount[];
+    public recentApis: Api[];
     public activity: ApiDesignChange[] = [];
     public activityStart: number = 0;
     public activityEnd: number = 10;
@@ -78,15 +79,16 @@ export class DashboardPageComponent extends AbstractPageComponent {
      */
     public loadAsyncPageData(): void {
         console.log("[DashboardPageComponent] loadAsyncPageData")
-        this.apis.getApis().then( apis => {
-            this.loaded("apis");
+        this.apis.getRecentApis().then( recent => {
+            this.recentApis = recent;
+            this.loaded("recentApis");
         }).catch( error => {
-            console.error("[DashboardPageComponent] Error fetching API list.");
+            console.error("[DashboardPageComponent] Error fetching recent API list.");
             this.error(error);
         });
         this.accountsService.getLinkedAccounts().then( accounts => {
-            this.loaded("accounts");
             this.accounts = accounts;
+            this.loaded("accounts");
         }).catch( error => {
             console.error("[DashboardPageComponent] Error fetching linked accounts.");
             this.error(error);
@@ -94,8 +96,8 @@ export class DashboardPageComponent extends AbstractPageComponent {
         this.currentUserService.getActivity(this.activityStart, this.activityEnd).then(activity => {
             console.info("[DashboardPageComponent] Activity data loaded: %o", activity);
             this.activity = activity;
-            this.dataLoaded["activity"] = true;
             this.hasMoreActivity = activity && activity.length >= 10;
+            this.dataLoaded["activity"] = true;
         }).catch(error => {
             console.error("[DashboardPageComponent] Error getting user activity");
             this.error(error);
@@ -108,14 +110,6 @@ export class DashboardPageComponent extends AbstractPageComponent {
      */
     public user(): Observable<User> {
         return this.authService.getAuthenticatedUser();
-    }
-
-    /**
-     * Gets the user's "recent APIs".
-     * @return {Observable<Api[]>}
-     */
-    public recentApis(): Observable<Api[]> {
-        return this.apis.getRecentApis();
     }
 
     /**

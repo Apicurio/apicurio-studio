@@ -21,8 +21,13 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.ICurrentUserResource;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -36,10 +41,14 @@ import io.apicurio.studio.shared.beans.User;
 @ApplicationScoped
 public class CurrentUserResource implements ICurrentUserResource {
     
+    private static Logger logger = LoggerFactory.getLogger(CurrentUserResource.class);
+
     @Inject
     private ISecurityContext security;
     @Inject
     private IStorage storage;
+    @Inject
+    private IApiMetrics metrics;
 
     /**
      * @see io.apicurio.hub.api.rest.ICurrentUserResource#getCurrentUser()
@@ -54,6 +63,7 @@ public class CurrentUserResource implements ICurrentUserResource {
      */
     @Override
     public Collection<ApiDesignChange> getActivity(Integer start, Integer end) throws ServerError, NotFoundException {
+        metrics.apiCall("/currentuser", "GET");
     	int from = 0;
         int to = 20;
         if (start != null) {
@@ -66,6 +76,20 @@ public class CurrentUserResource implements ICurrentUserResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             return this.storage.listUserActivity(user, from, to);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public Collection<ApiDesign> getRecentDesigns() throws ServerError {
+        metrics.apiCall("/currentuser/recent/designs", "GET");
+        
+        try {
+            logger.debug("Listing API Designs");
+            String user = this.security.getCurrentUser().getLogin();
+            Collection<ApiDesign> designs = this.storage.getRecentApiDesigns(user);
+            return designs;
         } catch (StorageException e) {
             throw new ServerError(e);
         }

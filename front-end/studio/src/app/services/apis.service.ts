@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import {Observable} from "rxjs/Observable";
-
 import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiContributor, ApiContributors} from "../models/api-contributors.model";
 import {NewApi} from "../models/new-api.model";
@@ -33,7 +31,6 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {OasLibraryUtils} from "oai-ts-core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {IAuthenticationService} from "./auth.service";
 
 
@@ -79,8 +76,6 @@ export interface IApiEditingSession {
     close(): void;
 
 }
-
-const RECENT_APIS_LOCAL_STORAGE_KEY = "apicurio.studio.services.hub-apis.recent-apis";
 
 
 /**
@@ -273,10 +268,6 @@ export class ApiEditingSession implements IApiEditingSession {
  */
 export class ApisService extends AbstractHubService {
 
-    private theRecentApis: Api[];
-    private _recentApis: BehaviorSubject<Api[]> = new BehaviorSubject([]);
-    private recentApis: Observable<Api[]> = this._recentApis.asObservable();
-
     private cachedApis: Api[] = null;
     private _user: User;
 
@@ -288,22 +279,9 @@ export class ApisService extends AbstractHubService {
      */
     constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
         super(http, authService, config);
-        this.theRecentApis = this.loadRecentApis();
-        if (this.theRecentApis === null) {
-            this._recentApis.next([]);
-        } else {
-            this._recentApis.next(this.theRecentApis);
-        }
         authService.getAuthenticatedUser().subscribe( user => {
             this._user = user;
         });
-    }
-
-    /**
-     * @see ApisService.getSupportedRepositoryTypes
-     */
-    public getSupportedRepositoryTypes(): string[] {
-        return ["GitHub"];
     }
 
     /**
@@ -318,11 +296,6 @@ export class ApisService extends AbstractHubService {
         console.info("[HubApisService] Fetching API list: %s", listApisUrl);
         return this.httpGet<Api[]>(listApisUrl, options, (apis) => {
             this.cachedApis = apis;
-            if (this.theRecentApis === null) {
-                this.theRecentApis = this.getRecentFromAllApis(apis);
-                this._recentApis.next(this.theRecentApis);
-            }
-            this.removeMissingRecentApis(apis);
             return apis;
         });
     }
@@ -330,8 +303,14 @@ export class ApisService extends AbstractHubService {
     /**
      * @see ApisService.getRecentApis
      */
-    public getRecentApis(): Observable<Api[]> {
-        return this.recentApis;
+    public getRecentApis(): Promise<Api[]> {
+        console.info("[HubApisService] Getting *recent* APIs");
+
+        let listRecentApisUrl: string = this.endpoint("/currentuser/recent/designs");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Fetching recent API list: %s", listRecentApisUrl);
+        return this.httpGet<Api[]>(listRecentApisUrl, options);
     }
 
     /**
@@ -389,8 +368,6 @@ export class ApisService extends AbstractHubService {
         console.info("[HubApisService] Deleting an API Design: %s", deleteApiUrl);
         return this.httpDelete(deleteApiUrl, options, () => {
             this.cachedApis = null;
-            this.removeFromRecent(api);
-            this._recentApis.next(this.theRecentApis);
             console.info("[HubApisService] Successfully deleted API %s", api.id);
         });
     }
@@ -405,11 +382,7 @@ export class ApisService extends AbstractHubService {
         let options: any = this.options({ "Accept": "application/json" });
 
         console.info("[HubApisService] Getting an API Design: %s", getApiUrl);
-        return this.httpGet<Api>(getApiUrl, options, (api) => {
-            this.addToRecentApis(api);
-            this._recentApis.next(this.theRecentApis);
-            return api;
-        });
+        return this.httpGet<Api>(getApiUrl, options);
     }
 
     /**
@@ -648,125 +621,4 @@ export class ApisService extends AbstractHubService {
         return this.httpGet<ApiDesignChange[]>(activityUrl, options);
     }
 
-
-    /**
-     * Loads the recent APIs from browser local storage.
-     * @return {Api[]}
-     */
-    private loadRecentApis(): Api[] {
-        let storedApis: string = localStorage.getItem(RECENT_APIS_LOCAL_STORAGE_KEY);
-        if (storedApis) {
-            let apis: any[] = JSON.parse(storedApis);
-            return apis;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the most recent 3 APIs from the full list of APIs provided.  Uses the
-     * API's "last modified" time to determine the most recent 3 APIs.
-     * @param {Api[]} apis
-     * @return {Api[]}
-     */
-    private getRecentFromAllApis(apis: Api[]): Api[] {
-        return apis.slice().sort( (api1, api2) => {
-            return -1;
-        }).slice(0, 3);
-    }
-
-    /**
-     * Adds the given API to the list of "recent APIs".  This may also remove an API
-     * from the list in addition to re-ordering the recent APIs list.
-     * @param {Api} api
-     * @return {Api[]}
-     */
-    private addToRecentApis(api: Api): Api[] {
-        let recent: Api[] = [];
-        if (this.theRecentApis !== null) {
-            recent = this.theRecentApis.slice();
-        }
-
-        // Check if the api is already in the list
-        let oldApi: Api = null;
-        recent.forEach( a => {
-            if (api.id === a.id) {
-                oldApi = a;
-            }
-        });
-        // If so, remove it.
-        if (oldApi !== null) {
-            recent.splice(recent.indexOf(oldApi), 1);
-        }
-
-        // Now push the API onto the list (should be first)
-        recent.unshift(api);
-
-        // Limit the # of APIs to 3
-        if (recent.length > 3) {
-            recent = recent.slice(0, 3);
-        }
-
-        // Finally save the recent APIs in local storage
-        setTimeout(() => {
-            let serializedApis: string = JSON.stringify(recent);
-            localStorage.setItem(RECENT_APIS_LOCAL_STORAGE_KEY, serializedApis);
-        }, 50);
-
-        this.theRecentApis = recent;
-        return recent;
-    }
-
-    /**
-     * Removes an API from the list of recent APIs.
-     * @param {Api} api
-     * @return {Api[]}
-     */
-    private removeFromRecent(api: Api) {
-        let recent: Api[] = [];
-        if (this.theRecentApis !== null) {
-            recent = this.theRecentApis.slice();
-        }
-
-        // Check if the api is in the list
-        let oldApi: Api = null;
-        recent.forEach( a => {
-            if (api.id === a.id) {
-                oldApi = a;
-            }
-        });
-        // If so, remove it.
-        if (oldApi !== null) {
-            recent.splice(recent.indexOf(oldApi), 1);
-        }
-
-        // Save the recent APIs in local storage
-        setTimeout(() => {
-            let serializedApis: string = JSON.stringify(recent);
-            localStorage.setItem(RECENT_APIS_LOCAL_STORAGE_KEY, serializedApis);
-        }, 50);
-
-        this.theRecentApis = recent;
-        return recent;
-    }
-
-    /**
-     * Removes any API from the "recent APIs" list that is not in the
-     * given list of "all" Apis.
-     * @param {Api[]} apis
-     */
-    private removeMissingRecentApis(apis: Api[]) {
-        this.theRecentApis.filter( recentApi => {
-            let found: boolean = false;
-            apis.forEach( api => {
-                if (api.id === recentApi.id) {
-                    found = true;
-                }
-            });
-            return !found;
-        }).forEach( diffApi => {
-            console.info("[HubApisService] Removing '%s' from the recent APIs list.", diffApi.name);
-            this.theRecentApis.splice(this.theRecentApis.indexOf(diffApi), 1);
-        });
-    }
 }

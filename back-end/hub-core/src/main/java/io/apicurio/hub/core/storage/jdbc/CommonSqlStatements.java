@@ -143,6 +143,17 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String selectApiDesigns() {
         return "SELECT d.* FROM api_designs d JOIN acl a ON a.design_id = d.id WHERE a.user_id = ?";
     }
+    
+    @Override
+    public String selectRecentApiDesigns() {
+        return "SELECT c.design_id, MAX(c.version) version "
+        		+ "FROM api_content c "
+        		+ "JOIN acl a ON a.design_id = c.design_id "
+        		+ "WHERE a.user_id = ? "
+        		+ "GROUP BY c.design_id "
+        		+ "ORDER BY version DESC "
+        		+ "LIMIT 5";
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesignById()

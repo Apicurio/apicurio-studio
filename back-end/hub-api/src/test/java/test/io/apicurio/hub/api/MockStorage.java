@@ -347,6 +347,18 @@ public class MockStorage implements IStorage {
         return this.designs.values();
     }
     
+    @Override
+    public Collection<ApiDesign> getRecentApiDesigns(String userId) throws StorageException {
+    	Collection<ApiDesign> recent = new ArrayList<>();
+    	int counter = 0;
+    	for (ApiDesign design : this.designs.values()) {
+			if (counter++ < 5) {
+				recent.add(design);
+			}
+		}
+        return recent;
+    }
+    
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long)
      */

@@ -28,64 +28,71 @@
                 </div>
             </div>
 
-            <!-- No APIs Found -->
-            <div  *ngIf="isLoaded('apis')">
-            <div class="card-pf blank-slate-card-pf" *ngIf="(recentApis() | async).length == 0">
-                <div class="blank-slate-pf">
-                    <div class="blank-slate-pf-icon">
-                        <span class="pficon pficon pficon-add-circle-o"></span>
-                    </div>
-                    <h1>No APIs Found</h1>
-                    <p>
-                        We couldn't find any APIs for you - it's possible that you have not yet created/imported any APIs to the studio.
-                        Or perhaps you have some APIs but haven't worked on them recently.  Pick an action below that makes sense
-                        for you!
-                    </p>
-                    <div class="blank-slate-pf-main-action">
-                        <div class="btn-group">
-                            <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
-                            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> Import API</a></li>
-                            </ul>
-                        </div>
-                        <a routerLink="/apis" class="btn btn-lg btn-default" style="margin-left: 10px">View All APIs</a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Recent APIs -->
-            <div class="card-pf" *ngIf="(recentApis() | async).length > 0">
+            <div class="card-pf" *ngIf="!isLoaded('recentApis')">
                 <div class="card-pf-heading">
-                    <h2 class="card-pf-title">Your Recent APIs</h2>
-                </div>
-                <div class="card-pf-body api-recent-apis">
-                    <div class="api-item" *ngFor="let api of recentApis() | async">
-                        <a [routerLink]="['apis', api.id]">
-                            <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
-                        </a>
-                        <p>{{api.description}}</p>
-                    </div>
-                </div>
-                <div style="font-size: 14px" class="card-pf-footer">
-                    <p>
-                        <a routerLink="/apis" class="">
-                            <span class="fa fa-list"></span><span>View All APIs</span>
-                        </a>
-                        <span></span>
-                        <a routerLink="/apis/import" class="pull-right" style="margin-left: 15px">
-                            <span class="pficon pficon-import"></span><span>Import API</span>
-                        </a>
-                        <a routerLink="/apis/create" class="pull-right" style="margin-left: 15px">
-                            <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
-                        </a>
-                    </p>
+                    <h1 class="card-pf-title">
+                        <p><span class="spinner spinner-xs spinner-inline"></span> Loading Recent APIs...</p>
+                    </h1>
                 </div>
             </div>
+            <div *ngIf="isLoaded('recentApis')">
+                <div class="card-pf blank-slate-card-pf" *ngIf="recentApis.length == 0">
+                    <div class="blank-slate-pf">
+                        <div class="blank-slate-pf-icon">
+                            <span class="pficon pficon pficon-add-circle-o"></span>
+                        </div>
+                        <h1>No APIs Found</h1>
+                        <p>
+                            We couldn't find any APIs for you - it's possible that you have not yet created/imported any APIs to the studio.
+                            Or perhaps you have some APIs but haven't worked on them recently.  Pick an action below that makes sense
+                            for you!
+                        </p>
+                        <div class="blank-slate-pf-main-action">
+                            <div class="btn-group">
+                                <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
+                                <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> Import API</a></li>
+                                </ul>
+                            </div>
+                            <a routerLink="/apis" class="btn btn-lg btn-default" style="margin-left: 10px">View All APIs</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent APIs -->
+                <div class="card-pf" *ngIf="isLoaded('recentApis') && recentApis.length > 0">
+                    <div class="card-pf-heading">
+                        <h2 class="card-pf-title">Your Recent APIs</h2>
+                    </div>
+                    <div class="card-pf-body api-recent-apis">
+                        <div class="api-item" *ngFor="let api of recentApis">
+                            <a [routerLink]="['apis', api.id]">
+                                <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
+                            </a>
+                            <p>{{api.description}}</p>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px" class="card-pf-footer">
+                        <p>
+                            <a routerLink="/apis" class="">
+                                <span class="fa fa-list"></span><span>View All APIs</span>
+                            </a>
+                            <span></span>
+                            <a routerLink="/apis/import" class="pull-right" style="margin-left: 15px">
+                                <span class="pficon pficon-import"></span><span>Import API</span>
+                            </a>
+                            <a routerLink="/apis/create" class="pull-right" style="margin-left: 15px">
+                                <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 

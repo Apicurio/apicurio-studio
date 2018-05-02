@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -36,7 +37,9 @@ import javax.sql.DataSource;
 import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
+import org.jdbi.v3.core.mapper.ColumnMapper;
 import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.mapper.SingleColumnMapper;
 import org.jdbi.v3.core.result.ResultIterable;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
@@ -771,6 +774,35 @@ public class JdbcStorage implements IStorage {
                         .bind(0, userId)
                         .map(ApiDesignRowMapper.instance)
                         .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error listing API designs.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getRecentApiDesigns(java.lang.String)
+     */
+    @Override
+    public Collection<ApiDesign> getRecentApiDesigns(String userId) throws StorageException {
+        logger.debug("Getting a list of the user's recent APIs.");
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectRecentApiDesigns();
+                Collection<ApiDesign> designs = new ArrayList<>();
+                Collection<Long> recentApiIds = handle.createQuery(statement)
+                        .bind(0, userId)
+                        .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
+							@Override
+							public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
+								return r.getLong(columnNumber);
+							}
+						}, "design_id"))
+                        .list();
+                for (Long did : recentApiIds) {
+					designs.add(this.getApiDesign(userId, String.valueOf(did)));
+				}
+                return designs;
             });
         } catch (Exception e) {
             throw new StorageException("Error listing API designs.", e);

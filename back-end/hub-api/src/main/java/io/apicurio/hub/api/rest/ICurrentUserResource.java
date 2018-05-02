@@ -24,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -44,5 +45,10 @@ public interface ICurrentUserResource {
     @Path("activity")
     public Collection<ApiDesignChange> getActivity(@QueryParam("start") Integer start, @QueryParam("end") Integer end) 
     		throws ServerError, NotFoundException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("recent/designs")
+    public Collection<ApiDesign> getRecentDesigns() throws ServerError;
 
 }

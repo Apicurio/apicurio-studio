@@ -134,6 +134,14 @@ public class OpenApi2Swarm {
             zos.write(generatePomXml(info).getBytes());
             zos.closeEntry();
 
+            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/Dockerfile"));
+            zos.write(generateDockerfile().getBytes());
+            zos.closeEntry();
+
+            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/openshift-template.yml"));
+            zos.write(generateOpenshiftTemplate().getBytes());
+            zos.closeEntry();
+
             zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/openapi.json"));
             zos.write(this.openApiDoc.getBytes());
             zos.closeEntry();
@@ -203,6 +211,22 @@ public class OpenApi2Swarm {
                 .replace("$VERSION$", info.getVersion())
                 .replace("$NAME$", info.getName())
                 .replace("$DESCRIPTION$", info.getDescription());
+    }
+
+    /**
+     * Generates the Dockerfile.
+     */
+    private String generateDockerfile() throws IOException {
+        String template = IOUtils.toString(getClass().getResource("Dockerfile"));
+        return template.replace("$ARTIFACT_ID$", this.settings.artifactId);
+    }
+
+    /**
+     * Generates the openshift-template.yml file.
+     */
+    private String generateOpenshiftTemplate() throws IOException {
+        String template = IOUtils.toString(getClass().getResource("openshift-template.yml"));
+        return template.replace("$ARTIFACT_ID$", this.settings.artifactId);
     }
 
     /**

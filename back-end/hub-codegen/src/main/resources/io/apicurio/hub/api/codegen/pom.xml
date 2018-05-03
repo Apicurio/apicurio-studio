@@ -33,6 +33,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>$ARTIFACT_ID$</finalName>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>

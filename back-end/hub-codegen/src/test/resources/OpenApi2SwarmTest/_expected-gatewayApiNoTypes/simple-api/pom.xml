@@ -33,6 +33,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>simple-api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.swarm</groupId>

@@ -6,7 +6,7 @@
         <context-help>
             <p>{{ description }}</p>
         </context-help>
-        <button class="btn btn-sm btn-default pull-right" (click)="addServerDialog.open()"><span class="fa fa-plus"></span></button>
+        <icon-button (click)="addServerDialog.open()" [pullRight]="true" [type]="'add'"></icon-button>
     </div>
     <div class="section-body collapse" id="servers-section-body" [class.in]="servers().length > 0">
         <div class="alert alert-info" *ngIf="servers().length === 0">
@@ -32,10 +32,10 @@
                                                             [value]="server.description"></inline-text-editor></td>
                 <td class="actions" nowrap>
                     <div>
-                        <button class="btn btn-sm btn-default" (click)="addServerDialog.open(server)"
-                                title="Edit server."><span class="pficon pficon-edit"></span></button>
-                        <button class="btn btn-sm btn-default" (click)="deleteServer(server)"
-                                title="Delete server."><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="addServerDialog.open(server)" [type]="'edit'"
+                                     [title]="'Edit server.'"></icon-button>
+                        <icon-button (click)="deleteServer(server)" [type]="'delete'"
+                                     [title]="'Delete Server.'"></icon-button>
                     </div>
                 </td>
             </tr>

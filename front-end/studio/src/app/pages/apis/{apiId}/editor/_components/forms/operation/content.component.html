@@ -3,14 +3,15 @@
         <li *ngFor="let mtName of mediaTypeNames()" [class.active]="mtName === mediaTypeName">
             <a (click)="selectMediaType(mtName)">
                 <span>{{ mtName }}</span>
-                <button style="margin-left: 5px" class="btn btn-xs btn-default" (click)="removeMediaType(mtName)"><span class="pficon pficon-delete"></span></button>
+                <icon-button (click)="removeMediaType(mtName)" [type]="'delete'"
+                             [title]="'Delete this media type.'"></icon-button>
             </a>
         </li>
 
-        <button class="btn btn-sm btn-default pull-right" (click)="addMediaTypeDialog.open()"
-                title="Add a new media type."><span class="fa fa-plus"></span></button>
-        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllMediaTypes()"
-                title="Delete all media types."><span class="pficon pficon-delete"></span></button>
+        <icon-button (click)="addMediaTypeDialog.open()" [pullRight]="true" [type]="'add'"
+                     [title]="'Add a new media type.'"></icon-button>
+        <icon-button (click)="deleteAllMediaTypes()" [pullRight]="true" [type]="'delete'"
+                     [title]="'Delete all media types.'"></icon-button>
 
     </ul>
     <div class="panel panel-default tab-panel">
@@ -69,10 +70,10 @@
                         </td>
                         <td class="actions">
                             <div>
-                                <button class="btn btn-sm btn-default pull-right" (click)="deleteExample(example)"
-                                        type="button" title="Delete example."><span class="pficon pficon-delete"></span></button>
-                                <button class="btn btn-sm btn-default pull-right" (click)="editExampleDialog.open(example)"
-                                        type="button" title="Edit example."><span class="pficon pficon-edit"></span></button>
+                                <icon-button (click)="deleteExample(example)" [pullRight]="true" [type]="'delete'"
+                                             [title]="'Delete example.'"></icon-button>
+                                <icon-button (click)="editExampleDialog.open(example)" [pullRight]="true" [type]="'edit'"
+                                             [title]="'Edit example.'"></icon-button>
                             </div>
                         </td>
                     </tr>

@@ -108,8 +108,7 @@
                         The result is a path with two dynamic components: <strong>resourceId</strong> and <strong>subresourceId</strong>.
                     </p>
                 </context-help>
-                <button class="btn btn-sm btn-default pull-right"
-                        (click)="addPathDialog.open(document, getCurrentPathSelection())"><span class="fa fa-plus"></span></button>
+                <icon-button (click)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" [type]="'add'"></icon-button>
             </div>
             <div class="section-body collapse in" id="path-section-body">
                 <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
@@ -159,8 +158,7 @@
                         and also <strong>Responses</strong> of any Operation in the API.
                     </p>
                 </context-help>
-                <button class="btn btn-sm btn-default pull-right"
-                        (click)="addDefinitionDialog.open(document)"><span class="fa fa-plus"></span></button>
+                <icon-button (click)="addDefinitionDialog.open(document)" [pullRight]="true" [type]="'add'"></icon-button>
             </div>
             <div class="section-body collapse in" id="definition-section-body">
                 <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}"  [name]="definitionName(def)"
@@ -183,7 +181,7 @@
                 <a class="collapsed" data-toggle="collapse" data-target="#response-section-body">
                     <span class="section-label">Responses</span>
                 </a>
-                <button class="btn btn-sm btn-default pull-right"><span class="fa fa-plus"></span></button>
+                <icon-button (click)="" [pullRight]="true" [type]="'add'"></icon-button>
             </div>
             <div class="section-body collapse" id="response-section-body">
                 <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"

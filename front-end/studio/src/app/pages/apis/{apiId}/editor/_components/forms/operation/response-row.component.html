@@ -62,10 +62,10 @@
                         <td class="value pre-actions">{{ exampleValue(contentType) }}</td>
                         <td class="actions">
                             <div>
-                                <button class="btn btn-sm btn-default pull-right" (click)="deleteExample(contentType)"
-                                        type="button" title="Delete example."><span class="pficon pficon-delete"></span></button>
-                                <button class="btn btn-sm btn-default pull-right" (click)="editExampleDialog.open(contentType, exampleValue(contentType))"
-                                        type="button" title="Edit example."><span class="pficon pficon-edit"></span></button>
+                                <icon-button (click)="deleteExample(contentType)" [pullRight]="true" [type]="'delete'"
+                                             [title]="'Delete example.'"></icon-button>
+                                <icon-button (click)="editExampleDialog.open(contentType, exampleValue(contentType))" [pullRight]="true" [type]="'edit'"
+                                             [title]="'Edit example.'"></icon-button>
                             </div>
                         </td>
                     </tr>

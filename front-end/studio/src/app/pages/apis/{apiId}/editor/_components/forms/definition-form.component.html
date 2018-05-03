@@ -76,10 +76,10 @@
                                 Use this section to define the properties that make up this definition.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="openAddSchemaPropertyModal()"><span class="fa fa-plus"></span></button>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllSchemaProperties()"
-                                title="Delete all schema properties."
-                                [disabled]="!hasProperties()"><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="openAddSchemaPropertyModal()" [pullRight]="true" [type]="'add'"
+                                     [title]="'Add a property to the schema.'"></icon-button>
+                        <icon-button (click)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
+                                     [title]="'Delete all properties from the schema.'"></icon-button>
                     </div>
                     <div class="section-body collapse in" id="properties-section-body">
                         <!-- Warning when no properties exist -->

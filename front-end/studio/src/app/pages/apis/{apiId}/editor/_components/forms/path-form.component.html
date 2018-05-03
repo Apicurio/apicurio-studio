@@ -107,11 +107,10 @@
                                 can be overridden (though not removed) at the operation level.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
-                                title="Add a new query parameter"><span class="fa fa-plus"></span></button>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
-                                title="Delete all query parameters."
-                                [disabled]="!hasParameters('query')"><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
+                                     [title]="'Add a new query parameter.'"></icon-button>
+                        <icon-button (click)="deleteAllQueryParams()" [disabled]="!hasParameters('query')" [pullRight]="true" [type]="'delete'"
+                                     [title]="'Delete all query parameters.'"></icon-button>
                     </div>
                     <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
 

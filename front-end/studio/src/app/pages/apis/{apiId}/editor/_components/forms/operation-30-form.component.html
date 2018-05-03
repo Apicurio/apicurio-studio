@@ -133,9 +133,8 @@
                                 types usually do not include a body.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteRequestBody()"
-                                title="Delete the request body."
-                                [disabled]="!hasRequestBody()"><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="deleteRequestBody()" [pullRight]="true" [type]="'delete'" [disabled]="!hasRequestBody()"
+                                     [title]="'Delete the request body.'"></icon-button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
 
@@ -198,11 +197,10 @@
                                 accepted/expected by this operation.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="openAddQueryParamModal()"
-                                title="Add a new query parameter"><span class="fa fa-plus"></span></button>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllQueryParams()"
-                                title="Delete all query parameters."
-                                [disabled]="!hasQueryParameters()"><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
+                                     [title]="'Add a new query parameter.'"></icon-button>
+                        <icon-button (click)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()" [pullRight]="true" [type]="'delete'"
+                                     [title]="'Delete all query parameters.'"></icon-button>
                     </div>
                     <div class="section-body collapse" id="parameters-section-body" [class.in]="hasQueryParameters()">
 
@@ -246,9 +244,10 @@
                                 <li><strong>404 Not Found</strong> - failed to GET something</li>
                             </ul>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="openAddResponseModal()"><span class="fa fa-plus"></span></button>
-                        <button class="btn btn-sm btn-default pull-right" (click)="deleteAllResponses()"
-                                [disabled]="!hasResponses()"><span class="pficon pficon-delete"></span></button>
+                        <icon-button (click)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
+                                     [title]="'Add a response to the operation.'"></icon-button>
+                        <icon-button (click)="deleteAllResponses()" [disabled]="!hasResponses()" [pullRight]="true" [type]="'delete'"
+                                     [title]="'Delete all responses from the operation.'"></icon-button>
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">
 
@@ -288,7 +287,8 @@
                                 operation and will override any security requirements configured globally.
                             </p>
                         </context-help>
-                        <button class="btn btn-sm btn-default pull-right" (click)="openSecurityRequirementDialog()"><span class="fa fa-plus"></span></button>
+                        <icon-button (click)="openSecurityRequirementDialog()" [pullRight]="true" [type]="'add'"
+                                     [title]="'Add a security requirement for the operation.'"></icon-button>
                     </div>
                     <div class="section-body collapse" id="security-requirements-section-body" [class.in]="hasSecurityRequirements()">
 
@@ -313,10 +313,10 @@
                                 <td class="requirement-name pre-actions">{{ securityRequirementSummary(requirement) }}</td>
                                 <td class="actions" nowrap>
                                     <div>
-                                        <button class="btn btn-sm btn-default" (click)="openSecurityRequirementDialog(requirement)"
-                                                title="Edit security requirement."><span class="pficon pficon-edit"></span></button>
-                                        <button class="btn btn-sm btn-default" (click)="deleteSecurityRequirement(requirement)"
-                                                title="Delete security requirement."><span class="pficon pficon-delete"></span></button>
+                                        <icon-button (click)="openSecurityRequirementDialog(requirement)" [type]="'edit'"
+                                                     [title]="'Edit security requirement.'"></icon-button>
+                                        <icon-button (click)="deleteSecurityRequirement(requirement)" [type]="'delete'"
+                                                     [title]="'Delete security requirement.'"></icon-button>
                                     </div>
                                 </td>
                             </tr>

@@ -1,14 +1,17 @@
 button.icon-button {
-  cursor: pointer;
   border: 0px;
   background-color: transparent;
-  color: #888;
+  color: #776;
   padding-left: 3px;
   padding-right: 3px;
 }
 
 button.icon-button:hover {
   color: #3f4950;
+}
+
+button.icon-button:disabled {
+  color: #ccc;
 }
 
 button.icon-button span {

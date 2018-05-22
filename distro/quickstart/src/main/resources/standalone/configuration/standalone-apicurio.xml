@@ -412,26 +412,26 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:weld:3.0"/>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
-            <realm name="apicurio-local">
-                <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmOxZoxTShVJt2hB8emM3OHuhqkiHThZdd6SjRaLQBwmZPb0gwCta0UjcFJv+j+B1DO/SeBzenFaVW72EDvDaoCjndW8t4PfXsVO3HHfb69DQCOx68nxrYdUIGB5xHjF5e5tas6BhaJV1kWkSvS7Sb7A6F8vKCdcDyBHHLpEEPmKj0VFfsvJu4JXQGmmcwh41re+c1xZz0eYBho8T0z/AESDrPorFq4OCwlLGoBj6/118/fm2Qs4xLIfE27FismpVtMxRwPju9k3hUijtG7a3+LYkkWOPV8KUJVz/+8d+abuRm4k4HVJL+XxCxjgJPKMGRo8Gww1uWwMCnLmw4YxgewIDAQAB</realm-public-key>
-                <auth-server-url>${apicurio.kc.auth.rootUrl}</auth-server-url>
-                <ssl-required>NONE</ssl-required>
-                <enable-cors>true</enable-cors>
-                <principal-attribute>preferred_username</principal-attribute>
-            </realm>
-            <secure-deployment name="apicurio-studio-api.war">
-                <realm>apicurio-local</realm>
-                <resource>apicurio-api</resource>
-                <bearer-only>true</bearer-only>
-                <disable-trust-manager>true</disable-trust-manager>
-                <credential name="secret">6f13da19-7cc1-40c0-85bf-6fac81ff5c05</credential>
-            </secure-deployment>
-            <secure-deployment name="apicurio-studio.war">
-                <realm>apicurio-local</realm>
-                <resource>apicurio-studio</resource>
-                <public-client>true</public-client>
-                <disable-trust-manager>true</disable-trust-manager>
-            </secure-deployment>
+<!--             <realm name="apicurio-local"> -->
+<!--                 <realm-public-key>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmOxZoxTShVJt2hB8emM3OHuhqkiHThZdd6SjRaLQBwmZPb0gwCta0UjcFJv+j+B1DO/SeBzenFaVW72EDvDaoCjndW8t4PfXsVO3HHfb69DQCOx68nxrYdUIGB5xHjF5e5tas6BhaJV1kWkSvS7Sb7A6F8vKCdcDyBHHLpEEPmKj0VFfsvJu4JXQGmmcwh41re+c1xZz0eYBho8T0z/AESDrPorFq4OCwlLGoBj6/118/fm2Qs4xLIfE27FismpVtMxRwPju9k3hUijtG7a3+LYkkWOPV8KUJVz/+8d+abuRm4k4HVJL+XxCxjgJPKMGRo8Gww1uWwMCnLmw4YxgewIDAQAB</realm-public-key> -->
+<!--                 <auth-server-url>${apicurio.kc.auth.rootUrl}</auth-server-url> -->
+<!--                 <ssl-required>NONE</ssl-required> -->
+<!--                 <enable-cors>true</enable-cors> -->
+<!--                 <principal-attribute>preferred_username</principal-attribute> -->
+<!--             </realm> -->
+<!--             <secure-deployment name="apicurio-studio-api.war"> -->
+<!--                 <realm>apicurio-local</realm> -->
+<!--                 <resource>apicurio-api</resource> -->
+<!--                 <bearer-only>true</bearer-only> -->
+<!--                 <disable-trust-manager>true</disable-trust-manager> -->
+<!--                 <credential name="secret">6f13da19-7cc1-40c0-85bf-6fac81ff5c05</credential> -->
+<!--             </secure-deployment> -->
+<!--             <secure-deployment name="apicurio-studio.war"> -->
+<!--                 <realm>apicurio-local</realm> -->
+<!--                 <resource>apicurio-studio</resource> -->
+<!--                 <public-client>true</public-client> -->
+<!--                 <disable-trust-manager>true</disable-trust-manager> -->
+<!--             </secure-deployment> -->
         </subsystem>
     </profile>
     <interfaces>

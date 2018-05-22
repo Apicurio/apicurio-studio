@@ -1,0 +1,7 @@
+<jboss-deployment-structure>
+  <deployment>
+    <dependencies>
+      <module name="org.keycloak.keycloak-core" />
+    </dependencies>
+  </deployment>
+</jboss-deployment-structure>

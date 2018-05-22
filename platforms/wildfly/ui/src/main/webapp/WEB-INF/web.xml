@@ -114,8 +114,7 @@
   </security-constraint>
 
   <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>apicurio</realm-name>
+    <auth-method>KEYCLOAK</auth-method>
   </login-config>
 
   <security-role>

@@ -1,0 +1,10 @@
+{
+	"realm": "${apicurio.kc.auth.realm:apicurio}",
+	"bearer-only": false,
+	"auth-server-url": "${apicurio.kc.auth.rootUrl:http://localhost:8180/auth}",
+	"ssl-required": "${apicurio.kc.auth.sslRequired:NONE}",
+	"public-client": true,
+	"disable-trust-manager": "${apicurio.kc.auth.disableTrustManager:true}",
+	"resource": "${apicurio.kc.auth.uiClientId:apicurio-studio}",
+	"proxy-url": "${apicurio.kc.auth.proxyUrl:}"
+}

@@ -43,6 +43,7 @@ export class PublishPageComponent extends AbstractPageComponent {
     public _selectedType: string;
     public model: any;
     public modelValid: any;
+    public resource: string;
     public format: string = "YAML";
     public commitMessage: string;
 
@@ -137,7 +138,7 @@ export class PublishPageComponent extends AbstractPageComponent {
         info.group = this.model.group;
         info.project = this.model.project;
         info.branch = this.model.branch;
-        info.resource = this.model.resource;
+        info.resource = this.resource;
         info.format = this.format;
         info.commitMessage = this.commitMessage;
 
@@ -159,19 +160,26 @@ export class PublishPageComponent extends AbstractPageComponent {
 
     public setModel(model: any): void {
         this.model = model;
-        if (this.model && this.model.resource && this.model.resource.endsWith(".json")) {
+    }
+
+    public resourceChanged(): void {
+        if (this.model && this.resource && this.resource.endsWith(".json")) {
             this.format = "JSON";
         }
-        if (this.model && this.model.resource && this.model.resource.endsWith(".yaml")) {
+        if (this.model && this.resource && this.resource.endsWith(".yaml")) {
             this.format = "YAML";
         }
-        if (this.model && this.model.resource && this.model.resource.endsWith(".yml")) {
+        if (this.model && this.resource && this.resource.endsWith(".yml")) {
             this.format = "YAML";
         }
     }
 
     public isValid(): boolean {
-        return this.modelValid && this.commitMessage && this.commitMessage.length > 0;
+        return this.modelValid &&
+            this.commitMessage &&
+            this.commitMessage.length > 0 &&
+            this.resource &&
+            this.resource.length > 0;
     }
 
     public commitMessageMode(): CodeEditorMode {

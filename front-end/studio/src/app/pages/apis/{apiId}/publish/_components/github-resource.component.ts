@@ -34,8 +34,7 @@ export class GitHubResourceComponent implements OnInit {
     public model: any = {
         org: null,
         repo: null,
-        branch: "master",
-        resource: null
+        branch: "master"
     };
     public _orgOptions: DropDownOption[] = [];
     public _repoOptions: DropDownOption[] = [];
@@ -168,11 +167,6 @@ export class GitHubResourceComponent implements OnInit {
         this.onValid.emit(this.isValid());
     }
 
-    public resourceChanged(): void {
-        this.onChange.emit(this.model);
-        this.onValid.emit(this.isValid());
-    }
-
     private isValid(): boolean {
         return this.model.org != null &&
             this.model.org != undefined &&
@@ -182,9 +176,6 @@ export class GitHubResourceComponent implements OnInit {
             this.model.repo.length > 0 &&
             this.model.branch != null &&
             this.model.branch != undefined &&
-            this.model.branch.length > 0 &&
-            this.model.resource != null &&
-            this.model.resource != undefined &&
-            this.model.resource.length > 0;
+            this.model.branch.length > 0;
     }
 }

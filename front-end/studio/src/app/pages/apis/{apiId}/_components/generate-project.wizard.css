@@ -1,0 +1,37 @@
+
+.experimental-pf-more-info {
+  z-index: 100;
+}
+
+.publish-project-form .publish-to-option {
+  font-size: 32px;
+  border: 2px solid;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-right: 5px;
+}
+.publish-project-form .publish-to-option:hover {
+  border: 2px solid #0088ce;
+  color: #0088ce;
+  cursor: pointer;
+}
+.publish-project-form .publish-to-option.disabled {
+  color: #999;
+  border: 2px solid #999;
+  cursor: default;
+}
+.publish-project-form .publish-to-option.hover {
+  color: #999;
+  border: 2px solid #999;
+}
+.publish-project-form .publish-to-option.selected {
+  color: white;
+  border: 2px solid #0088ce;
+  cursor: default;
+  background-color: #0088ce;
+}
+
+.wizard-pf-complete {
+  padding-bottom: 0px;
+  padding-top: 50px;
+}

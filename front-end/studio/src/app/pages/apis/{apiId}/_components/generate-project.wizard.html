@@ -1,0 +1,249 @@
+<div bsModal #generateProjectModal="bs-modal" class="modal fade" id="generateProjectModal" tabindex="-1" role="dialog"
+     aria-labelledby="generateProjectModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
+    <div class="modal-dialog modal-lg wizard-pf">
+        <div class="experimental-pf">
+            <div class="experimental-pf-bar">
+                <button class="experimental-pf-more-info">
+                    Experimental <i class="fa fa-flask"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="generateProjectModalLabel">Project Generation Wizard</h4>
+                </div>
+                <div class="modal-body wizard-pf-body clearfix">
+                    <div class="wizard-pf-steps" *ngIf="!loading && !generating && !generated">
+                        <ul class="wizard-pf-steps-indicator wizard-pf-steps-alt-indicator active">
+
+                            <li class="wizard-pf-step" [class.active]="currentPage === 'generationType'">
+                                <a (click)="goTo('generationType')">
+                                    <span class="wizard-pf-step-number">1</span>
+                                    <span class="wizard-pf-step-title">Generation Type</span>
+                                </a>
+                            </li>
+
+                            <li class="wizard-pf-step" [class.active]="currentPage === 'projectType'">
+                                <a (click)="goTo('projectType')">
+                                    <span class="wizard-pf-step-number">2</span>
+                                    <span class="wizard-pf-step-title">Project Type</span>
+                                </a>
+                            </li>
+
+                            <li class="wizard-pf-step" [class.active]="currentPage === 'location'">
+                                <a (click)="goTo('location')">
+                                    <span class="wizard-pf-step-number">3</span>
+                                    <span class="wizard-pf-step-title">Location</span>
+                                </a>
+                            </li>
+
+                            <li class="wizard-pf-step" [class.active]="currentPage === 'sourceControl'" *ngIf="model.location === 'sourceControl'">
+                                <a href="#">
+                                    <span class="wizard-pf-step-number">4</span>
+                                    <span class="wizard-pf-step-title">Source Control</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="wizard-pf-row" style="height: 425px">
+                        <div class="wizard-pf-main">
+                            <!-- Wizard Data Loading -->
+                            <div class="wizard-pf-loading blank-slate-pf" *ngIf="loading">
+                                <div class="spinner spinner-lg blank-slate-pf-icon"></div>
+                                <h3 class="blank-slate-pf-main-action">Loading Wizard Data</h3>
+                                <p class="blank-slate-pf-secondary-action">Loading information needed by the Project Generation Wizard, please wait...</p>
+                            </div>
+                            <!-- Generation Type -->
+                            <div class="wizard-pf-contents" *ngIf="!loading && currentPage === 'generationType'">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <input type="radio" name="generation-type" id="gentype-bootstrap" value="bootstrap" [(ngModel)]="model.generationType">
+                                            <label for="gentype-bootstrap">Bootstrap a new implementation project</label>
+                                            <p class="moreInfo" style="padding-left: 15px">
+                                                Create a brand new project from this API.  All boilerplate files will be generated.  Use
+                                                this option if this is the first time you've generated a project for this API.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <input type="radio" name="generation-type" id="gentype-update" value="update" [(ngModel)]="model.generationType">
+                                            <label for="gentype-update">Update an existing implementation project</label>
+                                            <p class="moreInfo" style="padding-left: 15px">
+                                                Update an existing implementation project that was previously generated using this API
+                                                Contract.  Generates a subset of the resources for the project (excludes some boilerplate).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Project Type -->
+                            <div class="wizard-pf-contents" *ngIf="currentPage === 'projectType'">
+                                <form class="form-horizontal" #projectTypeForm="ngForm" id="projectTypeForm">
+                                    <div class="form-group required">
+                                        <label class="col-sm-2 control-label">Type</label>
+                                        <div class="col-sm-10">
+                                            <drop-down id="projectType" [id]="'projectType'" [value]="model.projectType" [options]="projectTypeOptions()"
+                                                       (onValueChange)="model.projectType = $event" [noSelectionLabel]="'Choose Project Type'"></drop-down>
+                                        </div>
+                                    </div>
+                                    <div class="form-items-thorntail" *ngIf="model.projectType === 'thorntail'">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="groupId">Group ID</label>
+                                            <div class="col-sm-10">
+                                                <input #groupIdInput="ngModel" name="groupId" type="text" id="groupId" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.groupId" #name="ngModel">
+                                                <form-error-message [inputModel]="groupIdInput" [type]="'required'">Group ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="groupIdInput" [type]="'pattern'">Please enter a valid Maven groupId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="artifactId">Artifact ID</label>
+                                            <div class="col-sm-10">
+                                                <input #artifactIdInput="ngModel" name="artifactId" type="text" id="artifactId" class="form-control" placeholder="my-api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.artifactId" #name="ngModel">
+                                                <form-error-message [inputModel]="artifactIdInput" [type]="'required'">Artifact ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="artifactIdInput" [type]="'pattern'">Please enter a valid Maven artifactId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="javaPackage">Java Package</label>
+                                            <div class="col-sm-10">
+                                                <input #javaPackageInput="ngModel" name="javaPackage" type="text" id="javaPackage" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\._]*" [(ngModel)]="model.projectData.javaPackage" #name="ngModel">
+                                                <form-error-message [inputModel]="javaPackageInput" [type]="'required'">Java package is required.</form-error-message>
+                                                <form-error-message [inputModel]="javaPackageInput" [type]="'pattern'">Please enter a valid Java package name.</form-error-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Location: Download/Publish -->
+                            <div class="wizard-pf-contents" *ngIf="currentPage === 'location'">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <input type="radio" name="action-type" id="atype-download" value="download" [(ngModel)]="model.location">
+                                            <label for="atype-download">Download result as ZIP</label>
+                                            <p class="moreInfo" style="padding-left: 15px">
+                                                Download the resulting generated project as a ZIP file containing all of the
+                                                generated resources.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <input type="radio" name="action-type" id="atype-publish" value="sourceControl" [(ngModel)]="model.location">
+                                            <label for="atype-publish">Publish result to source control</label>
+                                            <p class="moreInfo" style="padding-left: 15px">
+                                                Publish the resulting generated project to a source control system (e.g. GitHub).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Publish Details -->
+                            <div class="wizard-pf-contents project-publish" *ngIf="currentPage === 'sourceControl'">
+                                <form class="form-horizontal publish-project-form">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label required">Publish To</label>
+                                        <div class="col-sm-10">
+                                            <span class="publish-to-option fa fa-github" (click)="setPublishTo('GitHub')"
+                                                  title="Publish to GitHub" [class.disabled]="!hasAccount('GitHub')"
+                                                  [class.selected]="isSelected('GitHub')"></span>
+                                            <span class="publish-to-option fa fa-gitlab disabled" (click)="setPublishTo('GitLab')"
+                                                  title="Publish to GitLab" [class.disabled]="!hasAccount('GitLab')"
+                                                  [class.selected]="isSelected('GitLab')"></span>
+                                            <span class="publish-to-option fa fa-bitbucket selected" (click)="setPublishTo('Bitbucket')"
+                                                  title="Publish to Bitbucket" [class.disabled]="!hasAccount('Bitbucket')"
+                                                  [class.selected]="isSelected('Bitbucket')"></span>
+                                            <div class="alert alert-warning" *ngIf="!hasAtLeastOneAccount()" style="margin-top: 20px;">
+                                                <span class="pficon pficon-warning-triangle-o"></span>
+                                                <strong>Cannot Publish API</strong> You haven't linked your Apicurio account to a source
+                                                control system.  Do this first from the appropriate <a routerLink="/settings/accounts">Settings</a> page.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <github-resource *ngIf="isSelected('GitHub')" (onChange)="model.sourceControlData.model = $event"
+                                                     (onValid)="sourceControlDataValid = $event"></github-resource>
+                                    <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="model.sourceControlData.model = $event"
+                                                     (onValid)="sourceControlDataValid = $event"></gitlab-resource>
+                                    <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="model.sourceControlData.model = $event"
+                                                        (onValid)="sourceControlDataValid = $event"></bitbucket-resource>
+
+                                    <div class="form-group" *ngIf="model.sourceControlData.type">
+                                        <label class="col-sm-2 control-label required" for="resource">Location</label>
+                                        <div class="col-sm-10">
+                                            <input name="repository.location" type="text" id="resource" class="form-control"
+                                                   placeholder="/path/to/project-root" required #scResource="ngModel"
+                                                   [(ngModel)]="model.sourceControlData.location">
+                                            <form-error-message [inputModel]="scResource" [type]="'required'">Location is required.</form-error-message>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" *ngIf="model.sourceControlData.type">
+                                        <label class="col-sm-2 control-label required">Commit Message</label>
+                                        <div class="col-sm-10">
+                                            <code-editor [mode]="commitMessageMode()" [(text)]="model.sourceControlData.commitMessage"
+                                                         [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Generation in progress -->
+                            <div class="wizard-pf-contents" *ngIf="generating">
+                                <div class="wizard-pf-process blank-slate-pf">
+                                    <div class="spinner spinner-lg blank-slate-pf-icon"></div>
+                                    <h3 class="blank-slate-pf-main-action">Project Generation in progress</h3>
+                                    <p class="blank-slate-pf-secondary-action">Please wait while we generate a project from your OpenAPI definition.</p>
+                                </div>
+                            </div>
+                            <div class="wizard-pf-contents" *ngIf="generated">
+                                <div class="wizard-pf-complete blank-slate-pf">
+                                    <div class="wizard-pf-success-icon"><span class="glyphicon glyphicon-ok-circle"></span></div>
+                                    <h3 class="blank-slate-pf-main-action">Project was successfully generated</h3>
+                                    <p class="blank-slate-pf-secondary-action">
+                                        <span>Alright!  We've successfully generated a project from your OpenAPI definition.</span>
+                                        <span *ngIf="model.location === 'download'">If your ZIP download does not start within a few seconds, click <strong>Download</strong> below.</span>
+                                    </p>
+                                    <a #downloadLink href="download?type=codegen-swarm&id={{ apiId }}&groupId={{ model.projectData.groupId }}&artifactId={{ model.projectData.artifactId }}&package={{ model.projectData.javaPackage }}"
+                                       class="btn btn-lg btn-default"
+                                       download="{{ model.projectData.artifactId }}.zip"><span>Download</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer wizard-pf-footer">
+                    <button type="button" class="btn btn-default btn-cancel wizard-pf-cancel wizard-pf-dismiss" (click)="cancel()"
+                            *ngIf="showCancelButton()">
+                        <span>Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-default wizard-pf-back" [disabled]="!isBackButtonEnabled()" (click)="goBack()"
+                            *ngIf="showBackButton()">
+                        <span class="i fa fa-angle-left"></span>
+                        <span>Back</span>
+                    </button>
+                    <button type="button" class="btn btn-primary wizard-pf-next" *ngIf="showNextButton()"
+                            [disabled]="!isNextButtonEnabled()" (click)="goNext()">
+                        <span>Next</span>
+                        <span class="i fa fa-angle-right"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary wizard-pf-finish" *ngIf="showGenerateButton()"
+                            [disabled]="!isGenerateButtonEnabled()" (click)="generate()">
+                        <span>Generate</span>
+                        <span class="i fa fa-angle-right"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary wizard-pf-close wizard-pf-dismiss" *ngIf="showCloseButton()"
+                            [disabled]="!isCloseButtonEnabled()" (click)="cancel()">
+                        <span>Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -22,6 +22,7 @@ export class DropDownOption {
     name?: string;
     value?: string;
     divider?: boolean;
+    disabled?: boolean;
 }
 
 

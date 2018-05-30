@@ -33,8 +33,7 @@ export class GitLabResourceComponent implements OnInit {
     public model: any = {
         group: null,
         project: null,
-        branch: "master",
-        resource: null
+        branch: "master"
     };
     public _groupOptions: DropDownOption[] = [];
     public _projectOptions: DropDownOption[] = [];
@@ -153,11 +152,6 @@ export class GitLabResourceComponent implements OnInit {
         this.onValid.emit(this.isValid());
     }
 
-    public resourceChanged(): void {
-        this.onChange.emit(this.model);
-        this.onValid.emit(this.isValid());
-    }
-
     private isValid(): boolean {
         return this.model.group != null &&
             this.model.group != undefined &&
@@ -167,9 +161,6 @@ export class GitLabResourceComponent implements OnInit {
             this.model.project.length > 0 &&
             this.model.branch != null &&
             this.model.branch != undefined &&
-            this.model.branch.length > 0 &&
-            this.model.resource != null &&
-            this.model.resource != undefined &&
-            this.model.resource.length > 0;
+            this.model.branch.length > 0;
     }
 }

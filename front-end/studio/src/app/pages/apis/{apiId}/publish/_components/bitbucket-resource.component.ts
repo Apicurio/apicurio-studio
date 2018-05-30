@@ -34,8 +34,7 @@ export class BitbucketResourceComponent implements OnInit {
     public model: any = {
         team: null,
         repo: null,
-        branch: "master",
-        resource: null
+        branch: "master"
     };
     public _teamOptions: DropDownOption[] = [];
     public _repoOptions: DropDownOption[] = [];
@@ -155,11 +154,6 @@ export class BitbucketResourceComponent implements OnInit {
         this.onValid.emit(this.isValid());
     }
 
-    public resourceChanged(): void {
-        this.onChange.emit(this.model);
-        this.onValid.emit(this.isValid());
-    }
-
     private isValid(): boolean {
         return this.model.team != null &&
             this.model.team != undefined &&
@@ -169,9 +163,6 @@ export class BitbucketResourceComponent implements OnInit {
             this.model.repo.length > 0 &&
             this.model.branch != null &&
             this.model.branch != undefined &&
-            this.model.branch.length > 0 &&
-            this.model.resource != null &&
-            this.model.resource != undefined &&
-            this.model.resource.length > 0;
+            this.model.branch.length > 0;
     }
 }

@@ -119,6 +119,7 @@ import {SecurityRequirementDialogComponent} from "./pages/apis/{apiId}/editor/_c
 import {ActivityItemComponent} from "./components/common/activity-item.component";
 import {GenerateProjectDialogComponent} from "./pages/apis/{apiId}/_components/generate-project.dialog";
 import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/common/icon-button.component";
+import {GenerateProjectWizardComponent} from "./pages/apis/{apiId}/_components/generate-project.wizard";
 
 @NgModule({
     imports: [
@@ -143,7 +144,7 @@ import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/commo
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
         BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent, FormErrorMessageComponent,
-        SecurityRequirementDialogComponent, GenerateProjectDialogComponent, IconButtonComponent
+        SecurityRequirementDialogComponent, GenerateProjectDialogComponent, IconButtonComponent, GenerateProjectWizardComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

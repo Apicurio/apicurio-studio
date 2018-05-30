@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
@@ -34,6 +35,9 @@ public class FormatUtils {
         YAMLFactory factory = new YAMLFactory();
         factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
         yamlMapper = new ObjectMapper(factory);
+        
+        jsonMapper.enable(SerializationFeature.INDENT_OUTPUT);
+//        jsonMapper.setDefaultPrettyPrinter(null)
     }
 
     /**
@@ -53,6 +57,17 @@ public class FormatUtils {
      */
     public static String yamlToJson(String content) throws IOException {
         JsonNode tree = yamlMapper.reader().readTree(content);
+        return jsonMapper.writeValueAsString(tree);
+    }
+
+    /**
+     * Takes JSON content and formats with a standard 2 spaces per indent.  This
+     * is used to take (potentially) unformatted JSON and convert it to formatted JSON.
+     * @param content
+     * @throws IOException
+     */
+    public static String formatJson(String content) throws IOException {
+        JsonNode tree = jsonMapper.reader().readTree(content);
         return jsonMapper.writeValueAsString(tree);
     }
 

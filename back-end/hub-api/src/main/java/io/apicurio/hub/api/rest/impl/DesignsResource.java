@@ -779,16 +779,23 @@ public class DesignsResource implements IDesignsResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
-            List<String> commands = new ArrayList<>(apiCommands.size());
-            for (ApiDesignCommand apiCommand : apiCommands) {
-                commands.add(apiCommand.getCommand());
-            }
-            String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
             
+            String content = designContent.getOaiDocument();
+            
+            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
+            if (!apiCommands.isEmpty()) {
+                List<String> commands = new ArrayList<>(apiCommands.size());
+                for (ApiDesignCommand apiCommand : apiCommands) {
+                    commands.add(apiCommand.getCommand());
+                }
+                content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+            }
+
             // Convert to yaml if necessary
             if (format == FormatType.YAML) {
                 content = FormatUtils.jsonToYaml(content);
+            } else {
+                content = FormatUtils.formatJson(content);
             }
             
             return content;

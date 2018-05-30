@@ -73,6 +73,16 @@
                         <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="setModel($event)" (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
+                            <label class="col-sm-2 control-label required" for="gh-resource">Resource</label>
+                            <div class="col-sm-10">
+                                <input name="repository.resource" type="text" id="gh-resource" class="form-control"
+                                       placeholder="/path/to/apis/openapi.yaml" required #ghResource="ngModel"
+                                       [(ngModel)]="resource" (keyup)="resourceChanged()">
+                                <form-error-message [inputModel]="ghResource" [type]="'required'">Resource is required.</form-error-message>
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="_selectedType">
                             <label class="col-sm-2 control-label required" for="format">Format</label>
                             <div class="col-sm-10">
                                 <drop-down id="format" [id]="'format'" [value]="format" [options]="formatOptions()"

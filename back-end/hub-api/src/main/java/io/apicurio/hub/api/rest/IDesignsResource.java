@@ -33,11 +33,14 @@ import javax.ws.rs.core.Response;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
+import io.apicurio.hub.api.beans.NewCodegenProject;
+import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
@@ -147,11 +150,33 @@ public interface IDesignsResource {
             @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
 
     @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    @Path("{designId}/codegen/swarm")
-    public Response generateSwarmProject(@PathParam("designId") String designId,
-            @QueryParam("groupId") String groupId,
-            @QueryParam("artifactId") String artifactId,
-            @QueryParam("package") String javaPackage) throws ServerError, NotFoundException;
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/codegen/projects")
+    public Collection<CodegenProject> getCodegenProjects(@PathParam("designId") String designId)
+            throws ServerError, NotFoundException;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/codegen/projects")
+    public CodegenProject createCodegenProject(@PathParam("designId") String designId, NewCodegenProject body)
+            throws ServerError, NotFoundException;
+
+    @DELETE
+    @Path("{designId}/codegen/projects")
+    public void deleteCodegenProjects(@PathParam("designId") String designId)
+            throws ServerError, NotFoundException;
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/codegen/projects/{projectId}")
+    public void updateCodegenProject(@PathParam("designId") String designId,
+            @PathParam("projectId") String projectId, UpdateCodgenProject body)
+            throws ServerError, NotFoundException;
+
+    @DELETE
+    @Path("{designId}/codegen/projects/{projectId}")
+    public void deleteCodegenProject(@PathParam("designId") String designId,
+            @PathParam("projectId") String projectId) throws ServerError, NotFoundException;
 
 }

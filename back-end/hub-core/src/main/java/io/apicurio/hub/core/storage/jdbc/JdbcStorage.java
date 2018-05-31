@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.ResultSet;
@@ -23,8 +24,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +56,8 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
+import io.apicurio.hub.core.beans.CodegenProjectType;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -71,7 +77,7 @@ import io.apicurio.hub.core.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 4;
+    private static int DB_VERSION = 5;
     private static Object dbMutex = new Object();
 
     @Inject
@@ -1048,6 +1054,124 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting contributors.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listCodegenProjects(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<CodegenProject> listCodegenProjects(String userId, String designId)
+            throws StorageException {
+        logger.debug("Selecting codegen projects for API Design: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectCodegenProjects();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .map(CodegenProjectRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting codegen projects.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
+     */
+    @Override
+    public String createCodegenProject(String userId, CodegenProject project) throws StorageException {
+        logger.debug("Inserting a codegen project: {}", project.getType());
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertCodegenProject();
+                String attrs = CodegenProjectRowMapper.toString(project.getAttributes());
+                CharacterStreamArgument attributesClob = new CharacterStreamArgument(new StringReader(attrs), attrs.length());
+                String designId = handle.createUpdate(statement)
+                      .bind(0, project.getCreatedBy())
+                      .bind(1, project.getCreatedOn())
+                      .bind(2, Long.valueOf(project.getDesignId()))
+                      .bind(3, project.getType().toString())
+                      .bind(4, attributesClob)
+                      .executeAndReturnGeneratedKeys("id")
+                      .mapTo(String.class)
+                      .findOnly();
+                return designId;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting codegen project.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
+     */
+    @Override
+    public void updateCodegenProject(String userId, CodegenProject project) throws StorageException, NotFoundException {
+        logger.debug("Updating a codegen project: {}", project.getId());
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateCodegenProject();
+                String attrs = CodegenProjectRowMapper.toString(project.getAttributes());
+                CharacterStreamArgument attributesClob = new CharacterStreamArgument(new StringReader(attrs), attrs.length());
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, project.getModifiedBy())
+                        .bind(1, project.getModifiedOn())
+                        .bind(2, project.getType().toString())
+                        .bind(3, attributesClob)
+                        .bind(4, Long.valueOf(project.getId()))
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new StorageException("Error updating an API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProject(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProject(String userId, String designId, String projectId)
+            throws NotFoundException, StorageException {
+        logger.debug("Deleting a codegen project: {}", projectId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteCodegenProject();
+                handle.createUpdate(statement)
+                      .bind(0, Long.valueOf(projectId))
+                      .bind(1, Long.valueOf(designId))
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting a codegen project.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProjects(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProjects(String userId, String designId)
+            throws NotFoundException, StorageException {
+        logger.debug("Deleting all codegen projects for: {}", designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteCodegenProjects();
+                handle.createUpdate(statement)
+                      .bind(0, Long.valueOf(designId))
+                      .execute();
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error deleting a codegen project.", e);
+        }
+    }
 
     
     /**
@@ -1266,6 +1390,67 @@ public class JdbcStorage implements IStorage {
             } catch (IOException e) {
                 throw new SQLException(e);
             }
+        }
+
+    }
+    
+    /**
+     * A row mapper to read a single row from the codegen table.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class CodegenProjectRowMapper implements RowMapper<CodegenProject> {
+        
+        public static final CodegenProjectRowMapper instance = new CodegenProjectRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public CodegenProject map(ResultSet rs, StatementContext ctx) throws SQLException {
+            try {
+                CodegenProject project = new CodegenProject();
+                project.setId(String.valueOf(rs.getLong("id")));
+                project.setCreatedBy(rs.getString("created_by"));
+                project.setCreatedOn(rs.getDate("created_on"));
+                project.setModifiedBy(rs.getString("modified_by"));
+                project.setModifiedOn(rs.getDate("modified_on"));
+                project.setDesignId(String.valueOf(rs.getLong("design_id")));
+                project.setType(CodegenProjectType.valueOf(rs.getString("ptype")));
+                project.setAttributes(toMap(IOUtils.toString(rs.getCharacterStream("attributes"))));
+                return project;
+            } catch (IOException e) {
+                throw new SQLException(e);
+            }
+        }
+
+        private static String toString(Map<String, String> attributes) {
+            StringBuilder builder = new StringBuilder();
+            for (Entry<String, String> entry : attributes.entrySet()) {
+                builder.append(entry.getKey());
+                builder.append("=");
+                builder.append(entry.getValue());
+                builder.append("\n");
+            }
+            return builder.toString();
+        }
+
+        private static Map<String, String> toMap(String attributes) {
+            Map<String, String> map = new HashMap<>();
+            if (attributes != null) {
+                try (BufferedReader reader = new BufferedReader(new StringReader(attributes))) {
+                    String line = reader.readLine();
+                    while (line != null) {
+                        int idx = line.indexOf('=');
+                        if (idx != -1) {
+                            String key = line.substring(0, idx);
+                            String val = line.substring(idx + 1);
+                            map.put(key, val);
+                        }
+                        line = reader.readLine();
+                    }
+                } catch (IOException e) {}
+            }
+            return map;
         }
 
     }

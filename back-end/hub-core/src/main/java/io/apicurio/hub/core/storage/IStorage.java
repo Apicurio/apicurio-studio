@@ -26,6 +26,7 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -340,4 +341,48 @@ public interface IStorage {
      */
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException;
     
+    /**
+     * Returns a collection of codegen projects for the given API design.
+     * @param userId
+     * @param designId
+     * @throws StorageException
+     */
+    public Collection<CodegenProject> listCodegenProjects(String userId, String designId) throws StorageException;
+    
+    /**
+     * Creates a codegen project.
+     * @param userId
+     * @param project
+     * @throws StorageException
+     */
+    public String createCodegenProject(String userId, CodegenProject project) throws StorageException;
+    
+    /**
+     * Updates a codegen project.
+     * @param userId
+     * @param project
+     * @throws StorageException
+     * @throws NotFoundException
+     */
+    public void updateCodegenProject(String userId, CodegenProject project) throws StorageException, NotFoundException;
+    
+    /**
+     * Deletes a single codegen project.
+     * @param userId
+     * @param designId
+     * @param projectId
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public void deleteCodegenProject(String userId, String designId, String projectId) throws NotFoundException, StorageException;
+    
+    /**
+     * Deletes all codegen projects for an API design.
+     * @param userId
+     * @param designId
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public void deleteCodegenProjects(String userId, String designId) throws NotFoundException, StorageException;
+
 }

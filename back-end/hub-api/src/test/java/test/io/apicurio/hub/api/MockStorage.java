@@ -32,6 +32,7 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -497,7 +498,6 @@ public class MockStorage implements IStorage {
     @Override
     public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to)
             throws StorageException {
-        // TODO implement this and add to unit tests?
         return null;
     }
     
@@ -506,7 +506,6 @@ public class MockStorage implements IStorage {
      */
     @Override
     public Collection<ApiDesignChange> listUserActivity(String user, int from, int to) throws StorageException {
-        // TODO implement this and add to unit tests?
     	return null;
     }
     
@@ -516,7 +515,6 @@ public class MockStorage implements IStorage {
     @Override
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) 
             throws StorageException {
-        // TODO implement this and add to unit tests?
         return null;
     }
     
@@ -549,6 +547,46 @@ public class MockStorage implements IStorage {
         public String status;
         public String modifiedBy;
         public String subject;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
+     */
+    @Override
+    public String createCodegenProject(String userId, CodegenProject project) throws StorageException {
+        return null;
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listCodegenProjects(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Collection<CodegenProject> listCodegenProjects(String userId, String designId)
+            throws StorageException {
+        return null;
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProject(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProject(String userId, String designId, String projectId)
+            throws NotFoundException, StorageException {
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProjects(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProjects(String userId, String designId)
+            throws NotFoundException, StorageException {
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
+     */
+    @Override
+    public void updateCodegenProject(String userId, CodegenProject project) throws StorageException {
     }
 
 }

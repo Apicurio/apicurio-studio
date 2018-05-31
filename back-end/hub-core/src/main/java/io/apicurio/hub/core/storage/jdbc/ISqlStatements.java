@@ -226,5 +226,30 @@ public interface ISqlStatements {
      * A statement used to select the most recent 5 APIs for a given user.
      */
 	public String selectRecentApiDesigns();
+	
+	/**
+	 * A statement used to select the codegen projects for an API design.
+	 */
+	public String selectCodegenProjects();
+	
+	/**
+	 * A statement used to insert a single row on the codegen table.
+	 */
+	public String insertCodegenProject();
+	
+	/**
+	 * A statement used to update a row in the codegen table.
+	 */
+	public String updateCodegenProject();
+	
+	/**
+	 * A statement used to delete a single row in the codegen table.
+	 */
+	public String deleteCodegenProject();
+	
+	/**
+	 * A statement used to delete all rows in the codegen table for a single design_id.
+	 */
+	public String deleteCodegenProjects();
 
 }

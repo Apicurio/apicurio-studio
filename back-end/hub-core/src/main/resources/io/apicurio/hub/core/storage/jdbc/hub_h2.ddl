@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 4);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 5);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP, used_on TIMESTAMP, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -34,3 +34,9 @@ CREATE INDEX IDX_invites_1 ON acl_invites(status);
 CREATE TABLE session_uuids (uuid VARCHAR(255) NOT NULL, design_id BIGINT NOT NULL, user_id VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, version BIGINT NOT NULL, expires_on BIGINT NOT NULL);
 ALTER TABLE session_uuids ADD PRIMARY KEY (uuid);
 CREATE INDEX IDX_uuids_1 ON session_uuids(uuid, design_id, secret);
+
+CREATE TABLE codegen (id BIGINT AUTO_INCREMENT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP, design_id BIGINT NOT NULL, ptype VARCHAR(64) NOT NULL, attributes CLOB NOT NULL);
+ALTER TABLE codegen ADD PRIMARY KEY (id);
+ALTER TABLE codegen ADD CONSTRAINT FK_codegen_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
+CREATE INDEX IDX_codegen_1 ON codegen(ptype);
+

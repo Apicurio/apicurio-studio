@@ -17,7 +17,6 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,10 +50,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
+import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
+import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
-import io.apicurio.hub.api.codegen.OpenApi2Swarm;
-import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -69,6 +68,7 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
@@ -804,38 +804,84 @@ public class DesignsResource implements IDesignsResource {
         }
     }
     
+//    public Response generateSwarmProject(String designId, String groupId,
+//            String artifactId, String javaPackage) throws ServerError, NotFoundException {
+//        logger.debug("Generating a Wildfly Swarm project for API Design with ID {}", designId);
+//        metrics.apiCall("/designs/{designId}/codegen/swarm", "GET");
+//
+//        String oaiContent = this.getApiContent(designId, FormatType.JSON);
+//
+//        try {
+//            SwarmProjectSettings settings = new SwarmProjectSettings();
+//            settings.groupId = groupId != null ? groupId : "org.example.api";
+//            settings.artifactId = artifactId != null ? artifactId : "generated-api";
+//            settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+//            
+//            OpenApi2Swarm generator = new OpenApi2Swarm();
+//            generator.setSettings(settings);
+//            generator.setOpenApiDocument(oaiContent);
+//            ByteArrayOutputStream stream = generator.generate();
+//            byte[] data = stream.toByteArray();
+//
+//            String fname = settings.artifactId + ".zip";
+//            ResponseBuilder builder = Response.ok().entity(data)
+//                    .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
+//                    .header("Content-Type", "application/zip")
+//                    .header("Content-Length", String.valueOf(data.length));
+//
+//            return builder.build();
+//        } catch (IOException e) {
+//            throw new ServerError(e);
+//        }
+//    }
+    
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#generateSwarmProject(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getCodegenProjects(java.lang.String)
      */
     @Override
-    public Response generateSwarmProject(String designId, String groupId,
-            String artifactId, String javaPackage) throws ServerError, NotFoundException {
-        logger.debug("Generating a Wildfly Swarm project for API Design with ID {}", designId);
-        metrics.apiCall("/designs/{designId}/codegen/swarm", "GET");
-
-        String oaiContent = this.getApiContent(designId, FormatType.JSON);
-
-        try {
-            SwarmProjectSettings settings = new SwarmProjectSettings();
-            settings.groupId = groupId != null ? groupId : "org.example.api";
-            settings.artifactId = artifactId != null ? artifactId : "generated-api";
-            settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
-            
-            OpenApi2Swarm generator = new OpenApi2Swarm();
-            generator.setSettings(settings);
-            generator.setOpenApiDocument(oaiContent);
-            ByteArrayOutputStream stream = generator.generate();
-            byte[] data = stream.toByteArray();
-
-            String fname = settings.artifactId + ".zip";
-            ResponseBuilder builder = Response.ok().entity(data)
-                    .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
-                    .header("Content-Type", "application/zip")
-                    .header("Content-Length", String.valueOf(data.length));
-
-            return builder.build();
-        } catch (IOException e) {
-            throw new ServerError(e);
-        }
+    public Collection<CodegenProject> getCodegenProjects(String designId)
+            throws ServerError, NotFoundException {
+        // TODO Auto-generated method stub
+        return null;
     }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#createCodegenProject(java.lang.String, io.apicurio.hub.api.beans.NewCodegenProject)
+     */
+    @Override
+    public CodegenProject createCodegenProject(String designId, NewCodegenProject body)
+            throws ServerError, NotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateCodegenProject(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.UpdateCodgenProject)
+     */
+    @Override
+    public void updateCodegenProject(String designId, String projectId, UpdateCodgenProject body)
+            throws ServerError, NotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCodegenProject(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProject(String designId, String projectId)
+            throws ServerError, NotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCodegenProjects(java.lang.String)
+     */
+    @Override
+    public void deleteCodegenProjects(String designId) throws ServerError, NotFoundException {
+        // TODO Auto-generated method stub
+        
+    }
+    
 }

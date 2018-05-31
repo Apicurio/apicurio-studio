@@ -386,5 +386,45 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String selectApiPublicationActivity() {
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 2 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectCodegenProjects()
+     */
+    @Override
+    public String selectCodegenProjects() {
+        return "SELECT c.* FROM codegen c WHERE c.design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertCodegenProject()
+     */
+    @Override
+    public String insertCodegenProject() {
+        return "INSERT INTO codegen (created_by, created_on, design_id, ptype, attributes) VALUES (?, ?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#updateCodegenProject()
+     */
+    @Override
+    public String updateCodegenProject() {
+        return "UPDATE codegen SET modified_by = ?, modified_on = ?, ptype = ?, attributes = ? WHERE id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteCodegenProject()
+     */
+    @Override
+    public String deleteCodegenProject() {
+        return "DELETE FROM codegen WHERE id = ? AND design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteCodegenProjects()
+     */
+    @Override
+    public String deleteCodegenProjects() {
+        return "DELETE FROM codegen WHERE design_id = ?";
+    }
     
 }

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,8 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
+import io.apicurio.hub.core.beans.CodegenProjectType;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
@@ -1086,6 +1089,107 @@ public class JdbcStorageTest {
 		Assert.assertEquals("8", third.getId());
     }
 
+    @Test
+    public void testCodegenProjects() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name (1)");
+        
+        String designId1 = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(designId1);
+        Assert.assertEquals("1", designId1);
+
+        ApiDesign design2 = new ApiDesign();
+        design2.setCreatedBy("user");
+        design2.setCreatedOn(now);
+        design2.setName("API Name (2)");
+        
+        String designId2 = storage.createApiDesign("user", design2, "{}");
+        Assert.assertNotNull(designId2);
+        Assert.assertEquals("2", designId2);
+        
+        // Create a codegen project
+        CodegenProject project = new CodegenProject();
+        project.setCreatedBy("user");
+        project.setCreatedOn(now);
+        project.setType(CodegenProjectType.thorntail);
+        project.setDesignId(designId1);
+        project.setAttributes(new HashMap<>());
+        project.getAttributes().put("property-1", "value-1");
+        project.getAttributes().put("property-2", "value-2");
+        String projectId = storage.createCodegenProject("user", project);
+        
+        // Verify it
+        Collection<CodegenProject> projects = storage.listCodegenProjects("user", designId1);
+        Assert.assertFalse(projects.isEmpty());
+        CodegenProject listedProject = projects.iterator().next();
+        Assert.assertNotNull(listedProject.getId());
+        Assert.assertEquals(projectId, listedProject.getId());
+        Assert.assertEquals(project.getCreatedBy(), listedProject.getCreatedBy());
+        Assert.assertEquals(project.getDesignId(), listedProject.getDesignId());
+        Assert.assertEquals(project.getModifiedBy(), listedProject.getModifiedBy());
+        Assert.assertEquals(project.getAttributes(), listedProject.getAttributes());
+        Assert.assertEquals(project.getType(), listedProject.getType());
+        
+        // Create two more projects
+        project = new CodegenProject();
+        project.setCreatedBy("user2");
+        project.setCreatedOn(now);
+        project.setType(CodegenProjectType.jaxrs);
+        project.setDesignId(designId1);
+        project.setAttributes(new HashMap<>());
+        storage.createCodegenProject("user2", project);
+        project = new CodegenProject();
+        project.setCreatedBy("user2");
+        project.setCreatedOn(now);
+        project.setType(CodegenProjectType.springBoot);
+        project.setDesignId(designId1);
+        project.setAttributes(new HashMap<>());
+        storage.createCodegenProject("user2", project);
+        
+        // Verify them
+        projects = storage.listCodegenProjects("user", designId1);
+        Assert.assertFalse(projects.isEmpty());
+        Assert.assertEquals(3, projects.size());
+        
+        // Update a project
+        project = new CodegenProject();
+        project.setId(projectId);
+        project.setCreatedBy("user");
+        project.setCreatedOn(now);
+        project.setType(CodegenProjectType.vertx);
+        project.setDesignId(designId1);
+        project.setAttributes(new HashMap<>());
+        project.getAttributes().put("property-3", "value-3");
+        project.getAttributes().put("property-4", "value-4");
+        storage.updateCodegenProject("user", project);
+
+        // Verify it
+        projects = storage.listCodegenProjects("user", designId1);
+        Assert.assertFalse(projects.isEmpty());
+        listedProject = projects.iterator().next();
+        Assert.assertNotNull(listedProject.getId());
+        Assert.assertEquals(project.getCreatedBy(), listedProject.getCreatedBy());
+        Assert.assertEquals(project.getDesignId(), listedProject.getDesignId());
+        Assert.assertEquals(project.getModifiedBy(), listedProject.getModifiedBy());
+        Assert.assertEquals(project.getAttributes(), listedProject.getAttributes());
+        Assert.assertEquals(project.getType(), listedProject.getType());
+        
+        // Delete 1
+        storage.deleteCodegenProject("user", designId1, projectId);
+        // Verify
+        projects = storage.listCodegenProjects("user", designId1);
+        Assert.assertEquals(2, projects.size());
+
+        // Delete all
+        storage.deleteCodegenProjects("user", designId1);
+        // Verify
+        projects = storage.listCodegenProjects("user", designId1);
+        Assert.assertTrue(projects.isEmpty());
+    }
+    
     
     /**
      * Creates an in-memory datasource.

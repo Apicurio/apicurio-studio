@@ -22,6 +22,9 @@ import {NgForm} from "@angular/forms";
 import {LinkedAccount} from "../../../../models/linked-account.model";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
 import {CodeEditorMode} from "../../../../components/common/code-editor.component";
+import {ApisService} from "../../../../services/apis.service";
+import {NewCodegenProject} from "../../../../models/new-codegen-project.model";
+import {CodegenProject} from "../../../../models/codegen-project.model";
 
 
 export interface GenerateProjectWizardModel {
@@ -67,12 +70,13 @@ export class GenerateProjectWizardComponent {
     public generating: boolean;
     public generated: boolean;
 
+    public generatedProject: CodegenProject;
+
     /**
      * Constructor with injection!
      * @param {LinkedAccountsService} linkedAcounts
      */
-    constructor(private linkedAcounts: LinkedAccountsService) {
-        console.info("LINKED ACCOUNTS: " + linkedAcounts);
+    constructor(private linkedAcounts: LinkedAccountsService, private apis: ApisService) {
     }
 
     /**
@@ -99,7 +103,6 @@ export class GenerateProjectWizardComponent {
         this.sourceControlDataValid = false;
 
         // TODO lookup relevant information from the server (load most recent Project Generation info)
-        console.info("(open) LINKED ACCOUNTS: " + this.linkedAcounts);
         this.linkedAcounts.getLinkedAccounts().then( accounts => {
             this.accounts = accounts;
             this.loading = false;
@@ -249,10 +252,6 @@ export class GenerateProjectWizardComponent {
         }
     }
 
-    public setLocation(event): void {
-        console.info(event);
-    }
-
     public goTo(newPage: string): void {
         switch (newPage) {
             case "generationType":
@@ -300,27 +299,51 @@ export class GenerateProjectWizardComponent {
         this.model.sourceControlData.type = target;
     }
 
+    public isUpdate(): boolean {
+        return this.model.generationType === "update";
+    }
+
+    public downloadFilename(): string {
+        if (this.model.projectType === "thorntail") {
+            return this.model.projectData.artifactId + ".zip";
+        }
+        // TODO handle the other project types (jax-rs, node.js, etc)
+        return "download.zip";
+    }
+
     public commitMessageMode(): CodeEditorMode {
         return CodeEditorMode.Markdown;
     }
 
     public generate(): void {
         this.generating = true;
+        this.generated = false;
         this.currentPage = null;
 
         // Handle the "download" style of project generation
         if (this.model.location === "download") {
-            setTimeout( () => {
+            let newProj: NewCodegenProject = new NewCodegenProject();
+            newProj.projectType = this.model.projectType;
+            newProj.projectConfig = this.model.projectData;
+            newProj.location = this.model.location;
+            newProj.publishInfo = {};
+
+            this.apis.createCodegenProject(this.apiId, newProj).then( project => {
+                this.generatedProject = project;
                 this.generating = false;
                 this.generated = true;
                 setTimeout( () => {
                     this.downloadLink.first.nativeElement.click();
-                }, 500);
-            }, 750);
+                }, 100);
+            }).catch( error => {
+                // TODO handle errors here!
+            });
         }
 
         // Handle the "publish" style of project generation
-        // TODO handle publishing the project to e.g. GitHub
+        if (this.model.location === "publish") {
+            // TODO handle publishing the project to e.g. GitHub
+        }
     }
 
 }

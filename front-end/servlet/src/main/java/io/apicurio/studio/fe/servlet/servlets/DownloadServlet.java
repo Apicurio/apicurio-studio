@@ -96,21 +96,19 @@ public class DownloadServlet extends HttpServlet {
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);
-        } else if ("codegen-swarm".equals(type)) {
-            String designId = params.get("id");
-            String groupId = params.get("groupId");
-            String artifactId = params.get("artifactId");
-            String javaPackage = params.get("package");
+        } else if ("codegen".equals(type)) {
+            String designId = params.get("designId");
+            String projectId = params.get("projectId");
+            String update = params.get("update");
             
             String url = generateHubApiUrl(req);
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length() - 1);
             }
-            url += "/designs/{designId}/codegen/swarm?groupId={groupId}&artifactId={artifactId}&package={package}"
+            url += "/designs/{designId}/codegen/projects/{projectId}?update={update}"
                     .replace("{designId}", designId)
-                    .replace("{groupId}", groupId)
-                    .replace("{artifactId}", artifactId)
-                    .replace("{package}", javaPackage);
+                    .replace("{projectId}", projectId)
+                    .replace("{update}", update);
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);

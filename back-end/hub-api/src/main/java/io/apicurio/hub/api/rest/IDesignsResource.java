@@ -160,23 +160,29 @@ public interface IDesignsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/codegen/projects")
     public CodegenProject createCodegenProject(@PathParam("designId") String designId, NewCodegenProject body)
-            throws ServerError, NotFoundException;
+            throws ServerError, NotFoundException, AccessDeniedException;
 
     @DELETE
     @Path("{designId}/codegen/projects")
     public void deleteCodegenProjects(@PathParam("designId") String designId)
-            throws ServerError, NotFoundException;
+            throws ServerError, NotFoundException, AccessDeniedException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path("{designId}/codegen/projects/{projectId}/zip")
+    public Response getCodegenProjectAsZip(@PathParam("designId") String designId,
+            @PathParam("projectId") String projectId) throws ServerError, NotFoundException, AccessDeniedException;
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{designId}/codegen/projects/{projectId}")
     public void updateCodegenProject(@PathParam("designId") String designId,
             @PathParam("projectId") String projectId, UpdateCodgenProject body)
-            throws ServerError, NotFoundException;
+            throws ServerError, NotFoundException, AccessDeniedException;
 
     @DELETE
     @Path("{designId}/codegen/projects/{projectId}")
     public void deleteCodegenProject(@PathParam("designId") String designId,
-            @PathParam("projectId") String projectId) throws ServerError, NotFoundException;
+            @PathParam("projectId") String projectId) throws ServerError, NotFoundException, AccessDeniedException;
 
 }

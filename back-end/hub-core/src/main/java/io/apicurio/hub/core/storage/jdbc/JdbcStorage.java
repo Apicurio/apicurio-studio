@@ -38,6 +38,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
@@ -1101,7 +1102,28 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error inserting codegen project.", e);
         }
     }
-    
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getCodegenProject(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public CodegenProject getCodegenProject(String userId, String designId, String projectId)
+            throws StorageException, NotFoundException {
+        logger.debug("Selecting a single codegen project for API Design: {}  with projectId: {}", designId, projectId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectCodegenProject();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, Long.valueOf(projectId))
+                        .map(CodegenProjectRowMapper.instance)
+                        .findOnly();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting invitations.", e);
+        }
+    }
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
      */
@@ -1426,10 +1448,12 @@ public class JdbcStorage implements IStorage {
         private static String toString(Map<String, String> attributes) {
             StringBuilder builder = new StringBuilder();
             for (Entry<String, String> entry : attributes.entrySet()) {
-                builder.append(entry.getKey());
-                builder.append("=");
-                builder.append(entry.getValue());
-                builder.append("\n");
+                if (entry.getValue() != null) {
+                    builder.append(entry.getKey());
+                    builder.append("=");
+                    builder.append(Base64.encodeBase64String(entry.getValue().getBytes()));
+                    builder.append("\n");
+                }
             }
             return builder.toString();
         }
@@ -1444,6 +1468,7 @@ public class JdbcStorage implements IStorage {
                         if (idx != -1) {
                             String key = line.substring(0, idx);
                             String val = line.substring(idx + 1);
+                            val = new String(Base64.decodeBase64(val));
                             map.put(key, val);
                         }
                         line = reader.readLine();

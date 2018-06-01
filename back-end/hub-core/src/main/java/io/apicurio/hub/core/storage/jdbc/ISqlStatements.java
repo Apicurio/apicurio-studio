@@ -230,7 +230,12 @@ public interface ISqlStatements {
 	/**
 	 * A statement used to select the codegen projects for an API design.
 	 */
-	public String selectCodegenProjects();
+    public String selectCodegenProjects();
+
+    /**
+     * A statement used to select a single codegen project.
+     */
+    public String selectCodegenProject();
 	
 	/**
 	 * A statement used to insert a single row on the codegen table.

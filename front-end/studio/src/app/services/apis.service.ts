@@ -32,6 +32,8 @@ import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {OasLibraryUtils} from "oai-ts-core";
 import {IAuthenticationService} from "./auth.service";
+import {CodegenProject} from "../models/codegen-project.model";
+import {NewCodegenProject} from "../models/new-codegen-project.model";
 
 
 export interface IConnectionHandler {
@@ -564,7 +566,7 @@ export class ApisService extends AbstractHubService {
         let createInviteUrl: string = this.endpoint("/designs/:designId/invitations", {
             designId: apiId
         });
-        let options: any = this.options({ "Accept": "application/json" });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
         console.info("[HubApisService] Creating an API Design collaboration invite: %s", createInviteUrl);
         return this.httpPostWithReturn<void, Invitation>(createInviteUrl, null, options);
@@ -619,6 +621,24 @@ export class ApisService extends AbstractHubService {
 
         console.info("[HubApisService] Fetching API design activity: %s", activityUrl);
         return this.httpGet<ApiDesignChange[]>(activityUrl, options);
+    }
+
+    /**
+     * Called to create a new codegen project for the given API.
+     * @param {string} apiId
+     * @param {NewCodegenProject} project
+     * @return {Promise<CodegenProject>}
+     */
+    public createCodegenProject(apiId: string, project: NewCodegenProject): Promise<CodegenProject> {
+        console.info("[HubApisService] Creating a codegen project for API %s", apiId);
+
+        let createProjectUrl: string = this.endpoint("/designs/:designId/codegen/projects", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[HubApisService] Creating a codegen project: %s", createProjectUrl);
+        return this.httpPostWithReturn<NewCodegenProject, CodegenProject>(createProjectUrl, project, options);
     }
 
 }

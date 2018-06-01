@@ -396,6 +396,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectCodegenProject()
+     */
+    @Override
+    public String selectCodegenProject() {
+        return "SELECT c.* FROM codegen c WHERE c.design_id = ? AND c.id = ?";
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertCodegenProject()
      */
     @Override

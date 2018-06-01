@@ -565,6 +565,15 @@ public class MockStorage implements IStorage {
             throws StorageException {
         return null;
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getCodegenProject(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public CodegenProject getCodegenProject(String userId, String designId, String projectId)
+            throws StorageException, NotFoundException {
+        return null;
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProject(java.lang.String, java.lang.String, java.lang.String)

@@ -202,17 +202,18 @@
                                     <p class="blank-slate-pf-secondary-action">Please wait while we generate a project from your OpenAPI definition.</p>
                                 </div>
                             </div>
+                            <!-- Project Generated Successfully -->
                             <div class="wizard-pf-contents" *ngIf="generated">
                                 <div class="wizard-pf-complete blank-slate-pf">
                                     <div class="wizard-pf-success-icon"><span class="glyphicon glyphicon-ok-circle"></span></div>
                                     <h3 class="blank-slate-pf-main-action">Project was successfully generated</h3>
                                     <p class="blank-slate-pf-secondary-action">
                                         <span>Alright!  We've successfully generated a project from your OpenAPI definition.</span>
-                                        <span *ngIf="model.location === 'download'">If your ZIP download does not start within a few seconds, click <strong>Download</strong> below.</span>
+                                        <span *ngIf="model.location === 'download'">If your ZIP download does not start within a few seconds, please click <strong>Download</strong> below.</span>
                                     </p>
-                                    <a #downloadLink href="download?type=codegen-swarm&id={{ apiId }}&groupId={{ model.projectData.groupId }}&artifactId={{ model.projectData.artifactId }}&package={{ model.projectData.javaPackage }}"
+                                    <a #downloadLink href="download?type=codegen&designId={{ apiId }}&projectId={{ generatedProject.id }}&update={{ isUpdate() }}"
                                        class="btn btn-lg btn-default"
-                                       download="{{ model.projectData.artifactId }}.zip"><span>Download</span></a>
+                                       download="{{ downloadFilename() }}"><span>Download</span></a>
                                 </div>
                             </div>
                         </div>

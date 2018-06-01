@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
@@ -54,6 +57,8 @@ import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.codegen.OpenApi2Swarm;
+import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -69,6 +74,7 @@ import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
+import io.apicurio.hub.core.beans.CodegenProjectType;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
@@ -804,45 +810,22 @@ public class DesignsResource implements IDesignsResource {
         }
     }
     
-//    public Response generateSwarmProject(String designId, String groupId,
-//            String artifactId, String javaPackage) throws ServerError, NotFoundException {
-//        logger.debug("Generating a Wildfly Swarm project for API Design with ID {}", designId);
-//        metrics.apiCall("/designs/{designId}/codegen/swarm", "GET");
-//
-//        String oaiContent = this.getApiContent(designId, FormatType.JSON);
-//
-//        try {
-//            SwarmProjectSettings settings = new SwarmProjectSettings();
-//            settings.groupId = groupId != null ? groupId : "org.example.api";
-//            settings.artifactId = artifactId != null ? artifactId : "generated-api";
-//            settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
-//            
-//            OpenApi2Swarm generator = new OpenApi2Swarm();
-//            generator.setSettings(settings);
-//            generator.setOpenApiDocument(oaiContent);
-//            ByteArrayOutputStream stream = generator.generate();
-//            byte[] data = stream.toByteArray();
-//
-//            String fname = settings.artifactId + ".zip";
-//            ResponseBuilder builder = Response.ok().entity(data)
-//                    .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
-//                    .header("Content-Type", "application/zip")
-//                    .header("Content-Length", String.valueOf(data.length));
-//
-//            return builder.build();
-//        } catch (IOException e) {
-//            throw new ServerError(e);
-//        }
-//    }
-    
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getCodegenProjects(java.lang.String)
      */
     @Override
     public Collection<CodegenProject> getCodegenProjects(String designId)
             throws ServerError, NotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        logger.debug("Retrieving codegen project list for design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects", "GET");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            return this.storage.listCodegenProjects(user, design.getId());
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
     /**
@@ -850,9 +833,110 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public CodegenProject createCodegenProject(String designId, NewCodegenProject body)
-            throws ServerError, NotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+            throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Creating a codegen project for API: {} ", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects", "POST");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            
+            CodegenProject project = new CodegenProject();
+            Date now = new Date();
+            project.setCreatedBy(user);
+            project.setCreatedOn(now);
+            project.setModifiedBy(user);
+            project.setModifiedOn(now);
+            project.setDesignId(design.getId());
+            project.setType(body.getProjectType());
+            
+            project.setAttributes(new HashMap<String, String>());
+            if (body.getProjectConfig() != null) {
+                project.getAttributes().putAll(body.getProjectConfig());
+            }
+            if (body.getPublishInfo() != null) {
+                if (body.getPublishInfo().getType() != null) {
+                    project.getAttributes().put("publish.type", body.getPublishInfo().getType().toString());
+                }
+                project.getAttributes().put("publish.branch", body.getPublishInfo().getBranch());
+                project.getAttributes().put("publish.commitMessage", body.getPublishInfo().getCommitMessage());
+                project.getAttributes().put("publish.group", body.getPublishInfo().getGroup());
+                project.getAttributes().put("publish.location", body.getPublishInfo().getLocation());
+                project.getAttributes().put("publish.org", body.getPublishInfo().getOrg());
+                project.getAttributes().put("publish.project", body.getPublishInfo().getProject());
+                project.getAttributes().put("publish.repo", body.getPublishInfo().getRepo());
+                project.getAttributes().put("publish.team", body.getPublishInfo().getTeam());
+            }
+            
+            if (body.getLocation() == CodegenLocation.download) {
+                // Nothing extra to do when downloading - that will be handled by a separate call
+            }
+            
+            if (body.getLocation() == CodegenLocation.publish) {
+                // TODO publish to git
+            }
+            
+            String projectId = this.storage.createCodegenProject(user, project);
+            project.setId(projectId);
+            
+            return project;
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getCodegenProjectAsZip(java.lang.String, java.lang.String)
+     */
+    @Override
+    public Response getCodegenProjectAsZip(String designId, String projectId)
+            throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Downloading a codegen project for API Design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}/zip", "GET");
+
+        String user = this.security.getCurrentUser().getLogin();
+
+        try {
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            CodegenProject project = this.storage.getCodegenProject(user, designId, projectId);
+            String oaiContent = this.getApiContent(designId, FormatType.JSON);
+            
+            // TODO support other types besides Thorntail
+            if (project.getType() == CodegenProjectType.thorntail) {
+                String groupId = project.getAttributes().get("groupId");
+                String artifactId = project.getAttributes().get("artifactId");
+                String javaPackage = project.getAttributes().get("javaPackage");
+            
+                SwarmProjectSettings settings = new SwarmProjectSettings();
+                settings.groupId = groupId != null ? groupId : "org.example.api";
+                settings.artifactId = artifactId != null ? artifactId : "generated-api";
+                settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+            
+                OpenApi2Swarm generator = new OpenApi2Swarm();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                ByteArrayOutputStream stream = generator.generate();
+                byte[] data = stream.toByteArray();
+    
+                String fname = settings.artifactId + ".zip";
+                ResponseBuilder builder = Response.ok().entity(data)
+                        .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
+                        .header("Content-Type", "application/zip")
+                        .header("Content-Length", String.valueOf(data.length));
+
+                return builder.build();
+            } else {
+                throw new ServerError("Unsupported project type: " + project.getType());
+            }
+        } catch (IOException | StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
     /**
@@ -860,7 +944,7 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public void updateCodegenProject(String designId, String projectId, UpdateCodgenProject body)
-            throws ServerError, NotFoundException {
+            throws ServerError, NotFoundException, AccessDeniedException {
         // TODO Auto-generated method stub
         
     }
@@ -870,7 +954,7 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public void deleteCodegenProject(String designId, String projectId)
-            throws ServerError, NotFoundException {
+            throws ServerError, NotFoundException, AccessDeniedException {
         // TODO Auto-generated method stub
         
     }
@@ -879,7 +963,7 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCodegenProjects(java.lang.String)
      */
     @Override
-    public void deleteCodegenProjects(String designId) throws ServerError, NotFoundException {
+    public void deleteCodegenProjects(String designId) throws ServerError, NotFoundException, AccessDeniedException {
         // TODO Auto-generated method stub
         
     }

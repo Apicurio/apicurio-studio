@@ -1133,6 +1133,16 @@ public class JdbcStorageTest {
         Assert.assertEquals(project.getAttributes(), listedProject.getAttributes());
         Assert.assertEquals(project.getType(), listedProject.getType());
         
+        // Verify again
+        CodegenProject fetchedProject = storage.getCodegenProject("user", designId1, projectId);
+        Assert.assertNotNull(fetchedProject.getId());
+        Assert.assertEquals(projectId, fetchedProject.getId());
+        Assert.assertEquals(project.getCreatedBy(), fetchedProject.getCreatedBy());
+        Assert.assertEquals(project.getDesignId(), fetchedProject.getDesignId());
+        Assert.assertEquals(project.getModifiedBy(), fetchedProject.getModifiedBy());
+        Assert.assertEquals(project.getAttributes(), fetchedProject.getAttributes());
+        Assert.assertEquals(project.getType(), fetchedProject.getType());
+        
         // Create two more projects
         project = new CodegenProject();
         project.setCreatedBy("user2");

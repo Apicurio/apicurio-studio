@@ -350,6 +350,16 @@ public interface IStorage {
     public Collection<CodegenProject> listCodegenProjects(String userId, String designId) throws StorageException;
     
     /**
+     * Returns a single codegen project by its ID.
+     * @param userId
+     * @param designId
+     * @param projectId
+     * @throws StorageException
+     * @throws NotFoundException
+     */
+    public CodegenProject getCodegenProject(String userId, String designId, String projectId) throws StorageException, NotFoundException;
+    
+    /**
      * Creates a codegen project.
      * @param userId
      * @param project

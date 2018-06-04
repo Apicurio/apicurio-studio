@@ -20,7 +20,7 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 
 export class DropDownOption {
     name?: string;
-    value?: string;
+    value?: any;
     divider?: boolean;
     disabled?: boolean;
 }
@@ -36,13 +36,13 @@ export class DropDownComponent {
     public _open: boolean = false;
 
     @Input() id: string;
-    @Input() value: string;
+    @Input() value: any;
     _options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";
     @Input() loading: boolean = false;
     @Input() loadingLabel: string = "Loading...";
 
-    @Output() onValueChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onValueChange: EventEmitter<any> = new EventEmitter<any>();
 
     @Input()
     get options(): DropDownOption[] {
@@ -88,9 +88,8 @@ export class DropDownComponent {
         return null;
     }
 
-    public setValue(value: string): void {
+    public setValue(value: any): void {
         this.value = value;
-        //this.close();
         this.onValueChange.emit(this.value);
     }
 

@@ -392,7 +392,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectCodegenProjects() {
-        return "SELECT c.* FROM codegen c WHERE c.design_id = ?";
+        return "SELECT c.* FROM codegen c WHERE c.design_id = ? ORDER BY c.modified_on DESC";
     }
     
     /**
@@ -408,7 +408,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertCodegenProject() {
-        return "INSERT INTO codegen (created_by, created_on, design_id, ptype, attributes) VALUES (?, ?, ?, ?, ?)";
+        return "INSERT INTO codegen (created_by, created_on, modified_by, modified_on, design_id, ptype, attributes) VALUES (?, ?, ?, ?, ?, ?, ?)";
     }
     
     /**

@@ -1,5 +1,6 @@
-/*
- * Copyright 2018 JBoss Inc
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {NewCodegenProject} from "./new-codegen-project.model";
 
-package io.apicurio.hub.api.beans;
-
-/**
- * @author eric.wittmann@gmail.com
- */
-public enum CodegenLocation {
-    
-    download, sourceControl
+export class UpdateCodegenProject extends NewCodegenProject {
 
 }

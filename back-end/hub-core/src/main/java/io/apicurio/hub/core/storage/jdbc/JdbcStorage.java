@@ -700,7 +700,11 @@ public class JdbcStorage implements IStorage {
                 // And also delete the api_content rows
                 statement = sqlStatements.clearContent();
                 handle.createUpdate(statement).bind(0, did).execute();
-                
+
+                // And also delete the codegen rows
+                statement = sqlStatements.deleteCodegenProjects();
+                handle.createUpdate(statement).bind(0, did).execute();
+
                 // Then delete the api design itself
                 statement = sqlStatements.deleteApiDesign();
                 int rowCount = handle.createUpdate(statement)
@@ -1087,16 +1091,18 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.insertCodegenProject();
                 String attrs = CodegenProjectRowMapper.toString(project.getAttributes());
                 CharacterStreamArgument attributesClob = new CharacterStreamArgument(new StringReader(attrs), attrs.length());
-                String designId = handle.createUpdate(statement)
+                String projectId = handle.createUpdate(statement)
                       .bind(0, project.getCreatedBy())
                       .bind(1, project.getCreatedOn())
-                      .bind(2, Long.valueOf(project.getDesignId()))
-                      .bind(3, project.getType().toString())
-                      .bind(4, attributesClob)
+                      .bind(2, project.getCreatedBy())
+                      .bind(3, project.getCreatedOn())
+                      .bind(4, Long.valueOf(project.getDesignId()))
+                      .bind(5, project.getType().toString())
+                      .bind(6, attributesClob)
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
                       .findOnly();
-                return designId;
+                return projectId;
             });
         } catch (Exception e) {
             throw new StorageException("Error inserting codegen project.", e);
@@ -1136,8 +1142,8 @@ public class JdbcStorage implements IStorage {
                 String attrs = CodegenProjectRowMapper.toString(project.getAttributes());
                 CharacterStreamArgument attributesClob = new CharacterStreamArgument(new StringReader(attrs), attrs.length());
                 int rowCount = handle.createUpdate(statement)
-                        .bind(0, project.getModifiedBy())
-                        .bind(1, project.getModifiedOn())
+                        .bind(0, userId)
+                        .bind(1, new Date())
                         .bind(2, project.getType().toString())
                         .bind(3, attributesClob)
                         .bind(4, Long.valueOf(project.getId()))

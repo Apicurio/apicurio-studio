@@ -60,7 +60,9 @@
                                 <form class="form-horizontal">
                                     <div class="form-group">
                                         <div class="col-sm-10">
-                                            <input type="radio" name="generation-type" id="gentype-bootstrap" value="bootstrap" [(ngModel)]="model.generationType">
+                                            <input type="radio" name="generation-type" id="gentype-bootstrap" value="bootstrap"
+                                                   (click)="resetModel()"
+                                                   [(ngModel)]="model.generationType">
                                             <label for="gentype-bootstrap">Bootstrap a new implementation project</label>
                                             <p class="moreInfo" style="padding-left: 15px">
                                                 Create a brand new project from this API.  All boilerplate files will be generated.  Use
@@ -70,12 +72,18 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-10">
-                                            <input type="radio" name="generation-type" id="gentype-update" value="update" [(ngModel)]="model.generationType">
+                                            <input type="radio" name="generation-type" id="gentype-update" value="update"
+                                                   [(ngModel)]="model.generationType" [attr.disabled]="projects.length === 0 ? true : null">
                                             <label for="gentype-update">Update an existing implementation project</label>
                                             <p class="moreInfo" style="padding-left: 15px">
                                                 Update an existing implementation project that was previously generated using this API
                                                 Contract.  Generates a subset of the resources for the project (excludes some boilerplate).
                                             </p>
+                                            <div style="padding-left: 15px">
+                                                <drop-down id="project" [id]="'project'" [value]="updateProject" [options]="updateProjectOptions()"
+                                                           *ngIf="model.generationType === 'update'"
+                                                           (onValueChange)="setUpdateProject($event)" [noSelectionLabel]="'Choose Project'"></drop-down>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -169,10 +177,13 @@
                                     </div>
 
                                     <github-resource *ngIf="isSelected('GitHub')" (onChange)="model.sourceControlData.model = $event"
+                                                     [value]="model.sourceControlData.model"
                                                      (onValid)="sourceControlDataValid = $event"></github-resource>
                                     <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="model.sourceControlData.model = $event"
+                                                     [value]="model.sourceControlData.model"
                                                      (onValid)="sourceControlDataValid = $event"></gitlab-resource>
                                     <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="model.sourceControlData.model = $event"
+                                                        [value]="model.sourceControlData.model"
                                                         (onValid)="sourceControlDataValid = $event"></bitbucket-resource>
 
                                     <div class="form-group" *ngIf="model.sourceControlData.type">
@@ -212,8 +223,14 @@
                                         <span *ngIf="model.location === 'download'">If your ZIP download does not start within a few seconds, please click <strong>Download</strong> below.</span>
                                     </p>
                                     <a #downloadLink href="download?type=codegen&designId={{ apiId }}&projectId={{ generatedProject.id }}&update={{ isUpdate() }}"
-                                       class="btn btn-lg btn-default"
+                                       class="btn btn-lg btn-default" *ngIf="model.location === 'download'"
                                        download="{{ downloadFilename() }}"><span>Download</span></a>
+                                    <a href="{{ viewProjectLink() }}" target="_blank"
+                                       class="btn btn-lg btn-primary" *ngIf="model.location === 'sourceControl'"
+                                       download="{{ downloadFilename() }}">
+                                        <span class="fa fa-fw fa-external-link"></span>
+                                        <span>View Project</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

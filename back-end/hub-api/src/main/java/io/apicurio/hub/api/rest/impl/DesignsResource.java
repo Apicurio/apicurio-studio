@@ -827,7 +827,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#createCodegenProject(java.lang.String, io.apicurio.hub.api.beans.NewCodegenProject)
      */
@@ -858,31 +858,34 @@ public class DesignsResource implements IDesignsResource {
             if (body.getProjectConfig() != null) {
                 project.getAttributes().putAll(body.getProjectConfig());
             }
+            project.getAttributes().put("location", body.getLocation().toString());
+            project.getAttributes().put("update-only", Boolean.FALSE.toString());
             if (body.getPublishInfo() != null) {
                 if (body.getPublishInfo().getType() != null) {
-                    project.getAttributes().put("publish.type", body.getPublishInfo().getType().toString());
+                    project.getAttributes().put("publish-type", body.getPublishInfo().getType().toString());
                 }
-                project.getAttributes().put("publish.branch", body.getPublishInfo().getBranch());
-                project.getAttributes().put("publish.commitMessage", body.getPublishInfo().getCommitMessage());
-                project.getAttributes().put("publish.group", body.getPublishInfo().getGroup());
-                project.getAttributes().put("publish.location", body.getPublishInfo().getLocation());
-                project.getAttributes().put("publish.org", body.getPublishInfo().getOrg());
-                project.getAttributes().put("publish.project", body.getPublishInfo().getProject());
-                project.getAttributes().put("publish.repo", body.getPublishInfo().getRepo());
-                project.getAttributes().put("publish.team", body.getPublishInfo().getTeam());
+                project.getAttributes().put("publish-branch", body.getPublishInfo().getBranch());
+                project.getAttributes().put("publish-commitMessage", body.getPublishInfo().getCommitMessage());
+                project.getAttributes().put("publish-group", body.getPublishInfo().getGroup());
+                project.getAttributes().put("publish-location", body.getPublishInfo().getLocation());
+                project.getAttributes().put("publish-org", body.getPublishInfo().getOrg());
+                project.getAttributes().put("publish-project", body.getPublishInfo().getProject());
+                project.getAttributes().put("publish-repo", body.getPublishInfo().getRepo());
+                project.getAttributes().put("publish-team", body.getPublishInfo().getTeam());
             }
-            
+
             if (body.getLocation() == CodegenLocation.download) {
                 // Nothing extra to do when downloading - that will be handled by a separate call
             }
-            
-            if (body.getLocation() == CodegenLocation.publish) {
+
+            if (body.getLocation() == CodegenLocation.sourceControl) {
+                System.out.println("Publishing generated project content!");
                 // TODO publish to git
             }
-            
+
             String projectId = this.storage.createCodegenProject(user, project);
             project.setId(projectId);
-            
+
             return project;
         } catch (StorageException e) {
             throw new ServerError(e);
@@ -917,10 +920,14 @@ public class DesignsResource implements IDesignsResource {
                 settings.groupId = groupId != null ? groupId : "org.example.api";
                 settings.artifactId = artifactId != null ? artifactId : "generated-api";
                 settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
-            
+                
+                boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
+
                 OpenApi2Swarm generator = new OpenApi2Swarm();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
+                
                 ByteArrayOutputStream stream = generator.generate();
                 byte[] data = stream.toByteArray();
     
@@ -945,8 +952,51 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void updateCodegenProject(String designId, String projectId, UpdateCodgenProject body)
             throws ServerError, NotFoundException, AccessDeniedException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Updating codegen project for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+
+            CodegenProject project = this.storage.getCodegenProject(user, designId, projectId);
+            project.setType(body.getProjectType());
+            
+            project.setAttributes(new HashMap<String, String>());
+            if (body.getProjectConfig() != null) {
+                project.getAttributes().putAll(body.getProjectConfig());
+            }
+            project.getAttributes().put("location", body.getLocation().toString());
+            project.getAttributes().put("update-only", Boolean.TRUE.toString());
+            if (body.getPublishInfo() != null) {
+                if (body.getPublishInfo().getType() != null) {
+                    project.getAttributes().put("publish-type", body.getPublishInfo().getType().toString());
+                }
+                project.getAttributes().put("publish-branch", body.getPublishInfo().getBranch());
+                project.getAttributes().put("publish-commitMessage", body.getPublishInfo().getCommitMessage());
+                project.getAttributes().put("publish-group", body.getPublishInfo().getGroup());
+                project.getAttributes().put("publish-location", body.getPublishInfo().getLocation());
+                project.getAttributes().put("publish-org", body.getPublishInfo().getOrg());
+                project.getAttributes().put("publish-project", body.getPublishInfo().getProject());
+                project.getAttributes().put("publish-repo", body.getPublishInfo().getRepo());
+                project.getAttributes().put("publish-team", body.getPublishInfo().getTeam());
+            }
+            
+            if (body.getLocation() == CodegenLocation.download) {
+                // Nothing extra to do when downloading - that will be handled by a separate call
+            }
+            
+            if (body.getLocation() == CodegenLocation.sourceControl) {
+                System.out.println("Publishing generated project content (update)!");
+                // TODO publish to git
+            }
+
+            this.storage.updateCodegenProject(user, project);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
     /**
@@ -955,8 +1005,18 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public void deleteCodegenProject(String designId, String projectId)
             throws ServerError, NotFoundException, AccessDeniedException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Deleting codegen project for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}", "DELETE");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            this.storage.deleteCodegenProject(user, designId, projectId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
     /**
@@ -964,8 +1024,18 @@ public class DesignsResource implements IDesignsResource {
      */
     @Override
     public void deleteCodegenProjects(String designId) throws ServerError, NotFoundException, AccessDeniedException {
-        // TODO Auto-generated method stub
-        
+        logger.debug("Deleting ALL codegen projects for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/codegen/projects", "DELETE");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new AccessDeniedException();
+            }
+            this.storage.deleteCodegenProjects(user, designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
 }

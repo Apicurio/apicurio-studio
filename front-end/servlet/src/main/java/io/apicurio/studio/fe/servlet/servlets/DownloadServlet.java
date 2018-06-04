@@ -99,16 +99,14 @@ public class DownloadServlet extends HttpServlet {
         } else if ("codegen".equals(type)) {
             String designId = params.get("designId");
             String projectId = params.get("projectId");
-            String update = params.get("update");
             
             String url = generateHubApiUrl(req);
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length() - 1);
             }
-            url += "/designs/{designId}/codegen/projects/{projectId}?update={update}"
+            url += "/designs/{designId}/codegen/projects/{projectId}/zip"
                     .replace("{designId}", designId)
-                    .replace("{projectId}", projectId)
-                    .replace("{update}", update);
+                    .replace("{projectId}", projectId);
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);

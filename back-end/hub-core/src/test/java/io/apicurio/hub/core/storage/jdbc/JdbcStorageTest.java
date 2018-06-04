@@ -1129,7 +1129,7 @@ public class JdbcStorageTest {
         Assert.assertEquals(projectId, listedProject.getId());
         Assert.assertEquals(project.getCreatedBy(), listedProject.getCreatedBy());
         Assert.assertEquals(project.getDesignId(), listedProject.getDesignId());
-        Assert.assertEquals(project.getModifiedBy(), listedProject.getModifiedBy());
+        Assert.assertEquals(project.getCreatedBy(), listedProject.getModifiedBy());
         Assert.assertEquals(project.getAttributes(), listedProject.getAttributes());
         Assert.assertEquals(project.getType(), listedProject.getType());
         
@@ -1139,7 +1139,7 @@ public class JdbcStorageTest {
         Assert.assertEquals(projectId, fetchedProject.getId());
         Assert.assertEquals(project.getCreatedBy(), fetchedProject.getCreatedBy());
         Assert.assertEquals(project.getDesignId(), fetchedProject.getDesignId());
-        Assert.assertEquals(project.getModifiedBy(), fetchedProject.getModifiedBy());
+        Assert.assertEquals(project.getCreatedBy(), listedProject.getModifiedBy());
         Assert.assertEquals(project.getAttributes(), fetchedProject.getAttributes());
         Assert.assertEquals(project.getType(), fetchedProject.getType());
         
@@ -1183,7 +1183,7 @@ public class JdbcStorageTest {
         Assert.assertNotNull(listedProject.getId());
         Assert.assertEquals(project.getCreatedBy(), listedProject.getCreatedBy());
         Assert.assertEquals(project.getDesignId(), listedProject.getDesignId());
-        Assert.assertEquals(project.getModifiedBy(), listedProject.getModifiedBy());
+        Assert.assertEquals("user", listedProject.getModifiedBy());
         Assert.assertEquals(project.getAttributes(), listedProject.getAttributes());
         Assert.assertEquals(project.getType(), listedProject.getType());
         

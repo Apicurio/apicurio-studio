@@ -25,6 +25,7 @@ import {CodeEditorMode} from "../../../../components/common/code-editor.componen
 import {ApisService} from "../../../../services/apis.service";
 import {NewCodegenProject} from "../../../../models/new-codegen-project.model";
 import {CodegenProject} from "../../../../models/codegen-project.model";
+import {UpdateCodegenProject} from "../../../../models/update-codegen-project.model";
 
 
 export interface GenerateProjectWizardModel {
@@ -60,16 +61,22 @@ export class GenerateProjectWizardComponent {
 
     protected _isOpen: boolean = false;
 
+    public accounts: LinkedAccount[];
+    public projects: CodegenProject[];
+    public _loadCount: number;
+    public _expectedLoadCount: number = 2;
+
+    public _updateProjectOptions: DropDownOption[];
+
     public model: GenerateProjectWizardModel;
     public sourceControlDataValid: boolean;
-
-    public accounts: LinkedAccount[];
 
     public loading: boolean;
     public currentPage: string;
     public generating: boolean;
     public generated: boolean;
 
+    public updateProject: CodegenProject;
     public generatedProject: CodegenProject;
 
     /**
@@ -102,19 +109,32 @@ export class GenerateProjectWizardComponent {
         this.currentPage = "generationType";
         this.sourceControlDataValid = false;
 
-        // TODO lookup relevant information from the server (load most recent Project Generation info)
+        this._loadCount = 0;
+
         this.linkedAcounts.getLinkedAccounts().then( accounts => {
+            this._loadCount++;
             this.accounts = accounts;
-            this.loading = false;
+            this.loading = this._loadCount < this._expectedLoadCount;
+            console.debug("[GenerateProjectWizardComponent] Linked accounts loaded.");
         }).catch(error => {
             console.error("[GenerateProjectWizardComponent] Error getting Linked Accounts");
             // TODO What to do here?
         });
-
-
-        setTimeout(() => {
-            this.loading = false;
-        }, 1000);
+        this.apis.getCodegenProjects(this.apiId).then( projects => {
+            this._loadCount++;
+            this.projects = projects;
+            if (projects.length > 0) {
+                this.updateProject = projects[0];
+                this.model.generationType = "update";
+                this.updateModelWithProjectInfo(this.updateProject);
+            }
+            this.loading = this._loadCount < this._expectedLoadCount;
+            this._updateProjectOptions = null;
+            console.debug("[GenerateProjectWizardComponent] Codegen projects loaded.  still loading: ", this.loading);
+        }).catch( error => {
+            console.error("[GenerateProjectWizardComponent] Error getting Codegen Projects");
+            // TODO What to do here?
+        });
     }
 
     /**
@@ -137,6 +157,19 @@ export class GenerateProjectWizardComponent {
      */
     public isOpen(): boolean {
         return this._isOpen;
+    }
+
+    public updateProjectOptions(): DropDownOption[] {
+        if (this._updateProjectOptions === null) {
+            this._updateProjectOptions = [];
+            for (let project of this.projects) {
+                this._updateProjectOptions.push({
+                    name: project.type + " (" + project.createdOn + ")",
+                    value: project
+                });
+            }
+        }
+        return this._updateProjectOptions;
     }
 
     public projectTypeOptions(): DropDownOption[] {
@@ -320,30 +353,98 @@ export class GenerateProjectWizardComponent {
         this.generated = false;
         this.currentPage = null;
 
-        // Handle the "download" style of project generation
-        if (this.model.location === "download") {
-            let newProj: NewCodegenProject = new NewCodegenProject();
-            newProj.projectType = this.model.projectType;
-            newProj.projectConfig = this.model.projectData;
-            newProj.location = this.model.location;
-            newProj.publishInfo = {};
+        let newProj: NewCodegenProject = new NewCodegenProject();
+        newProj.projectType = this.model.projectType;
+        newProj.projectConfig = this.model.projectData;
+        newProj.location = this.model.location;
+        newProj.publishInfo = this.getPublishInfo();
 
+        if (this.model.generationType === "update") {
+            this.apis.updateCodegenProject(this.apiId, this.updateProject.id, newProj as UpdateCodegenProject).then( () => {
+                this.generatedProject = this.updateProject;
+                this.generating = false;
+                this.generated = true;
+                this.onProjectGenerated();
+            }).catch( error => {
+                // TODO handle errors here!
+            });
+        } else {
             this.apis.createCodegenProject(this.apiId, newProj).then( project => {
                 this.generatedProject = project;
                 this.generating = false;
                 this.generated = true;
-                setTimeout( () => {
-                    this.downloadLink.first.nativeElement.click();
-                }, 100);
+                this.onProjectGenerated();
             }).catch( error => {
                 // TODO handle errors here!
             });
         }
+    }
 
-        // Handle the "publish" style of project generation
-        if (this.model.location === "publish") {
-            // TODO handle publishing the project to e.g. GitHub
+    public getPublishInfo(): any {
+        let info: any = {};
+        if (this.model.location === "sourceControl") {
+            info = {
+                type: this.model.sourceControlData.type,
+                org: this.model.sourceControlData.model.org,
+                repo: this.model.sourceControlData.model.repo,
+                team: this.model.sourceControlData.model.team,
+                group: this.model.sourceControlData.model.group,
+                project: this.model.sourceControlData.model.project,
+                branch: this.model.sourceControlData.model.branch,
+                location: this.model.sourceControlData.location,
+                commitMessage: this.model.sourceControlData.commitMessage
+            };
         }
+        return info;
+    }
+
+    public onProjectGenerated(): void {
+        if (this.model.location === "download") {
+            setTimeout( () => {
+                this.downloadLink.first.nativeElement.click();
+            }, 100);
+        }
+    }
+
+    public setUpdateProject(project: CodegenProject): void {
+        this.updateProject = project;
+        this.updateModelWithProjectInfo(project);
+    }
+
+    /**
+     * Called to update the model attributes based on the info in the project.
+     * @param {CodegenProject} project
+     */
+    public updateModelWithProjectInfo(project: CodegenProject): void {
+        this.model.projectType = project.type;
+        this.model.location = project.attributes.location;
+        this.model.projectData.artifactId = project.attributes.artifactId;
+        this.model.projectData.groupId = project.attributes.groupId;
+        this.model.projectData.javaPackage = project.attributes.javaPackage;
+        this.model.sourceControlData.type = project.attributes['publish-type'];
+        this.model.sourceControlData.model = {};
+        this.model.sourceControlData.model.branch = project.attributes['publish-branch'];
+        this.model.sourceControlData.model.group = project.attributes['publish-group'];
+        this.model.sourceControlData.model.org = project.attributes['publish-org'];
+        this.model.sourceControlData.model.project = project.attributes['publish-project'];
+        this.model.sourceControlData.model.repo = project.attributes['publish-repo'];
+        this.model.sourceControlData.model.team = project.attributes['publish-team'];
+        this.model.sourceControlData.location = project.attributes['publish-location'];
+        this.model.sourceControlData.commitMessage = project.attributes['publish-commitMessage'];
+    }
+
+    public resetModel(): void {
+        this.model = {
+            generationType: "bootstrap",
+            projectType: "thorntail",
+            projectData: {},
+            location: "download",
+            sourceControlData: {}
+        };
+    }
+
+    public viewProjectLink(): string {
+        return "http://www.google.com";
     }
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption} from "../../../../../components/common/drop-down.component";
 import {BitbucketRepository} from "../../../../../models/bitbucket-repository.model";
@@ -28,6 +28,7 @@ import {BitbucketRepository} from "../../../../../models/bitbucket-repository.mo
 })
 export class BitbucketResourceComponent implements OnInit {
 
+    @Input() value: any;
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
 
@@ -50,16 +51,16 @@ export class BitbucketResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param {LinkedAccountsService} linkedAcounts
+     * @param {LinkedAccountsService} linkedAccounts
      */
-    constructor( private linkedAcounts: LinkedAccountsService) {}
+    constructor( private linkedAccounts: LinkedAccountsService) {}
 
     public ngOnInit(): void {
         console.info("[BitbucketResourceComponent] ngOnInit()");
         // Get the list of teams (async)
         this.gettingTeams = true;
         this.onValid.emit(false);
-        this.linkedAcounts.getAccountTeams("Bitbucket").then( teams => {
+        this.linkedAccounts.getAccountTeams("Bitbucket").then( teams => {
             teams.sort( (team1, team2) => {
                 return team1.displayName.localeCompare(team2.displayName);
             });
@@ -71,6 +72,13 @@ export class BitbucketResourceComponent implements OnInit {
                 });
             });
             this.gettingTeams = false;
+
+            if (this.value && this.value.org) {
+                this.model.org = this.value.org;
+                this.model.repo = this.value.repo;
+                this.model.branch = this.value.branch;
+                this.updateRepos();
+            }
         }).catch( error => {
             // TODO handle an error in some way!
             this.gettingTeams = false;
@@ -90,8 +98,12 @@ export class BitbucketResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateRepos();
+    }
+
+    public updateRepos(): void {
         this.gettingRepos = true;
-        this.linkedAcounts.getAccountRepositories("Bitbucket", this.model.team).then( _repos => {
+        this.linkedAccounts.getAccountRepositories("Bitbucket", this.model.team).then( _repos => {
             let repos: BitbucketRepository[] = _repos as BitbucketRepository[];
             repos.sort( (repo1, repo2) => {
                 return repo1.name.localeCompare(repo2.name);
@@ -104,6 +116,10 @@ export class BitbucketResourceComponent implements OnInit {
                 });
             })
             this.gettingRepos = false;
+
+            if (this.model.branch) {
+                this.updateBranches();
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingRepos = false;
@@ -122,8 +138,12 @@ export class BitbucketResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateBranches();
+    }
+
+    public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAcounts.getAccountBranches("Bitbucket", this.model.team, this.model.repo).then( branches => {
+        this.linkedAccounts.getAccountBranches("Bitbucket", this.model.team, this.model.repo).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });
@@ -133,8 +153,11 @@ export class BitbucketResourceComponent implements OnInit {
                     name: branch.name,
                     value: branch.name
                 });
-            })
+            });
             this.gettingBranches = false;
+            if (this.isValid()) {
+                this.onValid.emit(true);
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingBranches = false;

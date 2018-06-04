@@ -34,6 +34,7 @@ import {OasLibraryUtils} from "oai-ts-core";
 import {IAuthenticationService} from "./auth.service";
 import {CodegenProject} from "../models/codegen-project.model";
 import {NewCodegenProject} from "../models/new-codegen-project.model";
+import {UpdateCodegenProject} from "../models/update-codegen-project.model";
 
 
 export interface IConnectionHandler {
@@ -639,6 +640,43 @@ export class ApisService extends AbstractHubService {
 
         console.info("[HubApisService] Creating a codegen project: %s", createProjectUrl);
         return this.httpPostWithReturn<NewCodegenProject, CodegenProject>(createProjectUrl, project, options);
+    }
+
+    /**
+     * Called to update information about a codegen project.
+     * @param {string} apiId
+     * @param {string} projectId
+     * @param {UpdateCodegenProject} project
+     * @return {Promise<void>}
+     */
+    public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<void> {
+        console.info("[HubApisService] Updating a codegen project for API %s", apiId);
+
+        let updateProjectUrl: string = this.endpoint("/designs/:designId/codegen/projects/:projectId", {
+            designId: apiId,
+            projectId: projectId
+        });
+        let options: any = this.options({ "Content-Type": "application/json" });
+
+        console.info("[HubApisService] Updating a codegen project: %s", updateProjectUrl);
+        return this.httpPut<UpdateCodegenProject>(updateProjectUrl, project, options);
+    }
+
+    /**
+     * Called to get a list of all the codegen projects for a given API design.
+     * @param {string} apiId
+     * @return {Promise<CodegenProject[]>}
+     */
+    public getCodegenProjects(apiId: string): Promise<CodegenProject[]> {
+        console.info("[HubApisService] Getting codegen projects for API Design %s", apiId);
+
+        let getProjectsUrl: string = this.endpoint("/designs/:designId/codegen/projects", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[HubApisService] Fetching codegen project list: %s", getProjectsUrl);
+        return this.httpGet<CodegenProject[]>(getProjectsUrl, options);
     }
 
 }

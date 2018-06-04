@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption} from "../../../../../components/common/drop-down.component";
 import {GitHubRepository} from "../../../../../models/github-repository.model";
@@ -28,6 +28,7 @@ import {GitHubRepository} from "../../../../../models/github-repository.model";
 })
 export class GitHubResourceComponent implements OnInit {
 
+    @Input() value: any;
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
 
@@ -50,16 +51,16 @@ export class GitHubResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param {LinkedAccountsService} linkedAcounts
+     * @param {LinkedAccountsService} linkedAccounts
      */
-    constructor(private linkedAcounts: LinkedAccountsService) {}
+    constructor(private linkedAccounts: LinkedAccountsService) {}
 
     public ngOnInit(): void {
         console.info("[GitHubResourceComponent] ngOnInit()");
         // Get the list of orgs (async)
         this.gettingOrgs = true;
         this.onValid.emit(false);
-        this.linkedAcounts.getAccountOrganizations("GitHub").then( orgs => {
+        this.linkedAccounts.getAccountOrganizations("GitHub").then( orgs => {
             orgs.sort( (org1, org2) => {
                 return org1.id.localeCompare(org2.id);
             });
@@ -84,6 +85,13 @@ export class GitHubResourceComponent implements OnInit {
                 }
             });
             this.gettingOrgs = false;
+
+            if (this.value && this.value.org) {
+                this.model.org = this.value.org;
+                this.model.repo = this.value.repo;
+                this.model.branch = this.value.branch;
+                this.updateRepos();
+            }
         }).catch( error => {
             // TODO handle an error in some way!
             this.gettingOrgs = false;
@@ -103,8 +111,12 @@ export class GitHubResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateRepos();
+    }
+
+    private updateRepos(): void {
         this.gettingRepos = true;
-        this.linkedAcounts.getAccountRepositories("GitHub", this.model.org).then( _repos => {
+        this.linkedAccounts.getAccountRepositories("GitHub", this.model.org).then( _repos => {
             let repos: GitHubRepository[] = _repos as GitHubRepository[];
             repos.sort( (repo1, repo2) => {
                 return repo1.name.localeCompare(repo2.name);
@@ -117,6 +129,10 @@ export class GitHubResourceComponent implements OnInit {
                 });
             })
             this.gettingRepos = false;
+
+            if (this.model.branch) {
+                this.updateBranches();
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingRepos = false;
@@ -135,8 +151,12 @@ export class GitHubResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateBranches();
+    }
+
+    public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAcounts.getAccountBranches("GitHub", this.model.org, this.model.repo).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitHub", this.model.org, this.model.repo).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });
@@ -146,8 +166,11 @@ export class GitHubResourceComponent implements OnInit {
                     name: branch.name,
                     value: branch.name
                 });
-            })
+            });
             this.gettingBranches = false;
+            if (this.isValid()) {
+                this.onValid.emit(true);
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingBranches = false;

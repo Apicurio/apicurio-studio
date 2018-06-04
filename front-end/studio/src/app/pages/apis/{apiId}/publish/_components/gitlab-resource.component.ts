@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption} from "../../../../../components/common/drop-down.component";
 
@@ -27,6 +27,7 @@ import {DropDownOption} from "../../../../../components/common/drop-down.compone
 })
 export class GitLabResourceComponent implements OnInit {
 
+    @Input() value: any;
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
 
@@ -49,16 +50,16 @@ export class GitLabResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param {LinkedAccountsService} linkedAcounts
+     * @param {LinkedAccountsService} linkedAccounts
      */
-    constructor( private linkedAcounts: LinkedAccountsService) {}
+    constructor( private linkedAccounts: LinkedAccountsService) {}
 
     public ngOnInit(): void {
         console.info("[GitLabResourceComponent] ngOnInit()");
         // Get the list of groups (async)
         this.gettingGroups = true;
         this.onValid.emit(false);
-        this.linkedAcounts.getAccountGroups("GitLab").then( groups => {
+        this.linkedAccounts.getAccountGroups("GitLab").then( groups => {
             groups.sort( (group1, group2) => {
                 return group1.name.localeCompare(group2.name);
             });
@@ -70,6 +71,13 @@ export class GitLabResourceComponent implements OnInit {
                 });
             });
             this.gettingGroups = false;
+
+            if (this.value && this.value.group) {
+                this.model.group = this.value.group;
+                this.model.project = this.value.project;
+                this.model.branch = this.value.branch;
+                this.updateProjects();
+            }
         }).catch( error => {
             // TODO handle an error in some way!
             this.gettingGroups = false;
@@ -89,8 +97,12 @@ export class GitLabResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateProjects();
+    }
+
+    public updateProjects(): void {
         this.gettingProjects = true;
-        this.linkedAcounts.getAccountProjects("GitLab", this.model.group).then( projects => {
+        this.linkedAccounts.getAccountProjects("GitLab", this.model.group).then( projects => {
             projects.sort( (project1, project2) => {
                 return project1.name.localeCompare(project2.name);
             });
@@ -100,8 +112,12 @@ export class GitLabResourceComponent implements OnInit {
                     name: project.name,
                     value: project.name
                 });
-            })
+            });
             this.gettingProjects = false;
+
+            if (this.model.branch) {
+                this.updateBranches();
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingProjects = false;
@@ -120,8 +136,12 @@ export class GitLabResourceComponent implements OnInit {
         this.onChange.emit(this.model);
         this.onValid.emit(this.isValid());
 
+        this.updateBranches();
+    }
+
+    public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAcounts.getAccountBranches("GitLab", this.model.group, this.model.project).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitLab", this.model.group, this.model.project).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });
@@ -133,6 +153,9 @@ export class GitLabResourceComponent implements OnInit {
                 });
             })
             this.gettingBranches = false;
+            if (this.isValid()) {
+                this.onValid.emit(true);
+            }
         }).catch(error => {
             // TODO handle an error!
             this.gettingBranches = false;

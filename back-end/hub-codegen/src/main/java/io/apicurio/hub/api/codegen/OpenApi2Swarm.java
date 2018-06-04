@@ -65,6 +65,8 @@ import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
  * Class used to generate a WildFly Swarm JAX-RS project from an OpenAPI document.
  * 
  * @author eric.wittmann@gmail.com
+ * 
+ * TODO rename to:  OpenAPi2Thorntail
  */
 public class OpenApi2Swarm {
 
@@ -72,6 +74,7 @@ public class OpenApi2Swarm {
 
     private String openApiDoc;
     private SwarmProjectSettings settings;
+    private boolean updateOnly;
     
     /**
      * Constructor.
@@ -505,6 +508,20 @@ public class OpenApi2Swarm {
     
     private static String javaPackageToPath(String javaPackage) {
         return javaPackage.replaceAll("[^A-Za-z0-9.]", "").replace('.', '/') + "/";
+    }
+
+    /**
+     * @return the updateOnly
+     */
+    public boolean isUpdateOnly() {
+        return updateOnly;
+    }
+
+    /**
+     * @param updateOnly the updateOnly to set
+     */
+    public void setUpdateOnly(boolean updateOnly) {
+        this.updateOnly = updateOnly;
     }
 
     /**

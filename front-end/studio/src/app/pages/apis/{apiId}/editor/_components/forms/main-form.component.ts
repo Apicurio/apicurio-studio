@@ -464,6 +464,10 @@ export class Main20FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme20Dialog") securitySchemeDialog: SecurityScheme20DialogComponent;
 
+    constructor(licenseService: LicenseService) {
+        super(licenseService);
+    }
+
     /**
      * Opens the security scheme dialog.
      * @param scheme
@@ -557,6 +561,10 @@ export class Main20FormComponent extends MainFormComponent {
 export class Main30FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme30Dialog") securitySchemeDialog: SecurityScheme30DialogComponent;
+
+    constructor(licenseService: LicenseService) {
+        super(licenseService);
+    }
 
     /**
      * Opens the security scheme dialog.

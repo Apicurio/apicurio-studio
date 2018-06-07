@@ -12,10 +12,11 @@
     "ng": "ng",
     "start": "ng serve --port 8888 --aot",
     "debug": "ng serve --port 8888 --sourcemap -dev -v",
-    "build": "ng build -prod"
+    "build": "ng build -prod",
+    "package": "ng-packagr -p package.json"
   },
   "private": true,
-  "dependencies": {
+  "peerDependencies": {
     "@angular/animations": "^5.2.0",
     "@angular/common": "^5.2.0",
     "@angular/compiler": "^5.2.0",
@@ -24,22 +25,45 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
-    "patternfly": "3.40.0",
-    "oai-ts-core": "0.2.15",
-    "oai-ts-commands": "0.2.28",
+    "brace": "0.11.1",
     "core-js": "^2.4.1",
     "ngx-bootstrap": "2.0.2",
-    "brace": "0.11.1",
-    "yamljs": "0.3.0",
+    "oai-ts-commands": "0.2.28",
+    "oai-ts-core": "0.2.15",
+    "patternfly": "3.40.0",
     "rxjs": "^5.5.6",
+    "yamljs": "0.3.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
+    "@angular/animations": "^5.2.0",
     "@angular/cli": "1.6.8",
+    "@angular/common": "^5.2.0",
+    "@angular/compiler": "^5.2.0",
     "@angular/compiler-cli": "^5.2.0",
+    "@angular/core": "^5.2.0",
+    "@angular/forms": "^5.2.0",
     "@angular/language-service": "^5.2.0",
+    "@angular/platform-browser": "^5.2.0",
+    "@angular/platform-browser-dynamic": "^5.2.0",
+    "@angular/router": "^5.2.0",
     "@types/node": "~6.0.60",
+    "brace": "0.11.1",
+    "core-js": "^2.4.1",
+    "ng-packagr": "^2.0.0",
+    "ngx-bootstrap": "2.0.2",
+    "oai-ts-commands": "0.2.28",
+    "oai-ts-core": "0.2.15",
+    "patternfly": "3.40.0",
+    "rxjs": "^5.5.6",
     "ts-node": "~4.1.0",
-    "typescript": "~2.5.3"
+    "typescript": "~2.5.3",
+    "yamljs": "0.3.0",
+    "zone.js": "^0.8.19"
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "public_api.ts"
+    }
   }
 }

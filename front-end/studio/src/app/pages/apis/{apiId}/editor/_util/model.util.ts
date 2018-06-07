@@ -26,7 +26,7 @@ export class ModelUtils {
      * string "/resources/{fooId}/subresources/{barId}" is passed in, the following
      * string array will be returned:  [ "fooId", "barId" ]
      * @param path
-     * @return {string[]}
+     * @return
      */
     public static detectPathParamNames(path: string): string[] {
         let segments: string[] = path.split("/");
@@ -45,7 +45,7 @@ export class ModelUtils {
      * for a given path.
      * @param path
      * @param paramName
-     * @return {Oas20Parameter[]}
+     * @return
      */
     public static getAllPathParams(path: Oas20PathItem, paramName: string): Oas20Parameter[] {
         let operations: OasOperation[] = [
@@ -68,7 +68,7 @@ export class ModelUtils {
 
     /**
      * Clears any possible selection that may exist on the given node for the local user.
-     * @param {OasNode} node
+     * @param node
      */
     public static clearSelection(node: OasNode): void {
         node.n_attribute("local-selection", false);
@@ -77,7 +77,7 @@ export class ModelUtils {
     /**
      * Sets the local selection on the node.  Essentially this marks the node as "selected"
      * for the local user.
-     * @param {OasNode} node
+     * @param node
      */
     public static setSelection(node: OasNode): void {
         node.n_attribute("local-selection", true);
@@ -85,8 +85,8 @@ export class ModelUtils {
 
     /**
      * Checks whether the given item is selected by the local user.
-     * @param {OasNode} node
-     * @return {ApiEditorUser}
+     * @param node
+     * @return
      */
     public static isSelected(node: OasNode): boolean {
         let rval: boolean = node.n_attribute("local-selection");
@@ -98,8 +98,8 @@ export class ModelUtils {
 
     /**
      * Clears any possible selection that may exist on the given node for the given user.
-     * @param {ApiEditorUser} user
-     * @param {OasNode} node
+     * @param user
+     * @param node
      */
     public static clearCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
         let selections: any = node.n_attribute("collaborator-selections");
@@ -111,8 +111,8 @@ export class ModelUtils {
     /**
      * Sets the collaborator selection for the given user on the node.  Essentially this marks
      * the node as "selected" by the external (active) collaborator.
-     * @param {ApiEditorUser} user
-     * @param {OasNode} node
+     * @param user
+     * @param node
      */
     public static setCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
         let selections: any = node.n_attribute("collaborator-selections");
@@ -126,8 +126,8 @@ export class ModelUtils {
     /**
      * Checks whether the given item is selected by an external collaborator.  Returns the collaborator
      * information if the item is selected or else null.
-     * @param {OasNode} node
-     * @return {ApiEditorUser}
+     * @param node
+     * @return
      */
     public static isSelectedByCollaborator(node: OasNode): ApiEditorUser {
         let selections: any = node.n_attribute("collaborator-selections");

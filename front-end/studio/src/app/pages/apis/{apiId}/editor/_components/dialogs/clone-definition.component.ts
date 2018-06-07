@@ -44,7 +44,7 @@ export class CloneDefinitionDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
+     * @param definition
      */
     public open(document: OasDocument, definition: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._isOpen = true;
@@ -110,7 +110,7 @@ export class CloneDefinitionDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;

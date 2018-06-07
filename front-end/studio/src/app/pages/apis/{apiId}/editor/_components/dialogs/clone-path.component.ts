@@ -44,8 +44,8 @@ export class ClonePathDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {OasDocument} document
-     * @param {OasPathItem} path
+     * @param document
+     * @param path
      */
     public open(document: OasDocument, path: OasPathItem): void {
         this.object = path;
@@ -104,7 +104,7 @@ export class ClonePathDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;

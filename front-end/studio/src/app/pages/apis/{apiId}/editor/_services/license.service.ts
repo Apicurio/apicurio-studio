@@ -266,7 +266,7 @@ export class LicenseService {
 
     /**
      * Returns a list of all licenses.
-     * @return {({id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: string[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: Array, limitations: (string|string)[]})[]}
+     * @return|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: string[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: Array, limitations: (string|string)[]})[]}
      */
     public getLicenses(): ILicense[] {
         return LICENSE_DATA;
@@ -324,7 +324,7 @@ export class LicenseService {
      * Finds a license by its URL.  Multiple URLs may resolve to the same
      * license.
      * @param url
-     * @return {any}
+     * @return
      */
     public findLicense(url: string): ILicense {
         for (let license of LICENSE_DATA) {

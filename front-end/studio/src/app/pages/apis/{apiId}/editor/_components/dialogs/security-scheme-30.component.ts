@@ -188,7 +188,7 @@ export class SecurityScheme30DialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -204,7 +204,7 @@ export class SecurityScheme30DialogComponent {
 
     /**
      * Called when the user clicks the "Add Scope" button.
-     * @param {string} flow
+     * @param flow
      */
     public addScope(flow: string): void {
         this.model.flows[flow].scopes.push({
@@ -215,8 +215,8 @@ export class SecurityScheme30DialogComponent {
 
     /**
      * Called to delete a scope.
-     * @param {string} flow
-     * @param {Scope} scope
+     * @param flow
+     * @param scope
      */
     public deleteScope(flow: string, scope: Scope): void {
         this.model.flows[flow].scopes.splice(this.model.flows[flow].scopes.indexOf(scope), 1);
@@ -224,7 +224,7 @@ export class SecurityScheme30DialogComponent {
 
     /**
      * Reads the flow information from the security scheme and copies it to the model.
-     * @param {Oas30SecurityScheme} scheme
+     * @param scheme
      */
     private readFlows(scheme: Oas30SecurityScheme) {
         if (!ObjectUtils.isNullOrUndefined(scheme.flows)) {
@@ -245,8 +245,8 @@ export class SecurityScheme30DialogComponent {
 
     /**
      * Reads flow information from the data model into the local UI model.
-     * @param {Oas30OAuthFlow} flowModel
-     * @param {Flow} flow
+     * @param flowModel
+     * @param flow
      */
     private readFlowInto(flowModel: Oas30OAuthFlow, flow: Flow) {
         flow.enabled = true;
@@ -259,7 +259,7 @@ export class SecurityScheme30DialogComponent {
     /**
      * Converts from OAS30 scopes to an array of scope objects.
      * @param scopes
-     * @return {Scope[]}
+     * @return
      */
     private toScopesArray(scopes: any): Scope[] {
         console.info("toScopesArray: %o", scopes);

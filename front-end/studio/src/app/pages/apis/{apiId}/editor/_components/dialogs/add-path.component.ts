@@ -44,8 +44,8 @@ export class AddPathDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {OasDocument} document
-     * @param {string} path
+     * @param document
+     * @param path
      */
     public open(document: OasDocument, path?: string): void {
         this.path = path;
@@ -102,7 +102,7 @@ export class AddPathDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;

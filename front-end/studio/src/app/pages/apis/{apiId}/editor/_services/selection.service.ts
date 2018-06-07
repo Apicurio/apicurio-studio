@@ -79,9 +79,9 @@ class CollaboratorSelections {
 
     /**
      * Sets the selection for a given active collaborator.  Returns the user's previous selection.
-     * @param {ApiEditorUser} user
-     * @param {string} selection
-     * @return {OasNode}
+     * @param user
+     * @param selection
+     * @return
      */
     public setSelection(user: ApiEditorUser, selection: string, document: OasDocument): void {
         // First, clear any previous selection the user may have had.

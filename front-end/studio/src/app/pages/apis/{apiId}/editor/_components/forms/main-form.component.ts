@@ -119,7 +119,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns the current contact object.
-     * @return {OasContact}
+     * @return
      */
     public contact(): OasContact {
         if (this.hasContact()) {
@@ -194,7 +194,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns the list of tags defined in the document.
-     * @return {OasTag[]}
+     * @return
      */
     public tags(): OasTag[] {
         let tags: OasTag[] = this.document.tags;
@@ -288,7 +288,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns true if the API has Contact Info defined.
-     * @return {boolean}
+     * @return
      */
     public hasContact(): boolean {
         if (this.document.info && this.document.info.contact) {
@@ -326,7 +326,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns true if there is at least one security requirement defined.
-     * @return {boolean}
+     * @return
      */
     public hasSecurityRequirements(): boolean {
         return this.securityRequirements().length > 0;
@@ -334,7 +334,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns true if there is at least one security scheme defined.
-     * @return {boolean}
+     * @return
      */
     public hasSecuritySchemes(): boolean {
         return this.securitySchemes().length > 0;
@@ -342,13 +342,13 @@ export abstract class MainFormComponent {
 
     /**
      * Returns all defined security schemes.
-     * @return {OasSecurityScheme[]}
+     * @return
      */
     public abstract securitySchemes(): OasSecurityScheme[];
 
     /**
      * Returns all defined security requirements.
-     * @return {OasSecurityRequirement[]}
+     * @return
      */
     public securityRequirements(): OasSecurityRequirement[] {
         return this.document.security ? this.document.security : [];
@@ -356,8 +356,8 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user changes the description of a security scheme in the table of schemes.
-     * @param {OasSecurityScheme} scheme
-     * @param {string} description
+     * @param scheme
+     * @param description
      */
     public changeSecuritySchemeDescription(scheme: OasSecurityScheme, description: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, scheme, "description", description);
@@ -366,13 +366,13 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user adds a new security scheme.
-     * @param {SecurityScheme20EventData | SecurityScheme30EventData} event
+     * @param event
      */
     public abstract addSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
 
     /**
      * Called when the user adds a new security requirement.
-     * @param {SecurityRequirementEventData} event
+     * @param event
      */
     public addSecurityRequirement(event: SecurityRequirementEventData): void {
         let requirement: OasSecurityRequirement = this.document.createSecurityRequirement();
@@ -384,13 +384,13 @@ export abstract class MainFormComponent {
 
     /**
      * Called when the user changes an existing security scheme.
-     * @param {SecurityScheme20EventData | SecurityScheme30EventData} event
+     * @param event
      */
     public abstract changeSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void;
 
     /**
      * Called when the user changes an existing Security Requirement.
-     * @param {SecurityRequirementEventData} event
+     * @param event
      */
     public changeSecurityRequirement(event: ChangeSecurityRequirementEvent): void {
         let newRequirement: OasSecurityRequirement = this.document.createSecurityRequirement();
@@ -402,7 +402,7 @@ export abstract class MainFormComponent {
 
     /**
      * Deletes a security scheme.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public deleteSecurityScheme(scheme: OasSecurityScheme): void {
         let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
@@ -411,7 +411,7 @@ export abstract class MainFormComponent {
 
     /**
      * Deletes a security requirement.
-     * @param {OasSecurityRequirement} requirement
+     * @param requirement
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
         let command: ICommand = createDeleteSecurityRequirementCommand(this.document, this.document, requirement);
@@ -420,8 +420,8 @@ export abstract class MainFormComponent {
 
     /**
      * Returns a summary of the requirement.
-     * @param {OasSecurityRequirement} requirement
-     * @return {string}
+     * @param requirement
+     * @return
      */
     public securityRequirementSummary(requirement: OasSecurityRequirement): string {
         return requirement.securityRequirementNames().join(", ");
@@ -429,13 +429,13 @@ export abstract class MainFormComponent {
 
     /**
      * Opens the security scheme dialog for adding or editing a security scheme.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public abstract openSecuritySchemeDialog(scheme?: OasSecurityScheme): void;
 
     /**
      * Opens the security requirement dialog for adding or editing a security requirement.
-     * @param {OasSecurityRequirement} requirement
+     * @param requirement
      */
     public openSecurityRequirementDialog(requirement?: OasSecurityRequirement): void {
         this.securityRequirementDialog.open(this.document, requirement);
@@ -443,7 +443,7 @@ export abstract class MainFormComponent {
 
     /**
      * Returns true if the form is for an OpenAPI 3.x document.
-     * @return {boolean}
+     * @return
      */
     public is3xForm(): boolean {
         return false;
@@ -464,9 +464,13 @@ export class Main20FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme20Dialog") securitySchemeDialog: SecurityScheme20DialogComponent;
 
+    constructor(licenseService: LicenseService) {
+        super(licenseService);
+    }
+
     /**
      * Opens the security scheme dialog.
-     * @param {Oas20SecurityScheme} scheme
+     * @param scheme
      */
     public openSecuritySchemeDialog(scheme?: Oas20SecurityScheme): void {
         this.securitySchemeDialog.open(scheme);
@@ -474,7 +478,7 @@ export class Main20FormComponent extends MainFormComponent {
 
     /**
      * Returns all defined security schemes.
-     * @return {OasSecurityScheme[]}
+     * @return
      */
     public securitySchemes(): OasSecurityScheme[] {
         let secdefs: Oas20SecurityDefinitions = (this.document as Oas20Document).securityDefinitions;
@@ -488,7 +492,7 @@ export class Main20FormComponent extends MainFormComponent {
 
     /**
      * Called when the user adds a new security scheme.
-     * @param {SecurityScheme20EventData} event
+     * @param event
      */
     public addSecurityScheme(event: SecurityScheme20EventData): void {
         console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
@@ -517,7 +521,7 @@ export class Main20FormComponent extends MainFormComponent {
 
     /**
      * Called when the user changes an existing security scheme.
-     * @param {SecurityScheme20EventData} event
+     * @param event
      */
     public changeSecurityScheme(event: SecurityScheme20EventData): void {
         console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
@@ -558,9 +562,13 @@ export class Main30FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme30Dialog") securitySchemeDialog: SecurityScheme30DialogComponent;
 
+    constructor(licenseService: LicenseService) {
+        super(licenseService);
+    }
+
     /**
      * Opens the security scheme dialog.
-     * @param {Oas30SecurityScheme} scheme
+     * @param scheme
      */
     public openSecuritySchemeDialog(scheme?: Oas30SecurityScheme): void {
         this.securitySchemeDialog.open(scheme);
@@ -568,7 +576,7 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Returns all defined security schemes.
-     * @return {OasSecurityScheme[]}
+     * @return
      */
     public securitySchemes(): OasSecurityScheme[] {
         let doc: Oas30Document = this.document as Oas30Document;
@@ -583,7 +591,7 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Called when the user adds a new security scheme.
-     * @param {SecurityScheme30EventData} event
+     * @param event
      */
     public addSecurityScheme(event: SecurityScheme30EventData): void {
         console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
@@ -597,7 +605,7 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Called when the user changes an existing security scheme.
-     * @param {SecurityScheme30EventData} event
+     * @param event
      */
     public changeSecurityScheme(event: SecurityScheme30EventData): void {
         console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
@@ -611,7 +619,7 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Converts from array of scopes to scopes object for data model.
-     * @param {Scope[]} scopes
+     * @param scopes
      */
     private toScopes(scopes: Scope[]): any {
         let rval: any = {};
@@ -623,8 +631,8 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Copy the event data to the data model.
-     * @param {SecurityScheme30EventData} event
-     * @param {Oas30SecurityScheme} scheme
+     * @param event
+     * @param scheme
      */
     private copySchemeToModel(event: SecurityScheme30EventData, scheme: Oas30SecurityScheme) {
         scheme.description = event.description;
@@ -677,7 +685,7 @@ export class Main30FormComponent extends MainFormComponent {
 
     /**
      * Returns true if the form is for an OpenAPI 3.x document.
-     * @return {boolean}
+     * @return
      */
     public is3xForm(): boolean {
         return true;

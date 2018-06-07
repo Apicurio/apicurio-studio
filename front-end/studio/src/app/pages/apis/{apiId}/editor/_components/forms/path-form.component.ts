@@ -16,7 +16,8 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas30PathItem, OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
+import {Oas20PathItem, Oas30PathItem, OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
+import {ReplaceNodeCommand} from "oai-ts-commands";
 import {SourceFormComponent} from "./source-form.base";
 import {ModelUtils} from "../../_util/model.util";
 import {
@@ -66,7 +67,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return (<OasPaths>this.path.parent()).createPathItem(this.path.path());
     }
 
-    protected createReplaceNodeCommand(node: OasPathItem) {
+    protected createReplaceNodeCommand(node: OasPathItem): ReplaceNodeCommand<Oas20PathItem> | ReplaceNodeCommand<Oas30PathItem> {
         return createReplacePathItemCommand(this.path.ownerDocument(), this.path as any, node as any);
     }
 

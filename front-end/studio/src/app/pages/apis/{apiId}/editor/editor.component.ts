@@ -97,7 +97,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Called when the @Input changes.
-     * @param {SimpleChanges} changes
+     * @param changes
      */
     ngOnChanges(changes: SimpleChanges): void {
         this._document = null;
@@ -126,7 +126,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Lazy getter for the OtEngine.
-     * @return {OtEngine}
+     * @return
      */
     public otEngine(): OtEngine {
         if (this._otEngine === null) {
@@ -177,7 +177,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
      * Executes a command.  Called by the parent of this component when detecting that
      * another user has executed a command.  In other words, this command is *not*
      * performed by the local user.
-     * @param {ICommand} command
+     * @param command
      */
     public executeCommand(command: OtCommand): void {
         console.info("[ApiEditorComponent] Executing a command.");
@@ -192,7 +192,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Finalizes a command.
-     * @param {ApiDesignCommandAck} ack
+     * @param ack
      */
     public finalizeCommand(ack: ApiDesignCommandAck): void {
         this.otEngine().finalizeCommand(ack.commandId, ack.contentVersion);
@@ -200,8 +200,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Called to update the selection state of the given remote API editor (i.e. an active collaborator).
-     * @param {ApiEditorUser} user
-     * @param {string} selection
+     * @param user
+     * @param selection
      */
     public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
         this.selectionService.setCollaboratorSelection(user, selection, this.document());
@@ -209,7 +209,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Called when the user selects a node in some way.
-     * @param {OasNodePath} path
+     * @param path
      */
     public onNodeSelected(path: OasNodePath): void {
         console.info("[ApiEditorComponent] Selection changed to path: %s", path.toString());
@@ -235,7 +235,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Returns the currently selected path item.
-     * @return {OasPathItem}
+     * @return
      */
     public selectedPath(): OasPathItem {
         if (this.currentSelectionType === "path") {
@@ -258,7 +258,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Returns the currently selected definition.
-     * @return {Oas20SchemaDefinition}
+     * @return
      */
     public selectedDefinition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
         if (this.currentSelectionType === "definition") {
@@ -270,7 +270,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Returns the currently selected definition.
-     * @return {OasValidationProblem}
+     * @return
      */
     public selectedProblem(): OasValidationProblem {
         if (this.currentSelectionType === "problem") {

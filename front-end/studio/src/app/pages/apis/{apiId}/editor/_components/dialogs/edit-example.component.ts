@@ -58,7 +58,7 @@ export class EditExampleDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {Oas30Example} example
+     * @param example
      */
     public open(example: Oas30Example): void {
         this._isOpen = true;
@@ -119,7 +119,7 @@ export class EditExampleDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -138,7 +138,7 @@ export class EditExampleDialogComponent {
     }
 
     /**
-     * @param {string} value
+     * @param value
      */
     private setValueFormatFromValue(value: string): void {
         if (value && value.trim().startsWith("{")) {

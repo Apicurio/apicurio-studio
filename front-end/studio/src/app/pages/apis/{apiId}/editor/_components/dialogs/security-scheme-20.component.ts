@@ -123,7 +123,7 @@ export class SecurityScheme20DialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -200,7 +200,7 @@ export class SecurityScheme20DialogComponent {
     /**
      * Converts from OAS20 scopes to an array of scope objects.
      * @param scopes
-     * @return {Scope[]}
+     * @return
      */
     private toScopesArray(scopes: Oas20Scopes): Scope[] {
         let rval: Scope[] = [];
@@ -218,7 +218,7 @@ export class SecurityScheme20DialogComponent {
 
     /**
      * Returns true only if all the defined scopes are valid (have names).
-     * @return {boolean}
+     * @return
      */
     public scopesAreValid(): boolean {
         if (this.model.type === "oauth2") {

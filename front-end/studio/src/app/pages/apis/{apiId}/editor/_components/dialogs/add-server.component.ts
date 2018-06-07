@@ -60,7 +60,7 @@ export class AddServerDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {Oas30Server} server
+     * @param server
      */
     public open(server?: Oas30Server): void {
         if (server) {
@@ -133,7 +133,7 @@ export class AddServerDialogComponent {
 
     /**
      * Returns true if there are any variables to be configured.
-     * @return {boolean}
+     * @return
      */
     public hasVariables(): boolean {
         let rval: boolean = false;
@@ -147,7 +147,7 @@ export class AddServerDialogComponent {
 
     /**
      * Returns the names of the variables.
-     * @return {string[]}
+     * @return
      */
     public variableNames(): string[] {
         let rval: string[] = [];
@@ -190,7 +190,7 @@ export class AddServerDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;

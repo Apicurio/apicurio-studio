@@ -56,8 +56,8 @@ export class AceEditorComponent implements ControlValueAccessor, OnInit, OnDestr
 
     /**
      * C'tor.
-     * @param {ElementRef} elementRef
-     * @param {NgZone} zone
+     * @param elementRef
+     * @param zone
      */
     constructor(elementRef: ElementRef, private zone: NgZone) {
         let el = elementRef.nativeElement;

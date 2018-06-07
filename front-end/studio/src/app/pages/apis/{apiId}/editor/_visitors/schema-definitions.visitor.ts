@@ -25,7 +25,7 @@ export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
 
     /**
      * C'tor.
-     * @param {string} filterCriteria
+     * @param filterCriteria
      */
     constructor(private filterCriteria: string) {
         super();
@@ -33,7 +33,7 @@ export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
 
     /**
      * Called when a schema definition is visited.
-     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} node
+     * @param node
      */
     visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         let name: string = FindSchemaDefinitionsVisitor.definitionName(node);
@@ -55,8 +55,8 @@ export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
 
     /**
      * Figures out the definition name regardless of the version of the model.
-     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
-     * @return {string}
+     * @param definition
+     * @return
      */
     public static definitionName(definition: Oas20SchemaDefinition|Oas30SchemaDefinition): string {
         let name: string;
@@ -71,7 +71,7 @@ export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
     /**
      * Returns true if the given name is accepted by the current filter criteria.
      * @param name
-     * @return {boolean}
+     * @return
      */
     private acceptThroughFilter(name: string): boolean {
         //console.info("Accepting: %s through filter: %s", name, this.filterCriteria);

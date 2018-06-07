@@ -261,7 +261,7 @@ export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
 
     /**
      * Subclasses can override this to provide validation status of the current value.
-     * @return {boolean}
+     * @return
      */
     protected isValid(): boolean {
         return true;

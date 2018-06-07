@@ -115,7 +115,7 @@ export class AddDefinitionDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -145,7 +145,7 @@ export class AddDefinitionDialogComponent {
     /**
      * Returns true if it's possible to format the example definition (it must be non-null and
      * syntactically valid).
-     * @return {boolean}
+     * @return
      */
     public isExampleDefinitionFormattable(): boolean {
         return this.exampleFormattable;
@@ -154,7 +154,7 @@ export class AddDefinitionDialogComponent {
     /**
      * Returns true if the example definition added by the user in the Add Definition modal
      * dialog is valid (syntactically).
-     * @return {boolean}
+     * @return
      */
     public isExampleDefinitionValid(): boolean {
         return this.exampleValid;

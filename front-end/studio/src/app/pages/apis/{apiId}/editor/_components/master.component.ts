@@ -116,7 +116,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
-     * @return {OasPathItem[]}
+     * @return
      */
     public paths(): OasPathItem[] {
         let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
@@ -126,7 +126,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the array of definitions, filtered by search criteria and sorted.
-     * @return {(Oas20SchemaDefinition | Oas30SchemaDefinition)[]}
+     * @return
      */
     public definitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
@@ -136,7 +136,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns an array of responses filtered by the search criteria and sorted.
-     * @return {(Oas20ResponseDefinition | Oas30ResponseDefinition)[]}
+     * @return
      */
     public responses(): (Oas20ResponseDefinition | Oas30ResponseDefinition)[] {
         return [];
@@ -157,8 +157,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns true if the given item is a valid path in the current document.
-     * @param {OasPathItem} pathItem
-     * @return {boolean}
+     * @param pathItem
+     * @return
      */
     protected isValidPathItem(pathItem: OasPathItem): boolean {
         if (ObjectUtils.isNullOrUndefined(pathItem)) {
@@ -174,8 +174,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Returns true if the given operation is a valid operation contained within the
      * current document.
-     * @param {OasOperation} operation
-     * @return {boolean}
+     * @param operation
+     * @return
      */
     protected isValidOperation(operation: OasOperation): boolean {
         let pathItem: OasPathItem = operation.parent() as OasPathItem;
@@ -197,8 +197,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Returns true if the given schema definition is valid and contained within the
      * current document.
-     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
-     * @return {boolean}
+     * @param definition
+     * @return
      */
     protected isValidDefinition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition): boolean {
         if (ObjectUtils.isNullOrUndefined(definition)) {
@@ -210,8 +210,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Returns true if the given response is valid and contained within the
      * current document.
-     * @param {Oas20ResponseDefinition | Oas30ResponseDefinition} response
-     * @return {boolean}
+     * @param response
+     * @return
      */
     protected isValidResponse(response: Oas20ResponseDefinition | Oas30ResponseDefinition): boolean {
         if (ObjectUtils.isNullOrUndefined(response)) {
@@ -229,7 +229,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Called when the user selects a path from the master area.
-     * @param {OasPathItem} path
+     * @param path
      */
     public selectPath(path: OasPathItem): void {
         this.selectionService.selectNode(path, this.document);
@@ -290,7 +290,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Called when the user selects a response from the master area.
-     * @param {Oas20ResponseDefinition | Oas30ResponseDefinition} response
+     * @param response
      */
     public selectResponse(response: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
         this.selectionService.selectNode(response, this.document);
@@ -332,8 +332,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the selection style to use for the given (potentially selected) node.
-     * @param {OasNode} item
-     * @return {string}
+     * @param item
+     * @return
      */
     public collaboratorSelectionClasses(item: OasNode): string {
         if (item) {
@@ -347,7 +347,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Called when the user fills out the Add Path modal dialog and clicks Add.
-     * @param {string} path
+     * @param path
      */
     public addPath(path: string): void {
         let command: ICommand = createNewPathCommand(this.document, path);
@@ -357,9 +357,9 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Called to test whether the given resource path has an operation of the given type defined.
-     * @param {OasPathItem} pathItem
-     * @param {string} operation
-     * @return {boolean}
+     * @param pathItem
+     * @param operation
+     * @return
      */
     public hasOperation(pathItem: OasPathItem, operation: string): boolean {
         let op: OasOperation = pathItem[operation];
@@ -369,8 +369,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Returns true if the given node is the currently selected item *or* is the parent
      * of the currently selected item.
-     * @param {OasNode} node
-     * @return {boolean}
+     * @param node
+     * @return
      */
     public isSelected(node: OasNode): boolean {
         return ModelUtils.isSelected(node);
@@ -378,7 +378,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns true if the main node should be selected.
-     * @return {boolean}
+     * @return
      */
     public isMainSelected(): boolean {
         return ModelUtils.isSelected(this.document);
@@ -386,8 +386,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns true if the given node is the current context menu item.
-     * @param {OasNode} node
-     * @return {boolean}
+     * @param node
+     * @return
      */
     public isContexted(node: OasNode): boolean {
         if (this.contextMenuSelection === null) {
@@ -398,8 +398,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns true if the given path item has at least one operation.
-     * @param {OasPathItem} pathItem
-     * @return {boolean}
+     * @param pathItem
+     * @return
      */
     public hasAtLeastOneOperation(pathItem: OasPathItem): boolean {
         if (pathItem) {
@@ -440,8 +440,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Gets a definition by its name.
-     * @param {string} name
-     * @return {Oas20SchemaDefinition | Oas30SchemaDefinition}
+     * @param name
+     * @return
      */
     protected getDefinitionByName(name: string): Oas20SchemaDefinition | Oas30SchemaDefinition {
         if (this.document.getSpecVersion() === "2.0") {
@@ -479,8 +479,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Called when the user right-clicks on an operation.
-     * @param {MouseEvent} event
-     * @param {OasOperation} operation
+     * @param event
+     * @param operation
      */
     public showOperationContextMenu(event: MouseEvent, operation: OasOperation): void {
         event.preventDefault();
@@ -629,8 +629,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the name of the definition.
-     * @param {Oas20SchemaDefinition | Oas30SchemaDefinition} definition
-     * @return {string}
+     * @param definition
+     * @return
      */
     public definitionName(definition: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
         return definition.ownerDocument().getSpecVersion() === "2.0" ?
@@ -651,7 +651,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the classes that should be applied to the "main" selection item.
-     * @return {string}
+     * @return
      */
     public mainClasses(): string {
         let classes: string[] = [];
@@ -672,8 +672,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the classes that should be applied to the path item in the master view.
-     * @param {OasPathItem} node
-     * @return {string}
+     * @param node
+     * @return
      */
     public pathClasses(node: OasPathItem): string {
         let classes: string[] = [];
@@ -691,8 +691,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the classes that should be applied to the operation in the master view.
-     * @param {OasOperation} node
-     * @return {string}
+     * @param node
+     * @return
      */
     public operationClasses(node: OasOperation): string {
         let classes: string[] = [];
@@ -710,8 +710,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the classes that should be applied to the validation problem.
-     * @param {OasValidationProblem} node
-     * @return {string}
+     * @param node
+     * @return
      */
     public problemClasses(node: OasValidationProblem): string {
         let classes: string[] = [];
@@ -726,8 +726,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the classes that should be applied to the schema definition in the master view.
-     * @param {OasNode} node
-     * @return {string}
+     * @param node
+     * @return
      */
     public definitionClasses(node: OasNode): string {
         let classes: string[] = [];

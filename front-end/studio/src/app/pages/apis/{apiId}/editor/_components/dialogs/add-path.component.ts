@@ -20,7 +20,7 @@ import {ModalDirective} from "ngx-bootstrap";
 import {OasDocument, OasLibraryUtils} from "oai-ts-core";
 import {FormControl} from "@angular/forms";
 import {Subject} from "rxjs/Subject";
-
+import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
     moduleId: module.id,

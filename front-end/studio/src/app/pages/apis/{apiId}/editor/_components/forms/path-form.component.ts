@@ -67,7 +67,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return (<OasPaths>this.path.parent()).createPathItem(this.path.path());
     }
 
-    protected createReplaceNodeCommand(node: OasPathItem): ReplaceNodeCommand<Oas20PathItem> | ReplaceNodeCommand<Oas30PathItem> {
+    protected createReplaceNodeCommand(node: OasPathItem): ICommand {
         return createReplacePathItemCommand(this.path.ownerDocument(), this.path as any, node as any);
     }
 

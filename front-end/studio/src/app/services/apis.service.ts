@@ -649,17 +649,17 @@ export class ApisService extends AbstractHubService {
      * @param {UpdateCodegenProject} project
      * @return {Promise<void>}
      */
-    public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<void> {
+    public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<CodegenProject> {
         console.info("[HubApisService] Updating a codegen project for API %s", apiId);
 
         let updateProjectUrl: string = this.endpoint("/designs/:designId/codegen/projects/:projectId", {
             designId: apiId,
             projectId: projectId
         });
-        let options: any = this.options({ "Content-Type": "application/json" });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
         console.info("[HubApisService] Updating a codegen project: %s", updateProjectUrl);
-        return this.httpPut<UpdateCodegenProject>(updateProjectUrl, project, options);
+        return this.httpPutWithReturn<UpdateCodegenProject, CodegenProject>(updateProjectUrl, project, options);
     }
 
     /**

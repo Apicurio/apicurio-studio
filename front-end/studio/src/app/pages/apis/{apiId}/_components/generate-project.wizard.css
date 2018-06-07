@@ -35,3 +35,9 @@
   padding-bottom: 0px;
   padding-top: 50px;
 }
+
+.wizard-pf-failure-icon {
+  color: #8b0000;
+  font-size: 67.2px;
+  line-height: 67.2px;
+}

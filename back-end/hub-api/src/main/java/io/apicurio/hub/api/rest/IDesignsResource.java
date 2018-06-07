@@ -176,7 +176,7 @@ public interface IDesignsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{designId}/codegen/projects/{projectId}")
-    public void updateCodegenProject(@PathParam("designId") String designId,
+    public CodegenProject updateCodegenProject(@PathParam("designId") String designId,
             @PathParam("projectId") String projectId, UpdateCodgenProject body)
             throws ServerError, NotFoundException, AccessDeniedException;
 

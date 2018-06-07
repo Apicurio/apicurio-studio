@@ -118,7 +118,7 @@ var OpenApi2CodegenVisitor = (function (_super) {
         var _this = _super.call(this) || this;
         _this.interfacesIndex = {};
         _this.codegenInfo = {
-            name: "Wildfly Swarm API",
+            name: "Thorntail API",
             version: "1.0.0",
             interfaces: [],
             beans: []
@@ -316,7 +316,7 @@ var OpenApi2CodegenVisitor = (function (_super) {
     OpenApi2CodegenVisitor.prototype.visitResponse = function (node) {
         // Note: if there are multiple 2xx responses, only the first one will
         // become the method return value.
-        if (node.statusCode().indexOf("2") === 0 && !this._currentMethod.return) {
+        if (node.statusCode() && node.statusCode().indexOf("2") === 0 && !this._currentMethod.return) {
             if (node.ownerDocument().is2xDocument()) {
                 this.visit20Response(node);
             }
@@ -326,7 +326,7 @@ var OpenApi2CodegenVisitor = (function (_super) {
         }
     };
     OpenApi2CodegenVisitor.prototype.visit20Response = function (node) {
-        if (node.statusCode().indexOf("2") === 0) {
+        if (node.statusCode() && node.statusCode().indexOf("2") === 0) {
             this._currentMethod.return = this.returnFromSchema(node.schema);
         }
     };
@@ -438,10 +438,10 @@ var OpenApi2CodegenVisitor = (function (_super) {
         return cgReturn;
     };
     OpenApi2CodegenVisitor.prototype.typeFromSchemaRef = function (schemaRef) {
-        if (schemaRef.indexOf("#/components/schemas/") === 0) {
+        if (schemaRef && schemaRef.indexOf("#/components/schemas/") === 0) {
             return this.packageName + ".beans." + schemaRef.substring(21);
         }
-        if (schemaRef.indexOf("#/definitions/") === 0) {
+        if (schemaRef && schemaRef.indexOf("#/definitions/") === 0) {
             return this.packageName + ".beans." + schemaRef.substring(14);
         }
         return null;

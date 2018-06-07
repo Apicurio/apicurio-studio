@@ -79,6 +79,9 @@ export class GenerateProjectWizardComponent {
     public updateProject: CodegenProject;
     public generatedProject: CodegenProject;
 
+    public error: any = null;
+    public errorMessage: string = null;
+
     /**
      * Constructor with injection!
      * @param {LinkedAccountsService} linkedAcounts
@@ -90,6 +93,9 @@ export class GenerateProjectWizardComponent {
      * Called to open the wizard.
      */
     public open(): void {
+        this.error = null;
+        this.errorMessage = null;
+
         this.model = {
             generationType: "bootstrap",
             projectType: "thorntail",
@@ -118,7 +124,8 @@ export class GenerateProjectWizardComponent {
             console.debug("[GenerateProjectWizardComponent] Linked accounts loaded.");
         }).catch(error => {
             console.error("[GenerateProjectWizardComponent] Error getting Linked Accounts");
-            // TODO What to do here?
+            this.error = error;
+            this.errorMessage = "Error getting Wizard information.";
         });
         this.apis.getCodegenProjects(this.apiId).then( projects => {
             this._loadCount++;
@@ -133,7 +140,8 @@ export class GenerateProjectWizardComponent {
             console.debug("[GenerateProjectWizardComponent] Codegen projects loaded.  still loading: ", this.loading);
         }).catch( error => {
             console.error("[GenerateProjectWizardComponent] Error getting Codegen Projects");
-            // TODO What to do here?
+            this.error = error;
+            this.errorMessage = "Error getting Wizard information.";
         });
     }
 
@@ -246,15 +254,15 @@ export class GenerateProjectWizardComponent {
     }
 
     public showCloseButton(): boolean {
-        return this.generating || this.generated;
+        return this.generating || this.generated || this.error;
     }
 
     public isCloseButtonEnabled(): boolean {
-        return this.generated;
+        return this.generated || this.error;
     }
 
     public showCancelButton(): boolean {
-        return !this.generated;
+        return !this.generated && !this.error;
     }
 
     public goBack(): void {
@@ -360,13 +368,14 @@ export class GenerateProjectWizardComponent {
         newProj.publishInfo = this.getPublishInfo();
 
         if (this.model.generationType === "update") {
-            this.apis.updateCodegenProject(this.apiId, this.updateProject.id, newProj as UpdateCodegenProject).then( () => {
-                this.generatedProject = this.updateProject;
+            this.apis.updateCodegenProject(this.apiId, this.updateProject.id, newProj as UpdateCodegenProject).then( project => {
+                this.generatedProject = project;
                 this.generating = false;
                 this.generated = true;
                 this.onProjectGenerated();
             }).catch( error => {
-                // TODO handle errors here!
+                this.error = error;
+                this.errorMessage = "Error updating the Code Generation Project.";
             });
         } else {
             this.apis.createCodegenProject(this.apiId, newProj).then( project => {
@@ -375,7 +384,8 @@ export class GenerateProjectWizardComponent {
                 this.generated = true;
                 this.onProjectGenerated();
             }).catch( error => {
-                // TODO handle errors here!
+                this.error = error;
+                this.errorMessage = "Error creating a new Code Generation Project.";
             });
         }
     }
@@ -444,7 +454,10 @@ export class GenerateProjectWizardComponent {
     }
 
     public viewProjectLink(): string {
-        return "http://www.google.com";
+        if (this.generatedProject && this.generatedProject.attributes) {
+            return this.generatedProject.attributes['pullRequest-url'];
+        }
+        return "about:blank";
     }
 
 }

@@ -21,8 +21,7 @@ import java.util.regex.Pattern;
 
 public class GitLabResourceResolver {
 
-    private static Pattern pattern1 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*.json)");
-    private static Pattern pattern2 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*.ya?ml)");
+    private static Pattern pattern1 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)");
     // TODO support "raw" URLs.  Example:  https://gitlab.com/Apicurio/api-samples/raw/master/3.0/simple-api.json
 
     private static String template = "https://gitlab.com/:group/:project/blob/:branch/:resource";
@@ -33,20 +32,6 @@ public class GitLabResourceResolver {
      */
     public static GitLabResource resolve(String glUrl) {
         Matcher matcher = pattern1.matcher(glUrl);
-        if (matcher.matches()) {
-            GitLabResource resource = new GitLabResource();
-            String org = matcher.group(1);
-            String repo = matcher.group(2);
-            String branch = matcher.group(3);
-            String path = matcher.group(4);
-            resource.setGroup(org);
-            resource.setProject(repo);
-            resource.setBranch(branch);
-            resource.setResourcePath(path);
-            return resource;
-        }
-        
-        matcher = pattern2.matcher(glUrl);
         if (matcher.matches()) {
             GitLabResource resource = new GitLabResource();
             String org = matcher.group(1);

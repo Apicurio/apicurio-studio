@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.ZipInputStream;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -199,17 +201,17 @@ public class GitHubSourceConnectorTest {
         });
         Assert.assertTrue(branches.size() > 0);
     }
-
+    
     /**
-     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#getRepositories(String)}.
+     * Test method for {@link io.apicurio.hub.api.github.GitHubSourceConnector#createPullRequestFromZipContent(java.util.zip.ZipInputStream)}.
      */
     @Test
-    public void testParseLinkHeader() {
-        Map<String, String> map = GitHubSourceConnector.parseLinkHeader("<https://api.github.com/user/1890703/repos?page=2>; rel=\"next\", <https://api.github.com/user/1890703/repos?page=3>; rel=\"last\"");
-        Assert.assertNotNull(map);
-        Assert.assertEquals(2, map.size());
-        Assert.assertEquals("https://api.github.com/user/1890703/repos?page=2", map.get("next"));
-        Assert.assertEquals("https://api.github.com/user/1890703/repos?page=3", map.get("last"));
+    @Ignore
+    public void testCreatePullRequestFromZipContent() throws GitHubException, SourceConnectorException {
+        ZipInputStream zipInput = new ZipInputStream(getClass().getResourceAsStream("beer-api.zip"));
+        Assert.assertNotNull(zipInput);
+        String repositoryUrl = GitHubResourceResolver.create("EricWittmann", "generated-apis", "master", "/tests/2018-06-06");
+        service.createPullRequestFromZipContent(repositoryUrl, "Testing from JUnit: " + new Date(), zipInput);
     }
     
 }

@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.api.connectors;
 
+import java.util.zip.ZipInputStream;
+
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -69,5 +71,17 @@ public interface ISourceConnector {
      * @param content
      */
     public void createResourceContent(String repositoryUrl, String commitMessage, String content) throws SourceConnectorException;
+
+    /**
+     * Creates a pull request in GitHub in order to check in all of the content found in the 
+     * given ZIP file.
+     * @param repositoryUrl
+     * @param commitMessage
+     * @param generatedContent
+     * @return the URL of the newly created Pull Request
+     * @throws SourceConnectorException
+     */
+    public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage,
+            ZipInputStream generatedContent) throws SourceConnectorException;
 
 }

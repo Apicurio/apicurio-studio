@@ -27,32 +27,33 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
+import io.apicurio.hub.api.codegen.OpenApi2Thorntail.ThorntailProjectSettings;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public class OpenApi2SwarmTest {
+public class OpenApi2ThorntailTest {
     
     /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
      */
     @Test
     public void testGenerateOnly() throws IOException {
-        OpenApi2Swarm generator = new OpenApi2Swarm() {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
             /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2Swarm#processApiDoc()
+             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
              */
             @Override
             protected String processApiDoc() {
                 try {
-                    return IOUtils.toString(OpenApi2SwarmTest.class.getClassLoader().getResource("OpenApi2SwarmTest/beer-api.codegen.json"));
+                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.codegen.json"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         };
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/beer-api.json"));
+        generator.setUpdateOnly(false);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
         //FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
@@ -66,7 +67,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected/generated-api/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -83,25 +84,26 @@ public class OpenApi2SwarmTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
      */
     @Test
     public void testGenerateOnly_GatewayApiNoTypes() throws IOException {
-        OpenApi2Swarm generator = new OpenApi2Swarm() {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
             /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2Swarm#processApiDoc()
+             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
              */
             @Override
             protected String processApiDoc() {
                 try {
-                    return IOUtils.toString(OpenApi2SwarmTest.class.getClassLoader().getResource("OpenApi2SwarmTest/gateway-api-notypes.codegen.json"));
+                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api-notypes.codegen.json"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         };
-        generator.setSettings(new SwarmProjectSettings("io.openapi.simple", "simple-api", "io.openapi.simple"));
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/gateway-api.json"));
+        generator.setUpdateOnly(false);
+        generator.setSettings(new ThorntailProjectSettings("io.openapi.simple", "simple-api", "io.openapi.simple"));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
@@ -115,7 +117,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApiNoTypes/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApiNoTypes/simple-api/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -132,12 +134,13 @@ public class OpenApi2SwarmTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
      */
     @Test
     public void testGenerateFull() throws IOException {
-        OpenApi2Swarm generator = new OpenApi2Swarm();
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/beer-api.json"));
+        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        generator.setUpdateOnly(false);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
@@ -151,7 +154,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/generated-api/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -167,12 +170,13 @@ public class OpenApi2SwarmTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Swarm#generate()}.
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
      */
     @Test
     public void testGenerateFull_GatewayApi() throws IOException {
-        OpenApi2Swarm generator = new OpenApi2Swarm();
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2SwarmTest/gateway-api.json"));
+        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        generator.setUpdateOnly(false);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api.json"));
         ByteArrayOutputStream outputStream = generator.generate();
         
 //        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_GatewayApi.zip"), outputStream.toByteArray());
@@ -186,7 +190,7 @@ public class OpenApi2SwarmTest {
 //                    System.out.println(name);
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApi-full/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApi-full/generated-api/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
@@ -194,6 +198,36 @@ public class OpenApi2SwarmTest {
 //                    System.out.println("-----");
 //                    System.out.println(actual);
 //                    System.out.println("-----");
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        }
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
+     */
+    @Test
+    public void testGenerateUpdateOnly() throws IOException {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        generator.setUpdateOnly(true);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
+        ByteArrayOutputStream outputStream = generator.generate();
+
+        // Validate the result
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+                    Assert.assertNotNull(name);
+                    
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/generated-api/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
                     Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
                 }
                 zipEntry = zipInputStream.getNextEntry();

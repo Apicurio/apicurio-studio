@@ -117,7 +117,6 @@ import {ApisService} from "./services/apis.service";
 import {FormErrorMessageComponent} from "./components/common/form-error-message.component";
 import {SecurityRequirementDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-requirement.component";
 import {ActivityItemComponent} from "./components/common/activity-item.component";
-import {GenerateProjectDialogComponent} from "./pages/apis/{apiId}/_components/generate-project.dialog";
 import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/common/icon-button.component";
 import {GenerateProjectWizardComponent} from "./pages/apis/{apiId}/_components/generate-project.wizard";
 
@@ -144,7 +143,7 @@ import {GenerateProjectWizardComponent} from "./pages/apis/{apiId}/_components/g
         Main30FormComponent, CodeEditorComponent, PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent,
         BitbucketResourceComponent, RenameDefinitionDialogComponent, AceEditorComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditExample20DialogComponent, FormErrorMessageComponent,
-        SecurityRequirementDialogComponent, GenerateProjectDialogComponent, IconButtonComponent, GenerateProjectWizardComponent
+        SecurityRequirementDialogComponent, IconButtonComponent, GenerateProjectWizardComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

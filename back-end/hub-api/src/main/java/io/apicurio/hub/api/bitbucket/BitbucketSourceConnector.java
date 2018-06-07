@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -408,5 +409,14 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         } catch (UnirestException e) {
             throw new SourceConnectorException(e);
         }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.lang.String, java.lang.String, java.util.zip.ZipInputStream)
+     */
+    @Override
+    public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage,
+            ZipInputStream generatedContent) throws SourceConnectorException {
+        return null;
     }
 }

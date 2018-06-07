@@ -1,6 +1,6 @@
 <div bsModal #generateProjectModal="bs-modal" class="modal fade" id="generateProjectModal" tabindex="-1" role="dialog"
      aria-labelledby="generateProjectModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
-    <div class="modal-dialog modal-lg wizard-pf">
+    <div class="modal-dialog modal-lg wizard-pf" style="width: 900px">
         <div class="experimental-pf">
             <div class="experimental-pf-bar">
                 <button class="experimental-pf-more-info">
@@ -14,35 +14,35 @@
                     </button>
                     <h4 class="modal-title" id="generateProjectModalLabel">Project Generation Wizard</h4>
                 </div>
-                <div class="modal-body wizard-pf-body clearfix">
+                <div class="modal-body wizard-pf-body clearfix" *ngIf="!error">
                     <div class="wizard-pf-steps" *ngIf="!loading && !generating && !generated">
                         <ul class="wizard-pf-steps-indicator wizard-pf-steps-alt-indicator active">
 
                             <li class="wizard-pf-step" [class.active]="currentPage === 'generationType'">
                                 <a (click)="goTo('generationType')">
                                     <span class="wizard-pf-step-number">1</span>
-                                    <span class="wizard-pf-step-title">Generation Type</span>
+                                    <span class="wizard-pf-step-title">Select Type</span>
                                 </a>
                             </li>
 
                             <li class="wizard-pf-step" [class.active]="currentPage === 'projectType'">
                                 <a (click)="goTo('projectType')">
                                     <span class="wizard-pf-step-number">2</span>
-                                    <span class="wizard-pf-step-title">Project Type</span>
+                                    <span class="wizard-pf-step-title">Configure Project</span>
                                 </a>
                             </li>
 
                             <li class="wizard-pf-step" [class.active]="currentPage === 'location'">
                                 <a (click)="goTo('location')">
                                     <span class="wizard-pf-step-number">3</span>
-                                    <span class="wizard-pf-step-title">Location</span>
+                                    <span class="wizard-pf-step-title">Choose Location</span>
                                 </a>
                             </li>
 
                             <li class="wizard-pf-step" [class.active]="currentPage === 'sourceControl'" *ngIf="model.location === 'sourceControl'">
                                 <a href="#">
                                     <span class="wizard-pf-step-number">4</span>
-                                    <span class="wizard-pf-step-title">Source Control</span>
+                                    <span class="wizard-pf-step-title">Push to Git</span>
                                 </a>
                             </li>
                         </ul>
@@ -179,29 +179,45 @@
                                     <github-resource *ngIf="isSelected('GitHub')" (onChange)="model.sourceControlData.model = $event"
                                                      [value]="model.sourceControlData.model"
                                                      (onValid)="sourceControlDataValid = $event"></github-resource>
-                                    <gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="model.sourceControlData.model = $event"
-                                                     [value]="model.sourceControlData.model"
-                                                     (onValid)="sourceControlDataValid = $event"></gitlab-resource>
-                                    <bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="model.sourceControlData.model = $event"
-                                                        [value]="model.sourceControlData.model"
-                                                        (onValid)="sourceControlDataValid = $event"></bitbucket-resource>
 
-                                    <div class="form-group" *ngIf="model.sourceControlData.type">
-                                        <label class="col-sm-2 control-label required" for="resource">Location</label>
-                                        <div class="col-sm-10">
-                                            <input name="repository.location" type="text" id="resource" class="form-control"
-                                                   placeholder="/path/to/project-root" required #scResource="ngModel"
-                                                   [(ngModel)]="model.sourceControlData.location">
-                                            <form-error-message [inputModel]="scResource" [type]="'required'">Location is required.</form-error-message>
-                                        </div>
+                                    <!--<gitlab-resource *ngIf="isSelected('GitLab')" (onChange)="model.sourceControlData.model = $event"-->
+                                                     <!--[value]="model.sourceControlData.model"-->
+                                                     <!--(onValid)="sourceControlDataValid = $event"></gitlab-resource>-->
+                                    <div class="alert alert-warning" *ngIf="isSelected('GitLab')">
+                                        <span class="pficon pficon-warning-triangle-o"></span>
+                                        <strong>Not yet implemented</strong> Apologies, we have not <strong>yet</strong> implemented publishing
+                                        a generated code project to GitLab.  Check back later!
+                                    </div>
+                                    <!--<bitbucket-resource *ngIf="isSelected('Bitbucket')" (onChange)="model.sourceControlData.model = $event"-->
+                                                        <!--[value]="model.sourceControlData.model"-->
+                                                        <!--(onValid)="sourceControlDataValid = $event"></bitbucket-resource>-->
+                                    <div class="alert alert-warning" *ngIf="isSelected('Bitbucket')">
+                                        <span class="pficon pficon-warning-triangle-o"></span>
+                                        <strong>Not yet implemented</strong> Apologies, we have not <strong>yet</strong> implemented publishing
+                                        a generated code project to Bitbucket.  Check back later!
                                     </div>
 
-                                    <div class="form-group" *ngIf="model.sourceControlData.type">
-                                        <label class="col-sm-2 control-label required">Commit Message</label>
-                                        <div class="col-sm-10">
-                                            <code-editor [mode]="commitMessageMode()" [(text)]="model.sourceControlData.commitMessage"
-                                                         [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
-                                        </div>
+                                    <!-- REMOVE THIS DIV WHEN GITLAB & BITBUCKET ARE IMPLEMENTED!! -->
+                                    <div *ngIf="isSelected('GitHub')">
+
+                                                <div class="form-group" *ngIf="model.sourceControlData.type">
+                                                    <label class="col-sm-2 control-label required" for="resource">Location</label>
+                                                    <div class="col-sm-10">
+                                                        <input name="repository.location" type="text" id="resource" class="form-control"
+                                                               placeholder="/path/to/project-root" required #scResource="ngModel"
+                                                               [(ngModel)]="model.sourceControlData.location">
+                                                        <form-error-message [inputModel]="scResource" [type]="'required'">Location is required.</form-error-message>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group" *ngIf="model.sourceControlData.type">
+                                                    <label class="col-sm-2 control-label required">Commit Message</label>
+                                                    <div class="col-sm-10">
+                                                        <code-editor [mode]="commitMessageMode()" [(text)]="model.sourceControlData.commitMessage"
+                                                                     [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
+                                                    </div>
+                                                </div>
+
                                     </div>
                                 </form>
                             </div>
@@ -226,11 +242,30 @@
                                        class="btn btn-lg btn-default" *ngIf="model.location === 'download'"
                                        download="{{ downloadFilename() }}"><span>Download</span></a>
                                     <a href="{{ viewProjectLink() }}" target="_blank"
-                                       class="btn btn-lg btn-primary" *ngIf="model.location === 'sourceControl'"
-                                       download="{{ downloadFilename() }}">
+                                       class="btn btn-lg btn-primary" *ngIf="model.location === 'sourceControl'">
                                         <span class="fa fa-fw fa-external-link"></span>
                                         <span>View Project</span>
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body wizard-pf-body clearfix" *ngIf="error">
+                    <div class="wizard-pf-row" style="height: 425px">
+                        <div class="wizard-pf-main">
+                            <!-- Error generating project -->
+                            <div class="wizard-pf-contents">
+                                <div class="wizard-pf-complete blank-slate-pf">
+                                    <div class="wizard-pf-failure-icon"><span class="glyphicon glyphicon-warning-sign"></span></div>
+                                    <h3 class="blank-slate-pf-main-action">{{ errorMessage }}</h3>
+                                    <p class="blank-slate-pf-secondary-action">
+                                        <span>
+                                            Uh oh!  It seems we have encountered an error while trying to generate an
+                                            implementation project from your OpenAPI definition.  Perhaps close the
+                                            wizard and try again...
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
                         </div>

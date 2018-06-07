@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -57,11 +58,14 @@ import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
-import io.apicurio.hub.api.codegen.OpenApi2Swarm;
-import io.apicurio.hub.api.codegen.OpenApi2Swarm.SwarmProjectSettings;
+import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
+import io.apicurio.hub.api.codegen.OpenApi2Thorntail;
+import io.apicurio.hub.api.codegen.OpenApi2Thorntail.ThorntailProjectSettings;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
+import io.apicurio.hub.api.github.GitHubResourceResolver;
+import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -879,8 +883,8 @@ public class DesignsResource implements IDesignsResource {
             }
 
             if (body.getLocation() == CodegenLocation.sourceControl) {
-                System.out.println("Publishing generated project content!");
-                // TODO publish to git
+                String prUrl = generateAndPublishProject(project, false);
+                project.getAttributes().put("pullRequest-url", prUrl);
             }
 
             String projectId = this.storage.createCodegenProject(user, project);
@@ -916,14 +920,14 @@ public class DesignsResource implements IDesignsResource {
                 String artifactId = project.getAttributes().get("artifactId");
                 String javaPackage = project.getAttributes().get("javaPackage");
             
-                SwarmProjectSettings settings = new SwarmProjectSettings();
+                ThorntailProjectSettings settings = new ThorntailProjectSettings();
                 settings.groupId = groupId != null ? groupId : "org.example.api";
                 settings.artifactId = artifactId != null ? artifactId : "generated-api";
                 settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
                 
                 boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
-                OpenApi2Swarm generator = new OpenApi2Swarm();
+                OpenApi2Thorntail generator = new OpenApi2Thorntail();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(oaiContent);
                 generator.setUpdateOnly(updateOnly);
@@ -950,7 +954,7 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#updateCodegenProject(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.UpdateCodgenProject)
      */
     @Override
-    public void updateCodegenProject(String designId, String projectId, UpdateCodgenProject body)
+    public CodegenProject updateCodegenProject(String designId, String projectId, UpdateCodgenProject body)
             throws ServerError, NotFoundException, AccessDeniedException {
         logger.debug("Updating codegen project for API: {}", designId);
         metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}", "PUT");
@@ -989,11 +993,13 @@ public class DesignsResource implements IDesignsResource {
             }
             
             if (body.getLocation() == CodegenLocation.sourceControl) {
-                System.out.println("Publishing generated project content (update)!");
-                // TODO publish to git
+                String prUrl = generateAndPublishProject(project, true);
+                project.getAttributes().put("pullRequest-url", prUrl);
             }
 
             this.storage.updateCodegenProject(user, project);
+            
+            return project;
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -1036,6 +1042,90 @@ public class DesignsResource implements IDesignsResource {
         } catch (StorageException e) {
             throw new ServerError(e);
         }
+    }
+
+    /**
+     * Generate and publish (to a git/source control system) a project.  This will 
+     * generate a project from the OpenAPI document and then publish the result to
+     * a soruce control platform.
+     * @param project
+     * @param updateOnly
+     * @return the URL of the published pull request
+     */
+    private String generateAndPublishProject(CodegenProject project, boolean updateOnly)
+            throws ServerError, NotFoundException {
+        try {
+            String oaiContent = this.getApiContent(project.getDesignId(), FormatType.JSON);
+            
+            // TODO support other types besides Thorntail
+            if (project.getType() == CodegenProjectType.thorntail) {
+                String groupId = project.getAttributes().get("groupId");
+                String artifactId = project.getAttributes().get("artifactId");
+                String javaPackage = project.getAttributes().get("javaPackage");
+            
+                ThorntailProjectSettings settings = new ThorntailProjectSettings();
+                settings.groupId = groupId != null ? groupId : "org.example.api";
+                settings.artifactId = artifactId != null ? artifactId : "generated-api";
+                settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+
+                OpenApi2Thorntail generator = new OpenApi2Thorntail();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
+                
+                ByteArrayOutputStream generatedContent = generator.generate();
+                LinkedAccountType scsType = LinkedAccountType.valueOf(project.getAttributes().get("publish-type"));
+                
+                ISourceConnector connector = this.sourceConnectorFactory.createConnector(scsType);
+                String url = toSourceResourceUrl(project);
+                String commitMessage = project.getAttributes().get("publish-commitMessage");
+                String pullRequestUrl = connector.createPullRequestFromZipContent(url, commitMessage,
+                        new ZipInputStream(new ByteArrayInputStream(generatedContent.toByteArray())));
+                return pullRequestUrl;
+            } else {
+                throw new ServerError("Unsupported project type: " + project.getType());
+            }
+        } catch (IOException | SourceConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
+     * Creates a source control resource URL from the information found in the codegen project.
+     * @param project
+     */
+    private String toSourceResourceUrl(CodegenProject project) {
+        LinkedAccountType scsType = LinkedAccountType.valueOf(project.getAttributes().get("publish-type"));
+        String url;
+        switch (scsType) {
+            case Bitbucket: {
+                String team = project.getAttributes().get("publish-team");
+                String repo = project.getAttributes().get("publish-repo");
+                String branch = project.getAttributes().get("publish-branch");
+                String path = project.getAttributes().get("publish-location");
+                url = BitbucketResourceResolver.create(team, repo, branch, path);
+            }
+            break; 
+            case GitHub: {
+                String org = project.getAttributes().get("publish-org");
+                String repo = project.getAttributes().get("publish-repo");
+                String branch = project.getAttributes().get("publish-branch");
+                String path = project.getAttributes().get("publish-location");
+                url = GitHubResourceResolver.create(org, repo, branch, path);
+            }
+            break;
+            case GitLab: {
+                String group = project.getAttributes().get("publish-group");
+                String proj = project.getAttributes().get("publish-project");
+                String branch = project.getAttributes().get("publish-branch");
+                String path = project.getAttributes().get("publish-location");
+                url = GitLabResourceResolver.create(group, proj, branch, path);
+            }
+            break;
+            default:
+                throw new RuntimeException("Unsupported type: " + scsType);
+        }
+        return url;
     }
     
 }

@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.zip.ZipInputStream;
 
 import io.apicurio.hub.api.beans.GitHubOrganization;
 import io.apicurio.hub.api.beans.GitHubRepository;
@@ -180,6 +181,15 @@ public class MockGitHubService implements IGitHubSourceConnector {
         branches.add(branch(org + "-" + repo +"-Branch2"));
         branches.add(branch(org + "-" + repo +"-Branch3"));
         return branches;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.lang.String, java.lang.String, java.util.zip.ZipInputStream)
+     */
+    @Override
+    public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage,
+            ZipInputStream generatedContent) throws SourceConnectorException {
+        return null;
     }
 
     /**

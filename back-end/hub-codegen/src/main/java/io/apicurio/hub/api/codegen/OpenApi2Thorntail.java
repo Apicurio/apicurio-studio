@@ -62,25 +62,23 @@ import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 
 
 /**
- * Class used to generate a WildFly Swarm JAX-RS project from an OpenAPI document.
+ * Class used to generate a Thorntail JAX-RS project from an OpenAPI document.
  * 
  * @author eric.wittmann@gmail.com
- * 
- * TODO rename to:  OpenAPi2Thorntail
  */
-public class OpenApi2Swarm {
+public class OpenApi2Thorntail {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
     private String openApiDoc;
-    private SwarmProjectSettings settings;
+    private ThorntailProjectSettings settings;
     private boolean updateOnly;
     
     /**
      * Constructor.
      */
-    public OpenApi2Swarm() {
-        this.settings = new SwarmProjectSettings();
+    public OpenApi2Thorntail() {
+        this.settings = new ThorntailProjectSettings();
         this.settings.artifactId = "generated-api";
         this.settings.groupId = "org.example.api";
         this.settings.javaPackage = "org.example.api";
@@ -90,7 +88,7 @@ public class OpenApi2Swarm {
      * Configure the settings.
      * @param settings
      */
-    public void setSettings(SwarmProjectSettings settings) {
+    public void setSettings(ThorntailProjectSettings settings) {
         this.settings = settings;
     }
 
@@ -124,7 +122,7 @@ public class OpenApi2Swarm {
     }
     
     /**
-     * Generate the WildFly Swarm project.
+     * Generate the Thorntail project.
      * @throws IOException
      */
     public ByteArrayOutputStream generate() throws IOException {
@@ -133,33 +131,37 @@ public class OpenApi2Swarm {
         CodegenInfo info = getInfoFromApiDoc();
         
         try (ZipOutputStream zos = new ZipOutputStream(output)) {
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/pom.xml"));
-            zos.write(generatePomXml(info).getBytes());
-            zos.closeEntry();
+            if (!this.updateOnly) {
+                zos.putNextEntry(new ZipEntry("pom.xml"));
+                zos.write(generatePomXml(info).getBytes());
+                zos.closeEntry();
+    
+                zos.putNextEntry(new ZipEntry("Dockerfile"));
+                zos.write(generateDockerfile().getBytes());
+                zos.closeEntry();
+    
+                zos.putNextEntry(new ZipEntry("openshift-template.yml"));
+                zos.write(generateOpenshiftTemplate().getBytes());
+                zos.closeEntry();
 
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/Dockerfile"));
-            zos.write(generateDockerfile().getBytes());
-            zos.closeEntry();
+                zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/microprofile-config.properties"));
+                zos.write(generateMicroprofileConfigProperties().getBytes());
+                zos.closeEntry();
+            }
 
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/openshift-template.yml"));
-            zos.write(generateOpenshiftTemplate().getBytes());
-            zos.closeEntry();
-
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/openapi.json"));
+            zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/openapi.json"));
             zos.write(this.openApiDoc.getBytes());
             zos.closeEntry();
-
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + "/src/main/resources/META-INF/microprofile-config.properties"));
-            zos.write(generateMicroprofileConfigProperties().getBytes());
-            zos.closeEntry();
-
-            zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java"));
-            zos.write(generateJaxRsApplication().getBytes());
-            zos.closeEntry();
+            
+            if (!this.updateOnly) {
+                zos.putNextEntry(new ZipEntry(javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java"));
+                zos.write(generateJaxRsApplication().getBytes());
+                zos.closeEntry();
+            }
             
             for (CodegenJavaInterface iface : info.getInterfaces()) {
                 String javaInterface = generateJavaInterface(iface);
-                zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java"));
+                zos.putNextEntry(new ZipEntry(javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java"));
                 zos.write(javaInterface.getBytes());
                 zos.closeEntry();
             }
@@ -169,7 +171,7 @@ public class OpenApi2Swarm {
                 generateJavaBean(bean, info, codeWriter);
             }
             for (String key : codeWriter.getKeys()) {
-                zos.putNextEntry(new ZipEntry(this.settings.artifactId + javaClassToZipPath(key)));
+                zos.putNextEntry(new ZipEntry(javaClassToZipPath(key)));
                 zos.write(codeWriter.get(key).getBytes());
                 zos.closeEntry();
             }
@@ -179,7 +181,7 @@ public class OpenApi2Swarm {
     }
     
     private String javaClassToZipPath(String javaClass) {
-        return "/src/main/java/" + javaClass.replace('.', '/') + ".java";
+        return "src/main/java/" + javaClass.replace('.', '/') + ".java";
     }
 
     /**
@@ -503,7 +505,7 @@ public class OpenApi2Swarm {
     }
 
     private static String javaPackageToZipPath(String javaPackage) {
-        return "/src/main/java/" + javaPackageToPath(javaPackage);
+        return "src/main/java/" + javaPackageToPath(javaPackage);
     }
     
     private static String javaPackageToPath(String javaPackage) {
@@ -528,7 +530,7 @@ public class OpenApi2Swarm {
      * Represents some basic meta information about the project being generated.
      * @author eric.wittmann@gmail.com
      */
-    public static class SwarmProjectSettings {
+    public static class ThorntailProjectSettings {
         public String groupId;
         public String artifactId;
         public String javaPackage;
@@ -536,10 +538,10 @@ public class OpenApi2Swarm {
         /**
          * Constructor.
          */
-        public SwarmProjectSettings() {
+        public ThorntailProjectSettings() {
         }
         
-        public SwarmProjectSettings(String groupId, String artifactId, String javaPackage) {
+        public ThorntailProjectSettings(String groupId, String artifactId, String javaPackage) {
             this.groupId = groupId;
             this.artifactId = artifactId;
             this.javaPackage = javaPackage;

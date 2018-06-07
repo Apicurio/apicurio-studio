@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -469,6 +470,15 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             throw new SourceConnectorException("Error getting GitLab resource content.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.lang.String, java.lang.String, java.util.zip.ZipInputStream)
+     */
+    @Override
+    public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage,
+            ZipInputStream generatedContent) throws SourceConnectorException {
+        return null;
+    }
 
     private String toEncodedId(GitLabResource resource) {
         return toEncodedId(resource.getGroup(), resource.getProject());
@@ -503,5 +513,5 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         }
         return urlEncodedBranch;
     }
-
+    
 }

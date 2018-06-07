@@ -39,7 +39,7 @@ export class ArrayUtils {
      * Returns true if the given item is contained in the given array.
      * @param a
      * @param item
-     * @return {boolean}
+     * @return
      */
     public static contains(a: any[], item: any): boolean {
         for (let aitem of a) {

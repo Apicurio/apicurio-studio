@@ -138,7 +138,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -146,7 +146,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true if the model is valid.
-     * @return {boolean}
+     * @return
      */
     public isSecurityRequirementValid(): boolean {
         for (let n in this.model) {
@@ -157,8 +157,8 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true if the given scheme is enabled.
-     * @param {OasSecurityScheme} scheme
-     * @return {boolean}
+     * @param scheme
+     * @return
      */
     public isChecked(scheme: OasSecurityScheme): boolean {
         for (let n in this.model) {
@@ -171,8 +171,8 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true only if the scheme is one that can be expanded.
-     * @param {OasSecurityScheme} scheme
-     * @return {boolean}
+     * @param scheme
+     * @return
      */
     public canExpand(scheme: OasSecurityScheme): boolean {
         return scheme.type === "oauth2" || scheme.type === "openIdConnect";
@@ -180,8 +180,8 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true if the given scheme is expanded.
-     * @param {OasSecurityScheme} scheme
-     * @return {boolean}
+     * @param scheme
+     * @return
      */
     public isExpanded(scheme: OasSecurityScheme): boolean {
         return this._expanded[scheme.schemeName()] ? true : false;
@@ -189,7 +189,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Called to toggle the expansion of a scheme.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public toggleExpansion(scheme: OasSecurityScheme): void {
         let pval: boolean = this._expanded[scheme.schemeName()];
@@ -202,7 +202,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Called to expand a scheme.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public expand(scheme: OasSecurityScheme): void {
         this._expanded[scheme.schemeName()] = true;
@@ -210,7 +210,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Called to collapse a scheme.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public collapse(scheme: OasSecurityScheme): void {
         this._expanded[scheme.schemeName()] = false;
@@ -218,7 +218,7 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Adds/removes the security scheme from the model.
-     * @param {OasSecurityScheme} scheme
+     * @param scheme
      */
     public toggleSecurityScheme(scheme: OasSecurityScheme, enable?: boolean): void {
         if (enable === undefined) {
@@ -239,8 +239,8 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns the possible scopes for the given scheme.
-     * @param {OasSecurityScheme} scheme
-     * @return {ScopeInfo[]}
+     * @param scheme
+     * @return
      */
     public scopes(scheme: OasSecurityScheme): ScopeInfo[] {
         if (this.canExpand(scheme)) {
@@ -258,9 +258,9 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Returns true if the given scope is enabled/checked in the model.
-     * @param {OasSecurityScheme} scheme
-     * @param {string} scope
-     * @return {boolean}
+     * @param scheme
+     * @param scope
+     * @return
      */
     public isScopeChecked(scheme: OasSecurityScheme, scope: string): boolean {
         let modelScopes: string[] = this.model[scheme.schemeName()];
@@ -272,9 +272,9 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Toggles the enabled/checked status of a single scope for a given scheme.
-     * @param {OasSecurityScheme} scheme
-     * @param {string} scope
-     * @param {boolean} enable
+     * @param scheme
+     * @param scope
+     * @param enable
      */
     public toggleScope(scheme: OasSecurityScheme, scope: string, enable: boolean): void {
         let modelScopes: string[] = this.model[scheme.schemeName()];
@@ -292,8 +292,8 @@ export class SecurityRequirementDialogComponent {
 
     /**
      * Finds all security schemes defined in the document.
-     * @param {OasDocument} document
-     * @return {OasSecurityScheme[]}
+     * @param document
+     * @return
      */
     public findSchemes(document: OasDocument): OasSecurityScheme[] {
         let visitor: SecuritySchemeFinder = new SecuritySchemeFinder();

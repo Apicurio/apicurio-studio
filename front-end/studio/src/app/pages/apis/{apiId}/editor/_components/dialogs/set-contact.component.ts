@@ -46,7 +46,7 @@ export class SetContactDialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {OasContact} contact
+     * @param contact
      */
     public open(contact?: OasContact): void {
         this._isOpen = true;
@@ -95,7 +95,7 @@ export class SetContactDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;

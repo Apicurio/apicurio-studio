@@ -75,7 +75,7 @@ export class AddResponseDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -83,7 +83,7 @@ export class AddResponseDialogComponent {
 
     /**
      * Returns true if today is the first of April.  (teapot related)
-     * @return {boolean}
+     * @return
      */
     public isAprilFirst(): boolean {
         let d: Date = new Date();

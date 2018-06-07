@@ -78,7 +78,7 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     public allApis: Api[] = [];
     public filteredApis: Api[];
     public selectedApis: Api[];
-    public filters: Filters = new Filters();
+    private filters: Filters = new Filters();
 
     public numApisToDelete: number = 0;
 

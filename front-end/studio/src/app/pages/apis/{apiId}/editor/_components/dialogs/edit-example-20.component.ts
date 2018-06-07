@@ -59,7 +59,7 @@ export class EditExample20DialogComponent {
 
     /**
      * Called to open the dialog.
-     * @param {string} contentType
+     * @param contentType
      * @param value
      */
     public open(contentType: string, value: any): void {
@@ -124,7 +124,7 @@ export class EditExample20DialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -143,7 +143,7 @@ export class EditExample20DialogComponent {
     }
 
     /**
-     * @param {string} value
+     * @param value
      */
     private setValueFormatFromValue(value: string): void {
         if (value && value.trim().startsWith("{")) {

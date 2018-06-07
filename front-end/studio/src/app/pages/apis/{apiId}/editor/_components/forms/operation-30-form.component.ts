@@ -421,7 +421,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Returns true if there is at least one security requirement defined.
-     * @return {boolean}
+     * @return
      */
     public hasSecurityRequirements(): boolean {
         return this.securityRequirements().length > 0;
@@ -429,7 +429,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Returns all defined security requirements.
-     * @return {OasSecurityRequirement[]}
+     * @return
      */
     public securityRequirements(): OasSecurityRequirement[] {
         return this.operation.security ? this.operation.security : [];
@@ -437,8 +437,8 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Returns a summary of the requirement.
-     * @param {OasSecurityRequirement} requirement
-     * @return {string}
+     * @param requirement
+     * @return
      */
     public securityRequirementSummary(requirement: OasSecurityRequirement): string {
         return requirement.securityRequirementNames().join(", ");
@@ -446,7 +446,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Opens the security requirement dialog for adding or editing a security requirement.
-     * @param {OasSecurityRequirement} requirement
+     * @param requirement
      */
     public openSecurityRequirementDialog(requirement?: OasSecurityRequirement): void {
         this.securityRequirementDialog.open(this.operation.ownerDocument(), requirement);
@@ -454,7 +454,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Called when the user adds a new security requirement.
-     * @param {SecurityRequirementEventData} event
+     * @param event
      */
     public addSecurityRequirement(event: SecurityRequirementEventData): void {
         let requirement: OasSecurityRequirement = this.operation.createSecurityRequirement();
@@ -466,7 +466,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Called when the user changes an existing Security Requirement.
-     * @param {SecurityRequirementEventData} event
+     * @param event
      */
     public changeSecurityRequirement(event: ChangeSecurityRequirementEvent): void {
         let newRequirement: OasSecurityRequirement = this.operation.createSecurityRequirement();
@@ -478,7 +478,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     /**
      * Deletes a security requirement.
-     * @param {OasSecurityRequirement} requirement
+     * @param requirement
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
         let command: ICommand = createDeleteSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);

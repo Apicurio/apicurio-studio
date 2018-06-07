@@ -40,7 +40,7 @@ export class ServersSectionComponent {
 
     /**
      * Returns the list of global servers defined in the document.
-     * @return {Oas30Server[]}
+     * @return
      */
     public servers(): Oas30Server[] {
         let servers: Oas30Server[] = this.parent.servers;
@@ -78,7 +78,7 @@ export class ServersSectionComponent {
 
     /**
      * Called when the user adds a new server.
-     * @param {Server30EventData} event
+     * @param event
      */
     public addServer(event: ServerEventData): void {
         console.info("[MainFormComponent] Adding a server: %s", event.url);
@@ -93,7 +93,7 @@ export class ServersSectionComponent {
 
     /**
      * Called when the user edits an existing server.
-     * @param {ServerEventData} event
+     * @param event
      */
     public changeServer(event: ServerEventData): void {
         console.info("[MainFormComponent] Editing a server: %s", event.url);
@@ -108,8 +108,8 @@ export class ServersSectionComponent {
 
     /**
      * Copies the data from the event to the new server model.
-     * @param {ServerEventData} fromData
-     * @param {Oas30Server} toServer
+     * @param fromData
+     * @param toServer
      */
     private copyServerToModel(fromData: ServerEventData, toServer: Oas30Server): void {
         toServer.url = fromData.url;

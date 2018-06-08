@@ -29,6 +29,9 @@ export class AppComponent {
     public routerOutletWrapperId: string;
     public routerOutletWrapperClass: string;
 
+    /**
+     * @param authService
+     */
     constructor(public authService: IAuthenticationService) {
         this.routerOutletWrapperId = "api-page-body";
         this.routerOutletWrapperClass = "";

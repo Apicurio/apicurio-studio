@@ -16,7 +16,7 @@
  */
 
 import {
-    Component, Inject, ViewChild, Injectable, ViewChildren, QueryList,
+    Component, ViewChild, Injectable, ViewChildren, QueryList,
     AfterViewInit, NgZone
 } from "@angular/core";
 import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";

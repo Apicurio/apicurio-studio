@@ -29,7 +29,7 @@ import {ImportApiPageComponent} from './pages/apis/import/import.page';
 import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
-import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
+import {ApiEditorPageComponent} from './pages/apis/{apiId}/editor/api-editor.page';
 import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 
 const routes: Routes = [

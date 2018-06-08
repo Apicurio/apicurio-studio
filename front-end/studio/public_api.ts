@@ -25,7 +25,7 @@ import { CopyUrlDialogComponent } from './src/app/components/dialogs/copy-url.co
 import { DefinitionFormComponent } from './src/app/pages/apis/{apiId}/editor/_components/forms/definition-form.component';
 import { DefinitionItemComponent } from './src/app/pages/apis/{apiId}/editor/_components/forms/definition-item.component';
 import { DropDownComponent } from './src/app/components/common/drop-down.component';
-import { EditableApiDefinition } from './src/app/models/api.model';
+import { ApiDefinition } from './src/app/models/api.model';
 import { EditExample20DialogComponent } from './src/app/pages/apis/{apiId}/editor/_components/dialogs/edit-example-20.component';
 import { EditExampleDialogComponent } from './src/app/pages/apis/{apiId}/editor/_components/dialogs/edit-example.component';
 import { EditorMasterComponent } from './src/app/pages/apis/{apiId}/editor/_components/master.component';
@@ -58,7 +58,7 @@ import { SetContactDialogComponent } from './src/app/pages/apis/{apiId}/editor/_
 import { SetLicenseDialogComponent } from './src/app/pages/apis/{apiId}/editor/_components/dialogs/set-license.component';
 import { ValidationIconComponent } from './src/app/pages/apis/{apiId}/editor/_components/common/validation-icon.component';
 
-export { ApiEditorComponent, EditableApiDefinition };
+export { ApiEditorComponent, ApiDefinition };
 
 @NgModule({
   declarations: [

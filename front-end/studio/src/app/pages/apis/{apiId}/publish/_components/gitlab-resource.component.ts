@@ -50,7 +50,7 @@ export class GitLabResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param {LinkedAccountsService} linkedAccounts
+     * @param linkedAccounts
      */
     constructor( private linkedAccounts: LinkedAccountsService) {}
 

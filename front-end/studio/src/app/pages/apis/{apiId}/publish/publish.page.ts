@@ -52,12 +52,12 @@ export class PublishPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {ApisService} apis
-     * @param {LinkedAccountsService} accounts
-     * @param {IAuthenticationService} authService
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param apis
+     * @param accounts
+     * @param authService
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private apis: ApisService,
                 private accountsService: LinkedAccountsService,
@@ -69,7 +69,7 @@ export class PublishPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         if (this.api.name) {

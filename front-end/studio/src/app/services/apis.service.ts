@@ -99,8 +99,8 @@ export class ApiEditingSession implements IApiEditingSession {
 
     /**
      * Constructor.
-     * @param {EditableApiDefinition} api
-     * @param {WebSocket} socket
+     * @param api
+     * @param socket
      */
     constructor(private api: EditableApiDefinition, private socket: WebSocket) {
         this._oasLibrary = new OasLibraryUtils();
@@ -109,7 +109,7 @@ export class ApiEditingSession implements IApiEditingSession {
 
     /**
      * Connects the websocket to the server.
-     * @param {IConnectionHandler} handler
+     * @param handler
      */
     connect(handler: IConnectionHandler): void {
         let me: ApiEditingSession = this;
@@ -194,7 +194,7 @@ export class ApiEditingSession implements IApiEditingSession {
 
     /**
      * Called to set the command handler.
-     * @param {ICommandHandler} handler
+     * @param handler
      */
     commandHandler(handler: ICommandHandler): void {
         this._commandHandler = handler;
@@ -202,7 +202,7 @@ export class ApiEditingSession implements IApiEditingSession {
 
     /**
      * Called to set the activity handler.
-     * @param {IActivityHandler} handler
+     * @param handler
      */
     activityHandler(handler: IActivityHandler): void {
         this._activityHandler = handler;
@@ -210,7 +210,7 @@ export class ApiEditingSession implements IApiEditingSession {
 
     /**
      * Called to send a command to the server.
-     * @param {ICommand} command
+     * @param command
      */
     sendCommand(command: OtCommand): void {
         let data: any = {
@@ -225,7 +225,7 @@ export class ApiEditingSession implements IApiEditingSession {
     /**
      * Called to send a selection event.  This is done whenever the local user
      * changes her selection (e.g. in the master view).
-     * @param {string} selection
+     * @param selection
      */
     sendSelection(selection: string): void {
         let data: any = {
@@ -276,9 +276,9 @@ export class ApisService extends AbstractHubService {
 
     /**
      * Constructor.
-     * @param {HttpClient} http
-     * @param {IAuthenticationService} authService
-     * @param {ConfigService} config
+     * @param http
+     * @param authService
+     * @param config
      */
     constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
         super(http, authService, config);
@@ -626,9 +626,9 @@ export class ApisService extends AbstractHubService {
 
     /**
      * Called to create a new codegen project for the given API.
-     * @param {string} apiId
-     * @param {NewCodegenProject} project
-     * @return {Promise<CodegenProject>}
+     * @param apiId
+     * @param project
+     * 
      */
     public createCodegenProject(apiId: string, project: NewCodegenProject): Promise<CodegenProject> {
         console.info("[HubApisService] Creating a codegen project for API %s", apiId);
@@ -644,10 +644,10 @@ export class ApisService extends AbstractHubService {
 
     /**
      * Called to update information about a codegen project.
-     * @param {string} apiId
-     * @param {string} projectId
-     * @param {UpdateCodegenProject} project
-     * @return {Promise<void>}
+     * @param apiId
+     * @param projectId
+     * @param project
+     * 
      */
     public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<CodegenProject> {
         console.info("[HubApisService] Updating a codegen project for API %s", apiId);
@@ -664,8 +664,8 @@ export class ApisService extends AbstractHubService {
 
     /**
      * Called to get a list of all the codegen projects for a given API design.
-     * @param {string} apiId
-     * @return {Promise<CodegenProject[]>}
+     * @param apiId
+     * 
      */
     public getCodegenProjects(apiId: string): Promise<CodegenProject[]> {
         console.info("[HubApisService] Getting codegen projects for API Design %s", apiId);

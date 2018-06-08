@@ -37,10 +37,10 @@ export class CreateApiPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {ApisService} apis
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param apis
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private apis: ApisService, titleService: Title) {
         super(route, titleService);
@@ -48,7 +48,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Create API";
@@ -57,7 +57,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
     /**
      * Called when the Create API form (component) emits a "create-api" event.  This is bound to
      * from the createapi.page.html template.
-     * @param {NewApi} newApi
+     * @param newApi
      */
     public onCreateApi(newApi: NewApi) {
         console.log("[CreateApiPageComponent] onCreateApi(): " + JSON.stringify(newApi))

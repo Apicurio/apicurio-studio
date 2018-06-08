@@ -84,9 +84,9 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
 
     /**
      * C'tor.
-     * @param {ApisService} apis
-     * @param {ActivatedRoute} route
-     * @param {Title} titleService
+     * @param apis
+     * @param route
+     * @param titleService
      */
     constructor(private apis: ApisService, route: ActivatedRoute, titleService: Title) {
         super(route, titleService);
@@ -101,7 +101,7 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - API Listing";

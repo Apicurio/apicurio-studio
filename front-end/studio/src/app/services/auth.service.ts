@@ -35,7 +35,7 @@ export abstract class IAuthenticationService {
     /**
      * Immediately gets the current authenticated user (if any).  Returns null if no user is
      * currently authenticated.
-     * @return {User}
+     * 
      */
     abstract getAuthenticatedUserNow(): User;
 
@@ -59,7 +59,7 @@ export abstract class IAuthenticationService {
 
     /**
      * Called to return an authentication secret (e.g. the auth access token).
-     * @return {string}
+     * 
      */
     abstract getAuthenticationSecret(): string;
 }

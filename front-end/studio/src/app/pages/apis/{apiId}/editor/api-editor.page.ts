@@ -62,11 +62,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {NgZone} zone
-     * @param {ApisService} apis
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param zone
+     * @param apis
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
                 private apis: ApisService, titleService: Title) {
@@ -76,7 +76,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         if (this.apiDefinition.name) {
@@ -210,7 +210,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Called when the editor fires this event.
-     * @param {ICommand} command
+     * @param command
      */
     public onCommandExecuted(command: OtCommand): void {
         this.editingSession.sendCommand(command);
@@ -218,7 +218,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Called when the user's selection changes.
-     * @param {string} selection
+     * @param selection
      */
     public onSelectionChanged(selection: string): void {
         this.currentEditorSelection = selection;
@@ -227,7 +227,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Executes the given command in the editor.
-     * @param {ICommand} command
+     * @param command
      */
     protected executeCommand(command: OtCommand): void {
         this.pendingCommands.push(command);
@@ -236,7 +236,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Finalizes a given command after receiving an ack from the server.
-     * @param {ApiDesignCommandAck} ack
+     * @param ack
      */
     protected finalizeCommand(ack: ApiDesignCommandAck): void {
         this._apiEditor.first.finalizeCommand(ack);
@@ -244,8 +244,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Updates the selection state for the given user.
-     * @param {ApiEditorUser} user
-     * @param {string} selection
+     * @param user
+     * @param selection
      */
     protected updateSelection(user: ApiEditorUser, selection: string) {
         // TODO convert this to a pubsub model like pending commands - I think selection update events may arrive before the editor is initialized.

@@ -33,9 +33,9 @@ export class CurrentUserService extends AbstractHubService {
 
     /**
      * Constructor.
-     * @param {HttpClient} http
-     * @param {IAuthenticationService} authService
-     * @param {ConfigService} config
+     * @param http
+     * @param authService
+     * @param config
      */
     constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
         super(http, authService, config);

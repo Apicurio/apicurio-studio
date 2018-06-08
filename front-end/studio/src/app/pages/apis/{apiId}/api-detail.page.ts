@@ -43,10 +43,10 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {ApisService} apis
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param apis
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute,
                 private apis: ApisService, titleService: Title) {
@@ -56,7 +56,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         if (this.api.name) {
@@ -114,7 +114,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     /**
      * Called when the user clicks on a Tag in the API details page.
-     * @param {string} tag
+     * @param tag
      */
     public selectTag(tag: string): void {
         // TODO do something when the user clicks a tag?

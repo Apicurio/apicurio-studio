@@ -40,9 +40,9 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * C'tor.
-     * @param {LinkedAccountsService} accountsApi
-     * @param {ActivatedRoute} route
-     * @param {Title} titleService
+     * @param accountsApi
+     * @param route
+     * @param titleService
      */
     constructor(private accountsApi: LinkedAccountsService, route: ActivatedRoute, titleService: Title) {
         super(route, titleService);
@@ -50,7 +50,7 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Settings - Accounts";
@@ -72,8 +72,8 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Returns true if an account of the given type has been created.
-     * @param {string} type
-     * @return {boolean}
+     * @param type
+     * 
      */
     public isAccountCreated(type: string): boolean {
         let account: LinkedAccount = this.account(type);
@@ -85,8 +85,8 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Returns true if an account is missing entirely from the list.
-     * @param {string} type
-     * @return {boolean}
+     * @param type
+     * 
      */
     public isAccountMissing(type: string): boolean {
         let account: LinkedAccount = this.account(type);
@@ -98,8 +98,8 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Returns true if an account of the given type has been initiated but not completed.
-     * @param {string} type
-     * @return {boolean}
+     * @param type
+     * 
      */
     public isAccountInitiated(type: string): boolean {
         let account: LinkedAccount = this.account(type);
@@ -111,8 +111,8 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Returns true if the account is actively being linked or deleted.
-     * @param {string} type
-     * @return {boolean}
+     * @param type
+     * 
      */
     public isAccountInProgress(type: string): boolean {
         return this.linksInProgress[type];
@@ -120,7 +120,7 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Called to initiate linking of a particular account.
-     * @param {string} type
+     * @param type
      */
     public createLinkedAccount(type: string): void {
         this.linksInProgress[type] = true;
@@ -142,7 +142,7 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Called to delete a (or cancel an in-progress) linked account.
-     * @param {string} type
+     * @param type
      */
     public deleteLinkedAccount(type: string): void {
         this.linksInProgress[type] = true;
@@ -157,8 +157,8 @@ export class LinkedAccountsPageComponent extends AbstractPageComponent {
 
     /**
      * Returns the linked account of the given type or null if not found.
-     * @param {string} type
-     * @return {LinkedAccount}
+     * @param type
+     * 
      */
     protected account(type: string): LinkedAccount {
         for (let account of this.accounts) {

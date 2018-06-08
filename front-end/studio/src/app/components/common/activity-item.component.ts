@@ -41,7 +41,7 @@ export class ActivityItemComponent {
 
     /**
      * Get the command for this change.
-     * @return {any}
+     * 
      */
     protected command(): ICommand {
         if (this._command == null) {
@@ -59,7 +59,7 @@ export class ActivityItemComponent {
 
     /**
      * Returns an appropriate icon for the activity item, based on its type.
-     * @return {string}
+     * 
      */
     public icon(): string {
         if (this.item.type == "Command") {
@@ -203,7 +203,7 @@ export class ActivityItemComponent {
 
     /**
      * Returns an appropriate description for the activity item, based on its type.
-     * @return {string}
+     * 
      */
     public description(): string {
         if (this.item.type == "Command") {

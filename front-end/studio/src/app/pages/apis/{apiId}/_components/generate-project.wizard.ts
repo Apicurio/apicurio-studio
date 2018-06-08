@@ -84,7 +84,7 @@ export class GenerateProjectWizardComponent {
 
     /**
      * Constructor with injection!
-     * @param {LinkedAccountsService} linkedAcounts
+     * @param linkedAcounts
      */
     constructor(private linkedAcounts: LinkedAccountsService, private apis: ApisService) {
     }
@@ -161,7 +161,7 @@ export class GenerateProjectWizardComponent {
 
     /**
      * Returns true if the wizard is open.
-     * @return {boolean}
+     * 
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -423,7 +423,7 @@ export class GenerateProjectWizardComponent {
 
     /**
      * Called to update the model attributes based on the info in the project.
-     * @param {CodegenProject} project
+     * @param project
      */
     public updateModelWithProjectInfo(project: CodegenProject): void {
         this.model.projectType = project.type;

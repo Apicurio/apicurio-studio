@@ -58,7 +58,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Returns the observable for is/isnot authenticated.
-     * @return {Observable<boolean>}
+     * 
      */
     public isAuthenticated(): Observable<boolean> {
         return this.authenticated;
@@ -66,7 +66,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Returns an observable over the currently authenticated User (or null if not logged in).
-     * @return {any}
+     * 
      */
     public getAuthenticatedUser(): Observable<User> {
         return this.authenticatedUser;
@@ -74,7 +74,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Returns the currently authenticated user.
-     * @return {User}
+     * 
      */
     public getAuthenticatedUserNow(): User {
         return this._authenticatedUser.getValue();
@@ -138,8 +138,8 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Extracts user information from the access token.
-     * @param {OIDCDirectGrantAccessToken} token
-     * @return {User}
+     * @param token
+     * 
      */
     protected toUser(token: OIDCDirectGrantAccessToken): User {
         let tokenData: any = this.parseToken(token.access_token);
@@ -152,8 +152,8 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Parses the access token into a js object.  The access token is a base64 encoded JWT.
-     * @param {string} token
-     * @return {any}
+     * @param token
+     * 
      */
     protected parseToken(token: string): any {
         token = token.split(".")[1];
@@ -166,7 +166,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
     /**
      * Called to return the access token.
-     * @return {string}
+     * 
      */
     public getAuthenticationSecret(): string {
         return this.accessToken.access_token;

@@ -49,9 +49,9 @@ export class CreateApiFormComponent {
 
     /**
      * Constructor.
-     * @param {ApisService} apisService
-     * @param {IAuthenticationService} authService
-     * @param {LinkedAccountsService} accountsService
+     * @param apisService
+     * @param authService
+     * @param accountsService
      */
     constructor(private apisService: ApisService,
             @Inject(IAuthenticationService) private authService: IAuthenticationService,

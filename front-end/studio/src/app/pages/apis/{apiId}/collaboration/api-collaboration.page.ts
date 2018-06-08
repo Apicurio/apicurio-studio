@@ -45,11 +45,11 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {ApisService} apis
-     * @param {IAuthenticationService} authService
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param apis
+     * @param authService
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private apis: ApisService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService,
@@ -60,7 +60,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         if (this.api.name) {
@@ -147,7 +147,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * Called to remove a collaborator.  The user will no longer have access to the API.
-     * @param {ApiCollaborator} collaborator
+     * @param collaborator
      */
     public removeCollaborator(collaborator: ApiCollaborator): void {
     }
@@ -168,7 +168,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * Called to copy the invitation link to the clipboard.
-     * @param {Invitation} invite
+     * @param invite
      */
     public copyInvitationLink(invite: Invitation): void {
         this._copyLink = window.location.toString() + "/accept/" + invite.inviteId;
@@ -176,7 +176,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * Returns true if the currently logged-in user is an Owner of the API.
-     * @return {boolean}
+     * 
      */
     public isOwner(): boolean {
         return this._isOwner;

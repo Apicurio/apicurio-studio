@@ -27,7 +27,7 @@ export abstract class AbstractGithubService {
      * Creates a github API endpoint from the api path and params.
      * @param path
      * @param params
-     * @return {string}
+     * 
      */
     protected endpoint(path: string, params?: any): string {
         if (params) {

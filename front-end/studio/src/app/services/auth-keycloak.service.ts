@@ -38,8 +38,8 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
 
     /**
      * Constructor.
-     * @param {Http} http
-     * @param {ConfigService} config
+     * @param http
+     * @param config
      */
     constructor(private http: HttpClient, private config: ConfigService) {
         super();
@@ -67,7 +67,7 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
 
     /**
      * Returns the observable for is/isnot authenticated.
-     * @return {Observable<boolean>}
+     * 
      */
     public isAuthenticated(): Observable<boolean> {
         return this.authenticated;
@@ -75,7 +75,7 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
 
     /**
      * Returns an observable over the currently authenticated User (or null if not logged in).
-     * @return {any}
+     * 
      */
     public getAuthenticatedUser(): Observable<User> {
         return this.authenticatedUser;
@@ -83,7 +83,7 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
 
     /**
      * Returns the currently authenticated user.
-     * @return {User}
+     * 
      */
     public getAuthenticatedUserNow(): User {
         return this._authenticatedUser.getValue();
@@ -116,7 +116,7 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
 
     /**
      * Called to return the keycloak access token.
-     * @return {string}
+     * 
      */
     public getAuthenticationSecret(): string {
         return this.keycloak.token;

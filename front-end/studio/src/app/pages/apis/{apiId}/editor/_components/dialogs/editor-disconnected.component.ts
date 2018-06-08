@@ -58,7 +58,7 @@ export class EditorDisconnectedDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * 
      */
     public isOpen(): boolean {
         return this._isOpen;

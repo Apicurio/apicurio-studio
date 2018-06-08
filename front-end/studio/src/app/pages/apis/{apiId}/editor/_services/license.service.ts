@@ -266,7 +266,7 @@ export class LicenseService {
 
     /**
      * Returns a list of all licenses.
-     * @return|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string|string)[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string|string)[], conditions: (string|string)[], limitations: (string|string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: string[], limitations: (string|string)[]}|{id: string, name: string, description: string, url: string, moreInfoUrl: string, permissions: (string|string|string|string)[], conditions: Array, limitations: (string|string)[]})[]}
+     * 
      */
     public getLicenses(): ILicense[] {
         return LICENSE_DATA;

@@ -36,10 +36,10 @@ export class ImportApiPageComponent extends AbstractPageComponent {
 
     /**
      * Constructor.
-     * @param {Router} router
-     * @param {ActivatedRoute} route
-     * @param {ApisService} apis
-     * @param {Title} titleService
+     * @param router
+     * @param route
+     * @param apis
+     * @param titleService
      */
     constructor(private router: Router, route: ActivatedRoute, private apis: ApisService, titleService: Title) {
         super(route, titleService);
@@ -47,7 +47,7 @@ export class ImportApiPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Import API";
@@ -56,7 +56,7 @@ export class ImportApiPageComponent extends AbstractPageComponent {
     /**
      * Called when the Import API form (component) emits a "import-api" event.  This is bound to
      * from the importapi.page.html template.
-     * @param {ImportApi} api
+     * @param api
      */
     public onImportApi(api: ImportApi) {
         this.importing = true;

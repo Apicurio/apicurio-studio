@@ -124,7 +124,7 @@ export class EditExample20DialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return
+     * 
      */
     public isOpen(): boolean {
         return this._isOpen;

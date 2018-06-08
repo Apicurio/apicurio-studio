@@ -41,7 +41,7 @@ export class VerticalNavComponent implements OnInit {
 
     /**
      * C'tor.
-     * @param {Router} router
+     * @param router
      */
     constructor(private router: Router) {}
 
@@ -63,9 +63,9 @@ export class VerticalNavComponent implements OnInit {
 
     /**
      * Returns true if the given route is the active route.
-     * @param {string} route
-     * @param {boolean} exact
-     * @return {boolean}
+     * @param route
+     * @param exact
+     * 
      */
     public isRouteActive(route: string, exact: boolean = false): boolean {
         return this.router.isActive(route, exact);

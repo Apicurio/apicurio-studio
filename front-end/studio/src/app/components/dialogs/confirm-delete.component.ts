@@ -68,7 +68,7 @@ export class ConfirmDeleteDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return {boolean}
+     * 
      */
     public isOpen(): boolean {
         return this._isOpen;

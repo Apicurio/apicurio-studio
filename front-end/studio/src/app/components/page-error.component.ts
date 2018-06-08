@@ -54,7 +54,7 @@ export class PageErrorComponent {
 
     /**
      * Returns the error type.  Only valid when the error code is 500.
-     * @return {()=>string}
+     * 
      */
     public errorMessage(): string {
         if (this.errorObj().message) {
@@ -72,7 +72,7 @@ export class PageErrorComponent {
 
     /**
      * Returns the error type.  Only valid when the error code is 500.
-     * @return {()=>string}
+     * 
      */
     public errorType(): string {
         return this.errorObj().errorType;
@@ -80,7 +80,7 @@ export class PageErrorComponent {
 
     /**
      * Returns the parsed error body.
-     * @return {any}
+     * 
      */
     private errorObj(): any {
         if (this.eobj === null) {

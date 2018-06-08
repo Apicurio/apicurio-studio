@@ -40,9 +40,9 @@ export abstract class AbstractHubService {
 
     /**
      * Creates a hub API endpoint from the api path and params.
-     * @param {string} path
+     * @param path
      * @param params
-     * @return {string}
+     * 
      */
     protected endpoint(path: string, params?: any, queryParams?: any): string {
         if (params) {
@@ -72,9 +72,9 @@ export abstract class AbstractHubService {
 
     /**
      * Creates an editing endpoint from the given relative path and params.
-     * @param {string} path
+     * @param path
      * @param params
-     * @return {string}
+     * 
      */
     protected editingEndpoint(path: string, params?: any): string {
         if (params) {
@@ -89,9 +89,9 @@ export abstract class AbstractHubService {
     /**
      * Creates the request options used by the HTTP service when making
      * API calls.
-     * @param {{[p: string]: string}} headers
-     * @param {boolean} authenticated
-     * @return {any}
+     * @param headers
+     * @param authenticated
+     * 
      */
     protected options(headers: {[header: string]: string}, authenticated: boolean = true): any {
         let options = {
@@ -106,9 +106,9 @@ export abstract class AbstractHubService {
     /**
      * Performs an HTTP GET operation to the given URL with the given options.  Returns
      * a Promise to the HTTP response data.
-     * @param {string} url
+     * @param url
      * @param options
-     * @return {Promise<T>}
+     * 
      */
     protected httpGet<T>(url: string, options: any, successCallback?: (apis: T) => T): Promise<T> {
         options["observe"] = "response";
@@ -125,10 +125,10 @@ export abstract class AbstractHubService {
     /**
      * Performs an HTTP POST operation to the given URL with the given body and options.  Returns
      * a Promise to null (no response data expected).
-     * @param {string} url
-     * @param {I} body
+     * @param url
+     * @param body
      * @param options
-     * @return {Promise<void>}
+     * 
      */
     protected httpPost<I>(url: string, body: I, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
@@ -143,10 +143,10 @@ export abstract class AbstractHubService {
     /**
      * Performs an HTTP POST operation to the given URL with the given body and options.  Returns
      * a Promise to the HTTP response data.
-     * @param {string} url
-     * @param {I} body
+     * @param url
+     * @param body
      * @param options
-     * @return {Promise<O>}
+     * 
      */
     protected httpPostWithReturn<I, O>(url: string, body: I, options: any, successCallback?: (data: O) => O): Promise<O> {
         options["observe"] = "response";
@@ -164,10 +164,10 @@ export abstract class AbstractHubService {
     /**
      * Performs an HTTP PUT operation to the given URL with the given body and options.  Returns
      * a Promise to null (no response data expected).
-     * @param {string} url
-     * @param {I} body
+     * @param url
+     * @param body
      * @param options
-     * @return {Promise<void>}
+     * 
      */
     protected httpPut<I>(url: string, body: I, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
@@ -182,10 +182,10 @@ export abstract class AbstractHubService {
     /**
      * Performs an HTTP PUT operation to the given URL with the given body and options.  Returns
      * a Promise to the HTTP response data.
-     * @param {string} url
-     * @param {I} body
+     * @param url
+     * @param body
      * @param options
-     * @return {Promise<O>}
+     * 
      */
     protected httpPutWithReturn<I, O>(url: string, body: I, options: any, successCallback?: (data: O) => O): Promise<O> {
         options["observe"] = "response";
@@ -202,9 +202,9 @@ export abstract class AbstractHubService {
 
     /**
      * Performs an HTTP DELETE operation to the given URL with the given body and options.
-     * @param {string} url
+     * @param url
      * @param options
-     * @return {Promise<void>}
+     * 
      */
     protected httpDelete(url: string, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";

@@ -51,7 +51,7 @@ export class GitHubResourceComponent implements OnInit {
 
     /**
      * Constructor.
-     * @param {LinkedAccountsService} linkedAccounts
+     * @param linkedAccounts
      */
     constructor(private linkedAccounts: LinkedAccountsService) {}
 

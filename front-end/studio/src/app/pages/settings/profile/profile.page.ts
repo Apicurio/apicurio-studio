@@ -37,9 +37,9 @@ export class ProfilePageComponent extends AbstractPageComponent {
 
     /**
      * C'tor.
-     * @param {IAuthenticationService} authService
-     * @param {ActivatedRoute} route
-     * @param {Title} titleService
+     * @param authService
+     * @param route
+     * @param titleService
      */
     constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, route: ActivatedRoute, titleService: Title) {
         super(route, titleService);
@@ -47,7 +47,7 @@ export class ProfilePageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * @return {string}
+     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Settings - Profile";

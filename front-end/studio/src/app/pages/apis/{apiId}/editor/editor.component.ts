@@ -126,7 +126,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Lazy getter for the OtEngine.
-     * @return
      */
     public otEngine(): OtEngine {
         if (this._otEngine === null) {
@@ -290,6 +289,23 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     public deselectDefinition(): void {
         this.master.deselectDefinition();
+    }
+
+    /**
+     * Called to get the current value in the editor.
+     * @return {ApiDefinition}
+     */
+    public getValue(): ApiDefinition {
+        let apiDef: ApiDefinition = new ApiDefinition();
+        apiDef.id = this.api.id;
+        apiDef.createdBy = this.api.createdBy;
+        apiDef.createdOn = this.api.createdOn;
+        apiDef.description = this.api.description;
+        apiDef.name = this.api.name;
+        apiDef.tags = this.api.tags;
+        let doc: OasDocument = this.document();
+        apiDef.spec = this._library.writeNode(doc);
+        return apiDef;
     }
 
 }

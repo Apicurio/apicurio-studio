@@ -41,3 +41,7 @@
   font-size: 67.2px;
   line-height: 67.2px;
 }
+
+label.disabled, .moreInfo.disabled {
+  color: #9c9c9c;
+}

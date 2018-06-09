@@ -74,8 +74,8 @@
                                         <div class="col-sm-10">
                                             <input type="radio" name="generation-type" id="gentype-update" value="update"
                                                    [(ngModel)]="model.generationType" [attr.disabled]="projects.length === 0 ? true : null">
-                                            <label for="gentype-update">Update an existing implementation project</label>
-                                            <p class="moreInfo" style="padding-left: 15px">
+                                            <label for="gentype-update" [class.disabled]="projects.length === 0">Update an existing implementation project</label>
+                                            <p class="moreInfo" [class.disabled]="projects.length === 0" style="padding-left: 15px">
                                                 Update an existing implementation project that was previously generated using this API
                                                 Contract.  Generates a subset of the resources for the project (excludes some boilerplate).
                                             </p>
@@ -237,6 +237,8 @@
                                     <p class="blank-slate-pf-secondary-action">
                                         <span>Alright!  We've successfully generated a project from your OpenAPI definition.</span>
                                         <span *ngIf="model.location === 'download'">If your ZIP download does not start within a few seconds, please click <strong>Download</strong> below.</span>
+                                        <span *ngIf="model.location === 'sourceControl'">Your generated code project has been committed to Git and a pull/merge request has been created.  Click
+                                            the <strong>View Pull Request</strong> button below to review and merge the changes.</span>
                                     </p>
                                     <a #downloadLink href="download?type=codegen&designId={{ apiId }}&projectId={{ generatedProject.id }}&update={{ isUpdate() }}"
                                        class="btn btn-lg btn-default" *ngIf="model.location === 'download'"
@@ -244,7 +246,7 @@
                                     <a href="{{ viewProjectLink() }}" target="_blank"
                                        class="btn btn-lg btn-primary" *ngIf="model.location === 'sourceControl'">
                                         <span class="fa fa-fw fa-external-link"></span>
-                                        <span>View Project</span>
+                                        <span>View Pull Request</span>
                                     </a>
                                 </div>
                             </div>

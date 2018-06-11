@@ -39,4 +39,5 @@ CREATE TABLE codegen (id BIGINT AUTO_INCREMENT NOT NULL, created_by VARCHAR(255)
 ALTER TABLE codegen ADD PRIMARY KEY (id);
 ALTER TABLE codegen ADD CONSTRAINT FK_codegen_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_codegen_1 ON codegen(ptype);
+CREATE INDEX IDX_codegen_2 ON codegen(design_id);
 

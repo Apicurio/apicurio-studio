@@ -293,7 +293,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Called to get the current value in the editor.
-     * @return {ApiDefinition}
+     * @return
      */
     public getValue(): ApiDefinition {
         let apiDef: ApiDefinition = new ApiDefinition();

@@ -262,7 +262,7 @@ export class GenerateProjectWizardComponent {
     }
 
     public showCancelButton(): boolean {
-        return !this.generated && !this.error;
+        return !this.generated && !this.generating && !this.error;
     }
 
     public goBack(): void {

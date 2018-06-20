@@ -73,6 +73,7 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {BsDropdownModule, ModalModule} from "ngx-bootstrap";
 import {ApicurioCommonComponentsModule} from "./common-components.module";
+import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/signpost.component";
 
 @NgModule({
     imports: [
@@ -91,7 +92,7 @@ import {ApicurioCommonComponentsModule} from "./common-components.module";
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent,
         AddMediaTypeDialogComponent, Main20FormComponent, Main30FormComponent, RenameDefinitionDialogComponent,
         AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
-        EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent
+        EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService

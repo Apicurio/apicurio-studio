@@ -83,12 +83,10 @@
                     </div>
                     <div class="section-body collapse in" id="properties-section-body">
                         <!-- Warning when no properties exist -->
-                        <div class="alert alert-info" *ngIf="!hasProperties()">
-                            <span class="pficon pficon-info"></span>
-                            <strong>None Found</strong>
+                        <signpost *ngIf="!hasProperties()">
                             <span>No schema properties have been defined.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddSchemaPropertyModal()">Add Property</button>
-                        </div>
+                            <a (click)="openAddSchemaPropertyModal()">Add a property</a>
+                        </signpost>
 
                         <!-- The list of schema properties -->
                         <div class="container-fluid path-parameters typed-item-list">

@@ -76,12 +76,10 @@
         </div>
         <div class="section-body collapse" id="contact-section-body" [class.in]="hasContact()">
 
-            <div class="alert alert-info" *ngIf="!hasContact()">
-                <span class="pficon pficon-info"></span>
-                <strong>None Found</strong>
-                <span>No contact info has been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="setContactDialog.open()">Add Contact Info</button>
-            </div>
+            <signpost *ngIf="!hasContact()">
+                <span>No contact information has been entered.</span>
+                <a (click)="setContactDialog.open()">Add contact info</a>
+            </signpost>
 
             <div *ngIf="hasContact()">
                 <p>
@@ -111,12 +109,10 @@
         </div>
         <div class="section-body collapse" id="license-section-body" [class.in]="hasLicense()">
 
-            <div class="alert alert-info" *ngIf="!hasLicense()">
-                <span class="pficon pficon-info"></span>
-                <strong>None Found</strong>
-                <span>No license has been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="setLicenseDialog.open()">Set License</button>
-            </div>
+            <signpost *ngIf="!hasLicense()">
+                <span>No license has been set.</span>
+                <a (click)="setLicenseDialog.open()">Set license</a>
+            </signpost>
 
             <div *ngIf="hasLicense() && license() === null" class="container-fluid license">
                 <div class="row">
@@ -176,12 +172,12 @@
                          [title]="'Add a tag to the API.'"></icon-button>
         </div>
         <div class="section-body collapse" id="tags-section-body" [class.in]="tags().length > 0">
-            <div class="alert alert-info" *ngIf="tags().length === 0">
-                <span class="pficon pficon-info"></span>
-                <strong>None Found</strong>
+
+            <signpost *ngIf="tags().length === 0">
                 <span>No tags have been configured.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="addTagDialog.open()">Add Tag</button>
-            </div>
+                <a (click)="addTagDialog.open()">Add a tag</a>
+            </signpost>
+
             <table class="table table-striped table-bordered api-operation-parameters" *ngIf="tags().length > 0">
                 <thead>
                 <tr>
@@ -234,12 +230,10 @@
         </div>
         <div class="section-body collapse" id="security-section-body" [class.in]="hasSecuritySchemes()">
 
-            <div class="alert alert-info" *ngIf="!hasSecuritySchemes()">
-                <span class="pficon pficon-info"></span>
-                <strong>None Found</strong>
-                <span>No security options have been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="openSecuritySchemeDialog()">Add Scheme</button>
-            </div>
+            <signpost *ngIf="!hasSecuritySchemes()">
+                <span>No security options have been configured.</span>
+                <a (click)="openSecuritySchemeDialog()">Add a security scheme</a>
+            </signpost>
 
             <table class="table table-striped table-bordered" *ngIf="hasSecuritySchemes()">
                 <thead>
@@ -296,12 +290,10 @@
         </div>
         <div class="section-body collapse" id="security-requirements-section-body" [class.in]="hasSecurityRequirements()">
 
-            <div class="alert alert-info" *ngIf="!hasSecurityRequirements()">
-                <span class="pficon pficon-info"></span>
-                <strong>None Found</strong>
-                <span>No global security requirements have been configured for this API.</span>
-                <button class="btn btn-primary btn-sm pull-right" (click)="openSecurityRequirementDialog()">Add Requirement</button>
-            </div>
+            <signpost *ngIf="!hasSecurityRequirements()">
+                <span>No global security requirements have been configured.</span>
+                <a (click)="openSecurityRequirementDialog()">Add global security requirement</a>
+            </signpost>
 
             <table class="table table-striped table-bordered" *ngIf="hasSecurityRequirements()">
                 <thead>

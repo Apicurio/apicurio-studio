@@ -114,12 +114,10 @@
                     </div>
                     <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
 
-                        <div class="alert alert-info" *ngIf="!hasParameters('query')">
-                            <span class="pficon pficon-info"></span>
-                            <strong>None Found</strong>
-                            <span>No query parameters have been declared.</span>
-                            <button class="btn btn-primary btn-sm pull-right" (click)="openAddQueryParamModal()">Add Query Parameter</button>
-                        </div>
+                        <signpost *ngIf="!hasParameters('query')">
+                            <span>No query parameters have been defined.</span>
+                            <a (click)="openAddQueryParamModal()">Add a query parameter</a>
+                        </signpost>
 
                         <!-- The list of query parameters -->
                         <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">

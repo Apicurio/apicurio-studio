@@ -59,6 +59,7 @@ import {Subscription} from "rxjs/Subscription";
 export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() api: ApiDefinition;
+    @Input() embedded: boolean;
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
 
@@ -87,8 +88,14 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public ngOnInit(): void {
         let me: ApiEditorComponent = this;
         this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
+            console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
             me.onNodeSelected(selectedPath);
         });
+
+        // If we're in embedded mode, select the root now.
+        if (this.embedded && this.api) {
+            this.selectionService.selectRoot(this.document());
+        }
     }
 
     public ngOnDestroy(): void {
@@ -170,6 +177,14 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
         // After changing the model, we should re-validate it
         this.validateModel();
+
+        // If we're in embedded mode, immediately finalize the command (no collaboration server is present)
+        if (this.embedded) {
+            this.finalizeCommand({
+                commandId: otCmd.contentVersion,
+                contentVersion: otCmd.contentVersion
+            });
+        }
     }
 
     /**
@@ -213,7 +228,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public onNodeSelected(path: OasNodePath): void {
         console.info("[ApiEditorComponent] Selection changed to path: %s", path.toString());
 
-        let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().getSpecVersion() === "2.0" ? "20" : "30");
+        let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
         OasVisitorUtil.visitPath(path, visitor, this.document());
 
         this.currentSelection = path;

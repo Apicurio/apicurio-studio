@@ -1320,3 +1320,52 @@
   overflow-x: hidden;
   padding-right: 10px;
 }
+
+
+.api-editor .modal-header {
+  background-color: rgb(57, 165, 220);
+  color: white;
+}
+.api-editor .modal-header button.close {
+  color: white;
+}
+.api-editor .modal-footer {
+  border-top: 1px solid rgb(221, 221, 221);
+  background-color: rgb(239, 239, 239);
+}
+.api-editor .modal-dialog {
+  margin-top: 50px;
+}
+.api-editor form input.ng-invalid.ng-touched {
+  border-color: red;
+}
+.api-editor .center-text {
+  text-align: center;
+}
+.api-editor .dropdown-menu > li > a {
+  cursor: pointer;
+}
+.api-editor .dropdown-menu {
+  font-size: 13px;
+}
+.api-editor div.notice-of-required {
+  margin-top: 15px;
+  font-size: 11px;
+}
+.api-editor div.notice-of-required .required-icon {
+  color: red;
+}
+.api-editor div.modal-notice-of-required {
+  margin-bottom: -12px;
+  padding-left: 15px;
+}
+.api-editor .form-group .control-label {
+  white-space: nowrap;
+}
+.api-editor .form-group .control-label.required::after {
+  color: red;
+  content: '*'
+}
+.api-editor .form-group .form-error-message {
+  color: red;
+}

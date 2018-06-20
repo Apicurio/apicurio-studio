@@ -484,7 +484,7 @@ var OasNodePathSegment = (function () {
         return this._index;
     };
     OasNodePathSegment.prototype.resolve = function (node) {
-        if (node === null) {
+        if (node === null || node === undefined) {
             return null;
         }
         var childNode = null;

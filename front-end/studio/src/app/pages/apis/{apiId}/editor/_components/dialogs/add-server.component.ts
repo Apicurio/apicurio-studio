@@ -173,6 +173,12 @@ export class AddServerDialogComponent {
      * Called when the user clicks "ok".
      */
     protected ok(): void {
+        for (let varName of this.variableNames()) {
+            let varModel: any = this.model.variables[varName];
+            if (varModel && varModel.default === "") {
+                varModel.default = undefined;
+            }
+        }
         if (this.mode === "create") {
             this.onAdd.emit(this.model);
         } else {

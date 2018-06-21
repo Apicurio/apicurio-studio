@@ -1,9 +1,8 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
-        <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
-        <li breadcrumb [label]="apiDefinition.name" icon="bolt" [route]="[ '/apis', apiDefinition.id ]"></li>
-        <li breadcrumb label="Editor" icon="pencil" class="active"></li>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="apiDefinition.name" [route]="[ '/apis', apiDefinition.id ]"></li>
+        <li breadcrumb label="Editor" class="active"></li>
     </breadcrumbs>
     <div class="pull-right activeCollaboratorIcons">
         <!-- Information about current remote editor users (active collaborators) goes in here -->

@@ -27,7 +27,6 @@ import {Component, Input} from "@angular/core";
 export class BreadcrumbComponent {
 
     @Input() label: string;
-    @Input() icon: string;
     @Input() route: string[];
 
 }

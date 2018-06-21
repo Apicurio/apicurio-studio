@@ -1,8 +1,7 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
-        <li breadcrumb label="Settings" icon="cogs" [route]="[ '/settings' ]"></li>
-        <li breadcrumb label="Linked Accounts" icon="link" class="active"></li>
+        <li breadcrumb label="Settings" [route]="[ '/settings' ]"></li>
+        <li breadcrumb label="Linked Accounts" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>

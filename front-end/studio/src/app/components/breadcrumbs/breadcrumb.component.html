@@ -1,2 +1,2 @@
-<span *ngIf="route == null"><span *ngIf="icon.startsWith('pficon')" class="pficon {{ icon }}" style="margin-right: 3px"></span><span *ngIf="!icon.startsWith('pficon')" class="fa fa-fw fa-{{ icon }}"></span><span>{{ label }}</span></span>
-<a *ngIf="route != null" [routerLink]="route"><span class="fa fa-fw fa-{{ icon }}"></span><span>{{ label }}</span></a>
+<span *ngIf="route == null"><span>{{ label }}</span></span>
+<a *ngIf="route != null" [routerLink]="route"><span>{{ label }}</span></a>

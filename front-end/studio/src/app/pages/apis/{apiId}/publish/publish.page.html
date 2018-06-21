@@ -1,9 +1,8 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="Dashboard" icon="dashboard" [route]="[ '/' ]"></li>
-        <li breadcrumb label="APIs" icon="search" [route]="[ '/apis' ]"></li>
-        <li breadcrumb [label]="api.name" icon="bolt" [route]="[ '/apis', api.id ]"></li>
-        <li breadcrumb label="Publish" icon="cloud-upload" class="active"></li>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Publish" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>

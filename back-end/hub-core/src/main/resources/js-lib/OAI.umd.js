@@ -92,8 +92,8 @@ var OasNode = (function () {
     OasNode.prototype.validationProblem = function (code) {
         return this._validationProblems[code];
     };
-    OasNode.prototype.addValidationProblem = function (errorCode, nodePath, message) {
-        var problem = new OasValidationProblem(errorCode, nodePath, message);
+    OasNode.prototype.addValidationProblem = function (errorCode, nodePath, message, severity) {
+        var problem = new OasValidationProblem(errorCode, nodePath, message, severity);
         problem._ownerDocument = this._ownerDocument;
         problem._parent = this;
         this._validationProblems[errorCode] = problem;
@@ -111,15 +111,17 @@ var OasValidationProblem = (function (_super) {
     __extends$3(OasValidationProblem, _super);
     /**
      * Constructor.
-     * @param {string} errorCode
-     * @param {OasNodePath} nodePath
-     * @param {string} message
+     * @param errorCode
+     * @param nodePath
+     * @param message
+     * @param severity
      */
-    function OasValidationProblem(errorCode, nodePath, message) {
+    function OasValidationProblem(errorCode, nodePath, message, severity) {
         var _this = _super.call(this) || this;
         _this.errorCode = errorCode;
         _this.nodePath = nodePath;
         _this.message = message;
+        _this.severity = severity;
         return _this;
     }
     OasValidationProblem.prototype.accept = function (visitor) {
@@ -13645,6 +13647,21 @@ var OasAllNodeVisitor = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+(function (OasValidationProblemSeverity) {
+    OasValidationProblemSeverity[OasValidationProblemSeverity["ignore"] = 0] = "ignore";
+    OasValidationProblemSeverity[OasValidationProblemSeverity["low"] = 1] = "low";
+    OasValidationProblemSeverity[OasValidationProblemSeverity["medium"] = 2] = "medium";
+    OasValidationProblemSeverity[OasValidationProblemSeverity["high"] = 3] = "high";
+})(exports.OasValidationProblemSeverity || (exports.OasValidationProblemSeverity = {}));
+var DefaultValidationSeverityRegistry = (function () {
+    function DefaultValidationSeverityRegistry() {
+    }
+    DefaultValidationSeverityRegistry.prototype.lookupSeverity = function (ruleCode) {
+        return exports.OasValidationProblemSeverity.medium;
+    };
+    return DefaultValidationSeverityRegistry;
+}());
 /**
  * Base class for all validation rules.
  */
@@ -16322,6 +16339,7 @@ var Oas20ValidationVisitor = (function (_super) {
     function Oas20ValidationVisitor() {
         var _this = _super.call(this) || this;
         _this.errors = [];
+        _this.severityRegistry = new DefaultValidationSeverityRegistry();
         // Add a bunch of validation rules to the array of visitors.
         _this.addVisitors([
             new Oas20RequiredPropertyValidationRule(_this),
@@ -16334,6 +16352,13 @@ var Oas20ValidationVisitor = (function (_super) {
         ]);
         return _this;
     }
+    /**
+     * Sets the severity registry.
+     * @param {IOasValidationSeverityRegistry} severityRegistry
+     */
+    Oas20ValidationVisitor.prototype.setSeverityRegistry = function (severityRegistry) {
+        this.severityRegistry = severityRegistry;
+    };
     /**
      * Returns the array of validation errors found by the visitor.
      * @return {OasValidationProblem[]}
@@ -16348,12 +16373,19 @@ var Oas20ValidationVisitor = (function (_super) {
      * @param message
      */
     Oas20ValidationVisitor.prototype.report = function (code, node, message) {
+        var severity = this.lookupSeverity(code);
+        if (severity === exports.OasValidationProblemSeverity.ignore) {
+            return;
+        }
         var viz = new Oas20NodePathVisitor();
         OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
         var path = viz.path();
-        var error = node.addValidationProblem(code, path, message);
+        var error = node.addValidationProblem(code, path, message, severity);
         // Include the error in the list of errors found by this visitor.
         this.errors.push(error);
+    };
+    Oas20ValidationVisitor.prototype.lookupSeverity = function (code) {
+        return this.severityRegistry.lookupSeverity(code);
     };
     return Oas20ValidationVisitor;
 }(Oas20CompositeVisitor));
@@ -16367,6 +16399,7 @@ var Oas30ValidationVisitor = (function (_super) {
     function Oas30ValidationVisitor() {
         var _this = _super.call(this) || this;
         _this.errors = [];
+        _this.severityRegistry = new DefaultValidationSeverityRegistry();
         // Add a bunch of validation rules to the array of visitors.
         _this.addVisitors([
             new Oas30InvalidPropertyFormatValidationRule(_this),
@@ -16381,6 +16414,13 @@ var Oas30ValidationVisitor = (function (_super) {
         return _this;
     }
     /**
+     * Sets the severity registry.
+     * @param {IOasValidationSeverityRegistry} severityRegistry
+     */
+    Oas30ValidationVisitor.prototype.setSeverityRegistry = function (severityRegistry) {
+        this.severityRegistry = severityRegistry;
+    };
+    /**
      * Returns the array of validation errors found by the visitor.
      * @return {OasValidationProblem[]}
      */
@@ -16394,12 +16434,19 @@ var Oas30ValidationVisitor = (function (_super) {
      * @param message
      */
     Oas30ValidationVisitor.prototype.report = function (code, node, message) {
+        var severity = this.lookupSeverity(code);
+        if (severity === exports.OasValidationProblemSeverity.ignore) {
+            return;
+        }
         var viz = new Oas30NodePathVisitor();
         OasVisitorUtil.visitTree(node, viz, exports.OasTraverserDirection.up);
         var path = viz.path();
-        var error = node.addValidationProblem(code, path, message);
+        var error = node.addValidationProblem(code, path, message, severity);
         // Include the error in the list of errors found by this visitor.
         this.errors.push(error);
+    };
+    Oas30ValidationVisitor.prototype.lookupSeverity = function (code) {
+        return this.severityRegistry.lookupSeverity(code);
     };
     return Oas30ValidationVisitor;
 }(Oas30CompositeVisitor));
@@ -16508,10 +16555,15 @@ var OasLibraryUtils = (function () {
      * Validates the given OAS model.
      * @param node
      * @param recursive
+     * @param severityRegistry
      * @return {any}
      */
-    OasLibraryUtils.prototype.validate = function (node, recursive) {
+    OasLibraryUtils.prototype.validate = function (node, recursive, severityRegistry) {
         if (recursive === void 0) { recursive = true; }
+        // Default the severity registry if one is not provided.
+        if (!severityRegistry) {
+            severityRegistry = new DefaultValidationSeverityRegistry();
+        }
         // Reset all problems first
         var resetter = new OasResetValidationProblemsVisitor();
         OasVisitorUtil.visitTree(node, resetter);
@@ -16878,6 +16930,7 @@ exports.Oas30Traverser = Oas30Traverser;
 exports.OasReverseTraverser = OasReverseTraverser;
 exports.Oas20ReverseTraverser = Oas20ReverseTraverser;
 exports.Oas30ReverseTraverser = Oas30ReverseTraverser;
+exports.DefaultValidationSeverityRegistry = DefaultValidationSeverityRegistry;
 exports.OasValidationRuleUtil = OasValidationRuleUtil;
 exports.OasResetValidationProblemsVisitor = OasResetValidationProblemsVisitor;
 exports.Oas20ValidationVisitor = Oas20ValidationVisitor;

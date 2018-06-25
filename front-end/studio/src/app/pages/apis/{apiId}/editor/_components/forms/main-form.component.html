@@ -1,30 +1,3 @@
-<div class="detail-title">
-    <div class="detail-label"></div>
-<!-- *** No actions at this level (currently)
-    <div class="detail-actions">
-        <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="fa fa-ellipsis-v"></span>
-            </button>
-            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-            </ul>
-        </div>
-    </div>
--->
-</div>
-<!-- *** No support for the Source tab.  Not sure if it's needed. ***
-<div class="detail-tabs">
-    <ul class="nav nav-tabs nav-tabs-pf">
-        <li class="active"><a href="#" onclick="return false">Design</a></li>
-        <li class="disabled"><a href="#" onclick="return false" disabled="disabled">Source</a></li>
-    </ul>
-</div>
--->
 <div class="detail-content">
 
     <!-- Info about the API -->
@@ -39,17 +12,12 @@
         </div>
         <div class="section-body collapse in" id="info-section-body">
             <div class="api-title-and-version">
-                <inline-text-editor [value]="title()"
-                                    [labelClass]="'api-title api-item-title'"
-                                    [formClass]="'api-title-editor-form'"
-                                    [inputClass]="'api-item-editor api-title-editor api-title api-item-title'"
-                                    [noValueMessage]="'No Title'" (onChange)="onTitleChange($event)"></inline-text-editor>
-                <span class="spacer" style="margin-left: 30px">&nbsp;</span>
+                <span style="font-size: 16px">This API is currently version</span>
                 <inline-text-editor [value]="version()"
                                     [labelClass]="'api-version'"
                                     [formClass]="'api-title-editor-form'"
                                     [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
-                                    [noValueMessage]="'No Version'" (onChange)="onVersionChange($event)"></inline-text-editor>
+                                    [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></inline-text-editor>
             </div>
             <inline-textarea-editor [value]="description()"
                                     [labelClass]="'api-description api-item-description'"

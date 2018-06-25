@@ -1,0 +1,20 @@
+<!-- Visual Mode -->
+<div class="editor-title-bar {{ mainClasses() }}" *ngIf="!editMode">
+    <h1 [class.no-title]="!hasTitle()" (click)="selectMain()">
+        <span>{{ title() }}</span>
+        <a class="editor-title-bar-edit" (click)="editTitle()"><span class="fa fa-fw fa-pencil"></span></a>
+    </h1>
+    <validation-icon [validationErrors]="validationErrors" (onClick)="toggleProblemDrawer()"></validation-icon>
+</div>
+<!-- Edit Mode -->
+<div class="editor-title-bar editing {{ mainClasses() }} {{ collaboratorSelectionClasses }}" *ngIf="editMode" >
+    <form #editform="ngForm" name="title-edit-form" class="title-editor-form" (submit)="save()">
+        <input #newtitle required [(ngModel)]="newTitle" type="text" class="form-control title-editor-input"
+               name="title-input" autocomplete="off" required (keypress)="onInputKeypress($event)">
+        <div class="edit-buttons">
+            <button title="Save changes." [disabled]="!editform.form.valid" class="btn btn-lg btn-primary" type="submit">Save</button>
+            <button title="Cancel changes." class="btn btn-lg btn-default" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+</div>
+<problem-drawer *ngIf="showProblems" [validationErrors]="validationErrors" (close)="closeProblemDrawer()"></problem-drawer>

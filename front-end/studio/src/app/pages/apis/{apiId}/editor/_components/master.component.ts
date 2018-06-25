@@ -71,7 +71,6 @@ import {Subscription} from "rxjs/Subscription";
 export class EditorMasterComponent implements OnInit, OnDestroy {
 
     @Input() document: OasDocument;
-    @Input() validationErrors: OasValidationProblem[];
     @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
@@ -92,8 +91,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     filterCriteria: string = null;
 
-    validationPanelOpen = false;
-
     constructor(private selectionService: SelectionService) {
     }
 
@@ -107,11 +104,11 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     public isOAI30(): boolean {
-        return this.document.getSpecVersion().indexOf("3.0") === 0;
+        return this.document.is3xDocument();
     }
 
     public isSwagger2(): boolean {
-        return this.document.getSpecVersion() === "2.0";
+        return this.document.is2xDocument();
     }
 
     /**
@@ -270,15 +267,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      */
     public selectDefinition(def: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this.selectionService.selectNode(def, this.document);
-    }
-
-    /**
-     * Called when the user selects a validation problem from the master
-     * area.
-     * @param problem
-     */
-    public selectProblem(problem: OasValidationProblem): void {
-        this.selectionService.selectNode(problem, this.document);
     }
 
     /**
@@ -620,14 +608,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Called to toggle the visibility of the validation panel (the section that
-     * displays validation errors).
-     */
-    public toggleValidationPanel(): void {
-        this.validationPanelOpen = !this.validationPanelOpen;
-    }
-
-    /**
      * Returns the name of the definition.
      * @param definition
      * @return
@@ -647,27 +627,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
         let viz: HasProblemVisitor = new HasProblemVisitor();
         OasVisitorUtil.visitTree(node, viz);
         return viz.problemsFound;
-    }
-
-    /**
-     * Returns the classes that should be applied to the "main" selection item.
-     * @return
-     */
-    public mainClasses(): string {
-        let classes: string[] = [];
-        if (this.hasValidationProblem(this.document)) {
-            classes.push("problem-marker");
-        }
-        if (this.isMainSelected()) {
-            classes.push("selected");
-        }
-        if (this.isOAI30()) {
-            classes.push("oai30");
-        }
-        if (this.isSwagger2()) {
-            classes.push("oai20");
-        }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(this.document);
     }
 
     /**
@@ -699,22 +658,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
         }
-        if (this.isContexted(node)) {
-            classes.push("contexted");
-        }
-        if (this.isSelected(node)) {
-            classes.push("selected");
-        }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
-    }
-
-    /**
-     * Returns the classes that should be applied to the validation problem.
-     * @param node
-     * @return
-     */
-    public problemClasses(node: OasValidationProblem): string {
-        let classes: string[] = [];
         if (this.isContexted(node)) {
             classes.push("contexted");
         }

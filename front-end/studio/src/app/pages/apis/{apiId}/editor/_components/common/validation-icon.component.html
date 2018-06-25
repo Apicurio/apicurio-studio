@@ -1,3 +1,6 @@
-<a title="{{ message() }}" class="validation-icon" [class.has-errors]="hasErrors()" (click)="onClick.emit(true)"
-   [class.clean]="!hasErrors()"><span class="fa" [class.fa-warning]="hasErrors()"
-                                      [class.fa-check-circle-o]="!hasErrors()">&nbsp;({{ numErrors() }})</span></a>
+<div class="validation-icon" [class.has-errors]="hasErrors()">
+    <button class="btn btn-link nav-item-iconic drawer-pf-trigger-icon" title="{{ message() }}" (click)="onClick.emit(true)">
+        <span class="fa fa-bell dropdown-title" title="Notifications"></span>
+        <span *ngIf="hasErrors()" class="badge badge-pf-bordered"> </span>
+    </button>
+</div>

@@ -74,6 +74,8 @@ import {FormsModule} from "@angular/forms";
 import {BsDropdownModule, ModalModule} from "ngx-bootstrap";
 import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/signpost.component";
+import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/title-bar.component";
+import {EditorProblemDrawerComponent} from "./pages/apis/{apiId}/editor/_components/problem-drawer.component";
 
 @NgModule({
     imports: [
@@ -91,8 +93,9 @@ import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent,
         AddMediaTypeDialogComponent, Main20FormComponent, Main30FormComponent, RenameDefinitionDialogComponent,
-        AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
-        EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent
+        AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent,
+        EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent,
+        EditorProblemDrawerComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService

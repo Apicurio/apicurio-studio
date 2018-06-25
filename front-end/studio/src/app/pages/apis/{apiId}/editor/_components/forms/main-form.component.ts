@@ -74,17 +74,6 @@ export abstract class MainFormComponent {
     constructor(public licenseService: LicenseService) {}
 
     /**
-     * returns the title.
-     */
-    public title(): string {
-        if (this.document.info) {
-            return this.document.info.title;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * returns the version.
      */
     public version(): string {
@@ -163,17 +152,7 @@ export abstract class MainFormComponent {
     }
 
     /**
-     * Called when the user changes the title.
-     * @param newTitle
-     */
-    public onTitleChange(newTitle: string): void {
-        console.info("[MainFormComponent] User changed the title to: " + newTitle);
-        let command: ICommand = createChangeTitleCommand(this.document, newTitle);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Called when the user changes the title.
+     * Called when the user changes the version.
      * @param newVersion
      */
     public onVersionChange(newVersion: string): void {

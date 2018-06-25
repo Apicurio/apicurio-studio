@@ -58,31 +58,9 @@
         </li>
     </ul>
 
-    <!-- Main Editor Selector (name of API, select to show Main Form -->
-    <div class="editor-main {{ mainClasses() }}" (click)="selectMain()">
-        <h2>{{ document.info.title }}</h2>
-    </div>
-
     <!-- Search - Used to Filter Paths and Definitions -->
     <div class="editor-search">
         <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
-        <validation-icon [validationErrors]="validationErrors" (onClick)="toggleValidationPanel()"></validation-icon>
-    </div>
-
-    <!-- Validation Problems -->
-    <div class="editor-validation" [class.expanded]="validationPanelOpen" autoheight maxHeight="200">
-
-        <div class="validation-no-problem" *ngIf="validationErrors.length === 0">
-            <span class="icon fa fa-fw fa-info-circle"></span>
-            <span class="message">No validation problems found!</span>
-        </div>
-
-        <div class="validation-problem {{ problemClasses(problem) }}" *ngFor="let problem of validationErrors"
-             (click)="selectProblem(problem)">
-            <span class="icon fa fa-fw fa-exclamation-circle"></span>
-            <span class="code">{{ problem.errorCode }}</span>
-            <span class="message">{{ problem.message }}</span>
-        </div>
     </div>
 
     <!-- Outline - Paths, Definitions, Responses -->

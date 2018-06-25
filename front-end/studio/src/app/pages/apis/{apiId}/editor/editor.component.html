@@ -1,7 +1,8 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
 
+    <title-bar [document]="document()" [validationErrors]="validationErrors" (onCommand)="onCommand($event)"></title-bar>
+
     <master [document]="document()" #master
-            [validationErrors]="validationErrors"
             (onCommand)="onCommand($event)"
             (onNodeSelected)="onNodeSelected($event)"></master>
 

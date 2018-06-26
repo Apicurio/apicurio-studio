@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
 import {Oas20Document, Oas20SchemaDefinition, Oas30Document, Oas30SchemaDefinition, OasSchema} from "oai-ts-core";
 import {
     createAddSchemaDefinitionCommand,
@@ -23,8 +23,10 @@ import {
     createDeleteAllPropertiesCommand,
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
-    createNewSchemaPropertyCommand, createRenameSchemaDefinitionCommand,
-    createReplaceSchemaDefinitionCommand, ICommand,
+    createNewSchemaPropertyCommand,
+    createRenameSchemaDefinitionCommand,
+    createReplaceSchemaDefinitionCommand,
+    ICommand,
     SimplifiedPropertyType
 } from "oai-ts-commands";
 
@@ -53,8 +55,6 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     get definition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
         return this._definition;
     }
-
-    @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
@@ -99,35 +99,33 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     public changePropertyDescription(property: OasSchema, newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(property.ownerDocument(), property, "description", newDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changePropertyType(property: OasSchema, newType: SimplifiedPropertyType): void {
         let command: ICommand = createChangePropertyTypeCommand(property.ownerDocument(), property as any, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteProperty(property: OasSchema): void {
         let command: ICommand = createDeletePropertyCommand(property.ownerDocument(), property as any);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addSchemaProperty(name: string): void {
         let command: ICommand = createNewSchemaPropertyCommand(this.definition.ownerDocument(), this.definition, name);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteAllSchemaProperties(): void {
         let command: ICommand = createDeleteAllPropertiesCommand(this.definition.ownerDocument(), this.definition);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public delete(): void {
         console.info("[DefinitionFormComponent] Deleting schema definition.");
         let command: ICommand = createDeleteSchemaDefinitionCommand(this.definition.ownerDocument(), this.definitionName());
-        this.onCommand.emit(command);
-        console.info("AAA");
-        this.onDeselect.emit(true);
+        this.commandService.emit(command);
     }
 
     public clone(modalData?: any): void {
@@ -138,7 +136,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
             console.info("[DefinitionFormComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this.oasLibrary().writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.definition.ownerDocument(), modalData.name, cloneSrcObj);
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         }
     }
 
@@ -153,7 +151,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
             }
             console.info("[DefinitionFormComponent] Rename definition to: %s", modalData.name);
             let command: ICommand = createRenameSchemaDefinitionCommand(this.definition.ownerDocument(), oldName, modalData.name);
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
 
         }
     }

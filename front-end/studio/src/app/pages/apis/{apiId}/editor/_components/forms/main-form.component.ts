@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Document,
     Oas20SecurityDefinitions,
@@ -32,12 +32,9 @@ import {
 import {
     createAddSecurityRequirementCommand,
     createChangeContactCommand,
-    createChangeDescriptionCommand,
     createChangeLicenseCommand,
     createChangePropertyCommand,
     createChangeSecuritySchemeCommand,
-    createChangeTitleCommand,
-    createChangeVersionCommand,
     createDeleteContactCommand,
     createDeleteLicenseCommand,
     createDeleteSecurityRequirementCommand,
@@ -62,38 +59,16 @@ import {
     SecurityRequirementDialogComponent,
     SecurityRequirementEventData
 } from "../dialogs/security-requirement.component";
+import {CommandService} from "../../_services/command.service";
 
 
 export abstract class MainFormComponent {
 
     @Input() document: OasDocument;
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
 
-    constructor(public licenseService: LicenseService) {}
-
-    /**
-     * returns the version.
-     */
-    public version(): string {
-        if (this.document.info) {
-            return this.document.info.version;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * returns the description.
-     */
-    public description(): string {
-        if (this.document.info) {
-            return this.document.info.description;
-        } else {
-            return null;
-        }
-    }
+    constructor(public licenseService: LicenseService, public commandService: CommandService) {}
 
     /**
      * returns the terms of service.
@@ -152,26 +127,6 @@ export abstract class MainFormComponent {
     }
 
     /**
-     * Called when the user changes the version.
-     * @param newVersion
-     */
-    public onVersionChange(newVersion: string): void {
-        console.info("[MainFormComponent] User changed the version to: " + newVersion);
-        let command: ICommand = createChangeVersionCommand(this.document, newVersion);
-        this.onCommand.emit(command);
-    }
-
-    /**
-     * Called when the user changes the description.
-     * @param newDescription
-     */
-    public onDescriptionChange(newDescription: string): void {
-        console.info("[MainFormComponent] User changed the description.");
-        let command: ICommand = createChangeDescriptionCommand(this.document, newDescription);
-        this.onCommand.emit(command);
-    }
-
-    /**
      * Returns the list of tags defined in the document.
      * @return
      */
@@ -196,7 +151,7 @@ export abstract class MainFormComponent {
      */
     public changeTagDescription(tag: OasTag, description: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, tag, "description", description);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -205,7 +160,7 @@ export abstract class MainFormComponent {
      */
     public deleteTag(tag: OasTag): void {
         let command: ICommand = createDeleteTagCommand(this.document, tag.name);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -214,7 +169,7 @@ export abstract class MainFormComponent {
      */
     public addTag(tag: any): void {
         let command: ICommand = createNewTagCommand(this.document, tag.name, tag.description);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -262,7 +217,7 @@ export abstract class MainFormComponent {
      */
     public setLicense(licenseInfo: any): void {
         let command: ICommand = createChangeLicenseCommand(this.document, licenseInfo.name, licenseInfo.url);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -284,7 +239,7 @@ export abstract class MainFormComponent {
      */
     public setContactInfo(contactInfo: ContactInfo): void {
         let command: ICommand = createChangeContactCommand(this.document, contactInfo.name, contactInfo.email, contactInfo.url);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -292,7 +247,7 @@ export abstract class MainFormComponent {
      */
     public deleteContact(): void {
         let command: ICommand = createDeleteContactCommand(this.document);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -300,7 +255,7 @@ export abstract class MainFormComponent {
      */
     public deleteLicense(): void {
         let command: ICommand = createDeleteLicenseCommand(this.document);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -340,7 +295,7 @@ export abstract class MainFormComponent {
      */
     public changeSecuritySchemeDescription(scheme: OasSecurityScheme, description: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, scheme, "description", description);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -358,7 +313,7 @@ export abstract class MainFormComponent {
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event, requirement);
         let command: ICommand = createAddSecurityRequirementCommand(this.document, this.document, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -376,7 +331,7 @@ export abstract class MainFormComponent {
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event.data, newRequirement);
         let command: ICommand = createReplaceSecurityRequirementCommand(this.document, event.requirement, newRequirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -385,7 +340,7 @@ export abstract class MainFormComponent {
      */
     public deleteSecurityScheme(scheme: OasSecurityScheme): void {
         let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -394,7 +349,7 @@ export abstract class MainFormComponent {
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
         let command: ICommand = createDeleteSecurityRequirementCommand(this.document, this.document, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -443,8 +398,8 @@ export class Main20FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme20Dialog") securitySchemeDialog: SecurityScheme20DialogComponent;
 
-    constructor(licenseService: LicenseService) {
-        super(licenseService);
+    constructor(licenseService: LicenseService, commandService: CommandService) {
+        super(licenseService, commandService);
     }
 
     /**
@@ -495,7 +450,7 @@ export class Main20FormComponent extends MainFormComponent {
 
 
         let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -522,7 +477,7 @@ export class Main20FormComponent extends MainFormComponent {
         }
 
         let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
 }
@@ -541,8 +496,8 @@ export class Main30FormComponent extends MainFormComponent {
 
     @ViewChild("securityScheme30Dialog") securitySchemeDialog: SecurityScheme30DialogComponent;
 
-    constructor(licenseService: LicenseService) {
-        super(licenseService);
+    constructor(licenseService: LicenseService, commandService: CommandService) {
+        super(licenseService, commandService);
     }
 
     /**
@@ -579,7 +534,7 @@ export class Main30FormComponent extends MainFormComponent {
         this.copySchemeToModel(event, scheme);
 
         let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -593,7 +548,7 @@ export class Main30FormComponent extends MainFormComponent {
         this.copySchemeToModel(event, scheme);
 
         let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**

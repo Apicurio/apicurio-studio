@@ -30,7 +30,6 @@ import {SelectionService} from "../../_services/selection.service";
 export class ProblemFormComponent  {
 
     @Input() problem: OasValidationProblem;
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     constructor(private problems: ProblemsService, private selectionService: SelectionService) {}
 

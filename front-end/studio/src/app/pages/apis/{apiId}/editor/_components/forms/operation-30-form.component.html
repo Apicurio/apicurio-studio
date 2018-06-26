@@ -92,7 +92,7 @@
                 </div>
 
                 <!-- Servers -->
-                <servers-section [parent]="operation" (onCommand)="onCommand.emit($event)" [description]="'Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+                <servers-section [parent]="operation" [description]="'Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
                 <!-- Path Parameters Section -->
                 <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
@@ -253,7 +253,6 @@
                         <div class="container-fluid responses typed-item-list">
                             <response-row-30 *ngFor="let response of responses()" [response]="response"
                                              (onDelete)="deleteResponse(response)"
-                                             (onCommand)="onCommand.emit($event)"
                                              [document]="response.ownerDocument()"></response-row-30>
                         </div>
                     </div>

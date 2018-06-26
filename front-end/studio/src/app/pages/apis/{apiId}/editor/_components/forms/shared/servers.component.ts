@@ -15,14 +15,18 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
 import {
-    createChangePropertyCommand, createChangeServerCommand, createDeleteServerCommand, createNewServerCommand,
+    createChangePropertyCommand,
+    createChangeServerCommand,
+    createDeleteServerCommand,
+    createNewServerCommand,
     ICommand
 } from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {ServerEventData} from "../../dialogs/add-server.component";
+import {CommandService} from "../../../_services/command.service";
 
 
 @Component({
@@ -36,7 +40,7 @@ export class ServersSectionComponent {
     @Input() parent: Oas30Document | Oas30PathItem | Oas30Operation;
     @Input() description: string;
 
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    constructor(private commandService: CommandService) {}
 
     /**
      * Returns the list of global servers defined in the document.
@@ -64,7 +68,7 @@ export class ServersSectionComponent {
     public changeServerDescription(server: Oas30Server, description: string): void {
         // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
         let command: ICommand = createChangePropertyCommand<string>(this.parent.ownerDocument(), server, "description", description);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -73,7 +77,7 @@ export class ServersSectionComponent {
      */
     public deleteServer(server: Oas30Server): void {
         let command: ICommand = createDeleteServerCommand(this.parent.ownerDocument(), server);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -88,7 +92,7 @@ export class ServersSectionComponent {
         this.copyServerToModel(event, newServer);
 
         let command: ICommand = createNewServerCommand(this.parent.ownerDocument(), this.parent, newServer);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -103,7 +107,7 @@ export class ServersSectionComponent {
         this.copyServerToModel(event, newServer);
 
         let command: ICommand = createChangeServerCommand(this.parent.ownerDocument(), newServer);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**

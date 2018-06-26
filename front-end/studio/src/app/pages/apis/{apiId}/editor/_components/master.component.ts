@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
     Oas20Document,
     Oas20ResponseDefinition,
@@ -30,7 +30,6 @@ import {
     OasNodePath,
     OasOperation,
     OasPathItem,
-    OasValidationProblem,
     OasVisitorUtil
 } from "oai-ts-core";
 import {AddPathDialogComponent} from "./dialogs/add-path.component";
@@ -55,6 +54,7 @@ import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.component";
 import {SelectionService} from "../_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
+import {CommandService} from "../_services/command.service";
 
 
 /**
@@ -71,7 +71,6 @@ import {Subscription} from "rxjs/Subscription";
 export class EditorMasterComponent implements OnInit, OnDestroy {
 
     @Input() document: OasDocument;
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
@@ -91,7 +90,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     filterCriteria: string = null;
 
-    constructor(private selectionService: SelectionService) {
+    constructor(private selectionService: SelectionService, private commandService: CommandService) {
     }
 
     public ngOnInit(): void {
@@ -339,7 +338,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      */
     public addPath(path: string): void {
         let command: ICommand = createNewPathCommand(this.document, path);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.selectPath(this.document.paths.pathItem(path) as OasPathItem);
     }
 
@@ -422,7 +421,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     public addDefinition(modalData: any): void {
         let example: string = (modalData.example === "") ? null : modalData.example;
         let command: ICommand = createNewSchemaDefinitionCommand(this.document, modalData.name, example);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.selectDefinition(this.getDefinitionByName(modalData.name));
     }
 
@@ -511,7 +510,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     public deletePath(): void {
         let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
         let command: ICommand = createDeletePathCommand(this.document, pathItem.path());
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.closeContextMenu();
     }
 
@@ -527,7 +526,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
             let cloneSrcObj: any = this._library.writeNode(pathItem);
             let command: ICommand = createAddPathItemCommand(this.document, modalData.path, cloneSrcObj);
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         }
     }
 
@@ -537,7 +536,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     public deleteOperation(): void {
         let operation: OasOperation = this.contextMenuSelection.resolve(this.document) as OasOperation;
         let command: ICommand = createDeleteOperationCommand(this.document, operation.method(), operation.parent() as OasPathItem);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.closeContextMenu();
     }
 
@@ -568,7 +567,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             schemaDefName = schemaDef.name();
         }
         let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, schemaDefName);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.closeContextMenu();
     }
 
@@ -584,7 +583,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = this._library.writeNode(definition);
             let command: ICommand = createAddSchemaDefinitionCommand(this.document, modalData.name, cloneSrcObj);
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         }
     }
 
@@ -603,7 +602,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             }
             console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
             let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, modalData.name);
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         }
     }
 

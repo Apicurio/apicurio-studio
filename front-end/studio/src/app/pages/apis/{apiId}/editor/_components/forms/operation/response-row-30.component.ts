@@ -30,6 +30,7 @@ import {
     createSetExampleCommand,
     ICommand
 } from "oai-ts-commands";
+import {CommandService} from "../../../_services/command.service";
 
 
 @Component({
@@ -45,10 +46,11 @@ export class ResponseRow30Component {
     @Input() document: Oas30Document;
     @Input() response: Oas30Response;
 
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
+    
+    constructor(private commandService: CommandService) {}
 
     public statusCodeLine(code: string): string {
         let httpCode: HttpCode = ResponseRow30Component.httpCodes.getCode(code);
@@ -125,51 +127,51 @@ export class ResponseRow30Component {
 
     public setDescription(description: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, this.response, "description", description);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public createResponseMediaType(mediaType: string): void {
         let command: ICommand = createNewMediaTypeCommand(this.document, this.response, mediaType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteResponseMediaType(mediaType: string): void {
         let mt: Oas30MediaType = this.response.getMediaType(mediaType);
         let command: ICommand = createDeleteMediaTypeCommand(this.document, mt);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeResponseMediaType(event: MediaTypeChangeEvent): void {
         let mt: Oas30MediaType = this.response.getMediaType(event.name);
         let command: ICommand = createChangeMediaTypeTypeCommand(this.document, mt, event.type);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addMediaTypeExample(event: AddExampleEvent): void {
         let mt: Oas30MediaType = event.mediaType;
         let command: ICommand = createAddExampleCommand(this.document, mt, event.value, event.name);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteMediaTypeExample(event: DeleteExampleEvent): void {
         let command: ICommand = createDeleteExampleCommand(this.document, event.example);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, event.example, "summary", event.value);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
         let command: ICommand = createChangePropertyCommand<string>(this.document, event.example, "description", event.value);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleValue(event: EditExampleEvent): void {
         let mt: Oas30MediaType = event.example.parent() as Oas30MediaType;
         let command: ICommand = createSetExampleCommand(this.document, mt, event.value, event.example.name());
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

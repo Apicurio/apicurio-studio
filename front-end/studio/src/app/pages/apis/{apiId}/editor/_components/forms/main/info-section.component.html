@@ -1,0 +1,25 @@
+<div class="section info-section panel-group">
+    <div class="section-header panel-title">
+        <a data-toggle="collapse" data-target="#info-section-body">
+            <span class="section-label">INFO</span>
+        </a>
+        <context-help>
+            <p>This section allows you to modify the <strong>Version</strong> and <strong>Description</strong> of the API.</p>
+        </context-help>
+    </div>
+    <div class="section-body collapse in" id="info-section-body">
+        <div class="api-title-and-version">
+            <span style="font-size: 16px">This API is currently version</span>
+            <inline-text-editor [value]="version()"
+                                [labelClass]="'api-version'"
+                                [formClass]="'api-title-editor-form'"
+                                [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
+                                [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></inline-text-editor>
+        </div>
+        <inline-textarea-editor [value]="description()"
+                                [labelClass]="'api-description api-item-description'"
+                                [formClass]="'api-description-editor-form'"
+                                [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
+                                [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-textarea-editor>
+    </div>
+</div>

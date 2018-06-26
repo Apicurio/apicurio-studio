@@ -257,59 +257,59 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public changeSummary(newSummary: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"summary", newSummary);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeOperationId(newId: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"operationId", newId);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeDescription(newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation, "description", newDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeBodyDescription(newBodyDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation.requestBody,"description", newBodyDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeParamDescription(param: Oas30Parameter, newParamDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), param, "description", newParamDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeParamType(param: Oas30Parameter, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), param, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public delete(): void {
         let command: ICommand = createDeleteOperationCommand(this.operation.ownerDocument(), this.operation.method(),
             this.operation.parent() as OasPathItem);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.onDeselect.emit(true);
     }
 
     public deleteAllQueryParams(): void {
         let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "query");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteAllResponses(): void {
         let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteParam(parameter: Oas30Parameter): void {
         let command: ICommand = createDeleteParameterCommand(this.operation.ownerDocument(), parameter);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteResponse(response: Oas30Response): void {
         let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public openAddQueryParamModal(): void {
@@ -318,69 +318,69 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public addQueryParam(name: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "query");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addRequestBody(): void {
         let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteRequestBody(): void {
         let command: ICommand = createDeleteRequestBodyCommand(this.operation.ownerDocument(), this.operation);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public createRequestBodyMediaType(mediaType: string): void {
         console.info("[Operation30FormComponent] Creating request body media type: " + mediaType);
         let command: ICommand = createNewMediaTypeCommand(this.operation.ownerDocument(), this.operation.requestBody, mediaType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteRequestBodyMediaType(mediaType: string): void {
         console.info("[Operation30FormComponent] Deleting request body media type: " + mediaType);
         let mt: Oas30MediaType = this.operation.requestBody.getMediaType(mediaType);
         let command: ICommand = createDeleteMediaTypeCommand(this.operation.ownerDocument(), mt);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeRequestBodyMediaType(event: MediaTypeChangeEvent): void {
         console.info("[Operation30FormComponent] Changing request body media type: " + event.name);
         let mt: Oas30MediaType = this.operation.requestBody.getMediaType(event.name);
         let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addMediaTypeExample(event: AddExampleEvent): void {
         console.info("[Operation30FormComponent] Adding an example named: " + event.name);
         let mt: Oas30MediaType = event.mediaType;
         let command: ICommand = createAddExampleCommand(this.operation.ownerDocument(), mt, event.value, event.name);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteMediaTypeExample(event: DeleteExampleEvent): void {
         console.info("[Operation30FormComponent] Deleting an example of a media type.");
         let command: ICommand = createDeleteExampleCommand(this.operation.ownerDocument(), event.example);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
         console.info("[Operation30FormComponent] Changing the summary of a Media Type example.");
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "summary", event.value);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
         console.info("[Operation30FormComponent] Changing the description of a Media Type example.");
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "description", event.value);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeMediaTypeExampleValue(event: EditExampleEvent): void {
         console.info("[Operation30FormComponent] Changing the value of a Media Type example.");
         let mt: Oas30MediaType = event.example.parent() as Oas30MediaType;
         let command: ICommand = createSetExampleCommand(this.operation.ownerDocument(), mt, event.value, event.example.name());
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public openAddResponseModal(): void {
@@ -389,12 +389,12 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public addResponse(statusCode: string): void {
         let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public createPathParam(paramName: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, paramName, "path");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public enableSourceMode(): void {
@@ -412,7 +412,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     public changeRequestBodyRequired(value: string): void {
         let isRequired: boolean = value === "required";
         let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation.requestBody, "required", isRequired);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public parentPath() {
@@ -461,7 +461,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event, requirement);
         let command: ICommand = createAddSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -473,7 +473,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event.data, newRequirement);
         let command: ICommand = createReplaceSecurityRequirementCommand(this.operation.ownerDocument(), event.requirement, newRequirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -482,7 +482,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
         let command: ICommand = createDeleteSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
 }

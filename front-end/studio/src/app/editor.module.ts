@@ -76,6 +76,8 @@ import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/signpost.component";
 import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/title-bar.component";
 import {EditorProblemDrawerComponent} from "./pages/apis/{apiId}/editor/_components/problem-drawer.component";
+import {InfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/info-section.component";
+import {CommandService} from "./pages/apis/{apiId}/editor/_services/command.service";
 
 @NgModule({
     imports: [
@@ -95,10 +97,10 @@ import {EditorProblemDrawerComponent} from "./pages/apis/{apiId}/editor/_compone
         AddMediaTypeDialogComponent, Main20FormComponent, Main30FormComponent, RenameDefinitionDialogComponent,
         AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent,
         EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent,
-        EditorProblemDrawerComponent
+        EditorProblemDrawerComponent, InfoSectionComponent
     ],
     providers: [
-        ProblemsService, SelectionService, LicenseService
+        ProblemsService, SelectionService, LicenseService, CommandService
     ],
     exports: [
         ApiEditorComponent

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Output} from "@angular/core";
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
 import {ObjectUtils} from "../../_util/object.util";
@@ -23,6 +22,7 @@ import * as YAML from "yamljs";
 import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
 
 
 /**
@@ -31,8 +31,6 @@ import {SelectionService} from "../../_services/selection.service";
 export abstract class SourceFormComponent<T extends OasNode> {
 
     private static library: OasLibraryUtils = new OasLibraryUtils();
-
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
 
     private _mode: string = "design";
     private _sourceFormat: CodeEditorMode = CodeEditorMode.YAML;
@@ -95,7 +93,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
         }
     }
 
-    constructor(protected selectionService: SelectionService) {}
+    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {}
 
     protected abstract createEmptyNodeForSource(): T;
 
@@ -132,7 +130,7 @@ export abstract class SourceFormComponent<T extends OasNode> {
 
     public saveSource(): void {
         let command: ICommand = this.createReplaceNodeCommand(<T>this._source.value);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
         this.sourceNode = this._source.value;
         this._source.dirty = false;
         this._source.value = null;

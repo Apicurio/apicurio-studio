@@ -47,6 +47,7 @@ import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
+import {CommandService} from "./_services/command.service";
 
 
 @Component({
@@ -75,6 +76,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public validationErrors: OasValidationProblem[] = [];
 
     private _selectionSubscription: Subscription;
+    private _commandSubscription: Subscription;
 
     @ViewChild("master") master: EditorMasterComponent;
 
@@ -82,14 +84,22 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     /**
      * Constructor.
+     * @param selectionService
+     * @param commandService
      */
-    constructor(private selectionService: SelectionService) {}
+    constructor(private selectionService: SelectionService, private commandService: CommandService) {}
 
     public ngOnInit(): void {
         let me: ApiEditorComponent = this;
         this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
             console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
             me.onNodeSelected(selectedPath);
+        });
+        this._commandSubscription = this.commandService.commands().subscribe( command => {
+            if (command) {
+                console.info("[ApiEditorComponent] Command execution detected (from the command service)")
+                me.onCommand(command);
+            }
         });
 
         // If we're in embedded mode, select the root now.
@@ -100,6 +110,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     public ngOnDestroy(): void {
         this._selectionSubscription.unsubscribe();
+        this._commandSubscription.unsubscribe();
     }
 
     /**

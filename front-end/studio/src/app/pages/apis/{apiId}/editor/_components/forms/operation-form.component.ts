@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Document,
     Oas20Operation,
@@ -23,32 +23,33 @@ import {
     Oas20PathItem,
     Oas20Response,
     OasLibraryUtils,
-    OasPathItem, OasSecurityRequirement
+    OasPathItem,
+    OasSecurityRequirement
 } from "oai-ts-core";
 import {
+    createAddSecurityRequirementCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
     createChangeResponseTypeCommand,
     createDeleteAllParametersCommand,
+    createDeleteAllResponsesCommand,
+    createDeleteOperationCommand,
     createDeleteParameterCommand,
     createDeleteResponseCommand,
+    createDeleteSecurityRequirementCommand,
     createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
-    createDeleteOperationCommand,
-    createDeleteAllResponsesCommand,
-    SimplifiedParameterType,
+    createReplaceSecurityRequirementCommand,
     ICommand,
-    createDeleteSecurityRequirementCommand,
-    createAddSecurityRequirementCommand,
-    createReplaceSecurityRequirementCommand
+    SimplifiedParameterType,
+    SimplifiedType
 } from "oai-ts-commands";
 import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
-import {SimplifiedType} from "oai-ts-commands";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {ModelUtils} from "../../_util/model.util";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
@@ -77,8 +78,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     get operation(): Oas20Operation {
         return this._operation;
     }
-
-    @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
@@ -304,7 +303,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.type = newType;
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, nt);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeRequestBodyTypeOf(newOf: string): void {
@@ -314,7 +313,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         newType.of.type = newOf;
         newType.as = null;
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeRequestBodyTypeAs(newAs: string): void {
@@ -327,7 +326,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
             newType.of.as = newAs;
         }
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public bodyDescription(): string {
@@ -471,85 +470,84 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public changeSummary(newSummary: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"summary", newSummary);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeOperationId(newId: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"operationId", newId);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeDescription(newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation, "description", newDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeBodyDescription(newBodyDescription: string): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), bodyParam,"description", newBodyDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeParamDescription(param: Oas20Parameter, newParamDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), param, "description", newParamDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeParamType(param: Oas20Parameter, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), param, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeResponseType(response: Oas20Response, newType: SimplifiedType): void {
         let command: ICommand = createChangeResponseTypeCommand(this.operation.ownerDocument(), response, newType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public changeResponseDescription(response: Oas20Response, newDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), response, "description", newDescription);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public createRequestBody(): void {
         let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public delete(): void {
         let command: ICommand = createDeleteOperationCommand(this.operation.ownerDocument(), this.operation.method(),
             this.operation.parent() as OasPathItem);
-        this.onCommand.emit(command);
-        this.onDeselect.emit(true);
+        this.commandService.emit(command);
     }
 
     public deleteRequestBody(): void {
         if (this.hasBodyParam()) {
             let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "body");
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         } else {
             let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "formData");
-            this.onCommand.emit(command);
+            this.commandService.emit(command);
         }
     }
 
     public deleteAllQueryParams(): void {
         let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "query");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteAllResponses(): void {
         let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteParam(parameter: Oas20Parameter): void {
         let command: ICommand = createDeleteParameterCommand(this.operation.ownerDocument(), parameter);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public deleteResponse(response: Oas20Response): void {
         let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public openAddQueryParamModal(): void {
@@ -562,12 +560,12 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public addQueryParam(name: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "query");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addFormDataParam(name: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "formData");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public openAddResponseModal(): void {
@@ -576,12 +574,12 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public addResponse(statusCode: string): void {
         let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public createPathParam(paramName: string): void {
         let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, paramName, "path");
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public enableSourceMode(): void {
@@ -635,7 +633,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event, requirement);
         let command: ICommand = createAddSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -647,7 +645,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event.data, newRequirement);
         let command: ICommand = createReplaceSecurityRequirementCommand(this.operation.ownerDocument(), event.requirement, newRequirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     /**
@@ -656,7 +654,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
         let command: ICommand = createDeleteSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
 }

@@ -25,6 +25,7 @@ import {AbstractTypedItemComponent} from "./typed-item.component";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {ObjectUtils} from "../../../_util/object.util";
 import {EditExample20Event} from "../../dialogs/edit-example-20.component";
+import {CommandService} from "../../../_services/command.service";
 
 
 @Component({
@@ -40,7 +41,9 @@ export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedT
     @Input() document: Oas20Document;
     @Input() response: Oas20Response;
 
-    @Output() onCommand: EventEmitter<ICommand> = new EventEmitter<ICommand>();
+    constructor(private commandService: CommandService) {
+        super();
+    }
 
     public statusCodeLine(code: string): string {
         let httpCode: HttpCode = ResponseRowComponent.httpCodes.getCode(code);
@@ -146,17 +149,17 @@ export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedT
 
     public deleteExample(contentType: string): void {
         let command: ICommand = createDelete20ExampleCommand(this.document, this.response, contentType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public addExample(exampleData: any): void {
         let command: ICommand = createSetExampleCommand(this.document, this.response, exampleData.value, exampleData.contentType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
     public editExample(event: EditExample20Event): void {
         let command: ICommand = createSetExampleCommand(this.document, this.response, event.value, event.contentType);
-        this.onCommand.emit(command);
+        this.commandService.emit(command);
     }
 
 }

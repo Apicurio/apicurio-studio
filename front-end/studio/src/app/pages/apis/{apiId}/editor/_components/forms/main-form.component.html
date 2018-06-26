@@ -1,31 +1,7 @@
 <div class="detail-content">
 
     <!-- Info about the API -->
-    <div class="section info-section panel-group">
-        <div class="section-header panel-title">
-            <a data-toggle="collapse" data-target="#info-section-body">
-                <span class="section-label">INFO</span>
-            </a>
-            <context-help>
-                <p>This section allows you to modify the <strong>Name</strong>, <strong>Version</strong>, and <strong>Description</strong> of the API.</p>
-            </context-help>
-        </div>
-        <div class="section-body collapse in" id="info-section-body">
-            <div class="api-title-and-version">
-                <span style="font-size: 16px">This API is currently version</span>
-                <inline-text-editor [value]="version()"
-                                    [labelClass]="'api-version'"
-                                    [formClass]="'api-title-editor-form'"
-                                    [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
-                                    [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></inline-text-editor>
-            </div>
-            <inline-textarea-editor [value]="description()"
-                                    [labelClass]="'api-description api-item-description'"
-                                    [formClass]="'api-description-editor-form'"
-                                    [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
-                                    [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-textarea-editor>
-        </div>
-    </div>
+    <info-section [document]="document" [info]="document.info"></info-section>
 
     <!-- Contact Info -->
     <div class="section contact-section panel-group">
@@ -42,7 +18,7 @@
             <icon-button (click)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
                          [title]="'Delete the contact information.'"></icon-button>
         </div>
-        <div class="section-body collapse" id="contact-section-body" [class.in]="hasContact()">
+        <div class="section-body collapse in" id="contact-section-body">
 
             <signpost *ngIf="!hasContact()">
                 <span>No contact information has been entered.</span>
@@ -75,7 +51,7 @@
             <icon-button (click)="deleteLicense()" [disabled]="!hasLicense()" [pullRight]="true" [type]="'delete'"
                          [title]="'Delete the license information.'"></icon-button>
         </div>
-        <div class="section-body collapse" id="license-section-body" [class.in]="hasLicense()">
+        <div class="section-body collapse in" id="license-section-body">
 
             <signpost *ngIf="!hasLicense()">
                 <span>No license has been set.</span>
@@ -139,7 +115,7 @@
             <icon-button (click)="addTagDialog.open()" [pullRight]="true" [type]="'add'"
                          [title]="'Add a tag to the API.'"></icon-button>
         </div>
-        <div class="section-body collapse" id="tags-section-body" [class.in]="tags().length > 0">
+        <div class="section-body collapse in" id="tags-section-body">
 
             <signpost *ngIf="tags().length === 0">
                 <span>No tags have been configured.</span>
@@ -174,7 +150,8 @@
     </div>
 
     <!-- Global Servers -->
-    <servers-section *ngIf="is3xForm()" [parent]="document" (onCommand)="onCommand.emit($event)" [description]="'Configure global servers for your API in this section.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+    <servers-section *ngIf="is3xForm()" [parent]="document"
+                     [description]="'Configure global servers for your API in this section.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
     <!-- Security Schemes -->
     <div class="section security-section panel-group">
@@ -196,7 +173,7 @@
             <icon-button (click)="openSecuritySchemeDialog()" [pullRight]="true" [type]="'add'"
                          [title]="'Add a security scheme to the API.'"></icon-button>
         </div>
-        <div class="section-body collapse" id="security-section-body" [class.in]="hasSecuritySchemes()">
+        <div class="section-body collapse in" id="security-section-body">
 
             <signpost *ngIf="!hasSecuritySchemes()">
                 <span>No security options have been configured.</span>
@@ -256,7 +233,7 @@
             <icon-button (click)="openSecurityRequirementDialog()" [pullRight]="true" [type]="'add'"
                          [title]="'Add a security requirement to the API.'"></icon-button>
         </div>
-        <div class="section-body collapse" id="security-requirements-section-body" [class.in]="hasSecurityRequirements()">
+        <div class="section-body collapse in" id="security-requirements-section-body">
 
             <signpost *ngIf="!hasSecurityRequirements()">
                 <span>No global security requirements have been configured.</span>

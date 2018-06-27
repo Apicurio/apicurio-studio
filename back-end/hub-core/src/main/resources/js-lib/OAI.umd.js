@@ -76,9 +76,18 @@ var OasNode = (function () {
     };
     OasNode.prototype.validationProblems = function () {
         var problems = [];
-        for (var _i = 0, _a = this._validationProblems; _i < _a.length; _i++) {
-            var problem = _a[_i];
-            problems.push(problem);
+        for (var code in this._validationProblems) {
+            problems.push(this._validationProblems[code]);
+        }
+        return problems;
+    };
+    OasNode.prototype.validationProblemsFor = function (propertyName) {
+        var problems = [];
+        for (var code in this._validationProblems) {
+            var problem = this._validationProblems[code];
+            if (propertyName === problem.property) {
+                problems.push(problem);
+            }
         }
         return problems;
     };
@@ -12091,7 +12100,7 @@ var OasTraverser = (function () {
      * @param {OasValidationProblem} node
      */
     OasTraverser.prototype.visitValidationProblem = function (node) {
-        node.accept(this);
+        node.accept(this.visitor);
         // Don't traverse the validation problem's validation problems. :)
     };
     return OasTraverser;

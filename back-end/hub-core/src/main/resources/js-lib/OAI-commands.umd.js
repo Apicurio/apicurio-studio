@@ -7385,6 +7385,415 @@ var ReplaceSecurityRequirementCommand = (function (_super) {
     return ReplaceSecurityRequirementCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteAllTagsCommand() {
+    return new DeleteAllTagsCommand();
+}
+/**
+ * A command used to delete all tags from a document.
+ */
+var DeleteAllTagsCommand = (function (_super) {
+    __extends$54(DeleteAllTagsCommand, _super);
+    /**
+     * C'tor.
+     */
+    function DeleteAllTagsCommand() {
+        return _super.call(this) || this;
+    }
+    /**
+     * Deletes the tags.
+     * @param document
+     */
+    DeleteAllTagsCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[DeleteAllTagsCommand] Executing.");
+        this._oldTags = [];
+        // Save the old tags (if any)
+        if (!this.isNullOrUndefined(document.tags)) {
+            document.tags.forEach(function (tag) {
+                _this._oldTags.push(_this.oasLibrary().writeNode(tag));
+            });
+        }
+        document.tags = [];
+    };
+    /**
+     * Restore the old (deleted) tags.
+     * @param document
+     */
+    DeleteAllTagsCommand.prototype.undo = function (document) {
+        var _this = this;
+        console.info("[DeleteAllTagsCommand] Reverting.");
+        if (this._oldTags.length === 0) {
+            return;
+        }
+        if (this.isNullOrUndefined(document.tags)) {
+            document.tags = [];
+        }
+        this._oldTags.forEach(function (oldTag) {
+            var tag = document.createTag();
+            _this.oasLibrary().readNode(oldTag, tag);
+            document.tags.push(tag);
+        });
+    };
+    DeleteAllTagsCommand.prototype.type = function () {
+        return "DeleteAllTagsCommand";
+    };
+    return DeleteAllTagsCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$55 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteAllServersCommand(parent) {
+    return new DeleteAllServersCommand(parent);
+}
+/**
+ * A command used to delete all servers from a document.
+ */
+var DeleteAllServersCommand = (function (_super) {
+    __extends$55(DeleteAllServersCommand, _super);
+    /**
+     * C'tor.
+     */
+    function DeleteAllServersCommand(parent) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        return _this;
+    }
+    DeleteAllServersCommand.prototype.type = function () {
+        return "DeleteAllServersCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteAllServersCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteAllServersCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Deletes the servers.
+     * @param document
+     */
+    DeleteAllServersCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[DeleteAllServersCommand] Executing.");
+        this._oldServers = [];
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Save the old servers (if any)
+        if (!this.isNullOrUndefined(parent.servers)) {
+            parent.servers.forEach(function (server) {
+                _this._oldServers.push(_this.oasLibrary().writeNode(server));
+            });
+        }
+        parent.servers = [];
+    };
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    DeleteAllServersCommand.prototype.undo = function (document) {
+        var _this = this;
+        console.info("[DeleteAllServersCommand] Reverting.");
+        if (this._oldServers.length === 0) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        if (this.isNullOrUndefined(parent.servers)) {
+            parent.servers = [];
+        }
+        this._oldServers.forEach(function (oldServer) {
+            var server = parent.createServer();
+            _this.oasLibrary().readNode(oldServer, server);
+            parent.servers.push(server);
+        });
+    };
+    return DeleteAllServersCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteAllSecurityRequirementsCommand(parent) {
+    return new DeleteAllSecurityRequirementsCommand(parent);
+}
+/**
+ * A command used to delete all security requirements from a document or operation.
+ */
+var DeleteAllSecurityRequirementsCommand = (function (_super) {
+    __extends$56(DeleteAllSecurityRequirementsCommand, _super);
+    /**
+     * C'tor.
+     */
+    function DeleteAllSecurityRequirementsCommand(parent) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        return _this;
+    }
+    DeleteAllSecurityRequirementsCommand.prototype.type = function () {
+        return "DeleteAllSecurityRequirementsCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteAllSecurityRequirementsCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteAllSecurityRequirementsCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Deletes the security requirements.
+     * @param document
+     */
+    DeleteAllSecurityRequirementsCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[DeleteAllSecurityRequirementsCommand] Executing.");
+        this._oldSecurityRequirements = [];
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Save the old security-requirements (if any)
+        if (!this.isNullOrUndefined(parent.security)) {
+            parent.security.forEach(function (req) {
+                _this._oldSecurityRequirements.push(_this.oasLibrary().writeNode(req));
+            });
+        }
+        parent.security = [];
+    };
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    DeleteAllSecurityRequirementsCommand.prototype.undo = function (document) {
+        var _this = this;
+        console.info("[DeleteAllSecurityRequirementsCommand] Reverting.");
+        if (this._oldSecurityRequirements.length === 0) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        if (this.isNullOrUndefined(parent.security)) {
+            parent.security = [];
+        }
+        this._oldSecurityRequirements.forEach(function (oldSecurityRequirement) {
+            var requirement = parent.createSecurityRequirement();
+            _this.oasLibrary().readNode(oldSecurityRequirement, requirement);
+            parent.security.push(requirement);
+        });
+    };
+    return DeleteAllSecurityRequirementsCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteAllSecuritySchemesCommand() {
+    return new DeleteAllSecuritySchemesCommand();
+}
+/**
+ * A command used to delete all security schemes from a document or operation.
+ */
+var DeleteAllSecuritySchemesCommand = (function (_super) {
+    __extends$57(DeleteAllSecuritySchemesCommand, _super);
+    /**
+     * C'tor.
+     */
+    function DeleteAllSecuritySchemesCommand() {
+        return _super.call(this) || this;
+    }
+    DeleteAllSecuritySchemesCommand.prototype.type = function () {
+        return "DeleteAllSecuritySchemesCommand";
+    };
+    /**
+     * Deletes the security schemes.
+     * @param document
+     */
+    DeleteAllSecuritySchemesCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[DeleteAllSecuritySchemesCommand] Executing.");
+        this._oldSecuritySchemes = [];
+        // Logic for a 2.0 doc
+        if (document.is2xDocument()) {
+            var doc = document;
+            if (!this.isNullOrUndefined(doc.securityDefinitions)) {
+                doc.securityDefinitions.securitySchemes().forEach(function (scheme) {
+                    var savedScheme = _this.oasLibrary().writeNode(scheme);
+                    savedScheme["__name"] = scheme.schemeName();
+                    _this._oldSecuritySchemes.push(savedScheme);
+                });
+            }
+            doc.securityDefinitions = null;
+        }
+        // Logic for a 3.0 doc
+        if (document.is3xDocument()) {
+            var doc_1 = document;
+            if (!this.isNullOrUndefined(doc_1.components)) {
+                doc_1.components.getSecuritySchemes().forEach(function (scheme) {
+                    var savedScheme = _this.oasLibrary().writeNode(scheme);
+                    savedScheme["__name"] = scheme.schemeName();
+                    _this._oldSecuritySchemes.push(savedScheme);
+                    doc_1.components.removeSecurityScheme(scheme.schemeName());
+                });
+            }
+        }
+    };
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    DeleteAllSecuritySchemesCommand.prototype.undo = function (document) {
+        var _this = this;
+        console.info("[DeleteAllSecuritySchemesCommand] Reverting.");
+        if (this._oldSecuritySchemes.length === 0) {
+            return;
+        }
+        // Logic for a 2.0 doc
+        if (document.is2xDocument()) {
+            var doc_2 = document;
+            if (this.isNullOrUndefined(doc_2.securityDefinitions)) {
+                doc_2.securityDefinitions = doc_2.createSecurityDefinitions();
+            }
+            this._oldSecuritySchemes.forEach(function (savedScheme) {
+                var name = savedScheme["__name"];
+                var scheme = doc_2.securityDefinitions.createSecurityScheme(name);
+                _this.oasLibrary().readNode(savedScheme, scheme);
+                doc_2.securityDefinitions.addSecurityScheme(name, scheme);
+            });
+        }
+        // Logic for a 3.0 doc
+        if (document.is3xDocument()) {
+            var doc_3 = document;
+            if (this.isNullOrUndefined(doc_3.components)) {
+                doc_3.components = doc_3.createComponents();
+            }
+            this._oldSecuritySchemes.forEach(function (savedScheme) {
+                var name = savedScheme["__name"];
+                var scheme = doc_3.components.createSecurityScheme(name);
+                _this.oasLibrary().readNode(savedScheme, scheme);
+                doc_3.components.addSecurityScheme(name, scheme);
+            });
+        }
+    };
+    return DeleteAllSecuritySchemesCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -7437,6 +7846,10 @@ var commandFactory = {
     "DeleteAllParametersCommand_30": function () { return new DeleteAllParametersCommand_30(null, null); },
     "DeleteAllPropertiesCommand_20": function () { return new DeleteAllPropertiesCommand_20(null); },
     "DeleteAllPropertiesCommand_30": function () { return new DeleteAllPropertiesCommand_30(null); },
+    "DeleteAllTagsCommand": function () { return new DeleteAllTagsCommand(); },
+    "DeleteAllServersCommand": function () { return new DeleteAllServersCommand(null); },
+    "DeleteAllSecurityRequirementsCommand": function () { return new DeleteAllSecurityRequirementsCommand(null); },
+    "DeleteAllSecuritySchemesCommand": function () { return new DeleteAllSecuritySchemesCommand(); },
     "DeleteExampleCommand_20": function () { return new DeleteExampleCommand_20(null, null); },
     "DeleteExampleCommand_30": function () { return new DeleteExampleCommand_30(null); },
     "DeleteMediaTypeCommand": function () { return new DeleteMediaTypeCommand(null); },
@@ -7976,6 +8389,14 @@ exports.createDeleteAllResponsesCommand = createDeleteAllResponsesCommand;
 exports.AbstractDeleteAllResponsesCommand = AbstractDeleteAllResponsesCommand;
 exports.DeleteAllResponsesCommand_20 = DeleteAllResponsesCommand_20;
 exports.DeleteAllResponsesCommand_30 = DeleteAllResponsesCommand_30;
+exports.createDeleteAllServersCommand = createDeleteAllServersCommand;
+exports.DeleteAllServersCommand = DeleteAllServersCommand;
+exports.createDeleteAllSecurityRequirementsCommand = createDeleteAllSecurityRequirementsCommand;
+exports.DeleteAllSecurityRequirementsCommand = DeleteAllSecurityRequirementsCommand;
+exports.createDeleteAllSecuritySchemesCommand = createDeleteAllSecuritySchemesCommand;
+exports.DeleteAllSecuritySchemesCommand = DeleteAllSecuritySchemesCommand;
+exports.createDeleteAllTagsCommand = createDeleteAllTagsCommand;
+exports.DeleteAllTagsCommand = DeleteAllTagsCommand;
 exports.createDeleteContactCommand = createDeleteContactCommand;
 exports.AbstractDeleteContactCommand = AbstractDeleteContactCommand;
 exports.DeleteContactCommand_20 = DeleteContactCommand_20;

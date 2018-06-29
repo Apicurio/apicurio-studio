@@ -8,46 +8,14 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="drawer-pf-notification" *ngFor="let error of validationErrors">
-                        <span *ngIf="error.severity === high()" class="pficon pficon-error-circle-o pull-left"></span>
-                        <span *ngIf="error.severity === medium()" class="pficon pficon-warning-triangle-o pull-left"></span>
-                        <span *ngIf="error.severity === low()" class="pficon pficon-info pull-left"></span>
+                        <span class="pficon {{ iconFor(error) }} pull-left" title="{{ error.errorCode }}"></span>
                         <div class="drawer-pf-notification-content">
-                            <span class="drawer-pf-notification-message">{{ error.message }}</span>
+                            <span class="drawer-pf-notification-message">{{ summaryFor(error) }}</span>
                             <div class="drawer-pf-notification-info">
                                 <a (click)="goTo(error)">Go to problem</a>
                             </div>
                         </div>
                     </div>
-                    <!--<div class="drawer-pf-notification">-->
-                        <!--<span class="pficon pficon-ok pull-left"></span>-->
-                        <!--<div class="drawer-pf-notification-content">-->
-                            <!--<span class="drawer-pf-notification-message">Another Event Notification</span>-->
-                            <!--<div class="drawer-pf-notification-info">-->
-                                <!--<span class="date">3/31/16</span>-->
-                                <!--<span class="time">12:12:44 PM</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="drawer-pf-notification">-->
-                        <!--<span class="pficon pficon-warning-triangle-o pull-left"></span>-->
-                        <!--<div class="drawer-pf-notification-content">-->
-                            <!--<span class="drawer-pf-notification-message">Another Event Notification that is really long to see how it reacts on smaller screens sizes.</span>-->
-                            <!--<div class="drawer-pf-notification-info">-->
-                                <!--<span class="date">3/31/16</span>-->
-                                <!--<span class="time">12:12:44 PM</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="drawer-pf-notification">-->
-                        <!--<span class="pficon pficon-error-circle-o pull-left"></span>-->
-                        <!--<div class="drawer-pf-notification-content">-->
-                            <!--<span class="drawer-pf-notification-message">Another Event Notification</span>-->
-                            <!--<div class="drawer-pf-notification-info">-->
-                                <!--<span class="date">3/31/16</span>-->
-                                <!--<span class="time">12:12:44 PM</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
                     <div class="blank-slate-pf" *ngIf="!hasProblems()">
                         <div class="blank-slate-pf-icon">
                             <span class="pficon-info"></span>

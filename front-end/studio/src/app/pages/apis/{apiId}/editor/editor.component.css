@@ -1,75 +1,36 @@
 .api-editor .dropdown.empty > button.btn > span {
   color: #bbb;
 }
-.api-editor.light span.empty,
-.api-editor.light div.empty,
-.api-editor.light button.empty {
+.api-editor span.empty,
+.api-editor div.empty,
+.api-editor button.empty {
   color: #bbb;
 }
-.api-editor.light span.path-param,
-.api-editor.light span.server-variable {
+.api-editor span.path-param,
+.api-editor span.server-variable {
   color: #ff6a7c;
 }
-.api-editor.light span.path-segment::before {
+.api-editor span.path-segment::before {
   color: #363636;
 }
-.api-editor.light .context-help .context-help-panel p > a {
-  color: #0088ce;
-}
-.api-editor.light .context-help .context-help-panel p > a:hover {
-  color: #00659c;
-}
-.api-editor.light div.api-item-description {
+.api-editor div.api-item-description {
   border-left: 2px solid #39a5dc;
 }
-.api-editor.light div.api-item-description.empty {
+.api-editor div.api-item-description.empty {
   border-left: 2px solid #bbb;
   color: #bbb;
 }
-.api-editor.light .editor-master {
+.api-editor .editor-master {
   background-color: white;
   border-right: 1px solid #ddd;
 }
-.api-editor.light .editor-detail {
+.api-editor .editor-detail {
   background-color: white;
 }
-.api-editor.light .editor-detail .detail-actionbar {
-  border-bottom-color: #ddd;
-}
-.api-editor.light .editor-detail .hover-overlay {
-  border-color: #39a5dc;
-}
-.api-editor.light .editor-detail .hover-overlay .overlay-actions {
-  background: #39a5dc;
-  border-left-color: #39a5dc;
-}
-.api-editor.light .editor-detail .hover-overlay .overlay-actions .overlay-action {
-  background-color: #39a5dc;
-  color: white;
-  -webkit-transition: color 500ms;
-  -moz-transition: color 500ms;
-  -ms-transition: color 500ms;
-  -o-transition: color 500ms;
-  transition: color 500ms;
-}
-.api-editor.light .editor-detail .hover-overlay .overlay-actions .overlay-action:hover {
-  color: gold;
-}
-.api-editor.light .editor-detail .edit-overlay {
-  border-color: #bbb;
-  background-color: white;
-}
-.api-editor.light .editor-detail .edit-overlay.focus {
-  box-shadow: 3px 3px 3px rgba(0, 136, 206, 0.3), -3px 3px 3px rgba(0, 136, 206, 0.3);
-  border-color: #0088ce;
-}
-.api-editor.light .editor-detail .edit-overlay.hover {
-  border-color: #7dc3e8;
-}
-.api-editor.light .editor-detail table tbody tr:hover {
+.api-editor .editor-detail table tbody tr:hover {
   background-color: #efefef;
 }
-.api-editor.light .editor-master .editor-main {
+.api-editor .editor-master .editor-main {
   background-color: #eee;
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
@@ -77,186 +38,149 @@
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
 }
-.api-editor.light .editor-master .editor-main:hover {
+.api-editor .editor-master .editor-main:hover {
   background-color: #d1eaf7;
 }
-.api-editor.light .editor-master .editor-main.selected {
+.api-editor .editor-master .editor-main.selected {
   background-color: #a5d6ef;
 }
-.api-editor.light .editor-master .editor-search {
+.api-editor .editor-master .editor-search {
 }
-.api-editor.light .editor-master .editor-search input {
+.api-editor .editor-master .editor-search input {
   background-color: #eee;
   color: #333;
 }
-.api-editor.light .editor-master .editor-validation.expanded {
-  border-bottom: 1px solid #ddd;
-}
-
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.tree {
-  border-left: 2px dotted #50A162;
-  background-color: #daedde;
-}
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.bus {
-  border-left: 2px dotted #B65B80;
-  background-color: #f8eff3;
-}
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.bomb {
-  border-left: 2px dotted #D94C4C;
-  background-color: #f9e6e6;
-}
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.university {
-  border-left: 2px dotted #477187;
-  background-color: #c4d6e0;
-}
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.rocket {
-  border-left: 2px dotted #D4786A;
-  background-color: #f5e2df;
-}
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.taxi {
-  border-left: 2px dotted #B10DC9;
-  background-color: #f1b2fa;
-}
-
-.api-editor.light .editor-master .editor-validation.expanded .validation-problem.selected {
-  background-color: #a5d6ef;
-}
-.api-editor.light .section .section-header {
+.api-editor .section .section-header {
   border-bottom: 1px dotted #ddd;
 }
-.api-editor.light .section .section-header a {
+.api-editor .section .section-header a {
   color: #333;
 }
-.api-editor.light .editor-master .editor-outline .api-path {
+.api-editor .editor-master .editor-outline .api-path {
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
 }
-.api-editor.light .editor-master .editor-outline .api-path:hover {
+.api-editor .editor-master .editor-outline .api-path:hover {
   background-color: #d1eaf7;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected {
+.api-editor .editor-master .editor-outline .api-path.selected {
   background-color: #a5d6ef;
   border-left: 2px solid #39a5dc;
 }
-.api-editor.light .editor-master .editor-outline .api-path.contexted,
+.api-editor .editor-master .editor-outline .api-path.contexted,
 .api-editor .editor-master .editor-outline .api-path.contexted:hover {
   background-color: #FFCC87;
   border-left: 2px dotted #E89F3D;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label {
+.api-editor .editor-master .editor-outline .api-path.selected .label {
   -webkit-transition: border-color 350ms, box-shadow 350ms;
   -moz-transition: border-color 350ms, box-shadow 350ms;
   -ms-transition: border-color 350ms, box-shadow 350ms;
   -o-transition: border-color 350ms, box-shadow 350ms;
   transition: border-color 350ms, box-shadow 350ms;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label:hover {
+.api-editor .editor-master .editor-outline .api-path.selected .label:hover {
   box-shadow: 0 0 3px #646464;
   border: 1px solid #666;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.tree {
+.api-editor .editor-master .editor-outline .api-path.selected .label.tree {
   border: 2px dashed #50A162;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.bus {
+.api-editor .editor-master .editor-outline .api-path.selected .label.bus {
   border: 2px dashed #B65B80;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.bomb {
+.api-editor .editor-master .editor-outline .api-path.selected .label.bomb {
   border: 2px dashed #D94C4C;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.university {
+.api-editor .editor-master .editor-outline .api-path.selected .label.university {
   border: 2px dashed #477187;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.rocket {
+.api-editor .editor-master .editor-outline .api-path.selected .label.rocket {
   border: 2px dashed #D4786A;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.taxi {
+.api-editor .editor-master .editor-outline .api-path.selected .label.taxi {
   border: 2px dashed #B10DC9;
 }
-.api-editor.light .editor-master .editor-outline .api-path.selected .label.selected {
+.api-editor .editor-master .editor-outline .api-path.selected .label.selected {
   border: 1px solid black;
   box-shadow: 0 0 3px #141414;
 }
-.api-editor.light .editor-master .editor-outline .api-definition {
+.api-editor .editor-master .editor-outline .api-definition {
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
 }
-.api-editor.light .editor-master .editor-outline .api-definition:hover {
+.api-editor .editor-master .editor-outline .api-definition:hover {
   background-color: #d1eaf7;
 }
-.api-editor.light .editor-master .editor-outline .api-definition.selected {
+.api-editor .editor-master .editor-outline .api-definition.selected {
   background-color: #a5d6ef;
   border-left: 2px solid #39a5dc;
 }
-.api-editor.light .editor-master .editor-outline .api-definition.contexted,
+.api-editor .editor-master .editor-outline .api-definition.contexted,
 .api-editor .editor-master .editor-outline .api-definition.contexted:hover {
   background-color: #FFCC87;
   border-left: 2px dotted #E89F3D;
 }
-.api-editor.light .editor-master .editor-outline .api-response {
+.api-editor .editor-master .editor-outline .api-response {
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
 }
-.api-editor.light .editor-master .editor-outline .api-response:hover {
+.api-editor .editor-master .editor-outline .api-response:hover {
   background-color: #d1eaf7;
 }
-.api-editor.light .editor-master .editor-outline .api-response.selected {
+.api-editor .editor-master .editor-outline .api-response.selected {
   background-color: #a5d6ef;
   border-left: 2px solid #39a5dc;
 }
-.api-editor.light .editor-detail .detail-title {
+.api-editor .editor-detail .detail-title {
   border-bottom: 1px solid #ddd;
 }
-.api-editor.light .editor-detail .detail-title .detail-actions {
+.api-editor .editor-detail .detail-title .detail-actions {
   border-left: 1px solid #ddd;
 }
-.api-editor.light .editor-detail .detail-title .detail-actions .dropdown .btn {
+.api-editor .editor-detail .detail-title .detail-actions .dropdown .btn {
   color: #333;
 }
-.api-editor.light .editor-detail .detail-title .detail-actions:hover {
+.api-editor .editor-detail .detail-title .detail-actions:hover {
   background-color: #d1eaf7;
 }
-.api-editor.light .editor-detail .detail-content .info-section .api-md-entry .md-label {
+.api-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
   color: #333;
 }
-.api-editor.light td.path-parameter,
-.api-editor.light div.path-parameter,
-.api-editor.light span.path-parameter {
+.api-editor td.path-parameter, .api-editor div.path-parameter, .api-editor span.path-parameter {
   color: #ff6a7c;
 }
-.api-editor.light td.query-parameter,
-.api-editor.light div.query-parameter,
-.api-editor.light span.query-parameter {
+.api-editor td.query-parameter, .api-editor div.query-parameter, .api-editor span.query-parameter {
   color: #39a5dc;
 }
-.api-editor.light div.statusCode.success {
+.api-editor div.statusCode.success {
   color: green;
 }
-.api-editor.light div.statusCode.redirect {
+.api-editor div.statusCode.redirect {
   color: blue;
 }
-.api-editor.light div.statusCode.problem {
+.api-editor div.statusCode.problem {
   color: orange;
 }
-.api-editor.light div.statusCode.error {
+.api-editor div.statusCode.error {
   color: red;
 }
-.api-editor.light .api-operation-parameters td.icons,
-.api-details table td.icons {
+.api-editor .api-operation-parameters td.icons, .api-details table td.icons {
   color: #666;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation {
   border-bottom: 1px solid #ddd;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type .label {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label {
   -webkit-transition: border-color 200ms, box-shadow 200ms;
   -moz-transition: border-color 200ms, box-shadow 200ms;
   -ms-transition: border-color 200ms, box-shadow 200ms;
@@ -265,159 +189,33 @@
   box-shadow: none;
   border: 1px solid transparent;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .type .label:hover {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label:hover {
   border-color: #666;
   box-shadow: 0px 0px 8px #666;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .name.empty {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .name.empty {
   color: #bbb;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty {
   color: #999;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
   background-color: #ccc;
   border-color: transparent;
   box-shadow: none;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
   background-color: #ccc;
   border-color: transparent;
   box-shadow: none;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation .delete-operation {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .delete-operation {
   visibility: hidden;
 }
-.api-editor.light .editor-detail .api-path-detail .operations-section .api-operation:hover .delete-operation {
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation:hover .delete-operation {
   visibility: visible;
 }
 
-.api-editor.dark span.path-param {
-  color: #ff6a7c;
-}
-.api-editor.dark span.path-segment::before {
-  color: white;
-}
-.api-editor.dark div.api-item-description {
-  border-left: 2px solid #356c8c;
-}
-.api-editor.dark {
-  background-color: #1D2225;
-  color: #eee;
-}
-.api-editor.dark .editor-master {
-  background-color: #1D2225;
-  border-right: 1px solid #bbb;
-}
-.api-editor.dark .editor-detail {
-  background-color: #1D2225;
-}
-.api-editor.dark .editor-detail .hover-overlay {
-  border-color: #356c8c;
-}
-.api-editor.dark .editor-detail .hover-overlay .overlay-actions {
-  background: #356c8c;
-  border-left-color: #356c8c;
-}
-.api-editor.dark .editor-detail .hover-overlay .overlay-actions .overlay-action {
-  background-color: #356c8c;
-  color: white;
-}
-.api-editor.dark .editor-detail .edit-overlay {
-  border-color: #bbb;
-  background-color: white;
-}
-.api-editor.dark .editor-detail .edit-overlay.focus {
-  box-shadow: 3px 3px 3px rgba(0, 136, 206, 0.3), -3px 3px 3px rgba(0, 136, 206, 0.3);
-  border-color: #0088ce;
-}
-.api-editor.dark .editor-detail .edit-overlay.hover {
-  border-color: #7dc3e8;
-}
-.api-editor.dark .editor-master .editor-main {
-  background-color: #3f4950;
-}
-.api-editor.dark .editor-master .editor-main:hover {
-  background-color: #274f67;
-}
-.api-editor.dark .editor-master .editor-main.selected {
-  background-color: #356c8c;
-}
-.api-editor.dark .editor-master .editor-search {
-  border-top: 1px solid #bbb;
-  border-bottom: 1px solid #bbb;
-}
-.api-editor.dark .section .section-header {
-  border-bottom: 1px dotted #bbb;
-}
-.api-editor.dark .section .section-header a {
-  color: #fff;
-}
-.api-editor.dark .editor-master .editor-outline .api-path:hover {
-  background-color: #274f67;
-}
-.api-editor.dark .editor-master .editor-outline .api-path.selected {
-  background-color: #356c8c;
-  border-left: 2px solid #76accb;
-}
-.api-editor.dark .editor-master .editor-outline .api-path.selected .label.empty {
-  background-color: #ccc;
-}
-.api-editor.dark .editor-master .editor-outline .api-path.selected .label:hover {
-  border: 1px solid #274f67;
-}
-.api-editor.dark .editor-master .editor-outline .api-path.selected .label.selected {
-  border: 1px solid white;
-}
-.api-editor.dark .editor-master .editor-outline .api-definition:hover {
-  background-color: #274f67;
-}
-.api-editor.dark .editor-master .editor-outline .api-definition.selected {
-  background-color: #356c8c;
-  border-left: 2px solid #76accb;
-}
-.api-editor.dark .editor-master .editor-outline .api-response:hover {
-  background-color: #274f67;
-}
-.api-editor.dark .editor-master .editor-outline .api-response.selected {
-  background-color: #356c8c;
-  border-left: 2px solid #76accb;
-}
-.api-editor.dark .editor-detail .detail-title {
-  border-bottom: 1px solid #bbb;
-}
-.api-editor.dark .editor-detail .detail-title .detail-actions {
-  border-left: 1px solid #bbb;
-}
-.api-editor.dark .editor-detail .detail-title .detail-actions .dropdown .btn {
-  color: #fff;
-}
-.api-editor.dark .editor-detail .detail-title .detail-actions:hover {
-  background-color: #274f67;
-}
-.api-editor.dark .editor-detail .detail-tabs ul {
-  border-bottom-color: #bbb;
-}
-.api-editor.dark .editor-detail .detail-content .info-section .api-md-entry .md-label {
-  color: #fff;
-}
-.api-editor.dark .api-operation-parameters td.parameter {
-  color: #ff6a7c;
-}
-.api-editor.dark .api-operation-parameters td.icons,
-.api-details table td.icons {
-  color: #666;
-}
-.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation {
-  border-bottom: 1px solid #bbb;
-}
-.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty {
-  color: #888;
-}
-.api-editor.dark .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
-  color: #888;
-  background-color: #444;
-}
 .modal.in .modal-dialog {
   -ms-transform: none;
   transform: none;
@@ -440,6 +238,10 @@
 .api-editor span.path-segment:before {
   content: "/";
 }
+
+.api-editor .context-help {
+  margin-left: 10px;
+}
 .api-editor .context-help a {
   cursor: pointer;
 }
@@ -453,14 +255,15 @@
 .api-editor .context-help .context-help-panel {
   position: fixed;
   margin: 0;
-  padding: 10px;
+  padding: 10px 14px;
   border: 1px solid #bbb;
-  border-radius: 3px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
   z-index: 150;
   background: white;
-  font-size: 14px;
-  font-weight: normal;
+  line-height: 18px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
   max-width: 450px;
   cursor: default;
 }
@@ -469,11 +272,15 @@
   margin: 0;
   line-height: 18px;
 }
-.api-editor .context-help .context-help-panel pre {
-  margin-top: 10px;
+.api-editor .context-help .context-help-panel p > a {
+  color: #0088ce;
 }
 .api-editor .context-help .context-help-panel p > a:hover {
+  color: #00659c;
   text-decoration: underline;
+}
+.api-editor .context-help .context-help-panel pre {
+  margin-top: 10px;
 }
 .api-editor div.tab-panel {
   border-top: none;
@@ -523,6 +330,10 @@
   left: 0;
   right: 50px;
   cursor: pointer;
+}
+.api-editor .editor-title-bar > h1.no-title {
+  font-style: italic;
+  color: #9c9c9c;
 }
 .api-editor .editor-title-bar > h1 > span {
   white-space: nowrap;
@@ -691,17 +502,16 @@
   height: 100%;
 }
 .api-editor .editor-title-bar .validation-icon:hover button {
-  color: #9c9c9c;
 }
 
-.api-editor .editor-title-bar .validation-icon.has-errors button {
+.api-editor .editor-title-bar .validation-icon.has-errors button, .api-editor .editor-title-bar .validation-icon:hover button, .api-editor .editor-title-bar.expanded .validation-icon button {
   color: #666;
 }
-.api-editor .editor-title-bar .validation-icon.has-errors:hover, .api-editor .editor-title-bar.expanded .validation-icon {
-  background-color: #9c9c9c;
+.api-editor .editor-title-bar .validation-icon.has-errors:hover {
+  background-color: #d1eaf7;
 }
-.api-editor .editor-title-bar .validation-icon.has-errors:hover button, .api-editor .editor-title-bar.expanded .validation-icon button {
-  color: white;
+.api-editor .editor-title-bar.expanded .validation-icon, .api-editor .editor-title-bar.expanded .validation-icon:hover {
+  background-color: #a5d6ef;
 }
 
 
@@ -726,6 +536,7 @@
 
 .api-editor .editor-problem-drawer {
   position: absolute;
+  z-index: 200;
   top: 41px;
   right: 0;
   width: 320px;
@@ -733,6 +544,7 @@
 }
 .api-editor .editor-problem-drawer .drawer-pf {
   height: 100%;
+  width: 360px;
 }
 .api-editor .editor-problem-drawer .drawer-pf .panel-body {
   padding: 0;
@@ -751,50 +563,10 @@
   cursor: pointer;
 }
 
-.api-editor .editor-master .editor-validation {
-  line-height: 18px;
-  font-size: 14px;
-  display: none;
-}
-.api-editor .editor-master .editor-validation.expanded {
-  display: block;
-}
-.api-editor .editor-master .editor-validation.expanded .validation-problem {
-  padding: 5px;
-}
-.api-editor .editor-master .editor-validation.expanded .validation-problem:hover {
-  background-color: #eee;
-  cursor: pointer;
-}
-.api-editor .editor-master .editor-validation.expanded .validation-problem.selected {
-  cursor: default;
-}
-.api-editor .editor-master .editor-validation .validation-problem .icon {
-  color: #c00;
-}
-.api-editor .editor-master .editor-validation .validation-problem .code {
-  font-weight: bold;
-  color: #666;
-}
-.api-editor .editor-master .editor-validation.expanded .validation-no-problem {
-  padding: 5px;
-}
-.api-editor .editor-master .editor-validation .validation-no-problem .icon {
-  color: #3f9c35;
-}
 .api-editor .editor-master .editor-outline {
   padding: 5px;
   height: 100%;
   overflow-y: auto;
-}
-.api-editor .problem-marker:before {
-  content: "⚠";
-  text-rendering: auto;
-  color: #c00;
-  position: absolute;
-  top: 2px;
-  left: 1px;
-  font-size: 13px;
 }
 .api-editor .section {
   padding: 0;
@@ -975,7 +747,7 @@
   min-width: 90px;
 }
 .api-editor .editor-detail .hover-overlay {
-  border: 1px solid;
+  border: 1px solid #39a5dc;
   border-radius: 1px;
   background-color: transparent;
   position: fixed;
@@ -999,7 +771,8 @@
   height: 100%;
   padding: 0;
   margin: 0;
-  border-left: 1px solid;
+  border-left: 1px solid #39a5dc;
+  background: #39a5dc;
 }
 .api-editor .editor-detail .hover-overlay .overlay-actions .overlay-action {
   width: 19px;
@@ -1008,6 +781,16 @@
   padding: 0;
   margin: 0;
   font-size: 13px;
+  background-color: #39a5dc;
+  color: white;
+  -webkit-transition: color 500ms;
+  -moz-transition: color 500ms;
+  -ms-transition: color 500ms;
+  -o-transition: color 500ms;
+  transition: color 500ms;
+}
+.api-editor .editor-detail .hover-overlay .overlay-actions .overlay-action:hover {
+  color: gold;
 }
 .api-editor .editor-detail .edit-overlay {
   position: absolute;
@@ -1025,10 +808,19 @@
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   z-index: 150;
+  background-color: white;
+}
+.api-editor .editor-detail .edit-overlay.focus {
+  box-shadow: 3px 3px 3px rgba(0, 136, 206, 0.3), -3px 3px 3px rgba(0, 136, 206, 0.3);
+  border-color: #0088ce;
+}
+.api-editor .editor-detail .edit-overlay.hover {
+  border-color: #7dc3e8;
 }
 .api-editor .editor-detail .edit-overlay .overlay-action {
   margin: 2px;
 }
+
 .api-editor .editor-detail .detail-title {
   height: 45px;
 }
@@ -1078,7 +870,7 @@
 .api-editor .editor-detail .detail-actionbar {
   text-align: right;
   padding: 5px 25px 5px 5px;
-  border-bottom: 1px solid;
+  border-bottom: 1px solid #ddd;
 }
 .api-editor .editor-detail .detail-content {
   height: 100%;
@@ -1510,4 +1302,76 @@
 }
 .api-editor .form-group .form-error-message {
   color: red;
+}
+
+.api-editor .validation-aggregate .badge {
+  background-color: #0088ce;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  margin: -2px 5px;
+  padding: 2px 4px;
+  min-width: 12px;
+  min-height: 12px;
+}
+.api-editor .validation-aggregate .badge:hover {
+  filter: brightness(120%);
+}
+.api-editor .validation-aggregate .badge-pf-bordered {
+  border: 1px solid white;
+}
+.api-editor .validation-aggregate .badge-pf-bordered:hover {
+}
+
+.api-editor .section .section-header > a {
+  position: relative;
+}
+
+.api-editor .section .section-header > a .validation-aggregate {
+  position: absolute;
+  right: -15px;
+  top: -6px;
+}
+
+.api-editor .validation-problem-icon {
+  cursor: pointer;
+}
+.api-editor .validation-problem-icon:hover {
+  filter: brightness(125%);
+}
+
+.api-editor .validation-aggregate .validation-aggregate-panel,
+.api-editor .validation-problems-panel {
+  position: fixed;
+  margin: 0;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  background: white;
+  max-width: 425px;
+  max-height: 125px;
+  cursor: default;
+  overflow-y: auto;
+  color: #4d5258;
+  line-height: 18px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+.api-editor .validation-aggregate .validation-aggregate-panel .problem,
+.api-editor .validation-problems-panel .problem {
+  width: 100%;
+  text-align: left;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.api-editor .validation-aggregate .validation-aggregate-panel .problem .fa,
+.api-editor .validation-problems-panel .problem .fa {
+  margin-right: 3px;
 }

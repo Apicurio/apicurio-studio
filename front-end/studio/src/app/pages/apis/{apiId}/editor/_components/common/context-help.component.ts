@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ViewChildren, QueryList, ElementRef, HostListener} from "@angular/core";
+import {Component, HostListener} from "@angular/core";
 
 @Component({
     moduleId: module.id,
@@ -26,10 +26,8 @@ export class ContextHelpComponent {
 
     private _open: boolean = false;
 
-    private left: string;
-    private top: string;
-
-    @ViewChildren("helppanel") helppanel: QueryList<ElementRef>;
+    public left: string;
+    public top: string;
 
     @HostListener("document:click", ["$event"])
     public onDocumentClick(event: MouseEvent): void {

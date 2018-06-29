@@ -5,10 +5,10 @@
     <master [document]="document()" #master></master>
 
     <div class="editor-detail" [ngSwitch]="formType">
-        <main-20-form [document]="document()" class="editor-detail-form"
-                      *ngSwitchCase="'main_20'"></main-20-form>
-        <main-30-form [document]="document()" class="editor-detail-form"
-                      *ngSwitchCase="'main_30'"></main-30-form>
+        <main-form [document]="document()" class="editor-detail-form"
+                      *ngSwitchCase="'main_20'"></main-form>
+        <main-form [document]="document()" class="editor-detail-form"
+                      *ngSwitchCase="'main_30'"></main-form>
 
         <path-form [path]="selectedPath()" class="editor-detail-form"
                    *ngSwitchCase="'path_20'"></path-form>
@@ -24,11 +24,6 @@
                          *ngSwitchCase="'definition_20'"></definition-form>
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          *ngSwitchCase="'definition_30'"></definition-form>
-
-        <problem-form [problem]="selectedProblem()" class="editor-detail-form"
-                      *ngSwitchCase="'problem_20'"></problem-form>
-        <problem-form [problem]="selectedProblem()" class="editor-detail-form"
-                      *ngSwitchCase="'problem_30'"></problem-form>
     </div>
 
 </div>

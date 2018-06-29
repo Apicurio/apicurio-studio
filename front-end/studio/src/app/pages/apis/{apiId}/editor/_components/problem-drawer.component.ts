@@ -18,6 +18,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {OasValidationProblem, OasValidationProblemSeverity} from "oai-ts-core";
 import {SelectionService} from "../_services/selection.service";
+import {ProblemsService} from "../_services/problems.service";
 
 
 /**
@@ -34,8 +35,7 @@ export class EditorProblemDrawerComponent implements OnInit, OnDestroy {
     @Input() validationErrors: OasValidationProblem[];
     @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private selectionService: SelectionService) {
-    }
+    constructor(private selectionService: SelectionService, private problemsService: ProblemsService) {}
 
     public ngOnInit(): void {
     }
@@ -47,20 +47,26 @@ export class EditorProblemDrawerComponent implements OnInit, OnDestroy {
         return this.validationErrors && this.validationErrors.length > 0;
     }
 
-    public high(): OasValidationProblemSeverity {
-        return OasValidationProblemSeverity.high;
-    }
-
-    public medium(): OasValidationProblemSeverity {
-        return OasValidationProblemSeverity.medium;
-    }
-
-    public low(): OasValidationProblemSeverity {
-        return OasValidationProblemSeverity.low;
-    }
-
     public goTo(problem: OasValidationProblem): void {
         this.close.emit(true);
         this.selectionService.select(problem.nodePath, problem.ownerDocument());
     }
+
+    public iconFor(problem: OasValidationProblem): string {
+        switch (problem.severity) {
+            case OasValidationProblemSeverity.low:
+                return "pficon-info";
+            case OasValidationProblemSeverity.medium:
+                return "pficon-warning-triangle-o";
+            case OasValidationProblemSeverity.high:
+                return "pficon-error-circle-o";
+            default:
+                return "pficon-info";
+        }
+    }
+
+    public summaryFor(problem: OasValidationProblem): string {
+        return this.problemsService.summary(problem);
+    }
+
 }

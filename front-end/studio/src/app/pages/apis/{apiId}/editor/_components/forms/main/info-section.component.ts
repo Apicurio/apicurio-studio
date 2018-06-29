@@ -15,27 +15,9 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
-import {
-    Oas30Document,
-    Oas30Operation,
-    Oas30PathItem,
-    Oas30Server,
-    Oas30ServerVariable,
-    OasDocument,
-    OasInfo
-} from "oai-ts-core";
-import {
-    createChangeDescriptionCommand,
-    createChangePropertyCommand,
-    createChangeServerCommand,
-    createChangeVersionCommand,
-    createDeleteServerCommand,
-    createNewServerCommand,
-    ICommand
-} from "oai-ts-commands";
-import {ObjectUtils} from "../../../_util/object.util";
-import {ServerEventData} from "../../dialogs/add-server.component";
+import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {OasDocument, OasInfo} from "oai-ts-core";
+import {createChangeDescriptionCommand, createChangeVersionCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 
 
@@ -48,16 +30,19 @@ import {CommandService} from "../../../_services/command.service";
 export class InfoSectionComponent {
 
     @Input() document: OasDocument;
-    @Input() info: OasInfo;
 
     constructor(private commandService: CommandService) {}
+
+    public info(): OasInfo {
+        return this.document.info;
+    }
 
     /**
      * returns the version.
      */
     public version(): string {
-        if (this.info) {
-            return this.info.version;
+        if (this.info()) {
+            return this.info().version;
         } else {
             return null;
         }
@@ -67,8 +52,8 @@ export class InfoSectionComponent {
      * returns the description.
      */
     public description(): string {
-        if (this.info) {
-            return this.info.description;
+        if (this.info()) {
+            return this.info().description;
         } else {
             return null;
         }

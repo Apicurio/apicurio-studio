@@ -2,13 +2,14 @@
     <div class="section-header panel-title">
         <a [class.collapsed]="servers().length === 0" data-toggle="collapse" data-target="#servers-section-body">
             <span class="section-label">SERVERS</span>
+            <validation-aggregate [models]="servers()"></validation-aggregate>
         </a>
         <context-help>
             <p>{{ description }}</p>
         </context-help>
         <icon-button (click)="addServerDialog.open()" [pullRight]="true" [type]="'add'"></icon-button>
     </div>
-    <div class="section-body collapse" id="servers-section-body" [class.in]="servers().length > 0">
+    <div class="section-body collapse" id="servers-section-body" [class.in]="!collapsed">
 
         <signpost *ngIf="servers().length === 0">
             <span>No servers have been defined.</span>
@@ -25,7 +26,10 @@
             </thead>
             <tbody>
             <tr *ngFor="let server of servers()">
-                <td class="server-name" server-url [url]="server.url"></td>
+                <td class="server-name">
+                    <validation-problem [model]="server"></validation-problem>
+                    <span server-url [url]="server.url"></span>
+                </td>
                 <td class="description pre-actions"><inline-text-editor [noValueMessage]="'No description.'"
                                                             [topIncrement]="2"
                                                             (onChange)="changeServerDescription(server, $event)"

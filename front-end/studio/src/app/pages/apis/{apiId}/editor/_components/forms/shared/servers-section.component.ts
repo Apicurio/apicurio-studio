@@ -32,12 +32,13 @@ import {CommandService} from "../../../_services/command.service";
 @Component({
     moduleId: module.id,
     selector: "servers-section",
-    templateUrl: "servers.component.html",
+    templateUrl: "servers-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
 export class ServersSectionComponent {
 
     @Input() parent: Oas30Document | Oas30PathItem | Oas30Operation;
+    @Input() collapsed: boolean;
     @Input() description: string;
 
     constructor(private commandService: CommandService) {}

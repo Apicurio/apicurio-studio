@@ -16,18 +16,8 @@
  */
 
 import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Response, OasPathItem} from "oai-ts-core";
 import {
-    Oas20Document,
-    Oas20Operation,
-    Oas20Parameter,
-    Oas20PathItem,
-    Oas20Response,
-    OasLibraryUtils,
-    OasPathItem,
-    OasSecurityRequirement
-} from "oai-ts-core";
-import {
-    createAddSecurityRequirementCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
     createChangeResponseTypeCommand,
@@ -36,12 +26,10 @@ import {
     createDeleteOperationCommand,
     createDeleteParameterCommand,
     createDeleteResponseCommand,
-    createDeleteSecurityRequirementCommand,
     createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
-    createReplaceSecurityRequirementCommand,
     ICommand,
     SimplifiedParameterType,
     SimplifiedType
@@ -53,11 +41,6 @@ import {ObjectUtils} from "../../_util/object.util";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {ModelUtils} from "../../_util/model.util";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
-import {
-    ChangeSecurityRequirementEvent,
-    SecurityRequirementDialogComponent,
-    SecurityRequirementEventData
-} from "../dialogs/security-requirement.component";
 
 
 @Component({
@@ -82,7 +65,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
-    @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
 
     protected createEmptyNodeForSource(): Oas20Operation {
         return (<Oas20PathItem>this.operation.parent()).createOperation(this.operation.method());
@@ -589,72 +571,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     public parentPath() {
         return (this.operation.parent() as OasPathItem).path()
-    }
-
-    /**
-     * Returns true if there is at least one security requirement defined.
-     * @return
-     */
-    public hasSecurityRequirements(): boolean {
-        return this.securityRequirements().length > 0;
-    }
-
-    /**
-     * Returns all defined security requirements.
-     * @return
-     */
-    public securityRequirements(): OasSecurityRequirement[] {
-        return this.operation.security ? this.operation.security : [];
-    }
-
-    /**
-     * Returns a summary of the requirement.
-     * @param requirement
-     * @return
-     */
-    public securityRequirementSummary(requirement: OasSecurityRequirement): string {
-        return requirement.securityRequirementNames().join(", ");
-    }
-
-    /**
-     * Opens the security requirement dialog for adding or editing a security requirement.
-     * @param requirement
-     */
-    public openSecurityRequirementDialog(requirement?: OasSecurityRequirement): void {
-        this.securityRequirementDialog.open(this.operation.ownerDocument(), requirement);
-    }
-
-    /**
-     * Called when the user adds a new security requirement.
-     * @param event
-     */
-    public addSecurityRequirement(event: SecurityRequirementEventData): void {
-        let requirement: OasSecurityRequirement = this.operation.createSecurityRequirement();
-        let library: OasLibraryUtils = new OasLibraryUtils();
-        library.readNode(event, requirement);
-        let command: ICommand = createAddSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.commandService.emit(command);
-    }
-
-    /**
-     * Called when the user changes an existing Security Requirement.
-     * @param event
-     */
-    public changeSecurityRequirement(event: ChangeSecurityRequirementEvent): void {
-        let newRequirement: OasSecurityRequirement = this.operation.createSecurityRequirement();
-        let library: OasLibraryUtils = new OasLibraryUtils();
-        library.readNode(event.data, newRequirement);
-        let command: ICommand = createReplaceSecurityRequirementCommand(this.operation.ownerDocument(), event.requirement, newRequirement);
-        this.commandService.emit(command);
-    }
-
-    /**
-     * Deletes a security requirement.
-     * @param requirement
-     */
-    public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
-        let command: ICommand = createDeleteSecurityRequirementCommand(this.operation.ownerDocument(), this.operation, requirement);
-        this.commandService.emit(command);
     }
 
 }

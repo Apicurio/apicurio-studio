@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import {ValidationIconComponent} from './pages/apis/{apiId}/editor/_components/common/validation-icon.component';
 import {ServerUrlComponent} from './pages/apis/{apiId}/editor/_components/common/server-url.component';
@@ -42,10 +42,9 @@ import {OperationFormComponent} from './pages/apis/{apiId}/editor/_components/fo
 import {ContentComponent} from './pages/apis/{apiId}/editor/_components/forms/operation/content.component';
 import {Operation30FormComponent} from './pages/apis/{apiId}/editor/_components/forms/operation-30-form.component';
 import {PropertyRowComponent} from './pages/apis/{apiId}/editor/_components/forms/definition/property-row.component';
-import {ServersSectionComponent} from './pages/apis/{apiId}/editor/_components/forms/shared/servers.component';
+import {ServersSectionComponent} from './pages/apis/{apiId}/editor/_components/forms/shared/servers-section.component';
 import {DefinitionItemComponent} from './pages/apis/{apiId}/editor/_components/forms/definition-item.component';
 import {DefinitionFormComponent} from './pages/apis/{apiId}/editor/_components/forms/definition-form.component';
-import {ProblemFormComponent} from './pages/apis/{apiId}/editor/_components/forms/problem-form.component';
 import {PathFormComponent} from './pages/apis/{apiId}/editor/_components/forms/path-form.component';
 import {EditorMasterComponent} from './pages/apis/{apiId}/editor/_components/master.component';
 import {ApiEditorComponent} from './pages/apis/{apiId}/editor/editor.component';
@@ -54,10 +53,7 @@ import {AddPathDialogComponent} from './pages/apis/{apiId}/editor/_components/di
 import {AddResponseDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-response.component';
 import {AddFormDataParamDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component';
 import {AddDefinitionDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-definition.component';
-import {
-    Main20FormComponent,
-    Main30FormComponent
-} from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
+import {MainFormComponent} from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
 import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component';
 import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
@@ -78,26 +74,34 @@ import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/t
 import {EditorProblemDrawerComponent} from "./pages/apis/{apiId}/editor/_components/problem-drawer.component";
 import {InfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/info-section.component";
 import {CommandService} from "./pages/apis/{apiId}/editor/_services/command.service";
+import {ValidationProblemComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-problem.component";
+import {ValidationAggregateComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-aggregate.component";
+import {ContactSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/contact-section.component";
+import {LicenseSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/license-section.component";
+import {TagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/tags-section.component";
+import {SecurityRequirementsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/security-requirements-section.component";
+import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-schemes-section.component";
 
 @NgModule({
     imports: [
         CommonModule, FormsModule, ModalModule, BsDropdownModule, ApicurioCommonComponentsModule
     ],
     declarations: [
-        ValidationIconComponent, ServerUrlComponent, SearchComponent,
-        SchemaTypeComponent, ResponseItemComponent, PathItemComponent, InlineTextAreaComponent,
-        InlineTextEditorComponent, ContextHelpComponent, SetLicenseDialogComponent, SetContactDialogComponent,
-        SecurityScheme30DialogComponent, SecurityScheme20DialogComponent, ClonePathDialogComponent,
-        CloneDefinitionDialogComponent, AddTagDialogComponent, AddServerDialogComponent,
-        AddSchemaPropertyDialogComponent, ResponseRow30Component, ResponseRowComponent, ParamRowComponent,
-        ContentComponent, PropertyRowComponent, ServersSectionComponent, ProblemFormComponent, PathFormComponent,
+        ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
+        PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
+        SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
+        SecurityScheme20DialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
+        AddTagDialogComponent, AddServerDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component,
+        ResponseRowComponent, ParamRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent,
-        AddMediaTypeDialogComponent, Main20FormComponent, Main30FormComponent, RenameDefinitionDialogComponent,
-        AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent,
-        EditExample20DialogComponent, SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent,
-        EditorProblemDrawerComponent, InfoSectionComponent
+        AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
+        EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
+        SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
+        LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
+        SecuritySchemesSectionComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService

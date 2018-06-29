@@ -1,0 +1,35 @@
+<div class="section contact-section panel-group">
+    <div class="section-header panel-title">
+        <a [class.collapsed]="!hasContact()" data-toggle="collapse" data-target="#contact-section-body">
+            <span class="section-label">CONTACT</span>
+            <validation-aggregate [models]="[contact()]"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>
+                Update the information contained in this section to provide users of the API details
+                about how to contact you should they need help.
+            </p>
+        </context-help>
+        <icon-button (click)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
+                     [title]="'Delete the contact information.'"></icon-button>
+    </div>
+    <div class="section-body collapse in" id="contact-section-body">
+
+        <signpost *ngIf="!hasContact()">
+            <span>No contact information has been entered.</span>
+            <a (click)="setContactDialog.open()">Add contact info</a>
+        </signpost>
+
+        <div *ngIf="hasContact()">
+            <p>
+                <span>For more information about this API, users can </span>
+                <span *ngIf="contactEmail()">contact <validation-problem [model]="contact()" property="email"></validation-problem><a href="mailto:{{ contactEmail() }}" target="_blank">{{ contactName() }}</a></span>
+                <span *ngIf="contactUrl() && contactEmail()"> or </span>
+                <span *ngIf="contactUrl()">visit <validation-problem [model]="contact()" property="url"></validation-problem><a href="{{ contactUrl() }}" target="_blank">{{ contactUrl() }}</a></span><span>.</span>
+            </p>
+            <button class="btn btn-default btn-sm" (click)="setContactDialog.open(contact())">Change Contact Info</button>
+        </div>
+
+    </div>
+</div>
+<set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>

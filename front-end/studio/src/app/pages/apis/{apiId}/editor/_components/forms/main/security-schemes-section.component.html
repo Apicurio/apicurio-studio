@@ -1,0 +1,64 @@
+<div class="section security-section panel-group">
+    <div class="section-header panel-title">
+        <a [class.collapsed]="!hasSecuritySchemes()" data-toggle="collapse" data-target="#security-section-body">
+            <span class="section-label">SECURITY SCHEMES</span>
+            <validation-aggregate [models]="securitySchemes()"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>
+                Use this section to configure your API's security options.  There are three types of
+                security you may choose from (each with its own specific configuration details):
+            </p>
+            <ul>
+                <li><a href="https://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">BASIC</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/Application_programming_interface_key" target="_blank">API Key</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a></li>
+            </ul>
+        </context-help>
+        <icon-button (click)="openSecuritySchemeDialog()" [pullRight]="true" [type]="'add'"
+                     [title]="'Add a security scheme to the API.'"></icon-button>
+    </div>
+    <div class="section-body collapse in" id="security-section-body">
+
+        <signpost *ngIf="!hasSecuritySchemes()">
+            <span>No security options have been configured.</span>
+            <a (click)="openSecuritySchemeDialog()">Add a security scheme</a>
+        </signpost>
+
+        <table class="table table-striped table-bordered" *ngIf="hasSecuritySchemes()">
+            <thead>
+            <tr>
+                <th width="20%">Name</th>
+                <th width="20%" nowrap>Security Type</th>
+                <th class="pre-actions" width="60%">Description</th>
+                <th class="actions" width="1%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let scheme of securitySchemes()">
+                <td class="scheme-name">
+                    <validation-problem [model]="scheme"></validation-problem>
+                    <span>{{ scheme.schemeName() }}</span>
+                </td>
+                <td class="scheme-type">{{ scheme.type }}</td>
+                <td class="description pre-actions"><inline-text-editor [noValueMessage]="'No description.'"
+                                                                        [topIncrement]="2"
+                                                                        (onChange)="changeSecuritySchemeDescription(scheme, $event)"
+                                                                        [value]="scheme.description"></inline-text-editor></td>
+                <td class="actions" nowrap>
+                    <div>
+                        <icon-button (click)="openSecuritySchemeDialog(scheme)" [type]="'edit'"
+                                     [title]="'Edit security scheme.'"></icon-button>
+                        <icon-button (click)="deleteSecurityScheme(scheme)" [type]="'delete'"
+                                     [title]="'Delete security scheme.'"></icon-button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<security-scheme-20-dialog #securityScheme20Dialog (onSchemeAdded)="addSecurityScheme($event)"
+                           (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-20-dialog>
+<security-scheme-30-dialog #securityScheme30Dialog (onSchemeAdded)="addSecurityScheme($event)"
+                           (onSchemeChanged)="changeSecurityScheme($event)"></security-scheme-30-dialog>

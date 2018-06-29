@@ -2,6 +2,7 @@
     <div class="section-header panel-title">
         <a data-toggle="collapse" data-target="#info-section-body">
             <span class="section-label">INFO</span>
+            <validation-aggregate [models]="[info()]" [properties]="['version', 'description']" [shallow]="true"></validation-aggregate>
         </a>
         <context-help>
             <p>This section allows you to modify the <strong>Version</strong> and <strong>Description</strong> of the API.</p>
@@ -9,6 +10,7 @@
     </div>
     <div class="section-body collapse in" id="info-section-body">
         <div class="api-title-and-version">
+            <validation-problem [model]="info()" property="version"></validation-problem>
             <span style="font-size: 16px">This API is currently version</span>
             <inline-text-editor [value]="version()"
                                 [labelClass]="'api-version'"

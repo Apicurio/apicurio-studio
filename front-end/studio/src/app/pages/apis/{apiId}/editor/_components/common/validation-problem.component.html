@@ -1,0 +1,9 @@
+<span (window:keydown)="onGlobalKeyDown($event)" *ngIf="hasProblems()">
+    <a class="validation-problem-icon" (click)="open($event)"><span class="pficon {{ icon() }}"></span></a>
+</span>
+<div *ngIf="isOpen()" class="validation-problems-panel" [style.left]="left" [style.top]="top">
+    <div class="problem" *ngFor="let problem of validationProblems()">
+        <span class="pficon {{ iconFor(problem) }}" title="{{ problem.errorCode }}"></span>
+        {{ summaryFor(problem) }}
+    </div>
+</div>

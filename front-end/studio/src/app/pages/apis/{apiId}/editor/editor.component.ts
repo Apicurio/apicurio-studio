@@ -256,7 +256,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public validateModel(): void {
         let doc: OasDocument = this.document();
         this.validationErrors = this._library.validate(doc, true);
-        console.info("Model Validated: ", this.validationErrors);
     }
 
     /**
@@ -289,18 +288,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public selectedDefinition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
         if (this.currentSelectionType === "definition") {
             return this.currentSelectionNode as Oas20SchemaDefinition;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the currently selected definition.
-     * @return
-     */
-    public selectedProblem(): OasValidationProblem {
-        if (this.currentSelectionType === "problem") {
-            return this.currentSelectionNode as OasValidationProblem;
         } else {
             return null;
         }
@@ -375,10 +362,5 @@ export class FormSelectionVisitor extends OasCombinedVisitorAdapter {
     public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
-    }
-
-    public visitValidationProblem(node: OasValidationProblem): void {
-        this._selectedNode = node;
-        this._selectionType = "problem";
     }
 }

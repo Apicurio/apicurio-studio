@@ -12,6 +12,7 @@
                         <div class="drawer-pf-notification-content">
                             <span class="drawer-pf-notification-message">{{ summaryFor(error) }}</span>
                             <div class="drawer-pf-notification-info">
+                                <div class="explanation">{{ explanationFor(error) }}</div>
                                 <a (click)="goTo(error)">Go to problem</a>
                             </div>
                         </div>

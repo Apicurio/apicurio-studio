@@ -556,8 +556,14 @@
 }
 .api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-message {
   line-height: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 .api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info {
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info .explanation {
+  line-height: 15px;
+  font-size: 13px;
 }
 .api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info a {
   cursor: pointer;

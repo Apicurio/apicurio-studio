@@ -69,4 +69,8 @@ export class EditorProblemDrawerComponent implements OnInit, OnDestroy {
         return this.problemsService.summary(problem);
     }
 
+    public explanationFor(problem: OasValidationProblem): string {
+        return this.problemsService.explanation(problem);
+    }
+
 }

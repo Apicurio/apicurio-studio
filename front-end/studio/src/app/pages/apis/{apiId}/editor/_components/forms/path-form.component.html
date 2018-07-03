@@ -5,7 +5,7 @@
             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="fa fa-ellipsis-v"></span>
             </button>
-            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+            <ul class="dropdown-menu" aria-labelledby="dropdownKebab">
                 <li>
                     <a href="#" onclick="return false" (click)="newPath()">
                         <span class="pficon pficon-add-circle-o"></span>
@@ -72,6 +72,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#path-parameters-section-body">
                             <span class="section-label">PATH PARAMETERS</span>
+                            <validation-aggregate [models]="pathParameters()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -100,6 +101,7 @@
                     <div class="section-header panel-title">
                         <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
                             <span class="section-label">QUERY PARAMETERS</span>
+                            <validation-aggregate [models]="queryParameters()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -136,6 +138,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#operations-section-body">
                             <span class="section-label">OPERATIONS</span>
+                            <validation-aggregate [models]="operations()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -156,7 +159,7 @@
 
                         <div class="api-operation" [class.empty]="!hasGet()">
                             <div class="">
-                                <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span></div>
+                                <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span><validation-aggregate [models]="[path.get]"></validation-aggregate></div>
                                 <inline-text-editor [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -176,7 +179,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasPut()">
                             <div class="">
-                                <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span></div>
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span><validation-aggregate [models]="[path.put]"></validation-aggregate></div>
                                 <inline-text-editor [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -196,7 +199,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasPost()">
                             <div class="">
-                                <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span></div>
+                                <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span><validation-aggregate [models]="[path.post]"></validation-aggregate></div>
                                 <inline-text-editor [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -216,7 +219,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasDelete()">
                             <div class="">
-                                <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span></div>
+                                <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span><validation-aggregate [models]="[path.delete]"></validation-aggregate></div>
                                 <inline-text-editor [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -236,7 +239,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasOptions()">
                             <div class="">
-                                <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span></div>
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span><validation-aggregate [models]="[path.options]"></validation-aggregate></div>
                                 <inline-text-editor [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -256,7 +259,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasHead()">
                             <div class="">
-                                <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span></div>
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span><validation-aggregate [models]="[path.head]"></validation-aggregate></div>
                                 <inline-text-editor [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -276,7 +279,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasPatch()">
                             <div class="">
-                                <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span></div>
+                                <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span><validation-aggregate [models]="[path.patch]"></validation-aggregate></div>
                                 <inline-text-editor [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"
@@ -296,7 +299,7 @@
                         </div>
                         <div class="api-operation" [class.empty]="!hasTrace()" *ngIf="supportsTraceOperation()">
                             <div class="">
-                                <div class="type"><span class="label label-info" (click)="selectOperation(trace())">TRACE</span></div>
+                                <div class="type"><span class="label label-info" (click)="selectOperation(trace())">TRACE</span><validation-aggregate [models]="[path['trace']]"></validation-aggregate></div>
                                 <inline-text-editor [value]="traceSummary()" [enabled]="hasTrace()" [noValueMessage]="'No Summary'"
                                                     [labelClass]="'name'"
                                                     [formClass]="'api-summary-editor-form'"

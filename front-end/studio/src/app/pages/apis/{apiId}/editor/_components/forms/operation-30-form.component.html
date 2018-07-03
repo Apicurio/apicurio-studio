@@ -61,6 +61,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#info-section-body">
                             <span class="section-label">INFO</span>
+                            <validation-aggregate [models]="[operation]" [shallow]="true" [properties]="[ 'operationId', 'summary', 'description' ]"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -71,6 +72,7 @@
                     </div>
                     <div class="section-body collapse in" id="info-section-body">
                         <h1>
+                            <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
                             <inline-text-editor [value]="summary()" [noValueMessage]="'No Summary'"
                                                 [labelClass]="'api-item-title'"
                                                 [inputClass]="'api-item-editor api-summary-editor api-item-title'"
@@ -78,6 +80,7 @@
                         </h1>
                         <h2 class="operationId">
                             <strong>ID:</strong>
+                            <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
                             <inline-text-editor [value]="operationId()" [noValueMessage]="'No Operation ID'"
                                                 [labelClass]="'api-item-operation-id'"
                                                 [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
@@ -100,6 +103,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#path-parameters-section-body">
                             <span class="section-label">PATH PARAMETERS</span>
+                            <validation-aggregate [models]="pathParameters()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -126,6 +130,7 @@
                     <div class="section-header panel-title">
                         <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
+                            <validation-aggregate [models]="[operation.requestBody]"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -185,6 +190,7 @@
                     <div class="section-header panel-title">
                         <a [class.collapsed]="!hasQueryParameters()" data-toggle="collapse" data-target="#parameters-section-body">
                             <span class="section-label">QUERY PARAMETERS</span>
+                            <validation-aggregate [models]="queryParameters()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -222,6 +228,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#responses-section-body">
                             <span class="section-label">RESPONSES</span>
+                            <validation-aggregate [models]="responses()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>

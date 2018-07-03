@@ -607,17 +607,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns the name of the definition.
-     * @param definition
-     * @return
-     */
-    public definitionName(definition: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
-        return definition.ownerDocument().getSpecVersion() === "2.0" ?
-            (definition as Oas20SchemaDefinition).definitionName() :
-            (definition as Oas30SchemaDefinition).name();
-    }
-
-    /**
      * Called to determine whether there is a validation problem associated with the given
      * node (either directly on the node or any descendant node).
      * @param node

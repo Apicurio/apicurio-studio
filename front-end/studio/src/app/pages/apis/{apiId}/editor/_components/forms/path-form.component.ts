@@ -103,6 +103,20 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return this.trace() !== undefined && this.trace() !== null;
     }
 
+    public operations(): OasOperation[] {
+        let ops: OasOperation[] = [
+            this.path.get,
+            this.path.put,
+            this.path.post,
+            this.path.delete,
+            this.path.options,
+            this.path.head,
+            this.path.patch,
+            this.path["trace"]
+        ];
+        return ops;
+    }
+
     public getSummary(): string {
         return this.summary(this.path.get);
     }

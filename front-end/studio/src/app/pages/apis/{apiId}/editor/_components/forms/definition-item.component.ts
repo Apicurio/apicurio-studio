@@ -16,6 +16,7 @@
  */
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
 
 
 @Component({
@@ -26,6 +27,15 @@ import {Component, Input, ViewEncapsulation} from "@angular/core";
 })
 export class DefinitionItemComponent {
 
-    @Input() name: string;
+    @Input() schema: Oas20SchemaDefinition | Oas30SchemaDefinition;
+
+    /**
+     * Returns the name of the definition.
+     */
+    public definitionName(): string {
+        return this.schema.ownerDocument().is2xDocument() ?
+            (this.schema as Oas20SchemaDefinition).definitionName() :
+            (this.schema as Oas30SchemaDefinition).name();
+    }
 
 }

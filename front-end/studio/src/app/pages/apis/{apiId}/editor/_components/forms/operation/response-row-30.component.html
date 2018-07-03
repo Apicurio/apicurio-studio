@@ -1,6 +1,10 @@
 <div class="row response typed-item" [class.editing]="isEditing()">
     <div class="col-md-6 metainfo">
-        <div class="statusCode name {{ statusCodeType(response.statusCode()) }}">{{ response.statusCode() }} {{ statusCodeLine(response.statusCode()) }}</div>
+        <div class="statusCode name {{ statusCodeType(response.statusCode()) }}">
+            <validation-problem [model]="response"></validation-problem>
+            <span>{{ response.statusCode() }}</span>
+            <span>{{ statusCodeLine(response.statusCode()) }}</span>
+        </div>
         <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
                                                      (onChange)="setDescription($event)"
                                                      [value]="response.description"></inline-text-editor></div>

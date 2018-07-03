@@ -30,6 +30,7 @@ export class ValidationProblemComponent {
     @Input() model: OasNode;
     @Input() property: string;
     @Input() shallow: boolean;
+    @Input() debug: boolean;
 
     private _open: boolean = false;
     public left: string;
@@ -49,6 +50,12 @@ export class ValidationProblemComponent {
     public hasProblems(): boolean {
         if (!this.model) {
             return false;
+        }
+        if (this.debug) {
+            console.info("PROBLEMS?  Model: ", this.model);
+            console.info("            Prop: ", this.property);
+            console.info("         Shallow: ", this.shallow);
+            console.info("                : ", this.validationProblems());
         }
         return this.validationProblems().length > 0;
     }

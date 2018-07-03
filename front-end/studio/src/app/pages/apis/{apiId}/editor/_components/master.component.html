@@ -90,24 +90,25 @@
             </div>
             <div class="section-body collapse in" id="path-section-body">
                 <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
+                    <validation-aggregate [models]="[path]"></validation-aggregate>
                     <div path-item [path]="path.path()" (click)="selectPath(path)" (contextmenu)="showPathContextMenu($event, path)"></div>
                     <div class="api-operations" *ngIf="isSelected(path) && hasAtLeastOneOperation(path)">
                         <span *ngIf="hasOperation(path, 'get')" class="label label-success {{ operationClasses(path.get) }}" (click)="selectOperation(path.get)"
-                              (contextmenu)="showOperationContextMenu($event, path.get)">GET</span>
+                              (contextmenu)="showOperationContextMenu($event, path.get)"><validation-aggregate [models]="[path.get]"></validation-aggregate><span>GET</span></span>
                         <span *ngIf="hasOperation(path, 'put')" class="label label-info {{ operationClasses(path.put) }}" (click)="selectOperation(path.put)"
-                              (contextmenu)="showOperationContextMenu($event, path.put)">PUT</span>
+                              (contextmenu)="showOperationContextMenu($event, path.put)"><validation-aggregate [models]="[path.put]"></validation-aggregate><span>PUT</span></span>
                         <span *ngIf="hasOperation(path, 'post')" class="label label-warning {{ operationClasses(path.post) }}" (click)="selectOperation(path.post)"
-                              (contextmenu)="showOperationContextMenu($event, path.post)">POST</span>
+                              (contextmenu)="showOperationContextMenu($event, path.post)"><validation-aggregate [models]="[path.post]"></validation-aggregate><span>POST</span></span>
                         <span *ngIf="hasOperation(path, 'delete')" class="label label-danger {{ operationClasses(path.delete) }}" (click)="selectOperation(path.delete)"
-                              (contextmenu)="showOperationContextMenu($event, path.delete)">DELETE</span>
+                              (contextmenu)="showOperationContextMenu($event, path.delete)"><validation-aggregate [models]="[path.delete]"></validation-aggregate><span>DELETE</span></span>
                         <span *ngIf="hasOperation(path, 'options')" class="label label-info {{ operationClasses(path.options) }}" (click)="selectOperation(path.options)"
-                              (contextmenu)="showOperationContextMenu($event, path.options)">OPTIONS</span>
+                              (contextmenu)="showOperationContextMenu($event, path.options)"><validation-aggregate [models]="[path.options]"></validation-aggregate><span>OPTIONS</span></span>
                         <span *ngIf="hasOperation(path, 'head')" class="label label-info {{ operationClasses(path.head) }}" (click)="selectOperation(path.head)"
-                              (contextmenu)="showOperationContextMenu($event, path.head)">HEAD</span>
+                              (contextmenu)="showOperationContextMenu($event, path.head)"><validation-aggregate [models]="[path.head]"></validation-aggregate><span>HEAD</span></span>
                         <span *ngIf="hasOperation(path, 'patch')" class="label label-info {{ operationClasses(path.patch) }}" (click)="selectOperation(path.patch)"
-                              (contextmenu)="showOperationContextMenu($event, path.patch)">PATCH</span>
+                              (contextmenu)="showOperationContextMenu($event, path.patch)"><validation-aggregate [models]="[path.patch]"></validation-aggregate><span>PATCH</span></span>
                         <span *ngIf="hasOperation(path, 'trace')" class="label label-info {{ operationClasses(path['trace']) }}" (click)="selectOperation(path['trace'])"
-                              (contextmenu)="showOperationContextMenu($event, path['trace'])">TRACE</span>
+                              (contextmenu)="showOperationContextMenu($event, path['trace'])"><validation-aggregate [models]="[path['trace']]"></validation-aggregate><span>TRACE</span></span>
                         <span>&nbsp;</span>
                     </div>
                 </div>
@@ -137,7 +138,7 @@
                 <icon-button (click)="addDefinitionDialog.open(document)" [pullRight]="true" [type]="'add'"></icon-button>
             </div>
             <div class="section-body collapse in" id="definition-section-body">
-                <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}"  [name]="definitionName(def)"
+                <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
                      (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
 
                 <signpost *ngIf="definitions().length === 0">

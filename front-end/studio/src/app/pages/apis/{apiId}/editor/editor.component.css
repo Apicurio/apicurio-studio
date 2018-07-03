@@ -241,6 +241,7 @@
 
 .api-editor .context-help {
   margin-left: 10px;
+  display: none;
 }
 .api-editor .context-help a {
   cursor: pointer;
@@ -1319,14 +1320,13 @@
   font-weight: 700;
   margin: -2px 5px;
   padding: 2px 4px;
-  min-width: 12px;
-  min-height: 12px;
+  min-width: 9px;
+  min-height: 9px;
 }
 .api-editor .validation-aggregate .badge:hover {
   filter: brightness(120%);
 }
 .api-editor .validation-aggregate .badge-pf-bordered {
-  border: 1px solid white;
 }
 .api-editor .validation-aggregate .badge-pf-bordered:hover {
 }
@@ -1334,11 +1334,33 @@
 .api-editor .section .section-header > a {
   position: relative;
 }
-
 .api-editor .section .section-header > a .validation-aggregate {
   position: absolute;
   right: -15px;
   top: -6px;
+}
+.api-editor .editor-master .editor-outline .api-path .validation-aggregate {
+  position: absolute;
+  right: 3px;
+  top: -1px;
+}
+.api-editor .editor-master .editor-outline .api-path .api-operations .validation-aggregate {
+  position: absolute;
+  right: -9px;
+  top: -6px;
+}
+.api-editor .editor-master .editor-outline .api-definition .validation-aggregate {
+  position: absolute;
+  right: 3px;
+  top: -1px;
+}
+.api-editor .detail-content .operations-section .api-operation .type {
+  position: relative;
+}
+.api-editor .detail-content .operations-section .api-operation .type .validation-aggregate {
+  position: absolute;
+  right: -8px;
+  top: -11px;
 }
 
 .api-editor .validation-problem-icon {
@@ -1346,6 +1368,9 @@
 }
 .api-editor .validation-problem-icon:hover {
   filter: brightness(125%);
+}
+.api-editor h2 .validation-problem-icon {
+  font-size: 15px;
 }
 
 .api-editor .validation-aggregate .validation-aggregate-panel,

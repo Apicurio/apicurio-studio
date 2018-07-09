@@ -1053,6 +1053,9 @@
 .api-editor .editor-detail .api-operation-detail .request-body-section .request-body-content {
   margin-top: 15px;
 }
+.api-editor .editor-detail .api-operation-detail .request-body-section .request-body-content .content .nav-tabs li > a .icon-button {
+  margin-left: 8px;
+}
 .api-editor .editor-detail .api-operation-detail .media-type .strong {
   font-weight: 600;
 }
@@ -1361,6 +1364,14 @@
   position: absolute;
   right: -8px;
   top: -11px;
+}
+.api-editor .request-body-content .content .nav-tabs li > a {
+  position: relative;
+}
+.api-editor .request-body-content .content .nav-tabs li > a .validation-aggregate {
+  position: absolute;
+  right: 28px;
+  top: 0px;
 }
 
 .api-editor .validation-problem-icon {

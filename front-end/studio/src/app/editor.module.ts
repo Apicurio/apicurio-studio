@@ -81,6 +81,8 @@ import {LicenseSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
 import {TagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/tags-section.component";
 import {SecurityRequirementsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/security-requirements-section.component";
 import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-schemes-section.component";
+import {PathParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-params-section.component";
+import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-params-section.component";
 
 @NgModule({
     imports: [
@@ -101,7 +103,7 @@ import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_comp
         SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
-        SecuritySchemesSectionComponent
+        SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService

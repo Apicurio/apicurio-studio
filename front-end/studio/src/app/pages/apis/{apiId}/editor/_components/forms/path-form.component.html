@@ -68,70 +68,10 @@
                                  [description]="'Configure servers specific to this Path Item and all its Operations.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
                 <!-- Path Parameters Section -->
-                <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
-                    <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#path-parameters-section-body">
-                            <span class="section-label">PATH PARAMETERS</span>
-                            <validation-aggregate [models]="pathParameters()"></validation-aggregate>
-                        </a>
-                        <context-help>
-                            <p>
-                                This section is visible because this path has at least one dynamic path parameter.
-                                Here you can configure information about the path parameter, such as its description
-                                and type.  This information will be inherited by all operations in the path (but can
-                                optionally be overridden by each respective operation).
-                            </p>
-                        </context-help>
-                    </div>
-                    <div class="section-body collapse in" id="path-parameters-section-body">
-                        <!-- The list of path parameters -->
-                        <div class="container-fluid path-parameters typed-item-list">
-                            <param-row *ngFor="let param of pathParameters()"
-                                       [param]="param" [parameterClass]="'path-parameter'"
-                                       (onCreate)="createPathParam(param.name)"
-                                       (onDelete)="deleteParam(param)"
-                                       (onDescriptionChange)="changeParamDescription(param, $event)"
-                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
-                        </div>
-                    </div>
-                </div>
+                <path-params-section [parent]="path" [path]="path"></path-params-section>
 
                 <!-- Query Parameters Section -->
-                <div class="section query-parameters-section panel-group">
-                    <div class="section-header panel-title">
-                        <a [class.collapsed]="!hasParameters('query')" data-toggle="collapse" data-target="#parameters-section-body">
-                            <span class="section-label">QUERY PARAMETERS</span>
-                            <validation-aggregate [models]="queryParameters()"></validation-aggregate>
-                        </a>
-                        <context-help>
-                            <p>
-                                Use this section to define <strong>HTTP Query Parameters</strong> for all of the
-                                Operations in this path.  These query parameters will apply to all operations and
-                                can be overridden (though not removed) at the operation level.
-                            </p>
-                        </context-help>
-                        <icon-button (click)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
-                                     [title]="'Add a new query parameter.'"></icon-button>
-                        <icon-button (click)="deleteAllQueryParams()" [disabled]="!hasParameters('query')" [pullRight]="true" [type]="'delete'"
-                                     [title]="'Delete all query parameters.'"></icon-button>
-                    </div>
-                    <div class="section-body collapse" id="parameters-section-body" [class.in]="hasParameters('query')">
-
-                        <signpost *ngIf="!hasParameters('query')">
-                            <span>No query parameters have been defined.</span>
-                            <a (click)="openAddQueryParamModal()">Add a query parameter</a>
-                        </signpost>
-
-                        <!-- The list of query parameters -->
-                        <div class="container-fluid query-parameters typed-item-list" *ngIf="hasParameters('query')">
-                            <param-row *ngFor="let param of queryParameters()"
-                                       [param]="param" [parameterClass]="'query-parameter'"
-                                       (onDelete)="deleteParam(param)"
-                                       (onDescriptionChange)="changeParamDescription(param, $event)"
-                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
-                        </div>
-                    </div>
-                </div>
+                <query-params-section [parent]="path" [path]="path"></query-params-section>
 
                 <!-- Operations Section -->
                 <div class="section operations-section panel-group">
@@ -324,6 +264,5 @@
     </div>
 </div>
 
-<add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>
 <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
 <clone-path-dialog #clonePathDialog (onClone)="clone($event)"></clone-path-dialog>

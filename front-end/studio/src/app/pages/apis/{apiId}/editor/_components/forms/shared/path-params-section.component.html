@@ -1,0 +1,34 @@
+<!-- Path Parameters Section -->
+<div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
+    <div class="section-header panel-title">
+        <a data-toggle="collapse" data-target="#path-parameters-section-body">
+            <span class="section-label">PATH PARAMETERS</span>
+            <validation-aggregate [models]="pathParameters()"></validation-aggregate>
+        </a>
+        <context-help *ngIf="!isPathItem()">
+            <p>
+                This section is visible because the path/endpoint this operation belongs to has dynamic parameters.
+                Configure the parameters' descriptions and types below.
+            </p>
+        </context-help>
+        <context-help *ngIf="isPathItem()">
+            <p>
+                This section is visible because this path has at least one dynamic path parameter.
+                Here you can configure information about the path parameter, such as its description
+                and type.  This information will be inherited by all operations in the path (but can
+                optionally be overridden by each respective operation).
+            </p>
+        </context-help>
+    </div>
+    <div class="section-body collapse in" id="path-parameters-section-body">
+        <!-- The list of path parameters -->
+        <div class="container-fluid path-parameters typed-item-list">
+            <param-row *ngFor="let param of pathParameters()"
+                       [param]="param" [parameterClass]="'path-parameter'"
+                       (onDelete)="deleteParam(param)"
+                       (onCreate)="createPathParam(param.name)"
+                       (onDescriptionChange)="changeParamDescription(param, $event)"
+                       (onTypeChange)="changeParamType(param, $event)"></param-row>
+        </div>
+    </div>
+</div>

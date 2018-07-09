@@ -62,6 +62,7 @@
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#info-section-body">
                             <span class="section-label">INFO</span>
+                            <validation-aggregate [models]="[operation]" [shallow]="true" [properties]="[ 'operationId', 'summary', 'description' ]"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -93,36 +94,14 @@
                 </div>
 
                 <!-- Path Parameters Section -->
-                <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
-                    <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#path-parameters-section-body">
-                            <span class="section-label">PATH PARAMETERS</span>
-                        </a>
-                        <context-help>
-                            <p>
-                                This section is visible because the path/endpoint this operation belongs to has dynamic parameters.
-                                Configure the parameters' descriptions and types below.
-                            </p>
-                        </context-help>
-                    </div>
-                    <div class="section-body collapse in" id="path-parameters-section-body">
-                        <!-- The list of path parameters -->
-                        <div class="container-fluid path-parameters typed-item-list">
-                            <param-row *ngFor="let param of pathParameters()"
-                                       [param]="param" [parameterClass]="'path-parameter'"
-                                       (onDelete)="deleteParam(param)"
-                                       (onCreate)="createPathParam(param.name)"
-                                       (onDescriptionChange)="changeParamDescription(param, $event)"
-                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
-                        </div>
-                    </div>
-                </div>
+                <path-params-section [parent]="operation" [path]="operation.parent()"></path-params-section>
 
                 <!-- Request Body Section -->
                 <div class="section request-body-section panel-group">
                     <div class="section-header panel-title">
                         <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY <span *ngIf="hasFormDataParams()">PARAMS</span></span>
+                            <validation-aggregate [models]="requestBodyParams()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -161,6 +140,7 @@
                                                     (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
                             <div class="request-body-type">
                                 <span class="strong">Request Body Type:</span>
+                                <validation-problem [model]="bodyParam()"></validation-problem>
                                 <drop-down [id]="'api-request-body-type'"
                                            [value]="requestBodyType()"
                                            [options]="requestBodyTypeOptions()"
@@ -204,49 +184,14 @@
                 </div>
 
                 <!-- Query Parameters Section -->
-                <div class="section query-parameters-section panel-group">
-                    <div class="section-header panel-title">
-                        <a [class.collapsed]="!hasQueryParameters()" data-toggle="collapse" data-target="#parameters-section-body">
-                            <span class="section-label">QUERY PARAMETERS</span>
-                        </a>
-                        <context-help>
-                            <p>
-                                An operation may, optionally, allow additional options to be sent via <strong>URL query
-                                parameters</strong>.  This section allows you to document what query parameters are
-                                accepted/expected by this operation.
-                            </p>
-                        </context-help>
-                        <icon-button (click)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
-                                     [invisible]="!hasFormDataParams()"
-                                     [title]="'Add a new query parameter.'"></icon-button>
-                        <icon-button (click)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()"
-                                     [pullRight]="true" [type]="'delete'"
-                                     [title]="'Delete all query parameters.'"></icon-button>
-                    </div>
-                    <div class="section-body collapse" id="parameters-section-body" [class.in]="hasQueryParameters()">
-
-                        <signpost *ngIf="!hasQueryParameters()">
-                            <span>No query parameters have been defined.</span>
-                            <a (click)="openAddQueryParamModal()">Add a query parameter</a>
-                        </signpost>
-
-                        <!-- The list of query parameters -->
-                        <div class="container-fluid query-parameters typed-item-list" *ngIf="hasQueryParameters()">
-                            <param-row *ngFor="let param of queryParameters()"
-                                       [param]="param" [parameterClass]="'query-parameter'"
-                                       (onDelete)="deleteParam(param)"
-                                       (onCreate)="addQueryParam(param.name)"
-                                       (onDescriptionChange)="changeParamDescription(param, $event)"
-                                       (onTypeChange)="changeParamType(param, $event)"></param-row>
-                        </div>
-                    </div>
-                </div>
+                <query-params-section [parent]="operation" [path]="operation.parent()"></query-params-section>
 
                 <!-- Responses Section -->
                 <div class="section responses-section panel-group">
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#responses-section-body">
                             <span class="section-label">RESPONSES</span>
+                            <validation-aggregate [models]="responses()"></validation-aggregate>
                         </a>
                         <context-help>
                             <p>
@@ -294,7 +239,5 @@
         </div>
     </div>
 </div>
-
-<add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>
 <add-formData-param-dialog #addFormDataParamDialog (onAdd)="addFormDataParam($event)"></add-formData-param-dialog>
 <add-response-dialog #addResponseDialog (onAdd)="addResponse($event)"></add-response-dialog>

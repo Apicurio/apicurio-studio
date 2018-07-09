@@ -17,39 +17,45 @@
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 import {
-    Oas20Response, Oas30MediaType, Oas30Operation, Oas30Parameter, Oas30PathItem, Oas30Response, OasLibraryUtils,
-    OasPathItem, OasSecurityRequirement
+    Oas30MediaType,
+    Oas30Operation,
+    Oas30Parameter,
+    Oas30PathItem,
+    Oas30Response,
+    OasLibraryUtils,
+    OasPathItem,
+    OasSecurityRequirement
 } from "oai-ts-core";
 import {
+    createAddExampleCommand,
+    createAddSecurityRequirementCommand,
     createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteAllParametersCommand,
+    createDeleteAllResponsesCommand,
+    createDeleteExampleCommand,
     createDeleteMediaTypeCommand,
+    createDeleteOperationCommand,
     createDeleteParameterCommand,
+    createDeleteRequestBodyCommand,
     createDeleteResponseCommand,
+    createDeleteSecurityRequirementCommand,
     createNewMediaTypeCommand,
-    createNewParamCommand,
     createNewRequestBodyCommand,
     createNewResponseCommand,
     createReplaceOperationCommand,
-    createDeleteOperationCommand,
-    createDeleteAllResponsesCommand,
-    createDeleteRequestBodyCommand,
-    SimplifiedParameterType,
-    ICommand,
-    createAddExampleCommand,
-    createDeleteExampleCommand,
+    createReplaceSecurityRequirementCommand,
     createSetExampleCommand,
-    createAddSecurityRequirementCommand, createReplaceSecurityRequirementCommand, createDeleteSecurityRequirementCommand
+    ICommand,
+    SimplifiedParameterType
 } from "oai-ts-commands";
-import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
-import {ModelUtils} from "../../_util/model.util";
 import {ObjectUtils} from "../../_util/object.util";
 import {
-    AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
+    AddExampleEvent,
+    DeleteExampleEvent,
+    ExamplePropertyChangeEvent,
     MediaTypeChangeEvent
 } from "./operation/content.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
@@ -82,7 +88,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
     @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
 
@@ -148,54 +153,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         });
     }
 
-    public pathParam(paramName: string): Oas30Parameter {
-        let param: Oas30Parameter = this.operation.parameter("path", paramName) as Oas30Parameter;
-
-        if (param === null) {
-            param = this.operation.createParameter();
-            param.in = "path";
-            param.name = paramName;
-            param.required = true;
-            param.n_attribute("missing", true);
-        }
-
-        return param;
-    }
-
-    public pathParameters(): Oas30Parameter[] {
-        let pathParamNames: string[] = ModelUtils.detectPathParamNames((<Oas30PathItem>this.operation.parent()).path());
-        return pathParamNames.map( pname => {
-            return this.pathParam(pname);
-        });
-    }
-
-    public queryParameters(): Oas30Parameter[] {
-        let opParams: Oas30Parameter[] = this.parameters("query");
-        let piParams: Oas30Parameter[] = (<Oas30PathItem>this.operation.parent()).getParameters("query") as Oas30Parameter[];
-        let hasOpParam = function(param: Oas30Parameter): boolean {
-            var found: boolean = false;
-            opParams.forEach( opParam => {
-                if (opParam.name === param.name) {
-                    found = true;
-                }
-            });
-            return found;
-        };
-        piParams.forEach( param => {
-            if (!hasOpParam(param)) {
-                let missingParam: Oas30Parameter = this.operation.createParameter();
-                missingParam.in = "query";
-                missingParam.name = param.name;
-                missingParam.required = true;
-                missingParam.n_attribute("missing", true);
-                opParams.push(missingParam);
-            }
-        });
-        return opParams.sort((param1, param2) => {
-            return param1.name.localeCompare(param2.name);
-        });
-    }
-
     public headerParameters(): Oas30Parameter[] {
         return this.parameters("header");
     }
@@ -206,15 +163,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public hasFormDataParams(): boolean {
         return this.hasParameters("formData");
-    }
-
-    public hasQueryParameters(): boolean {
-        return this.operation.getParameters("query").length > 0 ||
-            (<Oas30PathItem>this.operation.parent()).getParameters("query").length > 0;
-    }
-
-    public canHavePathParams(): boolean {
-        return (<Oas30PathItem>this.operation.parent()).path().indexOf("{") !== -1;
     }
 
     public hasParameters(type: string): boolean {
@@ -292,11 +240,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         this.onDeselect.emit(true);
     }
 
-    public deleteAllQueryParams(): void {
-        let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "query");
-        this.commandService.emit(command);
-    }
-
     public deleteAllResponses(): void {
         let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
         this.commandService.emit(command);
@@ -309,15 +252,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public deleteResponse(response: Oas30Response): void {
         let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
-        this.commandService.emit(command);
-    }
-
-    public openAddQueryParamModal(): void {
-        this.addQueryParamDialog.open();
-    }
-
-    public addQueryParam(name: string): void {
-        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "query");
         this.commandService.emit(command);
     }
 
@@ -389,11 +323,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     public addResponse(statusCode: string): void {
         let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
-        this.commandService.emit(command);
-    }
-
-    public createPathParam(paramName: string): void {
-        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, paramName, "path");
         this.commandService.emit(command);
     }
 

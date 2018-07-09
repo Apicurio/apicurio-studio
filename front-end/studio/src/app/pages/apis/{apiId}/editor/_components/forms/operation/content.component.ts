@@ -108,6 +108,10 @@ export class ContentComponent implements OnInit {
         return this.content[this.mediaTypeName];
     }
 
+    public mediaTypeByName(name: string): Oas30MediaType {
+        return this.content[name];
+    }
+
     public mediaTypeType(): string {
         let mt: Oas30MediaType = this.mediaType();
         if (mt) {

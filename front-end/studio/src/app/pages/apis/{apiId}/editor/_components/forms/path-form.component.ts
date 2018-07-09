@@ -21,20 +21,16 @@ import {
     createAddPathItemCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteAllParametersCommand,
     createDeleteOperationCommand,
     createDeleteParameterCommand,
     createDeletePathCommand,
     createNewOperationCommand,
-    createNewParamCommand,
     createNewPathCommand,
     createReplacePathItemCommand,
     ICommand,
     SimplifiedParameterType
 } from "oai-ts-commands";
 import {SourceFormComponent} from "./source-form.base";
-import {ModelUtils} from "../../_util/model.util";
-import {AddQueryParamDialogComponent} from "../dialogs/add-query-param.component";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
 
@@ -58,7 +54,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return this._path;
     }
 
-    @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
 
@@ -255,31 +250,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         }
     }
 
-    public canHavePathParams(): boolean {
-        return this.path.path().indexOf('{') != -1;
-    }
-
-    public pathParam(paramName: string): OasParameterBase {
-        let param: OasParameterBase = this.path.parameter("path", paramName) as OasParameterBase;
-
-        if (param === null) {
-            param = this.path.createParameter();
-            param.in = "path";
-            param.name = paramName;
-            param.required = true;
-            param.n_attribute("missing", true);
-        }
-
-        return param;
-    }
-
-    public pathParameters(): OasParameterBase[] {
-        let pathParamNames: string[] = ModelUtils.detectPathParamNames(this.path.path());
-        return pathParamNames.map( pname => {
-            return this.pathParam(pname);
-        });
-    }
-
     public hasParameters(type: string): boolean {
         if (!this.path.parameters) {
             return false;
@@ -301,11 +271,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         });
     }
 
-    public createPathParam(paramName: string): void {
-        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path as any, paramName, "path");
-        this.commandService.emit(command);
-    }
-
     public changeParamDescription(param: OasParameterBase, newParamDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), param, "description", newParamDescription);
         this.commandService.emit(command);
@@ -316,26 +281,8 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         this.commandService.emit(command);
     }
 
-    public queryParameters(): OasParameterBase[] {
-        return this.parameters("query");
-    }
-
     public deleteParam(parameter: OasParameterBase): void {
         let command: ICommand = createDeleteParameterCommand(this.path.ownerDocument(), parameter as any);
-        this.commandService.emit(command);
-    }
-
-    public openAddQueryParamModal(): void {
-        this.addQueryParamDialog.open();
-    }
-
-    public addQueryParam(name: string): void {
-        let command: ICommand = createNewParamCommand(this.path.ownerDocument(), this.path as any, name, "query");
-        this.commandService.emit(command);
-    }
-
-    public deleteAllQueryParams(): void {
-        let command: ICommand = createDeleteAllParametersCommand(this.path.ownerDocument(), this.path as any, "query");
         this.commandService.emit(command);
     }
 

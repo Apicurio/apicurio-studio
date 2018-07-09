@@ -29,6 +29,7 @@ export class ValidationProblemComponent {
 
     @Input() model: OasNode;
     @Input() property: string;
+    @Input() code: string;
     @Input() shallow: boolean;
     @Input() debug: boolean;
 
@@ -62,7 +63,8 @@ export class ValidationProblemComponent {
 
     public validationProblems(): OasValidationProblem[] {
         let props: string[] = this.property ? [ this.property ] : null;
-        let finder: ProblemFinder = new ProblemFinder(props);
+        let codes: string[] = this.code ? [ this.code ] : null;
+        let finder: ProblemFinder = new ProblemFinder(props, codes);
 
         if (this.shallow) {
             OasVisitorUtil.visitNode(this.model, finder);

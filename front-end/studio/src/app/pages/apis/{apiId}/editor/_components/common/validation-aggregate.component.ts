@@ -29,6 +29,7 @@ export class ValidationAggregateComponent {
 
     @Input() models: OasNode[];
     @Input() properties: string[];
+    @Input() codes: string[];
     @Input() shallow: boolean;
 
     private _open: boolean = false;
@@ -83,7 +84,7 @@ export class ValidationAggregateComponent {
         if (!this.models) {
             return [];
         }
-        let finder: ProblemFinder = new ProblemFinder(this.properties);
+        let finder: ProblemFinder = new ProblemFinder(this.properties, this.codes);
         for (let model of this.models) {
             if (model !== null && model !== undefined) {
                 if (this.shallow) {
@@ -118,8 +119,8 @@ export class ValidationAggregateComponent {
 export class ProblemFinder extends OasAllNodeVisitor {
 
     private problems: OasValidationProblem[] = [];
-
-    constructor(private properties: string[]) {
+    
+    constructor(private properties: string[], private codes: string[]) {
         super();
     }
 
@@ -136,9 +137,16 @@ export class ProblemFinder extends OasAllNodeVisitor {
     }
 
     private accepts(problem: OasValidationProblem): boolean {
-        if (this.properties === null || this.properties === undefined || this.properties.length === 0) {
-            return true;
+        let accept: boolean = true;
+        
+        if (this.properties !== null && this.properties !== undefined && this.properties.length > 0) {
+            accept = accept && this.properties.indexOf(problem.property) != -1;
         }
-        return this.properties.indexOf(problem.property) != -1;
+
+        if (this.codes !== null && this.codes !== undefined && this.codes.length > 0) {
+            accept = accept && this.codes.indexOf(problem.errorCode) != -1;
+        }
+        
+        return accept;
     }
 }

@@ -194,6 +194,7 @@
                     <div class="section-body collapse in" id="responses-section-body">
 
                         <signpost *ngIf="!hasResponses()">
+                            <validation-problem [model]="operation" [code]="'OP-3-004'"></validation-problem>
                             <span>No responses have been defined.</span>
                             <a (click)="openAddResponseModal()">Add a response</a>
                         </signpost>

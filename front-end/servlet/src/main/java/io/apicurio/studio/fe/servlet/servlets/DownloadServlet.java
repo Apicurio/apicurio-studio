@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +44,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.keycloak.KeycloakSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.apicurio.studio.fe.servlet.config.StudioUiConfiguration;
 
@@ -57,6 +61,7 @@ import io.apicurio.studio.fe.servlet.config.StudioUiConfiguration;
 public class DownloadServlet extends HttpServlet {
     
     private static final long serialVersionUID = 8432874125909707075L;
+    private static Logger logger = LoggerFactory.getLogger(DownloadServlet.class);
     
     @Inject
     private StudioUiConfiguration uiConfig;
@@ -66,13 +71,20 @@ public class DownloadServlet extends HttpServlet {
     protected void postConstruct() {
         try {
             if (uiConfig.isDisableHubApiTrustManager()) {
-                SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+                SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+                    @Override
+                    public boolean isTrusted(X509Certificate[] chain, String authType)
+                            throws CertificateException {
+                        return true;
+                    }
+                }).build();
                 SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
                 httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
             } else {
                 httpClient = HttpClients.createSystem();
             }
         } catch (Exception e) {
+            logger.error("Error creating HTTP client.", e);
             throw new RuntimeException(e);
         }
     }
@@ -143,6 +155,7 @@ public class DownloadServlet extends HttpServlet {
                 response.getOutputStream().flush();
             }            
         } catch (IOException e) {
+            logger.error("Error proxying URL: " + url, e);
             try { response.sendError(500); } catch (IOException e1) {}
         }
     }
@@ -175,6 +188,7 @@ public class DownloadServlet extends HttpServlet {
             }
             return url;
         } catch (URISyntaxException e) {
+            logger.error("Error generating hub API URL.", e);
             throw new RuntimeException(e);
         }
     }

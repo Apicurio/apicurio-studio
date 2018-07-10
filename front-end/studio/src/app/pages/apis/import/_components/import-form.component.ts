@@ -20,6 +20,7 @@ import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
+import {Base64Utils} from "../../../../util/common";
 
 
 @Component({
@@ -64,7 +65,12 @@ export class ImportApiFormComponent {
         if (this.model.url) {
             importApi.url = this.model.url;
         } else if (this.model.data) {
-            importApi.data = btoa(this.model.data);
+            try {
+                importApi.data = Base64Utils.encode(this.model.data);
+            } catch (e) {
+                console.info("***  Failed to fire IMPORT event.  ***");
+                console.error(e);
+            }
         }
 
         this.onImportApi.emit(importApi);
@@ -81,14 +87,18 @@ export class ImportApiFormComponent {
         this.dragging = false;
         event.preventDefault();
 
+        console.info("[ImportApiFormComponent] Processing dropped content.");
         let files: FileList = event.dataTransfer.files;
         let dropData: string = event.dataTransfer.getData("text");
         if (files && files.length == 1) {
+            console.info("[ImportApiFormComponent] File was dropped.");
             let isJson: boolean = files[0].type === "application/json";
             let isYaml: boolean = files[0].name.endsWith(".yaml") || files[0].name.endsWith(".yml");
             if (isJson || isYaml) {
+                console.info("[ImportApiFormComponent] JSON/YAML file detected, reading now.");
                 let reader: FileReader = new FileReader();
                 reader.onload = (fileLoadedEvent) => {
+                    console.info("[ImportApiFormComponent] JSON/YAML file read.");
                     let content: string = fileLoadedEvent.target["result"];
                     this.model.data = content;
                     this.model.url = null;
@@ -97,8 +107,11 @@ export class ImportApiFormComponent {
                     if (isYaml) {
                         this.textMode = CodeEditorMode.YAML;
                     }
+                    console.info("[ImportApiFormComponent] File read complete!");
                 };
                 reader.readAsText(files[0]);
+            } else {
+                console.info("[ImportApiFormComponent] *** Dropped file was not JSON or YAML. ***");
             }
         } else if (dropData && dropData.startsWith("http")) {
             this.model.url = dropData;

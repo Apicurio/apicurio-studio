@@ -94,7 +94,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
             this.error(error);
         });
         this.currentUserService.getActivity(this.activityStart, this.activityEnd).then(activity => {
-            console.info("[DashboardPageComponent] Activity data loaded: %o", activity);
+            console.info("[DashboardPageComponent] Activity data loaded");
             this.activity = activity;
             this.hasMoreActivity = activity && activity.length >= 10;
             this.dataLoaded["activity"] = true;

@@ -158,6 +158,9 @@ public class DesignsResource implements IDesignsResource {
             return importDesignFromData(info);
         } else {
             logger.debug("Importing an API Design: {}", info.getUrl());
+            if (info.getUrl() == null) {
+                throw new ApiValidationException("No data provided to import.");
+            }
             ISourceConnector connector = null;
             
             try {
@@ -233,7 +236,7 @@ public class DesignsResource implements IDesignsResource {
             byte[] decodedData = Base64.decodeBase64(data);
             
             try (InputStream is = new ByteArrayInputStream(decodedData)) {
-                String content = IOUtils.toString(is);
+                String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
                 
                 String name = resourceInfo.getName();
@@ -287,7 +290,7 @@ public class DesignsResource implements IDesignsResource {
             URL url = new URL(info.getUrl());
             
             try (InputStream is = url.openStream()) {
-                String content = IOUtils.toString(is);
+                String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
                 
                 String name = resourceInfo.getName();

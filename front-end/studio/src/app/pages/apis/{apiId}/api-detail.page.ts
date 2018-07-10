@@ -90,7 +90,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             this.error(error);
         });
         this.apis.getActivity(apiId, this.activityStart, this.activityEnd).then(activity => {
-            console.info("[ApiDetailPageComponent] Activity data loaded: %o", activity);
+            console.info("[ApiDetailPageComponent] Activity data loaded");
             this.activity = activity;
             this.dataLoaded["activity"] = true;
             this.hasMoreActivity = activity && activity.length >= 10;

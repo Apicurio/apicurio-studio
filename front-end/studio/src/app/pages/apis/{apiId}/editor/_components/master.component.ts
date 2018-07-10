@@ -112,27 +112,38 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
-     * @return
      */
     public paths(): OasPathItem[] {
         let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
-        OasVisitorUtil.visitTree(this.document, viz);
+        if (this.document && this.document.paths) {
+            this.document.paths.pathItems().forEach( pathItem => {
+                OasVisitorUtil.visitNode(pathItem, viz);
+            });
+        }
         return viz.getSortedPathItems();
     }
 
     /**
      * Returns the array of definitions, filtered by search criteria and sorted.
-     * @return
      */
     public definitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
-        OasVisitorUtil.visitTree(this.document, viz);
+        if (this.document) {
+            if (this.document.is2xDocument() && (this.document as Oas20Document).definitions) {
+                (this.document as Oas20Document).definitions.definitions().forEach( definition => {
+                    OasVisitorUtil.visitNode(definition, viz);
+                })
+            } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
+                (this.document as Oas30Document).components.getSchemaDefinitions().forEach( definition => {
+                    OasVisitorUtil.visitNode(definition, viz);
+                })
+            }
+        }
         return viz.getSortedSchemaDefinitions();
     }
 
     /**
      * Returns an array of responses filtered by the search criteria and sorted.
-     * @return
      */
     public responses(): (Oas20ResponseDefinition | Oas30ResponseDefinition)[] {
         return [];
@@ -154,7 +165,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Returns true if the given item is a valid path in the current document.
      * @param pathItem
-     * @return
      */
     protected isValidPathItem(pathItem: OasPathItem): boolean {
         if (ObjectUtils.isNullOrUndefined(pathItem)) {

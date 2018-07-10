@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,62 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Input} from "@angular/core";
+import {Component, HostListener, Input, OnDestroy, OnInit} from "@angular/core";
 import {OasAllNodeVisitor, OasNode, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
 import {OasValidationProblem} from "oai-ts-core/src/models/node.model";
 import {ProblemsService} from "../../_services/problems.service";
+import {DocumentService} from "../../_services/document.service";
+import {Subscription} from "rxjs/Subscription";
+import {ArrayUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
     selector: "validation-aggregate",
     templateUrl: "validation-aggregate.component.html"
 })
-export class ValidationAggregateComponent {
+export class ValidationAggregateComponent implements OnInit, OnDestroy {
 
-    @Input() models: OasNode[];
+    protected _models: OasNode[];
+    @Input()
+    set models(models: OasNode[]) {
+        if (!ArrayUtils.equals(models, this._models)) {
+            this._problems = undefined;
+            this._models = models;
+        }
+    }
+    get models(): OasNode[] {
+        return this._models;
+    }
     @Input() properties: string[];
     @Input() codes: string[];
     @Input() shallow: boolean;
+    @Input() debug: boolean;
 
     private _open: boolean = false;
     public left: string;
     public top: string;
 
-    constructor(private problemsService: ProblemsService) {}
+    private _problems: OasValidationProblem[] = undefined;
+    private _changeSubscription: Subscription;
+
+    constructor(private problemsService: ProblemsService, private documentService: DocumentService) {}
+
+    /**
+     * Called when the component is initialized.
+     */
+    public ngOnInit(): void {
+        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
+            this.log("Invalidating cache.");
+            this._problems = undefined;
+        });
+    }
+
+    /**
+     * Called when the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        this._changeSubscription.unsubscribe();
+    }
 
     @HostListener("document:click", ["$event"])
     public onDocumentClick(event: MouseEvent): void {
@@ -84,17 +118,24 @@ export class ValidationAggregateComponent {
         if (!this.models) {
             return [];
         }
-        let finder: ProblemFinder = new ProblemFinder(this.properties, this.codes);
-        for (let model of this.models) {
-            if (model !== null && model !== undefined) {
-                if (this.shallow) {
-                    OasVisitorUtil.visitNode(model, finder);
-                } else {
-                    OasVisitorUtil.visitTree(model, finder);
+
+        // Find the relevant problems if not cached.
+        if (this._problems === undefined) {
+            this.log("Cache empty, finding matching problems.");
+            let finder: ProblemFinder = new ProblemFinder(this.properties, this.codes);
+            for (let model of this.models) {
+                if (model !== null && model !== undefined) {
+                    if (this.shallow) {
+                        OasVisitorUtil.visitNode(model, finder);
+                    } else {
+                        OasVisitorUtil.visitTree(model, finder);
+                    }
                 }
             }
+            this._problems = finder.getProblems();
         }
-        return finder.getProblems();
+
+        return this._problems;
     }
 
     public iconFor(problem: OasValidationProblem): string {
@@ -114,6 +155,11 @@ export class ValidationAggregateComponent {
         return this.problemsService.summary(problem);
     }
 
+    protected log(message: string): void {
+        if (this.debug) {
+            console.info("[ValidationAggregateComponent] " + message);
+        }
+    }
 }
 
 export class ProblemFinder extends OasAllNodeVisitor {
@@ -149,4 +195,5 @@ export class ProblemFinder extends OasAllNodeVisitor {
         
         return accept;
     }
+
 }

@@ -39,7 +39,6 @@ export class ArrayUtils {
      * Returns true if the given item is contained in the given array.
      * @param a
      * @param item
-     * @return
      */
     public static contains(a: any[], item: any): boolean {
         for (let aitem of a) {
@@ -48,6 +47,29 @@ export class ArrayUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Tests whether two arrays are the same.
+     * @param a1
+     * @param a2
+     */
+    public static equals(a1: any[], a2: any[]): boolean {
+        if (a1 === a2) {
+            return true;
+        }
+        if (a1 === null || a2 === null || a1 === undefined || a2 === undefined) {
+            return false;
+        }
+        if (a1.length !== a2.length) {
+            return false;
+        }
+        for (let i = 0; i < a1.length; i++) {
+            if (a1[i] !== a2[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

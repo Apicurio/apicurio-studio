@@ -15,19 +15,31 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Inject, Input} from "@angular/core";
-import {OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
+import {Component, HostListener, Inject, Input, OnDestroy, OnInit} from "@angular/core";
+import {Oas20Operation, OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
+import {DocumentService} from "../../_services/document.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
     moduleId: module.id,
     selector: "validation-problem",
     templateUrl: "validation-problem.component.html"
 })
-export class ValidationProblemComponent {
+export class ValidationProblemComponent implements OnInit, OnDestroy {
 
-    @Input() model: OasNode;
+    protected _model: OasNode;
+    @Input()
+    set model(model: OasNode) {
+        if (model !== this._model) {
+            this._problems = undefined;
+        }
+        this._model = model;
+    }
+    get model(): OasNode {
+        return this._model;
+    }
     @Input() property: string;
     @Input() code: string;
     @Input() shallow: boolean;
@@ -37,7 +49,27 @@ export class ValidationProblemComponent {
     public left: string;
     public top: string;
 
-    constructor(private problemsService: ProblemsService) {}
+    private _problems: OasValidationProblem[] = undefined;
+    private _changeSubscription: Subscription;
+
+    constructor(private problemsService: ProblemsService, private documentService: DocumentService) {}
+
+    /**
+     * Called when the component is initialized.
+     */
+    public ngOnInit(): void {
+        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
+            console.info("[ValidationProblemComponent] Invalidating cache.");
+            this._problems = undefined;
+        });
+    }
+
+    /**
+     * Called when the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        this._changeSubscription.unsubscribe();
+    }
 
     @HostListener("document:click", ["$event"])
     public onDocumentClick(event: MouseEvent): void {
@@ -62,17 +94,21 @@ export class ValidationProblemComponent {
     }
 
     public validationProblems(): OasValidationProblem[] {
-        let props: string[] = this.property ? [ this.property ] : null;
-        let codes: string[] = this.code ? [ this.code ] : null;
-        let finder: ProblemFinder = new ProblemFinder(props, codes);
+        if (this._problems === undefined) {
+            //console.info("[ValidationProblemComponent] Cache empty, finding validation problems.");
+            let props: string[] = this.property ? [ this.property ] : null;
+            let codes: string[] = this.code ? [ this.code ] : null;
+            let finder: ProblemFinder = new ProblemFinder(props, codes);
 
-        if (this.shallow) {
-            OasVisitorUtil.visitNode(this.model, finder);
-        } else {
-            OasVisitorUtil.visitTree(this.model, finder);
+            if (this.shallow) {
+                OasVisitorUtil.visitNode(this.model, finder);
+            } else {
+                OasVisitorUtil.visitTree(this.model, finder);
+            }
+
+            this._problems = finder.getProblems();
         }
-
-        return finder.getProblems();
+        return this._problems;
     }
 
     public icon(): string {

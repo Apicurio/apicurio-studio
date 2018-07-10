@@ -83,6 +83,7 @@ import {SecurityRequirementsSectionComponent} from "./pages/apis/{apiId}/editor/
 import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-schemes-section.component";
 import {PathParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-params-section.component";
 import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-params-section.component";
+import {DocumentService} from "./pages/apis/{apiId}/editor/_services/document.service";
 
 @NgModule({
     imports: [
@@ -106,7 +107,7 @@ import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_componen
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent
     ],
     providers: [
-        ProblemsService, SelectionService, LicenseService, CommandService
+        ProblemsService, SelectionService, LicenseService, CommandService, DocumentService
     ],
     exports: [
         ApiEditorComponent

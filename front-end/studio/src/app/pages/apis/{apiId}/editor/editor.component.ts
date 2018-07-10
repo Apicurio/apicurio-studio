@@ -48,6 +48,7 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "./_services/command.service";
+import {DocumentService} from "./_services/document.service";
 
 
 @Component({
@@ -86,8 +87,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
      * Constructor.
      * @param selectionService
      * @param commandService
+     * @param documentService
      */
-    constructor(private selectionService: SelectionService, private commandService: CommandService) {}
+    constructor(private selectionService: SelectionService, private commandService: CommandService,
+                private documentService: DocumentService) {}
 
     public ngOnInit(): void {
         let me: ApiEditorComponent = this;
@@ -124,13 +127,16 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
         } else {
             this.formType = "main_30";
         }
+
+        // Fire an event in the doc service indicating that there is a new document.
+        this.documentService.emitDocument(this.document());
     }
 
     /**
      * Gets the OpenAPI spec as a document.
      */
     public document(): OasDocument {
-        if (this._document === null) {
+        if (this._document === null && this.api) {
             try {
                 this._document = this._library.createDocument(this.api.spec);
             } catch (e) {
@@ -196,6 +202,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
                 contentVersion: otCmd.contentVersion
             });
         }
+
+        // Fire a change event in the document service
+        this.documentService.emitChange();
     }
 
     /**
@@ -213,6 +222,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
         // After changing the model, we should re-validate it
         this.validateModel();
+
+        // Fire a change event in the document service
+        this.documentService.emitChange();
     }
 
     /**

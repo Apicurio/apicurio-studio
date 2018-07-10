@@ -35,6 +35,8 @@ import {
     ICommand,
     SimplifiedParameterType
 } from "oai-ts-commands";
+import {DocumentService} from "../../../_services/document.service";
+import {Subscription} from "rxjs/Subscription";
 
 
 @Component({
@@ -46,9 +48,43 @@ import {
 export class PathParamsSectionComponent {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
-    @Input() path: OasPathItem;
+    _path: OasPathItem;
+    @Input()
+    set path(path: OasPathItem) {
+        if (this._path !== path) {
+            this._path = path;
+            this._pathParameters = undefined;
+        }
+    }
+    get path(): OasPathItem {
+        return this._path;
+    }
 
-    constructor(private commandService: CommandService) {}
+    private _pathParameters: (Oas30Parameter | Oas20Parameter)[] = undefined;
+    private _changeSubscription: Subscription;
+
+    /**
+     * C'tor.
+     * @param commandService
+     * @param documentService
+     */
+    constructor(private commandService: CommandService, private documentService: DocumentService) {}
+
+    /**
+     * Called when the component is initialized.
+     */
+    public ngOnInit(): void {
+        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
+            this._pathParameters = undefined;
+        });
+    }
+
+    /**
+     * Called when the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        this._changeSubscription.unsubscribe();
+    }
 
     public canHavePathParams(): boolean {
         return this.path.path().indexOf("{") !== -1;
@@ -59,19 +95,21 @@ export class PathParamsSectionComponent {
     }
 
     public pathParameters(): (Oas30Parameter | Oas20Parameter)[] {
-        let names: any = {};
-        ModelUtils.detectPathParamNames(this.path.path()).forEach( paramName => {
-            names[paramName] = "detected";
-        });
-        this.parent.getParameters("path").forEach( param => {
-            names[param.name] = "present";
-        });
+        if (this._pathParameters === undefined) {
+            let names: any = {};
+            ModelUtils.detectPathParamNames(this.path.path()).forEach( paramName => {
+                names[paramName] = "detected";
+            });
+            this.parent.getParameters("path").forEach( param => {
+                names[param.name] = "present";
+            });
 
-        let rval: (Oas30Parameter | Oas20Parameter)[] = [];
-        for (let pname in names) {
-            rval.push(this.pathParam(pname));
+            this._pathParameters = [];
+            for (let pname in names) {
+                this._pathParameters.push(this.pathParam(pname));
+            }
         }
-        return rval;
+        return this._pathParameters;
     }
 
     public pathParam(paramName: string): Oas30Parameter | Oas20Parameter {

@@ -122,7 +122,6 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     /**
      * Returns the classes that should be applied to the "main" selection item.
-     * @return
      */
     public mainClasses(): string {
         let classes: string[] = [];
@@ -144,7 +143,6 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
     /**
      * Returns the selection style to use for the given (potentially selected) node.
      * @param item
-     * @return
      */
     public collaboratorSelectionClasses(item: OasNode): string {
         if (item) {
@@ -158,7 +156,6 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     /**
      * Returns true if the main node should be selected.
-     * @return
      */
     public isMainSelected(): boolean {
         return ModelUtils.isSelected(this.document);
@@ -174,7 +171,6 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     /**
      * Returns the title of the API.
-     * @return {string}
      */
     public title(): string {
         if (this.hasTitle()) {
@@ -185,7 +181,6 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     /**
      * Returns true if the API has a title.
-     * @return {boolean}
      */
     public hasTitle(): boolean {
         if (this.document && this.document.info && this.document.info.title) {

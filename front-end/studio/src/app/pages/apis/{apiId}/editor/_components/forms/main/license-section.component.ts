@@ -53,7 +53,6 @@ export class LicenseSectionComponent {
 
     /**
      * Returns the license model.
-     * @return {OasLicense}
      */
     public licenseModel(): OasLicense {
         if (this.document.info && this.document.info.license) {

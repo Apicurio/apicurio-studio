@@ -24,6 +24,7 @@ public class GitLabGroup {
     private int id;
     private String name;
     private String path;
+    private boolean userGroup;
 
     /**
      * Constructor.
@@ -71,6 +72,20 @@ public class GitLabGroup {
      */
     public void setPath(String path) {
         this.path = path;
+    }
+
+    /**
+     * @return the userGroup
+     */
+    public boolean isUserGroup() {
+        return userGroup;
+    }
+
+    /**
+     * @param userGroup the userGroup to set
+     */
+    public void setUserGroup(boolean userGroup) {
+        this.userGroup = userGroup;
     }
 
 }

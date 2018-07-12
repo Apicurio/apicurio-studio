@@ -250,16 +250,42 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     public Collection<GitLabGroup> getGroups() throws GitLabException, SourceConnectorException {
         logger.debug("Getting the GitLab groups for current user");
 
+        Collection<GitLabGroup> rval = new HashSet<>();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet get = new HttpGet(this.endpoint("/api/v4/groups").url());
+            
+            // Get the user's personal group
+            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").url());
             get.addHeader("Accept", "application/json");
             addSecurity(get);
+            try (CloseableHttpResponse response = httpClient.execute(get)) {
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new SourceConnectorException("Error getting GitLab user information: " + response.getStatusLine().getReasonPhrase());
+                }
+                try (InputStream contentStream = response.getEntity().getContent()) {
+                    JsonNode node = mapper.readTree(contentStream);
+                    if (node.isObject()) {
+                        int id = node.get("id").asInt();
+                        String username = node.get("username").asText();
+                        String fullName = node.get("name").asText();
+                        GitLabGroup glg = new GitLabGroup();
+                        glg.setId(id);
+                        glg.setName(fullName);
+                        glg.setPath(username);
+                        glg.setUserGroup(true);
+                        rval.add(glg);
+                    }
+                }
+            }
 
+            
+            // Now get all the groups the user has access to
+            get = new HttpGet(this.endpoint("/api/v4/groups").url());
+            get.addHeader("Accept", "application/json");
+            addSecurity(get);
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {
                     throw new SourceConnectorException("Error getting GitLab groups: " + response.getStatusLine().getReasonPhrase());
                 }
-                Collection<GitLabGroup> rval = new HashSet<>();
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     JsonNode node = mapper.readTree(contentStream);
                     if (node.isArray()) {
@@ -276,12 +302,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                             rval.add(glg);
                         });
                     }
-                    return rval;
                 }
             }
         } catch (IOException e) {
             throw new GitLabException("Error getting GitLab groups.", e);
         }
+        return rval;
     }
     
     /**
@@ -291,37 +317,85 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     public Collection<GitLabProject> getProjects(String group) throws GitLabException, SourceConnectorException {
         logger.debug("Getting the projects from group {}", group);
 
+        Collection<GitLabProject> rval = new HashSet<>();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            String requestUrl = this.endpoint("/api/v4/groups/:group/projects").bind("group", group).url();
 
-            HttpGet get = new HttpGet(requestUrl);
+            // Get the user's personal group
+            String gitLabUsername = null;
+            String gitLabUserId = null;
+            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").url());
             get.addHeader("Accept", "application/json");
             addSecurity(get);
-
             try (CloseableHttpResponse response = httpClient.execute(get)) {
-                Collection<GitLabProject> rval = new HashSet<>();
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new SourceConnectorException("Error getting GitLab user information: " + response.getStatusLine().getReasonPhrase());
+                }
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     JsonNode node = mapper.readTree(contentStream);
-                    if (node.isArray()) {
-                        ArrayNode array = (ArrayNode) node;
-                        array.forEach(obj -> {
-                            JsonNode project = (JsonNode) obj;
-                            int id = project.get("id").asInt();
-                            String name = project.get("name").asText();
-                            String path = project.get("path").asText();
-                            GitLabProject glp = new GitLabProject();
-                            glp.setId(id);
-                            glp.setName(name);
-                            glp.setPath(path);
-                            rval.add(glp);
-                        });
+                    if (node.isObject()) {
+                        gitLabUsername = node.get("username").asText();
+                        gitLabUserId = node.get("id").asText();
                     }
-                    return rval;
+                }
+            }
+            
+            if (group != null && group.equalsIgnoreCase(gitLabUsername)) {
+                // List all user projects
+                //////////////////////////////
+                String requestUrl = this.endpoint("/api/v4/users/:user_id/projects").bind("user_id", gitLabUserId).url();
+                get = new HttpGet(requestUrl);
+                get.addHeader("Accept", "application/json");
+                addSecurity(get);
+                try (CloseableHttpResponse response = httpClient.execute(get)) {
+                    try (InputStream contentStream = response.getEntity().getContent()) {
+                        JsonNode node = mapper.readTree(contentStream);
+                        if (node.isArray()) {
+                            ArrayNode array = (ArrayNode) node;
+                            array.forEach(obj -> {
+                                JsonNode project = (JsonNode) obj;
+                                int id = project.get("id").asInt();
+                                String name = project.get("name").asText();
+                                String path = project.get("path").asText();
+                                GitLabProject glp = new GitLabProject();
+                                glp.setId(id);
+                                glp.setName(name);
+                                glp.setPath(path);
+                                rval.add(glp);
+                            });
+                        }
+                    }
+                }
+            } else {
+                // List all group projects
+                //////////////////////////////
+                String requestUrl = this.endpoint("/api/v4/groups/:group/projects").bind("group", group).url();
+                get = new HttpGet(requestUrl);
+                get.addHeader("Accept", "application/json");
+                addSecurity(get);
+                try (CloseableHttpResponse response = httpClient.execute(get)) {
+                    try (InputStream contentStream = response.getEntity().getContent()) {
+                        JsonNode node = mapper.readTree(contentStream);
+                        if (node.isArray()) {
+                            ArrayNode array = (ArrayNode) node;
+                            array.forEach(obj -> {
+                                JsonNode project = (JsonNode) obj;
+                                int id = project.get("id").asInt();
+                                String name = project.get("name").asText();
+                                String path = project.get("path").asText();
+                                GitLabProject glp = new GitLabProject();
+                                glp.setId(id);
+                                glp.setName(name);
+                                glp.setPath(path);
+                                rval.add(glp);
+                            });
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             throw new GitLabException("Error getting GitLab repositories.", e);
         }
+        return rval;
     }
     
     /**

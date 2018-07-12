@@ -179,7 +179,7 @@ public class GitLabSourceConnectorTest {
         Assert.assertTrue(groups.size() > 0);
         System.out.println("Found " + groups.size() + " groups!");
         groups.forEach( group -> {
-            System.out.println("\t" + group.getName());
+            System.out.println("\t" + group.getName() + (group.isUserGroup() ? " (*)" : "") + " [" + group.getPath() + "] {" + group.getId() + "}");
         });
     }
 
@@ -196,6 +196,14 @@ public class GitLabSourceConnectorTest {
             System.out.println("\t" + project.getName());
         });
         Assert.assertTrue(projects.size() > 0);
+//
+//        projects = service.getProjects("eric.wittmann");
+//        Assert.assertNotNull(projects);
+//        System.out.println("Found " + projects.size() + " projects!");
+//        projects.forEach( project -> {
+//            System.out.println("\t" + project.getName());
+//        });
+//        Assert.assertTrue(projects.size() > 0);
     }
 
     /**

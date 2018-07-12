@@ -65,10 +65,23 @@ export class GitLabResourceComponent implements OnInit {
             });
             this._groupOptions = [];
             groups.forEach( group => {
-                this._groupOptions.push({
-                    name: group.name,
-                    value: group.name
-                });
+                if (group.userGroup) {
+                    this._groupOptions.push({
+                        name: group.name,
+                        value: group.path
+                    });
+                    this._groupOptions.push({
+                        divider: true
+                    });
+                }
+            });
+            groups.forEach( group => {
+                if (!group.userGroup) {
+                    this._groupOptions.push({
+                        name: group.name,
+                        value: group.name
+                    });
+                }
             });
             this.gettingGroups = false;
 

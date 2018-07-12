@@ -56,7 +56,6 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * 
      */
     protected pageTitle(): string {
         if (this.api.name) {
@@ -64,6 +63,16 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         } else {
             return "Apicurio Studio - API Details";
         }
+    }
+
+    /**
+     * Name of the API for display purposes.
+     */
+    public displayName(): string {
+        if (this.api.name && this.api.name.length > 50) {
+            return this.api.name.substring(0, 50) + "...";
+        }
+        return this.api.name;
     }
 
     /**

@@ -29,4 +29,10 @@ export class BreadcrumbComponent {
     @Input() label: string;
     @Input() route: string[];
 
+    public displayLabel(): string {
+        if (this.label && this.label.length > 50) {
+            return this.label.substring(0, 50) + "...";
+        }
+        return this.label;
+    }
 }

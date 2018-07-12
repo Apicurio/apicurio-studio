@@ -1,2 +1,2 @@
-<span *ngIf="route == null"><span>{{ label }}</span></span>
-<a *ngIf="route != null" [routerLink]="route"><span>{{ label }}</span></a>
+<span *ngIf="route == null"><span class="breadcrumb-label">{{ displayLabel() }}</span></span>
+<a *ngIf="route != null" [routerLink]="route"><span class="breadcrumb-label">{{ displayLabel() }}</span></a>

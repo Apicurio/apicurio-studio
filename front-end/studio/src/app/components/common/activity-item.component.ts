@@ -432,4 +432,11 @@ export class ActivityItemComponent {
         return "published the API to " + this.publication().type + ".";
     }
 
+    public apiName(): string {
+        if (this.item.apiName && this.item.apiName.length > 50) {
+            return this.item.apiName.substring(0, 50) + "...";
+        }
+        return this.item.apiName;
+    }
+
 }

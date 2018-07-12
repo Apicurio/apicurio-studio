@@ -19,6 +19,9 @@
 .api-card .api-card-title {
   font-size: 16px;
   font-weight: bold;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .api-card {

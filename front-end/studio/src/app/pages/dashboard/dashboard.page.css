@@ -5,6 +5,13 @@
   font-size: 13px;
   padding-left: 20px;
 }
+.api-recent-apis .api-item > a {
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow-x: hidden;
+  display: inline-block;
+  white-space: nowrap;
+}
 
 .blank-slate-card-pf {
   padding: 0;

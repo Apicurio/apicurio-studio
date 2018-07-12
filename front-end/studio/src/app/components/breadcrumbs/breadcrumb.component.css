@@ -1,3 +1,6 @@
 .api-breadcrumb {
-   color: inherit;
+  color: inherit;
+}
+
+.api-breadcrumb .breadcrumb-label {
 }

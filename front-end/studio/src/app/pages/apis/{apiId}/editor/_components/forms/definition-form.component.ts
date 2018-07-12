@@ -34,6 +34,8 @@ import {SourceFormComponent} from "./source-form.base";
 import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
 import {RenameDefinitionDialogComponent} from "../dialogs/rename-definition.component";
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
 
 
 @Component({
@@ -59,6 +61,15 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
+
+    /**
+     * C'tor.
+     * @param selectionService
+     * @param commandService
+     */
+    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {
+        super(selectionService, commandService);
+    }
 
     public definitionName(): string {
         if (this.definition.ownerDocument().getSpecVersion() === "2.0") {

@@ -39,6 +39,8 @@ import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
 
 
 @Component({
@@ -62,6 +64,15 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
 
     @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
+
+    /**
+     * C'tor.
+     * @param selectionService
+     * @param commandService
+     */
+    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {
+        super(selectionService, commandService);
+    }
 
     protected createEmptyNodeForSource(): Oas20Operation {
         return (<Oas20PathItem>this.operation.parent()).createOperation(this.operation.method());

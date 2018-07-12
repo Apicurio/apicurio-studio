@@ -35,6 +35,7 @@ import {IAuthenticationService} from "./auth.service";
 import {CodegenProject} from "../models/codegen-project.model";
 import {NewCodegenProject} from "../models/new-codegen-project.model";
 import {UpdateCodegenProject} from "../models/update-codegen-project.model";
+import {Injectable} from "@angular/core";
 
 
 export interface IConnectionHandler {
@@ -269,6 +270,7 @@ export class ApiEditingSession implements IApiEditingSession {
  * An implementation of the APIs service that uses the Apicurio Studio back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
+@Injectable()
 export class ApisService extends AbstractHubService {
 
     private cachedApis: Api[] = null;

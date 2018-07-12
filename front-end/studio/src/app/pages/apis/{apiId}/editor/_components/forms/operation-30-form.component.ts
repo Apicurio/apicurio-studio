@@ -65,6 +65,8 @@ import {
     SecurityRequirementDialogComponent,
     SecurityRequirementEventData
 } from "../dialogs/security-requirement.component";
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
 
 
 @Component({
@@ -90,6 +92,15 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
     @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
+
+    /**
+     * C'tor.
+     * @param selectionService
+     * @param commandService
+     */
+    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {
+        super(selectionService, commandService);
+    }
 
     protected createEmptyNodeForSource(): Oas30Operation {
         return (<Oas30PathItem>this.operation.parent()).createOperation(this.operation.method());

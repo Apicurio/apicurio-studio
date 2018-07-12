@@ -30,12 +30,14 @@ import {ConfigService} from "./config.service";
 import {CompleteLinkedAccount} from "../models/complete-linked-account.model";
 import {CreateLinkedAccount} from "../models/create-linked-account.model";
 import {IAuthenticationService} from "./auth.service";
+import {Injectable} from "@angular/core";
 
 
 /**
  * An implementation of the Linked Accounts service that uses the Apicurio Studio back-end (Hub API) service
  * to store and retrieve relevant information for the user.
  */
+@Injectable()
 export class LinkedAccountsService extends AbstractHubService {
 
     /**

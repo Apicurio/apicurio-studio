@@ -262,11 +262,9 @@ export class SecurityScheme30DialogComponent {
      * @return
      */
     private toScopesArray(scopes: any): Scope[] {
-        console.info("toScopesArray: %o", scopes);
         let rval: Scope[] = [];
         if (scopes) {
             for (let sk in scopes) {
-                console.info("    " + sk);
                 let sd: string = scopes[sk]
                 rval.push({
                     name: sk,

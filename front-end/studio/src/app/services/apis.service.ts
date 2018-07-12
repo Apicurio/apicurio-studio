@@ -419,9 +419,8 @@ export class ApisService extends AbstractHubService {
 
                 return def;
             }).toPromise();
-        }, () => {
-            // TODO handle an error here!
-            return null;
+        }, error => {
+            return Promise.reject(error);
         });
     }
 

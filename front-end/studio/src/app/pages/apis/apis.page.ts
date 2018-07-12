@@ -113,7 +113,6 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
     public loadAsyncPageData(): void {
         console.log("[ApisPageComponent] loadAsyncPageData")
         this.apis.getApis().then( apis => {
-            console.info("APIS: %O", apis);
             this.allApis = apis;
             this.filterApis();
             this.loaded("apis");

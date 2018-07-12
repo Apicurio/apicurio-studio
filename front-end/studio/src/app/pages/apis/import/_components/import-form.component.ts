@@ -68,7 +68,6 @@ export class ImportApiFormComponent {
             try {
                 importApi.data = Base64Utils.encode(this.model.data);
             } catch (e) {
-                console.info("***  Failed to fire IMPORT event.  ***");
                 console.error(e);
             }
         }

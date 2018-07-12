@@ -114,14 +114,12 @@ export abstract class SourceFormComponent<T extends OasNode> {
     }
 
     public revertSource(): void {
-        console.info("Reverting source");
         let originalSource: string;
         if (this._sourceFormat === CodeEditorMode.YAML) {
             originalSource = YAML.stringify(this.sourceJs(), 100, 4);
         } else {
             originalSource = JSON.stringify(this.sourceJs(), null, 4);
         }
-        console.info("this.source = originalSource");
         this.source = originalSource;
         this._source.dirty = false;
         this._source.value = null;

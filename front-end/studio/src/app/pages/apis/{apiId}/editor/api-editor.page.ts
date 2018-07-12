@@ -147,7 +147,6 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                     });
                 },
                 onSelection: (user, selection) => {
-                    console.info("User %s selection changed to: %s", user.userName, selection);
                     this.zone.run(() => {
                         __component.updateSelection(user, selection);
                     });
@@ -180,7 +179,6 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     public ngAfterViewInit(): void {
         this._apiEditor.changes.subscribe( () => {
             if (this._apiEditor.first) {
-                console.info("Editor is available!");
                 this._pendingCommands.subscribe( commands => {
                     this.pendingCommands = [];
                     commands.forEach( command => {
@@ -205,7 +203,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Called when the page is destroyed.
      */
     public ngOnDestroy(): void {
-        this.editingSession.close();
+        if (this.editingSession) {
+            this.editingSession.close();
+        }
     }
 
     /**

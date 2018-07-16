@@ -200,11 +200,752 @@
                         </signpost>
 
                         <!-- The list of responses -->
-                        <div class="container-fluid responses typed-item-list">
-                            <response-row-30 *ngFor="let response of responses()" [response]="response"
-                                             (onDelete)="deleteResponse(response)"
-                                             [document]="response.ownerDocument()"></response-row-30>
+                        <div id="pf-list-simple-expansion" class="list-group list-view-pf list-view-pf-view">
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight9" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight9">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-plane list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event One
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>8</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>6</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>10</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>8</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart11" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart12"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart13"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart14"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight10">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-magic list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event Two
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>4</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>2</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>11</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>6</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart21" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart22"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart23"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart24"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight11" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight11">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-gamepad list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event Three
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>4</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>2</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>10</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>6</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart31" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart32"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart33"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart34"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight12">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-linux list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event Four
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>4</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>2</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>10</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>6</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart41" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart42"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart43"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart44"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight13" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight13">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-briefcase list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event Five
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>4</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>2</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>10</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>6</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart51" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart52"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart53"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart54"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="list-group-item-header">
+                                    <div class="list-view-pf-expand">
+                                        <span class="fa fa-angle-right"></span>
+                                    </div>
+                                    <div class="list-view-pf-checkbox">
+                                        <input type="checkbox">
+                                    </div>
+                                    <div class="list-view-pf-actions">
+                                        <button class="btn btn-default">Action</button>
+                                        <div class="dropdown pull-right dropdown-kebab-pf">
+                                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight14" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                <span class="fa fa-ellipsis-v"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight14">
+                                                <li><a href="#">Action</a></li>
+                                                <li><a href="#">Another Action</a></li>
+                                                <li><a href="#">Something Else Here</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Separated Link</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="list-view-pf-main-info">
+                                        <div class="list-view-pf-left">
+                                            <span class="fa fa-coffee list-view-pf-icon-sm"></span>
+                                        </div>
+                                        <div class="list-view-pf-body">
+                                            <div class="list-view-pf-description">
+                                                <div class="list-group-item-heading">
+                                                    Event Six
+                                                </div>
+                                                <div class="list-group-item-text">
+                                                    The following snippet of text is <a href="#">rendered as link text</a>.
+                                                </div>
+                                            </div>
+                                            <div class="list-view-pf-additional-info">
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-screen"></span>
+                                                    <strong>4</strong> Hosts
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-cluster"></span>
+                                                    <strong>2</strong> Clusters
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-container-node"></span>
+                                                    <strong>10</strong> Nodes
+                                                </div>
+                                                <div class="list-view-pf-additional-info-item">
+                                                    <span class="pficon pficon-image"></span>
+                                                    <strong>6</strong> Images
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item-container container-fluid hidden">
+                                    <div class="close">
+                                        <span class="pficon pficon-close"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div id="utilizationDonutChart61" class="example-donut-chart-utilization"></div>
+
+                                            <div class="pct-donut-chart-pf example-donut-chart-utilization">
+                                                <div class="pct-donut-chart-pf-chart">
+                                                    <div id="utilizationDonutChart62"></div>
+                                                </div>
+                                                <span class="pct-donut-chart-pf-label">
+    60 MHz of 100 MHz used
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-left">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart63"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-right">
+      60 MHz of 100 MHz used
+    </span>
+  </span>
+                                            </div>
+
+                                            <div class="example-donut-chart-utilization">
+  <span class="pct-donut-chart-pf pct-donut-chart-pf-right">
+    <div class="pct-donut-chart-pf-chart">
+      <div id="utilizationDonutChart64"></div>
+    </div>
+    <span class="pct-donut-chart-pf-label text-left">
+      60 MHz of 100 MHz
+    </span>
+  </span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <dl class="dl-horizontal">
+                                                <dt>Host Name</dt>
+                                                <dd>Hostceph1</dd>
+                                                <dt>Device Path</dt>
+                                                <dd>/dev/disk/pci-0000.05:00-sas-0.2-part1</dd>
+                                                <dt>Time</dt>
+                                                <dd>January 15, 2016 10:45:11 AM</dd>
+                                                <dt>Severity</dt>
+                                                <dd>Warning</dd>
+                                                <dt>Cluster</dt>
+                                                <dd>Cluster 1</dd>
+                                            </dl>
+                                            <p>
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!--<div class="container-fluid responses typed-item-list">-->
+                            <!--<response-row-30 *ngFor="let response of responses()" [response]="response"-->
+                                             <!--(onDelete)="deleteResponse(response)"-->
+                                             <!--[document]="response.ownerDocument()"></response-row-30>-->
+                        <!--</div>-->
                     </div>
                 </div>
 

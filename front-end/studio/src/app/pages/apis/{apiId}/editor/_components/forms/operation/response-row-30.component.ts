@@ -37,6 +37,7 @@ import {CommandService} from "../../../_services/command.service";
     moduleId: module.id,
     selector: "response-row-30",
     templateUrl: "response-row-30.component.html",
+    styleUrls: ["response-row-30.component.css"],
     encapsulation: ViewEncapsulation.None
 })
 export class ResponseRow30Component {
@@ -49,7 +50,7 @@ export class ResponseRow30Component {
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
-    
+
     constructor(private commandService: CommandService) {}
 
     public statusCodeLine(code: string): string {
@@ -89,6 +90,12 @@ export class ResponseRow30Component {
         return this._editing;
     }
 
+    public toggle(event: MouseEvent): void {
+        if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
+            this._editing = !this._editing;
+        }
+    }
+
     public edit(): void {
         this._editing = true;
     }
@@ -103,6 +110,10 @@ export class ResponseRow30Component {
 
     public delete(): void {
         this.onDelete.emit(true);
+    }
+
+    public renameResponse(): void {
+        alert("Not yet implemented.");
     }
 
     public isValid(): boolean {

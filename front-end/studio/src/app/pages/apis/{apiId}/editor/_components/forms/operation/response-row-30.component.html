@@ -1,40 +1,95 @@
-<div class="row response typed-item" [class.editing]="isEditing()">
-    <div class="col-md-6 metainfo">
+<div class="response" [class.expanded]="isEditing()">
+    <div class="header" (click)="toggle($event)">
+        <div class="expand">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+        </div>
         <div class="statusCode name {{ statusCodeType(response.statusCode()) }}">
             <validation-problem [model]="response"></validation-problem>
             <span>{{ response.statusCode() }}</span>
             <span>{{ statusCodeLine(response.statusCode()) }}</span>
         </div>
-        <div class="description"><inline-text-editor [noValueMessage]="'No description.'"
-                                                     (onChange)="setDescription($event)"
-                                                     [value]="response.description"></inline-text-editor></div>
-    </div>
-    <div class="col-md-4 type">
-        <span>{{ responseTypeInfo() }}</span>
-    </div>
-    <div class="col-md-2 actions">
-        <button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>
-        <button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>
-    </div>
-</div>
-<div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">
-    <form  class="form-horizontal">
-        <div class="col-md-12">
-            <div class="response-content">
-                <content [content]="response.content"
-                         [document]="response.ownerDocument()"
-                         (onNewMediaType)="createResponseMediaType($event)"
-                         (onMediaTypeChange)="changeResponseMediaType($event)"
-                         (onAddExample)="addMediaTypeExample($event)"
-                         (onDeleteExample)="deleteMediaTypeExample($event)"
-                         (onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"
-                         (onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"
-                         (onExampleValueChange)="changeMediaTypeExampleValue($event)"
-                         (onRemoveMediaType)="deleteResponseMediaType($event)"></content>
-            </div>
-            <div class="form-group form-group-actions">
-                <button type="button" class="btn btn-sm btn-default" (click)="cancel()">Done</button>
+        <div class="description">
+            <span>{{ response.description }}</span>
+        </div>
+        <div class="summary">
+            <span>{{ responseTypeInfo() }}</span>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="renameResponse()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Remove</span></a></li>
+                </ul>
             </div>
         </div>
-    </form>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="close">
+            <span class="pficon pficon-close" (click)="cancel()"></span>
+        </div>
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-12">
+                    <div class="response-content">
+                        <content [content]="response.content"
+                                 [document]="response.ownerDocument()"
+                                 (onNewMediaType)="createResponseMediaType($event)"
+                                 (onMediaTypeChange)="changeResponseMediaType($event)"
+                                 (onAddExample)="addMediaTypeExample($event)"
+                                 (onDeleteExample)="deleteMediaTypeExample($event)"
+                                 (onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"
+                                 (onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"
+                                 (onExampleValueChange)="changeMediaTypeExampleValue($event)"
+                                 (onRemoveMediaType)="deleteResponseMediaType($event)"></content>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<!--<div class="row response typed-item" [class.editing]="isEditing()">-->
+    <!--<div class="col-md-6 metainfo">-->
+        <!--<div class="statusCode name {{ statusCodeType(response.statusCode()) }}">-->
+            <!--<validation-problem [model]="response"></validation-problem>-->
+            <!--<span>{{ response.statusCode() }}</span>-->
+            <!--<span>{{ statusCodeLine(response.statusCode()) }}</span>-->
+        <!--</div>-->
+        <!--<div class="description"><inline-text-editor [noValueMessage]="'No description.'"-->
+                                                     <!--(onChange)="setDescription($event)"-->
+                                                     <!--[value]="response.description"></inline-text-editor></div>-->
+    <!--</div>-->
+    <!--<div class="col-md-4 type">-->
+        <!--<span>{{ responseTypeInfo() }}</span>-->
+    <!--</div>-->
+    <!--<div class="col-md-2 actions">-->
+        <!--<button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>-->
+        <!--<button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>-->
+    <!--</div>-->
+<!--</div>-->
+<!--<div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">-->
+    <!--<form  class="form-horizontal">-->
+        <!--<div class="col-md-12">-->
+            <!--<div class="response-content">-->
+                <!--<content [content]="response.content"-->
+                         <!--[document]="response.ownerDocument()"-->
+                         <!--(onNewMediaType)="createResponseMediaType($event)"-->
+                         <!--(onMediaTypeChange)="changeResponseMediaType($event)"-->
+                         <!--(onAddExample)="addMediaTypeExample($event)"-->
+                         <!--(onDeleteExample)="deleteMediaTypeExample($event)"-->
+                         <!--(onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"-->
+                         <!--(onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"-->
+                         <!--(onExampleValueChange)="changeMediaTypeExampleValue($event)"-->
+                         <!--(onRemoveMediaType)="deleteResponseMediaType($event)"></content>-->
+            <!--</div>-->
+            <!--<div class="form-group form-group-actions">-->
+                <!--<button type="button" class="btn btn-sm btn-default" (click)="cancel()">Done</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
+<!--</div>-->

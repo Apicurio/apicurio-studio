@@ -1010,7 +1010,6 @@ public class JdbcStorageTest {
         Assert.assertEquals("{Publish-5}", first.getInfo());
         Assert.assertEquals("{Publish-3}", second.getInfo());
     }
-    
 
     @Test
     public void testGetRecentApiDesigns() throws Exception {
@@ -1199,7 +1198,79 @@ public class JdbcStorageTest {
         projects = storage.listCodegenProjects("user", designId1);
         Assert.assertTrue(projects.isEmpty());
     }
-    
+
+    @SuppressWarnings("unused")
+    @Test
+    public void testUndoRedoContent() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+
+        long v1 = storage.addContent("user", id, ApiContentType.Command, "{1}");
+        long v2 = storage.addContent("user", id, ApiContentType.Command, "{2}");
+        long v3 = storage.addContent("user2", id, ApiContentType.Command, "{3}");
+        long v4 = storage.addContent("user2", id, ApiContentType.Command, "{4}");
+        long v5 = storage.addContent("user", id, ApiContentType.Command, "{5}");
+
+        List<ApiDesignCommand> commands = storage.listContentCommands("user", id, v1);
+        Assert.assertNotNull(commands);
+        Assert.assertFalse(commands.isEmpty());
+        Assert.assertEquals(4, commands.size());
+        Iterator<ApiDesignCommand> iter = commands.iterator();
+        Assert.assertEquals("{2}", iter.next().getCommand());
+        Assert.assertEquals("{3}", iter.next().getCommand());
+        Assert.assertEquals("{4}", iter.next().getCommand());
+        Assert.assertEquals("{5}", iter.next().getCommand());
+        
+        if (!storage.undoContent("user", id, v2)) {
+            Assert.fail("Failed to undo content.");
+        }
+        if (storage.undoContent("user", id, v3)) {
+            Assert.fail("Was able to undo content but shouldn't have!");
+        }
+
+        commands = storage.listContentCommands("user", id, v1);
+        Assert.assertNotNull(commands);
+        Assert.assertFalse(commands.isEmpty());
+        Assert.assertEquals(3, commands.size());
+        iter = commands.iterator();
+        Assert.assertEquals("{3}", iter.next().getCommand());
+        Assert.assertEquals("{4}", iter.next().getCommand());
+        Assert.assertEquals("{5}", iter.next().getCommand());
+        
+        // Can't undo v2 because it's already undone.
+        if (storage.undoContent("user", id, v2)) {
+            Assert.fail("Was able to undo content but shouldn't have!");
+        }
+        // Undo v5
+        if (!storage.undoContent("user", id, v5)) {
+            Assert.fail("Failed to undo content.");
+        }
+        // Redo v2 (restoring it)
+        if (!storage.redoContent("user", id, v2)) {
+            Assert.fail("Failed to redo content.");
+        }
+        // Can't redo v2 again (already done)
+        if (storage.redoContent("user", id, v2)) {
+            Assert.fail("Was able to redo content but shouldn't have!");
+        }
+
+        commands = storage.listContentCommands("user", id, v1);
+        Assert.assertNotNull(commands);
+        Assert.assertFalse(commands.isEmpty());
+        Assert.assertEquals(3, commands.size());
+        iter = commands.iterator();
+        Assert.assertEquals("{2}", iter.next().getCommand());
+        Assert.assertEquals("{3}", iter.next().getCommand());
+        Assert.assertEquals("{4}", iter.next().getCommand());
+    }
+
     
     /**
      * Creates an in-memory datasource.

@@ -78,7 +78,7 @@ import io.apicurio.hub.core.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 5;
+    private static int DB_VERSION = 6;
     private static Object dbMutex = new Object();
 
     @Inject
@@ -535,6 +535,50 @@ public class JdbcStorage implements IStorage {
             });
         } catch (Exception e) {
             throw new StorageException("Error adding content entry for API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#undoContent(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public boolean undoContent(String user, String designId, long contentVersion) throws StorageException {
+        logger.debug("Undoing a content row for: {}  version: {}", designId, contentVersion);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.undoContent();
+                long updateCount = handle.createUpdate(statement)
+                        .bind(0, new Date())
+                        .bind(1, user)
+                        .bind(2, designId)
+                        .bind(3, contentVersion)
+                        .execute();
+                return updateCount > 0;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error undoing content entry for API design.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#redoContent(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public boolean redoContent(String user, String designId, long contentVersion) throws StorageException {
+        logger.debug("Undoing a content row for: {}  version: {}", designId, contentVersion);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.redoContent();
+                long updateCount = handle.createUpdate(statement)
+                        .bind(0, new Date())
+                        .bind(1, user)
+                        .bind(2, designId)
+                        .bind(3, contentVersion)
+                        .execute();
+                return updateCount > 0;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error undoing content entry for API design.", e);
         }
     }
 

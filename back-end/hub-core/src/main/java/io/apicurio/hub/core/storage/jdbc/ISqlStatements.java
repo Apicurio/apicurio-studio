@@ -127,6 +127,16 @@ public interface ISqlStatements {
      * A statement used to insert a content row.
      */
     public String insertContent();
+    
+    /**
+     * A statement used to undo some content.
+     */
+    public String undoContent();
+
+    /**
+     * A statement used to redo some content.
+     */
+    public String redoContent();
 
     /**
      * A statement used to delete all acl rows for an api design.

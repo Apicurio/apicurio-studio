@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 
 /**
  * Models a single, shared editing session for an API Design.
@@ -137,6 +139,56 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
+     * Sends the "undo" signal to all other members of the editing session.
+     * @param excludeSession
+     * @param user
+     * @param undo
+     */
+    public void sendUndoToOthers(Session excludeSession, String user, ApiDesignUndoRedo undo) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"undo\", ");
+        builder.append("\"contentVersion\": ");
+        builder.append(undo.getContentVersion());
+        builder.append("}");
+        
+        for (Session otherSession : this.sessions.values()) {
+            if (otherSession != excludeSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sends the "undo" signal to all other members of the editing session.
+     * @param excludeSession
+     * @param user
+     * @param redo
+     */
+    public void sendRedoToOthers(Session excludeSession, String user, ApiDesignUndoRedo redo) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"redo\", ");
+        builder.append("\"contentVersion\": ");
+        builder.append(redo.getContentVersion());
+        builder.append("}");
+        
+        for (Session otherSession : this.sessions.values()) {
+            if (otherSession != excludeSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(builder.toString());
+                } catch (IOException e) {
+                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
+        }
+    }
+
+    /**
      * Sends the given selection change event to all other members of the editing session.
      * @param excludeSession
      * @param user
@@ -182,6 +234,25 @@ public class ApiDesignEditingSession implements Closeable {
         builder.append(", ");
         builder.append("\"commandId\": ");
         builder.append(ack.getCommandId());
+        builder.append("}");
+        try {
+            toSession.getBasicRemote().sendText(builder.toString());
+        } catch (IOException e) {
+            logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
+        }
+    }
+
+    /**
+     * Sends an acknowledgement message to the given client.
+     * @param toSession
+     * @param ack
+     */
+    public void sendAckTo(Session toSession, ApiDesignUndoRedoAck ack) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        builder.append("\"type\": \"ack\", ");
+        builder.append("\"contentVersion\": ");
+        builder.append(ack.getContentVersion());
         builder.append("}");
         try {
             toSession.getBasicRemote().sendText(builder.toString());

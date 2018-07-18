@@ -49,6 +49,8 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -245,6 +247,84 @@ public class EditApiDesignEndpoint {
             return;
         } else if (msgType.equals("ping")) {
             logger.debug("PING message received.");
+            return;
+        } else if (msgType.equals("undo")) {
+            String user = editingSession.getUser(session);
+            
+            long contentVersion = -1;
+            if (message.has("contentVersion")) {
+                contentVersion = message.get("contentVersion").asLong();
+            }
+            
+            this.metrics.undoCommand(designId, contentVersion);
+            
+            logger.debug("\tuser:" + user);
+            boolean reverted = false;
+            try {
+                reverted = storage.undoContent(user, designId, contentVersion);
+            } catch (StorageException e) {
+                logger.error("Error undoing a command.", e);
+                // TODO do something sensible here - send a msg to the client?
+                return;
+            }
+            
+            // If the command wasn't successfully reverted (it was already reverted or didn't exist)
+            // then return without doing anything else.
+            if (!reverted) {
+                return;
+            }
+            
+            // Send an ack message back to the user
+            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
+            ack.setContentVersion(contentVersion);
+            editingSession.sendAckTo(session, ack);
+            logger.debug("ACK sent back to client.");
+            
+            // Now propagate the undo to all other clients
+            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
+            command.setContentVersion(contentVersion);
+            editingSession.sendUndoToOthers(session, user, command);
+            logger.debug("Undo sent to 'other' clients.");
+
+            return;
+        } else if (msgType.equals("redo")) {
+            String user = editingSession.getUser(session);
+            
+            long contentVersion = -1;
+            if (message.has("contentVersion")) {
+                contentVersion = message.get("contentVersion").asLong();
+            }
+            
+            this.metrics.redoCommand(designId, contentVersion);
+            
+            logger.debug("\tuser:" + user);
+            boolean restored = false;
+            try {
+                restored = storage.redoContent(user, designId, contentVersion);
+            } catch (StorageException e) {
+                logger.error("Error undoing a command.", e);
+                // TODO do something sensible here - send a msg to the client?
+                return;
+            }
+            
+            // If the command wasn't successfully restored (it was already restored or didn't exist)
+            // then return without doing anything else.
+            if (!restored) {
+                return;
+            }
+            
+            // Send an ack message back to the user
+            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
+            ack.setContentVersion(contentVersion);
+            editingSession.sendAckTo(session, ack);
+            logger.debug("ACK sent back to client.");
+            
+            // Now propagate the redo to all other clients
+            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
+            command.setContentVersion(contentVersion);
+            editingSession.sendRedoToOthers(session, user, command);
+            logger.debug("Redo sent to 'other' clients.");
+
             return;
         }
         logger.error("Unknown message type: {}", msgType);

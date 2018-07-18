@@ -50,4 +50,18 @@ public interface IEditingMetrics {
      */
     public void contentCommand(String designId);
 
+    /**
+     * Indicates that a user wants to "undo" a command/content version.
+     * @param designId
+     * @param contentVersion
+     */
+    public void undoCommand(String designId, long contentVersion);
+
+    /**
+     * Indicates that a user wants to "redo" a command/content version.
+     * @param designId
+     * @param contentVersion
+     */
+    public void redoCommand(String designId, long contentVersion);
+
 }

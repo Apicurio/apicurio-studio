@@ -240,6 +240,24 @@ public interface IStorage {
     public long addContent(String userId, String designId, ApiContentType type, String data) throws StorageException;
 
     /**
+     * Marks a single content change as "reverted", which will undo that one change, removing it
+     * from the document.
+     * @param user
+     * @param designId
+     * @param contentVersion
+     */
+    public boolean undoContent(String user, String designId, long contentVersion) throws StorageException;
+
+    /**
+     * Restores a single content change by changing the "reverted" flag back to false.  This restores
+     * that one change, returning it to the document.
+     * @param user
+     * @param designId
+     * @param contentVersion
+     */
+    public boolean redoContent(String user, String designId, long contentVersion) throws StorageException;
+
+    /**
      * Creates an entry for an editing session UID.  Throws an exception if the entry could
      * not be created for any reason.
      * @param uuid

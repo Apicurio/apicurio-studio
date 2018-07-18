@@ -298,6 +298,40 @@ public class MockStorage implements IStorage {
         this.addContentRow(designId, row);
         return row.version;
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#undoContent(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public boolean undoContent(String user, String designId, long contentVersion) throws StorageException {
+        List<MockContentRow> list = this.content.get(designId);
+        if (list != null) {
+            for (MockContentRow row : list) {
+                if (row.version == contentVersion && !row.reverted) {
+                    row.reverted = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#redoContent(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public boolean redoContent(String user, String designId, long contentVersion) throws StorageException {
+        List<MockContentRow> list = this.content.get(designId);
+        if (list != null) {
+            for (MockContentRow row : list) {
+                if (row.version == contentVersion && row.reverted) {
+                    row.reverted = false;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign, java.lang.String)
@@ -527,6 +561,8 @@ public class MockStorage implements IStorage {
         public String data;
         public String createdBy;
         final public Date createdOn = new Date();
+        public boolean reverted;
+        public Date modifiedOn;
     }
 
     public static class MockUuidRow {

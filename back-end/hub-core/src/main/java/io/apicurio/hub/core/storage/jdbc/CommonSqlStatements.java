@@ -180,6 +180,22 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#undoContent()
+     */
+    @Override
+    public String undoContent() {
+        return "UPDATE api_content SET reverted = 1, modified_on = ? WHERE reverted = 0 AND created_by = ? AND design_id = ? AND version = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#redoContent()
+     */
+    @Override
+    public String redoContent() {
+        return "UPDATE api_content SET reverted = 0, modified_on = ? WHERE reverted = 1 AND created_by = ? AND design_id = ? AND version = ?";
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertAcl()
      */
     @Override
@@ -288,7 +304,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN acl a ON a.design_id = c.design_id "
-                + "WHERE c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
+                + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
                 + "ORDER BY c.version ASC";
     }
     

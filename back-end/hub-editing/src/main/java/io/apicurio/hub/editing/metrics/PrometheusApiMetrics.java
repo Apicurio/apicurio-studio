@@ -83,4 +83,20 @@ public class PrometheusApiMetrics implements IEditingMetrics {
         String content = writer.getBuffer().toString();
         return content;
     }
+    
+    /**
+     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#undoCommand(java.lang.String, long)
+     */
+    @Override
+    public void undoCommand(String designId, long contentVersion) {
+        // Nothing yet.
+    }
+    
+    /**
+     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#redoCommand(java.lang.String, long)
+     */
+    @Override
+    public void redoCommand(String designId, long contentVersion) {
+        // Nothing yet
+    }
 }

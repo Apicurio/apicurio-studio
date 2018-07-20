@@ -34,6 +34,9 @@ public class HubConfiguration extends Configuration {
 
     private static final String KEYCLOAK_DISABLE_TRUST_MANAGER_ENV = "APICURIO_KC_DISABLE_TRUST_MANAGER";
     private static final String KEYCLOAK_DISABLE_TRUST_MANAGER_SYSPROP = "apicurio.security.keycloak.disable-trust-manager";
+    
+    private static final String REPOSITORY_FILTER_ENV = "APICURIO_REPOSITORY_FILTER";
+    private static final String REPOSITORY_FILTER_SYSPROP = "apicurio.repository.filter";
 
     /**
      * @return the configured JDBC type (default: h2)
@@ -54,6 +57,11 @@ public class HubConfiguration extends Configuration {
      */
     public boolean isDisableKeycloakTrustManager() {
         return "true".equals(getConfigurationProperty(KEYCLOAK_DISABLE_TRUST_MANAGER_ENV, KEYCLOAK_DISABLE_TRUST_MANAGER_SYSPROP, "false"));
+    }
+    
+    
+    public String getRepositoryFilter() {
+        return getConfigurationProperty(REPOSITORY_FILTER_ENV, REPOSITORY_FILTER_SYSPROP, "");
     }
 
 }

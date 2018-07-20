@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -49,6 +50,7 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
@@ -62,10 +64,13 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
 
     private static Logger logger = LoggerFactory.getLogger(BitbucketSourceConnector.class);
 
-    private static final String BITBUCKET_API_ENDPOINT = "https://api.bitbucket.org/2.0";
+    private static final String BITBUCKET_API_ENDPOINT = "https://bitbucket.org/!api/2.0";
     protected static final Object TOKEN_TYPE_BASIC = "BASIC";
     protected static final Object TOKEN_TYPE_OAUTH = "OAUTH";
 
+    @Inject
+    private HubConfiguration config;
+    
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
      */
@@ -224,10 +229,17 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException {
         try {
+        	String urlTemplate = "/repositories/:uname?pagelen=100";
+        	if (!"".equals(config.getRepositoryFilter())) {
+        		urlTemplate += "&q=name%7E%22:filter%22";
+        	}
+        	
             //@formatter:off
-            String teamsUrl = endpoint("/repositories/:uname")
-                    .bind("uname", teamName)
-                    .url();
+        	Endpoint endpoint = endpoint(urlTemplate).bind("uname", teamName);
+        	if (!"".equals(config.getRepositoryFilter())) {
+        		endpoint = endpoint.bind("filter", config.getRepositoryFilter());
+        	}
+            String teamsUrl = endpoint.url();
             //@formatter:on;
 
             HttpRequest request = Unirest.get(teamsUrl);

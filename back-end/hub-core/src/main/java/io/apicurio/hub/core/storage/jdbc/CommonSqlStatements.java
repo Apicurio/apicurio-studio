@@ -326,7 +326,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN acl a ON a.design_id = c.design_id "
-                + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
+                + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND c.version > ? AND a.user_id = ? "
                 + "ORDER BY c.version ASC";
     }
     

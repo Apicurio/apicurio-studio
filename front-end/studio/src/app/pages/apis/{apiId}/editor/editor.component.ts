@@ -64,6 +64,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     @Input() embedded: boolean;
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onUndo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
+    @Output() onRedo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
@@ -93,10 +95,16 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
                 private documentService: DocumentService) {}
 
     public ngOnInit(): void {
+        this.selectionService.reset();
+        this.commandService.reset();
+        this.documentService.reset();
+
         let me: ApiEditorComponent = this;
         this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
-            console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
-            me.onNodeSelected(selectedPath);
+            if (selectedPath) {
+                console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
+                me.onNodeSelected(selectedPath);
+            }
         });
         this._commandSubscription = this.commandService.commands().subscribe( command => {
             if (command) {
@@ -165,9 +173,11 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     public onGlobalKeyDown(event: KeyboardEvent): void {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'undo' the last command (not implemented).");
-            // this._commands.undoLastCommand(this.document());
-            // this.master.validateSelection();
+            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+            // let cmd: OtCommand = this.otEngine().undoLastCommand();
+            // if (cmd !== null) {
+            //     this.onUndo.emit(cmd);
+            // }
             // this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {

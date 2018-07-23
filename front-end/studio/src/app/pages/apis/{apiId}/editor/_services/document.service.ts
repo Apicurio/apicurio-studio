@@ -28,11 +28,15 @@ import {OasDocument} from "oai-ts-core";
 export class DocumentService {
 
     private _currentDocument: OasDocument;
-    private _documentSubject: BehaviorSubject<OasDocument> = new BehaviorSubject(null);
-    private _document: Observable<OasDocument> = this._documentSubject.asObservable();
+    private _documentSubject: BehaviorSubject<OasDocument>;
+    private _document: Observable<OasDocument>;
 
-    private _changeSubject: BehaviorSubject<void> = new BehaviorSubject(null);
-    private _change: Observable<void> = this._changeSubject.asObservable();
+    private _changeSubject: BehaviorSubject<void>;
+    private _change: Observable<void>;
+
+    constructor() {
+        this.reset();
+    }
 
     public emitDocument(document: OasDocument): void {
         this._currentDocument = document;
@@ -53,6 +57,15 @@ export class DocumentService {
 
     public change(): Observable<void> {
         return this._change;
+    }
+
+    public reset(): void {
+        this._currentDocument = null;
+        this._documentSubject = new BehaviorSubject(null);
+        this._document = this._documentSubject.asObservable();
+
+        this._changeSubject = new BehaviorSubject(null);
+        this._change = this._changeSubject.asObservable();
     }
 
 }

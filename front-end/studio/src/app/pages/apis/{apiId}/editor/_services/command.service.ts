@@ -28,8 +28,12 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class CommandService {
 
-    private _commandSubject: BehaviorSubject<ICommand> = new BehaviorSubject(null);
-    private _commands: Observable<ICommand> = this._commandSubject.asObservable();
+    private _commandSubject: BehaviorSubject<ICommand>;
+    private _commands: Observable<ICommand>;
+
+    constructor() {
+        this.reset();
+    }
 
     public emit(command: ICommand): void {
         this._commandSubject.next(command);
@@ -37,6 +41,11 @@ export class CommandService {
 
     public commands(): Observable<ICommand> {
         return this._commands;
+    }
+
+    public reset(): void {
+        this._commandSubject = new BehaviorSubject(null);
+        this._commands = this._commandSubject.asObservable();
     }
 
 }

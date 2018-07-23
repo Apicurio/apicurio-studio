@@ -161,6 +161,10 @@ export class SelectionService {
     private _selection: Observable<OasNodePath> = this._selectionSubject.asObservable();
     private _collaboratorSelections: CollaboratorSelections = new CollaboratorSelections();
 
+    constructor() {
+        this.reset();
+    }
+
     public currentSelection(): OasNodePath {
         return this._selectionSubject.getValue();
     }
@@ -197,4 +201,9 @@ export class SelectionService {
         this._collaboratorSelections.setSelection(user, selection, document);
     }
 
+    public reset(): void {
+        this._selectionSubject = new BehaviorSubject(new OasNodePath("/"));
+        this._selection = this._selectionSubject.asObservable();
+        this._collaboratorSelections = new CollaboratorSelections();
+    }
 }

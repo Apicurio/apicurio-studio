@@ -309,6 +309,18 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectAllContentCommands()
+     */
+    @Override
+    public String selectAllContentCommands() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "JOIN acl a ON a.design_id = c.design_id "
+                + "WHERE c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
+                + "ORDER BY c.version ASC";
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertEditingSessionUuid()
      */
     @Override
@@ -382,6 +394,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.design_id = ? "
         		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
 
@@ -392,6 +405,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.created_by = ? "
         		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
     

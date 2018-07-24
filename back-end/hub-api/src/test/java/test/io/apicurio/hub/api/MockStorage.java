@@ -274,10 +274,39 @@ public class MockStorage implements IStorage {
         }
 
         for (MockContentRow row : list) {
+            if (row.designId.equals(designId) && !row.reverted && row.type == ApiContentType.Command && row.version > sinceVersion) {
+                ApiDesignCommand cmd = new ApiDesignCommand();
+                cmd.setContentVersion(row.version);
+                cmd.setCommand(row.data);
+                cmd.setAuthor(row.createdBy);
+                cmd.setReverted(row.reverted);
+                rval.add(cmd);
+            }
+        }
+        
+        return rval;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listAllContentCommands(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public List<ApiDesignCommand> listAllContentCommands(String userId, String designId, long sinceVersion)
+            throws StorageException {
+        List<ApiDesignCommand> rval = new ArrayList<>();
+
+        List<MockContentRow> list = this.content.get(designId);
+        if (list == null || list.isEmpty()) {
+            return rval;
+        }
+
+        for (MockContentRow row : list) {
             if (row.designId.equals(designId) && row.type == ApiContentType.Command && row.version > sinceVersion) {
                 ApiDesignCommand cmd = new ApiDesignCommand();
                 cmd.setContentVersion(row.version);
                 cmd.setCommand(row.data);
+                cmd.setAuthor(row.createdBy);
+                cmd.setReverted(row.reverted);
                 rval.add(cmd);
             }
         }

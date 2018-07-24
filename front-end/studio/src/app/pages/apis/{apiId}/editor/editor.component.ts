@@ -174,17 +174,21 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
-            // let cmd: OtCommand = this.otEngine().undoLastCommand();
-            // if (cmd !== null) {
-            //     this.onUndo.emit(cmd);
-            // }
-            // this.validateModel();
+            let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
+            // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
+            if (cmd !== null) {
+                this.onUndo.emit(cmd);
+            }
+            this.validateModel();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'redo' the last command (not implemented).");
-            // this._commands.redoLastCommand(this.document());
-            // this.master.validateSelection();
-            // this.validateModel();
+            console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
+            let cmd: OtCommand = this.otEngine().redoLastLocalCommand();
+            // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
+            if (cmd !== null) {
+                this.onRedo.emit(cmd);
+            }
+            this.validateModel();
         }
     }
 
@@ -192,7 +196,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
      * Called when an editor component creates a command that should be executed.
      * @param command
      */
-    public onCommand(command: ICommand): void {
+    protected onCommand(command: ICommand): void {
         let otCmd: OtCommand = new OtCommand();
         otCmd.command = command;
         otCmd.contentVersion = Date.now();
@@ -224,7 +228,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
      * @param command
      */
     public executeCommand(command: OtCommand): void {
-        console.info("[ApiEditorComponent] Executing a command.");
         this.otEngine().executeCommand(command);
 
         // After changing the model, we need to ensure all selections are still valid
@@ -235,6 +238,59 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
         // Fire a change event in the document service
         this.documentService.emitChange();
+    }
+
+    /**
+     * Call this to undo a command.  Typically this is used to undo commands from
+     * remote collaborators after receiving an async message from the server.
+     * @param command
+     */
+    public undoCommand(command: OtCommand | number | string): void {
+        if (command) {
+            if (typeof command === "number") {
+                this.otEngine().undo(command as number);
+            } else if (typeof command === "string") {
+                this.otEngine().undo(Number(command as string));
+            } else {
+                this.otEngine().undo(command.contentVersion);
+            }
+
+            // After changing the model, we need to ensure all selections are still valid
+            this.selectionService.select(this.selectionService.currentSelection(), this.document());
+
+            // After changing the model, we should re-validate it
+            this.validateModel();
+
+            // Fire a change event in the document service
+            this.documentService.emitChange();
+
+        }
+    }
+
+    /**
+     * Call this to redo a command.  Typically this is used to undo commands from
+     * remote collaborators after receiving an async message from the server.
+     * @param command
+     */
+    public redoCommand(command: OtCommand | number): void {
+        if (command) {
+            if (typeof command === "number") {
+                this.otEngine().redo(command as number);
+            } else if (typeof command === "string") {
+                this.otEngine().redo(Number(command as string));
+            } else {
+                this.otEngine().redo(command.contentVersion);
+            }
+
+            // After changing the model, we need to ensure all selections are still valid
+            this.selectionService.select(this.selectionService.currentSelection(), this.document());
+
+            // After changing the model, we should re-validate it
+            this.validateModel();
+
+            // Fire a change event in the document service
+            this.documentService.emitChange();
+        }
     }
 
     /**

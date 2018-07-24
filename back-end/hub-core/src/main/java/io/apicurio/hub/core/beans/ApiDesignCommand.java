@@ -21,8 +21,10 @@ package io.apicurio.hub.core.beans;
  */
 public class ApiDesignCommand {
 
+    private String author;
     private String command;
     private long contentVersion;
+    private boolean reverted;
     
     /**
      * Constructor.
@@ -56,6 +58,34 @@ public class ApiDesignCommand {
      */
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    /**
+     * @return the author
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * @param author the author to set
+     */
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    /**
+     * @return the reverted
+     */
+    public boolean isReverted() {
+        return reverted;
+    }
+
+    /**
+     * @param reverted the reverted to set
+     */
+    public void setReverted(boolean reverted) {
+        this.reverted = reverted;
     }
     
 }

@@ -220,13 +220,23 @@ public interface IStorage {
 
     /**
      * Returns a list of commands for a given API design that have been executed since 
-     * a specific content version.
+     * a specific content version (excludes reverted commands).
      * @param userId
      * @param designId
      * @param sinceVersion
      * @throws StorageException
      */
     public List<ApiDesignCommand> listContentCommands(String userId, String designId, long sinceVersion) throws StorageException;
+
+    /**
+     * Returns a list of commands for a given API design that have been executed since 
+     * a specific content version, including reverted commands.
+     * @param userId
+     * @param designId
+     * @param sinceVersion
+     * @throws StorageException
+     */
+    public List<ApiDesignCommand> listAllContentCommands(String userId, String designId, long sinceVersion) throws StorageException;
 
     /**
      * Adds a single content row to the DB and returns a unique content version number 

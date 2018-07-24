@@ -50,6 +50,8 @@ export interface IConnectionHandler {
 export interface ICommandHandler {
     onCommand(command: OtCommand): void;
     onAck(ack: ApiDesignCommandAck): void;
+    onUndo(contentVersion: number): void;
+    onRedo(contentVersion: number): void;
 }
 
 export interface IActivityHandler {
@@ -76,6 +78,10 @@ export interface IApiEditingSession {
     sendCommand(command: OtCommand): void;
 
     sendSelection(selection: string): void;
+
+    sendUndo(command: OtCommand): void;
+
+    sendRedo(command: OtCommand): void;
 
     close(): void;
 
@@ -135,6 +141,8 @@ export class ApiEditingSession implements IApiEditingSession {
                     let otCmd: OtCommand = new OtCommand();
                     otCmd.contentVersion = msg.contentVersion;
                     otCmd.command = command;
+                    otCmd.reverted = msg.reverted ? true : false;
+                    otCmd.author = msg.author;
                     this._commandHandler.onCommand(otCmd);
                 }
             } else if (msg.type === "ack") {
@@ -176,6 +184,18 @@ export class ApiEditingSession implements IApiEditingSession {
                 let user: ApiEditorUser = this._users[msg.id];
                 if (user) {
                     this._activityHandler.onSelection(user, msg.selection);
+                }
+            } else if (msg.type === "undo") {
+                // Process an 'undo' style message
+                console.info("                    Content Version: %o", msg.contentVersion);
+                if (this._commandHandler) {
+                    this._commandHandler.onUndo(msg.contentVersion);
+                }
+            } else if (msg.type === "redo") {
+                // Process an 'undo' style message
+                console.info("                    Content Version: %o", msg.contentVersion);
+                if (this._commandHandler) {
+                    this._commandHandler.onRedo(msg.contentVersion);
                 }
             } else {
                 console.error("[ApiEditingSession] *** Invalid message type: %s", msg.type);
@@ -232,6 +252,32 @@ export class ApiEditingSession implements IApiEditingSession {
         let data: any = {
             type: "selection",
             selection: selection
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to send a 'undo' to the server.
+     * @param command
+     */
+    sendUndo(command: OtCommand): void {
+        let data: any = {
+            type: "undo",
+            contentVersion: command.contentVersion
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to send a 'redo' to the server.
+     * @param command
+     */
+    sendRedo(command: OtCommand): void {
+        let data: any = {
+            type: "redo",
+            contentVersion: command.contentVersion
         };
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);

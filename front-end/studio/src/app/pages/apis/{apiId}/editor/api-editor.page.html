@@ -47,6 +47,8 @@
     <!-- The API Editor -->
     <api-editor #apiEditor [api]="apiDefinition" *ngSwitchCase="'loaded'"
                 (onSelectionChanged)="onSelectionChanged($event)"
-                (onCommandExecuted)="onCommandExecuted($event)"></api-editor>
+                (onCommandExecuted)="onCommandExecuted($event)"
+                (onUndo)="onEditorUndo($event)"
+                (onRedo)="onEditorRedo($event)"></api-editor>
 </div>
 <editor-disconnected-dialog #editorDisconnectedModal></editor-disconnected-dialog>

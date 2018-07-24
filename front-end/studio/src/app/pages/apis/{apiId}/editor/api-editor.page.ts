@@ -31,6 +31,7 @@ import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-di
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {Title} from "@angular/platform-browser";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
     moduleId: module.id,
@@ -47,6 +48,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     @ViewChildren("apiEditor") _apiEditor: QueryList<ApiEditorComponent>;
     @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
+    private editorAvailable: boolean;
 
     private editingSession: IApiEditingSession;
     public activeCollaborators: ApiEditorUser[] = [];
@@ -56,6 +58,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private pendingCommands: OtCommand[] = [];
     private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
+    private _pendingCommandsSubscription: Subscription;
     private _pendingCommands: Observable<OtCommand[]> = this._pendingCommandsSubject.asObservable();
 
     private currentEditorSelection: string;
@@ -92,6 +95,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      */
     public loadAsyncPageData(params: any): void {
         let __component: ApiEditorPageComponent = this;
+        this.editorAvailable = false;
 
         console.info("[ApiEditorPageComponent] Loading async page data");
         let apiId: string = params["apiId"];
@@ -113,6 +117,16 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 onAck: (ack) => {
                     this.zone.run(() => {
                         __component.finalizeCommand(ack);
+                    });
+                },
+                onUndo: (contentVersion) => {
+                    this.zone.run(() => {
+                        __component.undoCommand(contentVersion);
+                    });
+                },
+                onRedo: (contentVersion) => {
+                    this.zone.run(() => {
+                        __component.redoCommand(contentVersion);
                     });
                 }
             });
@@ -136,7 +150,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                         if (user.attributes["id"]) {
                             this._activeCollaboratorIds.push(user.attributes["id"]);
                         }
-                        console.info("User left the session, clearing their selection.");
+                        console.info("[ApiEditorPageComponent] User left the session, clearing their selection.");
                         __component.updateSelection(user, null);
                         for (let idx = this.activeCollaborators.length - 1; idx >= 0; idx--) {
                             if (this.activeCollaborators[idx].userId === user.userId) {
@@ -178,8 +192,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     public ngAfterViewInit(): void {
         this._apiEditor.changes.subscribe( () => {
-            if (this._apiEditor.first) {
-                this._pendingCommands.subscribe( commands => {
+            if (this._apiEditor.first && !this._pendingCommandsSubscription) {
+                this.editorAvailable = true;
+                this._pendingCommandsSubscription = this._pendingCommands.subscribe( commands => {
                     this.pendingCommands = [];
                     commands.forEach( command => {
                         this._apiEditor.first.executeCommand(command);
@@ -226,12 +241,50 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     /**
+     * Called when the user "undoes" a command in the editor/UI.
+     */
+    public onEditorUndo(event: OtCommand): void {
+        this.editingSession.sendUndo(event);
+    }
+
+    /**
+     * Called when the user "redoes" a command in the editor/UI.
+     */
+    public onEditorRedo(event: OtCommand): void {
+        this.editingSession.sendRedo(event);
+    }
+
+    /**
      * Executes the given command in the editor.
      * @param command
      */
     protected executeCommand(command: OtCommand): void {
         this.pendingCommands.push(command);
         this._pendingCommandsSubject.next(this.pendingCommands);
+    }
+
+    /**
+     * Performs a 'undo' on the given command content version.
+     * @param contentVersion
+     */
+    protected undoCommand(contentVersion: number): void {
+        if (this.editorAvailable) {
+            this._apiEditor.first.undoCommand(contentVersion);
+        } else {
+            // TODO queue these if the editor is not available yet or use an observable
+        }
+    }
+
+    /**
+     * Performs a 'redo' on the given command content version.
+     * @param contentVersion
+     */
+    protected redoCommand(contentVersion: number): void {
+        if (this.editorAvailable) {
+            this._apiEditor.first.redoCommand(contentVersion);
+        } else {
+            // TODO queue these if the editor is not available yet or use an observable
+        }
     }
 
     /**

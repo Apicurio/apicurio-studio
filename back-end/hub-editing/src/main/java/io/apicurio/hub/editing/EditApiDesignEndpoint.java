@@ -131,7 +131,7 @@ public class EditApiDesignEndpoint {
             }
             
             // Send any commands that have been created since the user asked to join the editing session.
-            List<ApiDesignCommand> commands = this.storage.listContentCommands(userId, designId, contentVersion);
+            List<ApiDesignCommand> commands = this.storage.listAllContentCommands(userId, designId, contentVersion);
             for (ApiDesignCommand command : commands) {
                 String cmdData = command.getCommand();
 
@@ -141,7 +141,13 @@ public class EditApiDesignEndpoint {
                 builder.append(command.getContentVersion());
                 builder.append(", ");
                 builder.append("\"type\": \"command\", ");
-                builder.append("\"command\": ");                
+                builder.append("\"author\": \"");
+                builder.append(command.getAuthor());
+                builder.append("\", ");
+                builder.append("\"reverted\": ");
+                builder.append(command.isReverted());
+                builder.append(", ");
+                builder.append("\"command\": ");
                 builder.append(cmdData);
                 builder.append("}");
                 
@@ -227,6 +233,8 @@ public class EditApiDesignEndpoint {
             ApiDesignCommand command = new ApiDesignCommand();
             command.setCommand(content);
             command.setContentVersion(cmdContentVersion);
+            command.setAuthor(user);
+            command.setReverted(false);
             editingSession.sendCommandToOthers(session, user, command);
             logger.debug("Command propagated to 'other' clients.");
 

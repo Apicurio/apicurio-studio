@@ -181,9 +181,15 @@ public interface ISqlStatements {
 
     /**
      * A statement used to return all of the 'command' style api_content rows for
-     * a given API Design.
+     * a given API Design (excludes reverted commands).
      */
     public String selectContentCommands();
+
+    /**
+     * A statement used to return all of the 'command' style api_content rows for
+     * a given API Design, including reverted commands.
+     */
+    public String selectAllContentCommands();
 
     /**
      * A statement used to return all of the collaboration invitations for a given API design.

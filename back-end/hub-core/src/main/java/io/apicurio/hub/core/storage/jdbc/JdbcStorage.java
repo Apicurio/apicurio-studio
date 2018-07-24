@@ -648,6 +648,28 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting content commands.", e);
         }
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listAllContentCommands(java.lang.String, java.lang.String, long)
+     */
+    @Override
+    public List<ApiDesignCommand> listAllContentCommands(String userId, String designId, long sinceVersion)
+            throws StorageException {
+        logger.debug("Selecting ALL content 'command' rows for API {} since content version {}", designId, sinceVersion);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectAllContentCommands();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, userId)
+                        .bind(2, sinceVersion)
+                        .map(ApiDesignCommandRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting content commands.", e);
+        }
+    }
 
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
@@ -1349,10 +1371,12 @@ public class JdbcStorage implements IStorage {
         @Override
         public ApiDesignCommand map(ResultSet rs, StatementContext ctx) throws SQLException {
             try {
-                ApiDesignCommand content = new ApiDesignCommand();
-                content.setContentVersion(rs.getLong("version"));
-                content.setCommand(IOUtils.toString(rs.getCharacterStream("data")));
-                return content;
+                ApiDesignCommand cmd = new ApiDesignCommand();
+                cmd.setContentVersion(rs.getLong("version"));
+                cmd.setCommand(IOUtils.toString(rs.getCharacterStream("data")));
+                cmd.setAuthor(rs.getString("created_by"));
+                cmd.setReverted(rs.getInt("reverted") > 0);
+                return cmd;
             } catch (IOException e) {
                 throw new SQLException(e);
             }

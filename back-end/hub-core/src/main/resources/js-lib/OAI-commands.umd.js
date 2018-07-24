@@ -79,7 +79,9 @@ var AbstractCommand = (function () {
         var obj = {
             __type: cmdType
         };
-        for (var propName in this) {
+        var propNames = Object.getOwnPropertyNames(this);
+        for (var _i = 0, propNames_1 = propNames; _i < propNames_1.length; _i++) {
+            var propName = propNames_1[_i];
             obj[propName] = this[propName];
         }
         return obj;
@@ -89,7 +91,9 @@ var AbstractCommand = (function () {
      * @param obj
      */
     AbstractCommand.prototype.unmarshall = function (obj) {
-        for (var propName in obj) {
+        var propNames = Object.getOwnPropertyNames(obj);
+        for (var _i = 0, propNames_2 = propNames; _i < propNames_2.length; _i++) {
+            var propName = propNames_2[_i];
             if (propName !== "__type") {
                 this[propName] = obj[propName];
             }
@@ -8085,10 +8089,33 @@ var OtCommand = (function () {
      */
     OtCommand.prototype.execute = function (document) {
         if (!this.reverted) {
-            // console.info("Executing CV: ", this.contentVersion);
             this.command.execute(document);
         }
+    };
+    /**
+     * Invokes 'undo' on the underlying ICommand but only if it hasn't already been reverted.
+     * Any command already reverted will simply be skipped.
+     * @param document
+     */
+    OtCommand.prototype.undo = function (document) {
+        if (this.reverted) {
+        }
         else {
+            this.command.undo(document);
+            this.reverted = true;
+        }
+    };
+    /**
+     * Invokes 'redo' on the underlying ICommand but only if it hasn't already been reverted.
+     * Any command already reverted will simply be skipped.
+     * @param document
+     */
+    OtCommand.prototype.redo = function (document) {
+        if (!this.reverted) {
+        }
+        else {
+            this.command.execute(document);
+            this.reverted = false;
         }
     };
     return OtCommand;
@@ -8140,6 +8167,7 @@ var OtEngine = (function () {
     function OtEngine(document) {
         this.document = document;
         this.pendingCommands = [];
+        this.pendingUndos = [];
         this.commands = [];
     }
     /**
@@ -8194,17 +8222,28 @@ var OtEngine = (function () {
             return;
         }
         console.info("[OtEngine] Executing command with content version: %s", command.contentVersion);
-        // Rewind any pending commands first.
         var pidx;
+        // Check to see if this command was already "undone" - if so then there's much less
+        // work to do - just insert it into the command list at the right place.
+        pidx = this.pendingUndos.indexOf(command.contentVersion);
+        if (pidx !== -1) {
+            this.pendingUndos.splice(pidx, 1);
+            command.reverted = true;
+        }
+        // Rewind any pending commands first.
         for (pidx = this.pendingCommands.length - 1; pidx >= 0; pidx--) {
-            this.pendingCommands[pidx].command.undo(this.document);
+            if (!this.pendingCommands[pidx].reverted) {
+                this.pendingCommands[pidx].command.undo(this.document);
+            }
         }
         // Note: when finding the insertion point, search backwards since that will likely be the shortest trip
         // Find the insertion point of the new command (rewind any commands that should occur *after* the new command)
         var insertionIdx = this.commands.length - 1;
         if (this.commands.length > 0) {
             while (insertionIdx >= 0 && this.commands[insertionIdx].contentVersion > command.contentVersion) {
-                this.commands[insertionIdx].command.undo(this.document);
+                if (!this.commands[insertionIdx].reverted) {
+                    this.commands[insertionIdx].command.undo(this.document);
+                }
                 insertionIdx--;
             }
         }
@@ -8256,7 +8295,9 @@ var OtEngine = (function () {
         // Rewind all pending commands.
         var pidx;
         for (pidx = this.pendingCommands.length - 1; pidx >= 0; pidx--) {
-            this.pendingCommands[pidx].command.undo(this.document);
+            if (!this.pendingCommands[pidx].reverted) {
+                this.pendingCommands[pidx].command.undo(this.document);
+            }
         }
         // Temporarily detach the pending commands (so we don't undo them twice).
         var pending = this.pendingCommands;
@@ -8296,8 +8337,7 @@ var OtEngine = (function () {
         for (idx = this.pendingCommands.length - 1; idx >= 0; idx--) {
             var cmd = this.pendingCommands[idx];
             if (!cmd.reverted) {
-                cmd.reverted = true;
-                cmd.command.undo(this.document);
+                cmd.undo(this.document);
                 return cmd;
             }
         }
@@ -8330,8 +8370,7 @@ var OtEngine = (function () {
         if (this.pendingCommands.length > 0) {
             var cmd = this.pendingCommands[this.pendingCommands.length - 1];
             if (cmd.reverted) {
-                cmd.reverted = false;
-                cmd.command.execute(this.document);
+                cmd.redo(this.document);
                 return cmd;
             }
             else {
@@ -8394,15 +8433,19 @@ var OtEngine = (function () {
         // mark it as "reverted" and not apply it.
         if (!found) {
             this.pendingUndos.push(contentVersion);
-            return;
+            return null;
         }
         // Now undo all the commands we found
-        commandsToUndo.forEach(function (cmd) { return cmd.command.undo(_this.document); });
+        commandsToUndo.forEach(function (cmd) {
+            if (!cmd.reverted) {
+                cmd.command.undo(_this.document);
+            }
+        });
         // Mark the found command as reverted
         foundCmd.reverted = true;
         // Re-apply all previously undone commands (auto-skipping the one we just marked as reverted)
         commandsToUndo.reverse().forEach(function (cmd) { return cmd.execute(_this.document); });
-        // Profit!
+        return foundCmd;
     };
     /**
      * Called to redo a specific command by its contentVersion identifier.
@@ -8439,14 +8482,19 @@ var OtEngine = (function () {
             if (idx !== -1) {
                 this.pendingUndos.splice(idx, 1);
             }
-            return;
+            return null;
         }
         // Now undo all the commands we found
-        commandsToUndo.forEach(function (cmd) { return cmd.command.undo(_this.document); });
+        commandsToUndo.forEach(function (cmd) {
+            if (!cmd.reverted) {
+                cmd.command.undo(_this.document);
+            }
+        });
         // Mark the found command as reverted
         foundCmd.reverted = false;
         // Re-apply all previously undone commands (auto-skipping the one we just marked as reverted)
         commandsToUndo.reverse().forEach(function (cmd) { return cmd.execute(_this.document); });
+        return foundCmd;
     };
     return OtEngine;
 }());

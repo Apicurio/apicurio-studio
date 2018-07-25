@@ -87,6 +87,7 @@ import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
 import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
@@ -110,7 +111,8 @@ public class DesignsResource implements IDesignsResource {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
     }
-
+    @Inject
+    private HubConfiguration config;
     @Inject
     private IStorage storage;
     @Inject
@@ -404,7 +406,7 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public Response editDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Editing an API Design with ID {}", designId);
-        metrics.apiCall("/designs/{designId}", "PUT");
+        metrics.apiCall("/designs/{designId}/session", "GET");
         
         try {
             String user = this.security.getCurrentUser().getLogin();
@@ -687,10 +689,12 @@ public class DesignsResource implements IDesignsResource {
         }
         
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
-                throw new NotFoundException();
-            }
+        	if (!config.isShareForEveryone()) {
+	            String user = this.security.getCurrentUser().getLogin();
+	            if (!this.storage.hasWritePermission(user, designId)) {
+	                throw new NotFoundException();
+	            }
+        	}
             return this.storage.listApiDesignActivity(designId, from, to);
         } catch (StorageException e) {
             throw new ServerError(e);

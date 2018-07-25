@@ -67,6 +67,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
                 }
             }
         });
+        // To allow Unirest to use system proxy
         Unirest.setHttpClient(HttpClients.createSystem());
     }
 

@@ -229,16 +229,14 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException {
         try {
-        	String urlTemplate = "/repositories/:uname?pagelen=100";
+        	//@formatter:off
+        	Endpoint endpoint = endpoint("/repositories/:uname")
+        			.bind("uname", teamName)
+        			.queryParam("pagelen", "100");
         	if (!"".equals(config.getRepositoryFilter())) {
-        		urlTemplate += "&q=name%7E%22:filter%22";
+        		endpoint = endpoint.queryParam("q", "name%7E%22:filter%22").bind("filter", config.getRepositoryFilter());
         	}
         	
-            //@formatter:off
-        	Endpoint endpoint = endpoint(urlTemplate).bind("uname", teamName);
-        	if (!"".equals(config.getRepositoryFilter())) {
-        		endpoint = endpoint.bind("filter", config.getRepositoryFilter());
-        	}
             String teamsUrl = endpoint.url();
             //@formatter:on;
 

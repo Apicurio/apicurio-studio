@@ -115,7 +115,7 @@
         <version.org.jdbi>3.1.0</version.org.jdbi>
         <version.org.json>20160212</version.org.json>
         <version.org.jsonschema2pojo>0.5.1</version.org.jsonschema2pojo>
-        <version.org.keycloak>4.1.0.Final</version.org.keycloak>
+        <version.org.keycloak>3.2.1.Final</version.org.keycloak>
         <version.mysql>5.1.45</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>

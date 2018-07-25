@@ -70,8 +70,13 @@ public class JdbcStorageTest {
     public void setUp() {
         storage = new JdbcStorage();
         ds = createInMemoryDatasource();
-        TestUtil.setPrivateField(storage, "config", new HubConfiguration());
+        HubConfiguration config = new HubConfiguration();
+        H2SqlStatements sqlStatements = new H2SqlStatements(config);
+
+        TestUtil.setPrivateField(storage, "config", config);
         TestUtil.setPrivateField(storage, "dataSource", ds);
+        TestUtil.setPrivateField(storage, "sqlStatements", sqlStatements);
+        
         storage.postConstruct();
     }
     

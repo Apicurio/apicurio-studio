@@ -38,8 +38,11 @@ public class HubConfiguration extends Configuration {
     private static final String REPOSITORY_FILTER_ENV = "APICURIO_REPOSITORY_FILTER";
     private static final String REPOSITORY_FILTER_SYSPROP = "apicurio.repository.filter";
     
-    private static final String SHARE_FOR_EVERYONE_ENV = "APICURIO_SHARE_FOR_EVERYONE_";
+    private static final String SHARE_FOR_EVERYONE_ENV = "APICURIO_SHARE_FOR_EVERYONE";
     private static final String SHARE_FOR_EVERYONE_SYSPROP = "apicurio.share.for.everyone";
+
+    private static final String BITBUCKET_API_URL_ENV = "APICURIO_BITBUCKET_API_URL";
+    private static final String BITBUCKET_API_URL_SYSPROP = "apicurio.hub.bitbucket.api";
 
     /**
      * @return the configured JDBC type (default: h2)
@@ -62,13 +65,25 @@ public class HubConfiguration extends Configuration {
         return "true".equals(getConfigurationProperty(KEYCLOAK_DISABLE_TRUST_MANAGER_ENV, KEYCLOAK_DISABLE_TRUST_MANAGER_SYSPROP, "false"));
     }
     
-    
+    /**
+     * @return the configured Bitbucket repository filter (if any)
+     */
     public String getRepositoryFilter() {
         return getConfigurationProperty(REPOSITORY_FILTER_ENV, REPOSITORY_FILTER_SYSPROP, "");
     }
     
+    /**
+     * @return true if the "share APIs for everyone" global option is enabled
+     */
     public boolean isShareForEveryone() {
         return "true".equals(getConfigurationProperty(SHARE_FOR_EVERYONE_ENV, SHARE_FOR_EVERYONE_SYSPROP, "false"));
     }
 
+    /**
+     * @return the configured Bitbucket API URL
+     */
+    public String getBitbucketApiUrl() {
+        return getConfigurationProperty(BITBUCKET_API_URL_ENV, BITBUCKET_API_URL_SYSPROP, "https://api.bitbucket.org/2.0");
+    }
+    
 }

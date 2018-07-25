@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
+import io.apicurio.hub.core.config.HubConfiguration;
+
 /**
  * H2 implementation of the sql statements interface.  Provides sql statements that
  * are specific to MySQL, where applicable.
@@ -23,6 +25,14 @@ package io.apicurio.hub.core.storage.jdbc;
  */
 public class MySQL5SqlStatements extends CommonSqlStatements {
     
+    /**
+     * Constructor.
+     * @param config
+     */
+    public MySQL5SqlStatements(HubConfiguration config) {
+        super(config);
+    }
+
     /**
      * @see io.apicurio.hub.core.storage.jdbc.CommonSqlStatements#dbType()
      */

@@ -215,7 +215,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         String addCommentUrl = this.endpoint("/api/v4/projects/:id/repository/commits/:sha/comments")
                 .bind("id", urlEncodedId)
                 .bind("sha", commitSha)
-                .url();
+                .toString();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(addCommentUrl);
@@ -254,7 +254,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             
             // Get the user's personal group
-            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").url());
+            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").toString());
             get.addHeader("Accept", "application/json");
             addSecurity(get);
             try (CloseableHttpResponse response = httpClient.execute(get)) {
@@ -279,7 +279,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
             
             // Now get all the groups the user has access to
-            get = new HttpGet(this.endpoint("/api/v4/groups").url());
+            get = new HttpGet(this.endpoint("/api/v4/groups").toString());
             get.addHeader("Accept", "application/json");
             addSecurity(get);
             try (CloseableHttpResponse response = httpClient.execute(get)) {
@@ -323,7 +323,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             // Get the user's personal group
             String gitLabUsername = null;
             String gitLabUserId = null;
-            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").url());
+            HttpGet get = new HttpGet(this.endpoint("/api/v4/user").toString());
             get.addHeader("Accept", "application/json");
             addSecurity(get);
             try (CloseableHttpResponse response = httpClient.execute(get)) {
@@ -342,7 +342,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             if (group != null && group.equalsIgnoreCase(gitLabUsername)) {
                 // List all user projects
                 //////////////////////////////
-                String requestUrl = this.endpoint("/api/v4/users/:user_id/projects").bind("user_id", gitLabUserId).url();
+                String requestUrl = this.endpoint("/api/v4/users/:user_id/projects").bind("user_id", gitLabUserId).toString();
                 get = new HttpGet(requestUrl);
                 get.addHeader("Accept", "application/json");
                 addSecurity(get);
@@ -368,7 +368,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             } else {
                 // List all group projects
                 //////////////////////////////
-                String requestUrl = this.endpoint("/api/v4/groups/:group/projects").bind("group", group).url();
+                String requestUrl = this.endpoint("/api/v4/groups/:group/projects").bind("group", group).toString();
                 get = new HttpGet(requestUrl);
                 get.addHeader("Accept", "application/json");
                 addSecurity(get);
@@ -459,7 +459,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
             String contentUrl = this.endpoint("/api/v4/projects/:id/repository/commits")
                     .bind("id", toEncodedId(resource))
-                    .url();
+                    .toString();
             
             HttpPost post = new HttpPost(contentUrl);
             post.addHeader("Content-Type", "application/json");
@@ -504,7 +504,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     .bind("id", toEncodedId(resource))
                     .bind("path", toEncodedPath(resource))
                     .bind("branch", toEncodedBranch(resource))
-                    .url();
+                    .toString();
             
             HttpGet get = new HttpGet(getContentUrl);
             get.addHeader("Accept", "application/json");

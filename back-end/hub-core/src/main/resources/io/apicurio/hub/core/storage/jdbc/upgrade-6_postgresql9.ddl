@@ -6,5 +6,5 @@
 UPDATE apicurio SET prop_value = 6 WHERE prop_name = 'db_version';
 
 ALTER TABLE api_content ADD reverted SMALLINT DEFAULT 0 NOT NULL;
-ALTER TABLE api_content ADD modified_on TIMESTAMP;
+ALTER TABLE api_content ADD modified_on TIMESTAMP WITHOUT TIME ZONE;
 CREATE INDEX IDX_content_5 ON api_content(reverted);

@@ -91,12 +91,12 @@ public interface ISqlStatements {
     /**
      * A statement used to select all API designs.
      */
-    public String selectApiDesigns(boolean shareForEveryone);
+    public String selectApiDesigns();
 
     /**
      * A statement used to select a single API design by its unique id.
      */
-    public String selectApiDesignById(boolean shareForEveryone);
+    public String selectApiDesignById();
 
     /**
      * A statement used to update a single API design.
@@ -177,13 +177,13 @@ public interface ISqlStatements {
      * A statement used to return the latest 'document' style api_content row for
      * a given API design.
      */
-    public String selectLatestContentDocument(boolean shareForEveryone);
+    public String selectLatestContentDocument();
 
     /**
      * A statement used to return all of the 'command' style api_content rows for
      * a given API Design (excludes reverted commands).
      */
-    public String selectContentCommands(boolean shareForEveryone);
+    public String selectContentCommands();
 
     /**
      * A statement used to return all of the 'command' style api_content rows for

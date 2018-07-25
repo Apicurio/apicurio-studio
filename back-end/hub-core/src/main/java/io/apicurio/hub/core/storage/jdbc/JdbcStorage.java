@@ -84,31 +84,22 @@ public class JdbcStorage implements IStorage {
 
     @Inject
     private HubConfiguration config;
+    @Inject
+    private ISqlStatements sqlStatements;
     @Resource(mappedName="java:jboss/datasources/ApicurioDS")
     private DataSource dataSource;
-    
-    private ISqlStatements sqlStatements;
+
     private Jdbi jdbi;
+    
+    private boolean shareForEveryone;
     
     @PostConstruct
     public void postConstruct() {
         logger.debug("JDBC Storage constructed successfully.");
 
         jdbi = Jdbi.create(dataSource);
-
-        switch (config.getJdbcType()) {
-            case "h2":
-                sqlStatements = new H2SqlStatements();
-                break;
-            case "mysql5":
-                sqlStatements = new MySQL5SqlStatements();
-                break;
-            case "postgresql9":
-                sqlStatements = new PostgreSQL9SqlStatements();
-                break;
-            default:
-                throw new RuntimeException("Unsupported JDBC type: " + config.getJdbcType());
-        }
+        
+        this.shareForEveryone = config.isShareForEveryone();
         
         if (config.isJdbcInit()) {
             synchronized (dbMutex) {
@@ -551,7 +542,7 @@ public class JdbcStorage implements IStorage {
                 long updateCount = handle.createUpdate(statement)
                         .bind(0, new Date())
                         .bind(1, user)
-                        .bind(2, designId)
+                        .bind(2, Long.parseLong(designId))
                         .bind(3, contentVersion)
                         .execute();
                 return updateCount > 0;
@@ -573,7 +564,7 @@ public class JdbcStorage implements IStorage {
                 long updateCount = handle.createUpdate(statement)
                         .bind(0, new Date())
                         .bind(1, user)
-                        .bind(2, designId)
+                        .bind(2, Long.parseLong(designId))
                         .bind(3, contentVersion)
                         .execute();
                 return updateCount > 0;
@@ -591,15 +582,13 @@ public class JdbcStorage implements IStorage {
         logger.debug("Selecting a single API Design: {}", designId);
         try {
             return this.jdbi.withHandle( handle -> {
-                String statement = sqlStatements.selectApiDesignById(config.isShareForEveryone());
+                String statement = sqlStatements.selectApiDesignById();
                 Query query = handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId));
-                if (!config.isShareForEveryone()) {
-                	query = query.bind(1, userId);
+                if (!shareForEveryone) {
+                    query = query.bind(1, userId);
                 }
-                return query
-                		.map(ApiDesignRowMapper.instance)
-                        .findOnly();
+                return query.map(ApiDesignRowMapper.instance).findOnly();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -617,15 +606,13 @@ public class JdbcStorage implements IStorage {
         logger.debug("Selecting the most recent api_content row of type 'document' for: {}", designId);
         try {
             return this.jdbi.withHandle( handle -> {
-                String statement = sqlStatements.selectLatestContentDocument(config.isShareForEveryone());
+                String statement = sqlStatements.selectLatestContentDocument();
                 Query query = handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId));
-                if (!config.isShareForEveryone()) {
-                	query = query.bind(1, userId);
+                if (!shareForEveryone) {
+                    query = query.bind(1, userId);
                 }
-                return query
-                        .map(ApiDesignContentRowMapper.instance)
-                        .findOnly();
+                return query.map(ApiDesignContentRowMapper.instance).findOnly();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -643,17 +630,14 @@ public class JdbcStorage implements IStorage {
         logger.debug("Selecting the content 'command' rows for API {} since content version {}", designId, sinceVersion);
         try {
             return this.jdbi.withHandle( handle -> {
-                String statement = sqlStatements.selectContentCommands(config.isShareForEveryone());
+                String statement = sqlStatements.selectContentCommands();
                 
                 Query query = handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId));
-                if (!config.isShareForEveryone()) {
-                	query = query.bind(2, userId);
+                if (!shareForEveryone) {
+                    query = query.bind(2, userId);
                 }
-                return query
-                        .bind(1, sinceVersion)
-                        .map(ApiDesignCommandRowMapper.instance)
-                        .list();
+                return query.bind(1, sinceVersion).map(ApiDesignCommandRowMapper.instance).list();
             });
         } catch (Exception e) {
             throw new StorageException("Error getting content commands.", e);
@@ -809,19 +793,19 @@ public class JdbcStorage implements IStorage {
         try {
             this.jdbi.withHandle( handle -> {
                 // Check for permissions first
-            	if (!config.isShareForEveryone()) {
-	                String statementPerms = sqlStatements.hasWritePermission();
-	                int count = handle.createQuery(statementPerms)
-	                    .bind(0, Long.valueOf(design.getId()))
-	                    .bind(1, userId)
-	                    .mapTo(Integer.class).findOnly();
-	                if (count == 0) {
-	                    throw new NotFoundException();
-	                }
-            	}
+                if (!shareForEveryone) {
+                    String statementPerms = sqlStatements.hasWritePermission();
+                    int count = handle.createQuery(statementPerms)
+                        .bind(0, Long.valueOf(design.getId()))
+                        .bind(1, userId)
+                        .mapTo(Integer.class).findOnly();
+                    if (count == 0) {
+                        throw new NotFoundException();
+                    }
+                }
 
                 // Then perform the update
-            	String statement = sqlStatements.updateApiDesign();
+                String statement = sqlStatements.updateApiDesign();
                 int rowCount = handle.createUpdate(statement)
                         .bind(0, design.getName())
                         .bind(1, trimTo255(design.getDescription()))
@@ -859,14 +843,12 @@ public class JdbcStorage implements IStorage {
         logger.debug("Getting a list of all API designs.");
         try {
             return this.jdbi.withHandle( handle -> {
-                String statement = sqlStatements.selectApiDesigns(config.isShareForEveryone());
+                String statement = sqlStatements.selectApiDesigns();
                 Query query = handle.createQuery(statement);
-                if (!config.isShareForEveryone()) {
-                	query = query.bind(0, userId);
+                if (!shareForEveryone) {
+                    query = query.bind(0, userId);
                 }
-                return query
-                        .map(ApiDesignRowMapper.instance)
-                        .list();
+                return query.map(ApiDesignRowMapper.instance).list();
             });
         } catch (Exception e) {
             throw new StorageException("Error listing API designs.", e);
@@ -886,15 +868,15 @@ public class JdbcStorage implements IStorage {
                 Collection<Long> recentApiIds = handle.createQuery(statement)
                         .bind(0, userId)
                         .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
-							@Override
-							public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
-								return r.getLong(columnNumber);
-							}
-						}, "design_id"))
+                            @Override
+                            public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
+                                return r.getLong(columnNumber);
+                            }
+                        }, "design_id"))
                         .list();
                 for (Long did : recentApiIds) {
-					designs.add(this.getApiDesign(userId, String.valueOf(did)));
-				}
+                    designs.add(this.getApiDesign(userId, String.valueOf(did)));
+                }
                 return designs;
             });
         } catch (Exception e) {

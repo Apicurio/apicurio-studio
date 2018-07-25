@@ -169,7 +169,7 @@ public class GitHubPullRequestCreator {
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
                 .bind("ref", ref)
-                .url();
+                .toString();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
@@ -200,7 +200,7 @@ public class GitHubPullRequestCreator {
         String url = this.endpoint("/repos/:owner/:repo/git/refs")
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
-                .url();
+                .toString();
         
         String branchName = "_apicurio-" + (System.currentTimeMillis() % 10000);
         String newRefName = "refs/heads/" + branchName;
@@ -260,7 +260,7 @@ public class GitHubPullRequestCreator {
         String url = this.endpoint("/repos/:owner/:repo/git/blobs")
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
-                .url();
+                .toString();
         
         GitHubCreateBlob requestBody = new GitHubCreateBlob();
         requestBody.setContent(content);
@@ -296,7 +296,7 @@ public class GitHubPullRequestCreator {
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
                 .bind("tree_sha", branchRef.getObject().getSha())
-                .url();
+                .toString();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(url);
@@ -327,7 +327,7 @@ public class GitHubPullRequestCreator {
         String url = this.endpoint("/repos/:owner/:repo/git/trees")
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
-                .url();
+                .toString();
         
         GitHubCreateTree requestBody = new GitHubCreateTree();
         requestBody.setBase_tree(parentTree.getSha());
@@ -372,7 +372,7 @@ public class GitHubPullRequestCreator {
         String url = this.endpoint("/repos/:owner/:repo/git/commits")
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
-                .url();
+                .toString();
         
         GitHubCreateCommit requestBody = new GitHubCreateCommit();
         requestBody.setMessage(this.commitMessage);
@@ -414,7 +414,7 @@ public class GitHubPullRequestCreator {
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
                 .bind("ref", bref)
-                .url();
+                .toString();
         
         GitHubUpdateReference requestBody = new GitHubUpdateReference();
         requestBody.setSha(commit.getSha());
@@ -449,7 +449,7 @@ public class GitHubPullRequestCreator {
         String url = this.endpoint("/repos/:owner/:repo/pulls")
                 .bind("owner", this.organization)
                 .bind("repo", this.repository)
-                .url();
+                .toString();
         
         GitHubCreatePullRequest requestBody = new GitHubCreatePullRequest();
         requestBody.setTitle("[Apicurio] Please merge generated API project");

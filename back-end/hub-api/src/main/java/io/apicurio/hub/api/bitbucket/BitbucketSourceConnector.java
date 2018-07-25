@@ -31,6 +31,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,12 +65,13 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
 
     private static Logger logger = LoggerFactory.getLogger(BitbucketSourceConnector.class);
 
-    private static final String BITBUCKET_API_ENDPOINT = "https://bitbucket.org/!api/2.0";
     protected static final Object TOKEN_TYPE_BASIC = "BASIC";
     protected static final Object TOKEN_TYPE_OAUTH = "OAUTH";
 
     @Inject
     private HubConfiguration config;
+
+    private String apiUrl;
     
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
@@ -84,7 +86,10 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
      */
     @Override
     protected String getBaseApiEndpointUrl() {
-        return BITBUCKET_API_ENDPOINT;
+        if (apiUrl == null) {
+            apiUrl = this.config.getBitbucketApiUrl();
+        }
+        return apiUrl;
     }
 
     /**
@@ -195,29 +200,44 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         logger.debug("Getting the Bitbucket teams for current user");
 
         try {
-            String teamsUrl = endpoint("/teams?role=member").url();
-
-            HttpRequest request = Unirest.get(teamsUrl);
-            addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
-
-            JSONObject responseObj = response.getBody().getObject();
-
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
+            String teamsUrl = endpoint("/teams")
+                    .queryParam("role", "member")
+                    .queryParam("pagelen", "25")
+                    .toString();
 
             Collection<BitbucketTeam> rVal =  new HashSet<>();
+            boolean done = false;
 
-            // TODO response is paged - make sure we consume and return all data!
-            responseObj.getJSONArray("values").forEach(obj -> {
-                BitbucketTeam bbt = new BitbucketTeam();
-                JSONObject team = (JSONObject) obj;
-                bbt.setDisplayName(team.getString("display_name"));
-                bbt.setUsername(team.getString("username"));
-                bbt.setUuid(team.getString("uuid"));
-                rVal.add(bbt);
-            });
+            while (!done) {
+                HttpRequest request = Unirest.get(teamsUrl);
+                addSecurityTo(request);
+                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+    
+                JSONObject responseObj = response.getBody().getObject();
+    
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
+                }
+    
+    
+                responseObj.getJSONArray("values").forEach(obj -> {
+                    BitbucketTeam bbt = new BitbucketTeam();
+                    JSONObject team = (JSONObject) obj;
+                    bbt.setDisplayName(team.getString("display_name"));
+                    bbt.setUsername(team.getString("username"));
+                    bbt.setUuid(team.getString("uuid"));
+                    rVal.add(bbt);
+                });
+
+                done = true;
+                if (responseObj.has("next")) {
+                    String next = responseObj.getString("next");
+                    if (!StringUtils.isEmpty(next) && !next.equals(teamsUrl)) {
+                        done = false;
+                        teamsUrl = next;
+                    }
+                }
+            }
 
             return rVal;
 
@@ -232,35 +252,47 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
         	//@formatter:off
         	Endpoint endpoint = endpoint("/repositories/:uname")
         			.bind("uname", teamName)
-        			.queryParam("pagelen", "100");
-        	if (!"".equals(config.getRepositoryFilter())) {
-        		endpoint = endpoint.queryParam("q", "name%7E%22:filter%22").bind("filter", config.getRepositoryFilter());
+        			.queryParam("pagelen", "25");
+        	if (!StringUtils.isEmpty(config.getRepositoryFilter())) {
+        	    String filter = "name~\"" + config.getRepositoryFilter() + "\"";
+        		endpoint = endpoint.queryParam("q", filter);
         	}
-        	
-            String teamsUrl = endpoint.url();
             //@formatter:on;
 
-            HttpRequest request = Unirest.get(teamsUrl);
-            addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
-
-            JSONObject responseObj = response.getBody().getObject();
-
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
+            String reposUrl = endpoint.toString();
 
             Collection<BitbucketRepository> rVal =  new HashSet<>();
-
-            // TODO response is paged - make sure we consume and return all data!
-            responseObj.getJSONArray("values").forEach(obj -> {
-                BitbucketRepository bbr = new BitbucketRepository();
-                JSONObject rep = (JSONObject) obj;
-                bbr.setName(rep.getString("name"));
-                bbr.setUuid(rep.getString("uuid"));
-                bbr.setSlug(rep.getString("slug"));
-                rVal.add(bbr);
-            });
+            boolean done = false;
+            
+            while (!done) {
+                HttpRequest request = Unirest.get(reposUrl);
+                addSecurityTo(request);
+                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+    
+                JSONObject responseObj = response.getBody().getObject();
+    
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
+                }
+    
+                responseObj.getJSONArray("values").forEach(obj -> {
+                    BitbucketRepository bbr = new BitbucketRepository();
+                    JSONObject rep = (JSONObject) obj;
+                    bbr.setName(rep.getString("name"));
+                    bbr.setUuid(rep.getString("uuid"));
+                    bbr.setSlug(rep.getString("slug"));
+                    rVal.add(bbr);
+                });
+                
+                done = true;
+                if (responseObj.has("next")) {
+                    String next = responseObj.getString("next");
+                    if (!StringUtils.isEmpty(next) && !next.equals(reposUrl)) {
+                        done = false;
+                        reposUrl = next;
+                    }
+                }
+            }
 
             return rVal;
 
@@ -280,29 +312,42 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             String branchesUrl = endpoint("/repositories/:uname/:repo/refs/branches")
                     .bind("uname", group)
                     .bind("repo", repo)
+                    .queryParam("pagelen", "25")
                     .toString();
             //@formatter:on;
 
-            HttpRequest request = Unirest.get(branchesUrl);
-            addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
-
-            JSONObject responseObj = response.getBody().getObject();
-
-            if (response.getStatus() != 200) {
-                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
-            }
-
             Collection<SourceCodeBranch> rVal =  new HashSet<>();
+            boolean done = false;
 
-            // TODO response is paged - make sure we consume and return all data!
-            responseObj.getJSONArray("values").forEach(obj -> {
-                JSONObject b = (JSONObject) obj;
-                SourceCodeBranch branch = new SourceCodeBranch();
-                branch.setName(b.getString("name"));
-                branch.setCommitId(b.getJSONObject("target").getString("hash"));
-                rVal.add(branch);
-            });
+            while (!done) {
+                HttpRequest request = Unirest.get(branchesUrl);
+                addSecurityTo(request);
+                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+    
+                JSONObject responseObj = response.getBody().getObject();
+    
+                if (response.getStatus() != 200) {
+                    throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
+                }
+    
+    
+                responseObj.getJSONArray("values").forEach(obj -> {
+                    JSONObject b = (JSONObject) obj;
+                    SourceCodeBranch branch = new SourceCodeBranch();
+                    branch.setName(b.getString("name"));
+                    branch.setCommitId(b.getJSONObject("target").getString("hash"));
+                    rVal.add(branch);
+                });
+                
+                done = true;
+                if (responseObj.has("next")) {
+                    String next = responseObj.getString("next");
+                    if (!StringUtils.isEmpty(next) && !next.equals(branchesUrl)) {
+                        done = false;
+                        branchesUrl = next;
+                    }
+                }
+            }
 
             return rVal;
 
@@ -342,7 +387,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             String contentUrl = endpoint("/repositories/:team/:repo/src")
                     .bind("team", resource.getTeam())
                     .bind("repo", resource.getRepository())
-                    .url();
+                    .toString();
             //@formatter:on
 
             InputStream filesStream = null;
@@ -382,7 +427,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                     .bind("repo", resource.getRepository())
                     .bind("branch", resource.getSlug())
                     .bind("path", resource.getResourcePath())
-                    .url();
+                    .toString();
             //@formatter:on
 
             HttpRequest request = Unirest.get(contentUrl);

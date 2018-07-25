@@ -111,6 +111,7 @@ public class DesignsResource implements IDesignsResource {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
     }
+    
     @Inject
     private HubConfiguration config;
     @Inject

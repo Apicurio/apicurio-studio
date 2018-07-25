@@ -39,7 +39,6 @@ import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
  * Base class for all source connectors.
- * 
  * @author eric.wittmann@gmail.com
  */
 public abstract class AbstractSourceConnector implements ISourceConnector {
@@ -52,17 +51,14 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
                     return mapper.readValue(value, valueType);
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-
             public String writeValue(Object value) {
                 try {
                     return mapper.writeValueAsString(value);
-                }
-                catch (JsonProcessingException e) {
+                } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -82,18 +78,16 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
      * Returns the base URL for the source connector's API.
      */
     protected abstract String getBaseApiEndpointUrl();
-
+    
     /**
      * Adds the appropriate security credentials into the request.
-     * 
      * @param request
      */
     protected abstract void addSecurityTo(HttpRequest request) throws SourceConnectorException;
 
     /**
-     * Fetches the external IDP token from Keycloak. For this to work, the user
-     * must have established a linked account with the provider in question
-     * (e.g. GitHub).
+     * Fetches the external IDP token from Keycloak.  For this to work, the user must
+     * have established a linked account with the provider in question (e.g. GitHub).
      */
     protected String getExternalToken() throws SourceConnectorException {
         try {
@@ -101,18 +95,17 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             if (externalAccessToken == null) {
                 return null;
             }
-
+            
             Map<String, String> data = parseExternalTokenResponse(externalAccessToken);
             return data.get("access_token");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new SourceConnectorException(e);
         }
     }
 
     /**
-     * Parses the response from the Keycloak "get external IDP token" endpoint
-     * into a simple map of values. A typical response body might be:
+     * Parses the response from the Keycloak "get external IDP token" endpoint into a simple 
+     * map of values.  A typical response body might be:
      * 
      * <pre>
      * access_token=298cc1f917075a955a7bbbff23f67a72e5d6cba7&scope=repo%2Cuser%3Aemail&token_type=bearer
@@ -124,7 +117,6 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
 
     /**
      * Creates a github API endpoint from the api path.
-     * 
      * @param path
      */
     protected Endpoint endpoint(String path) {
@@ -132,31 +124,29 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     }
 
     /**
-     * An endpoint that will be used to make a call to the GitHub API. The form
-     * of an endpoint path should be (for example):
+     * An endpoint that will be used to make a call to the GitHub API.  The form of an endpoint path
+     * should be (for example):
      * 
      * https://api.github.com/repos/:owner/:repo/contents/:path
      * 
-     * The path parameters can then be set by calling bind() on the
-     * {@link Endpoint} object.
+     * The path parameters can then be set by calling bind() on the {@link Endpoint} object.
      * 
      * @author eric.wittmann@gmail.com
      */
     public static class Endpoint {
-
+        
         private String url;
         private Map<String, String> queryParams = new LinkedHashMap<>();
-
+        
         /**
          * Constructor.
          */
         public Endpoint(String url) {
             this.url = url;
         }
-
+        
         /**
-         * Binds a parameter to the endpoint.
-         * 
+         * Binds a parameter to the endpoint.  
          * @param paramName
          * @param value
          * @return
@@ -165,10 +155,9 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             this.url = this.url.replace(":" + paramName, String.valueOf(value));
             return this;
         }
-
+        
         /**
          * Sets a query param.
-         * 
          * @param name
          * @param value
          */
@@ -176,14 +165,14 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             this.queryParams.put(name, value);
             return this;
         }
-
+        
         /**
          * Returns the url.
          */
         public String url() {
             return this.url;
         }
-
+        
         /**
          * @see java.lang.Object#toString()
          */
@@ -207,10 +196,10 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
                 url.append("=");
                 url.append(Encode.encodeQueryParamAsIs(value));
             }
-
+            
             return url.toString();
         }
-
+        
     }
 
 }

@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
@@ -31,6 +29,15 @@ import io.apicurio.hub.core.config.HubConfiguration;
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
 
+    private boolean shareForEveryone;
+    
+    /**
+     * Constructor.
+     */
+    public CommonSqlStatements(HubConfiguration config) {
+        this.shareForEveryone = config.isShareForEveryone();
+    }
+    
     /**
      * Returns the database type identifier.
      */
@@ -144,7 +151,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesigns()
      */
     @Override
-    public String selectApiDesigns(boolean shareForEveryone) {
+    public String selectApiDesigns() {
     	if (shareForEveryone) {
     		return "SELECT d.* FROM api_designs d";
     	}
@@ -166,7 +173,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiDesignById()
      */
     @Override
-    public String selectApiDesignById(boolean shareForEveryone) {
+    public String selectApiDesignById() {
     	if (shareForEveryone) {
     		return "SELECT d.* FROM api_designs d WHERE d.id = ?";
     	}
@@ -298,7 +305,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectLatestContentDocument()
      */
     @Override
-    public String selectLatestContentDocument(boolean shareForEveryone) {
+    public String selectLatestContentDocument() {
     	if (shareForEveryone) {
     		return "SELECT c.* "
                     + "FROM api_content c "
@@ -316,7 +323,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectContentCommands()
      */
     @Override
-    public String selectContentCommands(boolean shareForEveryone) {
+    public String selectContentCommands() {
     	if (shareForEveryone) {
     		return "SELECT c.* "
                     + "FROM api_content c "

@@ -21,12 +21,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.apicurio.hub.core.config.HubConfiguration;
+
 /**
  * Shared base class for all sql statements.
  * @author eric.wittmann@gmail.com
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
 
+    private boolean shareForEveryone;
+    
+    /**
+     * Constructor.
+     */
+    public CommonSqlStatements(HubConfiguration config) {
+        this.shareForEveryone = config.isShareForEveryone();
+    }
+    
     /**
      * Returns the database type identifier.
      */
@@ -141,6 +152,9 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesigns() {
+    	if (shareForEveryone) {
+    		return "SELECT d.* FROM api_designs d";
+    	}
         return "SELECT d.* FROM api_designs d JOIN acl a ON a.design_id = d.id WHERE a.user_id = ?";
     }
     
@@ -160,6 +174,9 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesignById() {
+    	if (shareForEveryone) {
+    		return "SELECT d.* FROM api_designs d WHERE d.id = ?";
+    	}
         return "SELECT d.* FROM api_designs d JOIN acl a ON a.design_id = d.id WHERE d.id = ? AND a.user_id = ?";
     }
     
@@ -289,6 +306,12 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectLatestContentDocument() {
+    	if (shareForEveryone) {
+    		return "SELECT c.* "
+                    + "FROM api_content c "
+                    + "WHERE c.design_id = ? AND c.type = 0 "
+                    + "ORDER BY c.version DESC LIMIT 1";
+    	}
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN acl a ON a.design_id = c.design_id "
@@ -301,10 +324,16 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectContentCommands() {
+    	if (shareForEveryone) {
+    		return "SELECT c.* "
+                    + "FROM api_content c "
+                    + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND c.version > ? "
+                    + "ORDER BY c.version ASC";
+    	}
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN acl a ON a.design_id = c.design_id "
-                + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND a.user_id = ? AND c.version > ? "
+                + "WHERE c.reverted = 0 AND c.design_id = ? AND c.type = 1 AND c.version > ? AND a.user_id = ? "
                 + "ORDER BY c.version ASC";
     }
     

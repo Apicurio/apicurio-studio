@@ -124,6 +124,8 @@ public class BitbucketSourceConnectorTest {
     @Ignore
     public void testGetRepositories() throws SourceConnectorException, BitbucketException {
         String team = "apicurio";
+        
+        System.setProperty("apicurio.repository.filter", "oai");
 
         Collection<BitbucketRepository> repos = service.getRepositories(team);
         Assert.assertNotNull(repos);

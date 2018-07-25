@@ -29,6 +29,7 @@ import org.junit.Test;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
 import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
 import io.apicurio.test.core.TestUtil;
 
@@ -50,8 +51,13 @@ public class EditingSessionManagerTest {
     public void setUp() {
         storage = new JdbcStorage();
         ds = createInMemoryDatasource();
-        TestUtil.setPrivateField(storage, "config", new HubConfiguration());
+        HubConfiguration config = new HubConfiguration();
+        H2SqlStatements sqlStatements = new H2SqlStatements(config);
+
+        TestUtil.setPrivateField(storage, "config", config);
         TestUtil.setPrivateField(storage, "dataSource", ds);
+        TestUtil.setPrivateField(storage, "sqlStatements", sqlStatements);
+
         storage.postConstruct();
 
         manager = new EditingSessionManager();

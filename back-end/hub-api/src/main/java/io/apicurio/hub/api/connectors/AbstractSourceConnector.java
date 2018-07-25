@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import org.apache.http.impl.client.HttpClients;
 import org.keycloak.common.util.Encode;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -62,6 +63,8 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
                 }
             }
         });
+        // To allow Unirest to use system proxy
+        Unirest.setHttpClient(HttpClients.createSystem());
     }
 
     @Inject

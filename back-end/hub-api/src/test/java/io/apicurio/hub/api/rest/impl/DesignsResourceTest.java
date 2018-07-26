@@ -220,7 +220,7 @@ public class DesignsResourceTest {
     }
 
     @Test
-    public void testCreateDesign() throws ServerError, AlreadyExistsException {
+    public void testCreateDesign() throws Exception {
         NewApiDesign info = new NewApiDesign();
         info.setSpecVersion("2.0");
         info.setName("My API");
@@ -238,6 +238,35 @@ public class DesignsResourceTest {
                 "---\n" + 
                 "---",
                 ghLog);
+        
+        Response response = resource.getContent(design.getId(), "json");
+        String content = response.getEntity().toString();
+        JsonNode jsonData = new ObjectMapper().reader().readTree(content);
+        String version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        String oaiVersion = jsonData.get("swagger").asText();
+        Assert.assertEquals("2.0", oaiVersion);
+        
+        
+        // 3.0 document
+        info = new NewApiDesign();
+        info.setSpecVersion("3.0.1");
+        info.setName("My 3.0 API");
+        info.setDescription("Description of my 3.0 API.");
+        design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("2", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        
+        response = resource.getContent(design.getId(), "json");
+        content = response.getEntity().toString();
+        jsonData = new ObjectMapper().reader().readTree(content);
+        version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        oaiVersion = jsonData.get("openapi").asText();
+        Assert.assertEquals("3.0.1", oaiVersion);
     }
 
     @Test

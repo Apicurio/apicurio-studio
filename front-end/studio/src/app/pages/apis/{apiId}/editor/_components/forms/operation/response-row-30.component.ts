@@ -50,6 +50,7 @@ export class ResponseRow30Component {
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;
+    protected _tab: string = "description";
 
     constructor(private commandService: CommandService) {}
 
@@ -59,6 +60,14 @@ export class ResponseRow30Component {
             return httpCode.line;
         }
         return "";
+    }
+
+    public description(): string {
+        if (this.response.description) {
+            return this.response.description
+        } else {
+            return "No description.";
+        }
     }
 
     public statusCodeType(code: string): string {
@@ -90,10 +99,43 @@ export class ResponseRow30Component {
         return this._editing;
     }
 
+    public isEditingDescription(): boolean {
+        return this._editing && this._tab === "description";
+    }
+
+    public isEditingSummary(): boolean {
+        return this._editing && this._tab === "summary";
+    }
+
     public toggle(event: MouseEvent): void {
+        console.info("++++++ toggle()");
         if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
             this._editing = !this._editing;
         }
+    }
+
+    public toggleDescription(event: MouseEvent): void {
+        console.info("++++++ toggleDescription()");
+        if (this.isEditing() && this._tab === "description") {
+            this._editing = false;
+        } else {
+            this._editing = true;
+            this._tab = "description";
+        }
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    public toggleSummary(event: MouseEvent): void {
+        console.info("++++++ toggleSummary()");
+        if (this.isEditing() && this._tab === "summary") {
+            this._editing = false;
+        } else {
+            this._editing = true;
+            this._tab = "summary";
+        }
+        event.stopPropagation();
+        event.preventDefault();
     }
 
     public edit(): void {

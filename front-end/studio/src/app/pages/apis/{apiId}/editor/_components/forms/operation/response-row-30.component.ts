@@ -108,34 +108,27 @@ export class ResponseRow30Component {
     }
 
     public toggle(event: MouseEvent): void {
-        console.info("++++++ toggle()");
         if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
             this._editing = !this._editing;
         }
     }
 
-    public toggleDescription(event: MouseEvent): void {
-        console.info("++++++ toggleDescription()");
+    public toggleDescription(): void {
         if (this.isEditing() && this._tab === "description") {
             this._editing = false;
         } else {
             this._editing = true;
             this._tab = "description";
         }
-        event.stopPropagation();
-        event.preventDefault();
     }
 
-    public toggleSummary(event: MouseEvent): void {
-        console.info("++++++ toggleSummary()");
+    public toggleSummary(): void {
         if (this.isEditing() && this._tab === "summary") {
             this._editing = false;
         } else {
             this._editing = true;
             this._tab = "summary";
         }
-        event.stopPropagation();
-        event.preventDefault();
     }
 
     public edit(): void {

@@ -16,7 +16,6 @@
 }
 .response .header:hover {
   background-color: #edf8ff;
-  cursor: pointer;
 }
 .response.expanded .header {
   border-bottom: solid 1px #bbb;
@@ -28,9 +27,17 @@
 }
 .response .header .statusCode {
   flex-basis: 12%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
 }
 .response .header .description {
   flex-basis: 44%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
 }
 .response .header .description:hover {
   color: #0088ce;
@@ -66,4 +73,7 @@
 
 .response .body .response-description form {
   width: 100%;
+}
+.response .body .response-description .form-label {
+  font-weight: 600;
 }

@@ -33,9 +33,13 @@ ENV APICURIO_DB_PASSWORD=sa
 ENV APICURIO_DB_INITIALIZE=true
 ENV APICURIO_DB_TYPE=h2
 ENV APICURIO_LOGGING_LEVEL=INFO
+ENV APICURIO_MIN_HEAP=768m
+ENV APICURIO_MAX_HEAP=2048m
 
 
 CMD java -jar /opt/apicurio/apicurio-studio-api-swarm.jar \
+    -Xms${APICURIO_MIN_HEAP} \
+    -Xmx${APICURIO_MAX_HEAP} \
     -Dswarm.port.offset=${APICURIO_PORT_OFFSET} \
     -Dswarm.datasources.data-sources.ApicurioDS.driver-name=${APICURIO_DB_DRIVER_NAME} \
     -Dswarm.datasources.data-sources.ApicurioDS.connection-url=${APICURIO_DB_CONNECTION_URL} \

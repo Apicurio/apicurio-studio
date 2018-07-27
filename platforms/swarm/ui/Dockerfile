@@ -29,9 +29,13 @@ ENV APICURIO_PORT_OFFSET=0
 ENV APICURIO_LOGGING_LEVEL=INFO
 ENV APICURIO_UI_HUB_API_URL=https://localhost:8443/api
 ENV APICURIO_UI_EDITING_URL=https://localhost:8443/ws
+ENV APICURIO_MIN_HEAP=512m
+ENV APICURIO_MAX_HEAP=2048m
 
 
 CMD java -jar /opt/apicurio/apicurio-studio-ui-swarm.jar \
+    -Xms${APICURIO_MIN_HEAP} \
+    -Xmx${APICURIO_MAX_HEAP} \
     -Dswarm.port.offset=${APICURIO_PORT_OFFSET} \
     -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL} \
     -Dapicurio-ui.editing.url=${APICURIO_UI_EDITING_URL} \

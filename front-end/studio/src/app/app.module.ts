@@ -35,7 +35,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.component';
 import {CopyUrlDialogComponent} from './components/dialogs/copy-url.component';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
-import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from './directives/autosize.directive';
 import {NotFoundPageComponent} from './pages/404.page';
 import {SettingsNavComponent} from './pages/settings/_components/settings-nav.component';
 import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
@@ -74,13 +73,12 @@ import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_co
     declarations: [
         AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
         VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
-        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, NotFoundPageComponent, SettingsNavComponent,
-        CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent, ProfilePageComponent, SettingsPageComponent,
-        ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent, ImportApiFormComponent, CreateApiFormComponent,
-        ApisListComponent, ApisCardsComponent, ApiCollaborationPageComponent, ApiAcceptPageComponent,
-        ApiDetailPageComponent, ApiEditorPageComponent, PublishPageComponent, GitHubResourceComponent,
-        GitLabResourceComponent, BitbucketResourceComponent, GenerateProjectWizardComponent, ActivityItemComponent,
-        EditorDisconnectedDialogComponent
+        NotFoundPageComponent, SettingsNavComponent, CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent,
+        ProfilePageComponent, SettingsPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
+        ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent,
+        ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
+        PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
+        GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

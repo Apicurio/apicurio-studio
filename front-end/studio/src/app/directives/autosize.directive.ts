@@ -50,7 +50,8 @@ export class DivAutoHeight implements AfterViewChecked {
 
     @Input() maxHeight: number;
 
-    constructor(public element: ElementRef) {}
+    constructor(public element: ElementRef) {
+    }
 
     ngAfterViewChecked(): void {
         this.adjust();
@@ -84,7 +85,8 @@ export class TextBoxAutosize implements AfterContentChecked {
         this.adjust();
     }
 
-    constructor(public element: ElementRef) {}
+    constructor(public element: ElementRef) {
+    }
 
     ngAfterContentChecked(): void {
         this.adjust();
@@ -93,5 +95,6 @@ export class TextBoxAutosize implements AfterContentChecked {
     adjust(): void {
         this.element.nativeElement.style.width = "auto";
         this.element.nativeElement.style.width = this.element.nativeElement.scrollWidth + "px";
+        console.info("New Width: ", this.element.nativeElement.style.width);
     }
 }

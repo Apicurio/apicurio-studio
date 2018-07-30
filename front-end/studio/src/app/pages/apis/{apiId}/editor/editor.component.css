@@ -14,10 +14,9 @@
   color: #363636;
 }
 .api-editor div.api-item-description {
-  border-left: 2px solid #39a5dc;
+  margin-right: 30px;
 }
 .api-editor div.api-item-description.empty {
-  border-left: 2px solid #bbb;
   color: #bbb;
 }
 .api-editor .editor-master {
@@ -300,14 +299,6 @@
 }
 .api-editor .nav-tabs > li > a:hover > button {
   visibility: visible;
-}
-.api-editor .api-item-description {
-  font-size: 16px;
-  padding-left: 5px;
-  margin-right: 30px;
-}
-.api-editor .api-item-title {
-  font-weight: 500;
 }
 
 .api-editor .editor-title-bar {
@@ -888,33 +879,7 @@
   padding-left: 15px;
   padding-right: 15px;
 }
-.api-editor .editor-detail .detail-content .info-section .api-title-and-version {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-.api-editor .editor-detail .detail-content .info-section .api-title-and-version .api-title {
-  font-size: 26px;
-  font-weight: 300;
-}
-.api-editor .editor-detail .detail-content .info-section .api-title-and-version .api-version {
-  font-size: 20px;
-}
-.api-editor .editor-detail .detail-content .info-section .api-title-and-version div.api-description {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  margin-right: 30px;
-}
-.api-editor .editor-detail .detail-content .info-section .api-meta-data {
-  margin-top: 10px;
-}
-.api-editor .editor-detail .detail-content .info-section .api-md-entry {
-  font-size: 13px;
-}
-.api-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
-  margin-top: 5px;
-  font-weight: 600;
-  margin-bottom: -5px;
-}
+
 .api-editor .editor-detail .detail-content .info-section .explanation {
   font-size: 15px;
 }
@@ -1416,4 +1381,41 @@
 .api-editor .validation-aggregate .validation-aggregate-panel .problem .fa,
 .api-editor .validation-problems-panel .problem .fa {
   margin-right: 3px;
+}
+
+.api-editor .editor-detail .inline-editor-label {
+  cursor: pointer;
+}
+.api-editor .editor-detail .inline-editor-label .fa {
+  visibility: hidden;
+  color: #0088ce;
+}
+.api-editor .editor-detail .inline-editor-label .fa:hover {
+  color: #00659c;
+}
+.api-editor .editor-detail .inline-editor-label:hover .fa {
+  visibility: visible;
+}
+.api-editor .editor-detail .inline-text-editor {
+}
+.api-editor .editor-detail .inline-text-editor > input {
+  display: inline;
+  min-width: 90px;
+}
+.api-editor .editor-detail .inline-text-editor > input.form-control {
+  width: auto;
+}
+
+.api-editor .editor-detail .detail-content .info-section .section-field.version .inline-text-editor > input {
+  width: 110px;
+}
+
+.api-editor .editor-detail .section-field-label {
+  margin-bottom: 0px;
+}
+.api-editor .editor-detail .section-field-label > span {
+  font-weight: 600;
+}
+.api-editor .editor-detail .section-field {
+  margin-bottom: 8px;
 }

@@ -18,7 +18,12 @@
 import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasContact, OasDocument} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {createChangeContactCommand, createDeleteContactCommand, ICommand} from "oai-ts-commands";
+import {
+    createChangeContactCommand,
+    createChangePropertyCommand,
+    createDeleteContactCommand, createDeletePropertyCommand,
+    ICommand
+} from "oai-ts-commands";
 import {ContactInfo} from "../../dialogs/set-contact.component";
 
 
@@ -40,7 +45,7 @@ export class ContactSectionComponent {
      */
     public hasContact(): boolean {
         if (this.document.info && this.document.info.contact) {
-            if (this.document.info.contact.email || this.document.info.contact.url) {
+            if (this.document.info.contact.email || this.document.info.contact.url || this.document.info.contact.name) {
                 return true;
             }
         }
@@ -74,7 +79,7 @@ export class ContactSectionComponent {
         if (this.document.info && this.document.info.contact && this.document.info.contact.name) {
             return this.document.info.contact.name;
         } else {
-            return this.contactEmail();
+            return null;
         }
     }
 
@@ -85,7 +90,7 @@ export class ContactSectionComponent {
         if (this.document.info && this.document.info.contact && this.document.info.contact.email) {
             return this.document.info.contact.email;
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -93,10 +98,10 @@ export class ContactSectionComponent {
      * returns the contact url.
      */
     public contactUrl(): string {
-        if (this.document.info && this.document.info.contact) {
+        if (this.document.info && this.document.info.contact && this.document.info.contact.url) {
             return this.document.info.contact.url;
         } else {
-            return "";
+            return null;
         }
     }
 
@@ -105,7 +110,46 @@ export class ContactSectionComponent {
      * @param contactInfo
      */
     public setContactInfo(contactInfo: ContactInfo): void {
+        if (!contactInfo.name) {
+            contactInfo.name = null;
+        }
+        if (!contactInfo.email) {
+            contactInfo.email = null;
+        }
+        if (!contactInfo.url) {
+            contactInfo.url = null;
+        }
         let command: ICommand = createChangeContactCommand(this.document, contactInfo.name, contactInfo.email, contactInfo.url);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the contact name.
+     * @param newValue
+     */
+    public changeContactName(newValue: string): void {
+        if (!newValue) { newValue = null; }
+        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "name", newValue);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the contact email.
+     * @param newValue
+     */
+    public changeContactEmail(newValue: string): void {
+        if (!newValue) { newValue = null; }
+        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "email", newValue);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the contact url.
+     * @param newValue
+     */
+    public changeContactURL(newValue: string): void {
+        if (!newValue) { newValue = null; }
+        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "url", newValue);
         this.commandService.emit(command);
     }
 

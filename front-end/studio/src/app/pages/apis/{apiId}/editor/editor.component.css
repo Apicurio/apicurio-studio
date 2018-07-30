@@ -1419,3 +1419,13 @@
 .api-editor .editor-detail .section-field {
   margin-bottom: 8px;
 }
+
+.api-editor .editor-detail .detail-content .contact-section .section-field.name .inline-text-editor > input {
+  width: 275px;
+}
+.api-editor .editor-detail .detail-content .contact-section .section-field.email .inline-text-editor > input {
+  width: 275px;
+}
+.api-editor .editor-detail .detail-content .contact-section .section-field.url .inline-text-editor > input {
+  width: 375px;
+}

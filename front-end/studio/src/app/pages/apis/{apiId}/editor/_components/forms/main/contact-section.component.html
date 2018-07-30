@@ -21,13 +21,39 @@
         </signpost>
 
         <div *ngIf="hasContact()">
-            <p>
-                <span>For more information about this API, users can </span>
-                <span *ngIf="contactEmail()">contact <validation-problem [model]="contact()" property="email"></validation-problem><a href="mailto:{{ contactEmail() }}" target="_blank">{{ contactName() }}</a></span>
-                <span *ngIf="contactUrl() && contactEmail()"> or </span>
-                <span *ngIf="contactUrl()">visit <validation-problem [model]="contact()" property="url"></validation-problem><a href="{{ contactUrl() }}" target="_blank">{{ contactUrl() }}</a></span><span>.</span>
-            </p>
-            <button class="btn btn-default btn-sm" (click)="setContactDialog.open(contact())">Change Contact Info</button>
+            <!-- Contact Name -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="name"></validation-problem>
+                <span>Name</span>
+            </div>
+            <div class="section-field name">
+                <pf-inline-text-editor [value]="contactName()"
+                                       [labelClass]="'contact-name'"
+                                       [noValueMessage]="'No name provided.'" (onChange)="changeContactName($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Contact Email -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="email"></validation-problem>
+                <span>Email</span>
+            </div>
+            <div class="section-field email">
+                <pf-inline-text-editor [value]="contactEmail()"
+                                       [labelClass]="'contact-email'"
+                                       [noValueMessage]="'No email provided.'" (onChange)="changeContactEmail($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Contact URL -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="url"></validation-problem>
+                <span>URL</span>
+            </div>
+            <div class="section-field url">
+                <pf-inline-text-editor [value]="contactUrl()"
+                                       [labelClass]="'contact-url'"
+                                       [noValueMessage]="'No URL provided.'" (onChange)="changeContactURL($event)"></pf-inline-text-editor>
+            </div>
+            <!--<button class="btn btn-default btn-sm" (click)="setContactDialog.open(contact())">Change Contact Info</button>-->
         </div>
 
     </div>

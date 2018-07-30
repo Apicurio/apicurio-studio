@@ -180,6 +180,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
                 this.onUndo.emit(cmd);
             }
             this.validateModel();
+
+            // Fire a change event in the document service
+            this.documentService.emitChange();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
             console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
@@ -189,6 +192,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
                 this.onRedo.emit(cmd);
             }
             this.validateModel();
+
+            // Fire a change event in the document service
+            this.documentService.emitChange();
         }
     }
 
@@ -263,7 +269,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
             // Fire a change event in the document service
             this.documentService.emitChange();
-
         }
     }
 

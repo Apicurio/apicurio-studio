@@ -85,6 +85,7 @@ import {PathParamsSectionComponent} from "./pages/apis/{apiId}/editor/_component
 import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-params-section.component";
 import {DocumentService} from "./pages/apis/{apiId}/editor/_services/document.service";
 import {PfInlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/pf-inline-text-editor.component";
+import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/main/tag-row.component';
 
 @NgModule({
     imports: [
@@ -106,7 +107,7 @@ import {PfInlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_componen
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
-        PfInlineTextEditorComponent
+        PfInlineTextEditorComponent, TagRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService

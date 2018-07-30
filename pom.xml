@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -74,6 +75,7 @@
         <version.dependency.plugin>3.0.2</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
         <version.enforcer.plugin>1.4</version.enforcer.plugin>
+        <version.gatling.plugin>2.2.0</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>2.5</version.jar.plugin>
         <version.javadoc.plugin>2.10.4</version.javadoc.plugin>
@@ -88,6 +90,7 @@
         <version.exec.plugin>1.3.2</version.exec.plugin>
         <version.docker.plugin>0.11.2</version.docker.plugin>
         <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>
+        <version.scala-maven.plugin>3.2.2</version.scala-maven.plugin>
 
         <!-- Dependency Versions -->
         <version.com.fasterxml.jackson>2.9.4</version.com.fasterxml.jackson>
@@ -102,6 +105,7 @@
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.4</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
+        <version.io.gatling>2.2.2</version.io.gatling>
         <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
         <version.junit>4.11</version.junit>
@@ -119,6 +123,7 @@
         <version.mysql>5.1.45</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>
+        <version.scala>2.11.7</version.scala>
     </properties>
 
     <dependencyManagement>
@@ -285,6 +290,24 @@
                 <groupId>com.sun.codemodel</groupId>
                 <artifactId>codemodel</artifactId>
                 <version>${version.com.sun.codemodel}</version>
+            </dependency>
+
+            <!-- Gatling -->
+            <dependency>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-app</artifactId>
+                <version>${version.io.gatling}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.gatling.highcharts</groupId>
+                <artifactId>gatling-charts-highcharts</artifactId>
+                <version>${version.io.gatling}</version>
+            </dependency>
+            <!-- Scala -->
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${version.scala}</version>
             </dependency>
 
             <!-- Spec Libraries -->
@@ -478,6 +501,16 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>${version.maven-gpg-plugin.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.gatling</groupId>
+                    <artifactId>gatling-maven-plugin</artifactId>
+                    <version>${version.gatling.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <version>${version.scala-maven.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

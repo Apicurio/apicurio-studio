@@ -71,26 +71,46 @@
                         </context-help>
                     </div>
                     <div class="section-body collapse in" id="info-section-body">
-                        <h1>
-                            <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
-                            <inline-text-editor [value]="summary()" [noValueMessage]="'No Summary'"
-                                                [labelClass]="'api-item-title'"
-                                                [inputClass]="'api-item-editor api-summary-editor api-item-title'"
-                                                (onChange)="changeSummary($event)"></inline-text-editor>
-                        </h1>
-                        <h2 class="operationId">
-                            <strong>ID:</strong>
-                            <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
-                            <inline-text-editor [value]="operationId()" [noValueMessage]="'No Operation ID'"
-                                                [labelClass]="'api-item-operation-id'"
-                                                [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
-                                                (onChange)="changeOperationId($event)"></inline-text-editor>
-                        </h2>
-                        <inline-textarea-editor [value]="description()" [noValueMessage]="'No description.'"
-                                                [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
-                                                [inputClass]="'api-item-description'"
-                                                [formClass]="'api-description-editor-form'"
-                                                (onChange)="changeDescription($event)"></inline-textarea-editor>
+                        <div class="half-section">
+                            <!-- Summary -->
+                            <div class="section-field-label">
+                                <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
+                                <span>Summary</span>
+                            </div>
+                            <div class="section-field summary">
+                                <pf-inline-text-editor [value]="summary()" [noValueMessage]="'No Summary'"
+                                                    [labelClass]="'api-item-title'"
+                                                    [inputClass]="'api-item-editor api-summary-editor api-item-title'"
+                                                    (onChange)="changeSummary($event)"></pf-inline-text-editor>
+                            </div>
+                        </div>
+
+                        <div class="half-section right">
+                            <!-- Operation ID -->
+                            <div class="section-field-label">
+                                <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
+                                <span>Operation ID</span>
+                            </div>
+                            <div class="section-field operationId">
+                                <pf-inline-text-editor [value]="operationId()" [noValueMessage]="'No Operation ID'"
+                                                       [labelClass]="'api-item-operation-id'"
+                                                       [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                                       (onChange)="changeOperationId($event)"></pf-inline-text-editor>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="section-field-label">
+                            <validation-problem [model]="operation" [shallow]="true" [property]="'description'"></validation-problem>
+                            <span>Description</span>
+                        </div>
+                        <div class="section-field description">
+                            <inline-textarea-editor [value]="description()" [noValueMessage]="'No description.'"
+                                                    [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                                    [inputClass]="'api-item-description'"
+                                                    [formClass]="'api-description-editor-form'"
+                                                    (onChange)="changeDescription($event)"></inline-textarea-editor>
+                        </div>
                     </div>
                 </div>
 

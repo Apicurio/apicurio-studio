@@ -981,13 +981,6 @@
   cursor: default;
 }
 
-.api-editor .editor-detail .api-operation-detail .operationId {
-  margin: -5px 0px 15px;
-}
-.api-editor .editor-detail .api-operation-detail .operationId strong {
-  font-size: 18px;
-}
-
 .api-editor .editor-detail .api-operation-detail .request-body-section .request-body-name {
   font-size: 15px;
   margin-left: 10px;
@@ -1408,6 +1401,14 @@
 
 .api-editor .editor-detail .detail-content .info-section .section-field.version .inline-text-editor > input {
   width: 110px;
+}
+
+.api-editor .editor-detail .section .half-section {
+  width: 50%;
+  display: inline-block;
+}
+.api-editor .editor-detail .section .half-section.right {
+  float: right;
 }
 
 .api-editor .editor-detail .section-field-label {

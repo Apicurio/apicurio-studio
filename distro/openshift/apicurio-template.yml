@@ -473,9 +473,9 @@ objects:
                    name: postgresql
                    key: database-password
              - name: APICURIO_MIN_HEAP
-               VALUE: ${API_JVM_MIN}
+               value: ${API_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${API_JVM_MAX}
+               value: ${API_JVM_MAX}
           resources:
             limits:
               cpu: ${API_CPU_LIMIT}
@@ -573,9 +573,9 @@ objects:
                    name: postgresql
                    key: database-password
              - name: APICURIO_MIN_HEAP
-               VALUE: ${WS_JVM_MIN}
+               value: ${WS_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${WS_JVM_MAX}
+               value: ${WS_JVM_MAX}
           resources:
             limits:
               cpu: ${WS_CPU_LIMIT}
@@ -667,9 +667,9 @@ objects:
              - name: APICURIO_UI_LOGOUT_REDIRECT_URI
                value: /
              - name: APICURIO_MIN_HEAP
-               VALUE: ${UI_JVM_MIN}
+               value: ${UI_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${UI_JVM_MAX}
+               value: ${UI_JVM_MAX}
           resources:
             limits:
               cpu: ${UI_CPU_LIMIT}

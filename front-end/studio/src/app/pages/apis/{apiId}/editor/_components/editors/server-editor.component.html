@@ -8,11 +8,15 @@
             <div class="context" *ngIf="contextIs !== 'document'">
                 <div class="col-md-6 path">
                     <div class="context-label">Path</div>
-                    <div class="context-value">/path/to/&#123;resourceId&#125;</div>
+                    <div path-item class="context-value" [path]="pathItem().path()"></div>
                 </div>
                 <div class="col-md-6 operation" *ngIf="contextIs === 'operation'">
                     <span class="context-label">Operation</span>
-                    <span class="label label-success">GET</span>
+                    <span class="label"
+                          [class.label-info]="operation().method() !== 'get' && operation().method() !== 'post' && operation().method() !== 'delete'"
+                          [class.label-success]="operation().method() === 'get'"
+                          [class.label-warning]="operation().method() === 'post'"
+                          [class.label-danger]="operation().method() === 'delete'">{{ operation().method() }}</span>
                 </div>
             </div>
         </div>

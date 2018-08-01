@@ -16,7 +16,15 @@
  */
 
 import {Component, EventEmitter, Output} from "@angular/core";
-import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, OasLibraryUtils} from "oai-ts-core";
+import {
+    Oas30Document,
+    Oas30Operation,
+    Oas30PathItem,
+    Oas30Server,
+    OasLibraryUtils,
+    OasOperation,
+    OasPathItem
+} from "oai-ts-core";
 
 export interface ServerVariableData {
     default: string;
@@ -62,6 +70,11 @@ export class ServerEditorComponent {
         description: "",
         variables: {}
     };
+    protected _expandedContext: any = {
+        document: null,
+        pathItem: null,
+        operation: null
+    };
 
     /**
      * Called to open the editor.
@@ -92,6 +105,9 @@ export class ServerEditorComponent {
                 description: "",
                 variables: {}
             };
+        }
+        if (context) {
+            this.expandContext(context);
         }
         this._isOpen = true;
     }
@@ -205,6 +221,40 @@ export class ServerEditorComponent {
             }
         }
         return rval;
+    }
+
+    /**
+     * Figures out what the context is based on what is passed to it.
+     * @param context
+     */
+    public expandContext(context: Oas30Document | Oas30PathItem | Oas30Operation): void {
+        if (context['_method']) {
+            this.contextIs = "operation";
+            this._expandedContext.operation = context as Oas30Operation;
+            this._expandedContext.pathItem = context.parent() as Oas30PathItem;
+            this._expandedContext.document = context.ownerDocument();
+        } else if (context['_path']) {
+            this.contextIs = "pathItem";
+            this._expandedContext.pathItem = context as Oas30PathItem;
+            this._expandedContext.document = context.ownerDocument();
+        } else {
+            this.contextIs = "document";
+            this._expandedContext.document = context as Oas30Document;
+        }
+    }
+
+    /**
+     * Gets the context path item (if any).
+     */
+    public pathItem(): Oas30PathItem {
+        return this._expandedContext.pathItem;
+    }
+
+    /**
+     * Gets the context operation (if any).
+     */
+    public operation(): Oas30Operation {
+        return this._expandedContext.operation;
     }
 
 }

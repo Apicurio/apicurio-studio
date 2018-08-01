@@ -1474,6 +1474,7 @@
 .api-editor .entity-editor .context .operation > .label {
   font-size: 16px;
   border-radius: 4px;
+  text-transform: uppercase;
 }
 .api-editor .entity-editor .notice-of-required {
   margin-bottom: -15px;

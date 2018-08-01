@@ -20,8 +20,7 @@ import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server} from "oai-ts-
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
-import {ServerEditorComponent} from "../../editors/server-editor.component";
-import {ServerEventData} from "../../dialogs/add-server.component";
+import {ServerEditorComponent, ServerEventData} from "../../editors/server-editor.component";
 
 
 @Component({

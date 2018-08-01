@@ -17,18 +17,11 @@
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
-import {
-    createChangePropertyCommand,
-    createChangeServerCommand,
-    createDeleteServerCommand,
-    createNewServerCommand,
-    ICommand
-} from "oai-ts-commands";
+import {createChangeServerCommand, createDeleteServerCommand, createNewServerCommand, ICommand} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
-import {ServerEventData} from "../../dialogs/add-server.component";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
-import {ServerEditorComponent} from "../../editors/server-editor.component";
+import {ServerEditorComponent, ServerEventData} from "../../editors/server-editor.component";
 
 
 @Component({

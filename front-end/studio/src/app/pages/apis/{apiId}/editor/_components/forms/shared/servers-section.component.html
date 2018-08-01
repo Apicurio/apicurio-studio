@@ -7,44 +7,22 @@
         <context-help>
             <p>{{ description }}</p>
         </context-help>
-        <icon-button (click)="addServerDialog.open()" [pullRight]="true" [type]="'add'"></icon-button>
+        <icon-button (click)="onAddServer()" [pullRight]="true" [type]="'add'"
+                     [title]="'Add a server to the API.'"></icon-button>
     </div>
     <div class="section-body collapse" id="servers-section-body" [class.in]="!collapsed">
 
         <signpost *ngIf="servers().length === 0">
             <span>No servers have been defined.</span>
-            <a (click)="addServerDialog.open()">Add a server</a>
+            <a (click)="onAddServer()">Add a server</a>
         </signpost>
 
-        <table class="table table-striped table-bordered api-servers" *ngIf="servers().length > 0">
-            <thead>
-            <tr>
-                <th>Server</th>
-                <th class="pre-actions" width="50%">Description</th>
-                <th class="actions" width="1%"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let server of servers()">
-                <td class="server-name">
-                    <validation-problem [model]="server"></validation-problem>
-                    <span server-url [url]="server.url"></span>
-                </td>
-                <td class="description pre-actions"><inline-text-editor [noValueMessage]="'No description.'"
-                                                            [topIncrement]="2"
-                                                            (onChange)="changeServerDescription(server, $event)"
-                                                            [value]="server.description"></inline-text-editor></td>
-                <td class="actions" nowrap>
-                    <div>
-                        <icon-button (click)="addServerDialog.open(server)" [type]="'edit'"
-                                     [title]="'Edit server.'"></icon-button>
-                        <icon-button (click)="deleteServer(server)" [type]="'delete'"
-                                     [title]="'Delete Server.'"></icon-button>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <!-- The list of servers -->
+        <div class="tags" *ngIf="servers().length > 0">
+            <server-row *ngFor="let server of servers()" [server]="server"
+                        (onEdit)="changeServer($event)"
+                        (onDelete)="deleteServer(server)"></server-row>
+        </div>
+
     </div>
 </div>
-<add-server-dialog #addServerDialog (onAdd)="addServer($event)" (onChange)="changeServer($event)"></add-server-dialog>

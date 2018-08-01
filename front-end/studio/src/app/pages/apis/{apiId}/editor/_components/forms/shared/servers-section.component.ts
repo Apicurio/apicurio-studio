@@ -27,6 +27,8 @@ import {
 import {ObjectUtils} from "../../../_util/object.util";
 import {ServerEventData} from "../../dialogs/add-server.component";
 import {CommandService} from "../../../_services/command.service";
+import {EditorsService} from "../../../_services/editors.service";
+import {ServerEditorComponent} from "../../editors/server-editor.component";
 
 
 @Component({
@@ -41,7 +43,7 @@ export class ServersSectionComponent {
     @Input() collapsed: boolean;
     @Input() description: string;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private commandService: CommandService, private editorsService: EditorsService) {}
 
     /**
      * Returns the list of global servers defined in the document.
@@ -62,17 +64,6 @@ export class ServersSectionComponent {
     }
 
     /**
-     * Called when the user changes the description of a server.
-     * @param server
-     * @param description
-     */
-    public changeServerDescription(server: Oas30Server, description: string): void {
-        // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
-        let command: ICommand = createChangePropertyCommand<string>(this.parent.ownerDocument(), server, "description", description);
-        this.commandService.emit(command);
-    }
-
-    /**
      * Called when the user chooses to delete a server.
      * @param server
      */
@@ -86,7 +77,7 @@ export class ServersSectionComponent {
      * @param event
      */
     public addServer(event: ServerEventData): void {
-        console.info("[MainFormComponent] Adding a server: %s", event.url);
+        console.info("[ServersSectionComponent] Adding a server: %s", event.url);
 
         let newServer: Oas30Server = this.parent.createServer();
 
@@ -101,7 +92,7 @@ export class ServersSectionComponent {
      * @param event
      */
     public changeServer(event: ServerEventData): void {
-        console.info("[MainFormComponent] Editing a server: %s", event.url);
+        console.info("[ServersSectionComponent] Editing a server: %s", event.url);
 
         let newServer: Oas30Server = this.parent.createServer();
 
@@ -109,6 +100,18 @@ export class ServersSectionComponent {
 
         let command: ICommand = createChangeServerCommand(this.parent.ownerDocument(), newServer);
         this.commandService.emit(command);
+    }
+
+    /**
+     * Opens the full screen modal "server editor" so that advanced editing of the
+     * server can be accomplished.
+     */
+    public onAddServer(): void {
+        let serverEditor: ServerEditorComponent = this.editorsService.getServerEditor();
+        serverEditor.open({
+            onSave: (data) => this.addServer(data),
+            onCancel: () => {}
+        }, this.parent);
     }
 
     /**

@@ -32,7 +32,6 @@ import {SetContactDialogComponent} from './pages/apis/{apiId}/editor/_components
 import {SecurityScheme20DialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/security-scheme-20.component';
 import {AddTagDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-tag.component';
 import {AddSchemaPropertyDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component';
-import {AddServerDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-server.component';
 import {CloneDefinitionDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component';
 import {ClonePathDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/clone-path.component';
 import {ResponseRow30Component} from './pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component';
@@ -86,6 +85,9 @@ import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_componen
 import {DocumentService} from "./pages/apis/{apiId}/editor/_services/document.service";
 import {PfInlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/pf-inline-text-editor.component";
 import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/main/tag-row.component';
+import {ServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/server-editor.component";
+import {EditorsService} from './pages/apis/{apiId}/editor/_services/editors.service';
+import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/server-row.component";
 
 @NgModule({
     imports: [
@@ -96,7 +98,7 @@ import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/mai
         PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
         SecurityScheme20DialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-        AddTagDialogComponent, AddServerDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component,
+        AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component,
         ResponseRowComponent, ParamRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
@@ -107,10 +109,10 @@ import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/mai
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
-        PfInlineTextEditorComponent, TagRowComponent
+        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent
     ],
     providers: [
-        ProblemsService, SelectionService, LicenseService, CommandService, DocumentService
+        ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService
     ],
     exports: [
         ApiEditorComponent

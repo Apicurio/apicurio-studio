@@ -1,0 +1,11 @@
+.server-entity-editor .body-section .server-variables {
+  width: 60%;
+  min-width: 400px;
+  margin-left: 20px
+}
+
+.server-entity-editor .body-section #server_ro {
+  border-color: #002d45;
+  background-color: #efefef;
+  color: #666;
+}

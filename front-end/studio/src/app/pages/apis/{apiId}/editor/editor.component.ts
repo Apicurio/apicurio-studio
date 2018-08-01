@@ -49,6 +49,8 @@ import {SelectionService} from "./_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
+import {ServerEditorComponent} from "./_components/editors/server-editor.component";
+import {EditorsService, IEditorsProvider} from "./_services/editors.service";
 
 
 @Component({
@@ -58,7 +60,7 @@ import {DocumentService} from "./_services/document.service";
     styleUrls: ["editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
+export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditorsProvider {
 
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
@@ -82,6 +84,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
     private _commandSubscription: Subscription;
 
     @ViewChild("master") master: EditorMasterComponent;
+    @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
 
     formType: string;
 
@@ -92,12 +95,13 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
      * @param documentService
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
-                private documentService: DocumentService) {}
+                private documentService: DocumentService, private editorsService: EditorsService) {}
 
     public ngOnInit(): void {
         this.selectionService.reset();
         this.commandService.reset();
         this.documentService.reset();
+        this.editorsService.setProvider(this);
 
         let me: ApiEditorComponent = this;
         this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
@@ -403,6 +407,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy {
         let doc: OasDocument = this.document();
         apiDef.spec = this._library.writeNode(doc);
         return apiDef;
+    }
+
+    public getServerEditor(): ServerEditorComponent {
+        return this.serverEditor;
     }
 
 }

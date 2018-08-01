@@ -475,7 +475,7 @@ objects:
              - name: APICURIO_MIN_HEAP
                VALUE: ${API_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${API_JVM_MIN}
+               VALUE: ${API_JVM_MAX}
           resources:
             limits:
               cpu: ${API_CPU_LIMIT}
@@ -575,7 +575,7 @@ objects:
              - name: APICURIO_MIN_HEAP
                VALUE: ${WS_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${WS_JVM_MIN}
+               VALUE: ${WS_JVM_MAX}
           resources:
             limits:
               cpu: ${WS_CPU_LIMIT}
@@ -669,7 +669,7 @@ objects:
              - name: APICURIO_MIN_HEAP
                VALUE: ${UI_JVM_MIN}
              - name: APICURIO_MAX_HEAP
-               VALUE: ${UI_JVM_MIN}
+               VALUE: ${UI_JVM_MAX}
           resources:
             limits:
               cpu: ${UI_CPU_LIMIT}

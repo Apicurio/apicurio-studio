@@ -1431,5 +1431,93 @@
 }
 
 .api-editor .editor-detail .detail-content .tags-section div.tags {
-  
+
+}
+
+.api-editor .entity-editor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top:  0;
+  bottom: 0;
+  overflow-y: auto;
+  background-color: white;
+  z-index: 5;
+}
+.api-editor .entity-editor h1 {
+  font-size: 25px;
+}
+.api-editor .entity-editor .close-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 50px;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 6;
+}
+.api-editor .entity-editor .close-button:hover {
+  filter: brightness(80%);
+}
+.api-editor .entity-editor .context {
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+.api-editor .entity-editor .context .context-label {
+  color: #666;
+  font-size: 18px;
+  margin-right: 15px;
+}
+.api-editor .entity-editor .context .context-value {
+  color: #666;
+}
+.api-editor .entity-editor .context .operation > .label {
+  font-size: 16px;
+  border-radius: 4px;
+}
+.api-editor .entity-editor .notice-of-required {
+  margin-bottom: -15px;
+  padding-left: 0;
+  margin-top: 10px;
+}
+.api-editor .entity-editor hr {
+  border-color: #bbb;
+}
+
+.api-editor .entity-editor .body-section {
+}
+.api-editor .entity-editor .body-section h3 {
+  font-weight: 600;
+  font-size: 19px;
+}
+.api-editor .entity-editor .body-section .explanation {
+  padding-left: 20px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  width: 60%;
+  min-width: 400px;
+}
+.api-editor .entity-editor .body-section > div > .form-group {
+  padding-left: 20px;
+}
+.api-editor .entity-editor .body-section > div > .form-group input {
+  min-width: 350px;
+  width: 40%;
+}
+.api-editor .entity-editor .body-section > div > .form-group textarea {
+  min-width: 350px;
+  width: 40%;
+}
+.api-editor .entity-editor .body-section .empty-state {
+  width: 60%;
+  min-width: 400px;
+  border: 1px solid #ccc;
+  color: #666;
+  padding: 30px;
+}
+.api-editor .entity-editor .actions-section .actions {
+  width: 60%;
+  min-width: 400px;
+  text-align: right;
+  padding-bottom: 30px;
 }

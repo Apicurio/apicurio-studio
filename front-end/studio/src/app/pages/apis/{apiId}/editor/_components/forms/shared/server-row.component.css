@@ -1,12 +1,12 @@
-.tag {
+.server {
   border: 1px solid transparent;
 }
-.tag.expanded {
+.server.expanded {
   border: 1px solid #bbb;
   box-shadow: 0 2px 6px rgba(3,3,3,.2);
 }
 
-.tag .header {
+.server .header {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -15,58 +15,58 @@
   border-bottom: 1px solid #f5f5f5;
   cursor: pointer;
 }
-.tag .header:hover {
+.server .header:hover {
   background-color: #edf8ff;
 }
-.tag.expanded .header {
+.server.expanded .header {
   border-bottom: solid 1px #bbb;
   background-color: #def3ff;
 }
 
-.tag .header .expand {
+.server .header .expand {
   flex-basis: 2%;
 }
-.tag .header .name {
-  flex-basis: 20%;
+.server .header .url {
+  flex-basis: 40%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding-right: 5px;
 }
-.tag .header .name .fa {
+.server .header .url .pficon {
   margin-right: 5px;
 }
-.tag .header .description {
-  flex-basis: 76%;
+.server .header .description {
+  flex-basis: 56%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding-right: 5px;
 }
-.tag .header .actions {
+.server .header .actions {
   flex-basis: 2%;
   text-align: center;
 }
-.tag .header .actions > div .fa-ellipsis-v {
+.server .header .actions > div .fa-ellipsis-v {
   visibility: hidden;
 }
-.tag:hover .header .actions > div .fa-ellipsis-v {
+.server:hover .header .actions > div .fa-ellipsis-v {
   visibility: visible;
 }
 
-.tag .body {
+.server .body {
   position: relative;
   padding: 15px;
 }
-.tag .body .close {
+.server .body .close {
   position: absolute;
   right: 10px;
   top: 5px;
 }
 
-.tag .body .tag-description form {
+.server .body .server-description form {
   width: 100%;
 }
-.tag .body .tag-description .form-label {
+.server .body .server-description .form-label {
   font-weight: 600;
 }

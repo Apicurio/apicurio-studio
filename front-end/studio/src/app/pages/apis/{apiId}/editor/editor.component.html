@@ -1,9 +1,7 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
 
     <title-bar [document]="document()" [validationErrors]="validationErrors"></title-bar>
-
     <master [document]="document()" #master></master>
-
     <div class="editor-detail" [ngSwitch]="formType">
         <main-form [document]="document()" class="editor-detail-form"
                       *ngSwitchCase="'main_20'"></main-form>
@@ -25,5 +23,8 @@
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          *ngSwitchCase="'definition_30'"></definition-form>
     </div>
+
+    <server-editor #serverEditor></server-editor>
+
 
 </div>

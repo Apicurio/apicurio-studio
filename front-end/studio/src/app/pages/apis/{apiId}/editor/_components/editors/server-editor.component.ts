@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
-import {Oas30Server} from "oai-ts-core";
-
+import {Component, EventEmitter, Output} from "@angular/core";
+import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, OasLibraryUtils} from "oai-ts-core";
 
 export interface ServerVariableData {
     default: string;
@@ -32,39 +30,50 @@ export interface ServerEventData {
     variables: any; // map of string to ServerVariableData
 }
 
+export interface IServerEditorHandler {
+
+    onSave(data: ServerEventData): void;
+    onCancel(): void;
+
+}
+
 
 @Component({
     moduleId: module.id,
-    selector: "add-server-dialog",
-    templateUrl: "add-server.component.html",
-    styleUrls: ["add-server.component.css"]
+    selector: "server-editor",
+    templateUrl: "server-editor.component.html",
+    styleUrls: ["server-editor.component.css"]
 })
-export class AddServerDialogComponent {
+export class ServerEditorComponent {
 
-    @Output() onAdd: EventEmitter<ServerEventData> = new EventEmitter<ServerEventData>();
-    @Output() onChange: EventEmitter<ServerEventData> = new EventEmitter<ServerEventData>();
+    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
 
-    @ViewChildren("addServerModal") addServerModal: QueryList<ModalDirective>;
+    public _library: OasLibraryUtils = new OasLibraryUtils();
+    public _isOpen: boolean = false;
+    public _mode: string = "create";
+    public _varSelected: string = null;
 
-    protected mode: string;
-
-    protected _isOpen: boolean = false;
-
+    protected handler: IServerEditorHandler;
+    protected context: Oas30Document | Oas30PathItem | Oas30Operation;
+    public contextIs: string = "document";
     protected model: ServerEventData = {
         url: "",
         description: "",
         variables: {}
     };
 
-    protected _varSelected: string = null;
-
     /**
-     * Called to open the dialog.
+     * Called to open the editor.
+     * @param handler
+     * @param context
      * @param server
      */
-    public open(server?: Oas30Server): void {
+    public open(handler: IServerEditorHandler, context: Oas30Document | Oas30PathItem | Oas30Operation, server?: Oas30Server): void {
+        this.context = context;
+        this.handler = handler;
         if (server) {
-            this.mode = "edit";
+            this._mode = "edit";
             this.model.url = server.url;
             this.model.description = server.description;
             this.model.variables = {};
@@ -77,7 +86,7 @@ export class AddServerDialogComponent {
             });
             this.updateVariables();
         } else {
-            this.mode = "create";
+            this._mode = "create";
             this.model = {
                 url: "",
                 description: "",
@@ -85,11 +94,50 @@ export class AddServerDialogComponent {
             };
         }
         this._isOpen = true;
-        this.addServerModal.changes.subscribe( () => {
-            if (this.addServerModal.first) {
-                this.addServerModal.first.show();
+    }
+
+    /**
+     * Called to close the dialog.
+     */
+    public close(): void {
+        this._isOpen = false;
+    }
+
+    /**
+     * Called when the user clicks "save".
+     */
+    protected save(): void {
+        for (let varName of this.variableNames()) {
+            let varModel: any = this.model.variables[varName];
+            if (varModel && varModel.default === "") {
+                varModel.default = undefined;
             }
-        });
+        }
+        this.close();
+        this.handler.onSave(this.model);
+    }
+
+    /**
+     * Called when the user clicks "cancel".
+     */
+    protected cancel(): void {
+        this.close();
+        this.handler.onCancel();
+    }
+
+    /**
+     * Returns true if the dialog is open.
+     */
+    public isOpen(): boolean {
+        return this._isOpen;
+    }
+
+    /**
+     * Returns true if the editor is currently valid.
+     */
+    public isValid(): boolean {
+        // TODO should also validate the URL format is OK
+        return this.model.url ? true : false;
     }
 
     /**
@@ -157,49 +205,6 @@ export class AddServerDialogComponent {
             }
         }
         return rval;
-
-    }
-
-    /**
-     * Called to close the dialog.
-     */
-    public close(): void {
-        this._isOpen = false;
-        this.model.url = "";
-        this.model.description = "";
-    }
-
-    /**
-     * Called when the user clicks "ok".
-     */
-    protected ok(): void {
-        for (let varName of this.variableNames()) {
-            let varModel: any = this.model.variables[varName];
-            if (varModel && varModel.default === "") {
-                varModel.default = undefined;
-            }
-        }
-        if (this.mode === "create") {
-            this.onAdd.emit(this.model);
-        } else {
-            this.onChange.emit(this.model);
-        }
-        this.cancel();
-    }
-
-    /**
-     * Called when the user clicks "cancel".
-     */
-    protected cancel(): void {
-        this.addServerModal.first.hide();
-    }
-
-    /**
-     * Returns true if the dialog is open.
-     * @return
-     */
-    public isOpen(): boolean {
-        return this._isOpen;
     }
 
 }

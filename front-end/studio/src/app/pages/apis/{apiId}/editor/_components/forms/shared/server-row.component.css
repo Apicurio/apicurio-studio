@@ -31,9 +31,13 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-right: 5px;
+  padding-right: 15px;
 }
-.server .header .url .pficon {
+.server .header .url .entity-icon {
+  margin-right: 5px;
+  color: #667;
+}
+.server .header .validation-problem-icon {
   margin-right: 5px;
 }
 .server .header .description {
@@ -41,7 +45,7 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-right: 5px;
+  padding-right: 25px;
 }
 .server .header .actions {
   flex-basis: 2%;

@@ -31,17 +31,21 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-right: 5px;
+  padding-right: 15px;
 }
-.tag .header .name .fa {
+.tag .header .validation-problem-icon {
   margin-right: 5px;
+}
+.tag .header .name .entity-icon {
+  margin-right: 5px;
+  color: #667;
 }
 .tag .header .description {
   flex-basis: 76%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-right: 5px;
+  padding-right: 25px;
 }
 .tag .header .actions {
   flex-basis: 2%;

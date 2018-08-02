@@ -16,15 +16,7 @@
  */
 
 import {Component, EventEmitter, Output} from "@angular/core";
-import {
-    Oas30Document,
-    Oas30Operation,
-    Oas30PathItem,
-    Oas30Server,
-    OasLibraryUtils,
-    OasOperation,
-    OasPathItem
-} from "oai-ts-core";
+import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, OasLibraryUtils} from "oai-ts-core";
 
 export interface ServerVariableData {
     default: string;
@@ -123,6 +115,9 @@ export class ServerEditorComponent {
      * Called when the user clicks "save".
      */
     protected save(): void {
+        if (!this.isValid()) {
+            return;
+        }
         for (let varName of this.variableNames()) {
             let varModel: any = this.model.variables[varName];
             if (varModel && varModel.default === "") {
@@ -161,7 +156,7 @@ export class ServerEditorComponent {
      * present in the URL spec.  The map of variables is then updated to reflect whatever is found.
      */
     public updateVariables(): void {
-        console.info("[AddServerDialogComponent] Updating variables for URL: %s", this.model.url);
+        console.info("[ServerEditorComponent] Updating variables for URL: %s", this.model.url);
 
         let url = this.model.url;
         if (!url) {
@@ -255,6 +250,35 @@ export class ServerEditorComponent {
      */
     public operation(): Oas30Operation {
         return this._expandedContext.operation;
+    }
+
+    /**
+     * @param event
+     */
+    public onServerUrlKeypress(event: KeyboardEvent): void {
+        if (event.key === "Enter") {
+            console.info("!!!! Enter on server-url");
+            this.updateVariables();
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
+
+    /**
+     * @param event
+     */
+    public onKeypress(event: KeyboardEvent): void {
+        if (event.key === "Enter") {
+            console.info("!!!! Enter on default value!");
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
+
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+            this.cancel();
+        }
     }
 
 }

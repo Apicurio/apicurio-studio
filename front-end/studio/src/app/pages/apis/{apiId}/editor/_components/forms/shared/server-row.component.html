@@ -5,7 +5,7 @@
         </div>
         <div class="url" (click)="toggle()" [class.empty]="!hasUrl()">
             <validation-problem [model]="server"></validation-problem>
-            <span class="pficon pficon-server"></span>
+            <span class="pficon pficon-server entity-icon"></span>
             <span server-url [url]="server.url"></span>
         </div>
         <div class="description" (click)="toggle()" [class.empty]="!hasDescription()">
@@ -34,7 +34,7 @@
                 <div class="col-md-11">
                     <div class="server-description">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="server.description" [noValueMessage]="'No description.'"
+                        <inline-textarea-editor [value]="server.description" [noValueMessage]="'Enter description here.'"
                                                 (onChange)="setDescription($event)"></inline-textarea-editor>
                     </div>
                 </div>

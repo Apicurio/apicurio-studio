@@ -1,5 +1,5 @@
-<div class="entity-editor server-entity-editor container-fluid" *ngIf="isOpen()">
-    <a class="close-button" (click)="close()"><span class="fa fa-close"></span></a>
+<div class="entity-editor server-entity-editor container-fluid" *ngIf="isOpen()" (window:keydown)="onGlobalKeyDown($event)">
+    <a class="close-button" (click)="close()"><span class="pficon pficon-close"></span></a>
     <form id="server-entity-form" #entityEditorForm="ngForm">
         <div class="row-fluid header">
             <div class="col-md-12">
@@ -31,8 +31,7 @@
                 <h3>1. Enter Server URL</h3>
                 <p class="explanation">
                         <span>
-                            Enter the URL template of the server below.  You can include server variables in the URL template
-                            with the following syntax:
+                            Enter the URL template of the server. Include server variables in the URL template using the following syntax:
                         </span>
                     <br />
                     <code>
@@ -45,7 +44,7 @@
                     <label class="control-label required" for="serverUrl">Server URL</label>
                     <div *ngIf="_mode === 'create'">
                         <input #urlInput="ngModel" name="server" type="text" id="serverUrl" class="form-control"
-                               placeholder="Enter Server URL"
+                               placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
                                required [(ngModel)]="model.url" (change)="updateVariables()">
                         <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
                     </div>
@@ -73,15 +72,13 @@
                 <h3>2. Configure Server Variables</h3>
                 <p class="explanation">
                     <span>
-                        Configure the server variables found in the server URL template entered in the section above.  Changing the
-                        server URL template might change the server variables in this section.
+                        Configure the server variables found in the server URL template.
                     </span>
                 </p>
             </div>
             <div class="col-md-12">
                 <p class="empty-state" *ngIf="!hasVariables()">
-                    The server's URL template does not contain any server variables.  This section will only display server variables
-                    that are included in the server URL template entered in the above section.
+                    This server URL does not contain variables.  Server variables are defined in the server URL template.
                 </p>
 
                 <div class="server-variables" *ngIf="hasVariables()">
@@ -94,6 +91,7 @@
                                 <label class="control-label">Default Value</label>
                                 <div class="">
                                     <input name="defval_{{ varName }}" type="text" class="form-control"
+                                           (keypress)="onKeypress($event)"
                                            placeholder="Default value" [(ngModel)]="model.variables[varName].default">
                                 </div>
                             </div>
@@ -118,7 +116,7 @@
         <div class="row-fluid actions-section">
             <div class="col-md-12">
                 <div class="actions">
-                    <button class="btn btn-default" (click)="cancel()">Cancel</button>
+                    <a class="btn btn-default" (click)="cancel()">Cancel</a>
                     <button class="btn btn-primary" (click)="save()" [disabled]="!isValid()">Save</button>
                 </div>
             </div>

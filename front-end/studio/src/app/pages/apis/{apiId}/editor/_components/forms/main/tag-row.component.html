@@ -5,7 +5,7 @@
         </div>
         <div class="name" (click)="toggle()" [class.empty]="!hasName()">
             <validation-problem [model]="tag"></validation-problem>
-            <span class="fa fa-tag"></span>
+            <span class="fa fa-tag entity-icon"></span>
             <span>{{ name() }}</span>
         </div>
         <div class="description" (click)="toggle()" [class.empty]="!hasDescription()">
@@ -34,7 +34,7 @@
                 <div class="col-md-11">
                     <div class="tag-description">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="tag.description" [noValueMessage]="'No description.'"
+                        <inline-textarea-editor [value]="tag.description" [noValueMessage]="'Enter description here.'"
                                                 (onChange)="setDescription($event)"></inline-textarea-editor>
                     </div>
                 </div>

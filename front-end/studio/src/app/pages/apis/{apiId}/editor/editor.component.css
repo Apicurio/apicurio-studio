@@ -1456,9 +1456,10 @@
   font-size: 32px;
   cursor: pointer;
   z-index: 6;
+  color: #666;
 }
 .api-editor .entity-editor .close-button:hover {
-  filter: brightness(80%);
+  color: black;
 }
 .api-editor .entity-editor .context {
   padding-bottom: 30px;

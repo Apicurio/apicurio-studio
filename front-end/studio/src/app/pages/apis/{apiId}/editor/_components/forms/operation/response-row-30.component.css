@@ -4,6 +4,7 @@
 .response.expanded {
   border: 1px solid #bbb;
   box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
 }
 
 .response .header {

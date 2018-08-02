@@ -32,7 +32,7 @@
                         <label class="col-sm-3 control-label" for="name">Description</label>
                         <div class="col-sm-9">
                             <textarea #descriptionInput name="description" type="text" id="description" class="form-control"
-                                      placeholder="Description of the security scheme (optional)." [(ngModel)]="model.description"></textarea>
+                                      placeholder="Description of the security scheme." [(ngModel)]="model.description"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                         <div class="form-group" *ngIf="model.scheme === 'bearer'">
-                            <label class="col-sm-3 control-label" for="bearerFormat">Format (optional)</label>
+                            <label class="col-sm-3 control-label" for="bearerFormat">Format</label>
                             <div class="col-sm-9">
                                 <div class="dropdown">
                                     <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormat" data-toggle="dropdown">

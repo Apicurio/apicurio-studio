@@ -57,7 +57,7 @@
                     <label class="control-label" for="description">Description</label>
                     <div>
                         <textarea name="description" id="description" class="form-control" autosize #descriptionInput
-                                  placeholder="Server description (optional)" [(ngModel)]="model.description"></textarea>
+                                  placeholder="Server description" [(ngModel)]="model.description"></textarea>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                                 <label class="control-label">Description</label>
                                 <div class="">
                                     <textarea name="description_{{ varName }}" class="form-control" autosize
-                                              placeholder="Variable description (optional)" [(ngModel)]="model.variables[varName].description"></textarea>
+                                              placeholder="Variable description" [(ngModel)]="model.variables[varName].description"></textarea>
                                 </div>
                             </div>
                         </div>

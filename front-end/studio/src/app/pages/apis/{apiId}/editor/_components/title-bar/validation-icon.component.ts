@@ -21,7 +21,8 @@ import {OasValidationProblem} from "oai-ts-core";
 @Component({
     moduleId: module.id,
     selector: "validation-icon",
-    templateUrl: "validation-icon.component.html"
+    templateUrl: "validation-icon.component.html",
+    styleUrls: ["validation-icon.component.css"],
 })
 export class ValidationIconComponent {
 

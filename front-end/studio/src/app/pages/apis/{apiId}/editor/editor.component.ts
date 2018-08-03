@@ -72,6 +72,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
     private _otEngine: OtEngine = null;
+    _undoableCommandCount: number = 0;
+    _redoableCommandCount: number = 0;
 
     theme: string = "light";
 
@@ -166,6 +168,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public otEngine(): OtEngine {
         if (this._otEngine === null) {
             this._otEngine = new OtEngine(this.document());
+            this._undoableCommandCount = 0;
+            this._redoableCommandCount = 0;
         }
         return this._otEngine;
     }
@@ -177,28 +181,44 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public onGlobalKeyDown(event: KeyboardEvent): void {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
         if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
-            let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
-            // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
-            if (cmd !== null) {
-                this.onUndo.emit(cmd);
-            }
-            this.validateModel();
-
-            // Fire a change event in the document service
-            this.documentService.emitChange();
+            this.undoLastCommand();
         }
         if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
-            console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
-            let cmd: OtCommand = this.otEngine().redoLastLocalCommand();
-            // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
-            if (cmd !== null) {
-                this.onRedo.emit(cmd);
-            }
-            this.validateModel();
+            this.redoLastCommand();
+        }
+    }
 
+    /**
+     * Called when the user clicks the Undo button or uses the Ctrl-z hotkey.
+     */
+    public undoLastCommand(): void {
+        console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+        let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
+        // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
+        if (cmd !== null) {
+            this.onUndo.emit(cmd);
+            this.validateModel();
             // Fire a change event in the document service
             this.documentService.emitChange();
+            this._undoableCommandCount--;
+            this._redoableCommandCount++;
+        }
+    }
+
+    /**
+     * Called when the user clicks the Redo button or uses the Ctrl-y hotkey.
+     */
+    public redoLastCommand(): void {
+        console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
+        let cmd: OtCommand = this.otEngine().redoLastLocalCommand();
+        // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
+        if (cmd !== null) {
+            this.onRedo.emit(cmd);
+            this.validateModel();
+            // Fire a change event in the document service
+            this.documentService.emitChange();
+            this._undoableCommandCount++;
+            this._redoableCommandCount--;
         }
     }
 
@@ -229,6 +249,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
         // Fire a change event in the document service
         this.documentService.emitChange();
+
+        this._undoableCommandCount++;
+        this._redoableCommandCount = 0;
     }
 
     /**

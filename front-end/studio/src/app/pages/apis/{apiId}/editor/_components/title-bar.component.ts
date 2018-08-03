@@ -18,16 +18,16 @@
 import {
     AfterViewInit,
     Component,
-    ElementRef,
+    ElementRef, EventEmitter,
     HostListener,
     Input,
     OnDestroy,
-    OnInit,
+    OnInit, Output,
     QueryList,
     ViewChildren
 } from "@angular/core";
 import {OasDocument, OasNode, OasValidationProblem} from "oai-ts-core";
-import {createChangeTitleCommand, ICommand} from "oai-ts-commands";
+import {createChangeTitleCommand, ICommand, OtCommand} from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {SelectionService} from "../_services/selection.service";
@@ -48,6 +48,10 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     @Input() document: OasDocument;
     @Input() validationErrors: OasValidationProblem[];
+    @Input() undoableCommandCount: number;
+    @Input() redoableCommandCount: number;
+    @Output() onUndoClick: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onRedoClick: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     filterCriteria: string = null;
 
@@ -58,8 +62,7 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     @ViewChildren("newtitle") titleInput: QueryList<ElementRef>;
 
-    constructor(private selectionService: SelectionService, private commandService: CommandService) {
-    }
+    constructor(private selectionService: SelectionService, private commandService: CommandService) {}
 
     public ngOnInit(): void {
     }
@@ -193,7 +196,17 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
      * Called when the user clicks the Bell icon to show the list of problems.
      */
     public toggleProblemDrawer(): void {
+        if (!this.showProblems && !this.hasProblems()) {
+            return;
+        }
         this.showProblems = !this.showProblems;
+    }
+
+    /**
+     * Returns true if there are problems to report.
+     */
+    private hasProblems(): boolean {
+        return this.validationErrors && this.validationErrors.length > 0;
     }
 
     /**

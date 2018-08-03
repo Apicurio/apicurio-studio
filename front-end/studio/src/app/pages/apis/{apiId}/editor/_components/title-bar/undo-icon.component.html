@@ -1,0 +1,6 @@
+<div class="undo-icon">
+    <button class="btn btn-link nav-item-iconic" [class.enabled]="isUndoable()"
+            title="Click to undo the last change." (click)="onClick.emit(true)">
+        <span class="fa fa-share fa-flip-horizontal"></span>
+    </button>
+</div>

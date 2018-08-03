@@ -17,7 +17,7 @@
 
 import {NgModule} from '@angular/core';
 
-import {ValidationIconComponent} from './pages/apis/{apiId}/editor/_components/common/validation-icon.component';
+import {ValidationIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/validation-icon.component';
 import {ServerUrlComponent} from './pages/apis/{apiId}/editor/_components/common/server-url.component';
 import {SearchComponent} from './pages/apis/{apiId}/editor/_components/common/search.component';
 import {InlineTextEditorComponent} from './pages/apis/{apiId}/editor/_components/common/inline-text-editor.component';
@@ -88,6 +88,8 @@ import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/mai
 import {ServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/server-editor.component";
 import {EditorsService} from './pages/apis/{apiId}/editor/_services/editors.service';
 import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/server-row.component";
+import {UndoIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/undo-icon.component';
+import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/redo-icon.component";
 
 @NgModule({
     imports: [
@@ -98,11 +100,11 @@ import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/
         PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
         SecurityScheme20DialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-        AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component,
+        AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
         ResponseRowComponent, ParamRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
-        AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent,
+        AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,

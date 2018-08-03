@@ -1,6 +1,9 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
 
-    <title-bar [document]="document()" [validationErrors]="validationErrors"></title-bar>
+    <title-bar [document]="document()" [validationErrors]="validationErrors"
+               [undoableCommandCount]="_undoableCommandCount"
+               [redoableCommandCount]="_redoableCommandCount"
+               (onUndoClick)="undoLastCommand()" (onRedoClick)="redoLastCommand()"></title-bar>
     <master [document]="document()" #master></master>
     <div class="editor-detail" [ngSwitch]="formType">
         <main-form [document]="document()" class="editor-detail-form"

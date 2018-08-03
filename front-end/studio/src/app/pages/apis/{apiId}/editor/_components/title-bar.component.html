@@ -4,6 +4,8 @@
         <span>{{ title() }}</span>
         <a class="editor-title-bar-edit" (click)="editTitle()"><span class="fa fa-fw fa-pencil"></span></a>
     </h1>
+    <undo-icon (onClick)="onUndoClick.emit(true)" [commandStackCount]="undoableCommandCount"></undo-icon>
+    <redo-icon (onClick)="onRedoClick.emit(true)" [commandStackCount]="redoableCommandCount"></redo-icon>
     <validation-icon [validationErrors]="validationErrors" (onClick)="toggleProblemDrawer()"></validation-icon>
 </div>
 <!-- Edit Mode -->

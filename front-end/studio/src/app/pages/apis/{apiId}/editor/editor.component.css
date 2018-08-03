@@ -309,6 +309,8 @@
   height: 42px;
   border-bottom: 1px solid #ddd;
   background-color: white;
+  display: flex;
+  flex-direction: row;
 }
 .api-editor .editor-title-bar.editing {
   background-color: #ccddf7;
@@ -318,10 +320,8 @@
   height: 38px;
   line-height: 38px;
   padding-left: 47px;
-  position: absolute;
-  left: 0;
-  right: 50px;
   cursor: pointer;
+  flex-grow: 1;
 }
 .api-editor .editor-title-bar > h1.no-title {
   font-style: italic;
@@ -367,12 +367,16 @@
   font-size: 20px;
   margin-left: 20px;
 }
-.api-editor .editor-title-bar:hover .editor-title-bar-edit {
+.api-editor .editor-title-bar h1:hover .editor-title-bar-edit {
   visibility: visible;
+}
+.api-editor .editor-title-bar.expanded .validation-icon, .api-editor .editor-title-bar.expanded .validation-icon:hover {
+  background-color: #a5d6ef;
 }
 
 .api-editor .editor-title-bar .title-editor-form {
   height: 42px;
+  flex-grow: 1;
 }
 .api-editor .editor-title-bar .title-editor-form .title-editor-input {
   width: 75%;
@@ -473,57 +477,6 @@
   display: table-cell;
   width: 100%;
   padding-right: 8px;
-}
-
-.api-editor .editor-title-bar .validation-icon {
-  position: absolute;
-  right: 0;
-  width: 48px;
-  margin: 2px;
-  height: 38px;
-  line-height: 32px;
-  cursor: pointer;
-}
-.api-editor .editor-title-bar .validation-icon button {
-  color: #c6c6c6;
-  font-size: 22px;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.api-editor .editor-title-bar .validation-icon:hover button {
-}
-
-.api-editor .editor-title-bar .validation-icon.has-errors button, .api-editor .editor-title-bar .validation-icon:hover button, .api-editor .editor-title-bar.expanded .validation-icon button {
-  color: #666;
-}
-.api-editor .editor-title-bar .validation-icon.has-errors:hover {
-  background-color: #d1eaf7;
-}
-.api-editor .editor-title-bar.expanded .validation-icon, .api-editor .editor-title-bar.expanded .validation-icon:hover {
-  background-color: #a5d6ef;
-}
-
-
-.api-editor .editor-title-bar .validation-icon button .badge.badge-pf-bordered {
-  border: 1px solid white;
-}
-.api-editor .editor-title-bar .validation-icon button .badge {
-  background-color: #0088ce;
-  border-radius: 20px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 9px;
-  font-weight: 700;
-  left: 20px;
-  margin: -2px 5px;
-  padding: 2px 4px;
-  position: absolute;
-  min-width: 12px;
-  min-height: 12px;
-  top: 10px;
 }
 
 .api-editor .editor-problem-drawer {
@@ -1272,32 +1225,20 @@
   color: red;
 }
 
-.api-editor .validation-aggregate .badge {
-  background-color: #0088ce;
-  border-radius: 20px;
-  color: #fff;
+.api-editor span.validation-aggregate > a > .fa-exclamation-circle {
+  color: #0088ce;
   cursor: pointer;
-  font-size: 9px;
-  font-weight: 700;
-  margin: -2px 5px;
-  padding: 2px 4px;
-  min-width: 9px;
-  min-height: 9px;
+  font-size: 14px;
 }
-.api-editor .validation-aggregate .badge:hover {
-  filter: brightness(120%);
+.api-editor span.validation-aggregate > a > .fa-exclamation-circle:hover {
+  color: #00659c;
 }
-.api-editor .validation-aggregate .badge-pf-bordered {
-}
-.api-editor .validation-aggregate .badge-pf-bordered:hover {
-}
-
 .api-editor .section .section-header > a {
   position: relative;
 }
 .api-editor .section .section-header > a .validation-aggregate {
   position: absolute;
-  right: -15px;
+  right: -12px;
   top: -6px;
 }
 .api-editor .editor-master .editor-outline .api-path .validation-aggregate {

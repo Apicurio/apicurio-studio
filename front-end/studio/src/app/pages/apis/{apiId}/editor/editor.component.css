@@ -615,12 +615,7 @@
 }
 .api-editor .editor-master .editor-outline .api-path .api-operations .label {
   position: relative;
-}
-.api-editor .editor-master .editor-outline .api-path .api-operations .label.problem-marker:before {
-  color: yellow;
-  top: -4px;
-  left: -2px;
-  font-size: 12px;
+  margin-right: 5px;
 }
 .api-editor .editor-master .editor-outline .api-path.contexted {
   cursor: default;
@@ -1225,6 +1220,9 @@
   color: red;
 }
 
+.api-editor span.validation-aggregate {
+  z-index: 1;
+}
 .api-editor span.validation-aggregate > a > .fa-exclamation-circle {
   color: #0088ce;
   cursor: pointer;

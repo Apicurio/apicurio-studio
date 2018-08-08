@@ -19,6 +19,7 @@ package io.apicurio.studio.fe.servlet.servlets;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -66,6 +67,8 @@ public class StudioConfigServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String ct = "application/json; charset=" + StandardCharsets.UTF_8;
+        response.setContentType(ct);
         JsonFactory f = new JsonFactory();
         try (JsonGenerator g = f.createGenerator(response.getOutputStream(), JsonEncoding.UTF8)) {
             response.getOutputStream().write("var ApicurioStudioConfig = ".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$

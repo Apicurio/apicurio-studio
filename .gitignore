@@ -3,6 +3,7 @@
 .settings
 .classpath
 releases
+yarn-error.log
 target/
 .idea/
 .site-src/

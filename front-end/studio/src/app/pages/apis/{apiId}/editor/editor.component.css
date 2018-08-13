@@ -377,21 +377,23 @@
 .api-editor .editor-title-bar .title-editor-form {
   height: 42px;
   flex-grow: 1;
+  display: flex;
+  flex-direction: row;
 }
 .api-editor .editor-title-bar .title-editor-form .title-editor-input {
-  width: 75%;
   font-size: 22px;
-  float: left;
   font-weight: 300;
   height: 37px;
   margin: 2px;
   margin-left: 47px;
+  flex-grow: 1;
 }
 .api-editor .editor-title-bar .title-editor-form .edit-buttons {
-  float: right;
   height: 42px;
   line-height: 40px;
+  margin-left: 40px;
   margin-right: 20px;
+  white-space: nowrap;
 }
 .api-editor .editor-title-bar .title-editor-form .edit-buttons button {
   width: 75px;

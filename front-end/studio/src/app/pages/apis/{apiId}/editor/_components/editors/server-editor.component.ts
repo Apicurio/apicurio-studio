@@ -67,6 +67,7 @@ export class ServerEditorComponent {
         pathItem: null,
         operation: null
     };
+    protected url: string;
 
     /**
      * Called to open the editor.
@@ -101,6 +102,7 @@ export class ServerEditorComponent {
         if (context) {
             this.expandContext(context);
         }
+        this.url = this.model.url;
         this._isOpen = true;
     }
 
@@ -148,7 +150,8 @@ export class ServerEditorComponent {
      */
     public isValid(): boolean {
         // TODO should also validate the URL format is OK
-        return this.model.url ? true : false;
+        let hasUrl: boolean = this.model.url ? true : false;
+        return hasUrl && !this.canApply();
     }
 
     /**
@@ -257,11 +260,32 @@ export class ServerEditorComponent {
      */
     public onServerUrlKeypress(event: KeyboardEvent): void {
         if (event.key === "Enter") {
-            console.info("!!!! Enter on server-url");
-            this.updateVariables();
+            this.apply();
             event.stopPropagation();
             event.preventDefault();
         }
+    }
+
+    /**
+     * Returns true if there are URL changes.
+     */
+    public canApply(): boolean {
+        return this.model.url !== this.url;
+    }
+
+    /**
+     * Called when the user clicks the "apply" button.
+     */
+    public apply(): void {
+        this.model.url = this.url;
+        this.updateVariables();
+    }
+
+    /**
+     * Called when the user clicks the "reset" button.
+     */
+    public reset(): void {
+        this.url = this.model.url;
     }
 
     /**
@@ -269,7 +293,6 @@ export class ServerEditorComponent {
      */
     public onKeypress(event: KeyboardEvent): void {
         if (event.key === "Enter") {
-            console.info("!!!! Enter on default value!");
             event.stopPropagation();
             event.preventDefault();
         }

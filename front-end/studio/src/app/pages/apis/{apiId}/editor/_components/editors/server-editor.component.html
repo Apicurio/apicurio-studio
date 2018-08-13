@@ -43,10 +43,23 @@
                 <div class="form-group">
                     <label class="control-label required" for="serverUrl">Server URL</label>
                     <div *ngIf="_mode === 'create'">
-                        <input #urlInput="ngModel" name="server" type="text" id="serverUrl" class="form-control"
-                               placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
-                               required [(ngModel)]="model.url" (change)="updateVariables()">
+                        <table>
+                            <tr>
+                                <td>
+                                    <input #urlInput="ngModel" name="server" type="text" id="serverUrl" class="form-control"
+                                           placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
+                                           required [(ngModel)]="url">
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary url-action" (click)="apply()" [disabled]="!canApply()">Apply</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-default url-action" (click)="reset()" [disabled]="!canApply()">Reset</button>
+                                </td>
+                            </tr>
+                        </table>
                         <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
+                        <div *ngIf="canApply()" class="form-error-message">URL has been changed.  Press enter or click "Apply" to accept.</div>
                     </div>
                     <div *ngIf="_mode === 'edit'">
                         <input name="server" type="text" id="server_ro" class="form-control" required
@@ -117,7 +130,7 @@
             <div class="col-md-12">
                 <div class="actions">
                     <a class="btn btn-default" (click)="cancel()">Cancel</a>
-                    <button class="btn btn-primary" (click)="save()" [disabled]="!isValid()">Save</button>
+                    <button class="btn btn-primary" (click)="save()" [disabled]="!isValid() || !entityEditorForm.form.dirty">Save</button>
                 </div>
             </div>
         </div>

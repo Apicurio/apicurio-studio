@@ -185,8 +185,10 @@ export class SelectionService {
         let visitor: MainSelectionVisitor = new MainSelectionVisitor();
         OasVisitorUtil.visitPath(path, visitor, document);
 
-        // Fire an event with the new selection path
-        this._selectionSubject.next(path);
+        // Fire an event with the new selection path (only if the selection changed)
+        if (path.toString() !== this.currentSelection().toString()) {
+            this._selectionSubject.next(path);
+        }
     }
 
     public selectNode(node: OasNode, document: OasDocument): void {

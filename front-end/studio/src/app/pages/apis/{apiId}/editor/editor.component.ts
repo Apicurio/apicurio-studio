@@ -158,7 +158,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         if (this._document === null && this.api) {
             try {
                 this._document = this._library.createDocument(this.api.spec);
+                console.info("[ApiEditorComponent] Loaded OAI content: ", this._document);
             } catch (e) {
+                console.error(e);
                 // If we can't process the document, then just create a new one
                 this._document = this._library.createDocument("3.0.1");
             }

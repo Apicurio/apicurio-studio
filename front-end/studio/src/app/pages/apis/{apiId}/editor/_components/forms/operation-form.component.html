@@ -209,7 +209,6 @@
                             </ul>
                         </context-help>
                         <icon-button (click)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
-                                     [invisible]="!hasFormDataParams()"
                                      [title]="'Add a new response to the operation.'"></icon-button>
                         <icon-button (click)="deleteAllResponses()" [disabled]="!hasResponses()"
                                      [pullRight]="true" [type]="'delete'"

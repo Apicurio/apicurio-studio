@@ -76,12 +76,10 @@ export class InlineArrayEditorComponent implements AfterViewInit {
     }
 
     public onSave(): void {
-        console.info("evalue: ", this.evalue);
         let newValue: string[] = [];
         if (this.evalue && this.evalue.length > 0) {
             newValue = this.evalue.split(/[ ,]+/);
         }
-        console.info("newValue: ", newValue);
         this.onChange.emit(newValue);
         this.editing = false;
     }

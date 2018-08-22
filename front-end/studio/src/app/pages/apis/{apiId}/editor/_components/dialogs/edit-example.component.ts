@@ -99,13 +99,14 @@ export class EditExampleDialogComponent {
             example: this.example,
             value: this.model.value
         };
-        if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
-            try {
-                event.value = JSON.parse(this.model.value);
-            } catch (e) {
-                console.error("[EditExampleDialogComponent] Failed to parse example.");
-            }
-        }
+        // TODO investigate whether to restore this functionality (treat JSON data differently)
+        // if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
+        //     try {
+        //         event.value = JSON.parse(this.model.value);
+        //     } catch (e) {
+        //         console.error("[EditExampleDialogComponent] Failed to parse example.");
+        //     }
+        // }
         this.onEdit.emit(event);
         this.cancel();
     }

@@ -101,13 +101,15 @@ export class AddExample20DialogComponent {
             contentType: this.model.contentType,
             value: this.model.value
         };
-        if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
-            try {
-                event.value = JSON.parse(this.model.value)
-            } catch (e) {
-                console.error("[AddExampleDialogComponent] Failed to parse example.");
-            }
-        }
+        console.info("EVENT: ", event);
+        // TODO investigate whether to restore this functionality (treat JSON data differently)
+        // if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
+        //     try {
+        //         event.value = JSON.parse(this.model.value)
+        //     } catch (e) {
+        //         console.error("[AddExampleDialogComponent] Failed to parse example.");
+        //     }
+        // }
         this.onAdd.emit(event);
         this.cancel();
     }

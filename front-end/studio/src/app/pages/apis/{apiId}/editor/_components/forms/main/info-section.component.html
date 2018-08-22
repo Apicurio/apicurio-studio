@@ -9,6 +9,7 @@
         </context-help>
     </div>
     <div class="section-body collapse in" id="info-section-body">
+        <!-- Version -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="version"></validation-problem>
             <span>Version</span>
@@ -20,6 +21,7 @@
                                    [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
                                    [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></pf-inline-text-editor>
         </div>
+        <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="description"></validation-problem>
             <span>Description</span>
@@ -30,6 +32,27 @@
                                     [formClass]="'api-description-editor-form'"
                                     [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
                                     [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-textarea-editor>
+        </div>
+        <!-- Consumes and Produces (2.0 only) -->
+        <div *ngIf="document.is2xDocument()">
+            <!-- Consumes -->
+            <div class="section-field-label">
+                <validation-problem [model]="document" property="consumes"></validation-problem>
+                <span>Consumes (Inputs)</span>
+            </div>
+            <div class="section-field consumes">
+                <inline-array-editor [value]="document.consumes" [noValueMessage]="'Set the `consumes` content-type.'"
+                        (onChange)="onConsumesChange($event)"></inline-array-editor>
+            </div>
+            <!-- Produces -->
+            <div class="section-field-label">
+                <validation-problem [model]="document" property="produces"></validation-problem>
+                <span>Produces (Outputs)</span>
+            </div>
+            <div class="section-field produces">
+                <inline-array-editor [value]="document.produces" [noValueMessage]="'Set the `produces` content-type.'"
+                                     (onChange)="onProducesChange($event)"></inline-array-editor>
+            </div>
         </div>
 
     </div>

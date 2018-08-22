@@ -1,0 +1,7 @@
+.inline-array-editor-label .label {
+  margin-right: 5px;
+}
+.inline-array-editor-label .label:hover {
+  margin-right: 5px;
+  opacity: .8;
+}

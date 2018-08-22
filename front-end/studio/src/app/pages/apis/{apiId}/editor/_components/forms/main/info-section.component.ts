@@ -17,7 +17,12 @@
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasInfo} from "oai-ts-core";
-import {createChangeDescriptionCommand, createChangeVersionCommand, ICommand} from "oai-ts-commands";
+import {
+    createChangeDescriptionCommand,
+    createChangePropertyCommand,
+    createChangeVersionCommand,
+    ICommand
+} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 
 
@@ -64,7 +69,7 @@ export class InfoSectionComponent {
      * @param newVersion
      */
     public onVersionChange(newVersion: string): void {
-        console.info("[MainFormComponent] User changed the version to: " + newVersion);
+        console.info("[InfoSectionComponent] User changed the version to: " + newVersion);
         let command: ICommand = createChangeVersionCommand(this.document, newVersion);
         this.commandService.emit(command);
     }
@@ -74,8 +79,28 @@ export class InfoSectionComponent {
      * @param newDescription
      */
     public onDescriptionChange(newDescription: string): void {
-        console.info("[MainFormComponent] User changed the description.");
+        console.info("[InfoSectionComponent] User changed the description.");
         let command: ICommand = createChangeDescriptionCommand(this.document, newDescription);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the "consumes".
+     * @param newValue
+     */
+    public onConsumesChange(newValue: string[]): void {
+        console.info("[InfoSectionComponent] User changed the consumes to: ", newValue);
+        let command: ICommand = createChangePropertyCommand<string[]>(this.document, this.document, "consumes", newValue);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the "produces".
+     * @param newValue
+     */
+    public onProducesChange(newValue: string[]): void {
+        console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
+        let command: ICommand = createChangePropertyCommand<string[]>(this.document, this.document, "produces", newValue);
         this.commandService.emit(command);
     }
 

@@ -90,6 +90,7 @@ import {EditorsService} from './pages/apis/{apiId}/editor/_services/editors.serv
 import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/server-row.component";
 import {UndoIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/undo-icon.component';
 import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/redo-icon.component";
+import {InlineArrayEditorComponent} from 'app/pages/apis/{apiId}/editor/_components/common/inline-array-editor.component';
 
 @NgModule({
     imports: [
@@ -111,7 +112,8 @@ import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-b
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
-        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent
+        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent,
+        InlineArrayEditorComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService

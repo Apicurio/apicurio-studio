@@ -1,0 +1,14 @@
+<span *ngIf="!editing" class="inline-editor-label inline-array-editor-label"
+      [class.empty]="isEmpty()" title="Click to edit." (click)="onStartEditing()">
+    <span *ngIf="isEmpty()" class="no-value">{{ noValueMessage }}</span>
+    <span class="label label-default" *ngFor="let item of value">{{ item }}</span>
+    <span class="fa fa-pencil"></span>
+</span>
+<span *ngIf="editing" class="inline-editor inline-array-editor">
+    <input #newvalue required [(ngModel)]="evalue" type="text" class="form-control inline-editor-input inline-array-editor-input"
+           name="inline-array-editor-input"
+           (keypress)="onInputKeypress($event)"
+           (keydown)="onInputKeypress($event)" autocomplete="off">
+    <button title="Save changes." class="btn btn-xs btn-primary" (click)="onSave()"><span class="fa fa-fw fa-check"></span></button>
+    <button title="Cancel changes." class="btn btn-xs btn-default" (click)="onCancel()"><span class="fa fa-fw fa-close"></span></button>
+</span>

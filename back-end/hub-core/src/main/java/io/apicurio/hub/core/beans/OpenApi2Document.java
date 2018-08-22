@@ -22,6 +22,8 @@ package io.apicurio.hub.core.beans;
 public class OpenApi2Document extends OpenApiDocument {
     
     private String swagger = "2.0";
+    private String[] consumes = new String[] { "application/json" };
+    private String[] produces = new String[] { "application/json" };
     
     /**
      * Constructor.
@@ -42,6 +44,34 @@ public class OpenApi2Document extends OpenApiDocument {
      */
     public void setSwagger(String swagger) {
         this.swagger = swagger;
+    }
+
+    /**
+     * @return the consumes
+     */
+    public String[] getConsumes() {
+        return consumes;
+    }
+
+    /**
+     * @param consumes the consumes to set
+     */
+    public void setConsumes(String[] consumes) {
+        this.consumes = consumes;
+    }
+
+    /**
+     * @return the produces
+     */
+    public String[] getProduces() {
+        return produces;
+    }
+
+    /**
+     * @param produces the produces to set
+     */
+    public void setProduces(String[] produces) {
+        this.produces = produces;
     }
 
 }

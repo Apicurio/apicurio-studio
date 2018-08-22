@@ -30,7 +30,7 @@
     "ngx-bootstrap": "2.0.2",
     "oai-ts-core": "0.2.22",
     "oai-ts-commands": "0.2.35",
-    "patternfly": "3.40.0",
+    "patternfly": "3.54.1",
     "rxjs": "^5.5.6",
     "yamljs": "0.3.0",
     "zone.js": "^0.8.19"
@@ -55,7 +55,7 @@
     "ngx-bootstrap": "2.0.2",
     "oai-ts-core": "0.2.22",
     "oai-ts-commands": "0.2.35",
-    "patternfly": "3.40.0",
+    "patternfly": "3.54.1",
     "rxjs": "^5.5.6",
     "ts-node": "~4.1.0",
     "typescript": "~2.5.3",

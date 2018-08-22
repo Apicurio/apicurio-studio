@@ -51,6 +51,7 @@ import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
 import {EditorsService, IEditorsProvider} from "./_services/editors.service";
+import {ArrayUtils} from "./_util/object.util";
 
 
 @Component({
@@ -66,6 +67,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     @Input() embedded: boolean;
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onValidationChanged: EventEmitter<OasValidationProblem[]> = new EventEmitter<OasValidationProblem[]>();
     @Output() onUndo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onRedo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
 
@@ -136,6 +138,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     ngOnChanges(changes: SimpleChanges): void {
         this._document = null;
+        this._otEngine = null;
+        this._undoableCommandCount = 0;
+        this._redoableCommandCount = 0;
         if (this.document().getSpecVersion() === "2.0") {
             this.formType = "main_20";
         } else {
@@ -365,7 +370,11 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public validateModel(): void {
         let doc: OasDocument = this.document();
+        let oldValidationErrors: OasValidationProblem[] = this.validationErrors;
         this.validationErrors = this._library.validate(doc, true);
+        if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
+            this.onValidationChanged.emit(this.validationErrors);
+        }
     }
 
     /**

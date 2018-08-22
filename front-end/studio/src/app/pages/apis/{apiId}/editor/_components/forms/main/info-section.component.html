@@ -41,7 +41,7 @@
                 <span>Consumes (Inputs)</span>
             </div>
             <div class="section-field consumes">
-                <inline-array-editor [value]="document.consumes" [noValueMessage]="'Set the `consumes` content-type.'"
+                <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
                         (onChange)="onConsumesChange($event)"></inline-array-editor>
             </div>
             <!-- Produces -->
@@ -50,7 +50,7 @@
                 <span>Produces (Outputs)</span>
             </div>
             <div class="section-field produces">
-                <inline-array-editor [value]="document.produces" [noValueMessage]="'Set the `produces` content-type.'"
+                <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'"
                                      (onChange)="onProducesChange($event)"></inline-array-editor>
             </div>
         </div>

@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-import {
-    Component, ViewChild, Injectable, ViewChildren, QueryList,
-    AfterViewInit, NgZone
-} from "@angular/core";
-import {ActivatedRoute, Router, CanDeactivate} from "@angular/router";
+import {AfterViewInit, Component, Injectable, NgZone, QueryList, ViewChild, ViewChildren} from "@angular/core";
+import {ActivatedRoute, CanDeactivate, Router} from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
-import {IApiEditingSession, ApisService} from "../../../../services/apis.service";
+import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {ICommand, OtCommand} from "oai-ts-commands";
+import {OtCommand} from "oai-ts-commands";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";

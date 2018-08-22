@@ -16,8 +16,14 @@
  */
 
 import {
-    EventEmitter, Output, Input, AfterViewInit, ViewChildren, QueryList, ElementRef,
-    ViewChild, HostListener
+    AfterViewInit,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    Output,
+    QueryList,
+    ViewChildren
 } from "@angular/core";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Subscription} from "rxjs";

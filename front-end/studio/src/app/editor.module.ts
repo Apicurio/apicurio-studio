@@ -90,7 +90,7 @@ import {EditorsService} from './pages/apis/{apiId}/editor/_services/editors.serv
 import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/server-row.component";
 import {UndoIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/undo-icon.component';
 import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/redo-icon.component";
-import {InlineArrayEditorComponent} from 'app/pages/apis/{apiId}/editor/_components/common/inline-array-editor.component';
+import {InlineArrayEditorComponent} from './pages/apis/{apiId}/editor/_components/common/inline-array-editor.component';
 
 @NgModule({
     imports: [

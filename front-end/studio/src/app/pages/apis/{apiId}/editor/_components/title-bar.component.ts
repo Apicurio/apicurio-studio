@@ -18,16 +18,18 @@
 import {
     AfterViewInit,
     Component,
-    ElementRef, EventEmitter,
+    ElementRef,
+    EventEmitter,
     HostListener,
     Input,
     OnDestroy,
-    OnInit, Output,
+    OnInit,
+    Output,
     QueryList,
     ViewChildren
 } from "@angular/core";
 import {OasDocument, OasNode, OasValidationProblem} from "oai-ts-core";
-import {createChangeTitleCommand, ICommand, OtCommand} from "oai-ts-commands";
+import {createChangeTitleCommand, ICommand} from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {SelectionService} from "../_services/selection.service";

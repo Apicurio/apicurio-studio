@@ -16,7 +16,7 @@
  */
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasInfo} from "oai-ts-core";
+import {Oas20Document, OasDocument, OasInfo} from "oai-ts-core";
 import {
     createChangeDescriptionCommand,
     createChangePropertyCommand,
@@ -69,7 +69,7 @@ export class InfoSectionComponent {
      * @param newVersion
      */
     public onVersionChange(newVersion: string): void {
-        console.info("[InfoSectionComponent] User changed the version to: " + newVersion);
+        console.info("[InfoSectionComponent] User changed the version to: ", newVersion);
         let command: ICommand = createChangeVersionCommand(this.document, newVersion);
         this.commandService.emit(command);
     }
@@ -102,6 +102,14 @@ export class InfoSectionComponent {
         console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
         let command: ICommand = createChangePropertyCommand<string[]>(this.document, this.document, "produces", newValue);
         this.commandService.emit(command);
+    }
+
+    public consumes(): string[] {
+        return (this.document as Oas20Document).consumes;
+    }
+
+    public produces(): string[] {
+        return (this.document as Oas20Document).produces;
     }
 
 }

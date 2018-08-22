@@ -17,8 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {OasDocument, OasLibraryUtils} from "oai-ts-core";
-import {FormControl} from "@angular/forms";
+import {OasDocument} from "oai-ts-core";
 import {Subject} from "rxjs/Subject";
 import 'rxjs/add/operator/distinctUntilChanged';
 

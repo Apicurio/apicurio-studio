@@ -10,7 +10,7 @@
                 about how to contact you should they need help.
             </p>
         </context-help>
-        <icon-button (click)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
+        <icon-button (onClick)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
                      [title]="'Delete the contact information.'"></icon-button>
     </div>
     <div class="section-body collapse in" id="contact-section-body">

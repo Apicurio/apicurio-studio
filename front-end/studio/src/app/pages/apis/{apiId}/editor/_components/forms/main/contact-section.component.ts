@@ -41,7 +41,6 @@ export class ContactSectionComponent {
 
     /**
      * Returns true if the API has Contact Info defined.
-     * @return
      */
     public hasContact(): boolean {
         if (this.document.info && this.document.info.contact) {
@@ -54,7 +53,6 @@ export class ContactSectionComponent {
 
     /**
      * Returns the current contact object.
-     * @return
      */
     public contact(): OasContact {
         if (this.hasContact()) {
@@ -73,7 +71,7 @@ export class ContactSectionComponent {
     }
 
     /**
-     * returns the contact name.
+     * Returns the contact name.
      */
     public contactName(): string {
         if (this.document.info && this.document.info.contact && this.document.info.contact.name) {
@@ -84,7 +82,7 @@ export class ContactSectionComponent {
     }
 
     /**
-     * returns the contact email.
+     * Returns the contact email.
      */
     public contactEmail(): string {
         if (this.document.info && this.document.info.contact && this.document.info.contact.email) {
@@ -95,7 +93,7 @@ export class ContactSectionComponent {
     }
 
     /**
-     * returns the contact url.
+     * Returns the contact url.
      */
     public contactUrl(): string {
         if (this.document.info && this.document.info.contact && this.document.info.contact.url) {

@@ -19,9 +19,9 @@
                 can be overridden (though not removed) at the operation level.
             </p>
         </context-help>
-        <icon-button (click)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a new query parameter.'"></icon-button>
-        <icon-button (click)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()"
+        <icon-button (onClick)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()"
                      [pullRight]="true" [type]="'delete'"
                      [title]="'Delete all query parameters.'"></icon-button>
     </div>

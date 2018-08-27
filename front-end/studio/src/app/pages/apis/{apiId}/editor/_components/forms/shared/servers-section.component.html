@@ -7,7 +7,7 @@
         <context-help>
             <p>{{ description }}</p>
         </context-help>
-        <icon-button (click)="onAddServer()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="onAddServer()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a server to the API.'"></icon-button>
     </div>
     <div class="section-body collapse" id="servers-section-body" [class.in]="!collapsed">

@@ -30,7 +30,7 @@
                 operation and will override any security requirements configured globally.
             </p>
         </context-help>
-        <icon-button (click)="openSecurityRequirementDialog()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openSecurityRequirementDialog()" [pullRight]="true" [type]="'add'"
                      [title]="global ? 'Add a security requirement to the API.' : 'Add a security requirement for the operation.'"></icon-button>
     </div>
     <div class="section-body collapse" id="security-requirements-section-body" [class.in]="global">
@@ -55,9 +55,9 @@
                 </td>
                 <td class="actions" nowrap>
                     <div>
-                        <icon-button (click)="openSecurityRequirementDialog(requirement)" [type]="'edit'"
+                        <icon-button (onClick)="openSecurityRequirementDialog(requirement)" [type]="'edit'"
                                      [title]="'Edit security requirement.'"></icon-button>
-                        <icon-button (click)="deleteSecurityRequirement(requirement)" [type]="'delete'"
+                        <icon-button (onClick)="deleteSecurityRequirement(requirement)" [type]="'delete'"
                                      [title]="'Delete security requirement.'"></icon-button>
                     </div>
                 </td>

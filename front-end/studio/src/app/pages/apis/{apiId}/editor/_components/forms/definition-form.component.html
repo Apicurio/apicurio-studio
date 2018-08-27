@@ -76,9 +76,9 @@
                                 Use this section to define the properties that make up this definition.
                             </p>
                         </context-help>
-                        <icon-button (click)="openAddSchemaPropertyModal()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddSchemaPropertyModal()" [pullRight]="true" [type]="'add'"
                                      [title]="'Add a property to the schema.'"></icon-button>
-                        <icon-button (click)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
+                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete all properties from the schema.'"></icon-button>
                     </div>
                     <div class="section-body collapse in" id="properties-section-body">

@@ -110,10 +110,10 @@
                                 types usually do not include a body.
                             </p>
                         </context-help>
-                        <icon-button (click)="openAddFormDataParamModal()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddFormDataParamModal()" [pullRight]="true" [type]="'add'"
                                      [invisible]="!hasFormDataParams()"
                                      [title]="'Add a response to the operation.'"></icon-button>
-                        <icon-button (click)="deleteRequestBody()" [disabled]="!hasBodyParam() && !hasFormDataParams()"
+                        <icon-button (onClick)="deleteRequestBody()" [disabled]="!hasBodyParam() && !hasFormDataParams()"
                                      [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete the request body.'"></icon-button>
                     </div>
@@ -208,9 +208,9 @@
                                 <li><strong>404 Not Found</strong> - failed to GET something</li>
                             </ul>
                         </context-help>
-                        <icon-button (click)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
                                      [title]="'Add a new response to the operation.'"></icon-button>
-                        <icon-button (click)="deleteAllResponses()" [disabled]="!hasResponses()"
+                        <icon-button (onClick)="deleteAllResponses()" [disabled]="!hasResponses()"
                                      [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete all responses from the operation.'"></icon-button>
                     </div>

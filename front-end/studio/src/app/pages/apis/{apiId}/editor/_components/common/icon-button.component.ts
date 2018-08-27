@@ -32,7 +32,7 @@ export class IconButtonComponent {
     @Input() title: string;
     @Input() invisible: boolean = false;
     @Input() pullRight: boolean = false;
-    @Output() click: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
 
     public pfIconType(): string {
         if (this.type === 'add') {
@@ -48,7 +48,7 @@ export class IconButtonComponent {
     }
 
     public doClick(): void {
-        this.click.emit();
+        this.onClick.emit();
     }
 
 }

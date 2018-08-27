@@ -15,7 +15,7 @@
                 <li><a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a></li>
             </ul>
         </context-help>
-        <icon-button (click)="openSecuritySchemeDialog()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openSecuritySchemeDialog()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a security scheme to the API.'"></icon-button>
     </div>
     <div class="section-body collapse in" id="security-section-body">
@@ -47,9 +47,9 @@
                                                                         [value]="scheme.description"></inline-text-editor></td>
                 <td class="actions" nowrap>
                     <div>
-                        <icon-button (click)="openSecuritySchemeDialog(scheme)" [type]="'edit'"
+                        <icon-button (onClick)="openSecuritySchemeDialog(scheme)" [type]="'edit'"
                                      [title]="'Edit security scheme.'"></icon-button>
-                        <icon-button (click)="deleteSecurityScheme(scheme)" [type]="'delete'"
+                        <icon-button (onClick)="deleteSecurityScheme(scheme)" [type]="'delete'"
                                      [title]="'Delete security scheme.'"></icon-button>
                     </div>
                 </td>

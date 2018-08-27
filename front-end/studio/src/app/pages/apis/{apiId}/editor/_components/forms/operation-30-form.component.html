@@ -135,7 +135,7 @@
                                 types usually do not include a body.
                             </p>
                         </context-help>
-                        <icon-button (click)="deleteRequestBody()" [pullRight]="true" [type]="'delete'" [disabled]="!hasRequestBody()"
+                        <icon-button (onClick)="deleteRequestBody()" [pullRight]="true" [type]="'delete'" [disabled]="!hasRequestBody()"
                                      [title]="'Delete the request body.'"></icon-button>
                     </div>
                     <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
@@ -206,9 +206,9 @@
                                 <li><strong>404 Not Found</strong> - failed to GET something</li>
                             </ul>
                         </context-help>
-                        <icon-button (click)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
                                      [title]="'Add a response to the operation.'"></icon-button>
-                        <icon-button (click)="deleteAllResponses()" [disabled]="!hasResponses()" [pullRight]="true" [type]="'delete'"
+                        <icon-button (onClick)="deleteAllResponses()" [disabled]="!hasResponses()" [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete all responses from the operation.'"></icon-button>
                     </div>
                     <div class="section-body collapse in" id="responses-section-body">

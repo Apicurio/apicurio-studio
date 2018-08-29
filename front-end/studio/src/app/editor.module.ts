@@ -15,45 +15,43 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
+import {NgModule} from "@angular/core";
 
-import {ValidationIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/validation-icon.component';
-import {ServerUrlComponent} from './pages/apis/{apiId}/editor/_components/common/server-url.component';
-import {SearchComponent} from './pages/apis/{apiId}/editor/_components/common/search.component';
-import {InlineTextEditorComponent} from './pages/apis/{apiId}/editor/_components/common/inline-text-editor.component';
-import {SchemaTypeComponent} from './pages/apis/{apiId}/editor/_components/common/schema-type.component';
-import {ResponseItemComponent} from './pages/apis/{apiId}/editor/_components/common/response-item.component';
-import {PathItemComponent} from './pages/apis/{apiId}/editor/_components/common/path-item.component';
-import {InlineTextAreaComponent} from './pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component';
-import {ContextHelpComponent} from './pages/apis/{apiId}/editor/_components/common/context-help.component';
-import {SecurityScheme30DialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/security-scheme-30.component';
-import {SetLicenseDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/set-license.component';
-import {SetContactDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/set-contact.component';
-import {SecurityScheme20DialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/security-scheme-20.component';
-import {AddTagDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-tag.component';
-import {AddSchemaPropertyDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component';
-import {CloneDefinitionDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component';
-import {ClonePathDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/clone-path.component';
-import {ResponseRow30Component} from './pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component';
-import {ResponseRowComponent} from './pages/apis/{apiId}/editor/_components/forms/operation/response-row.component';
-import {ParamRowComponent} from './pages/apis/{apiId}/editor/_components/forms/operation/param-row.component';
-import {OperationFormComponent} from './pages/apis/{apiId}/editor/_components/forms/operation-form.component';
-import {ContentComponent} from './pages/apis/{apiId}/editor/_components/forms/operation/content.component';
-import {Operation30FormComponent} from './pages/apis/{apiId}/editor/_components/forms/operation-30-form.component';
-import {PropertyRowComponent} from './pages/apis/{apiId}/editor/_components/forms/definition/property-row.component';
-import {ServersSectionComponent} from './pages/apis/{apiId}/editor/_components/forms/shared/servers-section.component';
-import {DefinitionItemComponent} from './pages/apis/{apiId}/editor/_components/forms/definition-item.component';
-import {DefinitionFormComponent} from './pages/apis/{apiId}/editor/_components/forms/definition-form.component';
-import {PathFormComponent} from './pages/apis/{apiId}/editor/_components/forms/path-form.component';
-import {EditorMasterComponent} from './pages/apis/{apiId}/editor/_components/master.component';
-import {ApiEditorComponent} from './pages/apis/{apiId}/editor/editor.component';
-import {AddQueryParamDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-query-param.component';
-import {AddPathDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-path.component';
-import {AddResponseDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-response.component';
-import {AddFormDataParamDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component';
-import {AddDefinitionDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-definition.component';
-import {MainFormComponent} from './pages/apis/{apiId}/editor/_components/forms/main-form.component';
-import {AddMediaTypeDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component';
+import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/validation-icon.component";
+import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common/server-url.component";
+import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
+import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
+import {SchemaTypeComponent} from "./pages/apis/{apiId}/editor/_components/common/schema-type.component";
+import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
+import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
+import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
+import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
+import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
+import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
+import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-tag.component";
+import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
+import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
+import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
+import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
+import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row.component";
+import {ParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/param-row.component";
+import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
+import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
+import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
+import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
+import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/servers-section.component";
+import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
+import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
+import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
+import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
+import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
+import {AddQueryParamDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-query-param.component";
+import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
+import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
+import {AddFormDataParamDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component";
+import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-definition.component";
+import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
+import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
@@ -84,13 +82,15 @@ import {PathParamsSectionComponent} from "./pages/apis/{apiId}/editor/_component
 import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-params-section.component";
 import {DocumentService} from "./pages/apis/{apiId}/editor/_services/document.service";
 import {PfInlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/pf-inline-text-editor.component";
-import {TagRowComponent} from './pages/apis/{apiId}/editor/_components/forms/main/tag-row.component';
+import {TagRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/tag-row.component";
 import {ServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/server-editor.component";
-import {EditorsService} from './pages/apis/{apiId}/editor/_services/editors.service';
+import {EditorsService} from "./pages/apis/{apiId}/editor/_services/editors.service";
 import {ServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/server-row.component";
-import {UndoIconComponent} from './pages/apis/{apiId}/editor/_components/title-bar/undo-icon.component';
+import {UndoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/undo-icon.component";
 import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/redo-icon.component";
-import {InlineArrayEditorComponent} from './pages/apis/{apiId}/editor/_components/common/inline-array-editor.component';
+import {InlineArrayEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-array-editor.component";
+import {SecuritySchemeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-scheme-row.component";
+import {SecuritySchemeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/security-scheme-editor.component";
 
 @NgModule({
     imports: [
@@ -99,8 +99,7 @@ import {InlineArrayEditorComponent} from './pages/apis/{apiId}/editor/_component
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
-        SetLicenseDialogComponent, SetContactDialogComponent, SecurityScheme30DialogComponent,
-        SecurityScheme20DialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
+        SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
         AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
         ResponseRowComponent, ParamRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
@@ -113,7 +112,7 @@ import {InlineArrayEditorComponent} from './pages/apis/{apiId}/editor/_component
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent,
-        InlineArrayEditorComponent
+        InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService

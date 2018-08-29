@@ -21,10 +21,12 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ICommand} from "oai-ts-commands";
 import {Observable} from "rxjs/Observable";
 import {ServerEditorComponent} from "../_components/editors/server-editor.component";
+import {SecuritySchemeEditorComponent} from "../_components/editors/security-scheme-editor.component";
 
 export interface IEditorsProvider {
 
     getServerEditor(): ServerEditorComponent;
+    getSecuritySchemeEditor(): SecuritySchemeEditorComponent;
 
 }
 
@@ -49,5 +51,8 @@ export class EditorsService implements IEditorsProvider {
         return this.provider.getServerEditor();
     }
 
+    public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
+        return this.provider.getSecuritySchemeEditor();
+    }
 
 }

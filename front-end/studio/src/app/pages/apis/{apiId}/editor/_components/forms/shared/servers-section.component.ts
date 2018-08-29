@@ -22,6 +22,7 @@ import {ObjectUtils} from "../../../_util/object.util";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEventData} from "../../editors/server-editor.component";
+import {SecuritySchemeData} from "../../editors/security-scheme-editor.component";
 
 
 @Component({

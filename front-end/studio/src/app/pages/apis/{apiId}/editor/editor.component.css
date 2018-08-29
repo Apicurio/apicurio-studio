@@ -1317,17 +1317,17 @@
   margin-right: 3px;
 }
 
-.api-editor .editor-detail .inline-editor-label {
+.api-editor .inline-editor-label {
   cursor: pointer;
 }
-.api-editor .editor-detail .inline-editor-label .fa {
+.api-editor .inline-editor-label .fa {
   visibility: hidden;
   color: #0088ce;
 }
-.api-editor .editor-detail .inline-editor-label .fa:hover {
+.api-editor .inline-editor-label .fa:hover {
   color: #00659c;
 }
-.api-editor .editor-detail .inline-editor-label:hover .fa {
+.api-editor .inline-editor-label:hover .fa {
   visibility: visible;
 }
 .api-editor .editor-detail .inline-text-editor {

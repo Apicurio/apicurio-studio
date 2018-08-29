@@ -52,6 +52,7 @@ import {DocumentService} from "./_services/document.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
 import {EditorsService, IEditorsProvider} from "./_services/editors.service";
 import {ArrayUtils} from "./_util/object.util";
+import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
 
 
 @Component({
@@ -89,6 +90,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     @ViewChild("master") master: EditorMasterComponent;
     @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
+    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
 
     formType: string;
 
@@ -445,6 +447,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public getServerEditor(): ServerEditorComponent {
         return this.serverEditor;
+    }
+
+    public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
+        return this.securitySchemeEditor;
     }
 
 }

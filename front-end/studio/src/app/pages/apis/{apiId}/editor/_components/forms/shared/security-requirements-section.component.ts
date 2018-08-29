@@ -82,7 +82,6 @@ export class SecurityRequirementsSectionComponent {
     /**
      * Returns a summary of the requirement.
      * @param requirement
-     * @return
      */
     public securityRequirementSummary(requirement: OasSecurityRequirement): string {
         return requirement.securityRequirementNames().join(", ");
@@ -98,7 +97,6 @@ export class SecurityRequirementsSectionComponent {
 
     /**
      * Returns true if there is at least one security requirement defined.
-     * @return
      */
     public hasSecurityRequirements(): boolean {
         return this.securityRequirements().length > 0;
@@ -106,7 +104,6 @@ export class SecurityRequirementsSectionComponent {
 
     /**
      * Returns all defined security requirements.
-     * @return
      */
     public securityRequirements(): OasSecurityRequirement[] {
         return this.parent.security ? this.parent.security : [];

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Document,
     Oas20SecurityDefinitions,
@@ -27,18 +27,19 @@ import {
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
-    createChangePropertyCommand,
     createChangeSecuritySchemeCommand,
     createDeleteSecuritySchemeCommand,
     createNewSecuritySchemeCommand,
     ICommand
 } from "oai-ts-commands";
+import {EditorsService} from "../../../_services/editors.service";
 import {
-    Scope,
-    SecurityScheme20DialogComponent,
-    SecurityScheme20EventData
-} from "../../dialogs/security-scheme-20.component";
-import {SecurityScheme30DialogComponent, SecurityScheme30EventData} from "../../dialogs/security-scheme-30.component";
+    ISecuritySchemeEditorHandler, Scope,
+    SecurityScheme20Data,
+    SecurityScheme30Data,
+    SecuritySchemeData,
+    SecuritySchemeEditorComponent
+} from "../../editors/security-scheme-editor.component";
 
 
 @Component({
@@ -51,21 +52,25 @@ export class SecuritySchemesSectionComponent {
 
     @Input() document: OasDocument;
 
-    @ViewChild("securityScheme20Dialog") securitySchemeDialog_20: SecurityScheme20DialogComponent;
-    @ViewChild("securityScheme30Dialog") securitySchemeDialog_30: SecurityScheme30DialogComponent;
-
-    constructor(private commandService: CommandService) {}
+    constructor(private commandService: CommandService, private editors: EditorsService) {}
 
     /**
      * Opens the security scheme dialog.
      * @param scheme
      */
-    public openSecuritySchemeDialog(scheme?: OasSecurityScheme): void {
-        if (this.document.is2xDocument()) {
-            this.securitySchemeDialog_20.open(scheme as Oas20SecurityScheme);
-        } else {
-            this.securitySchemeDialog_30.open(scheme as Oas30SecurityScheme);
-        }
+    public openSecuritySchemeModal(scheme?: OasSecurityScheme): void {
+        let editor: SecuritySchemeEditorComponent = this.editors.getSecuritySchemeEditor();
+        let handler: ISecuritySchemeEditorHandler = {
+            onSave: (data: SecuritySchemeData) => {
+                if (!scheme) {
+                    this.addSecurityScheme(data);
+                } else {
+                    this.changeSecurityScheme(data);
+                }
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.document, scheme);
     }
 
     /**
@@ -102,23 +107,13 @@ export class SecuritySchemesSectionComponent {
     }
 
     /**
-     * Called when the user changes the description of a security scheme in the table of schemes.
-     * @param scheme
-     * @param description
-     */
-    public changeSecuritySchemeDescription(scheme: OasSecurityScheme, description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.document, scheme, "description", description);
-        this.commandService.emit(command);
-    }
-
-    /**
      * Called when the user adds a new security scheme.
      * @param event
      */
-    public addSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void {
+    public addSecurityScheme(event: SecurityScheme20Data | SecurityScheme30Data): void {
         if (this.document.is2xDocument()) {
-            let evt : SecurityScheme20EventData = event as SecurityScheme20EventData;
-            console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
+            let evt : SecurityScheme20Data = event as SecurityScheme20Data;
+            console.info("[SecuritySchemesSectionComponent] Adding a security scheme: %s", event.schemeName);
             let scheme: Oas20SecurityScheme = (this.document as Oas20Document).createSecurityDefinitions().createSecurityScheme(event.schemeName);
             scheme.description = event.description;
             scheme.type = event.type;
@@ -141,8 +136,8 @@ export class SecuritySchemesSectionComponent {
             let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
             this.commandService.emit(command);
         } else {
-            console.info("[MainFormComponent] Adding a security scheme: %s", event.schemeName);
-            let evt : SecurityScheme30EventData = event as SecurityScheme30EventData;
+            console.info("[SecuritySchemesSectionComponent] Adding a security scheme: %s", event.schemeName);
+            let evt : SecurityScheme30Data = event as SecurityScheme30Data;
 
             let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
             this.copySchemeToModel(evt, scheme);
@@ -156,10 +151,10 @@ export class SecuritySchemesSectionComponent {
      * Called when the user changes an existing security scheme.
      * @param event
      */
-    public changeSecurityScheme(event: SecurityScheme20EventData | SecurityScheme30EventData): void {
+    public changeSecurityScheme(event: SecurityScheme20Data | SecurityScheme30Data): void {
         if (this.document.is2xDocument()) {
-            let evt : SecurityScheme20EventData = event as SecurityScheme20EventData;
-            console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
+            let evt : SecurityScheme20Data = event as SecurityScheme20Data;
+            console.info("[SecuritySchemesSectionComponent] Changing a 2.0 security scheme: %s", event.schemeName);
             let scheme: Oas20SecurityScheme = (this.document as Oas20Document).createSecurityDefinitions().createSecurityScheme(event.schemeName);
             scheme.description = event.description;
             scheme.type = event.type;
@@ -180,8 +175,8 @@ export class SecuritySchemesSectionComponent {
             let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
             this.commandService.emit(command);
         } else {
-            console.info("[MainFormComponent] Changing a security scheme: %s", event.schemeName);
-            let evt : SecurityScheme30EventData = event as SecurityScheme30EventData;
+            console.info("[SecuritySchemesSectionComponent] Changing a 3.x security scheme: %s", event.schemeName);
+            let evt : SecurityScheme30Data = event as SecurityScheme30Data;
 
             let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
             this.copySchemeToModel(evt, scheme);
@@ -217,7 +212,7 @@ export class SecuritySchemesSectionComponent {
      * @param event
      * @param scheme
      */
-    private copySchemeToModel(event: SecurityScheme30EventData, scheme: Oas30SecurityScheme) {
+    private copySchemeToModel(event: SecurityScheme30Data, scheme: Oas30SecurityScheme) {
         scheme.description = event.description;
         scheme.type = event.type;
         if (scheme.type === "http") {

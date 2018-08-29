@@ -41,6 +41,12 @@ public class HubConfiguration extends Configuration {
     private static final String SHARE_FOR_EVERYONE_ENV = "APICURIO_SHARE_FOR_EVERYONE";
     private static final String SHARE_FOR_EVERYONE_SYSPROP = "apicurio.share.for.everyone";
 
+    private static final String GITHUB_API_URL_ENV = "APICURIO_GITHUB_API_URL";
+    private static final String GITHUB_API_URL_SYSPROP = "apicurio.hub.github.api";
+
+    private static final String GITLAB_API_URL_ENV = "APICURIO_GITLAB_API_URL";
+    private static final String GITLAB_API_URL_SYSPROP = "apicurio.hub.gitlab.api";
+
     private static final String BITBUCKET_API_URL_ENV = "APICURIO_BITBUCKET_API_URL";
     private static final String BITBUCKET_API_URL_SYSPROP = "apicurio.hub.bitbucket.api";
 
@@ -77,6 +83,20 @@ public class HubConfiguration extends Configuration {
      */
     public boolean isShareForEveryone() {
         return "true".equals(getConfigurationProperty(SHARE_FOR_EVERYONE_ENV, SHARE_FOR_EVERYONE_SYSPROP, "false"));
+    }
+
+    /**
+     * @return the configured GitHub API URL
+     */
+    public String getGitHubApiUrl() {
+        return getConfigurationProperty(GITHUB_API_URL_ENV, GITHUB_API_URL_SYSPROP, "https://api.github.com");
+    }
+
+    /**
+     * @return the configured GitLab API URL
+     */
+    public String getGitLabApiUrl() {
+        return getConfigurationProperty(GITLAB_API_URL_ENV, GITLAB_API_URL_SYSPROP, "https://gitlab.com");
     }
 
     /**

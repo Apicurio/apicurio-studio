@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.egit.github.core.Repository;
@@ -59,6 +60,7 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
@@ -71,7 +73,10 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
 
     private static Logger logger = LoggerFactory.getLogger(GitHubSourceConnector.class);
 
-    private static final String GITHUB_API_ENDPOINT = "https://api.github.com";
+    @Inject
+    private HubConfiguration config;
+
+    private String apiUrl;
 
     /**
      * @throws SourceConnectorException
@@ -90,13 +95,16 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public LinkedAccountType getType() {
         return LinkedAccountType.GitHub;
     }
-    
+
     /**
-     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#getBaseApiEndpointUrl()
+     * @see AbstractSourceConnector#getBaseApiEndpointUrl()
      */
     @Override
     protected String getBaseApiEndpointUrl() {
-        return GITHUB_API_ENDPOINT;
+        if (apiUrl == null) {
+            apiUrl = this.config.getGitHubApiUrl();
+        }
+        return apiUrl;
     }
 
     /**
@@ -399,7 +407,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             
             GitHubPullRequestCreator creator = new GitHubPullRequestCreator(generatedContent, org, repo,
                     branch, path, commitMessage);
-            creator.setApiUrl(GITHUB_API_ENDPOINT);
+            creator.setApiUrl(this.getBaseApiEndpointUrl());
             creator.setToken(getExternalToken());
             GitHubPullRequest pullRequest = creator.create();
             return pullRequest.getHtml_url();

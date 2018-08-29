@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.NameValuePair;
@@ -60,6 +61,7 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
@@ -73,9 +75,13 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
     private static Logger logger = LoggerFactory.getLogger(GitLabSourceConnector.class);
 
-    private static final String GITLAB_API_ENDPOINT = "https://gitlab.com";
     protected static final Object TOKEN_TYPE_PAT = "PAT";
     protected static final Object TOKEN_TYPE_OAUTH = "OAUTH";
+
+    @Inject
+    private HubConfiguration config;
+
+    private String apiUrl;
 
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#getType()
@@ -90,7 +96,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     @Override
     protected String getBaseApiEndpointUrl() {
-        return GITLAB_API_ENDPOINT;
+        if (apiUrl == null) {
+            apiUrl = this.config.getGitLabApiUrl();
+        }
+        return apiUrl;
     }
 
     /**

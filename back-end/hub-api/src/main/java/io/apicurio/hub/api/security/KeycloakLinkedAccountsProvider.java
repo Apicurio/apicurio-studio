@@ -138,7 +138,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
             session.getToken().getSessionState();
 
             String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                .path("/auth/realms/{realm}/account/federated-identity-update")
+                .path("/realms/{realm}/account/federated-identity-update")
                 .queryParam("action", "REMOVE").queryParam("provider_id", provider).build(realm)
                 .toString();
             logger.debug("Deleting identity provider using URL: {}", url);

@@ -35,6 +35,7 @@ import {
     moduleId: module.id,
     selector: "security-requirements-section",
     templateUrl: "security-requirements-section.component.html",
+    styleUrls: [ "security-requirements-section.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
 export class SecurityRequirementsSectionComponent {
@@ -107,6 +108,15 @@ export class SecurityRequirementsSectionComponent {
      */
     public securityRequirements(): OasSecurityRequirement[] {
         return this.parent.security ? this.parent.security : [];
+    }
+
+    /**
+     * Returns the set of scopes (if any) needed for a particular requirement+scheme name.
+     * @param requirement
+     * @param schemeName
+     */
+    public requirementScopes(requirement: OasSecurityRequirement, schemeName: string): string {
+        return requirement.scopes(schemeName).join(", ");
     }
 
 }

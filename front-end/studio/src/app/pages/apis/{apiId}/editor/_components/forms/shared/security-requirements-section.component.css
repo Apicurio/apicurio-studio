@@ -1,0 +1,23 @@
+.security-requirement {
+    margin-top: 10px;
+}
+
+.security-requirement .label {
+    margin-right: 8px;
+    cursor: default;
+}
+
+.security-requirement .label:hover {
+    filter: brightness(120%);
+}
+
+.security-requirement .fa {
+    visibility: hidden;
+    cursor: pointer;
+    margin-right: 5px;
+    color: #0088ce;
+}
+.security-requirement:hover .fa {
+    visibility: visible;
+    color: #00659c;
+}

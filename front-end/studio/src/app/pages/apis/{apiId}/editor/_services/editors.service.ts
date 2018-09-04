@@ -22,13 +22,16 @@ import {ICommand} from "oai-ts-commands";
 import {Observable} from "rxjs/Observable";
 import {ServerEditorComponent} from "../_components/editors/server-editor.component";
 import {SecuritySchemeEditorComponent} from "../_components/editors/security-scheme-editor.component";
+import {SecurityRequirementEditorComponent} from "../_components/editors/security-requirement-editor.component";
 
 export interface IEditorsProvider {
 
     getServerEditor(): ServerEditorComponent;
     getSecuritySchemeEditor(): SecuritySchemeEditorComponent;
+    getSecurityRequirementEditor(): SecurityRequirementEditorComponent;
 
 }
+
 
 /**
  * A simple service that provides access to global entity editors.  These are the full page
@@ -53,6 +56,10 @@ export class EditorsService implements IEditorsProvider {
 
     public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
         return this.provider.getSecuritySchemeEditor();
+    }
+
+    public getSecurityRequirementEditor(): SecurityRequirementEditorComponent {
+        return this.provider.getSecurityRequirementEditor();
     }
 
 }

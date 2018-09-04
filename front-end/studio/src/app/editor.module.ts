@@ -60,7 +60,6 @@ import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_compone
 import {ProblemsService} from "./pages/apis/{apiId}/editor/_services/problems.service";
 import {SelectionService} from "./pages/apis/{apiId}/editor/_services/selection.service";
 import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.service";
-import {SecurityRequirementDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/security-requirement.component";
 import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/common/icon-button.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
@@ -91,6 +90,7 @@ import {RedoIconComponent} from "./pages/apis/{apiId}/editor/_components/title-b
 import {InlineArrayEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-array-editor.component";
 import {SecuritySchemeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-scheme-row.component";
 import {SecuritySchemeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/security-scheme-editor.component";
+import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/security-requirement-editor.component";
 
 @NgModule({
     imports: [
@@ -107,7 +107,7 @@ import {SecuritySchemeEditorComponent} from "./pages/apis/{apiId}/editor/_compon
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
-        SecurityRequirementDialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,

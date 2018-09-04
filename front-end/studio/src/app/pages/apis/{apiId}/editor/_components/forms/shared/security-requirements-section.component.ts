@@ -15,20 +15,21 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLibraryUtils, OasOperation, OasSecurityRequirement} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {
-    ChangeSecurityRequirementEvent,
-    SecurityRequirementDialogComponent,
-    SecurityRequirementEventData
-} from "../../dialogs/security-requirement.component";
 import {
     createAddSecurityRequirementCommand,
     createDeleteSecurityRequirementCommand,
     createReplaceSecurityRequirementCommand,
     ICommand
 } from "oai-ts-commands";
+import {EditorsService} from "../../../_services/editors.service";
+import {
+    ISecurityRequirementEditorHandler,
+    SecurityRequirementEditorComponent,
+    SecurityRequirementEvent
+} from "../../editors/security-requirement-editor.component";
 
 
 @Component({
@@ -43,18 +44,17 @@ export class SecurityRequirementsSectionComponent {
     @Input() parent: OasDocument | OasOperation;
     @Input() global: boolean;
 
-    @ViewChild("securityRequirementDialog") securityRequirementDialog: SecurityRequirementDialogComponent;
-
-    constructor(private commandService: CommandService) {}
+    constructor(private commandService: CommandService, private editorsService: EditorsService) {}
 
     /**
      * Called when the user adds a new security requirement.
      * @param event
      */
-    public addSecurityRequirement(event: SecurityRequirementEventData): void {
+    public addSecurityRequirement(event: SecurityRequirementEvent): void {
+        console.info("[SecurityRequirementsSectionComponent] Adding security requirement: ", event);
         let requirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
         let library: OasLibraryUtils = new OasLibraryUtils();
-        library.readNode(event, requirement);
+        library.readNode(event.data, requirement);
         let command: ICommand = createAddSecurityRequirementCommand(this.parent.ownerDocument(), this.parent, requirement);
         this.commandService.emit(command);
     }
@@ -63,7 +63,7 @@ export class SecurityRequirementsSectionComponent {
      * Called when the user changes an existing Security Requirement.
      * @param event
      */
-    public changeSecurityRequirement(event: ChangeSecurityRequirementEvent): void {
+    public changeSecurityRequirement(event: SecurityRequirementEvent): void {
         let newRequirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event.data, newRequirement);
@@ -89,11 +89,22 @@ export class SecurityRequirementsSectionComponent {
     }
 
     /**
-     * Opens the security requirement dialog for adding or editing a security requirement.
+     * Opens the security requirement editor for adding or editing a security requirement.
      * @param requirement
      */
-    public openSecurityRequirementDialog(requirement?: OasSecurityRequirement): void {
-        this.securityRequirementDialog.open(this.parent.ownerDocument(), requirement);
+    public openSecurityRequirementEditor(requirement?: OasSecurityRequirement): void {
+        let editor: SecurityRequirementEditorComponent = this.editorsService.getSecurityRequirementEditor();
+        let handler: ISecurityRequirementEditorHandler = {
+            onSave: (data: SecurityRequirementEvent) => {
+                if (requirement) {
+                    this.changeSecurityRequirement(data);
+                } else {
+                    this.addSecurityRequirement(data);
+                }
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.parent, requirement);
     }
 
     /**
@@ -116,7 +127,12 @@ export class SecurityRequirementsSectionComponent {
      * @param schemeName
      */
     public requirementScopes(requirement: OasSecurityRequirement, schemeName: string): string {
-        return requirement.scopes(schemeName).join(", ");
+        let scopes: any[] = requirement.scopes(schemeName);
+        if (scopes && scopes.length > 0) {
+            return scopes.join(", ");
+        } else {
+            return "";
+        }
     }
 
 }

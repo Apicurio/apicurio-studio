@@ -1,0 +1,124 @@
+<div class="entity-editor security-requirement-entity-editor container-fluid" *ngIf="isOpen()" (window:keydown)="onGlobalKeyDown($event)">
+    <a class="close-button" (click)="close()"><span class="pficon pficon-close"></span></a>
+    <form id="security-requirement-entity-form" #entityEditorForm="ngForm">
+        <div class="row-fluid header">
+            <div class="col-md-12">
+                <h1 class="title">Define the Security Requirement</h1>
+            </div>
+            <div class="context" *ngIf="contextIs === 'operation'">
+                <div class="col-md-6 path">
+                    <div class="context-label">Path</div>
+                    <div path-item class="context-value" [path]="pathItem().path()"></div>
+                </div>
+                <div class="col-md-6 operation">
+                    <span class="context-label">Operation</span>
+                    <span class="label"
+                          [class.label-info]="operation().method() !== 'get' && operation().method() !== 'post' && operation().method() !== 'delete'"
+                          [class.label-success]="operation().method() === 'get'"
+                          [class.label-warning]="operation().method() === 'post'"
+                          [class.label-danger]="operation().method() === 'delete'">{{ operation().method() }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid required-fields-notification divider-section">
+            <div class="col-md-12">
+                <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <hr />
+            </div>
+        </div>
+        <div class="row-fluid body-section">
+            <div class="col-md-12">
+                <h3>Configure a Security Requirement</h3>
+                <p class="explanation">
+                    <span>
+                        Choose which combination of security schemes are required by clients accessing
+                        <span class="strong" *ngIf="contextIs === 'operation'">this operation.</span>
+                        <span class="strong" *ngIf="contextIs === 'document'">any operation in this API.</span>
+                        When necessary (depending on the type of scheme) also configure required scopes for each enabled scheme.
+                    </span>
+                </p>
+            </div>
+            <div class="col-md-12">
+                <div class="list-group list-view-pf list-view-pf-view security-scheme-list">
+
+                    <!-- No Schemes Found -->
+                    <div class="blank-slate-pf " *ngIf="schemes.length === 0">
+                        <div class="blank-slate-pf-icon">
+                            <span class="pficon pficon pficon-add-circle-o"></span>
+                        </div>
+                        <h1>No Security Schemes Found</h1>
+                        <p>
+                            There are currently no <strong>Security Schemes</strong> defined for this API.  Before you can
+                            configure the <strong>security requirements</strong>, you must first configure the possible schemes.
+                        </p>
+                    </div>
+
+                    <!-- Select from list of Schemes -->
+                    <div class="list-group-item" *ngFor="let scheme of schemes" [class.active]="isChecked(scheme)"
+                         [class.list-view-pf-expand-active]="isExpanded(scheme)">
+                        <div class="list-group-item-header">
+                            <div class="list-view-pf-expand" [style.visibility]="canExpand(scheme) ? 'visible' : 'hidden'">
+                                        <span class="fa fa-angle-right" [class.fa-angle-down]="isExpanded(scheme)"
+                                              (click)="toggleExpansion(scheme)"></span>
+                            </div>
+                            <div class="list-view-pf-checkbox">
+                                <input type="checkbox" [checked]="isChecked(scheme)" (change)="toggleSecurityScheme(scheme, $event.target.checked)">
+                            </div>
+                            <div class="list-view-pf-main-info" (click)="toggleSecurityScheme(scheme)">
+                                <div class="list-view-pf-body">
+                                    <div class="list-view-pf-description">
+                                        <div class="list-group-item-heading">
+                                            <span class="name">{{ scheme.schemeName() }}</span>
+                                            <span class="type">{{ scheme.type }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="list-view-pf-additional-info">
+                                        <div class="list-group-item-text">{{ scheme.description }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="canExpand(scheme)" class="list-group-item-container container-fluid" [class.hidden]="!isExpanded(scheme)">
+                            <div class="close">
+                                <span class="pficon pficon-close" (click)="collapse(scheme)"></span>
+                            </div>
+                            <div class="row">
+                                <td class="col-md-12">
+                                    <div class="instructions" *ngIf="scopes(scheme).length > 0">Select the required scopes below:</div>
+                                    <div class="no-scopes" *ngIf="scopes(scheme).length === 0">
+                                        <div class="alert alert-warning">
+                                            <span class="pficon pficon-warning-triangle-o"></span>
+                                            <strong>No Available Scopes</strong> No scopes have been configured for this Security Scheme.
+                                        </div>
+                                    </div>
+                                </td>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3" *ngFor="let scope of scopes(scheme)">
+                                    <label title="{{ scope.description }}">
+                                        <input type="checkbox" [checked]="isScopeChecked(scheme, scope.name)" [disabled]="!isChecked(scheme)"
+                                               (change)="toggleScope(scheme, scope.name, $event.target.checked)">
+                                        <span>{{ scope.name }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid divider-section">
+            <div class="col-md-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row-fluid actions-section">
+            <div class="col-md-12">
+                <div class="actions">
+                    <a class="btn btn-default" (click)="cancel()">Cancel</a>
+                    <button class="btn btn-primary" (click)="save()" [disabled]="!isValid()">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

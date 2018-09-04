@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,33 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {
+    Oas20Scopes,
+    Oas30AuthorizationCodeOAuthFlow,
+    Oas30ClientCredentialsOAuthFlow,
+    Oas30Document,
+    Oas30ImplicitOAuthFlow,
     Oas30OAuthFlow,
+    Oas30PasswordOAuthFlow,
+    Oas30PathItem,
     OasCombinedVisitorAdapter,
     OasDocument,
+    OasLibraryUtils,
+    OasOperation,
     OasSecurityRequirement,
     OasSecurityScheme,
     OasVisitorUtil
 } from "oai-ts-core";
-import {Oas20Scopes} from "oai-ts-core/src/models/2.0/scopes.model";
-import {
-    Oas30AuthorizationCodeOAuthFlow,
-    Oas30ClientCredentialsOAuthFlow,
-    Oas30ImplicitOAuthFlow,
-    Oas30PasswordOAuthFlow
-} from "oai-ts-core/src/models/3.0/oauth-flow.model";
 
 
-export interface SecurityRequirementEventData {
+export interface SecurityRequirementData {
     [key: string]: string[];
 }
 
-export class ChangeSecurityRequirementEvent {
+export class SecurityRequirementEvent {
     requirement: OasSecurityRequirement;
-    data: SecurityRequirementEventData;
+    data: SecurityRequirementData;
 }
 
 export class ScopeInfo {
@@ -53,34 +54,52 @@ export class ScopeInfo {
     }
 }
 
+export interface ISecurityRequirementEditorHandler {
+
+    onSave(data: SecurityRequirementEvent): void;
+    onCancel(): void;
+
+}
+
 
 @Component({
     moduleId: module.id,
-    selector: "security-requirement-dialog",
-    templateUrl: "security-requirement.component.html",
-    styleUrls: ["security-requirement.component.css"]
+    selector: "security-requirement-editor",
+    templateUrl: "security-requirement-editor.component.html",
+    styleUrls: ["security-requirement-editor.component.css"]
 })
-export class SecurityRequirementDialogComponent {
+export class SecurityRequirementEditorComponent {
 
-    @Output() onAdded: EventEmitter<SecurityRequirementEventData> = new EventEmitter<SecurityRequirementEventData>();
-    @Output() onChanged: EventEmitter<ChangeSecurityRequirementEvent> = new EventEmitter<ChangeSecurityRequirementEvent>();
+    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
 
-    @ViewChildren("securityRequirementModal") securityRequirementModal: QueryList<ModalDirective>;
-
-    protected _isOpen: boolean = false;
-    protected _mode: string;
+    public _library: OasLibraryUtils = new OasLibraryUtils();
+    public _isOpen: boolean = false;
+    public _mode: string = "create";
     protected _expanded: any;
+    protected _requirement: OasSecurityRequirement;
 
+    protected handler: ISecurityRequirementEditorHandler;
+    protected context: OasDocument | OasOperation;
+    public contextIs: string = "document";
+    protected model: SecurityRequirementData;
+    protected _expandedContext: any = {
+        document: null,
+        pathItem: null,
+        operation: null
+    };
     protected schemes: OasSecurityScheme[];
     protected scopeCache: any;
 
-    protected model: SecurityRequirementEventData;
-    protected _requirement: OasSecurityRequirement;
-
     /**
-     * Called to open the dialog.
+     * Called to open the editor.
+     * @param handler
+     * @param context
+     * @param server
      */
-    public open(document: OasDocument, requirement?: OasSecurityRequirement): void {
+    public open(handler: ISecurityRequirementEditorHandler, context: OasDocument | OasOperation, requirement?: OasSecurityRequirement): void {
+        this.context = context;
+        this.handler = handler;
         this.model = {};
         this.scopeCache = {};
         this._expanded = {};
@@ -94,16 +113,12 @@ export class SecurityRequirementDialogComponent {
             this._mode = "edit";
         } else {
             this._requirement = null;
-            this._mode = "add";
+            this._mode = "create";
         }
-        this.schemes = this.findSchemes(document);
-
-        this.securityRequirementModal.changes.subscribe( () => {
-            if (this.securityRequirementModal.first) {
-                this.securityRequirementModal.first.show();
-            }
-        });
-
+        if (context) {
+            this.expandContext(context);
+        }
+        this.schemes = this.findSchemes(context.ownerDocument());
         this._isOpen = true;
     }
 
@@ -115,44 +130,88 @@ export class SecurityRequirementDialogComponent {
     }
 
     /**
-     * Called when the user clicks "OK".
+     * Called when the user clicks "save".
      */
-    protected ok(): void {
-        if (this._mode === "edit") {
-            let event: ChangeSecurityRequirementEvent = new ChangeSecurityRequirementEvent();
-            event.requirement = this._requirement;
-            event.data = this.model;
-            this.onChanged.emit(event);
-        } else {
-            this.onAdded.emit(this.model);
+    protected save(): void {
+        if (!this.isValid()) {
+            return;
         }
-        this.cancel();
+        let event: SecurityRequirementEvent = new SecurityRequirementEvent();
+        event.requirement = this._requirement;
+        event.data = this.model;
+        this.close();
+        this.handler.onSave(event);
     }
 
     /**
      * Called when the user clicks "cancel".
      */
     protected cancel(): void {
-        this.securityRequirementModal.first.hide();
+        this.close();
+        this.handler.onCancel();
     }
 
     /**
      * Returns true if the dialog is open.
-     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
-     * Returns true if the model is valid.
-     * @return
+     * Returns true if the editor is currently valid.
      */
-    public isSecurityRequirementValid(): boolean {
+    public isValid(): boolean {
         for (let n in this.model) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Figures out what the context is based on what is passed to it.
+     * @param context
+     */
+    public expandContext(context: OasDocument | OasOperation): void {
+        if (context['_method']) {
+            this.contextIs = "operation";
+            this._expandedContext.operation = context as OasOperation;
+            this._expandedContext.pathItem = context.parent() as Oas30PathItem;
+            this._expandedContext.document = context.ownerDocument();
+        } else {
+            this.contextIs = "document";
+            this._expandedContext.document = context as Oas30Document;
+        }
+    }
+
+    /**
+     * Gets the context path item (if any).
+     */
+    public pathItem(): Oas30PathItem {
+        return this._expandedContext.pathItem;
+    }
+
+    /**
+     * Gets the context operation (if any).
+     */
+    public operation(): OasOperation {
+        return this._expandedContext.operation;
+    }
+
+    /**
+     * @param event
+     */
+    public onKeypress(event: KeyboardEvent): void {
+        if (event.key === "Enter") {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
+
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+            this.cancel();
+        }
     }
 
     /**

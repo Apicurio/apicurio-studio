@@ -20,7 +20,7 @@ import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server} from "oai-ts-
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
-import {ServerEditorComponent, ServerEventData} from "../../editors/server-editor.component";
+import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
 
 
 @Component({
@@ -34,7 +34,7 @@ export class ServerRowComponent {
 
     @Input() server: Oas30Server;
 
-    @Output() onEdit: EventEmitter<ServerEventData> = new EventEmitter<ServerEventData>();
+    @Output() onEdit: EventEmitter<ServerEditorEvent> = new EventEmitter<ServerEditorEvent>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected _editing: boolean = false;

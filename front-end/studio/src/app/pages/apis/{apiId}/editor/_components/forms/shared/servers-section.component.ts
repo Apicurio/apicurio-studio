@@ -21,8 +21,7 @@ import {createChangeServerCommand, createDeleteServerCommand, createNewServerCom
 import {ObjectUtils} from "../../../_util/object.util";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
-import {ServerEditorComponent, ServerEventData} from "../../editors/server-editor.component";
-import {SecuritySchemeData} from "../../editors/security-scheme-editor.component";
+import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
 
 
 @Component({
@@ -68,14 +67,14 @@ export class ServersSectionComponent {
 
     /**
      * Called when the user adds a new server.
-     * @param event
+     * @param data
      */
-    public addServer(event: ServerEventData): void {
-        console.info("[ServersSectionComponent] Adding a server: %s", event.url);
+    public addServer(data: ServerData): void {
+        console.info("[ServersSectionComponent] Adding a server: %s", data.url);
 
         let newServer: Oas30Server = this.parent.createServer();
 
-        this.copyServerToModel(event, newServer);
+        this.copyServerToModel(data, newServer);
 
         let command: ICommand = createNewServerCommand(this.parent.ownerDocument(), this.parent, newServer);
         this.commandService.emit(command);
@@ -85,12 +84,12 @@ export class ServersSectionComponent {
      * Called when the user edits an existing server.
      * @param event
      */
-    public changeServer(event: ServerEventData): void {
-        console.info("[ServersSectionComponent] Editing a server: %s", event.url);
+    public changeServer(event: ServerEditorEvent): void {
+        console.info("[ServersSectionComponent] Editing a server: %s", event.data.url);
 
         let newServer: Oas30Server = this.parent.createServer();
 
-        this.copyServerToModel(event, newServer);
+        this.copyServerToModel(event.data, newServer);
 
         let command: ICommand = createChangeServerCommand(this.parent.ownerDocument(), newServer);
         this.commandService.emit(command);
@@ -103,7 +102,7 @@ export class ServersSectionComponent {
     public onAddServer(): void {
         let serverEditor: ServerEditorComponent = this.editorsService.getServerEditor();
         serverEditor.open({
-            onSave: (data) => this.addServer(data),
+            onSave: (event) => this.addServer(event.data),
             onCancel: () => {}
         }, this.parent);
     }
@@ -113,7 +112,7 @@ export class ServersSectionComponent {
      * @param fromData
      * @param toServer
      */
-    private copyServerToModel(fromData: ServerEventData, toServer: Oas30Server): void {
+    private copyServerToModel(fromData: ServerData, toServer: Oas30Server): void {
         toServer.url = fromData.url;
         toServer.description = fromData.description;
         if (fromData.variables) {

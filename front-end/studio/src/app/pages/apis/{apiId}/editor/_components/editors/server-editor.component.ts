@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output} from "@angular/core";
-import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, OasLibraryUtils} from "oai-ts-core";
+import {Component} from "@angular/core";
+import {Oas30Server} from "oai-ts-core";
+import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.base";
 
 export interface ServerVariableData {
     default: string;
@@ -24,17 +25,19 @@ export interface ServerVariableData {
     enum: string[];
 }
 
-export interface ServerEventData {
+export interface ServerData {
     url: string;
     description: string;
     variables: any; // map of string to ServerVariableData
 }
 
-export interface IServerEditorHandler {
+export interface ServerEditorEvent extends EntityEditorEvent<Oas30Server> {
+    data: ServerData;
+}
 
-    onSave(data: ServerEventData): void;
-    onCancel(): void;
-
+export interface IServerEditorHandler extends IEntityEditorHandler<Oas30Server, ServerEditorEvent> {
+    onSave(event: ServerEditorEvent): void;
+    onCancel(event: ServerEditorEvent): void;
 }
 
 
@@ -44,114 +47,66 @@ export interface IServerEditorHandler {
     templateUrl: "server-editor.component.html",
     styleUrls: ["server-editor.component.css"]
 })
-export class ServerEditorComponent {
+export class ServerEditorComponent extends EntityEditor<Oas30Server, ServerEditorEvent> {
 
-    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
-    @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
-
-    public _library: OasLibraryUtils = new OasLibraryUtils();
-    public _isOpen: boolean = false;
-    public _mode: string = "create";
     public _varSelected: string = null;
 
-    protected handler: IServerEditorHandler;
-    protected context: Oas30Document | Oas30PathItem | Oas30Operation;
-    public contextIs: string = "document";
-    protected model: ServerEventData = {
+    protected model: ServerData = {
         url: "",
         description: "",
         variables: {}
     };
-    protected _expandedContext: any = {
-        document: null,
-        pathItem: null,
-        operation: null
-    };
     protected url: string;
 
     /**
-     * Called to open the editor.
-     * @param handler
-     * @param context
-     * @param server
+     * Initializes the editor's data model from a provided entity (initialize the editor data model from an entity).
+     * @param entity
      */
-    public open(handler: IServerEditorHandler, context: Oas30Document | Oas30PathItem | Oas30Operation, server?: Oas30Server): void {
-        this.context = context;
-        this.handler = handler;
-        if (server) {
-            this._mode = "edit";
-            this.model.url = server.url;
-            this.model.description = server.description;
-            this.model.variables = {};
-            server.getServerVariables().forEach( variable => {
-                this.model.variables[variable.name()] = {
-                    "default": variable.default,
-                    "description": variable.description,
-                    "enum": variable.enum
-                };
-            });
-            this.updateVariables();
-        } else {
-            this._mode = "create";
-            this.model = {
-                url: "",
-                description: "",
-                variables: {}
+    public initializeModelFromEntity(entity: Oas30Server): void {
+        this.model.url = entity.url;
+        this.model.description = entity.description;
+        this.model.variables = {};
+        entity.getServerVariables().forEach( variable => {
+            this.model.variables[variable.name()] = {
+                "default": variable.default,
+                "description": variable.description,
+                "enum": variable.enum
             };
-        }
-        if (context) {
-            this.expandContext(context);
-        }
+        });
         this.url = this.model.url;
-        this._isOpen = true;
+        this.updateVariables();
     }
 
     /**
-     * Called to close the dialog.
+     * Initializes the editor's data model to an empty state.
      */
-    public close(): void {
-        this._isOpen = false;
+    public initializeModel(): void {
+        this.model = {
+            url: "",
+            description: "",
+            variables: {}
+        };
+        this.url = "";
     }
 
     /**
-     * Called when the user clicks "save".
-     */
-    protected save(): void {
-        if (!this.isValid()) {
-            return;
-        }
-        for (let varName of this.variableNames()) {
-            let varModel: any = this.model.variables[varName];
-            if (varModel && varModel.default === "") {
-                varModel.default = undefined;
-            }
-        }
-        this.close();
-        this.handler.onSave(this.model);
-    }
-
-    /**
-     * Called when the user clicks "cancel".
-     */
-    protected cancel(): void {
-        this.close();
-        this.handler.onCancel();
-    }
-
-    /**
-     * Returns true if the dialog is open.
-     */
-    public isOpen(): boolean {
-        return this._isOpen;
-    }
-
-    /**
-     * Returns true if the editor is currently valid.
+     * Returns true if the data model is valid.
      */
     public isValid(): boolean {
         // TODO should also validate the URL format is OK
         let hasUrl: boolean = this.model.url ? true : false;
         return hasUrl && !this.canApply();
+    }
+
+    /**
+     * Creates an entity event specific to this entity editor.
+     */
+    public entityEvent(): ServerEditorEvent {
+        let event: ServerEditorEvent = {
+            entity: this.entity,
+            data: this.model
+        };
+        return event;
     }
 
     /**
@@ -222,40 +177,6 @@ export class ServerEditorComponent {
     }
 
     /**
-     * Figures out what the context is based on what is passed to it.
-     * @param context
-     */
-    public expandContext(context: Oas30Document | Oas30PathItem | Oas30Operation): void {
-        if (context['_method']) {
-            this.contextIs = "operation";
-            this._expandedContext.operation = context as Oas30Operation;
-            this._expandedContext.pathItem = context.parent() as Oas30PathItem;
-            this._expandedContext.document = context.ownerDocument();
-        } else if (context['_path']) {
-            this.contextIs = "pathItem";
-            this._expandedContext.pathItem = context as Oas30PathItem;
-            this._expandedContext.document = context.ownerDocument();
-        } else {
-            this.contextIs = "document";
-            this._expandedContext.document = context as Oas30Document;
-        }
-    }
-
-    /**
-     * Gets the context path item (if any).
-     */
-    public pathItem(): Oas30PathItem {
-        return this._expandedContext.pathItem;
-    }
-
-    /**
-     * Gets the context operation (if any).
-     */
-    public operation(): Oas30Operation {
-        return this._expandedContext.operation;
-    }
-
-    /**
      * @param event
      */
     public onServerUrlKeypress(event: KeyboardEvent): void {
@@ -286,22 +207,6 @@ export class ServerEditorComponent {
      */
     public reset(): void {
         this.url = this.model.url;
-    }
-
-    /**
-     * @param event
-     */
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Enter") {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    }
-
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.cancel();
-        }
     }
 
 }

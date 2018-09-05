@@ -16,6 +16,7 @@
  */
 
 import {OasDocument, OasLibraryUtils, OasNode, OasOperation, OasPathItem} from "oai-ts-core";
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 
 export interface EntityEditorEvent<T extends OasNode> {
     entity: T;
@@ -36,15 +37,10 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
     public _library: OasLibraryUtils = new OasLibraryUtils();
     public _isOpen: boolean = false;
     public _mode: string = "create";
-    protected handler: IEntityEditorHandler<T, E>;
-    protected context: OasDocument | OasPathItem | OasOperation;
-    public contextIs: string = "document";
-    protected _expandedContext: any = {
-        document: null,
-        pathItem: null,
-        operation: null
-    };
-    protected entity: T;
+
+    public handler: IEntityEditorHandler<T, E>;
+    public context: OasDocument | OasPathItem | OasOperation;
+    public entity: T;
 
     /**
      * Called to open the editor.
@@ -62,9 +58,6 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
         } else {
             this._mode = "create";
             this.initializeModel();
-        }
-        if (context) {
-            this.expandContext(context);
         }
         this._isOpen = true;
     }
@@ -100,7 +93,7 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
     /**
      * Called when the user clicks "save".
      */
-    protected save(): void {
+    public save(): void {
         if (!this.isValid()) {
             return;
         }
@@ -112,7 +105,7 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    public cancel(): void {
         let event: E = this.entityEvent();
         this.close();
         this.handler.onCancel(event);
@@ -123,6 +116,55 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
      */
     public isOpen(): boolean {
         return this._isOpen;
+    }
+
+    /**
+     * @param event
+     */
+    public onKeypress(event: KeyboardEvent): void {
+        if (event.key === "Enter") {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
+
+}
+
+
+@Component({
+    moduleId: module.id,
+    selector: "entity-editor",
+    templateUrl: "entity-editor.component.html",
+    styleUrls: ["entity-editor.component.css"],
+    encapsulation: ViewEncapsulation.None
+})
+export class EntityEditorComponent implements OnChanges {
+
+    @Input() entityType: string = "unknown";
+    @Input() title: string = "Configure the Entity";
+    @Input() context: OasDocument | OasPathItem | OasOperation;
+    @Input() showRequiredFieldsMessage: boolean = false;
+    @Input() valid: boolean = true;
+    @Input() dirty: boolean = false;
+
+    @Output() onSave: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
+    public contextIs: string = "document";
+    protected _expandedContext: any = {
+        document: null,
+        pathItem: null,
+        operation: null
+    };
+
+    /**
+     * Called when the @Input changes.
+     * @param changes
+     */
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes["context"]) {
+            this.expandContext(this.context);
+        }
     }
 
     /**
@@ -162,19 +204,9 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
     /**
      * @param event
      */
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Enter") {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    }
-
-    /**
-     * @param event
-     */
     public onGlobalKeyDown(event: KeyboardEvent): void {
         if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.cancel();
+            this.onClose.emit();
         }
     }
 

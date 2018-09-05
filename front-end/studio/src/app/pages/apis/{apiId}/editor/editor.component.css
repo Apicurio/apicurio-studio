@@ -1429,6 +1429,8 @@
 }
 
 .api-editor .entity-editor .body-section {
+  width: 60%;
+  min-width: 400px;
 }
 .api-editor .entity-editor .body-section h3 {
   font-weight: 600;
@@ -1438,8 +1440,6 @@
   padding-left: 20px;
   margin-bottom: 20px;
   margin-top: 10px;
-  width: 60%;
-  min-width: 400px;
   color: #8b8d8f;
   line-height: 18px;
 }
@@ -1448,15 +1448,19 @@
 }
 .api-editor .entity-editor .body-section > div > .form-group input {
   min-width: 350px;
-  width: 40%;
+  width: 90%;
+}
+.api-editor .entity-editor .body-section .form-group input.short {
+  width: 50%;
 }
 .api-editor .entity-editor .body-section > div > .form-group textarea {
   min-width: 350px;
-  width: 40%;
+  width: 90%;
+}
+.api-editor .entity-editor .body-section .form-group textarea.short {
+  width: 50%;
 }
 .api-editor .entity-editor .body-section .empty-state {
-  width: 60%;
-  min-width: 400px;
   border: 1px solid #ccc;
   color: #8b8d8f;
   padding: 30px;

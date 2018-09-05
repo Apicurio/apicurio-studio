@@ -1,10 +1,13 @@
-.server-entity-editor .body-section .server-variables {
-  width: 60%;
-  min-width: 400px;
+
+.server-url-wrapper {
+  width: 80%;
+}
+
+.server-variables {
   margin-left: 20px
 }
 
-.server-entity-editor .body-section #server_ro {
+#server_ro {
   border-color: #002d45;
   background-color: #efefef;
   color: #666;
@@ -12,4 +15,8 @@
 
 .url-action {
   margin-left: 5px;
+}
+
+#serverUrl {
+  width: 100%;
 }

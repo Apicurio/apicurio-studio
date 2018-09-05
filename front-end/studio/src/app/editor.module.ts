@@ -91,6 +91,7 @@ import {InlineArrayEditorComponent} from "./pages/apis/{apiId}/editor/_component
 import {SecuritySchemeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-scheme-row.component";
 import {SecuritySchemeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/security-scheme-editor.component";
 import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/security-requirement-editor.component";
+import {EntityEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/entity-editor.component";
 
 @NgModule({
     imports: [
@@ -111,7 +112,7 @@ import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_c
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
-        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent,
+        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent
     ],
     providers: [

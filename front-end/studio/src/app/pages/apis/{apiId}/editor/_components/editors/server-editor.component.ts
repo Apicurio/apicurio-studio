@@ -17,7 +17,7 @@
 
 import {Component} from "@angular/core";
 import {Oas30Server} from "oai-ts-core";
-import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.base";
+import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 
 export interface ServerVariableData {
     default: string;
@@ -49,14 +49,13 @@ export interface IServerEditorHandler extends IEntityEditorHandler<Oas30Server, 
 })
 export class ServerEditorComponent extends EntityEditor<Oas30Server, ServerEditorEvent> {
 
-    public _varSelected: string = null;
-
-    protected model: ServerData = {
+    public model: ServerData = {
         url: "",
         description: "",
         variables: {}
     };
-    protected url: string;
+    public url: string;
+    _varSelected: string = null;
 
     /**
      * Initializes the editor's data model from a provided entity (initialize the editor data model from an entity).

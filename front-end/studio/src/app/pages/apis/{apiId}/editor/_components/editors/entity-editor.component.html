@@ -1,0 +1,46 @@
+<div class="entity-editor {{ entityType }}-entity-editor container-fluid" (window:keydown)="onGlobalKeyDown($event)">
+    <a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>
+    <form id="server-entity-form" #entityEditorForm="ngForm">
+        <div class="row-fluid header">
+            <div class="col-md-12">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+            <div class="context" *ngIf="contextIs !== 'document'">
+                <div class="col-md-6 path">
+                    <div class="context-label">Path</div>
+                    <div path-item class="context-value" [path]="pathItem().path()"></div>
+                </div>
+                <div class="col-md-6 operation" *ngIf="contextIs === 'operation'">
+                    <span class="context-label">Operation</span>
+                    <span class="label"
+                          [class.label-info]="operation().method() !== 'get' && operation().method() !== 'post' && operation().method() !== 'delete'"
+                          [class.label-success]="operation().method() === 'get'"
+                          [class.label-warning]="operation().method() === 'post'"
+                          [class.label-danger]="operation().method() === 'delete'">{{ operation().method() }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid required-fields-notification divider-section">
+            <div class="col-md-12">
+                <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <hr />
+            </div>
+        </div>
+
+        <ng-content></ng-content>
+
+        <div class="row-fluid divider-section">
+            <div class="col-md-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row-fluid actions-section">
+            <div class="col-md-12">
+                <div class="actions">
+                    <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
+                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

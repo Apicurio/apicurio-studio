@@ -27,8 +27,7 @@ import {
 import {EditorsService} from "../../../_services/editors.service";
 import {
     ISecurityRequirementEditorHandler,
-    SecurityRequirementEditorComponent,
-    SecurityRequirementEvent
+    SecurityRequirementEditorComponent, SecurityRequirementEditorEvent
 } from "../../editors/security-requirement-editor.component";
 
 
@@ -50,7 +49,7 @@ export class SecurityRequirementsSectionComponent {
      * Called when the user adds a new security requirement.
      * @param event
      */
-    public addSecurityRequirement(event: SecurityRequirementEvent): void {
+    public addSecurityRequirement(event: SecurityRequirementEditorEvent): void {
         console.info("[SecurityRequirementsSectionComponent] Adding security requirement: ", event);
         let requirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
         let library: OasLibraryUtils = new OasLibraryUtils();
@@ -63,11 +62,11 @@ export class SecurityRequirementsSectionComponent {
      * Called when the user changes an existing Security Requirement.
      * @param event
      */
-    public changeSecurityRequirement(event: SecurityRequirementEvent): void {
+    public changeSecurityRequirement(event: SecurityRequirementEditorEvent): void {
         let newRequirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
         let library: OasLibraryUtils = new OasLibraryUtils();
         library.readNode(event.data, newRequirement);
-        let command: ICommand = createReplaceSecurityRequirementCommand(this.parent.ownerDocument(), event.requirement, newRequirement);
+        let command: ICommand = createReplaceSecurityRequirementCommand(this.parent.ownerDocument(), event.entity, newRequirement);
         this.commandService.emit(command);
     }
 
@@ -95,11 +94,11 @@ export class SecurityRequirementsSectionComponent {
     public openSecurityRequirementEditor(requirement?: OasSecurityRequirement): void {
         let editor: SecurityRequirementEditorComponent = this.editorsService.getSecurityRequirementEditor();
         let handler: ISecurityRequirementEditorHandler = {
-            onSave: (data: SecurityRequirementEvent) => {
+            onSave: (event: SecurityRequirementEditorEvent) => {
                 if (requirement) {
-                    this.changeSecurityRequirement(data);
+                    this.changeSecurityRequirement(event);
                 } else {
-                    this.addSecurityRequirement(data);
+                    this.addSecurityRequirement(event);
                 }
             },
             onCancel: () => {}

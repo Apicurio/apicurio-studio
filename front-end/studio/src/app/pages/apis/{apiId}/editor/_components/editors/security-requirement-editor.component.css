@@ -1,6 +1,9 @@
 .security-scheme-list {
-  width: 60%;
-  min-width: 350px;
+  margin-left: 20px;
+}
+
+.security-scheme-list .list-view-pf-main-info {
+  padding-top: 24px;
 }
 
 .security-scheme-list .list-group-item-heading .type::before {

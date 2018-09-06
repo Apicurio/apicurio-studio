@@ -128,6 +128,13 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
         }
     }
 
+    /**
+     * Returns true if the context is the document (global).
+     */
+    public isGlobalContext(): boolean {
+        return this.context.ownerDocument() === this.context;
+    }
+
 }
 
 
@@ -141,7 +148,7 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
 export class EntityEditorComponent implements OnChanges {
 
     @Input() entityType: string = "unknown";
-    @Input() title: string = "Configure the Entity";
+    @Input() heading: string = "Configure the Entity";
     @Input() context: OasDocument | OasPathItem | OasOperation;
     @Input() showRequiredFieldsMessage: boolean = false;
     @Input() valid: boolean = true;

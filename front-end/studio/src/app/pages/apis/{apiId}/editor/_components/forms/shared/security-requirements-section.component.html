@@ -44,6 +44,7 @@
             <div *ngIf="global" class="api-label">Security Requirements needed to access <strong>Operations in this API</strong> (clients must choose one combination):</div>
             <div *ngIf="!global" class="api-label">Security Requirements needed to access <strong>this Operation</strong> (clients must choose one combination):</div>
             <div class="security-requirement" *ngFor="let requirement of securityRequirements()">
+                <validation-problem [model]="requirement" [shallow]="true"></validation-problem>
                 <span class="label label-info" *ngFor="let name of requirement.securityRequirementNames()"
                       title="{{ requirementScopes(requirement, name) }}">{{ name }}</span>
                 <span class="fa fa-pencil" title="Edit the security requirement."

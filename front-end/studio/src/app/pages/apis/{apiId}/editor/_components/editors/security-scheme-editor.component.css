@@ -1,6 +1,4 @@
 .security-scheme-entity-editor .body-section .scheme-details {
-  width: 60%;
-  min-width: 400px;
   margin-left: 20px
 }
 
@@ -13,7 +11,4 @@
 .security-scheme-entity-editor .scheme-details .form-group div input {
   min-width: 350px;
   width: 100%;
-}
-.security-scheme-entity-editor .scheme-details .form-group div input.short {
-  width: 50%;
 }

@@ -15,50 +15,40 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Scopes,
     Oas30AuthorizationCodeOAuthFlow,
     Oas30ClientCredentialsOAuthFlow,
-    Oas30Document,
     Oas30ImplicitOAuthFlow,
     Oas30OAuthFlow,
     Oas30PasswordOAuthFlow,
-    Oas30PathItem,
     OasCombinedVisitorAdapter,
     OasDocument,
-    OasLibraryUtils,
     OasOperation,
     OasSecurityRequirement,
     OasSecurityScheme,
     OasVisitorUtil
 } from "oai-ts-core";
+import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 
 
 export interface SecurityRequirementData {
     [key: string]: string[];
 }
 
-export class SecurityRequirementEvent {
-    requirement: OasSecurityRequirement;
+export interface SecurityRequirementEditorEvent extends EntityEditorEvent<OasSecurityRequirement> {
     data: SecurityRequirementData;
 }
 
-export class ScopeInfo {
+export interface ScopeInfo {
     name: string;
     description: string;
-
-    constructor(name: string, description: string) {
-        this.name = name;
-        this.description = description;
-    }
 }
 
-export interface ISecurityRequirementEditorHandler {
-
-    onSave(data: SecurityRequirementEvent): void;
-    onCancel(): void;
-
+export interface ISecurityRequirementEditorHandler extends IEntityEditorHandler<OasSecurityRequirement, SecurityRequirementEditorEvent> {
+    onSave(event: SecurityRequirementEditorEvent): void;
+    onCancel(event: SecurityRequirementEditorEvent): void;
 }
 
 
@@ -66,28 +56,14 @@ export interface ISecurityRequirementEditorHandler {
     moduleId: module.id,
     selector: "security-requirement-editor",
     templateUrl: "security-requirement-editor.component.html",
-    styleUrls: ["security-requirement-editor.component.css"]
+    styleUrls: ["security-requirement-editor.component.css"],
+    encapsulation: ViewEncapsulation.None
 })
-export class SecurityRequirementEditorComponent {
+export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurityRequirement, SecurityRequirementEditorEvent> {
 
-    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
-    @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
+    public _expanded: any;
 
-    public _library: OasLibraryUtils = new OasLibraryUtils();
-    public _isOpen: boolean = false;
-    public _mode: string = "create";
-    protected _expanded: any;
-    protected _requirement: OasSecurityRequirement;
-
-    protected handler: ISecurityRequirementEditorHandler;
-    protected context: OasDocument | OasOperation;
-    public contextIs: string = "document";
     protected model: SecurityRequirementData;
-    protected _expandedContext: any = {
-        document: null,
-        pathItem: null,
-        operation: null
-    };
     protected schemes: OasSecurityScheme[];
     protected scopeCache: any;
 
@@ -98,64 +74,39 @@ export class SecurityRequirementEditorComponent {
      * @param server
      */
     public open(handler: ISecurityRequirementEditorHandler, context: OasDocument | OasOperation, requirement?: OasSecurityRequirement): void {
-        this.context = context;
-        this.handler = handler;
+        this._expanded = {};
         this.model = {};
         this.scopeCache = {};
-        this._expanded = {};
-
-        if (requirement) {
-            this._requirement = requirement;
-            let names: string[] = requirement.securityRequirementNames();
-            names.forEach( name => {
-                this.model[name] = requirement.scopes(name);
-            });
-            this._mode = "edit";
-        } else {
-            this._requirement = null;
-            this._mode = "create";
-        }
-        if (context) {
-            this.expandContext(context);
-        }
         this.schemes = this.findSchemes(context.ownerDocument());
-        this._isOpen = true;
+        super.open(handler, context, requirement);
     }
 
     /**
-     * Called to close the dialog.
+     * Initializes the editor's data model from a provided entity.
+     * @param entity
      */
-    public close(): void {
-        this._isOpen = false;
+    public initializeModelFromEntity(entity: OasSecurityRequirement): void {
+        let names: string[] = entity.securityRequirementNames();
+        names.forEach( name => {
+            this.model[name] = entity.scopes(name);
+        });
     }
 
     /**
-     * Called when the user clicks "save".
+     * Initializes the editor's data model to an empty state.
      */
-    protected save(): void {
-        if (!this.isValid()) {
-            return;
-        }
-        let event: SecurityRequirementEvent = new SecurityRequirementEvent();
-        event.requirement = this._requirement;
-        event.data = this.model;
-        this.close();
-        this.handler.onSave(event);
+    public initializeModel(): void {
     }
 
     /**
-     * Called when the user clicks "cancel".
+     * Creates an entity event specific to this entity editor.
      */
-    protected cancel(): void {
-        this.close();
-        this.handler.onCancel();
-    }
-
-    /**
-     * Returns true if the dialog is open.
-     */
-    public isOpen(): boolean {
-        return this._isOpen;
+    public entityEvent(): SecurityRequirementEditorEvent {
+        let event: SecurityRequirementEditorEvent = {
+            entity: this.entity,
+            data: this.model
+        };
+        return event;
     }
 
     /**
@@ -166,52 +117,6 @@ export class SecurityRequirementEditorComponent {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Figures out what the context is based on what is passed to it.
-     * @param context
-     */
-    public expandContext(context: OasDocument | OasOperation): void {
-        if (context['_method']) {
-            this.contextIs = "operation";
-            this._expandedContext.operation = context as OasOperation;
-            this._expandedContext.pathItem = context.parent() as Oas30PathItem;
-            this._expandedContext.document = context.ownerDocument();
-        } else {
-            this.contextIs = "document";
-            this._expandedContext.document = context as Oas30Document;
-        }
-    }
-
-    /**
-     * Gets the context path item (if any).
-     */
-    public pathItem(): Oas30PathItem {
-        return this._expandedContext.pathItem;
-    }
-
-    /**
-     * Gets the context operation (if any).
-     */
-    public operation(): OasOperation {
-        return this._expandedContext.operation;
-    }
-
-    /**
-     * @param event
-     */
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Enter") {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    }
-
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.cancel();
-        }
     }
 
     /**
@@ -390,13 +295,19 @@ class ScopeFinder extends OasCombinedVisitorAdapter {
 
     protected visitOAuthFlow(node: Oas30OAuthFlow): void {
         for (let scope of node.getScopes()) {
-            this._scopes.push(new ScopeInfo(scope, node.scopes[scope]));
+            this._scopes.push({
+                name: scope,
+                description: node.scopes[scope]
+            });
         }
     }
 
     public visitScopes(node: Oas20Scopes): void {
         for (let scope of node.scopes()) {
-            this._scopes.push(new ScopeInfo(scope, node.getScopeDescription(scope)));
+            this._scopes.push({
+                name: scope,
+                description: node.getScopeDescription(scope)
+            });
         }
     }
 
@@ -404,6 +315,5 @@ class ScopeFinder extends OasCombinedVisitorAdapter {
     public visitPasswordOAuthFlow(node: Oas30PasswordOAuthFlow): void { this.visitOAuthFlow(node); }
     public visitClientCredentialsOAuthFlow(node: Oas30ClientCredentialsOAuthFlow): void { this.visitOAuthFlow(node); }
     public visitAuthorizationCodeOAuthFlow(node: Oas30AuthorizationCodeOAuthFlow): void { this.visitOAuthFlow(node); }
-
 
 }

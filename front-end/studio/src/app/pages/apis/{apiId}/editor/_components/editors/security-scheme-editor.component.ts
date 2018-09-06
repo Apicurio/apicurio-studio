@@ -15,16 +15,10 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, ViewEncapsulation} from "@angular/core";
-import {
-    Oas20SecurityScheme,
-    Oas30OAuthFlow,
-    Oas30SecurityScheme,
-    OasDocument,
-    OasLibraryUtils,
-    OasSecurityScheme
-} from "oai-ts-core";
+import {Component, ViewEncapsulation} from "@angular/core";
+import {Oas20SecurityScheme, Oas30OAuthFlow, Oas30SecurityScheme, OasDocument, OasSecurityScheme} from "oai-ts-core";
 import {ObjectUtils} from "../../_util/object.util";
+import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 
 export interface Scope {
     name: string;
@@ -76,11 +70,13 @@ export interface SecurityScheme30Data extends SecuritySchemeData {
     flows: Flows;
 }
 
-export interface ISecuritySchemeEditorHandler {
+export interface SecuritySchemeEditorEvent extends EntityEditorEvent<OasSecurityScheme> {
+    data: SecurityScheme20Data | SecurityScheme30Data;
+}
 
-    onSave(data: SecuritySchemeData): void;
-    onCancel(): void;
-
+export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<OasSecurityScheme, SecuritySchemeEditorEvent> {
+    onSave(event: SecuritySchemeEditorEvent): void;
+    onCancel(event: SecuritySchemeEditorEvent): void;
 }
 
 
@@ -91,20 +87,10 @@ export interface ISecuritySchemeEditorHandler {
     styleUrls: ["security-scheme-editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class SecuritySchemeEditorComponent {
+export class SecuritySchemeEditorComponent extends EntityEditor<OasSecurityScheme, SecuritySchemeEditorEvent> {
 
-    @Output() onSave: EventEmitter<any> = new EventEmitter<any>();
-    @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
-
-    public _library: OasLibraryUtils = new OasLibraryUtils();
-    public _isOpen: boolean = false;
-    public _mode: string = "create";
-    public _varSelected: string = null;
     public oauthTab: string = "implicit";
-
-    protected handler: ISecuritySchemeEditorHandler;
-    protected context: OasDocument;
-    protected model: SecuritySchemeData;
+    public model: SecuritySchemeData;
 
     private scopeIncrement: number;
 
@@ -115,35 +101,55 @@ export class SecuritySchemeEditorComponent {
      * @param server
      */
     public open(handler: ISecuritySchemeEditorHandler, context: OasDocument, scheme?: OasSecurityScheme): void {
-        this.handler = handler;
-        this.context = context;
-        this.initModel(scheme);
-        if (scheme) {
-            this._mode = "edit";
-        } else {
-            this._mode = "create";
-        }
-        this._isOpen = true;
         this.scopeIncrement = 1;
+        super.open(handler, context, scheme);
     }
 
     public is2x(): boolean {
-        return this.context.is2xDocument();
+        return this.context.ownerDocument().is2xDocument();
     }
 
     public is3x(): boolean {
-        return this.context.is3xDocument();
+        return this.context.ownerDocument().is3xDocument();
     }
 
     /**
-     * Called to close the dialog.
+     * Initializes the editor's data model from a provided entity.
+     * @param entity
      */
-    public close(): void {
-        this._isOpen = false;
+    public initializeModelFromEntity(entity: OasSecurityScheme): void {
+        this.initModel(entity);
     }
 
-    protected initModel(scheme: OasSecurityScheme): void {
-        if (this.context.is2xDocument()) {
+    /**
+     * Initializes the editor's data model to an empty state.
+     */
+    public initializeModel(): void {
+        this.initModel();
+    }
+
+    /**
+     * Returns true if the data model is valid.
+     */
+    public isValid(): boolean {
+        let hasSchemeName: boolean = !ObjectUtils.isNullOrUndefined(this.model.schemeName);
+        let hasType: boolean = !ObjectUtils.isNullOrUndefined(this.model.type);
+        return hasSchemeName && hasType;
+    }
+
+    /**
+     * Creates an entity event specific to this entity editor.
+     */
+    public entityEvent(): SecuritySchemeEditorEvent {
+        let event: SecuritySchemeEditorEvent = {
+            entity: this.entity,
+            data: this.model
+        };
+        return event;
+    }
+
+    protected initModel(scheme?: OasSecurityScheme): void {
+        if (this.context.ownerDocument().is2xDocument()) {
             this.model = {
                 schemeName: null,
                 description: null,
@@ -199,7 +205,7 @@ export class SecuritySchemeEditorComponent {
         }
 
         if (scheme) {
-            if (this.context.is2xDocument()) {
+            if (this.context.ownerDocument().is2xDocument()) {
                 let scheme20: Oas20SecurityScheme = scheme as Oas20SecurityScheme;
                 this.model.schemeName = scheme20.schemeName();
                 this.model.description = scheme20.description;
@@ -356,57 +362,6 @@ export class SecuritySchemeEditorComponent {
             }
         }
         return true;
-    }
-
-    /**
-     * Called when the user clicks "save".
-     */
-    protected save(): void {
-        if (!this.isValid()) {
-            return;
-        }
-        this.close();
-        this.handler.onSave(this.model);
-    }
-
-    /**
-     * Called when the user clicks "cancel".
-     */
-    protected cancel(): void {
-        this.close();
-        this.handler.onCancel();
-    }
-
-    /**
-     * Returns true if the dialog is open.
-     */
-    public isOpen(): boolean {
-        return this._isOpen;
-    }
-
-    /**
-     * Returns true if the editor is currently valid.
-     */
-    public isValid(): boolean {
-        let hasSchemeName: boolean = !ObjectUtils.isNullOrUndefined(this.model.schemeName);
-        let hasType: boolean = !ObjectUtils.isNullOrUndefined(this.model.type);
-        return hasSchemeName && hasType;
-    }
-
-    /**
-     * @param event
-     */
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Enter") {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    }
-
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.cancel();
-        }
     }
 
     /**

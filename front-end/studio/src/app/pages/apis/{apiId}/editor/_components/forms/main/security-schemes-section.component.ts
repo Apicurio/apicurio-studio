@@ -38,7 +38,7 @@ import {
     SecurityScheme20Data,
     SecurityScheme30Data,
     SecuritySchemeData,
-    SecuritySchemeEditorComponent
+    SecuritySchemeEditorComponent, SecuritySchemeEditorEvent
 } from "../../editors/security-scheme-editor.component";
 
 
@@ -61,11 +61,11 @@ export class SecuritySchemesSectionComponent {
     public openSecuritySchemeModal(scheme?: OasSecurityScheme): void {
         let editor: SecuritySchemeEditorComponent = this.editors.getSecuritySchemeEditor();
         let handler: ISecuritySchemeEditorHandler = {
-            onSave: (data: SecuritySchemeData) => {
+            onSave: (event: SecuritySchemeEditorEvent) => {
                 if (!scheme) {
-                    this.addSecurityScheme(data);
+                    this.addSecurityScheme(event.data);
                 } else {
-                    this.changeSecurityScheme(data);
+                    this.changeSecurityScheme(event.data);
                 }
             },
             onCancel: () => {}

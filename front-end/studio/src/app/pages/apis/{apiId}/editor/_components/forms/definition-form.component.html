@@ -90,11 +90,10 @@
 
                         <!-- The list of schema properties -->
                         <div class="container-fluid path-parameters typed-item-list">
-                            <property-row *ngFor="let property of properties()" [canDelete]="true"
-                                       [property]="property" [propertyClass]="'schema-property'"
-                                       (onDelete)="deleteProperty(property)"
-                                       (onDescriptionChange)="changePropertyDescription(property, $event)"
-                                       (onTypeChange)="changePropertyType(property, $event)"></property-row>
+                            <property-row *ngFor="let property of properties()" [property]="property"
+                                          (onDelete)="deleteProperty(property)"
+                                          (onDescriptionChange)="changePropertyDescription(property, $event)"
+                                          (onTypeChange)="changePropertyType(property, $event)"></property-row>
                         </div>
                     </div>
                 </div>

@@ -972,7 +972,6 @@
   margin-left: 3px;
   margin-right: 3px;
 }
-.api-editor .editor-detail .property.required,
 .api-editor .editor-detail .parameter.required {
   box-shadow: 1px 1px 4px #aae;
 }
@@ -981,9 +980,6 @@
 .api-editor .editor-detail .row.response {
   margin-left: 0;
   margin-right: 0;
-}
-.api-editor .editor-detail .property-type .api-property-required .dropdown {
-  display: inline-block;
 }
 .api-editor .editor-detail table {
   font-size: 13px;

@@ -62,6 +62,14 @@ export class ResponseRow30Component {
         return "";
     }
 
+    public hasDescription(): boolean {
+        if (this.response.description) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public description(): string {
         if (this.response.description) {
             return this.response.description

@@ -1,0 +1,112 @@
+.property {
+  border: 1px solid transparent;
+  position: relative;
+}
+.property.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.property .required-badge {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 15px;
+  color: #e8b829;
+}
+.property .required-badge:hover {
+  filter: brightness(120%);
+}
+
+.property .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.property .header:hover {
+  background-color: #edf8ff;
+}
+.property.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.property .header .expand {
+  flex-basis: 1%;
+}
+.property .header .name {
+  flex-basis: 12%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .name > span {
+  font-weight: 600;
+}
+.property .header .description {
+  flex-basis: 44%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .description:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.property .header .summary {
+  flex-basis: 41%;
+}
+.property .header .summary:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.property .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.property .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.property .body {
+  position: relative;
+  padding: 15px;
+}
+.property .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.property .body .property-description form {
+  width: 100%;
+}
+.property .body .property-description .form-label {
+  font-weight: 600;
+}
+
+.property .body span.strong {
+  font-weight: 600;
+}
+
+.property .body .property-required {
+  margin-bottom: 20px;
+}
+.property .body .property-type {
+  margin-bottom: 10px;
+}
+
+.property .body .property-required .dropdown, .property .body .property-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}

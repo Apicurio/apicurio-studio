@@ -4823,230 +4823,6 @@ var Oas30ExampleDefinition = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/**
- * Models an OAS 3.0 Parameter object.  Example:
- *
- * {
- *   "name": "token",
- *   "in": "header",
- *   "description": "token to be passed as a header",
- *   "required": true,
- *   "schema": {
- *     "type": "array",
- *     "items": {
- *       "type": "integer",
- *       "format": "int64"
- *     }
- *   },
- *   "style": "commaDelimited"
- * }
- */
-var Oas30ParameterBase = (function (_super) {
-    __extends$59(Oas30ParameterBase, _super);
-    function Oas30ParameterBase() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.content = new Oas30ParameterContent();
-        return _this;
-    }
-    /**
-     * Creates a child schema model.
-     * @return {Oas30Schema}
-     */
-    Oas30ParameterBase.prototype.createSchema = function () {
-        var rval = new Oas30Schema();
-        rval._ownerDocument = this._ownerDocument;
-        rval._parent = this;
-        return rval;
-    };
-    /**
-     * Creates a child Example model.
-     * @return {Oas30Example}
-     */
-    Oas30ParameterBase.prototype.createExample = function (name) {
-        var rval = new Oas30Example(name);
-        rval._ownerDocument = this._ownerDocument;
-        rval._parent = this;
-        return rval;
-    };
-    /**
-     * Adds the Example to the map of examples.
-     * @param example
-     */
-    Oas30ParameterBase.prototype.addExample = function (example) {
-        if (!this.examples) {
-            this.examples = new Oas30ExampleItems();
-        }
-        this.examples[example.name()] = example;
-    };
-    /**
-     * Removes an Example and returns it.
-     * @param name
-     * @return {Oas30Example}
-     */
-    Oas30ParameterBase.prototype.removeExample = function (name) {
-        var rval = null;
-        if (this.examples) {
-            rval = this.examples[name];
-            delete this.examples[name];
-        }
-        return rval;
-    };
-    /**
-     * Gets a single example by name.
-     * @param name
-     * @return {any}
-     */
-    Oas30ParameterBase.prototype.getExample = function (name) {
-        if (this.examples) {
-            return this.examples[name];
-        }
-        else {
-            return null;
-        }
-    };
-    /**
-     * Gets all examples.
-     * @return {Oas30Example[]}
-     */
-    Oas30ParameterBase.prototype.getExamples = function () {
-        var examples = [];
-        if (this.examples) {
-            for (var exampleName in this.examples) {
-                var example = this.examples[exampleName];
-                examples.push(example);
-            }
-        }
-        return examples;
-    };
-    /**
-     * Creates a media type.
-     * @param name
-     * @return {Oas30MediaType}
-     */
-    Oas30ParameterBase.prototype.createMediaType = function (name) {
-        var rval = new Oas30MediaType(name);
-        rval._ownerDocument = this._ownerDocument;
-        rval._parent = this;
-        return rval;
-    };
-    /**
-     * Adds a media type.
-     * @param name
-     * @param mediaType
-     */
-    Oas30ParameterBase.prototype.addMediaType = function (name, mediaType) {
-        this.content[name] = mediaType;
-    };
-    /**
-     * Gets a single media type by name.
-     * @param name
-     * @return {Oas30MediaType}
-     */
-    Oas30ParameterBase.prototype.getMediaType = function (name) {
-        return this.content[name];
-    };
-    /**
-     * Removes a single media type and returns it.  This may return null or undefined if none found.
-     * @param name
-     * @return {Oas30MediaType}
-     */
-    Oas30ParameterBase.prototype.removeMediaType = function (name) {
-        var rval = this.content[name];
-        if (rval) {
-            delete this.content[name];
-        }
-        return rval;
-    };
-    /**
-     * Gets a list of all media types.
-     * @return {Oas30MediaType[]}
-     */
-    Oas30ParameterBase.prototype.getMediaTypes = function () {
-        var rval = [];
-        for (var name_1 in this.content) {
-            rval.push(this.content[name_1]);
-        }
-        return rval;
-    };
-    return Oas30ParameterBase;
-}(OasParameterBase));
-/**
- * Extends the base parameter to model a parameter that is a child of the OAS 3.0 Parameters Definitions
- * object.
- */
-var Oas30ParameterDefinition = (function (_super) {
-    __extends$59(Oas30ParameterDefinition, _super);
-    /**
-     * Constructor.
-     * @param parameterName
-     */
-    function Oas30ParameterDefinition(parameterName) {
-        var _this = _super.call(this) || this;
-        _this._parameterName = parameterName;
-        return _this;
-    }
-    /**
-     * Gets the parameter name.
-     * @return {string}
-     */
-    Oas30ParameterDefinition.prototype.parameterName = function () {
-        return this._parameterName;
-    };
-    /**
-     * Accepts the given OAS node visitor and calls the appropriate method on it to visit this node.
-     * @param visitor
-     */
-    Oas30ParameterDefinition.prototype.accept = function (visitor) {
-        var viz = visitor;
-        viz.visitParameterDefinition(this);
-    };
-    return Oas30ParameterDefinition;
-}(Oas30ParameterBase));
-/**
- * Extends the base parameter to add support for references.
- */
-var Oas30Parameter = (function (_super) {
-    __extends$59(Oas30Parameter, _super);
-    function Oas30Parameter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /**
-     * Accepts the given OAS node visitor and calls the appropriate method on it to visit this node.
-     * @param visitor
-     */
-    Oas30Parameter.prototype.accept = function (visitor) {
-        var viz = visitor;
-        viz.visitParameter(this);
-    };
-    return Oas30Parameter;
-}(Oas30ParameterBase));
-var Oas30ParameterContent = (function () {
-    function Oas30ParameterContent() {
-    }
-    return Oas30ParameterContent;
-}());
-
-/**
- * @license
- * Copyright 2017 Red Hat
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -5071,7 +4847,7 @@ var Oas30Header = (function (_super) {
      */
     function Oas30Header(headerName) {
         var _this = _super.call(this, headerName) || this;
-        _this.content = new Oas30ParameterContent();
+        _this.content = new Oas30HeaderContent();
         return _this;
     }
     /**
@@ -5225,6 +5001,11 @@ var Oas30HeaderDefinition = (function (_super) {
     };
     return Oas30HeaderDefinition;
 }(Oas30Header));
+var Oas30HeaderContent = (function () {
+    function Oas30HeaderContent() {
+    }
+    return Oas30HeaderContent;
+}());
 
 /**
  * @license
@@ -5729,7 +5510,7 @@ var Oas30RequestBodyContent = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5738,7 +5519,7 @@ var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link Parameter Expression object.
  */
 var Oas30LinkParameterExpression = (function (_super) {
-    __extends$63(Oas30LinkParameterExpression, _super);
+    __extends$62(Oas30LinkParameterExpression, _super);
     /**
      * Constructor.
      * @param name
@@ -5805,7 +5586,7 @@ var Oas30LinkParameterExpression = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5814,7 +5595,7 @@ var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link Request Body Expression object.
  */
 var Oas30LinkRequestBodyExpression = (function (_super) {
-    __extends$64(Oas30LinkRequestBodyExpression, _super);
+    __extends$63(Oas30LinkRequestBodyExpression, _super);
     /**
      * Constructor.
      * @param value
@@ -5872,7 +5653,7 @@ var Oas30LinkRequestBodyExpression = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5881,7 +5662,7 @@ var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
  * Models an OAS 3.0 Link object.
  */
 var Oas30Link = (function (_super) {
-    __extends$62(Oas30Link, _super);
+    __extends$61(Oas30Link, _super);
     /**
      * Constructor.
      * @param name
@@ -5997,7 +5778,7 @@ var Oas30Link = (function (_super) {
  * Models a link definition found in the components section of an OAS document.
  */
 var Oas30LinkDefinition = (function (_super) {
-    __extends$62(Oas30LinkDefinition, _super);
+    __extends$61(Oas30LinkDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -6037,7 +5818,7 @@ var Oas30LinkParameters = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6056,7 +5837,7 @@ var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30ResponseBase = (function (_super) {
-    __extends$61(Oas30ResponseBase, _super);
+    __extends$60(Oas30ResponseBase, _super);
     function Oas30ResponseBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.headers = new Oas30ResponseHeaders();
@@ -6222,7 +6003,7 @@ var Oas30ResponseBase = (function (_super) {
  * response appears as part of a path/operation.
  */
 var Oas30Response = (function (_super) {
-    __extends$61(Oas30Response, _super);
+    __extends$60(Oas30Response, _super);
     /**
      * Constructor.
      * @param statusCode
@@ -6259,7 +6040,7 @@ var Oas30Response = (function (_super) {
  * is used when the response is a globally defined, named response.
  */
 var Oas30ResponseDefinition = (function (_super) {
-    __extends$61(Oas30ResponseDefinition, _super);
+    __extends$60(Oas30ResponseDefinition, _super);
     /**
      * Constructor.
      * @param name
@@ -6323,7 +6104,7 @@ var Oas30Links = (function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6356,7 +6137,7 @@ var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30Responses = (function (_super) {
-    __extends$60(Oas30Responses, _super);
+    __extends$59(Oas30Responses, _super);
     function Oas30Responses() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6390,7 +6171,7 @@ var Oas30Responses = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6406,12 +6187,236 @@ var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
  * }
  */
 var Oas30SecurityRequirement = (function (_super) {
-    __extends$65(Oas30SecurityRequirement, _super);
+    __extends$64(Oas30SecurityRequirement, _super);
     function Oas30SecurityRequirement() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     return Oas30SecurityRequirement;
 }(OasSecurityRequirement));
+
+/**
+ * @license
+ * Copyright 2017 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$65 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Models an OAS 3.0 Parameter object.  Example:
+ *
+ * {
+ *   "name": "token",
+ *   "in": "header",
+ *   "description": "token to be passed as a header",
+ *   "required": true,
+ *   "schema": {
+ *     "type": "array",
+ *     "items": {
+ *       "type": "integer",
+ *       "format": "int64"
+ *     }
+ *   },
+ *   "style": "commaDelimited"
+ * }
+ */
+var Oas30ParameterBase = (function (_super) {
+    __extends$65(Oas30ParameterBase, _super);
+    function Oas30ParameterBase() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.content = new Oas30ParameterContent();
+        return _this;
+    }
+    /**
+     * Creates a child schema model.
+     * @return {Oas30Schema}
+     */
+    Oas30ParameterBase.prototype.createSchema = function () {
+        var rval = new Oas30Schema();
+        rval._ownerDocument = this._ownerDocument;
+        rval._parent = this;
+        return rval;
+    };
+    /**
+     * Creates a child Example model.
+     * @return {Oas30Example}
+     */
+    Oas30ParameterBase.prototype.createExample = function (name) {
+        var rval = new Oas30Example(name);
+        rval._ownerDocument = this._ownerDocument;
+        rval._parent = this;
+        return rval;
+    };
+    /**
+     * Adds the Example to the map of examples.
+     * @param example
+     */
+    Oas30ParameterBase.prototype.addExample = function (example) {
+        if (!this.examples) {
+            this.examples = new Oas30ExampleItems();
+        }
+        this.examples[example.name()] = example;
+    };
+    /**
+     * Removes an Example and returns it.
+     * @param name
+     * @return {Oas30Example}
+     */
+    Oas30ParameterBase.prototype.removeExample = function (name) {
+        var rval = null;
+        if (this.examples) {
+            rval = this.examples[name];
+            delete this.examples[name];
+        }
+        return rval;
+    };
+    /**
+     * Gets a single example by name.
+     * @param name
+     * @return {any}
+     */
+    Oas30ParameterBase.prototype.getExample = function (name) {
+        if (this.examples) {
+            return this.examples[name];
+        }
+        else {
+            return null;
+        }
+    };
+    /**
+     * Gets all examples.
+     * @return {Oas30Example[]}
+     */
+    Oas30ParameterBase.prototype.getExamples = function () {
+        var examples = [];
+        if (this.examples) {
+            for (var exampleName in this.examples) {
+                var example = this.examples[exampleName];
+                examples.push(example);
+            }
+        }
+        return examples;
+    };
+    /**
+     * Creates a media type.
+     * @param name
+     * @return {Oas30MediaType}
+     */
+    Oas30ParameterBase.prototype.createMediaType = function (name) {
+        var rval = new Oas30MediaType(name);
+        rval._ownerDocument = this._ownerDocument;
+        rval._parent = this;
+        return rval;
+    };
+    /**
+     * Adds a media type.
+     * @param name
+     * @param mediaType
+     */
+    Oas30ParameterBase.prototype.addMediaType = function (name, mediaType) {
+        this.content[name] = mediaType;
+    };
+    /**
+     * Gets a single media type by name.
+     * @param name
+     * @return {Oas30MediaType}
+     */
+    Oas30ParameterBase.prototype.getMediaType = function (name) {
+        return this.content[name];
+    };
+    /**
+     * Removes a single media type and returns it.  This may return null or undefined if none found.
+     * @param name
+     * @return {Oas30MediaType}
+     */
+    Oas30ParameterBase.prototype.removeMediaType = function (name) {
+        var rval = this.content[name];
+        if (rval) {
+            delete this.content[name];
+        }
+        return rval;
+    };
+    /**
+     * Gets a list of all media types.
+     * @return {Oas30MediaType[]}
+     */
+    Oas30ParameterBase.prototype.getMediaTypes = function () {
+        var rval = [];
+        for (var name_1 in this.content) {
+            rval.push(this.content[name_1]);
+        }
+        return rval;
+    };
+    return Oas30ParameterBase;
+}(OasParameterBase));
+/**
+ * Extends the base parameter to model a parameter that is a child of the OAS 3.0 Parameters Definitions
+ * object.
+ */
+var Oas30ParameterDefinition = (function (_super) {
+    __extends$65(Oas30ParameterDefinition, _super);
+    /**
+     * Constructor.
+     * @param parameterName
+     */
+    function Oas30ParameterDefinition(parameterName) {
+        var _this = _super.call(this) || this;
+        _this._parameterName = parameterName;
+        return _this;
+    }
+    /**
+     * Gets the parameter name.
+     * @return {string}
+     */
+    Oas30ParameterDefinition.prototype.parameterName = function () {
+        return this._parameterName;
+    };
+    /**
+     * Accepts the given OAS node visitor and calls the appropriate method on it to visit this node.
+     * @param visitor
+     */
+    Oas30ParameterDefinition.prototype.accept = function (visitor) {
+        var viz = visitor;
+        viz.visitParameterDefinition(this);
+    };
+    return Oas30ParameterDefinition;
+}(Oas30ParameterBase));
+/**
+ * Extends the base parameter to add support for references.
+ */
+var Oas30Parameter = (function (_super) {
+    __extends$65(Oas30Parameter, _super);
+    function Oas30Parameter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Accepts the given OAS node visitor and calls the appropriate method on it to visit this node.
+     * @param visitor
+     */
+    Oas30Parameter.prototype.accept = function (visitor) {
+        var viz = visitor;
+        viz.visitParameter(this);
+    };
+    return Oas30Parameter;
+}(Oas30ParameterBase));
+var Oas30ParameterContent = (function () {
+    function Oas30ParameterContent() {
+    }
+    return Oas30ParameterContent;
+}());
 
 /**
  * @license
@@ -8714,7 +8719,7 @@ var OasJS2ModelReader = (function () {
         if (this.isDefined(example)) {
             schemaModel.example = example;
         }
-        this.readExtensions(items, schemaModel);
+        this.readExtensions(schema, schemaModel);
     };
     /**
      * Reads an OAS XML object from the given JS data.
@@ -10380,6 +10385,15 @@ var OasDocumentFactory = (function () {
      * @return {OasDocument}
      */
     OasDocumentFactory.prototype.createEmpty = function (oasVersion) {
+        if (oasVersion === "2") {
+            oasVersion = "2.0";
+        }
+        if (oasVersion === "3") {
+            oasVersion = "3.0.0";
+        }
+        if (oasVersion === "3.0") {
+            oasVersion = "3.0.0";
+        }
         if (oasVersion === "2.0") {
             return new Oas20Document();
         }
@@ -10394,6 +10408,12 @@ var OasDocumentFactory = (function () {
      * @return {Oas20Document}
      */
     OasDocumentFactory.prototype.createFromObject = function (oasObject) {
+        if (oasObject.swagger && oasObject.swagger === 2) {
+            oasObject.swagger = "2.0";
+        }
+        if (oasObject.openapi && (oasObject.openapi === 3 || oasObject.openapi === 3.0 || oasObject.openapi === "3.0")) {
+            oasObject.openapi = "3.0.0";
+        }
         if (oasObject.swagger && oasObject.swagger === "2.0") {
             var reader = new Oas20JS2ModelReader();
             return reader.read(oasObject);
@@ -15821,7 +15841,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
             }
             var path = pathItem.path();
             var pathVars = this.parsePathTemplate(path);
-            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter not found in path template.\"");
+            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter not found in path template.");
             this.reportIfInvalid("PAR-3-006", node.required === true, node, "required", "Path Parameters must be marked as \"required\".");
             if (this.hasValue(node.style)) {
                 this.reportIfInvalid("PAR-3-010", OasValidationRuleUtil.isValidEnumItem(node.style, ["matrix", "label", "simple"]), node, "style", "Path Parameter Style must be one of: [\"matrix\", \"label\", \"simple\"]  (Found \"" + node.style + "\").");
@@ -16202,10 +16222,13 @@ var Oas30RequiredPropertyValidationRule = (function (_super) {
         this.requirePropertyWhen("SS-3-006", node, "openIdConnectUrl", "type", "openIdConnect", "OpenID Connect Security Scheme is missing a Connect URL.");
     };
     Oas30RequiredPropertyValidationRule.prototype.visitServerVariable = function (node) {
-        this.requireProperty("SVAR-3-001", node, "default", "Server Variable is missing a default value.");
+        this.requireProperty("SVAR-3-001", node, "default", "Server Variable \"" + node.name() + "\" is missing a default value.");
     };
     Oas30RequiredPropertyValidationRule.prototype.visitTag = function (node) {
         this.requireProperty("TAG-3-001", node, "name", "Tag is missing a name.");
+    };
+    Oas30RequiredPropertyValidationRule.prototype.visitResponse = function (node) {
+        this.requireProperty("RES-3-003", node, "description", "Response (code " + node.statusCode() + ") is missing a description.");
     };
     return Oas30RequiredPropertyValidationRule;
 }(Oas30ValidationRule));
@@ -16846,6 +16869,7 @@ exports.Oas30ExampleDefinition = Oas30ExampleDefinition;
 exports.Oas30ExternalDocumentation = Oas30ExternalDocumentation;
 exports.Oas30Header = Oas30Header;
 exports.Oas30HeaderDefinition = Oas30HeaderDefinition;
+exports.Oas30HeaderContent = Oas30HeaderContent;
 exports.Oas30Info = Oas30Info;
 exports.Oas30License = Oas30License;
 exports.Oas30Link = Oas30Link;

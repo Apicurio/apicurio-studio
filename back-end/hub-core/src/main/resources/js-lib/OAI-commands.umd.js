@@ -3579,12 +3579,13 @@ var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-function createNewParamCommand(document, operation, paramName, paramType) {
+function createNewParamCommand(document, parent, paramName, paramType, override) {
+    if (override === void 0) { override = false; }
     if (document.getSpecVersion() === "2.0") {
-        return new NewParamCommand_20(operation, paramName, paramType);
+        return new NewParamCommand_20(parent, paramName, paramType, override);
     }
     else {
-        return new NewParamCommand_30(operation, paramName, paramType);
+        return new NewParamCommand_30(parent, paramName, paramType, override);
     }
 }
 /**
@@ -3594,21 +3595,24 @@ var NewParamCommand = (function (_super) {
     __extends$25(NewParamCommand, _super);
     /**
      * Constructor.
-     * @param operation
+     * @param parent
      * @param paramName
      * @param paramType
+     * @param override
      */
-    function NewParamCommand(operation, paramName, paramType) {
+    function NewParamCommand(parent, paramName, paramType, override) {
+        if (override === void 0) { override = false; }
         var _this = _super.call(this) || this;
-        if (operation) {
-            _this._parentPath = _this.oasLibrary().createNodePath(operation);
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
         }
         _this._paramName = paramName;
         _this._paramType = paramType;
+        _this._override = override;
         return _this;
     }
     /**
-     * Creates a request body parameter for the operation.
+     * Creates a parameter.
      * @param document
      */
     NewParamCommand.prototype.execute = function (document) {
@@ -3627,10 +3631,22 @@ var NewParamCommand = (function (_super) {
             parent.parameters = [];
         }
         var param = parent.createParameter();
-        param.in = this._paramType;
-        param.name = this._paramName;
-        if (param.in === "path") {
-            param.required = true;
+        var configured = false;
+        // If overriding a param from the path level, clone it!
+        if (this._override) {
+            var oparam = this.findOverridableParam(parent);
+            if (oparam) {
+                this.oasLibrary().readNode(this.oasLibrary().writeNode(oparam), param);
+                configured = true;
+            }
+        }
+        // If not overriding, then set the basics only.
+        if (!configured) {
+            param.in = this._paramType;
+            param.name = this._paramName;
+            if (param.in === "path") {
+                param.required = true;
+            }
         }
         parent.addParameter(param);
         console.info("[NewParamCommand] Param %s of type %s created successfully.", param.name, param.in);
@@ -3693,6 +3709,23 @@ var NewParamCommand = (function (_super) {
     NewParamCommand.prototype.unmarshall = function (obj) {
         _super.prototype.unmarshall.call(this, obj);
         this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Tries to find the parameter being overridden (if any).  Returns null if it can't
+     * find something.
+     */
+    NewParamCommand.prototype.findOverridableParam = function (operation) {
+        var _this = this;
+        var rval = null;
+        var pathItem = operation.parent();
+        if (pathItem && pathItem["_path"] && pathItem["parameters"] && pathItem.parameters.length > 0) {
+            pathItem.parameters.forEach(function (piParam) {
+                if (piParam.name === _this._paramName && piParam.in === _this._paramType) {
+                    rval = piParam;
+                }
+            });
+        }
+        return rval;
     };
     return NewParamCommand;
 }(AbstractCommand));
@@ -7798,6 +7831,94 @@ var DeleteAllSecuritySchemesCommand = (function (_super) {
     return DeleteAllSecuritySchemesCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2018 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ * @param name
+ * @param commands
+ */
+
+/**
+ * A command used to aggregate an array of other commands into a single logical command.  This is used
+ * for example to make multiple changes as a single "undoable" change.
+ */
+var AggregateCommand = (function (_super) {
+    __extends$58(AggregateCommand, _super);
+    /**
+     * Constructor.
+     * @param name
+     * @param commands
+     */
+    function AggregateCommand(name, info, commands) {
+        var _this = _super.call(this) || this;
+        _this.name = name;
+        _this.info = info;
+        _this._commands = commands;
+        return _this;
+    }
+    AggregateCommand.prototype.type = function () {
+        return "AggregateCommand";
+    };
+    /**
+     * Executes the command.
+     * @param {OasDocument} document
+     */
+    AggregateCommand.prototype.execute = function (document) {
+        console.info("[AggregateCommand] Executing " + this._commands.length + " child commands.");
+        this._commands.forEach(function (command) {
+            command.execute(document);
+        });
+    };
+    /**
+     * Undoes the command.
+     * @param {OasDocument} document
+     */
+    AggregateCommand.prototype.undo = function (document) {
+        console.info("[AggregateCommand] Reverting " + this._commands.length + " child commands.");
+        this._commands.reverse().forEach(function (command) {
+            command.undo(document);
+        });
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    AggregateCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._commands = this._commands.map(function (childCommand) { return MarshallUtils.marshallCommand(childCommand); });
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    AggregateCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._commands = obj["_commands"].map(function (childCommand) { return MarshallUtils.unmarshallCommand(childCommand); });
+    };
+    return AggregateCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -7816,6 +7937,7 @@ var DeleteAllSecuritySchemesCommand = (function (_super) {
  * limitations under the License.
  */
 var commandFactory = {
+    "AggregateCommand": function () { return new AggregateCommand(null, null, null); },
     "AddExampleCommand_30": function () { return new AddExampleCommand_30(null, null, null, null, null); },
     "AddPathItemCommand_20": function () { return new AddPathItemCommand_20(null, null); },
     "AddPathItemCommand_30": function () { return new AddPathItemCommand_30(null, null); },

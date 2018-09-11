@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem,
+    Oas30PathItem, OasLibraryUtils,
     OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
@@ -34,6 +34,8 @@ import {
     createNewParamCommand,
     ICommand, SimplifiedParameterType
 } from "oai-ts-commands";
+import {Subscription} from "rxjs/Subscription";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -42,14 +44,28 @@ import {
     templateUrl: "query-params-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParamsSectionComponent {
+export class QueryParamsSectionComponent implements OnInit, OnDestroy {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
 
-    constructor(private commandService: CommandService) {}
+    private _queryParameters: (Oas30Parameter | Oas20Parameter)[] = null;
+    private _cmdSubscription: Subscription;
+    private _library: OasLibraryUtils = new OasLibraryUtils();
+
+    constructor(private commandService: CommandService, private documentService: DocumentService) {}
+
+    public ngOnInit(): void {
+        this._cmdSubscription = this.documentService.change().subscribe( () => {
+            this._queryParameters = null;
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._cmdSubscription.unsubscribe();
+    }
 
     public isPathItem(): boolean {
         return this.parent === this.path;
@@ -80,6 +96,10 @@ export class QueryParamsSectionComponent {
             return this.parameters("query");
         }
 
+        if (this._queryParameters !== null) {
+            return this._queryParameters;
+        }
+
         let opParams: (Oas30Parameter | Oas20Parameter)[] = this.parameters("query");
         let piParams: (Oas30Parameter | Oas20Parameter)[] = this.path.getParameters("query") as (Oas30Parameter | Oas20Parameter)[];
         let hasOpParam = function(param: Oas30Parameter | Oas20Parameter): boolean {
@@ -94,16 +114,15 @@ export class QueryParamsSectionComponent {
         piParams.forEach( param => {
             if (!hasOpParam(param)) {
                 let missingParam: Oas30Parameter | Oas20Parameter = this.parent.createParameter();
-                missingParam.in = "query";
-                missingParam.name = param.name;
-                missingParam.required = true;
+                this._library.readNode(this._library.writeNode(param), missingParam);
                 missingParam.n_attribute("missing", true);
                 opParams.push(missingParam);
             }
         });
-        return opParams.sort((param1, param2) => {
+        this._queryParameters = opParams.sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
+        return this._queryParameters;
     }
 
     public openAddQueryParamModal(): void {

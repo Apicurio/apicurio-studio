@@ -17,18 +17,20 @@
 
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {
+    createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createChangePropertyTypeCommand,
+    createNewParamCommand,
     ICommand,
     SimplifiedParameterType,
-    SimplifiedPropertyType,
     SimplifiedType
 } from "oai-ts-commands";
 import {
-    Oas20PropertySchema,
     Oas20SchemaDefinition,
-    Oas30PropertySchema,
     Oas30SchemaDefinition,
+    OasCombinedVisitorAdapter,
+    OasOperation,
+    OasParameterBase,
+    OasPathItem,
     OasVisitorUtil
 } from "oai-ts-core";
 import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
@@ -39,14 +41,15 @@ import {ObjectUtils} from "../../../_util/object.util";
 
 @Component({
     moduleId: module.id,
-    selector: "property-row",
-    templateUrl: "property-row.component.html",
-    styleUrls: [ "property-row.component.css" ],
+    selector: "query-param-row",
+    templateUrl: "query-param-row.component.html",
+    styleUrls: [ "query-param-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class PropertyRowComponent implements OnChanges {
+export class QueryParamRowComponent implements OnChanges {
 
-    @Input() property: Oas20PropertySchema | Oas30PropertySchema;
+    @Input() parameter: OasParameterBase;
+    private _overriddenParam: OasParameterBase;
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
 
@@ -54,11 +57,19 @@ export class PropertyRowComponent implements OnChanges {
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
 
+    private overrideFlag: boolean;
+    private missingFlag: boolean;
+
     constructor(private commandService: CommandService) {}
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes["property"]) {
-            this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
+        if (changes["parameter"]) {
+            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
+            this.missingFlag = this.parameter.n_attribute("missing") === true;
+            this._overriddenParam = this.getOverriddenParam(this.parameter);
+            this.overrideFlag = this._overriddenParam !== null;
+            console.info(`[xxxxxxxxxxx] Param ${ this.parameter.name } changed.  Missing: ${ this.missingFlag } | Override: ${ this.overrideFlag } | Overridden: ${ this._overriddenParam !== null } | Overridable: ${ this.isOverridable() } `);
+            console.info(`[xxxxxxxxxxx] `, this.parameter);
         }
     }
 
@@ -67,7 +78,7 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public hasDescription(): boolean {
-        if (this.property.description) {
+        if (this.parameter.description) {
             return true;
         } else {
             return false;
@@ -75,19 +86,15 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public description(): string {
-        if (this.property.description) {
-            return this.property.description
+        if (this.parameter.description) {
+            return this.parameter.description
         } else {
             return "No description.";
         }
     }
 
     public isRequired(): boolean {
-        let required: string[] = this.property.parent()["required"];
-        if (required && required.length > 0) {
-            return required.indexOf(this.property.propertyName()) != -1;
-        }
-        return false;
+        return this.parameter.required;
     }
 
     public required(): string {
@@ -118,12 +125,12 @@ export class PropertyRowComponent implements OnChanges {
             { value: "number", name: "Number" }
         ];
         let refPrefix: string = "#/components/schemas/";
-        if (this.property.ownerDocument().getSpecVersion() === "2.0") {
+        if (this.parameter.ownerDocument().getSpecVersion() === "2.0") {
             refPrefix = "#/definitions/";
         }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
+        OasVisitorUtil.visitTree(this.parameter.ownerDocument(), viz);
         let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
         if (defs.length > 0) {
             options.push({ divider: true });
@@ -154,12 +161,12 @@ export class PropertyRowComponent implements OnChanges {
             { value: "number", name: "Number" }
         ];
         let refPrefix: string = "#/components/schemas/";
-        if (this.property.ownerDocument().getSpecVersion() === "2.0") {
+        if (this.parameter.ownerDocument().getSpecVersion() === "2.0") {
             refPrefix = "#/definitions/";
         }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(this.property.ownerDocument(), viz);
+        OasVisitorUtil.visitTree(this.parameter.ownerDocument(), viz);
         let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
         if (defs.length > 0) {
             options.push({ divider: true });
@@ -246,6 +253,10 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public toggleDescription(): void {
+        if (this.isOverridable()) {
+            this._editing = false;
+            return;
+        }
         if (this.isEditing() && this._tab === "description") {
             this._editing = false;
         } else {
@@ -255,6 +266,10 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public toggleSummary(): void {
+        if (this.isOverridable()) {
+            this._editing = false;
+            return;
+        }
         if (this.isEditing() && this._tab === "summary") {
             this._editing = false;
         } else {
@@ -272,7 +287,7 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public displayType(): SimplifiedParameterType {
-        return SimplifiedPropertyType.fromPropertySchema(this.property);
+        return SimplifiedParameterType.fromParameter(this.parameter as any);
     }
 
     public rename(): void {
@@ -281,42 +296,40 @@ export class PropertyRowComponent implements OnChanges {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.property.ownerDocument(), this.property, "description", description);
+        let command: ICommand = createChangePropertyCommand<string>(this.parameter.ownerDocument(), this.parameter, "description", description);
         this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
-        nt.required = this.model().required;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangePropertyCommand<boolean>(this.parameter.ownerDocument(), this.parameter, "required", this.model().required);
         this.commandService.emit(command);
     }
 
     public changeType(type: string): void {
-        let nt: SimplifiedPropertyType = new SimplifiedPropertyType();
+        let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.required = this.model().required;
         nt.type = type;
         nt.of = null;
         nt.as = null;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
 
     public changeTypeOf(typeOf: string): void {
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
+        let nt: SimplifiedParameterType = SimplifiedParameterType.fromParameter(this.parameter as any);
         nt.required = this.model().required;
         nt.of = new SimplifiedType();
         nt.of.type = typeOf;
         nt.as = null;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
 
     public changeTypeAs(typeAs: string): void {
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
+        let nt: SimplifiedParameterType = SimplifiedParameterType.fromParameter(this.parameter as any);
         nt.required = this.model().required;
         if (nt.isSimpleType()) {
             nt.as = typeAs;
@@ -324,9 +337,52 @@ export class PropertyRowComponent implements OnChanges {
         if (nt.isArray() && nt.of) {
             nt.of.as = typeAs;
         }
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
         this.commandService.emit(command);
         this._model = nt;
+    }
+
+    public override(): void {
+        let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
+            this.parameter.name, "query", true);
+        this.commandService.emit(command);
+    }
+
+    public isMissing(): boolean {
+        return this.missingFlag && !this.overrideFlag;
+    }
+
+    public isExists(): boolean {
+        return !this.missingFlag;
+    }
+
+    public isOverride(): boolean {
+        return !this.missingFlag && this.overrideFlag;
+    }
+
+    public isOverridable(): boolean {
+        return this.missingFlag && this.overrideFlag;
+    }
+
+    public getOverriddenParam(param: OasParameterBase): OasParameterBase {
+        let viz: DetectOverrideVisitor = new DetectOverrideVisitor(param);
+        param.parent().accept(viz);
+        return viz.overriddenParam;
+    }
+
+}
+
+
+class DetectOverrideVisitor extends OasCombinedVisitorAdapter {
+
+    public overriddenParam: OasParameterBase = null;
+
+    constructor(private param: OasParameterBase) {
+        super();
+    }
+
+    public visitOperation(node: OasOperation): void {
+        this.overriddenParam = (<OasPathItem>node.parent()).parameter(this.param.in, this.param.name) as OasParameterBase;
     }
 
 }

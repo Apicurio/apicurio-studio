@@ -56,6 +56,13 @@
   text-align: center;
 }
 
+.response .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.response:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
 .response .header > .selected {
   margin-bottom: -4px;
   border-bottom: 2px solid #0088ce;

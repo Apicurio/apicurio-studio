@@ -163,6 +163,17 @@ export class ResponseRow30Component {
         return true;
     }
 
+    public hasResponseTypeInfo(): boolean {
+        if (!this.response.content) {
+            return false;
+        }
+        let numMediaTypes: number = Object.keys(this.response.content).length;
+        if (numMediaTypes === 0) {
+            return false;
+        }
+        return true;
+    }
+
     public responseTypeInfo(): string {
         if (!this.response.content) {
             return "No response media types defined.";

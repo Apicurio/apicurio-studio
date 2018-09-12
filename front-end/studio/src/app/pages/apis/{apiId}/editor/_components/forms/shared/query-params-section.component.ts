@@ -144,14 +144,4 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy {
         this.commandService.emit(command);
     }
 
-    public changeParamDescription(param: Oas30Parameter | Oas20Parameter, newParamDescription: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.parent.ownerDocument(), param, "description", newParamDescription);
-        this.commandService.emit(command);
-    }
-
-    public changeParamType(param: Oas30Parameter | Oas20Parameter, newType: SimplifiedParameterType): void {
-        let command: ICommand = createChangeParameterTypeCommand(this.parent.ownerDocument(), param, newType);
-        this.commandService.emit(command);
-    }
-
 }

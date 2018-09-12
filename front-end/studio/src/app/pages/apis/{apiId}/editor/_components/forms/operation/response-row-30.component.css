@@ -23,18 +23,15 @@
   background-color: #def3ff;
 }
 
-.response .header .expand {
-  flex-basis: 1%;
-}
 .response .header .statusCode {
-  flex-basis: 12%;
+  flex-basis: 16%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding-right: 5px;
 }
 .response .header .description {
-  flex-basis: 44%;
+  flex-basis: 41%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

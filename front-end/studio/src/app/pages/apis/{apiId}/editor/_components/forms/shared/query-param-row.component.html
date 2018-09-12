@@ -1,9 +1,6 @@
 <div class="query-param" [class.expanded]="isEditing()" [class.required]="isRequired()"
      [class.override]="isOverride()" [class.overridable]="isOverridable()">
     <div class="header">
-        <div class="expand">
-            <!--<span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>-->
-        </div>
         <div class="name">
             <validation-problem [model]="parameter"></validation-problem>
             <span class="fa fa-arrow-circle-up icon-override" *ngIf="isOverride()" title="Overrides a parameter defined at the Path level."></span>

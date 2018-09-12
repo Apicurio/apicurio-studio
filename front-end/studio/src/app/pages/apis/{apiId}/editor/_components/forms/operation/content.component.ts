@@ -48,6 +48,7 @@ export interface ExamplePropertyChangeEvent {
     moduleId: module.id,
     selector: "content",
     templateUrl: "content.component.html",
+    styleUrls: [ "content.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
 export class ContentComponent implements OnInit {

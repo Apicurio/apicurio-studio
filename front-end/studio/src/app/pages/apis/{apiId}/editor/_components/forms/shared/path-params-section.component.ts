@@ -22,7 +22,7 @@ import {
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem,
+    Oas30PathItem, OasCombinedVisitorAdapter, OasLibraryUtils, OasOperation, OasParameterBase,
     OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
@@ -53,15 +53,16 @@ export class PathParamsSectionComponent {
     set path(path: OasPathItem) {
         if (this._path !== path) {
             this._path = path;
-            this._pathParameters = undefined;
+            this._pathParameters = null;
         }
     }
     get path(): OasPathItem {
         return this._path;
     }
 
-    private _pathParameters: (Oas30Parameter | Oas20Parameter)[] = undefined;
+    private _pathParameters: (Oas30Parameter | Oas20Parameter)[] = null;
     private _changeSubscription: Subscription;
+    private _library: OasLibraryUtils = new OasLibraryUtils();
 
     /**
      * C'tor.
@@ -75,7 +76,7 @@ export class PathParamsSectionComponent {
      */
     public ngOnInit(): void {
         this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
-            this._pathParameters = undefined;
+            this._pathParameters = null;
         });
     }
 
@@ -95,7 +96,7 @@ export class PathParamsSectionComponent {
     }
 
     public pathParameters(): (Oas30Parameter | Oas20Parameter)[] {
-        if (this._pathParameters === undefined) {
+        if (this._pathParameters === null) {
             let names: any = {};
             ModelUtils.detectPathParamNames(this.path.path()).forEach( paramName => {
                 names[paramName] = "detected";
@@ -116,11 +117,16 @@ export class PathParamsSectionComponent {
         let param: Oas20Parameter | Oas30Parameter = this.parent.parameter("path", paramName) as Oas30Parameter | Oas20Parameter;
 
         if (param === null) {
-            param = this.parent.createParameter() as Oas30Parameter | Oas20Parameter;
-            param.in = "path";
-            param.name = paramName;
-            param.required = true;
-            param.n_attribute("missing", true);
+            let missingParam: Oas30Parameter | Oas20Parameter = this.parent.createParameter() as Oas30Parameter | Oas20Parameter;
+            missingParam.in = "path";
+            missingParam.name = paramName;
+            missingParam.required = true;
+            let overriddenParam: OasParameterBase = this.getOverriddenParam(missingParam);
+            if (overriddenParam) {
+                this._library.readNode(this._library.writeNode(overriddenParam), missingParam);
+            }
+            missingParam.n_attribute("missing", true);
+            param = missingParam;
         }
 
         return param;
@@ -144,6 +150,26 @@ export class PathParamsSectionComponent {
     public changeParamType(param: Oas30Parameter, newType: SimplifiedParameterType): void {
         let command: ICommand = createChangeParameterTypeCommand(this.parent.ownerDocument(), param, newType);
         this.commandService.emit(command);
+    }
+
+    public getOverriddenParam(param: OasParameterBase): OasParameterBase {
+        let viz: DetectOverrideVisitor = new DetectOverrideVisitor(param);
+        param.parent().accept(viz);
+        return viz.overriddenParam;
+    }
+
+}
+
+class DetectOverrideVisitor extends OasCombinedVisitorAdapter {
+
+    public overriddenParam: OasParameterBase = null;
+
+    constructor(private param: OasParameterBase) {
+        super();
+    }
+
+    public visitOperation(node: OasOperation): void {
+        this.overriddenParam = (<OasPathItem>node.parent()).parameter(this.param.in, this.param.name) as OasParameterBase;
     }
 
 }

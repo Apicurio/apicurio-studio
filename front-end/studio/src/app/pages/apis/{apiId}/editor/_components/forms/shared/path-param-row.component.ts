@@ -24,7 +24,14 @@ import {
     SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
-import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
+import {
+    OasCombinedVisitorAdapter,
+    OasDocument,
+    OasLibraryUtils,
+    OasOperation,
+    OasParameterBase,
+    OasPathItem
+} from "oai-ts-core";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {TypedRow} from "./typed-row.base";
@@ -32,12 +39,12 @@ import {TypedRow} from "./typed-row.base";
 
 @Component({
     moduleId: module.id,
-    selector: "query-param-row",
-    templateUrl: "query-param-row.component.html",
-    styleUrls: [ "query-param-row.component.css" ],
+    selector: "path-param-row",
+    templateUrl: "path-param-row.component.html",
+    styleUrls: [ "path-param-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParamRowComponent extends TypedRow implements OnChanges {
+export class PathParamRowComponent extends TypedRow implements OnChanges {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -90,21 +97,6 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges {
         }
     }
 
-    public isRequired(): boolean {
-        return this.parameter.required;
-    }
-
-    public required(): string {
-        return this.isRequired() ? "required" : "not-required";
-    }
-
-    public requiredOptions(): DropDownOption[] {
-        return [
-            { name: "Required", value: "required" },
-            { name: "Not Required", value: "not-required" }
-        ];
-    }
-
     public isEditing(): boolean {
         return this._editing;
     }
@@ -124,7 +116,7 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges {
     }
 
     public toggleDescription(): void {
-        if (this.isOverridable()) {
+        if (this.isOverridable() || this.isMissing()) {
             this._editing = false;
             return;
         }
@@ -137,7 +129,7 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges {
     }
 
     public toggleSummary(): void {
-        if (this.isOverridable()) {
+        if (this.isOverridable() || this.isMissing()) {
             this._editing = false;
             return;
         }
@@ -213,9 +205,15 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges {
         this._model = nt;
     }
 
+    public create(): void {
+        let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
+            this.parameter.name, "path");
+        this.commandService.emit(command);
+    }
+
     public override(): void {
         let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
-            this.parameter.name, "query", true);
+            this.parameter.name, "path", true);
         this.commandService.emit(command);
     }
 

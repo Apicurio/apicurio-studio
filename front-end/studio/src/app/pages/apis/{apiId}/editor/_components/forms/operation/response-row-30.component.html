@@ -1,8 +1,5 @@
 <div class="response" [class.expanded]="isEditing()">
     <div class="header">
-        <div class="expand">
-            <!--<span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>-->
-        </div>
         <div class="statusCode name {{ statusCodeType(response.statusCode()) }}">
             <validation-problem [model]="response"></validation-problem>
             <span>{{ response.statusCode() }}</span>
@@ -14,7 +11,7 @@
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
-            <span>{{ responseTypeInfo() }}</span>
+            <span [class.empty]="!hasResponseTypeInfo()">{{ responseTypeInfo() }}</span>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">

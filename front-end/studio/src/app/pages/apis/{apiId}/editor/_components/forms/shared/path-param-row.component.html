@@ -1,20 +1,22 @@
-<div class="property" [class.expanded]="isEditing()" [class.required]="isRequired()">
+<div class="path-param" [class.expanded]="isEditing()" [class.override]="isOverride()"
+     [class.overridable]="isOverridable()" [class.missing]="isMissing()">
     <div class="header">
         <div class="name">
-            <validation-problem [model]="property"></validation-problem>
-            <span>{{ property.propertyName() }}</span>
+            <validation-problem [model]="parameter"></validation-problem>
+            <span class="fa fa-arrow-circle-up icon-override" *ngIf="isOverride()" title="Overrides a parameter defined at the Path level."></span>
+            <span class="fa fa-arrow-up icon-override" *ngIf="isOverridable()" title="Query parameter inherited from the Path level."></span>
+            <span title="{{ parameter.name }}">{{ parameter.name }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
-            <span [class.empty]="!hasDescription()">{{ description() }}</span>
+            <span title="{{ description() }}" [class.empty]="!hasDescription()">{{ description() }}</span>
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
-            <span class="property-required" *ngIf="isRequired()" title="This property is required.">[required]</span>
             <schema-type [type]="displayType()"></schema-type>
         </div>
         <div class="actions">
-            <div class="dropdown dropdown-kebab-pf">
+            <div class="dropdown dropdown-kebab-pf" *ngIf="!isMissing() && !isOverridable()">
                 <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="fa fa-ellipsis-v"></span>
@@ -25,44 +27,41 @@
                     <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
                 </ul>
             </div>
+            <button *ngIf="isMissing()" type="button" class="btn btn-primary btn-create"
+                    title="The path parameter is required but not declared.  Create it now."
+                    (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Create</span></button>
+            <button *ngIf="isOverridable()" (click)="override()" title="Override the path parameter."
+                    class="btn btn-default btn-override">Override</button>
         </div>
     </div>
     <div class="body" *ngIf="isEditing()">
         <div class="content container-fluid">
             <form  class="form-horizontal">
                 <div class="col-md-11">
-                    <div class="property-description" *ngIf="isEditingDescription()">
+                    <div class="param-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="property.description" [noValueMessage]="'No description.'"
+                        <inline-textarea-editor [value]="parameter.description" [noValueMessage]="'No description.'"
                                                 (onChange)="setDescription($event)"></inline-textarea-editor>
                     </div>
-                    <div class="property-content" *ngIf="isEditingSummary()">
-                        <div class="property-required">
-                            <span>Property is</span>
-                            <drop-down [id]="'api-property-required'"
-                                       [value]="required()"
-                                       [options]="requiredOptions()"
-                                       (onValueChange)="changeRequired($event)"
-                                       [noSelectionLabel]="'Not Required'"></drop-down>
-                        </div>
-                        <div class="property-type">
-                            <!--<validation-problem [model]="mediaType()" [property]="'schema'"></validation-problem>-->
+                    <div class="param-content" *ngIf="isEditingSummary()">
+                        <div class="param-type">
+                            <!--<validation-problem [model]="mediaType()" [param]="'schema'"></validation-problem>-->
                             <span class="strong">Type:</span>
-                            <drop-down [id]="'api-property-type'"
+                            <drop-down [id]="'api-param-type'"
                                        [value]="type()"
                                        [options]="typeOptions()"
                                        (onValueChange)="changeType($event)"
                                        [noSelectionLabel]="'Choose Type'"></drop-down>
-                            <span *ngIf="property.type === 'array'">of</span>
-                            <drop-down *ngIf="property.type === 'array'"
-                                       [id]="'api-property-type-of'"
+                            <span *ngIf="type() === 'array'">of</span>
+                            <drop-down *ngIf="type() === 'array'"
+                                       [id]="'api-param-type-of'"
                                        [value]="typeOf()"
                                        [options]="typeOfOptions()"
                                        (onValueChange)="changeTypeOf($event)"
                                        [noSelectionLabel]="'Choose Type'"></drop-down>
                             <span *ngIf="shouldShowFormattedAs()">as</span>
                             <drop-down *ngIf="shouldShowFormattedAs()"
-                                       [id]="'api-property-type-as'"
+                                       [id]="'api-param-type-as'"
                                        [value]="typeAs()"
                                        [options]="typeAsOptions()"
                                        (onValueChange)="changeTypeAs($event)"

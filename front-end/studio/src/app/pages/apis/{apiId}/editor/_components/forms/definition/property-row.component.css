@@ -24,11 +24,8 @@
   background-color: #def3ff;
 }
 
-.property .header .expand {
-  flex-basis: 1%;
-}
 .property .header .name {
-  flex-basis: 12%;
+  flex-basis: 13%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

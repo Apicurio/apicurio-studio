@@ -16,7 +16,7 @@
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
-            <span class="parameter-required" *ngIf="isRequired()">[required]</span>
+            <span class="parameter-required" *ngIf="isRequired()" title="This query parameter is required.">[required]</span>
             <schema-type [type]="displayType()"></schema-type>
         </div>
         <div class="actions">

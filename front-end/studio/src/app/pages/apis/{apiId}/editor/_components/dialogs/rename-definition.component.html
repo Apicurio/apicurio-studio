@@ -1,4 +1,4 @@
-<!-- Rename Definition Dialog -->
+<!-- Rename Data Type Dialog -->
 <div>
     <div bsModal #renameDefinitionModal="bs-modal" class="modal fade" id="renameDefinitionModal" tabindex="-1" role="dialog"
          aria-labelledby="renameDefinitionModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()"
@@ -9,18 +9,18 @@
                     <button type="button" class="close" aria-hidden="true" (click)="cancel()">
                         <span class="pficon pficon-close"></span>
                     </button>
-                    <h4 class="modal-title" id="renameDefinitionModalLabel">Rename Definition</h4>
+                    <h4 class="modal-title" id="renameDefinitionModalLabel">Rename Data Type</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Enter a new definition name below and then click Rename.</p>
+                    <p>Enter a new data type name below and then click Rename.</p>
                     <form id="renamedef-form" class="form-horizontal" #renameDefinitionForm="ngForm" data-dismiss="modal">
                         <div class="form-group">
                             <label class="col-sm-2 control-label required" for="definitionName">Name</label>
                             <div class="col-sm-10">
-                                <input name="definitionName" type="text" id="definitionName" class="form-control"
-                                       placeholder="Enter a Definition Name" pattern="[a-zA-Z0-9\.\-_]+" #defName="ngModel"
+                                <input name="definitionName" type="text" id="definitionName" class="form-control" #renameDefinitionInput
+                                       placeholder="Enter a Data Type Name" pattern="[a-zA-Z0-9\.\-_]+" #defName="ngModel"
                                        required [(ngModel)]="name" (ngModelChange)="defChanged.next($event)">
-                                <div class="form-error-message" *ngIf="defExists">Definition already exists.</div>
+                                <div class="form-error-message" *ngIf="defExists">Data Type already exists.</div>
                                 <form-error-message [inputModel]="defName" [type]="'required'">Name is required.</form-error-message>
                                 <form-error-message [inputModel]="defName" [type]="'pattern'">Please enter a valid name (allowed: a-Z 0-9 . - _).</form-error-message>
                             </div>

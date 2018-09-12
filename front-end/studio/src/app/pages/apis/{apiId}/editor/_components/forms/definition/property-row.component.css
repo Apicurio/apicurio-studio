@@ -8,18 +8,6 @@
   margin-bottom: 3px;
 }
 
-.property .required-badge {
-  position: absolute;
-  top: 2px;
-  left: 3px;
-  font-size: 15px;
-  color: #e8b829;
-  cursor: help;
-}
-.property .required-badge:hover {
-  filter: brightness(120%);
-}
-
 .property .header {
   display: flex;
   flex-direction: row;
@@ -67,6 +55,14 @@
   color: #0088ce;
   cursor: pointer;
 }
+
+.property .header .summary .property-required {
+  font-weight: 600;
+}
+.property .header .summary .property-required:hover {
+  filter: brightness(120%);
+}
+
 .property .header .actions {
   flex-basis: 2%;
   text-align: center;

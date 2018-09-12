@@ -72,6 +72,9 @@
 .query-param .header .summary .parameter-required {
   font-weight: 600;
 }
+.query-param .header .summary .parameter-required:hover {
+  filter: brightness(120%);
+}
 
 .query-param .header .actions {
   flex-basis: 2%;

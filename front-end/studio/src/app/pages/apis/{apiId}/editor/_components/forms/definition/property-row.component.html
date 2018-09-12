@@ -1,8 +1,5 @@
 <div class="property" [class.expanded]="isEditing()" [class.required]="isRequired()">
     <div class="header">
-        <div class="required-badge" *ngIf="isRequired()" title="Property is required.">
-            <span class="fa fa-star"></span>
-        </div>
         <div class="expand">
             <!--<span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>-->
         </div>
@@ -16,6 +13,7 @@
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
+            <span class="property-required" *ngIf="isRequired()" title="This property is required.">[required]</span>
             <schema-type [type]="displayType()"></schema-type>
         </div>
         <div class="actions">

@@ -34,36 +34,36 @@
         </li>
     </ul>
 
-    <!-- Definition Context Menu -->
+    <!-- Data Type Context Menu -->
     <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
         [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
         <li>
             <a href="#" onclick="return false" (click)="renameDefinition()">
                 <span class="fa fa-pencil-square-o"></span>
-                <span>Rename Definition</span>
+                <span>Rename Data Type</span>
             </a>
         </li>
         <li>
             <a href="#" onclick="return false" (click)="cloneDefinition()">
                 <span class="fa fa-clone"></span>
-                <span>Clone Definition</span>
+                <span>Clone Data Type</span>
             </a>
         </li>
         <li class="divider"></li>
         <li>
             <a href="#" onclick="return false" (click)="deleteDefinition()">
                 <span class="pficon pficon-delete"></span>
-                <span>Delete Definition</span>
+                <span>Delete Data Type</span>
             </a>
         </li>
     </ul>
 
-    <!-- Search - Used to Filter Paths and Definitions -->
+    <!-- Search - Used to Filter Paths and Data Type -->
     <div class="editor-search">
         <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
     </div>
 
-    <!-- Outline - Paths, Definitions, Responses -->
+    <!-- Outline - Paths, Data Type, Responses -->
     <div class="editor-outline">
         <!-- Paths Section -->
         <div class="section path-section panel-group">
@@ -120,17 +120,17 @@
             </div>
         </div>
 
-        <!-- Definitions Section -->
+        <!-- Data Types Section -->
         <div class="section definition-section panel-group">
             <div class="section-header panel-title">
                 <a data-toggle="collapse" data-target="#definition-section-body">
-                    <span class="section-label">Definitions</span>
+                    <span class="section-label">Data Types</span>
                 </a>
                 <context-help>
                     <p>
                         It is often necessary for many operations to return the same type of data
                         (or a list of that same data type).  Rather than define the same data type
-                        multiple times within each operation, you can create named Definitions
+                        multiple times within each operation, you can create named Data Types
                         in this section.  These can then be referenced in the <strong>Request Body</strong>
                         and also <strong>Responses</strong> of any Operation in the API.
                     </p>
@@ -143,7 +143,7 @@
 
                 <signpost *ngIf="definitions().length === 0">
                     <span>No reusable types have been created.</span>
-                    <a (click)="addDefinitionDialog.open(document)">Add a definition</a>
+                    <a (click)="addDefinitionDialog.open(document)">Add a data type</a>
                 </signpost>
             </div>
         </div>

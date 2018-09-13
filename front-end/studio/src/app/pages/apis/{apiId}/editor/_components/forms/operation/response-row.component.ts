@@ -15,34 +15,60 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation, Input, Output, EventEmitter} from "@angular/core";
-import {
-    Oas20Document, Oas20Response
-} from "oai-ts-core";
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {Oas20Response, OasDocument} from "oai-ts-core";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
-import {createDelete20ExampleCommand, createSetExampleCommand, ICommand, SimplifiedType} from "oai-ts-commands";
-import {AbstractTypedItemComponent} from "./typed-item.component";
-import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
+import {
+    createChangePropertyCommand,
+    createChangeResponseTypeCommand,
+    createDelete20ExampleCommand,
+    createSetExampleCommand,
+    ICommand,
+    SimplifiedType
+} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {EditExample20Event} from "../../dialogs/edit-example-20.component";
 import {CommandService} from "../../../_services/command.service";
+import {TypedRow} from "../shared/typed-row.base";
 
 
 @Component({
     moduleId: module.id,
     selector: "response-row",
     templateUrl: "response-row.component.html",
+    styleUrls: [ "response-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedType> {
+export class ResponseRowComponent extends TypedRow implements OnChanges {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 
-    @Input() document: Oas20Document;
     @Input() response: Oas20Response;
 
-    constructor(private commandService: CommandService) {
-        super();
+    @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+
+    protected _editing: boolean = false;
+    protected _tab: string = "description";
+    protected _model: SimplifiedType = null;
+
+    constructor(private commandService: CommandService) { super(); }
+
+    public model(): SimplifiedType {
+        return this._model;
+    }
+
+    public document(): OasDocument {
+        return this.response.ownerDocument();
+    }
+
+    public isParameter(): boolean {
+        return false;
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes["response"]) {
+            this._model = SimplifiedType.fromSchema(this.response.schema);
+        }
     }
 
     public statusCodeLine(code: string): string {
@@ -78,54 +104,56 @@ export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedT
         return "";
     }
 
-    protected modelForEditing(): SimplifiedType {
-        return SimplifiedType.fromSchema(this.response.schema);
-    }
-
-    protected modelForViewing(): SimplifiedType {
-        return SimplifiedType.fromSchema(this.response.schema);
-    }
-
-    public typeOptions(): DropDownOption[] {
-        let options: DropDownOption[] = super.typeOptions();
-
-        if (this.document.definitions) {
-            let co: DropDownOption[] = this.document.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
-            });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
+    public hasDescription(): boolean {
+        if (this.response.description) {
+            return true;
+        } else {
+            return false;
         }
-
-        return options;
     }
 
-    public typeOfOptions(): DropDownOption[] {
-        let options: DropDownOption[] = super.typeOfOptions();
-
-        if (this.document.definitions) {
-            let co: DropDownOption[] = this.document.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
-            });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
+    public description(): string {
+        if (this.response.description) {
+            return this.response.description
+        } else {
+            return "No description.";
         }
+    }
 
-        return options;
+    public isEditing(): boolean {
+        return this._editing;
+    }
+
+    public isEditingDescription(): boolean {
+        return this._editing && this._tab === "description";
+    }
+
+    public isEditingSummary(): boolean {
+        return this._editing && this._tab === "summary";
+    }
+
+    public toggle(event: MouseEvent): void {
+        if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
+            this._editing = !this._editing;
+        }
+    }
+
+    public toggleDescription(): void {
+        if (this.isEditing() && this._tab === "description") {
+            this._editing = false;
+        } else {
+            this._editing = true;
+            this._tab = "description";
+        }
+    }
+
+    public toggleSummary(): void {
+        if (this.isEditing() && this._tab === "summary") {
+            this._editing = false;
+        } else {
+            this._editing = true;
+            this._tab = "summary";
+        }
     }
 
     public hasExamples(): boolean {
@@ -147,18 +175,73 @@ export class ResponseRowComponent extends AbstractTypedItemComponent<SimplifiedT
         return evalue;
     }
 
+    public delete(): void {
+        this.onDelete.emit();
+    }
+
+    public isValid(): boolean {
+        return true;
+    }
+
+    public displayType(): SimplifiedType {
+        return SimplifiedType.fromSchema(this.response.schema);
+    }
+
+    public rename(): void {
+        // TODO implement this!
+        alert("Not yet implemented!");
+    }
+
+    public changeType(type: string): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = type;
+        nt.of = null;
+        nt.as = null;
+        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
+        this.commandService.emit(command);
+        this._model = nt;
+    }
+
+    public changeTypeOf(typeOf: string): void {
+        let nt: SimplifiedType = SimplifiedType.fromSchema(this.response.schema);
+        nt.of = new SimplifiedType();
+        nt.of.type = typeOf;
+        nt.as = null;
+        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
+        this.commandService.emit(command);
+        this._model = nt;
+    }
+
+    public changeTypeAs(typeAs: string): void {
+        let nt: SimplifiedType = SimplifiedType.fromSchema(this.response.schema);
+        if (nt.isSimpleType()) {
+            nt.as = typeAs;
+        }
+        if (nt.isArray() && nt.of) {
+            nt.of.as = typeAs;
+        }
+        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
+        this.commandService.emit(command);
+        this._model = nt;
+    }
+
+    public setDescription(description: string): void {
+        let command: ICommand = createChangePropertyCommand<string>(this.document(), this.response, "description", description);
+        this.commandService.emit(command);
+    }
+
     public deleteExample(contentType: string): void {
-        let command: ICommand = createDelete20ExampleCommand(this.document, this.response, contentType);
+        let command: ICommand = createDelete20ExampleCommand(this.document(), this.response, contentType);
         this.commandService.emit(command);
     }
 
     public addExample(exampleData: any): void {
-        let command: ICommand = createSetExampleCommand(this.document, this.response, exampleData.value, exampleData.contentType);
+        let command: ICommand = createSetExampleCommand(this.document(), this.response, exampleData.value, exampleData.contentType);
         this.commandService.emit(command);
     }
 
     public editExample(event: EditExample20Event): void {
-        let command: ICommand = createSetExampleCommand(this.document, this.response, event.value, event.contentType);
+        let command: ICommand = createSetExampleCommand(this.document(), this.response, event.value, event.contentType);
         this.commandService.emit(command);
     }
 

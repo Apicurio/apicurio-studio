@@ -224,11 +224,9 @@
 
                         <!-- The list of responses -->
                         <div class="container-fluid responses typed-item-list">
-                            <response-row *ngFor="let response of responses()" [response]="response"
-                                          (onDelete)="deleteResponse(response)"
-                                          (onDescriptionChange)="changeResponseDescription(response, $event)"
-                                          (onTypeChange)="changeResponseType(response, $event)"
-                                          [document]="response.ownerDocument()"></response-row>
+                            <response-row *ngFor="let response of responses()"
+                                          [response]="response"
+                                          (onDelete)="deleteResponse(response)"></response-row>
                         </div>
                     </div>
                 </div>

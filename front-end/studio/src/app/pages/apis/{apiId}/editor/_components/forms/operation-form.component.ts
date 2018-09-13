@@ -440,16 +440,6 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.commandService.emit(command);
     }
 
-    public changeResponseType(response: Oas20Response, newType: SimplifiedType): void {
-        let command: ICommand = createChangeResponseTypeCommand(this.operation.ownerDocument(), response, newType);
-        this.commandService.emit(command);
-    }
-
-    public changeResponseDescription(response: Oas20Response, newDescription: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), response, "description", newDescription);
-        this.commandService.emit(command);
-    }
-
     public createRequestBody(): void {
         let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
         this.commandService.emit(command);

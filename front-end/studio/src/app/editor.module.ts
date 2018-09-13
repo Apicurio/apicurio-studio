@@ -94,6 +94,7 @@ import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_c
 import {EntityEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/entity-editor.component";
 import {QueryParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-param-row.component";
 import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-param-row.component";
+import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/formData-param-row.component";
 
 @NgModule({
     imports: [
@@ -116,7 +117,7 @@ import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/for
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, QueryParamRowComponent,
-        PathParamRowComponent
+        PathParamRowComponent, FormDataParamRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService

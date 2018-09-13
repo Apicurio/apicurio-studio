@@ -935,7 +935,7 @@
   font-size: 15px;
   margin-left: 10px;
 }
-.api-editor .editor-detail .api-operation-detail .request-body-section .description {
+.api-editor .editor-detail .api-operation-detail .request-body-section .api-item-description {
   margin-top: 8px;
   font-size: 14px;
 }

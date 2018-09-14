@@ -22,17 +22,17 @@ import {
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem, OasLibraryUtils,
+    Oas30PathItem,
+    OasLibraryUtils,
     OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {AddQueryParamDialogComponent} from "../../dialogs/add-query-param.component";
 import {
-    createChangeParameterTypeCommand, createChangePropertyCommand,
     createDeleteAllParametersCommand,
     createDeleteParameterCommand,
     createNewParamCommand,
-    ICommand, SimplifiedParameterType
+    ICommand
 } from "oai-ts-commands";
 import {Subscription} from "rxjs/Subscription";
 import {DocumentService} from "../../../_services/document.service";
@@ -52,19 +52,19 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy {
     @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
 
     private _queryParameters: (Oas30Parameter | Oas20Parameter)[] = null;
-    private _cmdSubscription: Subscription;
+    private _docSub: Subscription;
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
     constructor(private commandService: CommandService, private documentService: DocumentService) {}
 
     public ngOnInit(): void {
-        this._cmdSubscription = this.documentService.change().subscribe( () => {
+        this._docSub = this.documentService.change().subscribe( () => {
             this._queryParameters = null;
         });
     }
 
     public ngOnDestroy(): void {
-        this._cmdSubscription.unsubscribe();
+        this._docSub.unsubscribe();
     }
 
     public isPathItem(): boolean {

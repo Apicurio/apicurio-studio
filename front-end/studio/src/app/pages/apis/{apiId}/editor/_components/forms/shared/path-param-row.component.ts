@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges, OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
@@ -24,17 +33,11 @@ import {
     SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
-import {
-    OasCombinedVisitorAdapter,
-    OasDocument,
-    OasLibraryUtils,
-    OasOperation,
-    OasParameterBase,
-    OasPathItem
-} from "oai-ts-core";
-import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
+import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {TypedRow} from "./typed-row.base";
+import {Subscription} from "rxjs";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -44,7 +47,7 @@ import {TypedRow} from "./typed-row.base";
     styleUrls: [ "path-param-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class PathParamRowComponent extends TypedRow implements OnChanges {
+export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -57,8 +60,19 @@ export class PathParamRowComponent extends TypedRow implements OnChanges {
 
     private overrideFlag: boolean;
     private missingFlag: boolean;
+    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+
+    public ngOnInit(): void {
+        this._docSub = this.documentService.change().subscribe( () => {
+            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._docSub.unsubscribe();
+    }
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes["parameter"]) {

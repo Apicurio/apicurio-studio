@@ -34,7 +34,6 @@ import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_compo
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
 import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
 import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row.component";
-import {ParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/param-row.component";
 import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
 import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
 import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
@@ -105,7 +104,7 @@ import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components
         PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
         AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
-        ResponseRowComponent, ParamRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
+        ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,

@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges, OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20Response, OasDocument} from "oai-ts-core";
 import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
 import {
@@ -23,13 +32,15 @@ import {
     createChangeResponseTypeCommand,
     createDelete20ExampleCommand,
     createSetExampleCommand,
-    ICommand,
+    ICommand, SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {EditExample20Event} from "../../dialogs/edit-example-20.component";
 import {CommandService} from "../../../_services/command.service";
 import {TypedRow} from "../shared/typed-row.base";
+import {Subscription} from "rxjs";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -39,7 +50,7 @@ import {TypedRow} from "../shared/typed-row.base";
     styleUrls: [ "response-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class ResponseRowComponent extends TypedRow implements OnChanges {
+export class ResponseRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 
@@ -50,8 +61,25 @@ export class ResponseRowComponent extends TypedRow implements OnChanges {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedType = null;
+    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+
+    public ngOnInit(): void {
+        this._docSub = this.documentService.change().subscribe( () => {
+            this._model = SimplifiedType.fromSchema(this.response.schema);
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._docSub.unsubscribe();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes["response"]) {
+            this._model = SimplifiedType.fromSchema(this.response.schema);
+        }
+    }
 
     public model(): SimplifiedType {
         return this._model;
@@ -63,12 +91,6 @@ export class ResponseRowComponent extends TypedRow implements OnChanges {
 
     public isParameter(): boolean {
         return false;
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes["response"]) {
-            this._model = SimplifiedType.fromSchema(this.response.schema);
-        }
     }
 
     public statusCodeLine(code: string): string {

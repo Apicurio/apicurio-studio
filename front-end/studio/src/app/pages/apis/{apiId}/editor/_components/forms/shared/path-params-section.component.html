@@ -25,12 +25,6 @@
         <div class="container-fluid path-parameters typed-item-list">
             <path-param-row *ngFor="let param of pathParameters()" [parameter]="param"
                              (onDelete)="deleteParam(param)"></path-param-row>
-            <!--<param-row *ngFor="let param of pathParameters()"-->
-                       <!--[param]="param" [parameterClass]="'path-parameter'"-->
-                       <!--(onDelete)="deleteParam(param)"-->
-                       <!--(onCreate)="createPathParam(param.name)"-->
-                       <!--(onDescriptionChange)="changeParamDescription(param, $event)"-->
-                       <!--(onTypeChange)="changeParamType(param, $event)"></param-row>-->
         </div>
     </div>
 </div>

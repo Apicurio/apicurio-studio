@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges, OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
@@ -28,6 +37,8 @@ import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, 
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {TypedRow} from "./typed-row.base";
+import {DocumentService} from "../../../_services/document.service";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -37,7 +48,7 @@ import {TypedRow} from "./typed-row.base";
     styleUrls: [ "query-param-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParamRowComponent extends TypedRow implements OnChanges {
+export class QueryParamRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -47,11 +58,22 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
+    private _docSub: Subscription;
 
     private overrideFlag: boolean;
     private missingFlag: boolean;
 
-    constructor(private commandService: CommandService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+
+    public ngOnInit(): void {
+        this._docSub = this.documentService.change().subscribe( () => {
+            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._docSub.unsubscribe();
+    }
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes["parameter"]) {

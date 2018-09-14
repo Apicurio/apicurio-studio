@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges, OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     createChangePropertyCommand,
     createChangePropertyTypeCommand,
@@ -28,6 +37,8 @@ import {Oas20PropertySchema, Oas30PropertySchema, OasDocument} from "oai-ts-core
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {TypedRow} from "../shared/typed-row.base";
+import {Subscription} from "rxjs";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -37,7 +48,7 @@ import {TypedRow} from "../shared/typed-row.base";
     styleUrls: [ "property-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class PropertyRowComponent extends TypedRow implements OnChanges {
+export class PropertyRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
 
     @Input() property: Oas20PropertySchema | Oas30PropertySchema;
 
@@ -46,8 +57,19 @@ export class PropertyRowComponent extends TypedRow implements OnChanges {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
+    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+
+    public ngOnInit(): void {
+        this._docSub = this.documentService.change().subscribe( () => {
+            this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this._docSub.unsubscribe();
+    }
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes["property"]) {

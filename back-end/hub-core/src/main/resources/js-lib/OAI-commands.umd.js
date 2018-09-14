@@ -843,8 +843,9 @@ var ChangeParameterTypeCommand = (function (_super) {
         var parent = param.parent();
         var oldParam = parent.createParameter();
         this.oasLibrary().readNode(this._oldParameter, oldParam);
-        var pindex = parent.parameters.indexOf(param);
-        parent.parameters.splice(pindex, 1, oldParam);
+        this.doRestoreParameter(param, oldParam);
+        //let pindex: number = parent.parameters.indexOf(param);
+        //parent.parameters.splice(pindex, 1, oldParam);
     };
     /**
      * Marshall the command into a JS object.
@@ -935,6 +936,30 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
             param.required = required;
         }
     };
+    /**
+     * Restores the parameter.
+     * @param parameter
+     * @param oldParameter
+     */
+    ChangeParameterTypeCommand_20.prototype.doRestoreParameter = function (param, oldParam) {
+        if (param.in === "body") {
+            param.schema = oldParam.schema;
+            if (param.schema) {
+                param.schema._parent = param;
+                param.schema._ownerDocument = param.ownerDocument();
+            }
+        }
+        else {
+            param.type = oldParam.type;
+            param.format = oldParam.format;
+            param.items = oldParam.items;
+            if (param.items) {
+                param.items._parent = param;
+                param.items._ownerDocument = param.ownerDocument();
+            }
+        }
+        param.required = oldParam.required;
+    };
     return ChangeParameterTypeCommand_20;
 }(ChangeParameterTypeCommand));
 /**
@@ -956,23 +981,6 @@ var ChangeParameterDefinitionTypeCommand_20 = (function (_super) {
      */
     ChangeParameterDefinitionTypeCommand_20.prototype.type = function () {
         return "ChangeParameterDefinitionTypeCommand_20";
-    };
-    /**
-     * Resets the param type back to its previous state.
-     * @param document
-     */
-    ChangeParameterDefinitionTypeCommand_20.prototype.undo = function (document) {
-        console.info("[ChangeParameterDefinitionType] Reverting.");
-        var param = this._paramPath.resolve(document);
-        if (!param) {
-            return;
-        }
-        // Remove the old/updated parameter.
-        document.parameters.removeParameter(param.parameterName());
-        // Restore the parameter from before the command executed.
-        var oldParam = document.parameters.createParameter(param.parameterName());
-        this.oasLibrary().readNode(this._oldParameter, oldParam);
-        document.parameters.addParameter(param.parameterName(), oldParam);
     };
     return ChangeParameterDefinitionTypeCommand_20;
 }(ChangeParameterTypeCommand_20));
@@ -1020,6 +1028,19 @@ var ChangeParameterTypeCommand_30 = (function (_super) {
         if (!this.isNullOrUndefined(this._newType.required)) {
             parameter.required = required;
         }
+    };
+    /**
+     * Restores the parameter.
+     * @param parameter
+     * @param oldParameter
+     */
+    ChangeParameterTypeCommand_30.prototype.doRestoreParameter = function (param, oldParam) {
+        param.schema = oldParam.schema;
+        if (param.schema) {
+            param.schema._parent = param;
+            param.schema._ownerDocument = param.ownerDocument();
+        }
+        param.required = oldParam.required;
     };
     return ChangeParameterTypeCommand_30;
 }(ChangeParameterTypeCommand));
@@ -1433,8 +1454,22 @@ var ChangePropertyTypeCommand = (function (_super) {
         var parentSchema = prop.parent();
         var oldProp = parentSchema.createPropertySchema(this._propName);
         this.oasLibrary().readNode(this._oldProperty, oldProp);
-        parentSchema.removeProperty(this._propName);
-        parentSchema.addProperty(this._propName, oldProp);
+        // Restore the schema attributes
+        prop.$ref = null;
+        prop.type = null;
+        prop.format = null;
+        prop.items = null;
+        if (oldProp) {
+            prop.$ref = oldProp.$ref;
+            prop.type = oldProp.type;
+            prop.format = oldProp.format;
+            prop.items = oldProp.items;
+            if (prop.items) {
+                prop.items["_parent"] = prop;
+                prop.items["_ownerDocument"] = prop.ownerDocument();
+            }
+        }
+        // Restore the "required" flag
         if (!this.isNullOrUndefined(this._newType.required)) {
             if (this._nullRequired) {
                 prop.parent()["required"] = null;

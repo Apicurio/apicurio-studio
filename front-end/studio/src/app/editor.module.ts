@@ -20,11 +20,9 @@ import {NgModule} from "@angular/core";
 import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/title-bar/validation-icon.component";
 import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common/server-url.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
-import {InlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-text-editor.component";
 import {SchemaTypeComponent} from "./pages/apis/{apiId}/editor/_components/common/schema-type.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
-import {InlineTextAreaComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-textarea-editor.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
@@ -94,6 +92,7 @@ import {EntityEditorComponent} from "./pages/apis/{apiId}/editor/_components/edi
 import {QueryParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-param-row.component";
 import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-param-row.component";
 import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/formData-param-row.component";
+import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-markdown-editor.component";
 
 @NgModule({
     imports: [
@@ -101,10 +100,10 @@ import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components
     ],
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
-        PathItemComponent, InlineTextAreaComponent, InlineTextEditorComponent, ContextHelpComponent,
+        PathItemComponent, ContextHelpComponent,FormDataParamRowComponent, InlineMarkdownEditorComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
         AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
-        ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent,
+        ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddQueryParamDialogComponent, AddPathDialogComponent,
         AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
@@ -113,10 +112,9 @@ import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
-        SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent,
+        SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
-        InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, QueryParamRowComponent,
-        PathParamRowComponent, FormDataParamRowComponent
+        InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService

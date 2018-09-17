@@ -8,8 +8,8 @@
             <span class="pficon pficon-server entity-icon"></span>
             <span server-url [url]="server.url"></span>
         </div>
-        <div class="description" (click)="toggle()" [class.empty]="!hasDescription()">
-            <span>{{ description() }}</span>
+        <div class="description" (click)="toggle()">
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">
@@ -31,8 +31,8 @@
                 <div class="col-md-11">
                     <div class="server-description">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="server.description" [noValueMessage]="'Enter description here.'"
-                                                (onChange)="setDescription($event)"></inline-textarea-editor>
+                        <inline-markdown-editor [value]="server.description" [noValueMessage]="'Enter description here.'"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                 </div>
             </form>

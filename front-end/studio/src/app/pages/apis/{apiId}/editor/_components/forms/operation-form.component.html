@@ -106,11 +106,11 @@
                             <span>Description</span>
                         </div>
                         <div class="section-field description">
-                            <inline-textarea-editor [value]="description()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor [value]="description()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
                                                     [inputClass]="'api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
-                                                    (onChange)="changeDescription($event)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event)"></inline-markdown-editor>
                         </div>
                     </div>
                 </div>
@@ -155,11 +155,11 @@
                                 <strong>Not Recommended</strong>
                                 <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
                             </div>
-                            <inline-textarea-editor [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
+                            <inline-markdown-editor [value]="bodyDescription()" [noValueMessage]="'No request body description.'"
                                                     [labelClass]="'request-body-description api-item-description description'"
                                                     [inputClass]="'api-description-editor api-item-description request-body-description api-item-description description'"
                                                     [formClass]="'api-description-editor-form'"
-                                                    (onChange)="changeBodyDescription($event)"></inline-textarea-editor>
+                                                    (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
                             <div class="request-body-type">
                                 <span class="strong">Request Body Type:</span>
                                 <validation-problem [model]="bodyParam()"></validation-problem>

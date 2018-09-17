@@ -9,8 +9,8 @@
             <span>{{ name() }}</span>
             <span>(</span><span>{{ schemeType() }}</span><span>)</span>
         </div>
-        <div class="description" (click)="toggle()" [class.empty]="!hasDescription()">
-            <span>{{ description() }}</span>
+        <div class="description" (click)="toggle()">
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">
@@ -33,8 +33,8 @@
                 <div class="col-md-11">
                     <div class="scheme-description">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="scheme.description" [noValueMessage]="'Enter description here.'"
-                                                (onChange)="setDescription($event)"></inline-textarea-editor>
+                        <inline-markdown-editor [value]="scheme.description" [noValueMessage]="'Enter description here.'"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                 </div>
             </form>

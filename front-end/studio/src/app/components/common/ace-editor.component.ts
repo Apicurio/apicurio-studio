@@ -92,6 +92,10 @@ export class AceEditorComponent implements ControlValueAccessor, OnInit, OnDestr
         this._editor.destroy();
     }
 
+    focus(): void {
+        this._editor.focus();
+    }
+
     updateText() {
         let newVal = this._editor.getValue(), that = this;
         if (newVal === this.oldText) {

@@ -7,7 +7,7 @@
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
-            <span title="{{ description() }}" [class.empty]="!hasDescription()">{{ description() }}</span>
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
@@ -33,8 +33,8 @@
                 <div class="col-md-11">
                     <div class="response-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="response.description" [noValueMessage]="'No description.'"
-                                                (onChange)="setDescription($event)"></inline-textarea-editor>
+                        <inline-markdown-editor [value]="response.description" [noValueMessage]="'No description.'"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                     <div class="response-content" *ngIf="isEditingSummary()">
                         <div class="response-type">
@@ -96,86 +96,3 @@
 </div>
 <add-example-20-dialog #addExampleDialog (onAdd)="addExample($event)"></add-example-20-dialog>
 <edit-example-20-dialog #editExampleDialog (onEdit)="editExample($event)"></edit-example-20-dialog>
-
-<!--<div class="row response typed-item" [class.editing]="isEditing()">-->
-    <!--<div class="col-md-6 metainfo">-->
-        <!--<div class="statusCode name {{ statusCodeType(response.statusCode()) }}">-->
-            <!--<validation-problem [model]="response"></validation-problem>-->
-            <!--<span>{{ response.statusCode() }}</span>-->
-            <!--<span>{{ statusCodeLine(response.statusCode()) }}</span></div>-->
-        <!--<div class="description"><inline-text-editor [noValueMessage]="'No description.'"-->
-                                                     <!--(onChange)="setDescription($event)"-->
-                                                     <!--[value]="response.description"></inline-text-editor></div>-->
-    <!--</div>-->
-    <!--<div class="col-md-4 type">-->
-        <!--<schema-type [type]="displayType()"></schema-type>-->
-    <!--</div>-->
-    <!--<div class="col-md-2 actions">-->
-        <!--<button type="button" class="btn btn-xs btn-default" (click)="edit()"><span class="fa fa-fw fa-pencil"></span><span class="btn-label">Edit</span></button>-->
-        <!--<button type="button" class="btn btn-xs btn-default" (click)="delete()"><span class="fa fa-fw fa-trash"></span><span class="btn-label">Delete</span></button>-->
-    <!--</div>-->
-<!--</div>-->
-<!--<div class="row response-type type-row" *ngIf="isEditing()" (window:keydown)="onGlobalKeyDown($event)">-->
-    <!--<form class="form-horizontal">-->
-        <!--<div class="col-md-5">-->
-            <!--<div class="form-group">-->
-                <!--<label class="col-sm-4 control-label" for="responseType">Type</label>-->
-                <!--<div class="col-sm-8">-->
-                    <!--<drop-down id="responseType" [id]="'api-response-type'" [value]="type()" [options]="typeOptions()" (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group" *ngIf="model.type === 'array'">-->
-                <!--<label class="col-sm-4 control-label" for="responseTypeOf">of</label>-->
-                <!--<div class="col-sm-8">-->
-                    <!--<drop-down id="responseTypeOf" [id]="'api-response-type-of'" [value]="typeOf()" [options]="typeOfOptions()" (onValueChange)="changeTypeOf($event)" [noSelectionLabel]="'Choose Type'"></drop-down>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="form-group" *ngIf="shouldShowFormattedAs()">-->
-                <!--<label class="col-sm-4 control-label" for="responseTypeFormat">formatted as</label>-->
-                <!--<div class="col-sm-8">-->
-                    <!--<drop-down id="responseTypeFormat" [id]="'api-response-type-as'" [value]="typeAs()" [options]="typeAsOptions()" (onValueChange)="changeTypeAs($event)" [noSelectionLabel]="'Choose Format'"></drop-down>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div class="form-group form-group-actions">-->
-                <!--<div class="col-sm-offset-4 col-sm-8">-->
-                    <!--<button type="submit" class="btn btn-sm btn-primary" (click)="ok()" [disabled]="!isValid()">OK</button>-->
-                    <!--<button type="button" class="btn btn-sm btn-default" (click)="cancel()">Cancel</button>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="col-md-7">-->
-
-            <!--<div class="examples">-->
-                <!--<table *ngIf="hasExamples()" class="table table-striped table-bordered table-examples">-->
-                    <!--<thead>-->
-                    <!--<tr>-->
-                        <!--<th colspan="3">Examples</th>-->
-                    <!--</tr>-->
-                    <!--<tr>-->
-                        <!--<th>Content Type</th>-->
-                        <!--<th class="pre-actions">Example</th>-->
-                        <!--<th class="actions"></th>-->
-                    <!--</tr>-->
-                    <!--</thead>-->
-                    <!--<tbody>-->
-                    <!--<tr *ngFor="let contentType of exampleContentTypes()">-->
-                        <!--<td class="content-type">{{ contentType }}</td>-->
-                        <!--<td class="value pre-actions">{{ exampleValue(contentType) }}</td>-->
-                        <!--<td class="actions">-->
-                            <!--<div>-->
-                                <!--<icon-button (onClick)="deleteExample(contentType)" [pullRight]="true" [type]="'delete'"-->
-                                             <!--[title]="'Delete example.'"></icon-button>-->
-                                <!--<icon-button (onClick)="editExampleDialog.open(contentType, exampleValue(contentType))" [pullRight]="true" [type]="'edit'"-->
-                                             <!--[title]="'Edit example.'"></icon-button>-->
-                            <!--</div>-->
-                        <!--</td>-->
-                    <!--</tr>-->
-                    <!--</tbody>-->
-                <!--</table>-->
-                <!--<a (click)="addExampleDialog.open()">Add an example</a>-->
-            <!--</div>-->
-
-        <!--</div>-->
-    <!--</form>-->
-<!--</div>-->

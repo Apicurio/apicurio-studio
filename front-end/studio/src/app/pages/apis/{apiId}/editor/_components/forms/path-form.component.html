@@ -98,161 +98,196 @@
                     <div class="section-body collapse in" id="operations-section-body">
 
                         <div class="api-operation" [class.empty]="!hasGet()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-success" (click)="selectOperation(path.get)">GET</span><validation-aggregate [models]="[path.get]"></validation-aggregate></div>
-                                <inline-text-editor [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.get)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasGet()"
-                                        (click)="deleteOperation('get')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="getSummary()" [enabled]="hasGet()" [noValueMessage]="'No Summary'"
+                                                           [labelClass]="'name'"
+                                                           [formClass]="'api-summary-editor-form'"
+                                                           [inputClass]="'api-item-editor api-summary-editor name'"
+                                                           (onChange)="changeSummary($event, path.get)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasGet()"
+                                            (click)="deleteOperation('get')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.get)"></inline-textarea-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasGet()" [value]="getDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.get)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasGet()">
                                 <button class="btn btn-default" (click)="createOperation('get')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasPut()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.put)">PUT</span><validation-aggregate [models]="[path.put]"></validation-aggregate></div>
-                                <inline-text-editor [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.put)"></inline-text-editor>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="putSummary()" [enabled]="hasPut()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.put)"></pf-inline-text-editor>
+                                </div>
                                 <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPut()"
                                         (click)="deleteOperation('put')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                             </div>
-                            <inline-textarea-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.put)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.put)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasPut()">
                                 <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasPost()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-warning" (click)="selectOperation(path.post)">POST</span><validation-aggregate [models]="[path.post]"></validation-aggregate></div>
-                                <inline-text-editor [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.post)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPost()"
-                                        (click)="deleteOperation('post')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="postSummary()" [enabled]="hasPost()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.post)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPost()"
+                                            (click)="deleteOperation('post')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.post)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.post)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasPost()">
                                 <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasDelete()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-danger" (click)="selectOperation(path.delete)">DELETE</span><validation-aggregate [models]="[path.delete]"></validation-aggregate></div>
-                                <inline-text-editor [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.delete)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasDelete()"
-                                        (click)="deleteOperation('delete')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="deleteSummary()" [enabled]="hasDelete()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.delete)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasDelete()"
+                                            (click)="deleteOperation('delete')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.delete)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.delete)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasDelete()">
                                 <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasOptions()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.options)">OPTIONS</span><validation-aggregate [models]="[path.options]"></validation-aggregate></div>
-                                <inline-text-editor [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.options)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasOptions()"
-                                        (click)="deleteOperation('options')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="optionsSummary()" [enabled]="hasOptions()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.options)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasOptions()"
+                                            (click)="deleteOperation('options')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.options)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.options)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasOptions()">
                                 <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasHead()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.head)">HEAD</span><validation-aggregate [models]="[path.head]"></validation-aggregate></div>
-                                <inline-text-editor [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.head)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasHead()"
-                                        (click)="deleteOperation('head')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="headSummary()" [enabled]="hasHead()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.head)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasHead()"
+                                            (click)="deleteOperation('head')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.head)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.head)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasHead()">
                                 <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasPatch()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(path.patch)">PATCH</span><validation-aggregate [models]="[path.patch]"></validation-aggregate></div>
-                                <inline-text-editor [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, path.patch)"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPatch()"
-                                        (click)="deleteOperation('patch')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="patchSummary()" [enabled]="hasPatch()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, path.patch)"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPatch()"
+                                            (click)="deleteOperation('patch')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
+                            <inline-markdown-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
                                                     [labelClass]="'description api-item-description'"
                                                     [formClass]="'api-description-editor-form'"
                                                     [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.patch)"></inline-textarea-editor>
+                                                    (onChange)="changeDescription($event, path.patch)"></inline-markdown-editor>
                             <div class="actions" *ngIf="!hasPatch()">
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
                             </div>
                         </div>
                         <div class="api-operation" [class.empty]="!hasTrace()" *ngIf="supportsTraceOperation()">
-                            <div class="">
+                            <div class="header">
                                 <div class="type"><span class="label label-info" (click)="selectOperation(trace())">TRACE</span><validation-aggregate [models]="[path['trace']]"></validation-aggregate></div>
-                                <inline-text-editor [value]="traceSummary()" [enabled]="hasTrace()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'name'"
-                                                    [formClass]="'api-summary-editor-form'"
-                                                    [inputClass]="'api-item-editor api-summary-editor name'"
-                                                    (onChange)="changeSummary($event, trace())"></inline-text-editor>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasTrace()"
-                                        (click)="deleteOperation('trace')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="summary">
+                                    <pf-inline-text-editor [value]="traceSummary()" [enabled]="hasTrace()" [noValueMessage]="'No Summary'"
+                                                        [labelClass]="'name'"
+                                                        [formClass]="'api-summary-editor-form'"
+                                                        [inputClass]="'api-item-editor api-summary-editor name'"
+                                                        (onChange)="changeSummary($event, trace())"></pf-inline-text-editor>
+                                </div>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasTrace()"
+                                            (click)="deleteOperation('trace')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-textarea-editor *ngIf="hasTrace()" [value]="traceDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, trace())"></inline-textarea-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasTrace()" [value]="traceDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, trace())"></inline-markdown-editor>
+
+                            </div>
                             <div class="actions" *ngIf="!hasTrace()">
                                 <button class="btn btn-default" (click)="createOperation('trace')">Create Operation</button>
                             </div>

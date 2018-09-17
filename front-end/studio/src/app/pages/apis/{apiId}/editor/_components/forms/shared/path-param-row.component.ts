@@ -104,11 +104,7 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
     }
 
     public description(): string {
-        if (this.parameter.description) {
-            return this.parameter.description
-        } else {
-            return "No description.";
-        }
+        return this.parameter.description
     }
 
     public isEditing(): boolean {

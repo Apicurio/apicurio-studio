@@ -132,6 +132,9 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onStartEditing(): void {
+        if (!this.enabled) {
+            return;
+        }
         this.canClose = false;
         this.evalue = this.initialValueForEditing();
         this.hovering = false;

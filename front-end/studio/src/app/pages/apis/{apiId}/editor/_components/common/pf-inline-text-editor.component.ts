@@ -22,6 +22,7 @@ import {TextInputEditorComponent} from "./inline-editor.base";
     moduleId: module.id,
     selector: "pf-inline-text-editor",
     templateUrl: "pf-inline-text-editor.component.html",
+    styleUrls: [ "pf-inline-text-editor.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
 export class PfInlineTextEditorComponent extends TextInputEditorComponent {
@@ -33,6 +34,11 @@ export class PfInlineTextEditorComponent extends TextInputEditorComponent {
         if (event.key === "Enter") {
             this.onSave();
         }
+    }
+
+    public clearValue(): void {
+        this.evalue = '';
+        this.input.first.nativeElement.focus();
     }
 
 }

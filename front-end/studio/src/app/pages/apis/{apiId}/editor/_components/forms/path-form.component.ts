@@ -41,6 +41,7 @@ import {CommandService} from "../../_services/command.service";
     moduleId: module.id,
     selector: "path-form",
     templateUrl: "path-form.component.html",
+    styleUrls: [ "path-form.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
 export class PathFormComponent extends SourceFormComponent<OasPathItem> {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,23 @@
  * limitations under the License.
  */
 
-import {
-    Component, ViewEncapsulation
-} from "@angular/core";
-import {TextAreaEditorComponent} from "./inline-editor.base";
-
+import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import * as marked from "marked";
 
 @Component({
-    moduleId: module.id,
-    selector: "inline-textarea-editor",
-    templateUrl: "inline-textarea-editor.component.html",
+    selector: "markdown",
+    template: `<div class="md-container" [innerHTML]="convertedData"></div>`,
     encapsulation: ViewEncapsulation.None
 })
-export class InlineTextAreaComponent extends TextAreaEditorComponent {
+export class MarkdownComponent implements OnChanges {
+    @Input("data")
+    data: string;
 
+    public convertedData: any;
+
+    ngOnChanges(changes: SimpleChanges): void {
+        this.convertedData = marked.parse(this.data, {
+            sanitize: true
+        });
+    }
 }

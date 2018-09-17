@@ -98,11 +98,7 @@ export class PropertyRowComponent extends TypedRow implements OnChanges, OnInit,
     }
 
     public description(): string {
-        if (this.property.description) {
-            return this.property.description
-        } else {
-            return "No description.";
-        }
+        return this.property.description
     }
 
     public isRequired(): boolean {

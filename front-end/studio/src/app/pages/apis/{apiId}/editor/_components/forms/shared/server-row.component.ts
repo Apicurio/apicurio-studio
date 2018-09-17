@@ -46,11 +46,7 @@ export class ServerRowComponent {
     }
 
     public description(): string {
-        if (this.server.description) {
-            return this.server.description
-        } else {
-            return "No description.";
-        }
+        return this.server.description
     }
 
     public hasDescription(): boolean {

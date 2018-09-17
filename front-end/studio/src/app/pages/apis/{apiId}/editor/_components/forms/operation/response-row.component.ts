@@ -135,11 +135,7 @@ export class ResponseRowComponent extends TypedRow implements OnChanges, OnInit,
     }
 
     public description(): string {
-        if (this.response.description) {
-            return this.response.description
-        } else {
-            return "No description.";
-        }
+        return this.response.description
     }
 
     public isEditing(): boolean {

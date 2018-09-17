@@ -110,4 +110,8 @@ export class CodeEditorComponent {
             return "eclipse";
         }
     }
+
+    public focus(): void {
+        this.editor.focus();
+    }
 }

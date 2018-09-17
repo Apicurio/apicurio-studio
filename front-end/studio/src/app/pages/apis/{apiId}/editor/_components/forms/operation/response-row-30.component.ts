@@ -71,11 +71,7 @@ export class ResponseRow30Component {
     }
 
     public description(): string {
-        if (this.response.description) {
-            return this.response.description
-        } else {
-            return "No description.";
-        }
+        return this.response.description
     }
 
     public statusCodeType(code: string): string {

@@ -105,11 +105,7 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges, OnIni
     }
 
     public description(): string {
-        if (this.parameter.description) {
-            return this.parameter.description
-        } else {
-            return "No description.";
-        }
+        return this.parameter.description
     }
 
     public isRequired(): boolean {

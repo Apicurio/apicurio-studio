@@ -27,6 +27,8 @@ import {FormErrorMessageComponent} from "./components/common/form-error-message.
 import {CodeEditorComponent} from "./components/common/code-editor.component";
 import {AceEditorComponent} from "./components/common/ace-editor.component";
 import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/autosize.directive";
+import {MarkdownComponent} from "./components/common/markdown.component";
+import {MarkdownSummaryComponent} from "./components/common/markdown-summary.component";
 
 @NgModule({
     imports: [
@@ -34,13 +36,13 @@ import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/aut
     ],
     declarations: [
         DropDownComponent, FormErrorMessageComponent, CodeEditorComponent, AceEditorComponent,
-        TextAreaAutosize, DivAutoHeight, TextBoxAutosize,
+        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, MarkdownComponent, MarkdownSummaryComponent
     ],
     providers: [
     ],
     exports: [
         DropDownComponent, FormErrorMessageComponent, CodeEditorComponent,
-        TextAreaAutosize, DivAutoHeight, TextBoxAutosize,
+        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, MarkdownComponent, MarkdownSummaryComponent
     ]
 })
 export class ApicurioCommonComponentsModule {

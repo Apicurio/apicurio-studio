@@ -52,11 +52,7 @@ export class TagRowComponent {
     }
 
     public description(): string {
-        if (this.tag.description) {
-            return this.tag.description
-        } else {
-            return "No description.";
-        }
+        return this.tag.description
     }
 
     public hasDescription(): boolean {

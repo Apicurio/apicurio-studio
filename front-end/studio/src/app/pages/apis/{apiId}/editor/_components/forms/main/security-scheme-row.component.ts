@@ -62,11 +62,7 @@ export class SecuritySchemeRowComponent {
     }
 
     public description(): string {
-        if (this.scheme.description) {
-            return this.scheme.description
-        } else {
-            return "No description.";
-        }
+        return this.scheme.description
     }
 
     public hasDescription(): boolean {

@@ -9,7 +9,7 @@
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
-            <span title="{{ description() }}" [class.empty]="!hasDescription()">{{ description() }}</span>
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
         </div>
         <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
@@ -37,8 +37,8 @@
                 <div class="col-md-11">
                     <div class="param-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-textarea-editor [value]="parameter.description" [noValueMessage]="'No description.'"
-                                                (onChange)="setDescription($event)"></inline-textarea-editor>
+                        <inline-markdown-editor [value]="parameter.description" [noValueMessage]="'No description.'"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                     <div class="param-content" *ngIf="isEditingSummary()">
                         <div class="param-required">

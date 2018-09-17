@@ -60,14 +60,14 @@
                                 <span>{{ example.name() }}</span>
                             </td>
                             <td class="summary">
-                                <inline-text-editor [noValueMessage]="'No Summary'" [topIncrement]="2"
+                                <pf-inline-text-editor [noValueMessage]="'No Summary'"
                                                     (onChange)="changeExampleSummary(example, $event)"
-                                                    [value]="example.summary"></inline-text-editor>
+                                                    [value]="example.summary"></pf-inline-text-editor>
                             </td>
                             <td class="description pre-actions">
-                                <inline-text-editor [noValueMessage]="'No Description'" [topIncrement]="2"
+                                <pf-inline-text-editor [noValueMessage]="'No Description'"
                                                     (onChange)="changeExampleDescription(example, $event)"
-                                                    [value]="example.description"></inline-text-editor>
+                                                    [value]="example.description"></pf-inline-text-editor>
                             </td>
                             <td class="actions">
                                 <div>

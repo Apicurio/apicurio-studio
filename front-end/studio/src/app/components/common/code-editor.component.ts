@@ -50,6 +50,7 @@ export class CodeEditorComponent {
     @Input() theme: CodeEditorTheme = CodeEditorTheme.Light;
     @Input() mode: CodeEditorMode = CodeEditorMode.Text;
     @Input() editorStyle: any;
+    @Input() wordWrap: boolean = false;
 
     @Input()
     get text() {

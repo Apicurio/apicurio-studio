@@ -50,6 +50,7 @@ export class AceEditorComponent implements ControlValueAccessor, OnInit, OnDestr
     _autoUpdateContent: boolean = true;
     _editor: any;
     _durationBeforeCallback: number = 0;
+    _wordWrap: boolean = false;
     _text: string = "";
     oldText: any;
     timeoutSaving: any;
@@ -190,6 +191,20 @@ export class AceEditorComponent implements ControlValueAccessor, OnInit, OnDestr
 
     registerOnTouched(fn: any) {
         this._onTouched = fn;
+    }
+
+    get wordWrap() {
+        return this._wordWrap;
+    }
+
+    @Input()
+    set wordWrap(wordWrap: boolean) {
+        this.setWordWrap(wordWrap);
+    }
+
+    setWordWrap(wordWrap: boolean) {
+        this._wordWrap = wordWrap;
+        this._editor.getSession().setUseWrapMode(true);
     }
 
     get text() {

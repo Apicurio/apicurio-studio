@@ -75,7 +75,7 @@
                             <a [routerLink]="['apis', api.id]">
                                 <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
                             </a>
-                            <p>{{api.description}}</p>
+                            <p><markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary></p>
                         </div>
                     </div>
                     <div style="font-size: 14px" class="card-pf-footer">

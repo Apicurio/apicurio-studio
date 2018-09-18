@@ -85,7 +85,8 @@
                                 </h1>
                             </div>
                             <div class="card-pf-body">
-                                <h3 *ngIf="api.description" class="api-description">{{ api.description }}</h3>
+                                <markdown [data]="api.description" emptyText="No description."></markdown>
+                                <!--<h3 *ngIf="api.description" class="api-description">{{ api.description }}</h3>-->
                                 <h3 *ngIf="!api.description" class="no-description">No description available.</h3>
                                 <div class="api-created-info">
                                     <div class="info-full">

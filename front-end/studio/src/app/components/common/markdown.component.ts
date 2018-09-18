@@ -20,12 +20,14 @@ import * as marked from "marked";
 
 @Component({
     selector: "markdown",
-    template: `<div class="md-container" [innerHTML]="convertedData"></div>`,
+    template: `<div class="md-container" [innerHTML]="convertedData" [class.empty]="isEmpty()"></div>`,
     encapsulation: ViewEncapsulation.None
 })
 export class MarkdownComponent implements OnChanges {
     @Input("data")
     data: string;
+    @Input("emptyText")
+    emptyText: string = "No value.";
 
     public convertedData: any;
 
@@ -33,5 +35,9 @@ export class MarkdownComponent implements OnChanges {
         this.convertedData = marked.parse(this.data, {
             sanitize: true
         });
+    }
+
+    public isEmpty(): boolean {
+        return this.data === null || this.data === undefined || this.data.trim().length === 0;
     }
 }

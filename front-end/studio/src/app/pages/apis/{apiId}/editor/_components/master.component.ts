@@ -493,7 +493,12 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      * menu if it is open.
      */
     @HostListener("document:click", ["$event"])
-    public onDocumentClick(): void {
+    public onDocumentClick(event: MouseEvent): void {
+        // For FireFox (especially macOS), suppress the right click event 
+        // to prevent it immediately closing the context menu just activated.
+        if (event && event.which === 3) { 
+            return; 
+        }
         this.closeContextMenu();
     }
 

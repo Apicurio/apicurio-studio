@@ -249,6 +249,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         // After changing the model, we need to ensure all selections are still valid
         this.selectionService.select(this.selectionService.currentSelection(), this.document());
 
+        // Update the form being displayed (this might change if the thing currently selected was deleted)
+        this.updateFormDisplay(this.selectionService.currentSelection());
+
         // After changing the model, we should re-validate it
         this.validateModel();
 
@@ -362,6 +365,12 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public onNodeSelected(path: OasNodePath): void {
         console.info("[ApiEditorComponent] Selection changed to path: %s", path.toString());
 
+        this.updateFormDisplay(path);
+
+        this.onSelectionChanged.emit(path.toString());
+    }
+
+    public updateFormDisplay(path: OasNodePath): void {
         let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
         OasVisitorUtil.visitPath(path, visitor, this.document());
 
@@ -369,8 +378,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         this.formType = visitor.formType();
         this.currentSelectionNode = visitor.selection();
         this.currentSelectionType = visitor.selectionType();
-
-        this.onSelectionChanged.emit(path.toString());
     }
 
     /**

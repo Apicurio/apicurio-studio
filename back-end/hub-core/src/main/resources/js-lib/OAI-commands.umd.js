@@ -165,13 +165,13 @@ var AddPathItemCommand = (function (_super) {
         }
         if (document.paths.pathItem(this._newPathItemName)) {
             console.info("[AddPathItemCommand] PathItem with name %s already exists.", this._newPathItemName);
-            this._pathItemExits = true;
+            this._pathItemExists = true;
         }
         else {
             var pathItem = document.paths.createPathItem(this._newPathItemName);
             pathItem = this.oasLibrary().readNode(this._newPathItemObj, pathItem);
             document.paths.addPathItem(this._newPathItemName, pathItem);
-            this._pathItemExits = false;
+            this._pathItemExists = false;
         }
     };
     /**
@@ -180,7 +180,7 @@ var AddPathItemCommand = (function (_super) {
      */
     AddPathItemCommand.prototype.undo = function (document) {
         console.info("[AddPathItemCommand] Reverting.");
-        if (this._pathItemExits) {
+        if (this._pathItemExists) {
             return;
         }
         if (this._nullPathItems) {
@@ -4264,12 +4264,12 @@ var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-function createNewSchemaDefinitionCommand(document, definitionName, example) {
+function createNewSchemaDefinitionCommand(document, definitionName, example, description) {
     if (document.getSpecVersion() === "2.0") {
-        return new NewSchemaDefinitionCommand_20(definitionName, example);
+        return new NewSchemaDefinitionCommand_20(definitionName, example, description);
     }
     else {
-        return new NewSchemaDefinitionCommand_30(definitionName, example);
+        return new NewSchemaDefinitionCommand_30(definitionName, example, description);
     }
 }
 /**
@@ -4282,10 +4282,11 @@ var NewSchemaDefinitionCommand = (function (_super) {
      * @param {string} definitionName
      * @param {string} example
      */
-    function NewSchemaDefinitionCommand(definitionName, example) {
+    function NewSchemaDefinitionCommand(definitionName, example, description) {
         var _this = _super.call(this) || this;
         _this._newDefinitionName = definitionName;
         _this._newDefinitionExample = example;
+        _this._newDefinitionDescription = description;
         return _this;
     }
     return NewSchemaDefinitionCommand;
@@ -4315,9 +4316,13 @@ var NewSchemaDefinitionCommand_20 = (function (_super) {
             var definition = void 0;
             if (!this.isNullOrUndefined(this._newDefinitionExample)) {
                 definition = new oaiTsCore.OasSchemaFactory().createSchemaDefinitionFromExample(document, this._newDefinitionName, this._newDefinitionExample);
+                definition.example = this._newDefinitionExample;
             }
             else {
                 definition = document.definitions.createSchemaDefinition(this._newDefinitionName);
+            }
+            if (this._newDefinitionDescription) {
+                definition.description = this._newDefinitionDescription;
             }
             document.definitions.addDefinition(this._newDefinitionName, definition);
             this._defExisted = false;
@@ -4368,9 +4373,13 @@ var NewSchemaDefinitionCommand_30 = (function (_super) {
             var definition = void 0;
             if (!this.isNullOrUndefined(this._newDefinitionExample)) {
                 definition = new oaiTsCore.OasSchemaFactory().createSchemaDefinitionFromExample(document, this._newDefinitionName, this._newDefinitionExample);
+                definition.example = this._newDefinitionExample;
             }
             else {
                 definition = document.components.createSchemaDefinition(this._newDefinitionName);
+            }
+            if (this._newDefinitionDescription) {
+                definition.description = this._newDefinitionDescription;
             }
             document.components.addSchemaDefinition(this._newDefinitionName, definition);
             this._defExisted = false;

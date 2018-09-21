@@ -1,0 +1,25 @@
+<div class="section info-section panel-group">
+    <div class="section-header panel-title">
+        <a data-toggle="collapse" data-target="#info-section-body">
+            <span class="section-label">INFO</span>
+            <validation-aggregate [models]="[definition]" [properties]="['description']" [shallow]="true"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>This section allows you to modify the <strong>Description</strong> of the Data Type.</p>
+        </context-help>
+    </div>
+    <div class="section-body collapse in" id="info-section-body">
+        <!-- Description -->
+        <div class="section-field-label">
+            <validation-problem [model]="definition" property="description"></validation-problem>
+            <span>Description</span>
+        </div>
+        <div class="section-field description">
+            <inline-markdown-editor [value]="description()"
+                                    [labelClass]="'api-definition-description api-item-description'"
+                                    [formClass]="'api-definition-description-editor-form'"
+                                    [inputClass]="'api-item-editor api-description-editor api-definition-description api-item-description'"
+                                    [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-markdown-editor>
+        </div>
+    </div>
+</div>

@@ -135,7 +135,7 @@
                         and also <strong>Responses</strong> of any Operation in the API.
                     </p>
                 </context-help>
-                <icon-button (onClick)="addDefinitionDialog.open(document)" [pullRight]="true" [type]="'add'"></icon-button>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" [type]="'add'"></icon-button>
             </div>
             <div class="section-body collapse in" id="definition-section-body">
                 <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
@@ -143,7 +143,7 @@
 
                 <signpost *ngIf="definitions().length === 0">
                     <span>No reusable types have been created.</span>
-                    <a (click)="addDefinitionDialog.open(document)">Add a data type</a>
+                    <a (click)="openAddDefinitionEditor()">Add a data type</a>
                 </signpost>
             </div>
         </div>
@@ -176,7 +176,7 @@
     <!-- Dialogs -->
     <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
     <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
-    <add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>
+    <!--<add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>-->
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-definition-dialog #renameDefinitionDialog (onRename)="renameDefinition($event)"></rename-definition-dialog>
 </div>

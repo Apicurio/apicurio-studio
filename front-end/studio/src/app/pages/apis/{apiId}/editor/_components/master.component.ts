@@ -55,6 +55,15 @@ import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.compo
 import {SelectionService} from "../_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "../_services/command.service";
+import {EditorsService} from "../_services/editors.service";
+import {
+    DataTypeData,
+    DataTypeEditorComponent,
+    DataTypeEditorEvent,
+    IDataTypeEditorHandler
+} from "./editors/data-type-editor.component";
+import {AggregateCommand, createAggregateCommand} from "oai-ts-commands/src/commands/aggregate.command";
+import {RestResourceService} from "../_services/rest-resource.service";
 
 
 /**
@@ -90,8 +99,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     filterCriteria: string = null;
 
-    constructor(private selectionService: SelectionService, private commandService: CommandService) {
-    }
+    constructor(private selectionService: SelectionService, private commandService: CommandService,
+                private editors: EditorsService, private restResourceService: RestResourceService) {}
 
     public ngOnInit(): void {
         this.selectionSubscription = this.selectionService.selection().subscribe( () => {});
@@ -428,11 +437,28 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     /**
      * Called when the user fills out the Add Definition modal dialog and clicks Add.
      */
-    public addDefinition(modalData: any): void {
-        let example: string = (modalData.example === "") ? null : modalData.example;
-        let command: ICommand = createNewSchemaDefinitionCommand(this.document, modalData.name, example);
-        this.commandService.emit(command);
-        this.selectDefinition(this.getDefinitionByName(modalData.name));
+    public addDefinition(data: DataTypeData): void {
+        console.info("[EditorMasterComponent] Adding a definition: ", data);
+        if (data.template === "resource") {
+            let commands: ICommand[] = [];
+            // First, create the "new schema def" command
+            let example: string = (data.example === "") ? null : data.example;
+            let newSchemaCmd: ICommand = createNewSchemaDefinitionCommand(this.document, data.name, example, data.description);
+            commands.push(newSchemaCmd);
+            // Next, add the "REST Resource" commands to the list
+            this.restResourceService.generateRESTResourceCommands(data.name, this.document).forEach( cmd => commands.push(cmd));
+            // Now create an aggregate command for them all and emit that
+            let info: any = {
+                dataType: data.name
+            };
+            let command: AggregateCommand = createAggregateCommand("CreateRESTResource", info, commands);
+            this.commandService.emit(command);
+        } else {
+            let example: string = (data.example === "") ? null : data.example;
+            let command: ICommand = createNewSchemaDefinitionCommand(this.document, data.name, example, data.description);
+            this.commandService.emit(command);
+        }
+        this.selectDefinition(this.getDefinitionByName(data.name));
     }
 
     /**
@@ -682,6 +708,20 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             classes.push("selected");
         }
         return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
+    }
+
+    /**
+     * Opens the Add Definition Editor (full screen editor for adding a data type).
+     */
+    public openAddDefinitionEditor(): void {
+        let dtEditor: DataTypeEditorComponent = this.editors.getDataTypeEditor();
+        let handler: IDataTypeEditorHandler = {
+            onSave: (event) => {
+                this.addDefinition(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        dtEditor.open(handler, this.document);
     }
 }
 

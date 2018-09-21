@@ -60,6 +60,13 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
             this.initializeModel();
         }
         this._isOpen = true;
+        this.doAfterOpen();
+    }
+
+    /**
+     * Called at the end of the open() method.  Subclasses can override this to perform specific work.
+     */
+    public doAfterOpen(): void {
     }
 
     /**

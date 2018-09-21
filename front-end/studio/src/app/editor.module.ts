@@ -93,6 +93,9 @@ import {QueryParamRowComponent} from "./pages/apis/{apiId}/editor/_components/fo
 import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-param-row.component";
 import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/formData-param-row.component";
 import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-markdown-editor.component";
+import {DataTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/data-type-editor.component";
+import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/info-section.component";
+import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-resource.service";
 
 @NgModule({
     imports: [
@@ -114,10 +117,12 @@ import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_compon
         LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
-        InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent
+        InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
+        DefinitionInfoSectionComponent
     ],
     providers: [
-        ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService
+        ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
+        RestResourceService
     ],
     exports: [
         ApiEditorComponent

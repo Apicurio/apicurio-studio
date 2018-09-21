@@ -24,13 +24,6 @@
   background-color: #def3ff;
 }
 
-.query-param.overridable .header {
-  opacity: 0.4;
-}
-.query-param.overridable .header:hover {
-  opacity: 0.8;
-}
-
 .query-param .header .name {
   flex-basis: 16%;
   overflow-x: hidden;

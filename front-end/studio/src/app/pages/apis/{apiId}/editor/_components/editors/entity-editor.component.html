@@ -1,5 +1,5 @@
 <div class="entity-editor {{ entityType }}-entity-editor container-fluid" (window:keydown)="onGlobalKeyDown($event)">
-    <a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>
+    <!--<a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>-->
     <form id="server-entity-form" #entityEditorForm="ngForm">
         <div class="row-fluid header">
             <div class="col-md-12">
@@ -22,7 +22,15 @@
         </div>
         <div class="row-fluid required-fields-notification divider-section">
             <div class="col-md-12">
-                <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <div class="action-header">
+                    <div class="notice">
+                        <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
+                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid">Save</button>
+                    </div>
+                </div>
                 <hr />
             </div>
         </div>

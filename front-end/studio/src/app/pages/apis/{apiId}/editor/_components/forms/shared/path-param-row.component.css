@@ -24,10 +24,10 @@
   background-color: #def3ff;
 }
 
-.path-param.overridable .header, .path-param.missing .header {
+.path-param.missing .header {
   opacity: 0.4;
 }
-.path-param.overridable .header:hover, .path-param.missing .header:hover {
+.path-param.missing .header:hover {
   opacity: 0.8;
 }
 

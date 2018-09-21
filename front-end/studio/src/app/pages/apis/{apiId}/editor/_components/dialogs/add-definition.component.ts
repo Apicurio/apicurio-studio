@@ -70,9 +70,7 @@ export class AddDefinitionDialogComponent {
         this.defs = [];
         this.defExists = false;
         let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(document);
-        definitions.forEach( definition => {
-            this.defs.push(FindSchemaDefinitionsVisitor.definitionName(definition));
-        });
+        this.defs = definitions.map(definition => FindSchemaDefinitionsVisitor.definitionName(definition));
         this.defChanged
             .debounceTime(300)
             .distinctUntilChanged()

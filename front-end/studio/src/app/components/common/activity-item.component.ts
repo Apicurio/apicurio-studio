@@ -191,8 +191,23 @@ export class ActivityItemComponent {
             case "RenameSchemaDefinitionCommand_30":
                 rval = "exchange";
                 break;
+
+            case "AggregateCommand":
+                rval = this.aggregateCommandIcon();
+                break;
             default:
                 rval = "question";
+        }
+        return rval;
+    }
+
+    protected aggregateCommandIcon(): string {
+        let name: string = this.command()["name"];
+        let rval: string = "question";
+        switch (name) {
+            case "CreateRESTResource":
+                rval = "align-left";
+                break;
         }
         return rval;
     }
@@ -224,7 +239,7 @@ export class ActivityItemComponent {
                 break;
             case "AddSchemaDefinitionCommand_20":
             case "AddSchemaDefinitionCommand_30":
-                rval = "added a Schema Definition named " + this.command()["_newDefinitionName"] + ".";
+                rval = "added a Data Type named " + this.command()["_newDefinitionName"] + ".";
                 break;
             case "AddSecurityRequirementCommand":
                 rval = `added a Security Requirement at location ${this.command()["_parentPath"]}.`;
@@ -310,7 +325,7 @@ export class ActivityItemComponent {
                 break;
             case "DeleteSchemaDefinitionCommand_20":
             case "DeleteSchemaDefinitionCommand_30":
-                rval = "deleted the Schema Definition named '" + this.command()["_definitionName"] + "'.";
+                rval = "deleted the Data Type named '" + this.command()["_definitionName"] + "'.";
                 break;
             case "DeleteSecuritySchemeCommand_20":
             case "DeleteSecuritySchemeCommand_30":
@@ -366,7 +381,7 @@ export class ActivityItemComponent {
                 break;
             case "NewSchemaDefinitionCommand_20":
             case "NewSchemaDefinitionCommand_30":
-                rval = "added a new Schema Definition for response code '" + this.command()["_statusCode"] + "' for Operation at location " + this.command()["_operationPath"] + ".";
+                rval = "added a new Data Type for response code '" + this.command()["_statusCode"] + "' for Operation at location " + this.command()["_operationPath"] + ".";
                 break;
             case "NewSchemaPropertyCommand_20":
             case "NewSchemaPropertyCommand_30":
@@ -393,11 +408,11 @@ export class ActivityItemComponent {
                 break;
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
-                rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
+                rval = "fully replaced the source for Data Type '" + this.command()["_defName"] + "'.";
                 break;
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
-                rval = "fully replaced the source for Schema Definition '" + this.command()["_defName"] + "'.";
+                rval = "fully replaced the source for Data Type '" + this.command()["_defName"] + "'.";
                 break;
             case "ReplaceSecurityRequirementCommand":
                 rval = `modified the details of a Security Requirement at location ${this.command()["_parentPath"]}.`;
@@ -421,8 +436,26 @@ export class ActivityItemComponent {
             case "SetExampleCommand_30":
                 rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the MediaType at location " + this.command()["_parentPath"] + "."
                 break;
+
+            case "AggregateCommand":
+                rval = this.aggregateCommandDescription();
+                break;
             default:
                 console.info("[ActivityItemComponent] WARNING - unhandled change item type: %s", this.command()["type"]());
+                rval = "performed some unknown action...";
+        }
+        return rval;
+    }
+
+    protected aggregateCommandDescription(): string {
+        let name: string = this.command()["name"];
+        let rval: string;
+        switch (name) {
+            case "CreateRESTResource":
+                rval = `created a Data Type and associated REST resource named '${ this.command()["info"].dataType }'.`;
+                break;
+            default:
+                console.info("[ActivityItemComponent] WARNING - unhandled AggregateCommand change item: %s", name);
                 rval = "performed some unknown action...";
         }
         return rval;

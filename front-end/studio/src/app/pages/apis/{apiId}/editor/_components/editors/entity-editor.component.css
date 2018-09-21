@@ -1,0 +1,18 @@
+.action-header {
+  display: flex;
+  width: 60%;
+  min-width: 400px;
+}
+
+.action-header .notice {
+  flex-basis: 50%;
+}
+
+.action-header .actions {
+  text-align: right;
+  flex-basis: 50%;
+}
+
+.required-fields-notification hr {
+  margin-top: 8px;
+}

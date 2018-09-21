@@ -29,6 +29,7 @@ import {AceEditorComponent} from "./components/common/ace-editor.component";
 import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/autosize.directive";
 import {MarkdownComponent} from "./components/common/markdown.component";
 import {MarkdownSummaryComponent} from "./components/common/markdown-summary.component";
+import {MarkdownEditorComponent} from './components/common/markdown-editor.component';
 
 @NgModule({
     imports: [
@@ -36,12 +37,13 @@ import {MarkdownSummaryComponent} from "./components/common/markdown-summary.com
     ],
     declarations: [
         DropDownComponent, FormErrorMessageComponent, CodeEditorComponent, AceEditorComponent,
-        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, MarkdownComponent, MarkdownSummaryComponent
+        TextAreaAutosize, DivAutoHeight, TextBoxAutosize, MarkdownComponent, MarkdownSummaryComponent,
+        MarkdownEditorComponent
     ],
     providers: [
     ],
     exports: [
-        DropDownComponent, FormErrorMessageComponent, CodeEditorComponent,
+        DropDownComponent, FormErrorMessageComponent, CodeEditorComponent, MarkdownEditorComponent,
         TextAreaAutosize, DivAutoHeight, TextBoxAutosize, MarkdownComponent, MarkdownSummaryComponent
     ]
 })

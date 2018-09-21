@@ -17,18 +17,17 @@
 
 
 import {Injectable} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ICommand} from "oai-ts-commands";
-import {Observable} from "rxjs/Observable";
 import {ServerEditorComponent} from "../_components/editors/server-editor.component";
 import {SecuritySchemeEditorComponent} from "../_components/editors/security-scheme-editor.component";
 import {SecurityRequirementEditorComponent} from "../_components/editors/security-requirement-editor.component";
+import {DataTypeEditorComponent} from "../_components/editors/data-type-editor.component";
 
 export interface IEditorsProvider {
 
     getServerEditor(): ServerEditorComponent;
     getSecuritySchemeEditor(): SecuritySchemeEditorComponent;
     getSecurityRequirementEditor(): SecurityRequirementEditorComponent;
+    getDataTypeEditor(): DataTypeEditorComponent;
 
 }
 
@@ -60,6 +59,10 @@ export class EditorsService implements IEditorsProvider {
 
     public getSecurityRequirementEditor(): SecurityRequirementEditorComponent {
         return this.provider.getSecurityRequirementEditor();
+    }
+
+    public getDataTypeEditor(): DataTypeEditorComponent {
+        return this.provider.getDataTypeEditor();
     }
 
 }

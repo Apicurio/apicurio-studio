@@ -150,6 +150,15 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
      * @param collaborator
      */
     public removeCollaborator(collaborator: ApiCollaborator): void {
+        let idx: number = this.collaborators.indexOf(collaborator);
+        if (idx >= 0) {
+            this.collaborators.splice(idx, 1);
+        }
+        this.apis.deleteCollaborator(this.api.id, collaborator.userId).then( () => {
+            // Nothing to do on success.
+        }).catch( error => {
+            this.error(error);
+        });
     }
 
     /**

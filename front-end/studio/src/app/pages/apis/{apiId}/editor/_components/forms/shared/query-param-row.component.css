@@ -45,7 +45,7 @@
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-right: 5px;
+  padding-right: 15px;
 }
 .query-param .header .description:hover {
   color: #0088ce;

@@ -34,7 +34,8 @@
                                 <div class="collaborator-list-group list-group list-view-pf">
                                     <div class="list-group-item list-view-pf-stacked collaborator-list-item" *ngFor="let collaborator of collaborators" [class.owner]="collaborator.role === 'owner'">
                                         <div class="list-view-pf-actions">
-                                            <button (click)="removeCollaborator(collaborator)" class="btn btn-default" *ngIf="collaborator.role != 'owner' && isOwner()"><span class="fa fa-fw fa-trash"></span></button>
+                                            <button (click)="removeCollaborator(collaborator)" class="btn btn-default"
+                                                    *ngIf="collaborator.role != 'owner' && isOwner()"><span class="fa fa-fw fa-trash"></span></button>
                                         </div>
                                         <div class="list-view-pf-main-info">
                                             <div class="list-view-pf-left">

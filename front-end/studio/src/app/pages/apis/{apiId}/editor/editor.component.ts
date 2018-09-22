@@ -206,13 +206,13 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public undoLastCommand(): void {
         console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+        this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
         // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
         if (cmd !== null) {
+            this.postDocumentChange();
+
             this.onUndo.emit(cmd);
-            this.validateModel();
-            // Fire a change event in the document service
-            this.documentService.emitChange();
             this._undoableCommandCount--;
             this._redoableCommandCount++;
         }
@@ -223,13 +223,13 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public redoLastCommand(): void {
         console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
+        this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().redoLastLocalCommand();
         // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
         if (cmd !== null) {
+            this.postDocumentChange();
+
             this.onRedo.emit(cmd);
-            this.validateModel();
-            // Fire a change event in the document service
-            this.documentService.emitChange();
             this._undoableCommandCount++;
             this._redoableCommandCount--;
         }
@@ -243,17 +243,12 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         let otCmd: OtCommand = new OtCommand();
         otCmd.command = command;
         otCmd.contentVersion = Date.now();
+
+        this.preDocumentChange();
         this.otEngine().executeCommand(otCmd, true);
+
         this.onCommandExecuted.emit(otCmd);
-
-        // After changing the model, we need to ensure all selections are still valid
-        this.selectionService.select(this.selectionService.currentSelection(), this.document());
-
-        // Update the form being displayed (this might change if the thing currently selected was deleted)
-        this.updateFormDisplay(this.selectionService.currentSelection());
-
-        // After changing the model, we should re-validate it
-        this.validateModel();
+        this.postDocumentChange();
 
         // If we're in embedded mode, immediately finalize the command (no collaboration server is present)
         if (this.embedded) {
@@ -262,9 +257,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
                 contentVersion: otCmd.contentVersion
             });
         }
-
-        // Fire a change event in the document service
-        this.documentService.emitChange();
 
         this._undoableCommandCount++;
         this._redoableCommandCount = 0;
@@ -277,16 +269,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param command
      */
     public executeCommand(command: OtCommand): void {
+        this.preDocumentChange();
         this.otEngine().executeCommand(command);
-
-        // After changing the model, we need to ensure all selections are still valid
-        this.selectionService.select(this.selectionService.currentSelection(), this.document());
-
-        // After changing the model, we should re-validate it
-        this.validateModel();
-
-        // Fire a change event in the document service
-        this.documentService.emitChange();
+        this.postDocumentChange();
     }
 
     /**
@@ -296,6 +281,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public undoCommand(command: OtCommand | number | string): void {
         if (command) {
+            this.preDocumentChange();
             if (typeof command === "number") {
                 this.otEngine().undo(command as number);
             } else if (typeof command === "string") {
@@ -303,15 +289,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             } else {
                 this.otEngine().undo(command.contentVersion);
             }
-
-            // After changing the model, we need to ensure all selections are still valid
-            this.selectionService.select(this.selectionService.currentSelection(), this.document());
-
-            // After changing the model, we should re-validate it
-            this.validateModel();
-
-            // Fire a change event in the document service
-            this.documentService.emitChange();
+            this.postDocumentChange();
         }
     }
 
@@ -322,6 +300,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public redoCommand(command: OtCommand | number): void {
         if (command) {
+            this.preDocumentChange();
             if (typeof command === "number") {
                 this.otEngine().redo(command as number);
             } else if (typeof command === "string") {
@@ -329,15 +308,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             } else {
                 this.otEngine().redo(command.contentVersion);
             }
-
-            // After changing the model, we need to ensure all selections are still valid
-            this.selectionService.select(this.selectionService.currentSelection(), this.document());
-
-            // After changing the model, we should re-validate it
-            this.validateModel();
-
-            // Fire a change event in the document service
-            this.documentService.emitChange();
+            this.postDocumentChange();
         }
     }
 
@@ -437,6 +408,24 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public deselectDefinition(): void {
         this.master.deselectDefinition();
+    }
+
+    public preDocumentChange(): void {
+
+    }
+
+    public postDocumentChange(): void {
+        // After changing the model, we need to ensure all selections are still valid
+        this.selectionService.select(this.selectionService.currentSelection(), this.document());
+
+        // After changing the model, we should re-validate it
+        this.validateModel();
+
+        // Update the form being displayed (this might change if the thing currently selected was deleted)
+        this.updateFormDisplay(this.selectionService.currentSelection());
+
+        // Fire a change event in the document service
+        this.documentService.emitChange();
     }
 
     /**

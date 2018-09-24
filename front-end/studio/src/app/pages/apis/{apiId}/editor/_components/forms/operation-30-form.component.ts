@@ -196,21 +196,6 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
         return true;
     }
 
-    public changeSummary(newSummary: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"summary", newSummary);
-        this.commandService.emit(command);
-    }
-
-    public changeOperationId(newId: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation,"operationId", newId);
-        this.commandService.emit(command);
-    }
-
-    public changeDescription(newDescription: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation, "description", newDescription);
-        this.commandService.emit(command);
-    }
-
     public changeBodyDescription(newBodyDescription: string): void {
         let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.operation.requestBody,"description", newBodyDescription);
         this.commandService.emit(command);

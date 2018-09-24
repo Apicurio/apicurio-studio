@@ -1,7 +1,35 @@
+.inline-array-editor-label {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+  margin-left: -6px;
+  display: inline-block;
+}
+.inline-array-editor-label.novalue:hover {
+  border-color: #bbb;
+  cursor: pointer;
+}
 .inline-array-editor-label .label {
   margin-right: 5px;
+  padding-right: 2px;
 }
 .inline-array-editor-label .label:hover {
   margin-right: 5px;
   opacity: .8;
+}
+
+.glyphicon {
+  cursor: pointer;
+  font-size: 11px;
+  margin-left: 5px;
+}
+.pficon {
+  cursor: pointer;
+  margin-left: 8px;
+}
+.pficon:hover {
+  color: #dde;
+}
+
+.inline-array-editor .form-control-pf-textbox {
+  width: 100%;
 }

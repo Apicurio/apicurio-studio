@@ -55,64 +55,8 @@
     <div class="api-operation-detail">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active">
-
                 <!-- Info Section -->
-                <div class="section info-section panel-group">
-                    <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#info-section-body">
-                            <span class="section-label">INFO</span>
-                            <validation-aggregate [models]="[operation]" [shallow]="true" [properties]="[ 'operationId', 'summary', 'description' ]"></validation-aggregate>
-                        </a>
-                        <context-help>
-                            <p>
-                                In this section you can easily edit the <strong>Name</strong> and
-                                <strong>Description</strong> of the Operation.
-                            </p>
-                        </context-help>
-                    </div>
-                    <div class="section-body collapse in" id="info-section-body">
-                        <div class="half-section">
-                            <!-- Summary -->
-                            <div class="section-field-label">
-                                <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
-                                <span>Summary</span>
-                            </div>
-                            <div class="section-field summary">
-                                <pf-inline-text-editor [value]="summary()" [noValueMessage]="'No Summary'"
-                                                    [labelClass]="'api-item-title'"
-                                                    [inputClass]="'api-item-editor api-summary-editor api-item-title'"
-                                                    (onChange)="changeSummary($event)"></pf-inline-text-editor>
-                            </div>
-                        </div>
-
-                        <div class="half-section right">
-                            <!-- Operation ID -->
-                            <div class="section-field-label">
-                                <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
-                                <span>Operation ID</span>
-                            </div>
-                            <div class="section-field operationId">
-                                <pf-inline-text-editor [value]="operationId()" [noValueMessage]="'No Operation ID'"
-                                                       [labelClass]="'api-item-operation-id'"
-                                                       [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
-                                                       (onChange)="changeOperationId($event)"></pf-inline-text-editor>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="section-field-label">
-                            <validation-problem [model]="operation" [shallow]="true" [property]="'description'"></validation-problem>
-                            <span>Description</span>
-                        </div>
-                        <div class="section-field description">
-                            <inline-markdown-editor [value]="description()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
-                                                    [inputClass]="'api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    (onChange)="changeDescription($event)"></inline-markdown-editor>
-                        </div>
-                    </div>
-                </div>
+                <operation-info-section [operation]="operation"></operation-info-section>
 
                 <!-- Servers -->
                 <servers-section [parent]="operation" [collapsed]="true"
@@ -225,12 +169,6 @@
                                              (onDelete)="deleteResponse(response)"
                                              [document]="response.ownerDocument()"></response-row-30>
                         </div>
-
-                        <!--<div class="container-fluid responses typed-item-list">-->
-                            <!--<response-row-30 *ngFor="let response of responses()" [response]="response"-->
-                                             <!--(onDelete)="deleteResponse(response)"-->
-                                             <!--[document]="response.ownerDocument()"></response-row-30>-->
-                        <!--</div>-->
                     </div>
                 </div>
 

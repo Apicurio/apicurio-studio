@@ -96,6 +96,7 @@ import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_compon
 import {DataTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/data-type-editor.component";
 import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/info-section.component";
 import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-resource.service";
+import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/info-section.component";
 
 @NgModule({
     imports: [
@@ -118,7 +119,7 @@ import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-re
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
-        DefinitionInfoSectionComponent
+        DefinitionInfoSectionComponent, OperationInfoSectionComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

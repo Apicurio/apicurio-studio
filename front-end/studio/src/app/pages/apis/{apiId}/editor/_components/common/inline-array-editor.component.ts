@@ -9,6 +9,7 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
+import {AbstractInlineEditor} from "./inline-editor.base";
 
 /**
  * @license
@@ -67,6 +68,11 @@ export class InlineArrayEditorComponent implements AfterViewInit {
     }
 
     public onStartEditing(): void {
+        if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
+            AbstractInlineEditor.s_activeEditor.onCancel();
+        }
+        AbstractInlineEditor.s_activeEditor = this;
+
         this.editing = true;
         if (this.isEmpty()) {
             this.evalue = "";
@@ -84,8 +90,21 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         this.editing = false;
     }
 
+    public removeItem(item: string): void {
+        let newValue: string[] = this.value.slice();
+        let idx: number = newValue.indexOf(item);
+        newValue.splice(idx, 1);
+        this.onChange.emit(newValue);
+    }
+
     public onCancel(): void {
         this.editing = false;
+    }
+
+    public clearValue(): void {
+        this.evalue = "";
+        this.input.last.nativeElement.focus();
+        this.input.last.nativeElement.select();
     }
 
 }

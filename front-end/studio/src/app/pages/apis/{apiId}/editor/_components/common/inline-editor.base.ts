@@ -15,18 +15,8 @@
  * limitations under the License.
  */
 
-import {
-    AfterViewInit,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    Output,
-    QueryList,
-    ViewChildren
-} from "@angular/core";
+import {AfterViewInit, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
-import {Subscription} from "rxjs";
 
 
 /**
@@ -40,96 +30,15 @@ export abstract class AbstractInlineEditor<T> {
     @Input() labelClass = "";
     @Input() inputClass = "";
     @Input() formClass = "";
-    @Input() topIncrement: number = 0;
-    @Input() leftIncrement: number = 0;
-    @Input() rightIncrement: number = 0;
-    @Input() bottomIncrement: number = 0;
 
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
-    @ViewChildren("clickcontainer") clickcontainer: QueryList<ElementRef>;
-
-    private _mousein: boolean = false;
-    private _hoverSub: Subscription;
-    private _hoverElem: any;
-
-    public hovering: boolean = false;
     public editing: boolean = false;
     public canClose: boolean = false;
-    public hoverDims: any = {
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0
-    };
 
-    public inputHover: boolean = false;
     public inputFocus: boolean = false;
 
     public evalue: T;
-
-    @HostListener("document:click", ["$event"])
-    public onDocumentClick(event: MouseEvent): void {
-        if (this.clickcontainer && this.clickcontainer.first && this.clickcontainer.first.nativeElement) {
-            if (!this.clickcontainer.first.nativeElement.contains(event.target) && this.canClose) {
-                this.onCancel();
-            } else {
-            }
-        }
-    }
-
-    public onMouseIn(event: MouseEvent): void {
-        if (this.editing || !this.enabled) {
-            return;
-        }
-        this._mousein = true;
-        this._hoverElem = event.currentTarget;
-        this._hoverSub = TimerObservable.create(100).subscribe(() => {
-            if (this._mousein) {
-                let target: any = this._hoverElem;
-                let targetRect: any = target.getBoundingClientRect();
-                this.hoverDims = this.calcHoverDimensions(targetRect);
-                this.hovering = true;
-            }
-        });
-    }
-
-    public hoverTop(): string {
-        return this.hoverDims.top + "px";
-    }
-
-    public hoverLeft(): string {
-        return this.hoverDims.left + "px";
-    }
-
-    public hoverWidth(): string {
-        return this.hoverDims.width + "px";
-    }
-
-    public hoverHeight(): string {
-        return this.hoverDims.height + "px";
-    }
-
-    public onMouseOut(): void {
-        if (this.editing) {
-            return;
-        }
-        if (this._mousein && !this.hovering) {
-            this.hovering = false;
-        }
-        if (this._hoverSub) {
-            this._hoverSub.unsubscribe();
-            this._hoverSub = null;
-        }
-        this._mousein = false;
-    }
-
-    public onOverlayOut(): void {
-        if (this.hovering) {
-            this.hovering = false;
-            this._mousein = false;
-        }
-    }
 
     public onStartEditing(): void {
         if (!this.enabled) {
@@ -137,10 +46,7 @@ export abstract class AbstractInlineEditor<T> {
         }
         this.canClose = false;
         this.evalue = this.initialValueForEditing();
-        this.hovering = false;
-        this._mousein = false;
         this.inputFocus = true;
-        this.inputHover = true;
         this.editing = true;
 
         if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
@@ -157,9 +63,14 @@ export abstract class AbstractInlineEditor<T> {
     protected abstract initialValueForEditing(): T;
 
     public onSave(): void {
-        this.onChange.emit(this.evalue);
+        let value: T = this.getValueForSave();
+        this.onChange.emit(value);
         this.editing = false;
         AbstractInlineEditor.s_activeEditor = this;
+    }
+
+    protected getValueForSave(): T {
+        return this.evalue;
     }
 
     public onCancel(): void {
@@ -177,21 +88,6 @@ export abstract class AbstractInlineEditor<T> {
     public onInputFocus(isFocus: boolean): void {
         if (this.inputFocus !== isFocus) {
             this.inputFocus = isFocus;
-        }
-    }
-
-    public onInputIn(isIn: boolean): void {
-        if (this.inputHover !== isIn) {
-            this.inputHover = isIn;
-        }
-    }
-
-    protected calcHoverDimensions(targetRect: any): any {
-        return {
-            left: targetRect.left - 5 - this.leftIncrement,
-            top: targetRect.top - this.topIncrement,
-            width: targetRect.right - targetRect.left + 10 + 20 + this.leftIncrement + this.rightIncrement,
-            height: targetRect.bottom - targetRect.top + 3 + this.topIncrement + this.bottomIncrement
         }
     }
 
@@ -251,6 +147,17 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         return value;
     }
 
+    protected getValueForSave(): string {
+        let val: string = this.evalue;
+        if (val) {
+            val = val.trim();
+        }
+        if (!val || val.length === 0) {
+            val = null;
+        }
+        return val;
+    }
+
 }
 
 
@@ -274,13 +181,6 @@ export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
      */
     protected isValid(): boolean {
         return true;
-    }
-
-    protected calcHoverDimensions(targetRect: any): any {
-        let dims: any = super.calcHoverDimensions(targetRect);
-        dims.top = dims.top - 2;
-        dims.height += 2;
-        return dims;
     }
 
 }

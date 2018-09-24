@@ -53,19 +53,13 @@
   font-weight: bold;
   margin-right: 5px;
 }
-.api-card .api-tags .api-tag {
+
+.api-card .api-tags .label {
   margin-right: 5px;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  padding: 2px 4px;
 }
-.api-card .api-tags .api-tag:hover {
+.api-card .api-tags .label:hover {
+  filter: brightness(120%);
   cursor: pointer;
-  background-color: #0088ce;
-  border-color: #00659c;
-  color: white;
 }
 
 span.no-description {

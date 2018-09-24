@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
                                     <span class="api-tags-label">Tags:</span>
-                                    <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag)">{{ tag }}</span>
+                                    <span class="label label-default" *ngFor="let tag of api.tags" (click)="selectTag(tag)">{{ tag }}</span>
                                 </div>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>

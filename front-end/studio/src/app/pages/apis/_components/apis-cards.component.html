@@ -11,7 +11,7 @@
                     <hr/>
                     <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
                         <span class="api-tags-label">Tags:</span>
-                        <span class="api-tag" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
+                        <span class="label label-default" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
                     </div>
                     <p class="api-description">
                         <markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary>

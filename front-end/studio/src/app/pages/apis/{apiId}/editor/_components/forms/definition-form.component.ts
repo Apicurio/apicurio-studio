@@ -62,15 +62,6 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
 
-    /**
-     * C'tor.
-     * @param selectionService
-     * @param commandService
-     */
-    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {
-        super(selectionService, commandService);
-    }
-
     public definitionName(): string {
         if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
             return (this.definition as Oas20SchemaDefinition).definitionName();

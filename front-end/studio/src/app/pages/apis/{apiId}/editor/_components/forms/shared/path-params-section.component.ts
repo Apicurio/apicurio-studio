@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -45,7 +45,7 @@ import {Subscription} from "rxjs/Subscription";
     templateUrl: "path-params-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class PathParamsSectionComponent {
+export class PathParamsSectionComponent implements OnInit, OnDestroy {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     _path: OasPathItem;

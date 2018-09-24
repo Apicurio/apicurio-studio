@@ -23,12 +23,15 @@ import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
+import {OnDestroy, OnInit} from "@angular/core";
+import {DocumentService} from "../../_services/document.service";
+import {Subscription} from "rxjs";
 
 
 /**
  * Base class for all forms that support a "Source" tab.
  */
-export abstract class SourceFormComponent<T extends OasNode> {
+export abstract class SourceFormComponent<T extends OasNode> implements OnInit, OnDestroy {
 
     private static library: OasLibraryUtils = new OasLibraryUtils();
 
@@ -93,7 +96,29 @@ export abstract class SourceFormComponent<T extends OasNode> {
         }
     }
 
-    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {}
+    private _changeSubscription: Subscription;
+
+    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
+                          protected documentService: DocumentService) {}
+
+    /**
+     * Called when the component is initialized.
+     */
+    public ngOnInit(): void {
+        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
+            if (!this._source.dirty) {
+                this._sourceJsObj = null;
+                this._sourceText = null;
+            }
+        });
+    }
+
+    /**
+     * Called when the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        this._changeSubscription.unsubscribe();
+    }
 
     protected abstract createEmptyNodeForSource(): T;
 

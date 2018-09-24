@@ -35,6 +35,7 @@ import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
@@ -59,15 +60,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
-
-    /**
-     * C'tor.
-     * @param selectionService
-     * @param commandService
-     */
-    constructor(protected selectionService: SelectionService, protected commandService: CommandService) {
-        super(selectionService, commandService);
-    }
 
     protected createEmptyNodeForSource(): OasPathItem {
         return (<OasPaths>this.path.parent()).createPathItem(this.path.path());

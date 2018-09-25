@@ -17,16 +17,16 @@
   opacity: .8;
 }
 
-.glyphicon {
+.inline-array-editor-label .glyphicon {
   cursor: pointer;
   font-size: 11px;
   margin-left: 5px;
 }
-.pficon {
+.inline-array-editor-label .pficon {
   cursor: pointer;
   margin-left: 8px;
 }
-.pficon:hover {
+.inline-array-editor-label .pficon:hover {
   color: #dde;
 }
 

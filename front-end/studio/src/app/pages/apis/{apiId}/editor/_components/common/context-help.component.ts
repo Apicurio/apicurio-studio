@@ -26,9 +26,6 @@ export class ContextHelpComponent {
 
     private _open: boolean = false;
 
-    public left: string;
-    public top: string;
-
     @HostListener("document:click", ["$event"])
     public onDocumentClick(event: MouseEvent): void {
         if (this._open) {
@@ -37,8 +34,6 @@ export class ContextHelpComponent {
     }
 
     public open(event: MouseEvent): void {
-        this.left = event.clientX + "px";
-        this.top = event.clientY + "px";
         event.preventDefault();
         event.stopPropagation();
         this._open = true;

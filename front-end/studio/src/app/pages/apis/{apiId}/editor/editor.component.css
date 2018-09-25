@@ -240,7 +240,8 @@
 
 .api-editor .context-help {
   margin-left: 10px;
-  display: none;
+  position: relative;
+  /*display: none;*/
 }
 .api-editor .context-help a {
   cursor: pointer;
@@ -253,7 +254,8 @@
   transition: opacity 300ms;
 }
 .api-editor .context-help .context-help-panel {
-  position: fixed;
+  position: absolute;
+  left: 0;
   margin: 0;
   padding: 10px 14px;
   border: 1px solid #bbb;
@@ -264,7 +266,7 @@
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
-  max-width: 450px;
+  width: 450px;
   cursor: default;
 }
 .api-editor .context-help .context-help-panel p {

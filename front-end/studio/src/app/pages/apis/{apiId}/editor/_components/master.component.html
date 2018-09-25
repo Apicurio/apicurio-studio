@@ -8,6 +8,12 @@
                 <span>New Sub-Path</span>
             </a>
         </li>
+        <!--<li>-->
+            <!--<a href="#" onclick="return false" (click)="renamePath()">-->
+                <!--<span class="fa fa-pencil-square-o"></span>-->
+                <!--<span>Rename Path</span>-->
+            <!--</a>-->
+        <!--</li>-->
         <li>
             <a href="#" onclick="return false" (click)="clonePath()">
                 <span class="fa fa-clone"></span>
@@ -179,4 +185,5 @@
     <!--<add-definition-dialog #addDefinitionDialog (onAdd)="addDefinition($event)"></add-definition-dialog>-->
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-definition-dialog #renameDefinitionDialog (onRename)="renameDefinition($event)"></rename-definition-dialog>
+    <rename-path-dialog #renamePathDialog (onRename)="renamePath($event)"></rename-path-dialog>
 </div>

@@ -25,7 +25,8 @@ import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.v
 @Component({
     moduleId: module.id,
     selector: "rename-definition-dialog",
-    templateUrl: "rename-definition.component.html"
+    templateUrl: "rename-definition.component.html",
+    styleUrls: [ "rename-definition.component.css" ]
 })
 export class RenameDefinitionDialogComponent {
 

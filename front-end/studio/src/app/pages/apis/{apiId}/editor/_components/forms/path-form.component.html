@@ -12,6 +12,12 @@
                         <span>New Sub-Path</span>
                     </a>
                 </li>
+                <!--<li>-->
+                    <!--<a href="javascript:return false" (click)="rename()">-->
+                        <!--<span class="fa fa-pencil-square-o"></span>-->
+                        <!--<span>Rename Path</span>-->
+                    <!--</a>-->
+                <!--</li>-->
                 <li>
                     <a href="javascript:return false" (click)="clone()">
                         <span class="fa fa-clone"></span>
@@ -301,3 +307,4 @@
 
 <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
 <clone-path-dialog #clonePathDialog (onClone)="clone($event)"></clone-path-dialog>
+<rename-path-dialog #renamePathDialog (onRename)="rename($event)"></rename-path-dialog>

@@ -97,6 +97,7 @@ import {DataTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/e
 import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/info-section.component";
 import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-resource.service";
 import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/info-section.component";
+import {RenamePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-path.component";
 
 @NgModule({
     imports: [
@@ -119,7 +120,7 @@ import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_compon
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
-        DefinitionInfoSectionComponent, OperationInfoSectionComponent
+        DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

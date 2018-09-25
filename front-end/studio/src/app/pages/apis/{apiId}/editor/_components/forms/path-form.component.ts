@@ -15,8 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Injectable, Input, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Oas30PathItem, OasDocument, OasOperation, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
+import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+    Oas20PathItem,
+    Oas30PathItem,
+    OasDocument,
+    OasOperation,
+    OasParameterBase,
+    OasPathItem,
+    OasPaths
+} from "oai-ts-core";
 import {
     createAddPathItemCommand,
     createChangeParameterTypeCommand,
@@ -33,9 +41,7 @@ import {
 import {SourceFormComponent} from "./source-form.base";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
-import {SelectionService} from "../../_services/selection.service";
-import {CommandService} from "../../_services/command.service";
-import {DocumentService} from "../../_services/document.service";
+import {RenamePathDialogComponent} from "../dialogs/rename-path.component";
 
 
 @Component({
@@ -60,6 +66,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
+    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
 
     protected createEmptyNodeForSource(): OasPathItem {
         return (<OasPaths>this.path.parent()).createPathItem(this.path.path());
@@ -251,6 +258,20 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
             let cloneSrcObj: any = this.oasLibrary().writeNode(pathItem);
             let command: ICommand = createAddPathItemCommand(this.path.ownerDocument(), modalData.path, cloneSrcObj);
             this.commandService.emit(command);
+        }
+    }
+    
+    public rename(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            this.renamePathDialog.open(this.path.ownerDocument(), this.path as Oas20PathItem | Oas30PathItem);
+        } else {
+            let path: OasPathItem = modalData.path;
+            console.info("[PathFormComponent] Rename path item: %s", modalData.path);
+            let oldName: string = path.path();
+            console.info("[PathFormComponent] Rename definition to: %s", modalData.name);
+            // TODO rename the path!!
+            // let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name);
+            // this.commandService.emit(command);
         }
     }
 

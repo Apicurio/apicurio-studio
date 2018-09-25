@@ -17,10 +17,10 @@
 
 import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
-    Oas20Document,
+    Oas20Document, Oas20PathItem,
     Oas20ResponseDefinition,
     Oas20SchemaDefinition,
-    Oas30Document,
+    Oas30Document, Oas30PathItem,
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasAllNodeVisitor,
@@ -56,14 +56,10 @@ import {SelectionService} from "../_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "../_services/command.service";
 import {EditorsService} from "../_services/editors.service";
-import {
-    DataTypeData,
-    DataTypeEditorComponent,
-    DataTypeEditorEvent,
-    IDataTypeEditorHandler
-} from "./editors/data-type-editor.component";
+import {DataTypeData, DataTypeEditorComponent, IDataTypeEditorHandler} from "./editors/data-type-editor.component";
 import {AggregateCommand, createAggregateCommand} from "oai-ts-commands/src/commands/aggregate.command";
 import {RestResourceService} from "../_services/rest-resource.service";
+import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 
 
 /**
@@ -96,6 +92,7 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
+    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
 
     filterCriteria: string = null;
 
@@ -644,6 +641,24 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
             let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, modalData.name);
             this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Rename Definition" in the context-menu for a schema definition.
+     */
+    public renamePath(modalData?: any): void {
+        console.info("[EditorMasterComponent] Renaming path: ", modalData);
+        if (undefined === modalData || modalData === null) {
+            let pathItem: any = this.contextMenuSelection.resolve(this.document);
+            this.renamePathDialog.open(this.document, pathItem);
+        } else {
+            let path: Oas20PathItem | Oas30PathItem = modalData.path;
+            let oldName: string = path.path();
+            console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
+            // TODO implement this!
+            // let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name);
+            // this.commandService.emit(command);
         }
     }
 

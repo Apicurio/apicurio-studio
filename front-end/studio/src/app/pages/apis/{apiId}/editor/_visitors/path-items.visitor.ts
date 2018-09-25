@@ -44,7 +44,7 @@ export class FindPathItemsVisitor extends OasCombinedVisitorAdapter {
     /**
      * Sorts and returns the path items.
      */
-    public getSortedPathItems() {
+    public getSortedPathItems(): OasPathItem[] {
         return this.pathItems.sort( (pathItem1, pathItem2) => {
             return pathItem1.path().localeCompare(pathItem2.path());
         });

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {Oas20Document, Oas20Operation, Oas30Operation, OasDocument, OasInfo} from "oai-ts-core";
 import {
     createChangeDescriptionCommand,
@@ -24,6 +24,7 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
+import {InlineArrayEditorComponent} from "../../common/inline-array-editor.component";
 
 
 @Component({
@@ -36,6 +37,8 @@ import {CommandService} from "../../../_services/command.service";
 export class OperationInfoSectionComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
+    @ViewChildren("consumesEditor") consumesEditor: QueryList<InlineArrayEditorComponent>;
+    @ViewChildren("producesEditor") producesEditor: QueryList<InlineArrayEditorComponent>;
 
     constructor(private commandService: CommandService) {}
 
@@ -74,9 +77,122 @@ export class OperationInfoSectionComponent {
      * @param newTags
      */
     public changeTags(newTags: string[]): void {
-        console.info("[InfoSectionComponent] User changed the operationId.");
+        console.info("[InfoSectionComponent] User changed the tags.");
         let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation, "tags", newTags);
         this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the "consumes".
+     * @param newValue
+     */
+    public onConsumesChange(newValue: string[]): void {
+        console.info("[InfoSectionComponent] User changed the consumes to: ", newValue);
+        if (newValue && newValue.length === 0) {
+            newValue = null;
+        }
+        let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "consumes", newValue);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user closes the consumes editor without making changes.
+     */
+    public onConsumesClose(): void {
+        let consumes: string[] = (this.operation as Oas20Operation).consumes;
+        if (consumes && consumes.length === 0) {
+            (this.operation as Oas20Operation).consumes = null
+        }
+    }
+
+    /**
+     * Called when the user changes the "produces".
+     * @param newValue
+     */
+    public onProducesChange(newValue: string[]): void {
+        console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
+        if (newValue && newValue.length === 0) {
+            newValue = null;
+        }
+        let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "produces", newValue);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user closes the produces editor without making changes.
+     */
+    public onProducesClose(): void {
+        let produces: string[] = (this.operation as Oas20Operation).produces;
+        if (produces && produces.length === 0) {
+            (this.operation as Oas20Operation).produces = null
+        }
+    }
+
+    public consumes(): string[] {
+        return (this.operation as Oas20Operation).consumes;
+    }
+
+    public produces(): string[] {
+        return (this.operation as Oas20Operation).produces;
+    }
+
+    public hasGlobalConsumes(): boolean {
+        let globalConsumes: string[] = (this.operation.ownerDocument() as Oas20Document).consumes;
+        if (globalConsumes !== null && globalConsumes !== undefined && globalConsumes.length > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public showInheritedConsumes(): boolean {
+        let consumes: string[] = (this.operation as Oas20Operation).consumes;
+        if (consumes !== null && consumes !== undefined) {
+            return false;
+        }
+
+        return this.hasGlobalConsumes();
+    }
+
+    public inheritedConsumes(): string[] {
+        let consumes: string[] = (this.operation.ownerDocument() as Oas20Document).consumes;
+        return consumes;
+    }
+
+    public hasGlobalProduces(): boolean {
+        let globalProduces: string[] = (this.operation.ownerDocument() as Oas20Document).produces;
+        if (globalProduces !== null && globalProduces !== undefined && globalProduces.length > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public showInheritedProduces(): boolean {
+        let produces: string[] = (this.operation as Oas20Operation).produces;
+        if (produces !== null && produces !== undefined) {
+            return false;
+        }
+
+        return this.hasGlobalProduces();
+
+    }
+
+    public inheritedProduces(): string[] {
+        let produces: string[] = (this.operation.ownerDocument() as Oas20Document).produces;
+        return produces;
+    }
+
+    public overrideConsumes(): void {
+        (this.operation as Oas20Operation).consumes = [];
+        setTimeout(() => {
+            this.consumesEditor.last.onStartEditing();
+        }, 50);
+    }
+
+    public overrideProduces(): void {
+        (this.operation as Oas20Operation).produces = [];
+        setTimeout(() => {
+            this.producesEditor.last.onStartEditing();
+        }, 50);
     }
 
 }

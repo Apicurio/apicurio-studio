@@ -40,6 +40,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
     @Input() value: string[];
     @Input() noValueMessage: string;
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
+    @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
     public editing: boolean = false;
@@ -99,6 +100,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
 
     public onCancel(): void {
         this.editing = false;
+        this.onClose.emit();
     }
 
     public clearValue(): void {

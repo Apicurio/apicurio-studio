@@ -1,3 +1,34 @@
 .section-field.description {
   margin-top: 5px;
 }
+
+.inherited-labels {
+  margin-top: 5px;
+}
+.inherited-labels .inherited-label {
+  margin-right: 5px;
+}
+.inherited-labels .inherited-label:hover {
+  filter: brightness(110%);
+}
+
+.overridden-labels {
+  padding-left: 20px;
+  position: relative;
+}
+.overridden-labels .icon-overridden {
+  position: absolute;
+  top: 7px;
+  left: 0px;
+}
+
+.icon-override {
+  margin-right: 5px;
+  cursor: help;
+  color: #666;
+}
+.icon-overridden {
+  margin-right: 12px;
+  cursor: help;
+  color: #666;
+}

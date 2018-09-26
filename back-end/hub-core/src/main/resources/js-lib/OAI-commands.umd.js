@@ -31,6 +31,24 @@ var ModelUtils = (function () {
     ModelUtils.isNullOrUndefined = function (object) {
         return object === undefined || object === null;
     };
+    /**
+     * Detects the appropriate path parameter names from a path.  For example, if the
+     * string "/resources/{fooId}/subresources/{barId}" is passed in, the following
+     * string array will be returned:  [ "fooId", "barId" ]
+     * @param path
+     * @return
+     */
+    ModelUtils.detectPathParamNames = function (path) {
+        var segments = path.split("/");
+        var pnames = segments.filter(function (segment) {
+            var startsWithOB = segment.charAt(0) === '{';
+            var endsWithCB = segment.charAt(segment.length - 1) === '}';
+            return startsWithOB && endsWithCB;
+        }).map(function (segment) {
+            return segment.substring(1, segment.length - 1);
+        });
+        return pnames;
+    };
     return ModelUtils;
 }());
 
@@ -6566,8 +6584,8 @@ var RenameSchemaDefinitionCommand = (function (_super) {
     __extends$48(RenameSchemaDefinitionCommand, _super);
     /**
      * C'tor.
-     * @param {string} pathItemName
-     * @param obj
+     * @param oldName
+     * @param newName
      */
     function RenameSchemaDefinitionCommand(oldName, newName) {
         var _this = _super.call(this) || this;
@@ -7963,6 +7981,165 @@ var AggregateCommand = (function (_super) {
     return AggregateCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createRenamePathItemCommand(document, oldPath, newPath, alsoRenameSubpaths) {
+    if (alsoRenameSubpaths === void 0) { alsoRenameSubpaths = true; }
+    return new RenamePathItemCommand(oldPath, newPath, alsoRenameSubpaths);
+}
+/**
+ * A command used to rename a path item, along with all references to it.
+ */
+var RenamePathItemCommand = (function (_super) {
+    __extends$59(RenamePathItemCommand, _super);
+    /**
+     * C'tor.
+     * @param oldPath
+     * @param newPath
+     * @param alsoRenameSubpaths
+     */
+    function RenamePathItemCommand(oldPath, newPath, alsoRenameSubpaths) {
+        if (alsoRenameSubpaths === void 0) { alsoRenameSubpaths = false; }
+        var _this = _super.call(this) || this;
+        _this._oldPath = oldPath;
+        _this._newPath = newPath;
+        _this._alsoRenameSubpaths = alsoRenameSubpaths;
+        return _this;
+    }
+    RenamePathItemCommand.prototype.type = function () {
+        return "RenamePathItemCommand";
+    };
+    /**
+     * Adds the new pathItem to the document.
+     * @param document
+     */
+    RenamePathItemCommand.prototype.execute = function (document) {
+        console.info("[RenamePathItemCommand] Executing.");
+        this._doPathRename(document, this._oldPath, this._newPath, this._alsoRenameSubpaths);
+    };
+    /**
+     * Removes the pathItem.
+     * @param document
+     */
+    RenamePathItemCommand.prototype.undo = function (document) {
+        console.info("[RenamePathItemCommand] Reverting.");
+        this._doPathRename(document, this._newPath, this._oldPath, this._alsoRenameSubpaths);
+    };
+    /**
+     * Does the work of renaming a path from one name to another.
+     * @param document
+     * @param from
+     * @param to
+     * @param alsoRenameSubpaths
+     */
+    RenamePathItemCommand.prototype._doPathRename = function (document, from, to, alsoRenameSubpaths) {
+        var _this = this;
+        var pathsToRename = [];
+        pathsToRename.push({
+            from: from,
+            to: to
+        });
+        if (this._alsoRenameSubpaths && document.paths) {
+            document.paths.pathItemNames().forEach(function (pathName) {
+                if (pathName.indexOf(from) === 0 && pathName !== from) {
+                    pathsToRename.push({
+                        from: pathName,
+                        to: to + pathName.substring(from.length)
+                    });
+                }
+            });
+        }
+        pathsToRename.forEach(function (p2r) {
+            _this._renamePath(document, p2r.from, p2r.to);
+        });
+    };
+    /**
+     * Does the work of renaming a path.
+     * @param from
+     * @param to
+     */
+    RenamePathItemCommand.prototype._renamePath = function (document, from, to) {
+        var _this = this;
+        var fromPathParamNames = ModelUtils.detectPathParamNames(from);
+        var toPathParamNames = ModelUtils.detectPathParamNames(to);
+        if (fromPathParamNames.length !== toPathParamNames.length) {
+        }
+        // First, rename the path itself
+        var path = document.paths.removePathItem(from);
+        path["_path"] = to;
+        document.paths.addPathItem(to, path);
+        // Next, rename all of the path params (if necessary)
+        fromPathParamNames.forEach(function (fromParamName, idx) {
+            var toParamName = toPathParamNames[idx];
+            if (toParamName) {
+                _this._renamePathParameter(path, fromParamName, toParamName);
+            }
+            else {
+                _this._removePathParameter(path, fromParamName);
+            }
+        });
+    };
+    /**
+     * Rename a path parameter.
+     * @param path
+     * @param fromParamName
+     * @param toParamName
+     */
+    RenamePathItemCommand.prototype._renamePathParameter = function (path, fromParamName, toParamName) {
+        if (fromParamName !== toParamName && path.parameters) {
+            path.parameters.forEach(function (param) {
+                if (param.in === "path" && param.name === fromParamName) {
+                    param.name = toParamName;
+                }
+            });
+        }
+    };
+    /**
+     * Remove a path parameter.
+     * @param path
+     * @param fromParamName
+     */
+    RenamePathItemCommand.prototype._removePathParameter = function (path, fromParamName) {
+        if (!path.parameters) {
+            return;
+        }
+        var paramIdx = -1;
+        path.parameters.forEach(function (param, idx) {
+            if (param.name === fromParamName && param.in === "path") {
+                paramIdx = idx;
+            }
+        });
+        // TODO save the parameter that was deleted so it can be restored on undo()
+        // TODO ALT: or perhaps save the whole path to be easily restored?
+        if (paramIdx !== -1) {
+            path.parameters.splice(paramIdx, 1);
+        }
+    };
+    return RenamePathItemCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -8068,6 +8245,7 @@ var commandFactory = {
     "NewServerCommand": function () { return new NewServerCommand(null, null); },
     "NewTagCommand_20": function () { return new NewTagCommand_20(null); },
     "NewTagCommand_30": function () { return new NewTagCommand_30(null); },
+    "RenamePathItemCommand": function () { return new RenamePathItemCommand(null, null); },
     "RenameSchemaDefinitionCommand_20": function () { return new RenameSchemaDefinitionCommand_20(null, null); },
     "RenameSchemaDefinitionCommand_30": function () { return new RenameSchemaDefinitionCommand_30(null, null); },
     "ReplaceOperationCommand_20": function () { return new ReplaceOperationCommand_20(null, null); },
@@ -8885,6 +9063,8 @@ exports.RenameSchemaDefinitionCommand = RenameSchemaDefinitionCommand;
 exports.RenameSchemaDefinitionCommand_20 = RenameSchemaDefinitionCommand_20;
 exports.RenameSchemaDefinitionCommand_30 = RenameSchemaDefinitionCommand_30;
 exports.SchemaRefFinder = SchemaRefFinder;
+exports.createRenamePathItemCommand = createRenamePathItemCommand;
+exports.RenamePathItemCommand = RenamePathItemCommand;
 exports.ReplaceNodeCommand = ReplaceNodeCommand;
 exports.createReplaceOperationCommand = createReplaceOperationCommand;
 exports.AbstractReplaceOperationCommand = AbstractReplaceOperationCommand;

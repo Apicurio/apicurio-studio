@@ -62,6 +62,13 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
+    public showRequestBody: boolean;
+
+    public ngOnInit(): void {
+        super.ngOnInit();
+        this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
+    }
+
     protected createEmptyNodeForSource(): Oas20Operation {
         return (<Oas20PathItem>this.operation.parent()).createOperation(this.operation.method());
     }

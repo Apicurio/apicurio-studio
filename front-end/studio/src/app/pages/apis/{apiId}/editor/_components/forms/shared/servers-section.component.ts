@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
 import {createChangeServerCommand, createDeleteServerCommand, createNewServerCommand, ICommand} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
@@ -30,13 +30,19 @@ import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editor
     templateUrl: "servers-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class ServersSectionComponent {
+export class ServersSectionComponent implements OnInit {
 
     @Input() parent: Oas30Document | Oas30PathItem | Oas30Operation;
     @Input() collapsed: boolean;
     @Input() description: string;
 
+    public showSectionBody: boolean;
+
     constructor(private commandService: CommandService, private editorsService: EditorsService) {}
+
+    public ngOnInit(): void {
+        this.showSectionBody = !this.collapsed;
+    }
 
     /**
      * Returns the list of global servers defined in the document.

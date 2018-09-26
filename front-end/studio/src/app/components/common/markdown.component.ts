@@ -32,9 +32,11 @@ export class MarkdownComponent implements OnChanges {
     public convertedData: any;
 
     ngOnChanges(changes: SimpleChanges): void {
-        this.convertedData = marked.parse(this.data, {
-            sanitize: true
-        });
+        if (this.data) {
+            this.convertedData = marked.parse(this.data, {
+                sanitize: true
+            });
+        }
     }
 
     public isEmpty(): boolean {

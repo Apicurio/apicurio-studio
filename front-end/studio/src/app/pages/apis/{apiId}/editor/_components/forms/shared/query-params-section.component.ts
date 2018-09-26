@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -44,7 +53,7 @@ import {DocumentService} from "../../../_services/document.service";
     templateUrl: "query-params-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParamsSectionComponent implements OnInit, OnDestroy {
+export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
@@ -55,12 +64,19 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy {
     private _docSub: Subscription;
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
+    public showSectionBody: boolean;
+
     constructor(private commandService: CommandService, private documentService: DocumentService) {}
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
             this._queryParameters = null;
         });
+        this.showSectionBody = this.hasQueryParameters();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        this._queryParameters = null;
     }
 
     public ngOnDestroy(): void {

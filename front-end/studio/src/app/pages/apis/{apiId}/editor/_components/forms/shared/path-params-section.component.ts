@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from "@angular/core";
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -45,20 +45,10 @@ import {Subscription} from "rxjs/Subscription";
     templateUrl: "path-params-section.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class PathParamsSectionComponent implements OnInit, OnDestroy {
+export class PathParamsSectionComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
-    _path: OasPathItem;
-    @Input()
-    set path(path: OasPathItem) {
-        if (this._path !== path) {
-            this._path = path;
-            this._pathParameters = null;
-        }
-    }
-    get path(): OasPathItem {
-        return this._path;
-    }
+    @Input() path: OasPathItem;
 
     private _pathParameters: (Oas30Parameter | Oas20Parameter)[] = null;
     private _changeSubscription: Subscription;
@@ -71,18 +61,16 @@ export class PathParamsSectionComponent implements OnInit, OnDestroy {
      */
     constructor(private commandService: CommandService, private documentService: DocumentService) {}
 
-    /**
-     * Called when the component is initialized.
-     */
     public ngOnInit(): void {
         this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
             this._pathParameters = null;
         });
     }
 
-    /**
-     * Called when the component is destroyed.
-     */
+    public ngOnChanges(changes: SimpleChanges): void {
+        this._pathParameters = null;
+    }
+
     public ngOnDestroy(): void {
         this._changeSubscription.unsubscribe();
     }

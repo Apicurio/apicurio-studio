@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLibraryUtils, OasOperation, OasSecurityRequirement} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
@@ -38,12 +38,18 @@ import {
     styleUrls: [ "security-requirements-section.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class SecurityRequirementsSectionComponent {
+export class SecurityRequirementsSectionComponent implements OnInit {
 
     @Input() parent: OasDocument | OasOperation;
     @Input() global: boolean;
 
+    public showSectionBody: boolean;
+
     constructor(private commandService: CommandService, private editorsService: EditorsService) {}
+
+    public ngOnInit(): void {
+        this.showSectionBody = this.global;
+    }
 
     /**
      * Called when the user adds a new security requirement.

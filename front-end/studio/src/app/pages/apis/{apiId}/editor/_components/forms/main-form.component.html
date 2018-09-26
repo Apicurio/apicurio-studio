@@ -13,7 +13,7 @@
     <tags-section [document]="document"></tags-section>
 
     <!-- Global Servers -->
-    <servers-section *ngIf="is3xForm()" [parent]="document"
+    <servers-section *ngIf="is3xForm()" [parent]="document" [collapsed]="false"
                      [description]="'Configure global servers for your API in this section.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
     <!-- Security Schemes -->

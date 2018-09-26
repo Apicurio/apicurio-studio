@@ -48,8 +48,6 @@ import {
 } from "./operation/content.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
 import {EditExampleEvent} from "../dialogs/edit-example.component";
-import {SelectionService} from "../../_services/selection.service";
-import {CommandService} from "../../_services/command.service";
 
 
 @Component({
@@ -74,6 +72,13 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     @Output() onDeselect: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
+
+    public showRequestBody: boolean;
+
+    public ngOnInit(): void {
+        super.ngOnInit();
+        this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
+    }
 
     protected createEmptyNodeForSource(): Oas30Operation {
         return (<Oas30PathItem>this.operation.parent()).createOperation(this.operation.method());

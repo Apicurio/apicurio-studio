@@ -1,6 +1,6 @@
 <div class="section security-section panel-group">
     <div class="section-header panel-title">
-        <a [class.collapsed]="!hasSecuritySchemes()" data-toggle="collapse" data-target="#security-section-body">
+        <a data-toggle="collapse" data-target="#security-section-body">
             <span class="section-label">SECURITY SCHEMES <counter [items]="securitySchemes()"></counter></span>
             <validation-aggregate [models]="securitySchemes()"></validation-aggregate>
         </a>

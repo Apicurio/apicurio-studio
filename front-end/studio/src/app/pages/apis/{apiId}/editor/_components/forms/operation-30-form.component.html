@@ -68,7 +68,7 @@
                 <!-- Request Body Section -->
                 <div class="section request-body-section panel-group">
                     <div class="section-header panel-title">
-                        <a [class.collapsed]="!(operation.method() === 'put' || operation.method() === 'post')" data-toggle="collapse" data-target="#request-body-section-body">
+                        <a [class.collapsed]="!showRequestBody" data-toggle="collapse" data-target="#request-body-section-body">
                             <span class="section-label">REQUEST BODY</span>
                             <validation-aggregate [models]="[operation.requestBody]"></validation-aggregate>
                         </a>
@@ -82,7 +82,7 @@
                         <icon-button (onClick)="deleteRequestBody()" [pullRight]="true" [type]="'delete'" [disabled]="!hasRequestBody()"
                                      [title]="'Delete the request body.'"></icon-button>
                     </div>
-                    <div class="section-body collapse" [class.in]="operation.method() === 'put' || operation.method() === 'post'" id="request-body-section-body">
+                    <div class="section-body collapse" [class.in]="showRequestBody" id="request-body-section-body">
 
                         <signpost *ngIf="!hasRequestBody()">
                             <span>No request body has been defined.</span>

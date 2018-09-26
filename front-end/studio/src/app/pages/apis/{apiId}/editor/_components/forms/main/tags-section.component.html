@@ -1,7 +1,7 @@
 <div class="section tags-section panel-group">
     <div class="section-header panel-title">
         <a [class.collapsed]="tags().length === 0" data-toggle="collapse" data-target="#tags-section-body">
-            <span class="section-label">TAG DEFINITIONS</span>
+            <span class="section-label">TAG DEFINITIONS  <counter [items]="tags()"></counter></span>
             <validation-aggregate [models]="tags()"></validation-aggregate>
         </a>
         <context-help>

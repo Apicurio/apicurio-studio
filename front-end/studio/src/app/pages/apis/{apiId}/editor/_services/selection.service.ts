@@ -33,7 +33,6 @@ import {Observable} from "rxjs/Observable";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
-import {Api} from "../../../../../models/api.model";
 
 
 class CollaboratorSelectionVisitor extends OasAllNodeVisitor {

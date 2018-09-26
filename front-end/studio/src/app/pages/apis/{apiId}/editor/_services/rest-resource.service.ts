@@ -18,10 +18,13 @@ import {Injectable} from "@angular/core";
 import {createAddPathItemCommand, ICommand} from "oai-ts-commands";
 import * as pluralize from "pluralize";
 import {
-    Oas20Parameter, Oas20Response,
+    Oas20Parameter,
+    Oas20Response,
     Oas30MediaType,
-    Oas30Operation, Oas30Parameter,
-    Oas30PathItem, Oas30Response, Oas30Schema,
+    Oas30Operation,
+    Oas30Parameter,
+    Oas30PathItem,
+    Oas30Response,
     OasDocument,
     OasLibraryUtils,
     OasOperation,

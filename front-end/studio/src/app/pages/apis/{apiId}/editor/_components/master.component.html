@@ -75,7 +75,7 @@
         <div class="section path-section panel-group">
             <div class="section-header panel-title">
                 <a data-toggle="collapse" data-target="#path-section-body">
-                    <span class="section-label">Paths</span>
+                    <span class="section-label">Paths <counter [items]="paths()"></counter></span>
                 </a>
                 <context-help>
                     <p>
@@ -130,7 +130,7 @@
         <div class="section definition-section panel-group">
             <div class="section-header panel-title">
                 <a data-toggle="collapse" data-target="#definition-section-body">
-                    <span class="section-label">Data Types</span>
+                    <span class="section-label">Data Types <counter [items]="definitions()"></counter></span>
                 </a>
                 <context-help>
                     <p>

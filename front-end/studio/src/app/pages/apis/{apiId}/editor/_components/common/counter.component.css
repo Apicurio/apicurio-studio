@@ -1,0 +1,6 @@
+.item-counter:before {
+  content: '(';
+}
+.item-counter:after {
+  content: ')';
+}

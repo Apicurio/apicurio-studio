@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Oas20Parameter, Oas20PathItem, OasNode, OasOperation, OasValidationProblem} from "oai-ts-core";
+import {Oas20Parameter, Oas20PathItem, OasNode, OasOperation} from "oai-ts-core";
 import {ObjectUtils} from "./object.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Inject, Input, OnDestroy, OnInit} from "@angular/core";
-import {Oas20Operation, OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
+import {Component, HostListener, Input, OnDestroy, OnInit} from "@angular/core";
+import {OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";

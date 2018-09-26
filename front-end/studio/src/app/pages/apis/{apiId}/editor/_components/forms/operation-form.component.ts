@@ -20,7 +20,6 @@ import {Oas20Document, Oas20Operation, Oas20Parameter, Oas20PathItem, Oas20Respo
 import {
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createChangeResponseTypeCommand,
     createDeleteAllParametersCommand,
     createDeleteAllResponsesCommand,
     createDeleteOperationCommand,
@@ -39,8 +38,6 @@ import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
-import {SelectionService} from "../../_services/selection.service";
-import {CommandService} from "../../_services/command.service";
 
 
 @Component({

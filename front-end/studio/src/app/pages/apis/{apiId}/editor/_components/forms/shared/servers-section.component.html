@@ -1,7 +1,7 @@
 <div class="section servers-section panel-group">
     <div class="section-header panel-title">
         <a [class.collapsed]="servers().length === 0" data-toggle="collapse" data-target="#servers-section-body">
-            <span class="section-label">SERVERS</span>
+            <span class="section-label">SERVERS <counter [items]="servers()"></counter></span>
             <validation-aggregate [models]="servers()"></validation-aggregate>
         </a>
         <context-help>

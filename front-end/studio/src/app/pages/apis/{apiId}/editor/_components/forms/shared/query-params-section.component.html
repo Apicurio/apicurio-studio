@@ -2,7 +2,7 @@
 <div class="section query-parameters-section panel-group">
     <div class="section-header panel-title">
         <a [class.collapsed]="!hasQueryParameters()" data-toggle="collapse" data-target="#parameters-section-body">
-            <span class="section-label">QUERY PARAMETERS</span>
+            <span class="section-label">QUERY PARAMETERS <counter [items]="queryParameters()"></counter></span>
             <validation-aggregate [models]="queryParameters()"></validation-aggregate>
         </a>
         <context-help *ngIf="!isPathItem()">

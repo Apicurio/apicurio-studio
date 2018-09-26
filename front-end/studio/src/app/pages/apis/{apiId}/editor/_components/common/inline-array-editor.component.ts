@@ -1,16 +1,3 @@
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    Output,
-    QueryList,
-    ViewChildren,
-    ViewEncapsulation
-} from "@angular/core";
-import {AbstractInlineEditor} from "./inline-editor.base";
-
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -27,6 +14,19 @@ import {AbstractInlineEditor} from "./inline-editor.base";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    QueryList,
+    ViewChildren,
+    ViewEncapsulation
+} from "@angular/core";
+import {AbstractInlineEditor} from "./inline-editor.base";
 
 @Component({
     moduleId: module.id,

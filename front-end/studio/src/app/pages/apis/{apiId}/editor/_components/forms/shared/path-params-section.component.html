@@ -2,7 +2,7 @@
 <div class="section path-parameters-section panel-group" *ngIf="canHavePathParams()">
     <div class="section-header panel-title">
         <a data-toggle="collapse" data-target="#path-parameters-section-body">
-            <span class="section-label">PATH PARAMETERS</span>
+            <span class="section-label">PATH PARAMETERS <counter [items]="pathParameters()"></counter></span>
             <validation-aggregate [models]="pathParameters()"></validation-aggregate>
         </a>
         <context-help *ngIf="!isPathItem()">

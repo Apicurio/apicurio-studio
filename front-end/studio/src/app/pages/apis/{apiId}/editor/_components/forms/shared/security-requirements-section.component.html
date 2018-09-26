@@ -1,7 +1,7 @@
 <div class="section security-requirements-section panel-group">
     <div class="section-header panel-title">
         <a [class.collapsed]="!hasSecurityRequirements()" data-toggle="collapse" data-target="#security-requirements-section-body">
-            <span class="section-label">SECURITY REQUIREMENTS</span>
+            <span class="section-label">SECURITY REQUIREMENTS <counter [items]="securityRequirements()"></counter></span>
             <validation-aggregate [models]="securityRequirements()"></validation-aggregate>
         </a>
         <context-help *ngIf="global">

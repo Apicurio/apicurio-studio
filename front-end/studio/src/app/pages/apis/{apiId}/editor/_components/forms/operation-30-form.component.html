@@ -132,7 +132,7 @@
                 <div class="section responses-section panel-group">
                     <div class="section-header panel-title">
                         <a data-toggle="collapse" data-target="#responses-section-body">
-                            <span class="section-label">RESPONSES</span>
+                            <span class="section-label">RESPONSES <counter [items]="responses()"></counter></span>
                             <validation-aggregate [models]="responses()"></validation-aggregate>
                         </a>
                         <context-help>

@@ -1,6 +1,3 @@
-import {Component, ViewEncapsulation} from "@angular/core";
-import {TextInputEditorComponent} from "./inline-editor.base";
-
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -17,6 +14,9 @@ import {TextInputEditorComponent} from "./inline-editor.base";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import {Component, ViewEncapsulation} from "@angular/core";
+import {TextInputEditorComponent} from "./inline-editor.base";
 
 @Component({
     moduleId: module.id,

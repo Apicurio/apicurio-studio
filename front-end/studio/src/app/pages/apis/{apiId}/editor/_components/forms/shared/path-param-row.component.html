@@ -27,7 +27,7 @@
                     <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
                 </ul>
             </div>
-            <button *ngIf="isMissing()" type="button" class="btn btn-primary btn-create"
+            <button *ngIf="isMissing()" type="button" class="btn btn-primary btn-xs btn-create"
                     title="The path parameter is required but not declared.  Create it now."
                     (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Create</span></button>
             <button *ngIf="isOverridable()" (click)="override()" title="Override the path parameter."

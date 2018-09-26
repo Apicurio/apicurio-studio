@@ -79,7 +79,7 @@ import io.apicurio.hub.core.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 6;
+    private static int DB_VERSION = 7;
     private static Object dbMutex = new Object();
 
     @Inject

@@ -29,6 +29,7 @@ export class ModelUtils {
      * @return
      */
     public static detectPathParamNames(path: string): string[] {
+        // TODO remove this in favor of the same method found in oai-ts-commands
         let segments: string[] = path.split("/");
         let pnames: string[] = segments.filter(segment => {
             return segment.startsWith("{") && segment.endsWith("}");

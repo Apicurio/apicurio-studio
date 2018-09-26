@@ -81,7 +81,7 @@
 .path-param .header .actions .btn-override, .path-param .header .actions .btn-create {
   position: absolute;
   right: 5px;
-  top: 4px;
+  top: 6px;
 }
 
 .path-param .header .actions > div .fa-ellipsis-v {

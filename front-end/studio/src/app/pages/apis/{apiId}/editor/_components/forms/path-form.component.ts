@@ -34,6 +34,7 @@ import {
     createDeletePathCommand,
     createNewOperationCommand,
     createNewPathCommand,
+    createRenamePathItemCommand,
     createReplacePathItemCommand,
     ICommand,
     SimplifiedParameterType
@@ -260,7 +261,7 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
             this.commandService.emit(command);
         }
     }
-    
+
     public rename(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
             this.renamePathDialog.open(this.path.ownerDocument(), this.path as Oas20PathItem | Oas30PathItem);
@@ -269,9 +270,8 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
             console.info("[PathFormComponent] Rename path item: %s", modalData.path);
             let oldName: string = path.path();
             console.info("[PathFormComponent] Rename definition to: %s", modalData.name);
-            // TODO rename the path!!
-            // let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name);
-            // this.commandService.emit(command);
+            let command: ICommand = createRenamePathItemCommand(this.path.ownerDocument(), oldName, modalData.name, modalData.renameSubpaths);
+            this.commandService.emit(command);
         }
     }
 

@@ -46,6 +46,7 @@ import {
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
     createNewSchemaDefinitionCommand,
+    createRenamePathItemCommand,
     createRenameSchemaDefinitionCommand,
     ICommand
 } from "oai-ts-commands";
@@ -656,9 +657,8 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             let path: Oas20PathItem | Oas30PathItem = modalData.path;
             let oldName: string = path.path();
             console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
-            // TODO implement this!
-            // let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name);
-            // this.commandService.emit(command);
+            let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name, modalData.renameSubpaths);
+            this.commandService.emit(command);
         }
     }
 

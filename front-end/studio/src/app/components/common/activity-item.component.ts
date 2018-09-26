@@ -187,6 +187,7 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand_30":
                 rval = "code";
                 break;
+            case "RenamePathItemCommand":
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":
                 rval = "exchange";
@@ -416,6 +417,9 @@ export class ActivityItemComponent {
                 break;
             case "ReplaceSecurityRequirementCommand":
                 rval = `modified the details of a Security Requirement at location ${this.command()["_parentPath"]}.`;
+                break;
+            case "RenamePathItemCommand":
+                rval = `renamed a path from '${this.command()['_oldPath']}' to '${this.command()['_newPath']}'.`;
                 break;
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":

@@ -31,7 +31,7 @@
                     title="The path parameter is required but not declared.  Create it now."
                     (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Create</span></button>
             <button *ngIf="isOverridable()" (click)="override()" title="Override the path parameter."
-                    class="btn btn-default btn-override">Override</button>
+                    class="btn btn-default btn-xs btn-override">Override</button>
         </div>
     </div>
     <div class="body" *ngIf="isEditing()">

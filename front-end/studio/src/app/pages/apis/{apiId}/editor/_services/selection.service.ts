@@ -33,6 +33,7 @@ import {Observable} from "rxjs/Observable";
 import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
+import {Api} from "../../../../../models/api.model";
 
 
 class CollaboratorSelectionVisitor extends OasAllNodeVisitor {
@@ -76,34 +77,77 @@ class CollaboratorSelectionVisitor extends OasAllNodeVisitor {
 class CollaboratorSelections {
 
     private selections: any = {};
+    private users: any = {};
+
+    /**
+     * Clears the current selection for a given user.
+     * @param user
+     * @param document
+     */
+    private clearUserSelection(user: ApiEditorUser, document: OasDocument): OasNodePath {
+        let selection: OasNodePath = this.selections[user.userId];
+        if (selection !== null && selection !== undefined) {
+            let visitor: CollaboratorSelectionVisitor = new CollaboratorSelectionVisitor(user, true);
+            OasVisitorUtil.visitPath(selection, visitor, document);
+        }
+        return selection;
+    }
+
+    /**
+     * Sets the selection for a user.
+     * @param user
+     * @param selection
+     * @param document
+     */
+    private setUserSelection(user: ApiEditorUser, selection: OasNodePath, document: OasDocument): void {
+        let visitor: CollaboratorSelectionVisitor = new CollaboratorSelectionVisitor(user);
+        OasVisitorUtil.visitPath(selection, visitor, document);
+    }
 
     /**
      * Sets the selection for a given active collaborator.  Returns the user's previous selection.
      * @param user
      * @param selection
-     * @return
      */
     public setSelection(user: ApiEditorUser, selection: string, document: OasDocument): void {
-        // First, clear any previous selection the user may have had.
-        let previousSelection: OasNodePath = this.selections[user.userId];
-        if (previousSelection != null) {
-            let visitor: CollaboratorSelectionVisitor = new CollaboratorSelectionVisitor(user, true);
-            OasVisitorUtil.visitPath(previousSelection, visitor, document);
-        }
+        this.users[user.userId] = user;
 
-        if (selection === null) {
-            delete this.selections[user.userId];
-            return;
-        }
+        // First, clear any previous selection the user may have had.
+        this.clearUserSelection(user, document);
 
         // Next, process the new selection
         if (selection) {
             let newSelection: OasNodePath = new OasNodePath(selection);
-            let visitor: CollaboratorSelectionVisitor = new CollaboratorSelectionVisitor(user);
-            OasVisitorUtil.visitPath(newSelection, visitor, document);
+            this.setUserSelection(user, newSelection, document);
             this.selections[user.userId] = newSelection;
         } else {
-            console.info("[CollaboratorSelections] Selection is null, skipping.");
+            // If the selection is null, remove it (user has left the editing session)
+            console.info(`[CollaboratorSelections] Selection for ${user.userId} is null, removing.`);
+            delete this.selections[user.userId];
+            delete this.users[user.userId];
+        }
+    }
+
+    /**
+     * Clears the selection for all users.
+     * @param document
+     */
+    public clearAllSelections(document: OasDocument): void {
+        for (let userId in this.selections) {
+            let user: ApiEditorUser = this.users[userId];
+            this.clearUserSelection(user, document);
+        }
+    }
+
+    /**
+     * Re-selects the current selection for each user.
+     * @param document
+     */
+    public reselectAll(document: OasDocument): void {
+        for (let userId in this.selections) {
+            let user: ApiEditorUser = this.users[userId];
+            let selection: OasNodePath = this.selections[userId];
+            this.setUserSelection(user, selection, document);
         }
     }
 
@@ -175,11 +219,7 @@ export class SelectionService {
 
     public select(path: OasNodePath, document: OasDocument): void {
         // Clear previous selection
-        let previousSelection: OasNodePath = this.currentSelection();
-        if (previousSelection) {
-            let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
-            OasVisitorUtil.visitPath(previousSelection, visitor, document);
-        }
+        this.clearCurrentSelection(document);
 
         // Select the new thing
         let visitor: MainSelectionVisitor = new MainSelectionVisitor();
@@ -207,5 +247,23 @@ export class SelectionService {
         this._selectionSubject = new BehaviorSubject(new OasNodePath("/"));
         this._selection = this._selectionSubject.asObservable();
         this._collaboratorSelections = new CollaboratorSelections();
+    }
+
+    public clearAllSelections(document: OasDocument): void {
+        this.clearCurrentSelection(document);
+        this._collaboratorSelections.clearAllSelections(document);
+    }
+
+    public reselectAll(document: OasDocument): void {
+        this.select(this.currentSelection(), document);
+        this._collaboratorSelections.reselectAll(document);
+    }
+
+    private clearCurrentSelection(document: OasDocument): void {
+        let previousSelection: OasNodePath = this.currentSelection();
+        if (previousSelection) {
+            let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
+            OasVisitorUtil.visitPath(previousSelection, visitor, document);
+        }
     }
 }

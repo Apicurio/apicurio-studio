@@ -38,10 +38,12 @@ export class RenamePathDialogComponent {
 
     protected name: string = "";
     protected path: Oas20PathItem | Oas30PathItem;
+    protected alsoSubpaths: boolean;
 
     protected pathChanged: Subject<string> = new Subject<string>();
     protected paths: string[] = [];
     protected pathExists: boolean = false;
+    protected numSubpaths: number = 0;
 
     /**
      * Called to open the dialog.
@@ -51,6 +53,7 @@ export class RenamePathDialogComponent {
         this._isOpen = true;
         this.path = path;
         this.name = path.path();
+        this.alsoSubpaths = true;
 
         this.renamePathModal.changes.subscribe( () => {
             if (this.renamePathModal.first) {
@@ -67,15 +70,27 @@ export class RenamePathDialogComponent {
         this.pathChanged
             .debounceTime(200)
             .distinctUntilChanged()
-            .subscribe( def => {
-                this.pathExists = this.paths.indexOf(def) != -1;
+            .subscribe( path => {
+                this.pathExists = this.paths.indexOf(path) != -1;
             });
+
+        this.numSubpaths = this.calculateNumberOfSubpaths(path.path());
     }
 
     private getPaths(document: OasDocument): (Oas20PathItem | Oas30PathItem)[] {
         let vizzy: FindPathItemsVisitor = new FindPathItemsVisitor(null);
         OasVisitorUtil.visitTree(document, vizzy);
         return vizzy.getSortedPathItems() as (Oas20PathItem | Oas30PathItem)[];
+    }
+
+    private calculateNumberOfSubpaths(path: string): number {
+        let rval: number = 0;
+        this.paths.forEach( aPath => {
+            if (aPath.startsWith(path) && aPath !== path) {
+                rval++;
+            }
+        });
+        return rval;
     }
 
     /**
@@ -91,7 +106,8 @@ export class RenamePathDialogComponent {
     protected rename(): void {
         let data: any = {
             name: this.name,
-            path: this.path
+            path: this.path,
+            renameSubpaths: this.alsoSubpaths
         };
         this.onRename.emit(data);
         this.cancel();

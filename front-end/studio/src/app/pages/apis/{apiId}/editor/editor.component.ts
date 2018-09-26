@@ -411,12 +411,13 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     }
 
     public preDocumentChange(): void {
-
+        // Before changing the document, let's clear/reset the current selection
+        this.selectionService.clearAllSelections(this.document());
     }
 
     public postDocumentChange(): void {
         // After changing the model, we need to ensure all selections are still valid
-        this.selectionService.select(this.selectionService.currentSelection(), this.document());
+        this.selectionService.reselectAll(this.document());
 
         // After changing the model, we should re-validate it
         this.validateModel();

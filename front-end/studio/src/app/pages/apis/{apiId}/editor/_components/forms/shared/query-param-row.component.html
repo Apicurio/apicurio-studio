@@ -28,7 +28,8 @@
                     <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
                 </ul>
             </div>
-            <button *ngIf="isOverridable()" (click)="override()" title="Override the query parameter." class="btn btn-default btn-override">Override</button>
+            <button *ngIf="isOverridable()" (click)="override()" title="Override the query parameter."
+                    class="btn btn-default btn-xs btn-override">Override</button>
         </div>
     </div>
     <div class="body" *ngIf="isEditing()">

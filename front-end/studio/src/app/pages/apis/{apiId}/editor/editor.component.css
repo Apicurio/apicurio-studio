@@ -241,7 +241,7 @@
 .api-editor .context-help {
   margin-left: 10px;
   position: relative;
-  /*display: none;*/
+  display: none;
 }
 .api-editor .context-help a {
   cursor: pointer;

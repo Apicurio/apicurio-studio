@@ -646,7 +646,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${maven.surefire.report.plugin.version}</version>
+                <version>${version.surefire-report.plugin}</version>
             </plugin>
         </plugins>
     </reporting>

@@ -1,0 +1,20 @@
+<div class="section example-section panel-group">
+    <div class="section-header panel-title">
+        <a data-toggle="collapse" data-target="#example-section-body">
+            <span class="section-label">EXAMPLE</span>
+            <validation-aggregate [models]="[definition]" [properties]="['example']" [shallow]="true"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>This section allows you to modify the Data Type's <strong>Example</strong>.</p>
+        </context-help>
+    </div>
+    <div class="section-body collapse in" id="example-section-body">
+        <div class="section-field example">
+            <inline-example-editor [value]="example()"
+                                   [labelClass]="'api-definition-example api-item-example'"
+                                   [formClass]="'api-definition-example-editor-form'"
+                                   [inputClass]="'api-item-editor api-example-editor api-definition-example api-item-example'"
+                                   [noValueMessage]="'No example.'" (onChange)="onExampleChange($event)"></inline-example-editor>
+        </div>
+    </div>
+</div>

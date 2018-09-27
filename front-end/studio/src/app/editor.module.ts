@@ -98,7 +98,9 @@ import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_compo
 import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-resource.service";
 import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/info-section.component";
 import {RenamePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-path.component";
-import {CounterComponent} from "app/pages/apis/{apiId}/editor/_components/common/counter.component";
+import {CounterComponent} from "./pages/apis/{apiId}/editor/_components/common/counter.component";
+import {InlineExampleEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-example-editor.component";
+import {DefinitionExampleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/example-section.component";
 
 @NgModule({
     imports: [
@@ -121,7 +123,8 @@ import {CounterComponent} from "app/pages/apis/{apiId}/editor/_components/common
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
-        DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent
+        DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
+        InlineExampleEditorComponent, DefinitionExampleSectionComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

@@ -9,7 +9,7 @@
     </parent>
     <artifactId>apicurio-studio-shared-servlet</artifactId>
     <packaging>jar</packaging>
-    <name>apicurio-studio-be-shared-servlet</name>
+    <name>apicurio-studio-shared-servlet</name>
     <dependencies>
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>

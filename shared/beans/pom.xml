@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>apicurio-studio-shared-beans</artifactId>
 	<packaging>jar</packaging>
-	<name>apicurio-studio-be-shared-beans</name>
+	<name>apicurio-studio-shared-beans</name>
 
 	<dependencies>
 		<!-- Third Party Libraries -->

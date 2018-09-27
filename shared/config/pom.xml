@@ -9,7 +9,7 @@
     </parent>
     <artifactId>apicurio-studio-shared-config</artifactId>
     <packaging>jar</packaging>
-    <name>apicurio-studio-be-shared-config</name>
+    <name>apicurio-studio-shared-config</name>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

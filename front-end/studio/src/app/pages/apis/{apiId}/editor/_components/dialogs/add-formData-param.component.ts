@@ -17,6 +17,8 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
+import {Subject} from "rxjs";
+import {Oas20Operation, Oas30Operation} from "oai-ts-core";
 
 
 @Component({
@@ -34,10 +36,14 @@ export class AddFormDataParamDialogComponent {
 
     protected name: string = "";
 
+    protected nameChanged: Subject<string> = new Subject<string>();
+    protected names: string[] = [];
+    protected nameExists: boolean = false;
+
     /**
      * Called to open the dialog.
      */
-    public open(name?: string): void {
+    public open(parent: Oas30Operation | Oas20Operation, name?: string): void {
         this.name = name;
         if (!name) {
             this.name = "";
@@ -48,6 +54,22 @@ export class AddFormDataParamDialogComponent {
                 this.addFormDataParamModal.first.show();
             }
         });
+
+        this.names = [];
+        this.nameExists = false;
+        if (parent.parameters) {
+            parent.parameters.forEach( param => {
+                if (param.in === "formData") {
+                    this.names.push(param.name);
+                }
+            });
+            this.nameChanged
+                .debounceTime(50)
+                .distinctUntilChanged()
+                .subscribe( name => {
+                    this.nameExists = this.names.indexOf(name) != -1;
+                });
+        }
     }
 
     /**
@@ -62,8 +84,11 @@ export class AddFormDataParamDialogComponent {
      * Called when the user clicks "add".
      */
     protected add(): void {
-        this.onAdd.emit(this.name);
-        this.cancel();
+        console.info("Trying to ADD");
+        if (this.isValid()) {
+            this.onAdd.emit(this.name);
+            this.cancel();
+        }
     }
 
     /**
@@ -75,10 +100,16 @@ export class AddFormDataParamDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
+    }
+
+    /**
+     * Check to see if the form is valid.
+     */
+    public isValid(): boolean {
+        return this.name && !this.nameExists;
     }
 
 }

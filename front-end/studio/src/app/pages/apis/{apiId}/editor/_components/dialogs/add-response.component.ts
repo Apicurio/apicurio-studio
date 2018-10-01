@@ -17,6 +17,8 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
+import {Subject} from "rxjs";
+import {Oas20Operation, Oas30Operation} from "oai-ts-core";
 
 
 @Component({
@@ -32,12 +34,25 @@ export class AddResponseDialogComponent {
 
     protected _isOpen: boolean = false;
 
-    public statusCode: string = "";
+    public _statusCode: string = "";
+    get statusCode() {
+        return this._statusCode;
+    }
+    set statusCode(code: string) {
+        this._statusCode = code;
+        this.codeChanged.next(code);
+    }
+
+    protected codeChanged: Subject<string> = new Subject<string>();
+    protected codes: string[] = [];
+    protected codeExists: boolean = false;
 
     /**
      * Called to open the dialog.
+     * @param parent
+     * @param statusCode
      */
-    public open(statusCode?: string): void {
+    public open(parent: Oas20Operation | Oas30Operation, statusCode?: string): void {
         this.statusCode = statusCode;
         if (!statusCode) {
             this.statusCode = "";
@@ -48,6 +63,18 @@ export class AddResponseDialogComponent {
                 this.addResponseModal.first.show();
             }
         });
+
+        this.codes = [];
+        this.codeExists = false;
+        if (parent.responses) {
+            this.codes = parent.responses.responseStatusCodes();
+            this.codeChanged
+                .debounceTime(50)
+                .distinctUntilChanged()
+                .subscribe( name => {
+                    this.codeExists = this.codes.indexOf(name) != -1;
+                });
+        }
     }
 
     /**
@@ -62,8 +89,10 @@ export class AddResponseDialogComponent {
      * Called when the user clicks "add".
      */
     protected add(): void {
-        this.onAdd.emit(this.statusCode);
-        this.cancel();
+        if (this.isValid()) {
+            this.onAdd.emit(this.statusCode);
+            this.cancel();
+        }
     }
 
     /**
@@ -75,7 +104,6 @@ export class AddResponseDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return
      */
     public isOpen(): boolean {
         return this._isOpen;
@@ -83,11 +111,17 @@ export class AddResponseDialogComponent {
 
     /**
      * Returns true if today is the first of April.  (teapot related)
-     * @return
      */
     public isAprilFirst(): boolean {
         let d: Date = new Date();
         return d.getMonth() === 3 && d.getDate() === 1;
+    }
+
+    /**
+     * Check to see if the form is valid.
+     */
+    public isValid(): boolean {
+        return this.statusCode && !this.codeExists;
     }
 
 }

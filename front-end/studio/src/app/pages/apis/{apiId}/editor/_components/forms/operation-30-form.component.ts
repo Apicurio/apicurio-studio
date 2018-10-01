@@ -292,7 +292,7 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     }
 
     public openAddResponseModal(): void {
-        this.addResponseDialog.open("200");
+        this.addResponseDialog.open(this.operation,"200");
     }
 
     public addResponse(statusCode: string): void {

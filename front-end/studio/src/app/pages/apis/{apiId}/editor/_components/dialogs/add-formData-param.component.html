@@ -17,7 +17,9 @@
                         <label class="col-sm-2 control-label required" for="name">Name</label>
                         <div class="col-sm-10">
                             <input #formDataParamNameInput name="name" type="text" id="name" class="form-control" #paramName="ngModel"
+                                   (ngModelChange)="nameChanged.next($event)"
                                    placeholder="Enter a Parameter Name" required [(ngModel)]="name">
+                            <div class="form-error-message" *ngIf="nameExists">Form Data Parameter already exists.</div>
                             <form-error-message [inputModel]="paramName" [type]="'required'">Name is required.</form-error-message>
                         </div>
                     </div>
@@ -25,7 +27,7 @@
             </div>
             <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addFormDataParamForm.form.valid">Add</button>
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()">Add</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

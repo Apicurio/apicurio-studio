@@ -447,7 +447,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public openAddFormDataParamModal(): void {
-        this.addFormDataParamDialog.open();
+        this.addFormDataParamDialog.open(this.operation);
     }
 
     public addFormDataParam(name: string): void {
@@ -456,7 +456,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     }
 
     public openAddResponseModal(): void {
-        this.addResponseDialog.open("200");
+        this.addResponseDialog.open(this.operation,"200");
     }
 
     public addResponse(statusCode: string): void {

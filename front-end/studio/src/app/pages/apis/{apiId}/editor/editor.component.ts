@@ -205,6 +205,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Called when the user clicks the Undo button or uses the Ctrl-z hotkey.
      */
     public undoLastCommand(): void {
+        if (this._undoableCommandCount === 0) {
+            return;
+        }
         console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
         this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
@@ -222,6 +225,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Called when the user clicks the Redo button or uses the Ctrl-y hotkey.
      */
     public redoLastCommand(): void {
+        if (this._redoableCommandCount === 0) {
+            return;
+        }
         console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
         this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().redoLastLocalCommand();

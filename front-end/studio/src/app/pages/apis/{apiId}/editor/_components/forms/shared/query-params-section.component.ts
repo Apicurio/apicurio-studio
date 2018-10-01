@@ -142,7 +142,7 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
     }
 
     public openAddQueryParamModal(): void {
-        this.addQueryParamDialog.open();
+        this.addQueryParamDialog.open(this.parent);
     }
 
     public deleteAllQueryParams(): void {

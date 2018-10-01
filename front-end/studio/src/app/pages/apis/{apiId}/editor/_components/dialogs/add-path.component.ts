@@ -68,7 +68,7 @@ export class AddPathDialogComponent {
                 this.paths.push(pathItem.path());
             });
             this.pathChanged
-                .debounceTime(300)
+                .debounceTime(50)
                 .distinctUntilChanged()
                 .subscribe( path => {
                     this.pathExists = this.paths.indexOf(path) != -1;

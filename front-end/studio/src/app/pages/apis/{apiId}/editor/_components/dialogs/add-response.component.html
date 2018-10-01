@@ -104,13 +104,14 @@
                                     <li role="presentation"><a role="menuitem" (click)="statusCode = '511'">511 Network Authentication Required</a></li>
                                 </ul>
                             </div>
+                            <div class="form-error-message" *ngIf="codeExists">Response with this code already exists.</div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="add()">Add</button>
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()">Add</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

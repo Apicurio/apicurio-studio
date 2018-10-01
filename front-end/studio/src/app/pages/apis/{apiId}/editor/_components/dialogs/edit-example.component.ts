@@ -21,6 +21,7 @@ import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/comm
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
 import {Oas30Example} from "oai-ts-core";
+import {StringUtils} from "../../_util/object.util";
 
 
 export interface EditExampleEvent {
@@ -142,13 +143,13 @@ export class EditExampleDialogComponent {
      * @param value
      */
     private setValueFormatFromValue(value: string): void {
-        if (value && value.trim().startsWith("{")) {
+        if (StringUtils.isJSON(value)) {
             this.model.format = CodeEditorMode.JSON;
             try {
                 JSON.parse(value);
                 this.model.valid = true;
             } catch (e) {}
-        } else if (value && value.trim().startsWith("<")) {
+        } else if (StringUtils.isXml(value)) {
             this.model.format = CodeEditorMode.XML;
         } else {
             this.model.format = CodeEditorMode.YAML;

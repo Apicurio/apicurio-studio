@@ -20,6 +20,7 @@ import {ModalDirective} from "ngx-bootstrap";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
+import {StringUtils} from "../../_util/object.util";
 
 
 @Component({
@@ -47,14 +48,14 @@ export class AddExampleDialogComponent {
     }
 
     set value(value: string) {
-        if (value && value.trim().startsWith("{")) {
+        if (StringUtils.isJSON(value)) {
             this.model.format = CodeEditorMode.JSON;
             try {
                 JSON.parse(value);
                 this.model.valid = true;
             } catch (e) {
             }
-        } else if (value && value.trim().startsWith("<")) {
+        } else if (StringUtils.isXml(value)) {
             this.model.format = CodeEditorMode.XML;
         } else {
             this.model.format = CodeEditorMode.YAML;

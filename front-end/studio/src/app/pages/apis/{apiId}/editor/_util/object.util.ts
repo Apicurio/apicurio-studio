@@ -17,6 +17,17 @@
 
 import {ElementRef} from "@angular/core";
 
+export class StringUtils {
+
+    public static isJSON(value: string): boolean {
+        return value !== null && value !== undefined && typeof value === "string" && (value.startsWith("{") || value.startsWith("["));
+    }
+
+    public static isXml(value: string): boolean {
+        return value !== null && value !== undefined && typeof value === "string" && value.startsWith("<");
+    }
+
+}
 
 export class ArrayUtils {
 

@@ -30,7 +30,7 @@ export abstract class TypedRow {
 
     public type(): string {
         if (!ObjectUtils.isNullOrUndefined(this.model())) {
-            return this.model().type;
+            return ObjectUtils.undefinedAsNull(this.model().type);
         }
         return null;
     }
@@ -71,7 +71,7 @@ export abstract class TypedRow {
 
     public typeOf(): string {
         if (this.model() && this.model().of) {
-            return this.model().of.type;
+            return ObjectUtils.undefinedAsNull(this.model().of.type);
         }
         return null;
     }
@@ -113,10 +113,10 @@ export abstract class TypedRow {
             return null;
         }
         if (this.model().isArray() && this.model().of && this.model().of.isSimpleType()) {
-            return this.model().of.as;
+            return ObjectUtils.undefinedAsNull(this.model().of.as);
         }
         if (this.model().isSimpleType()) {
-            return this.model().as;
+            return ObjectUtils.undefinedAsNull(this.model().as);
         }
         return null;
     }

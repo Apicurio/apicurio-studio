@@ -116,7 +116,7 @@ export class ContentComponent implements OnInit {
     public mediaTypeType(): string {
         let mt: Oas30MediaType = this.mediaType();
         if (mt) {
-            return SimplifiedType.fromSchema(mt.schema).type;
+            return ObjectUtils.undefinedAsNull(SimplifiedType.fromSchema(mt.schema).type);
         }
         return null;
     }
@@ -126,7 +126,7 @@ export class ContentComponent implements OnInit {
         if (mt) {
             let st: SimplifiedType = SimplifiedType.fromSchema(mt.schema);
             if (st.of) {
-                return st.of.type;
+                return ObjectUtils.undefinedAsNull(st.of.type);
             }
         }
         return null;
@@ -137,10 +137,10 @@ export class ContentComponent implements OnInit {
         if (mt) {
             let st: SimplifiedType = SimplifiedType.fromSchema(mt.schema);
             if (st.isArray() && st.of) {
-                return st.of.as;
+                return ObjectUtils.undefinedAsNull(st.of.as);
             }
             if (st.isSimpleType()) {
-                return st.as;
+                return ObjectUtils.undefinedAsNull(st.as);
             }
         }
         return null;

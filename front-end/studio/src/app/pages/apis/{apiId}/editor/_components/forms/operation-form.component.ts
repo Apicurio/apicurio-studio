@@ -140,7 +140,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     public requestBodyType(): string {
         let bodyParam: Oas20Parameter = this.bodyParam();
         if (bodyParam && bodyParam.schema) {
-            return SimplifiedType.fromSchema(bodyParam.schema).type;
+            return ObjectUtils.undefinedAsNull(SimplifiedType.fromSchema(bodyParam.schema).type);
         }
         return null;
     }
@@ -150,7 +150,7 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         if (bodyParam && bodyParam.schema) {
             let st: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
             if (st.of) {
-                return st.of.type;
+                return ObjectUtils.undefinedAsNull(st.of.type);
             }
         }
         return null;
@@ -161,10 +161,10 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         if (bodyParam && bodyParam.schema) {
             let st: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
             if (st.isArray() && st.of) {
-                return st.of.as;
+                return ObjectUtils.undefinedAsNull(st.of.as);
             }
             if (st.isSimpleType()) {
-                return st.as;
+                return ObjectUtils.undefinedAsNull(st.as);
             }
         }
         return null;

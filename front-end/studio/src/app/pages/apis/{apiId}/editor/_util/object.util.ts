@@ -91,6 +91,13 @@ export class ObjectUtils {
         return object === undefined || object === null;
     }
 
+    public static undefinedAsNull(value: any): any {
+        if (value === undefined) {
+            return null;
+        }
+        return value;
+    }
+
     public static objectEquals(x:any, y:any): boolean {
         if (x === null || x === undefined || y === null || y === undefined) { return x === y; }
         // after this just checking type of one would be enough

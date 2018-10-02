@@ -68,6 +68,8 @@
     <div class="api-path-detail">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+                <!-- Info Section -->
+                <path-info-section [path]="path" *ngIf="path.ownerDocument().is3xDocument()"></path-info-section>
 
                 <!-- Servers -->
                 <servers-section *ngIf="path.ownerDocument().is3xDocument()" [parent]="path" [collapsed]="true"

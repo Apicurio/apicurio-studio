@@ -196,7 +196,7 @@ public class GitLabSourceConnectorTest {
             System.out.println("\t" + project.getName());
         });
         Assert.assertTrue(projects.size() > 0);
-//
+
 //        projects = service.getProjects("eric.wittmann");
 //        Assert.assertNotNull(projects);
 //        System.out.println("Found " + projects.size() + " projects!");

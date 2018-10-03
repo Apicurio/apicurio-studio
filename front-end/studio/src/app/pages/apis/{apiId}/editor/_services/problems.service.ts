@@ -332,6 +332,7 @@ var PROBLEM_EXPLANATIONS = {
     "PAR-019"  : `Parameters are uniquely defined by their "name" and their "location" (path, query, formData, etc).  You cannot have two Parameters with the same combination of name and location.  Please make sure that all of your parameters are appropriately unique based on these two criteria.`,
     "PAR-020"  : `Only a single "body" parameter may be defined for an Operation.  A body parameter indicates that the operation expects to receive input (typically some JSON data) in the body of the HTTP request.  Since there is only one request body, only one paramet of this type can be specified.`,
     "TAG-003"  : `It was found that two (or more) tags have the same name.  Every tag in the document must have a unique name (different from all other tag names).`,
+    "UNKNOWN-001" : `When reading the OpenAPI definition, a property was discovered that is not a part of the specification (and is not an extension property).  The property and its value will be preserved, but is most likely a mistake and should be removed.`,
 
     // OpenAPI 3.0.x Problems
     "HEAD-3-001" : `When defining headers, most header names except for "Content-Type" are allowed.  However, "Content-Type" will be ignored because it is already specified in the definition of the Response's Content.`,
@@ -416,6 +417,8 @@ var PROBLEM_EXPLANATIONS = {
     "RB-3-003"   : `The definition of the Request Body attempts to reference a Request Body found elsewhere (typically globally declared Components section of the same API document) but the reference could not be resolved.  Perhaps the global Request Body was deleted, or there is a typo in the reference.`,
     "RES-3-004"  : `The definition of the Response attempts to reference a Response found elsewhere (typically globally declared Components section of the same API document) but the reference could not be resolved.  Perhaps the global Response was deleted, or there is a typo in the reference.`,
     "SCH-3-002"  : `The definition of the Schema attempts to reference a Schema found elsewhere (typically globally declared Components section of the same API document) but the reference could not be resolved.  Perhaps the global Schema was deleted, or there is a typo in the reference.`,
+    "SCH-3-003"  : `All schemas must have a type and that type must be one of ["string", "number", "integer", "boolean", "array", "object"].`,
+    "SCH-3-004"  : `When a Schema is defined as an array, the type of item allowed in the array is defined using the "items" property.  This property is only allowed when the Schema is of type array.`,
     "SS-3-012"   : `The definition of the Callback attempts to reference a Callback found elsewhere (typically globally declared Components section of the same API document) but the reference could not be resolved.  Perhaps the global Callback was deleted, or there is a typo in the reference.`,
     "EX-3-002"   : `When defining an Example, either an inline value or an external value must be provided, but not both.`,
     "HEAD-3-006" : `When providing the data type for a header, it must be defined either in a schema or a content object, but not both.`,
@@ -450,7 +453,8 @@ var PROBLEM_EXPLANATIONS = {
     "TAG-3-001"  : `All configured Tags must have a name.`,
     "OP-3-002"   : `If an Operation ID is defined for an Operation, it must be unique across all operations in the API.`,
     "PAR-3-001"  : `Parameters are uniquely defined by their "name" and their "location" (path, query, formData, etc).  You cannot have two Parameters with the same combination of name and location.  Please make sure that all of your parameters are appropriately unique based on these two criteria.`,
-    "TAG-3-003"  : `Each Tag must have a unique name (no duplicate tag names are allowed).`
+    "TAG-3-003"  : `Each Tag must have a unique name (no duplicate tag names are allowed).`,
+    "UNKNOWN-3-001" : `When reading the OpenAPI definition, a property was discovered that is not a part of the specification (and is not an extension property).  The property and its value will be preserved, but is most likely a mistake and should be removed.`
 };
 
 

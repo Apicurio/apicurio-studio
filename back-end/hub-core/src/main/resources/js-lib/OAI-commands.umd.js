@@ -7871,6 +7871,7 @@ var DeleteAllSecuritySchemesCommand = (function (_super) {
             }
             this._oldSecuritySchemes.forEach(function (savedScheme) {
                 var name = savedScheme["__name"];
+                delete savedScheme["__name"];
                 var scheme = doc_2.securityDefinitions.createSecurityScheme(name);
                 _this.oasLibrary().readNode(savedScheme, scheme);
                 doc_2.securityDefinitions.addSecurityScheme(name, scheme);
@@ -7884,6 +7885,7 @@ var DeleteAllSecuritySchemesCommand = (function (_super) {
             }
             this._oldSecuritySchemes.forEach(function (savedScheme) {
                 var name = savedScheme["__name"];
+                delete savedScheme["__name"];
                 var scheme = doc_3.components.createSecurityScheme(name);
                 _this.oasLibrary().readNode(savedScheme, scheme);
                 doc_3.components.addSecurityScheme(name, scheme);

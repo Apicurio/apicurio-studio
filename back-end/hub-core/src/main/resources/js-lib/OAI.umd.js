@@ -34,6 +34,7 @@ var OasNode = (function () {
     function OasNode() {
         this._modelId = __modelIdCounter++;
         this._attributes = new OasNodeAttributes();
+        this._extraProperties = {};
         this._validationProblems = {}; // Really a map of string(errorCode)->OasValidationProblem
     }
     /**
@@ -110,6 +111,26 @@ var OasNode = (function () {
     };
     OasNode.prototype.clearValidationProblems = function () {
         this._validationProblems = {};
+    };
+    OasNode.prototype.addExtraProperty = function (name, value) {
+        this._extraProperties[name] = value;
+    };
+    OasNode.prototype.removeExtraProperty = function (name) {
+        if (this._extraProperties.hasOwnProperty(name)) {
+            var rval = this._extraProperties[name];
+            delete this._extraProperties[name];
+            return rval;
+        }
+        return undefined;
+    };
+    OasNode.prototype.hasExtraProperties = function () {
+        return Object.keys(this._extraProperties).length > 0;
+    };
+    OasNode.prototype.getExtraPropertyNames = function () {
+        return Object.keys(this._extraProperties);
+    };
+    OasNode.prototype.getExtraProperty = function (name) {
+        return this._extraProperties[name];
     };
     return OasNode;
 }());
@@ -1163,6 +1184,9 @@ var OasResponses = (function (_super) {
      * @return {OasResponse}
      */
     OasResponses.prototype.response = function (statusCode) {
+        if (statusCode === "default") {
+            return this.default;
+        }
         if (this._responses) {
             return this._responses[statusCode];
         }
@@ -1191,6 +1215,10 @@ var OasResponses = (function (_super) {
      * @param response
      */
     OasResponses.prototype.addResponse = function (statusCode, response) {
+        if (statusCode === null || statusCode === "default") {
+            this.default = response;
+            return response;
+        }
         if (this._responses == null) {
             this._responses = new OasResponseItems();
         }
@@ -1202,6 +1230,10 @@ var OasResponses = (function (_super) {
      * @param statusCode
      */
     OasResponses.prototype.removeResponse = function (statusCode) {
+        if (statusCode === null || statusCode === "default") {
+            this.default = null;
+            return;
+        }
         var rval = this._responses[statusCode];
         if (this._responses && rval) {
             delete this._responses[statusCode];
@@ -8266,6 +8298,17 @@ var OasJS2ModelReader = (function () {
     function OasJS2ModelReader() {
     }
     /**
+     * Consumes and returns a property found in an entity js object.  The property is read and
+     * then deleted.
+     * @param entity
+     * @param property
+     */
+    OasJS2ModelReader.prototype.consume = function (entity, property) {
+        var rval = entity[property];
+        delete entity[property];
+        return rval;
+    };
+    /**
      * Returns true if the given thing is defined.
      * @param thing
      * @return {boolean}
@@ -8282,13 +8325,15 @@ var OasJS2ModelReader = (function () {
      * Reads an OAS Document object from the given javascript data.
      * @param document
      * @param documentModel
+     * @param readExtras
      */
-    OasJS2ModelReader.prototype.readDocument = function (document, documentModel) {
-        var info = document["info"];
-        var paths = document["paths"];
-        var security = document["security"];
-        var tags = document["tags"];
-        var externalDocs = document["externalDocs"];
+    OasJS2ModelReader.prototype.readDocument = function (document, documentModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var info = this.consume(document, "info");
+        var paths = this.consume(document, "paths");
+        var security = this.consume(document, "security");
+        var tags = this.consume(document, "tags");
+        var externalDocs = this.consume(document, "externalDocs");
         if (this.isDefined(info)) {
             var infoModel = documentModel.createInfo();
             this.readInfo(info, infoModel);
@@ -8325,19 +8370,23 @@ var OasJS2ModelReader = (function () {
             documentModel.externalDocs = externalDocsModel;
         }
         this.readExtensions(document, documentModel);
+        if (readExtras) {
+            this.readExtraProperties(document, documentModel);
+        }
     };
     /**
      * Reads a OAS Info object from the given javascript data.
      * @param info
      * @param infoModel
      */
-    OasJS2ModelReader.prototype.readInfo = function (info, infoModel) {
-        var title = info["title"];
-        var description = info["description"];
-        var termsOfService = info["termsOfService"];
-        var contact = info["contact"];
-        var license = info["license"];
-        var version = info["version"];
+    OasJS2ModelReader.prototype.readInfo = function (info, infoModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var title = this.consume(info, "title");
+        var description = this.consume(info, "description");
+        var termsOfService = this.consume(info, "termsOfService");
+        var contact = this.consume(info, "contact");
+        var license = this.consume(info, "license");
+        var version = this.consume(info, "version");
         if (this.isDefined(title)) {
             infoModel.title = title;
         }
@@ -8361,16 +8410,20 @@ var OasJS2ModelReader = (function () {
             infoModel.version = version;
         }
         this.readExtensions(info, infoModel);
+        if (readExtras) {
+            this.readExtraProperties(info, infoModel);
+        }
     };
     /**
      * Reads a OAS Contact object from the given javascript data.
      * @param contact
      * @param contactModel
      */
-    OasJS2ModelReader.prototype.readContact = function (contact, contactModel) {
-        var name = contact["name"];
-        var url = contact["url"];
-        var email = contact["email"];
+    OasJS2ModelReader.prototype.readContact = function (contact, contactModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var name = this.consume(contact, "name");
+        var url = this.consume(contact, "url");
+        var email = this.consume(contact, "email");
         if (this.isDefined(name)) {
             contactModel.name = name;
         }
@@ -8381,15 +8434,19 @@ var OasJS2ModelReader = (function () {
             contactModel.email = email;
         }
         this.readExtensions(contact, contactModel);
+        if (readExtras) {
+            this.readExtraProperties(contact, contactModel);
+        }
     };
     /**
      * Reads a OAS License object from the given javascript data.
      * @param license
      * @param licenseModel
      */
-    OasJS2ModelReader.prototype.readLicense = function (license, licenseModel) {
-        var name = license["name"];
-        var url = license["url"];
+    OasJS2ModelReader.prototype.readLicense = function (license, licenseModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var name = this.consume(license, "name");
+        var url = this.consume(license, "url");
         if (this.isDefined(name)) {
             licenseModel.name = name;
         }
@@ -8397,39 +8454,47 @@ var OasJS2ModelReader = (function () {
             licenseModel.url = url;
         }
         this.readExtensions(license, licenseModel);
+        if (readExtras) {
+            this.readExtraProperties(license, licenseModel);
+        }
     };
     /**
      * Reads an OAS Paths object from the given JS data.
      * @param paths
      * @param pathsModel
      */
-    OasJS2ModelReader.prototype.readPaths = function (paths, pathsModel) {
+    OasJS2ModelReader.prototype.readPaths = function (paths, pathsModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
         for (var path in paths) {
             if (path.indexOf("x-") === 0) {
                 continue;
             }
-            var pathItem = paths[path];
+            var pathItem = this.consume(paths, path);
             var pathItemModel = pathsModel.createPathItem(path);
             this.readPathItem(pathItem, pathItemModel);
             pathsModel.addPathItem(path, pathItemModel);
         }
         this.readExtensions(paths, pathsModel);
+        if (readExtras) {
+            this.readExtraProperties(paths, pathsModel);
+        }
     };
     /**
      * Reads an OAS PathItem object from the given JS data.
      * @param pathItem
      * @param pathItemModel
      */
-    OasJS2ModelReader.prototype.readPathItem = function (pathItem, pathItemModel) {
-        var $ref = pathItem["$ref"];
-        var get = pathItem["get"];
-        var put = pathItem["put"];
-        var post = pathItem["post"];
-        var delete_ = pathItem["delete"];
-        var options = pathItem["options"];
-        var head = pathItem["head"];
-        var patch = pathItem["patch"];
-        var parameters = pathItem["parameters"];
+    OasJS2ModelReader.prototype.readPathItem = function (pathItem, pathItemModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var $ref = this.consume(pathItem, "$ref");
+        var get = this.consume(pathItem, "get");
+        var put = this.consume(pathItem, "put");
+        var post = this.consume(pathItem, "post");
+        var delete_ = this.consume(pathItem, "delete");
+        var options = this.consume(pathItem, "options");
+        var head = this.consume(pathItem, "head");
+        var patch = this.consume(pathItem, "patch");
+        var parameters = this.consume(pathItem, "parameters");
         if (this.isDefined($ref)) {
             pathItemModel.$ref = $ref;
         }
@@ -8477,22 +8542,26 @@ var OasJS2ModelReader = (function () {
             }
         }
         this.readExtensions(pathItem, pathItemModel);
+        if (readExtras) {
+            this.readExtraProperties(pathItem, pathItemModel);
+        }
     };
     /**
      * Reads an OAS Operation object from the given JS data.
      * @param operation
      * @param operationModel
      */
-    OasJS2ModelReader.prototype.readOperation = function (operation, operationModel) {
-        var tags = operation["tags"];
-        var summary = operation["summary"];
-        var description = operation["description"];
-        var externalDocs = operation["externalDocs"];
-        var operationId = operation["operationId"];
-        var parameters = operation["parameters"];
-        var responses = operation["responses"];
-        var deprecated = operation["deprecated"];
-        var security = operation["security"];
+    OasJS2ModelReader.prototype.readOperation = function (operation, operationModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var tags = this.consume(operation, "tags");
+        var summary = this.consume(operation, "summary");
+        var description = this.consume(operation, "description");
+        var externalDocs = this.consume(operation, "externalDocs");
+        var operationId = this.consume(operation, "operationId");
+        var parameters = this.consume(operation, "parameters");
+        var responses = this.consume(operation, "responses");
+        var deprecated = this.consume(operation, "deprecated");
+        var security = this.consume(operation, "security");
         if (this.isDefined(tags)) {
             operationModel.tags = tags;
         }
@@ -8535,13 +8604,17 @@ var OasJS2ModelReader = (function () {
             }
         }
         this.readExtensions(operation, operationModel);
+        if (readExtras) {
+            this.readExtraProperties(operation, operationModel);
+        }
     };
     /**
      * Reads an OAS Responses object from the given JS data.
      * @param responses
      * @param responsesModel
      */
-    OasJS2ModelReader.prototype.readResponses = function (responses, responsesModel) {
+    OasJS2ModelReader.prototype.readResponses = function (responses, responsesModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
         var default_ = responses["default"];
         if (this.isDefined(default_)) {
             var defaultModel = responsesModel.createResponse();
@@ -8560,44 +8633,47 @@ var OasJS2ModelReader = (function () {
             this.readResponse(response, responseModel);
             responsesModel.addResponse(statusCode, responseModel);
         }
-        this.readExtensions(responses, responsesModel);
+        if (readExtras) {
+            this.readExtensions(responses, responsesModel);
+        }
     };
     /**
      * Reads an OAS Schema object from the given JS data.
      * @param schema
      * @param schemaModel
      */
-    OasJS2ModelReader.prototype.readSchema = function (schema, schemaModel) {
+    OasJS2ModelReader.prototype.readSchema = function (schema, schemaModel, readExtras) {
         var _this = this;
-        var $ref = schema["$ref"];
-        var format = schema["format"];
-        var title = schema["title"];
-        var description = schema["description"];
-        var default_ = schema["default"];
-        var multipleOf = schema["multipleOf"];
-        var maximum = schema["maximum"];
-        var exclusiveMaximum = schema["exclusiveMaximum"];
-        var minimum = schema["minimum"];
-        var exclusiveMinimum = schema["exclusiveMinimum"];
-        var maxLength = schema["maxLength"]; // Require: integer
-        var minLength = schema["minLength"]; // Require: integer
-        var pattern = schema["pattern"];
-        var maxItems = schema["maxItems"]; // Require: integer
-        var minItems = schema["minItems"]; // Require: integer
-        var uniqueItems = schema["uniqueItems"];
-        var maxProperties = schema["maxProperties"];
-        var minProperties = schema["minProperties"];
-        var required = schema["required"];
-        var enum_ = schema["enum"];
-        var type = schema["type"];
-        var items = schema["items"];
-        var allOf = schema["allOf"];
-        var properties = schema["properties"];
-        var additionalProperties = schema["additionalProperties"];
-        var readOnly = schema["readOnly"];
-        var xml = schema["xml"];
-        var externalDocs = schema["externalDocs"];
-        var example = schema["example"];
+        if (readExtras === void 0) { readExtras = true; }
+        var $ref = this.consume(schema, "$ref");
+        var format = this.consume(schema, "format");
+        var title = this.consume(schema, "title");
+        var description = this.consume(schema, "description");
+        var default_ = this.consume(schema, "default");
+        var multipleOf = this.consume(schema, "multipleOf");
+        var maximum = this.consume(schema, "maximum");
+        var exclusiveMaximum = this.consume(schema, "exclusiveMaximum");
+        var minimum = this.consume(schema, "minimum");
+        var exclusiveMinimum = this.consume(schema, "exclusiveMinimum");
+        var maxLength = this.consume(schema, "maxLength"); // Require: integer
+        var minLength = this.consume(schema, "minLength"); // Require: integer
+        var pattern = this.consume(schema, "pattern");
+        var maxItems = this.consume(schema, "maxItems"); // Require: integer
+        var minItems = this.consume(schema, "minItems"); // Require: integer
+        var uniqueItems = this.consume(schema, "uniqueItems");
+        var maxProperties = this.consume(schema, "maxProperties");
+        var minProperties = this.consume(schema, "minProperties");
+        var required = this.consume(schema, "required");
+        var enum_ = this.consume(schema, "enum");
+        var type = this.consume(schema, "type");
+        var items = this.consume(schema, "items");
+        var allOf = this.consume(schema, "allOf");
+        var properties = this.consume(schema, "properties");
+        var additionalProperties = this.consume(schema, "additionalProperties");
+        var readOnly = this.consume(schema, "readOnly");
+        var xml = this.consume(schema, "xml");
+        var externalDocs = this.consume(schema, "externalDocs");
+        var example = this.consume(schema, "example");
         if (this.isDefined($ref)) {
             schemaModel.$ref = $ref;
         }
@@ -8720,18 +8796,22 @@ var OasJS2ModelReader = (function () {
             schemaModel.example = example;
         }
         this.readExtensions(schema, schemaModel);
+        if (readExtras) {
+            this.readExtraProperties(schema, schemaModel);
+        }
     };
     /**
      * Reads an OAS XML object from the given JS data.
      * @param xml
      * @param xmlModel
      */
-    OasJS2ModelReader.prototype.readXML = function (xml, xmlModel) {
-        var name = xml["name"];
-        var namespace = xml["namespace"];
-        var prefix = xml["prefix"];
-        var attribute = xml["attribute"];
-        var wrapped = xml["wrapped"];
+    OasJS2ModelReader.prototype.readXML = function (xml, xmlModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var name = this.consume(xml, "name");
+        var namespace = this.consume(xml, "namespace");
+        var prefix = this.consume(xml, "prefix");
+        var attribute = this.consume(xml, "attribute");
+        var wrapped = this.consume(xml, "wrapped");
         if (this.isDefined(name)) {
             xmlModel.name = name;
         }
@@ -8748,17 +8828,21 @@ var OasJS2ModelReader = (function () {
             xmlModel.wrapped = wrapped;
         }
         this.readExtensions(xml, xmlModel);
+        if (readExtras) {
+            this.readExtraProperties(xml, xmlModel);
+        }
     };
     /**
      * Reads an OAS 2.0 Security Schema object from the given javascript data.
      * @param scheme
      * @param schemeModel
      */
-    OasJS2ModelReader.prototype.readSecurityScheme = function (scheme, schemeModel) {
-        var type = scheme["type"];
-        var description = scheme["description"];
-        var name = scheme["name"];
-        var in_ = scheme["in"];
+    OasJS2ModelReader.prototype.readSecurityScheme = function (scheme, schemeModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var type = this.consume(scheme, "type");
+        var description = this.consume(scheme, "description");
+        var name = this.consume(scheme, "name");
+        var in_ = this.consume(scheme, "in");
         if (this.isDefined(type)) {
             schemeModel.type = type;
         }
@@ -8772,6 +8856,9 @@ var OasJS2ModelReader = (function () {
             schemeModel.in = in_;
         }
         this.readExtensions(scheme, schemeModel);
+        if (readExtras) {
+            this.readExtraProperties(scheme, schemeModel);
+        }
     };
     /**
      * Reads an OAS Security Requirement object from the given javascript data.
@@ -8788,10 +8875,11 @@ var OasJS2ModelReader = (function () {
      * @param tag
      * @param tagModel
      */
-    OasJS2ModelReader.prototype.readTag = function (tag, tagModel) {
-        var name = tag["name"];
-        var description = tag["description"];
-        var externalDocs = tag["externalDocs"];
+    OasJS2ModelReader.prototype.readTag = function (tag, tagModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var name = this.consume(tag, "name");
+        var description = this.consume(tag, "description");
+        var externalDocs = this.consume(tag, "externalDocs");
         if (this.isDefined(name)) {
             tagModel.name = name;
         }
@@ -8804,15 +8892,19 @@ var OasJS2ModelReader = (function () {
             tagModel.externalDocs = externalDocsModel;
         }
         this.readExtensions(tag, tagModel);
+        if (readExtras) {
+            this.readExtraProperties(tag, tagModel);
+        }
     };
     /**
      * Reads an OAS External Documentation object from the given javascript data.
      * @param externalDocs
      * @param externalDocsModel
      */
-    OasJS2ModelReader.prototype.readExternalDocumentation = function (externalDocs, externalDocsModel) {
-        var description = externalDocs["description"];
-        var url = externalDocs["url"];
+    OasJS2ModelReader.prototype.readExternalDocumentation = function (externalDocs, externalDocsModel, readExtras) {
+        if (readExtras === void 0) { readExtras = true; }
+        var description = this.consume(externalDocs, "description");
+        var url = this.consume(externalDocs, "url");
         if (this.isDefined(description)) {
             externalDocsModel.description = description;
         }
@@ -8820,6 +8912,9 @@ var OasJS2ModelReader = (function () {
             externalDocsModel.url = url;
         }
         this.readExtensions(externalDocs, externalDocsModel);
+        if (readExtras) {
+            this.readExtraProperties(externalDocs, externalDocsModel);
+        }
     };
     /**
      * Reads all of the extension nodes.  An extension node is characterized by a property
@@ -8828,11 +8923,25 @@ var OasJS2ModelReader = (function () {
      * @param model
      */
     OasJS2ModelReader.prototype.readExtensions = function (jsData, model) {
-        for (var key in jsData) {
+        var _this = this;
+        var keys = Object.keys(jsData);
+        keys.forEach(function (key) {
             if (key.indexOf("x-") === 0) {
-                var val = jsData[key];
+                var val = _this.consume(jsData, key);
                 model.addExtension(key, val);
             }
+        });
+    };
+    /**
+     * Reads all remaining properties.  Anything left is an "extra" (or unexpected) property.
+     * @param jsData
+     * @param model
+     */
+    OasJS2ModelReader.prototype.readExtraProperties = function (jsData, model) {
+        for (var key in jsData) {
+            var val = jsData[key];
+            console.info("WARN: found unexpected property \"" + key + "\".");
+            model.addExtraProperty(key, val);
         }
     };
     return OasJS2ModelReader;
@@ -8862,20 +8971,20 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param documentModel
      */
     Oas20JS2ModelReader.prototype.readDocument = function (document, documentModel) {
-        var swagger = document["swagger"];
+        var swagger = this.consume(document, "swagger");
         if (swagger != "2.0") {
             throw Error("Unsupported specification version: " + swagger);
         }
-        _super.prototype.readDocument.call(this, document, documentModel);
-        var host = document["host"];
-        var basePath = document["basePath"];
-        var schemes = document["schemes"];
-        var consumes = document["consumes"];
-        var produces = document["produces"];
-        var definitions = document["definitions"];
-        var parameters = document["parameters"];
-        var responses = document["responses"];
-        var securityDefinitions = document["securityDefinitions"];
+        _super.prototype.readDocument.call(this, document, documentModel, false);
+        var host = this.consume(document, "host");
+        var basePath = this.consume(document, "basePath");
+        var schemes = this.consume(document, "schemes");
+        var consumes = this.consume(document, "consumes");
+        var produces = this.consume(document, "produces");
+        var definitions = this.consume(document, "definitions");
+        var parameters = this.consume(document, "parameters");
+        var responses = this.consume(document, "responses");
+        var securityDefinitions = this.consume(document, "securityDefinitions");
         if (this.isDefined(host)) {
             documentModel.host = host;
         }
@@ -8911,6 +9020,7 @@ var Oas20JS2ModelReader = (function (_super) {
             this.readSecurityDefinitions(securityDefinitions, securityDefinitionsModel);
             documentModel.securityDefinitions = securityDefinitionsModel;
         }
+        this.readExtraProperties(document, documentModel);
     };
     /**
      * Reads an OAS 2.0 Schema object from the given javascript data.
@@ -8918,11 +9028,12 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param schemaModel
      */
     Oas20JS2ModelReader.prototype.readSchema = function (schema, schemaModel) {
-        _super.prototype.readSchema.call(this, schema, schemaModel);
-        var discriminator = schema["discriminator"];
+        _super.prototype.readSchema.call(this, schema, schemaModel, false);
+        var discriminator = this.consume(schema, "discriminator");
         if (this.isDefined(discriminator)) {
             schemaModel.discriminator = discriminator;
         }
+        this.readExtraProperties(schema, schemaModel);
     };
     /**
      * Reads an OAS 2.0 Security Definitions object from the given javascript data.
@@ -8943,11 +9054,11 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param schemeModel
      */
     Oas20JS2ModelReader.prototype.readSecurityScheme = function (scheme, schemeModel) {
-        _super.prototype.readSecurityScheme.call(this, scheme, schemeModel);
-        var flow = scheme["flow"];
-        var authorizationUrl = scheme["authorizationUrl"];
-        var tokenUrl = scheme["tokenUrl"];
-        var scopes = scheme["scopes"];
+        _super.prototype.readSecurityScheme.call(this, scheme, schemeModel, false);
+        var flow = this.consume(scheme, "flow");
+        var authorizationUrl = this.consume(scheme, "authorizationUrl");
+        var tokenUrl = this.consume(scheme, "tokenUrl");
+        var scopes = this.consume(scheme, "scopes");
         if (this.isDefined(flow)) {
             schemeModel.flow = flow;
         }
@@ -8962,6 +9073,7 @@ var Oas20JS2ModelReader = (function (_super) {
             this.readScopes(scopes, scopesModel);
             schemeModel.scopes = scopesModel;
         }
+        this.readExtraProperties(scheme, schemeModel);
     };
     /**
      * Reads an OAS 2.0 Scopes object from the given javascript data.
@@ -8973,10 +9085,11 @@ var Oas20JS2ModelReader = (function (_super) {
             if (scope.indexOf("x-") === 0) {
                 continue;
             }
-            var description = scopes[scope];
+            var description = this.consume(scopes, scope);
             scopesModel.addScope(scope, description);
         }
         this.readExtensions(scopes, scopesModel);
+        this.readExtraProperties(scopes, scopesModel);
     };
     /**
      * Reads an OAS 2.0 Operation object from the given JS data.
@@ -8984,10 +9097,10 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param operationModel
      */
     Oas20JS2ModelReader.prototype.readOperation = function (operation, operationModel) {
-        _super.prototype.readOperation.call(this, operation, operationModel);
-        var consumes = operation["consumes"];
-        var produces = operation["produces"];
-        var schemes = operation["schemes"];
+        _super.prototype.readOperation.call(this, operation, operationModel, false);
+        var consumes = this.consume(operation, "consumes");
+        var produces = this.consume(operation, "produces");
+        var schemes = this.consume(operation, "schemes");
         if (this.isDefined(consumes)) {
             operationModel.consumes = consumes;
         }
@@ -8997,6 +9110,7 @@ var Oas20JS2ModelReader = (function (_super) {
         if (this.isDefined(schemes)) {
             operationModel.schemes = schemes;
         }
+        this.readExtraProperties(operation, operationModel);
     };
     /**
      * Reads an OAS 2.0 Parameter object from the given JS data.
@@ -9004,11 +9118,12 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param paramModel
      */
     Oas20JS2ModelReader.prototype.readParameter = function (parameter, paramModel) {
-        var $ref = parameter["$ref"];
+        var $ref = this.consume(parameter, "$ref");
         if (this.isDefined($ref)) {
             paramModel.$ref = $ref;
         }
         this.readParameterBase(parameter, paramModel);
+        this.readExtraProperties(parameter, paramModel);
     };
     /**
      * Reads an OAS 2.0 Parameter Definition from the given JS data.
@@ -9017,6 +9132,7 @@ var Oas20JS2ModelReader = (function (_super) {
      */
     Oas20JS2ModelReader.prototype.readParameterDefinition = function (parameterDef, paramDefModel) {
         this.readParameterBase(parameterDef, paramDefModel);
+        this.readExtraProperties(parameterDef, paramDefModel);
     };
     /**
      * Reads an OAS 2.0 Parameter object from the given JS data.
@@ -9024,13 +9140,13 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param paramModel
      */
     Oas20JS2ModelReader.prototype.readParameterBase = function (parameter, paramModel) {
-        this.readItems(parameter, paramModel);
-        var name = parameter["name"];
-        var in_ = parameter["in"];
-        var description = parameter["description"];
-        var required = parameter["required"];
-        var schema = parameter["schema"];
-        var allowEmptyValue = parameter["allowEmptyValue"];
+        this.readItems(parameter, paramModel, false);
+        var name = this.consume(parameter, "name");
+        var in_ = this.consume(parameter, "in");
+        var description = this.consume(parameter, "description");
+        var required = this.consume(parameter, "required");
+        var schema = this.consume(parameter, "schema");
+        var allowEmptyValue = this.consume(parameter, "allowEmptyValue");
         if (this.isDefined(name)) {
             paramModel.name = name;
         }
@@ -9058,24 +9174,25 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param items
      * @param itemsModel
      */
-    Oas20JS2ModelReader.prototype.readItems = function (items, itemsModel) {
-        var type = items["type"];
-        var format = items["format"];
-        var itemsChild = items["items"];
-        var collectionFormat = items["collectionFormat"];
-        var default_ = items["default"];
-        var maximum = items["maximum"];
-        var exclusiveMaximum = items["exclusiveMaximum"];
-        var minimum = items["minimum"];
-        var exclusiveMinimum = items["exclusiveMinimum"];
-        var maxLength = items["maxLength"]; // Require: integer
-        var minLength = items["minLength"]; // Require: integer
-        var pattern = items["pattern"];
-        var maxItems = items["maxItems"]; // Require: integer
-        var minItems = items["minItems"]; // Require: integer
-        var uniqueItems = items["uniqueItems"];
-        var enum_ = items["enum"];
-        var multipleOf = items["multipleOf"];
+    Oas20JS2ModelReader.prototype.readItems = function (items, itemsModel, readExtra) {
+        if (readExtra === void 0) { readExtra = true; }
+        var type = this.consume(items, "type");
+        var format = this.consume(items, "format");
+        var itemsChild = this.consume(items, "items");
+        var collectionFormat = this.consume(items, "collectionFormat");
+        var default_ = this.consume(items, "default");
+        var maximum = this.consume(items, "maximum");
+        var exclusiveMaximum = this.consume(items, "exclusiveMaximum");
+        var minimum = this.consume(items, "minimum");
+        var exclusiveMinimum = this.consume(items, "exclusiveMinimum");
+        var maxLength = this.consume(items, "maxLength"); // Require: integer
+        var minLength = this.consume(items, "minLength"); // Require: integer
+        var pattern = this.consume(items, "pattern");
+        var maxItems = this.consume(items, "maxItems"); // Require: integer
+        var minItems = this.consume(items, "minItems"); // Require: integer
+        var uniqueItems = this.consume(items, "uniqueItems");
+        var enum_ = this.consume(items, "enum");
+        var multipleOf = this.consume(items, "multipleOf");
         if (this.isDefined(type)) {
             itemsModel.type = type;
         }
@@ -9130,6 +9247,9 @@ var Oas20JS2ModelReader = (function (_super) {
             itemsModel.multipleOf = multipleOf;
         }
         this.readExtensions(items, itemsModel);
+        if (readExtra) {
+            this.readExtraProperties(items, itemsModel);
+        }
     };
     /**
      * Reads an OAS 2.0 Response object from the given JS data.
@@ -9137,11 +9257,12 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param responseModel
      */
     Oas20JS2ModelReader.prototype.readResponse = function (response, responseModel) {
-        var $ref = response["$ref"];
+        var $ref = this.consume(response, "$ref");
         if (this.isDefined($ref)) {
             responseModel.$ref = $ref;
         }
         this.readResponseBase(response, responseModel);
+        this.readExtraProperties(response, responseModel);
     };
     /**
      * Reads an OAS 2.0 Response Definition object from the given JS data.
@@ -9150,6 +9271,7 @@ var Oas20JS2ModelReader = (function (_super) {
      */
     Oas20JS2ModelReader.prototype.readResponseDefinition = function (response, responseDefModel) {
         this.readResponseBase(response, responseDefModel);
+        this.readExtraProperties(response, responseDefModel);
     };
     /**
      * Reads an OAS 2.0 Response object from the given JS data.
@@ -9157,10 +9279,10 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param responseModel
      */
     Oas20JS2ModelReader.prototype.readResponseBase = function (response, responseModel) {
-        var description = response["description"];
-        var schema = response["schema"];
-        var headers = response["headers"];
-        var examples = response["examples"];
+        var description = this.consume(response, "description");
+        var schema = this.consume(response, "schema");
+        var headers = this.consume(response, "headers");
+        var examples = this.consume(response, "examples");
         if (this.isDefined(description)) {
             responseModel.description = description;
         }
@@ -9211,10 +9333,11 @@ var Oas20JS2ModelReader = (function (_super) {
      * @param headerModel
      */
     Oas20JS2ModelReader.prototype.readHeader = function (header, headerModel) {
-        var description = header["description"];
+        var description = this.consume(header, "description");
         if (this.isDefined(description)) {
             headerModel.description = description;
         }
+        // Note: readItems() will finalize the input, so we can't read anything after this
         this.readItems(header, headerModel);
     };
     /**
@@ -9579,13 +9702,13 @@ var Oas30JS2ModelReader = (function (_super) {
      */
     Oas30JS2ModelReader.prototype.readDocument = function (document, documentModel) {
         var _this = this;
-        var openapi = document["openapi"];
+        var openapi = this.consume(document, "openapi");
         if (openapi.indexOf("3.") != 0) {
             throw Error("Unsupported specification version: " + openapi);
         }
-        _super.prototype.readDocument.call(this, document, documentModel);
-        var servers = document["servers"];
-        var components = document["components"];
+        _super.prototype.readDocument.call(this, document, documentModel, false);
+        var servers = this.consume(document, "servers");
+        var components = this.consume(document, "components");
         documentModel.openapi = openapi;
         if (Array.isArray(servers)) {
             documentModel.servers = [];
@@ -9600,6 +9723,7 @@ var Oas30JS2ModelReader = (function (_super) {
             this.readComponents(components, componentsModel);
             documentModel.components = componentsModel;
         }
+        this.readExtraProperties(document, documentModel);
     };
     /**
      * Reads an OAS 3.0 Components object from the given JS data.
@@ -9607,15 +9731,15 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param componentsModel
      */
     Oas30JS2ModelReader.prototype.readComponents = function (components, componentsModel) {
-        var schemas = components["schemas"];
-        var responses = components["responses"];
-        var parameters = components["parameters"];
-        var examples = components["examples"];
-        var requestBodies = components["requestBodies"];
-        var headers = components["headers"];
-        var securitySchemes = components["securitySchemes"];
-        var links = components["links"];
-        var callbacks = components["callbacks"];
+        var schemas = this.consume(components, "schemas");
+        var responses = this.consume(components, "responses");
+        var parameters = this.consume(components, "parameters");
+        var examples = this.consume(components, "examples");
+        var requestBodies = this.consume(components, "requestBodies");
+        var headers = this.consume(components, "headers");
+        var securitySchemes = this.consume(components, "securitySchemes");
+        var links = this.consume(components, "links");
+        var callbacks = this.consume(components, "callbacks");
         if (this.isDefined(schemas)) {
             for (var name_3 in schemas) {
                 var schema = schemas[name_3];
@@ -9689,6 +9813,7 @@ var Oas30JS2ModelReader = (function (_super) {
             }
         }
         this.readExtensions(components, componentsModel);
+        this.readExtraProperties(components, componentsModel);
     };
     /**
      * Reads an OAS 3.0 Security Scheme object from the given JS data.
@@ -9696,12 +9821,12 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param securitySchemeModel
      */
     Oas30JS2ModelReader.prototype.readSecurityScheme = function (securityScheme, securitySchemeModel) {
-        _super.prototype.readSecurityScheme.call(this, securityScheme, securitySchemeModel);
-        var $ref = securityScheme["$ref"];
-        var scheme = securityScheme["scheme"];
-        var bearerFormat = securityScheme["bearerFormat"];
-        var flows = securityScheme["flows"];
-        var openIdConnectUrl = securityScheme["openIdConnectUrl"];
+        _super.prototype.readSecurityScheme.call(this, securityScheme, securitySchemeModel, false);
+        var $ref = this.consume(securityScheme, "$ref");
+        var scheme = this.consume(securityScheme, "scheme");
+        var bearerFormat = this.consume(securityScheme, "bearerFormat");
+        var flows = this.consume(securityScheme, "flows");
+        var openIdConnectUrl = this.consume(securityScheme, "openIdConnectUrl");
         if (this.isDefined($ref)) {
             securitySchemeModel.$ref = $ref;
         }
@@ -9720,6 +9845,7 @@ var Oas30JS2ModelReader = (function (_super) {
             securitySchemeModel.openIdConnectUrl = openIdConnectUrl;
         }
         this.readExtensions(securityScheme, securitySchemeModel);
+        this.readExtraProperties(securityScheme, securitySchemeModel);
     };
     /**
      * Reads an OAS 3.0 OAuth Flows object from the given JS data.
@@ -9727,10 +9853,10 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param flowsModel
      */
     Oas30JS2ModelReader.prototype.readOAuthFlows = function (flows, flowsModel) {
-        var implicit = flows["implicit"];
-        var password = flows["password"];
-        var clientCredentials = flows["clientCredentials"];
-        var authorizationCode = flows["authorizationCode"];
+        var implicit = this.consume(flows, "implicit");
+        var password = this.consume(flows, "password");
+        var clientCredentials = this.consume(flows, "clientCredentials");
+        var authorizationCode = this.consume(flows, "authorizationCode");
         if (this.isDefined(implicit)) {
             var flowModel = flowsModel.createImplicitOAuthFlow();
             this.readOAuthFlow(implicit, flowModel);
@@ -9752,6 +9878,7 @@ var Oas30JS2ModelReader = (function (_super) {
             flowsModel.authorizationCode = flowModel;
         }
         this.readExtensions(flows, flowsModel);
+        this.readExtraProperties(flows, flowsModel);
     };
     /**
      * Reads an OAS 3.0 OAuth Flow object from the given JS data.
@@ -9759,10 +9886,10 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param flowModel
      */
     Oas30JS2ModelReader.prototype.readOAuthFlow = function (flow, flowModel) {
-        var authorizationUrl = flow["authorizationUrl"];
-        var tokenUrl = flow["tokenUrl"];
-        var refreshUrl = flow["refreshUrl"];
-        var scopes = flow["scopes"];
+        var authorizationUrl = this.consume(flow, "authorizationUrl");
+        var tokenUrl = this.consume(flow, "tokenUrl");
+        var refreshUrl = this.consume(flow, "refreshUrl");
+        var scopes = this.consume(flow, "scopes");
         if (this.isDefined(authorizationUrl)) {
             flowModel.authorizationUrl = authorizationUrl;
         }
@@ -9779,6 +9906,7 @@ var Oas30JS2ModelReader = (function (_super) {
             }
         }
         this.readExtensions(flow, flowModel);
+        this.readExtraProperties(flow, flowModel);
     };
     /**
      * Reads an OAS 3.0 PathItem object from the given JS data.
@@ -9786,11 +9914,11 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param pathItemModel
      */
     Oas30JS2ModelReader.prototype.readPathItem = function (pathItem, pathItemModel) {
-        _super.prototype.readPathItem.call(this, pathItem, pathItemModel);
-        var summary = pathItem["summary"];
-        var description = pathItem["description"];
-        var trace = pathItem["trace"];
-        var servers = pathItem["servers"];
+        _super.prototype.readPathItem.call(this, pathItem, pathItemModel, false);
+        var summary = this.consume(pathItem, "summary");
+        var description = this.consume(pathItem, "description");
+        var trace = this.consume(pathItem, "trace");
+        var servers = this.consume(pathItem, "servers");
         if (this.isDefined(summary)) {
             pathItemModel.summary = summary;
         }
@@ -9811,6 +9939,7 @@ var Oas30JS2ModelReader = (function (_super) {
                 pathItemModel.servers.push(serverModel);
             }
         }
+        this.readExtraProperties(pathItem, pathItemModel);
     };
     /**
      * Reads an OAS 3.0 Header object from the given js data.
@@ -9818,18 +9947,18 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param headerModel
      */
     Oas30JS2ModelReader.prototype.readHeader = function (header, headerModel) {
-        var $ref = header["$ref"];
-        var description = header["description"];
-        var required = header["required"];
-        var schema = header["schema"];
-        var allowEmptyValue = header["allowEmptyValue"];
-        var deprecated = header["deprecated"];
-        var style = header["style"];
-        var explode = header["explode"];
-        var allowReserved = header["allowReserved"];
-        var example = header["example"];
-        var examples = header["examples"];
-        var content = header["content"];
+        var $ref = this.consume(header, "$ref");
+        var description = this.consume(header, "description");
+        var required = this.consume(header, "required");
+        var schema = this.consume(header, "schema");
+        var allowEmptyValue = this.consume(header, "allowEmptyValue");
+        var deprecated = this.consume(header, "deprecated");
+        var style = this.consume(header, "style");
+        var explode = this.consume(header, "explode");
+        var allowReserved = this.consume(header, "allowReserved");
+        var example = this.consume(header, "example");
+        var examples = this.consume(header, "examples");
+        var content = this.consume(header, "content");
         if (this.isDefined($ref)) {
             headerModel.$ref = $ref;
         }
@@ -9879,6 +10008,7 @@ var Oas30JS2ModelReader = (function (_super) {
             }
         }
         this.readExtensions(header, headerModel);
+        this.readExtraProperties(header, headerModel);
     };
     /**
      * Reads an OAS 3.0 Parameter object from the given JS data.
@@ -9886,20 +10016,20 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param paramModel
      */
     Oas30JS2ModelReader.prototype.readParameterBase = function (parameter, paramModel) {
-        var $ref = parameter["$ref"];
-        var name = parameter["name"];
-        var in_ = parameter["in"];
-        var description = parameter["description"];
-        var required = parameter["required"];
-        var schema = parameter["schema"];
-        var allowEmptyValue = parameter["allowEmptyValue"];
-        var deprecated = parameter["deprecated"];
-        var style = parameter["style"];
-        var explode = parameter["explode"];
-        var allowReserved = parameter["allowReserved"];
-        var example = parameter["example"];
-        var examples = parameter["examples"];
-        var content = parameter["content"];
+        var $ref = this.consume(parameter, "$ref");
+        var name = this.consume(parameter, "name");
+        var in_ = this.consume(parameter, "in");
+        var description = this.consume(parameter, "description");
+        var required = this.consume(parameter, "required");
+        var schema = this.consume(parameter, "schema");
+        var allowEmptyValue = this.consume(parameter, "allowEmptyValue");
+        var deprecated = this.consume(parameter, "deprecated");
+        var style = this.consume(parameter, "style");
+        var explode = this.consume(parameter, "explode");
+        var allowReserved = this.consume(parameter, "allowReserved");
+        var example = this.consume(parameter, "example");
+        var examples = this.consume(parameter, "examples");
+        var content = this.consume(parameter, "content");
         if (this.isDefined($ref)) {
             paramModel.$ref = $ref;
         }
@@ -9962,11 +10092,12 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param paramModel
      */
     Oas30JS2ModelReader.prototype.readParameter = function (parameter, paramModel) {
-        var $ref = parameter["$ref"];
+        var $ref = this.consume(parameter, "$ref");
         if (this.isDefined($ref)) {
             paramModel.$ref = $ref;
         }
         this.readParameterBase(parameter, paramModel);
+        this.readExtraProperties(parameter, paramModel);
     };
     /**
      * Reads an OAS 3.0 Operation object from the given JS data.
@@ -9975,10 +10106,10 @@ var Oas30JS2ModelReader = (function (_super) {
      */
     Oas30JS2ModelReader.prototype.readOperation = function (operation, operationModel) {
         var _this = this;
-        _super.prototype.readOperation.call(this, operation, operationModel);
-        var requestBody = operation["requestBody"];
-        var callbacks = operation["callbacks"];
-        var servers = operation["servers"];
+        _super.prototype.readOperation.call(this, operation, operationModel, false);
+        var requestBody = this.consume(operation, "requestBody");
+        var callbacks = this.consume(operation, "callbacks");
+        var servers = this.consume(operation, "servers");
         if (this.isDefined(requestBody)) {
             var requestBodyModel = operationModel.createRequestBody();
             this.readRequestBody(requestBody, requestBodyModel);
@@ -10000,6 +10131,7 @@ var Oas30JS2ModelReader = (function (_super) {
                 operationModel.servers.push(serverModel);
             });
         }
+        this.readExtraProperties(operation, operationModel);
     };
     /**
      * Reads an OAS 3.0 Callback object from the given JS data.
@@ -10009,15 +10141,17 @@ var Oas30JS2ModelReader = (function (_super) {
     Oas30JS2ModelReader.prototype.readCallback = function (callback, callbackModel) {
         for (var name_16 in callback) {
             if (name_16 === "$ref") {
-                callbackModel.$ref = callback[name_16];
-                continue;
+                callbackModel.$ref = this.consume(callback, name_16);
             }
-            var pathItem = callback[name_16];
-            var pathItemModel = callbackModel.createPathItem(name_16);
-            this.readPathItem(pathItem, pathItemModel);
-            callbackModel.addPathItem(name_16, pathItemModel);
+            else {
+                var pathItem = this.consume(callback, name_16);
+                var pathItemModel = callbackModel.createPathItem(name_16);
+                this.readPathItem(pathItem, pathItemModel);
+                callbackModel.addPathItem(name_16, pathItemModel);
+            }
         }
         this.readExtensions(callback, callbackModel);
+        this.readExtraProperties(callback, callbackModel);
     };
     /**
      * Reads an OAS 3.0 Request Body object from the given JS data.
@@ -10025,10 +10159,10 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param requestBodyModel
      */
     Oas30JS2ModelReader.prototype.readRequestBody = function (requestBody, requestBodyModel) {
-        var $ref = requestBody["$ref"];
-        var description = requestBody["description"];
-        var content = requestBody["content"];
-        var required = requestBody["required"];
+        var $ref = this.consume(requestBody, "$ref");
+        var description = this.consume(requestBody, "description");
+        var content = this.consume(requestBody, "content");
+        var required = this.consume(requestBody, "required");
         if (this.isDefined($ref)) {
             requestBodyModel.$ref = $ref;
         }
@@ -10047,6 +10181,7 @@ var Oas30JS2ModelReader = (function (_super) {
             requestBodyModel.required = required;
         }
         this.readExtensions(requestBody, requestBodyModel);
+        this.readExtraProperties(requestBody, requestBodyModel);
     };
     /**
      * Reads an OAS 3.0 Media Type from the given js data.
@@ -10054,10 +10189,10 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param mediaTypeModel
      */
     Oas30JS2ModelReader.prototype.readMediaType = function (mediaType, mediaTypeModel) {
-        var schema = mediaType["schema"];
-        var example = mediaType["example"];
-        var examples = mediaType["examples"];
-        var encodings = mediaType["encoding"];
+        var schema = this.consume(mediaType, "schema");
+        var example = this.consume(mediaType, "example");
+        var examples = this.consume(mediaType, "examples");
+        var encodings = this.consume(mediaType, "encoding");
         if (this.isDefined(schema)) {
             var schemaModel = mediaTypeModel.createSchema();
             this.readSchema(schema, schemaModel);
@@ -10083,6 +10218,7 @@ var Oas30JS2ModelReader = (function (_super) {
             }
         }
         this.readExtensions(mediaType, mediaTypeModel);
+        this.readExtraProperties(mediaType, mediaTypeModel);
     };
     /**
      * Reads an OAS 3.0 Example from the given js data.
@@ -10090,11 +10226,11 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param exampleModel
      */
     Oas30JS2ModelReader.prototype.readExample = function (example, exampleModel) {
-        var $ref = example["$ref"];
-        var summary = example["summary"];
-        var description = example["description"];
-        var value = example["value"];
-        var externalValue = example["externalValue"];
+        var $ref = this.consume(example, "$ref");
+        var summary = this.consume(example, "summary");
+        var description = this.consume(example, "description");
+        var value = this.consume(example, "value");
+        var externalValue = this.consume(example, "externalValue");
         if (this.isDefined($ref)) {
             exampleModel.$ref = $ref;
         }
@@ -10111,6 +10247,7 @@ var Oas30JS2ModelReader = (function (_super) {
             exampleModel.externalValue = externalValue;
         }
         this.readExtensions(example, exampleModel);
+        this.readExtraProperties(example, exampleModel);
     };
     /**
      * Reads an OAS 3.0 Encoding from the given js data.
@@ -10118,11 +10255,11 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param encodingModel
      */
     Oas30JS2ModelReader.prototype.readEncoding = function (encodingProperty, encodingModel) {
-        var contentType = encodingProperty["contentType"];
-        var headers = encodingProperty["headers"];
-        var style = encodingProperty["style"];
-        var explode = encodingProperty["explode"];
-        var allowReserved = encodingProperty["allowReserved"];
+        var contentType = this.consume(encodingProperty, "contentType");
+        var headers = this.consume(encodingProperty, "headers");
+        var style = this.consume(encodingProperty, "style");
+        var explode = this.consume(encodingProperty, "explode");
+        var allowReserved = this.consume(encodingProperty, "allowReserved");
         if (this.isDefined(contentType)) {
             encodingModel.contentType = contentType;
         }
@@ -10144,6 +10281,7 @@ var Oas30JS2ModelReader = (function (_super) {
             encodingModel.allowReserved = allowReserved;
         }
         this.readExtensions(encodingProperty, encodingModel);
+        this.readExtraProperties(encodingProperty, encodingModel);
     };
     /**
      * Reads an OAS 3.0 Response object from the given js data.
@@ -10152,6 +10290,7 @@ var Oas30JS2ModelReader = (function (_super) {
      */
     Oas30JS2ModelReader.prototype.readResponse = function (response, responseModel) {
         this.readResponseBase(response, responseModel);
+        this.readExtraProperties(response, responseModel);
     };
     /**
      * Reads an OAS 3.0 Response object from the given JS data.
@@ -10159,11 +10298,11 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param responseModel
      */
     Oas30JS2ModelReader.prototype.readResponseBase = function (response, responseModel) {
-        var $ref = response["$ref"];
-        var description = response["description"];
-        var headers = response["headers"];
-        var content = response["content"];
-        var links = response["links"];
+        var $ref = this.consume(response, "$ref");
+        var description = this.consume(response, "description");
+        var headers = this.consume(response, "headers");
+        var content = this.consume(response, "content");
+        var links = this.consume(response, "links");
         if (this.isDefined($ref)) {
             responseModel.$ref = $ref;
         }
@@ -10202,13 +10341,13 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param linkModel
      */
     Oas30JS2ModelReader.prototype.readLink = function (link, linkModel) {
-        var $ref = link["$ref"];
-        var operationRef = link["operationRef"];
-        var operationId = link["operationId"];
-        var parameters = link["parameters"];
-        var requestBody = link["requestBody"];
-        var description = link["description"];
-        var server = link["server"];
+        var $ref = this.consume(link, "$ref");
+        var operationRef = this.consume(link, "operationRef");
+        var operationId = this.consume(link, "operationId");
+        var parameters = this.consume(link, "parameters");
+        var requestBody = this.consume(link, "requestBody");
+        var description = this.consume(link, "description");
+        var server = this.consume(link, "server");
         if (this.isDefined($ref)) {
             linkModel.$ref = $ref;
         }
@@ -10237,6 +10376,7 @@ var Oas30JS2ModelReader = (function (_super) {
             linkModel.server = serverModel;
         }
         this.readExtensions(link, linkModel);
+        this.readExtraProperties(link, linkModel);
     };
     /**
      * Reads an OAS 3.0 Schema object from the given js data.
@@ -10244,14 +10384,14 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param schemaModel
      */
     Oas30JS2ModelReader.prototype.readSchema = function (schema, schemaModel) {
-        _super.prototype.readSchema.call(this, schema, schemaModel);
-        var oneOf = schema["oneOf"];
-        var anyOf = schema["anyOf"];
-        var not = schema["not"];
-        var discriminator = schema["discriminator"];
-        var nullable = schema["nullable"];
-        var writeOnly = schema["writeOnly"];
-        var deprecated = schema["deprecated"];
+        _super.prototype.readSchema.call(this, schema, schemaModel, false);
+        var oneOf = this.consume(schema, "oneOf");
+        var anyOf = this.consume(schema, "anyOf");
+        var not = this.consume(schema, "not");
+        var discriminator = this.consume(schema, "discriminator");
+        var nullable = this.consume(schema, "nullable");
+        var writeOnly = this.consume(schema, "writeOnly");
+        var deprecated = this.consume(schema, "deprecated");
         if (this.isDefined(discriminator)) {
             var discriminatorModel = schemaModel.createDiscriminator();
             this.readDiscriminator(discriminator, discriminatorModel);
@@ -10291,6 +10431,7 @@ var Oas30JS2ModelReader = (function (_super) {
         if (this.isDefined(deprecated)) {
             schemaModel.deprecated = deprecated;
         }
+        this.readExtraProperties(schema, schemaModel);
     };
     /**
      * Reads a OAS 3.0 Server object from the given javascript data.
@@ -10298,9 +10439,9 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param serverModel
      */
     Oas30JS2ModelReader.prototype.readServer = function (server, serverModel) {
-        var url = server["url"];
-        var description = server["description"];
-        var variables = server["variables"];
+        var url = this.consume(server, "url");
+        var description = this.consume(server, "description");
+        var variables = this.consume(server, "variables");
         if (this.isDefined(url)) {
             serverModel.url = url;
         }
@@ -10316,6 +10457,7 @@ var Oas30JS2ModelReader = (function (_super) {
             }
         }
         this.readExtensions(server, serverModel);
+        this.readExtraProperties(server, serverModel);
     };
     /**
      * Reads an OAS 3.0 Server Variable object from the given JS data.
@@ -10323,9 +10465,9 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param serverVariableModel
      */
     Oas30JS2ModelReader.prototype.readServerVariable = function (serverVariable, serverVariableModel) {
-        var _enum = serverVariable["enum"];
-        var _default = serverVariable["default"];
-        var description = serverVariable["description"];
+        var _enum = this.consume(serverVariable, "enum");
+        var _default = this.consume(serverVariable, "default");
+        var description = this.consume(serverVariable, "description");
         if (Array.isArray(_enum)) {
             serverVariableModel.enum = _enum;
         }
@@ -10336,6 +10478,7 @@ var Oas30JS2ModelReader = (function (_super) {
             serverVariableModel.description = description;
         }
         this.readExtensions(serverVariable, serverVariableModel);
+        this.readExtraProperties(serverVariable, serverVariableModel);
     };
     /**
      * Reads an OAS 3.0 Discriminator object from the given JS data.
@@ -10343,8 +10486,8 @@ var Oas30JS2ModelReader = (function (_super) {
      * @param discriminatorModel
      */
     Oas30JS2ModelReader.prototype.readDiscriminator = function (discriminator, discriminatorModel) {
-        var propertyName = discriminator["propertyName"];
-        var mapping = discriminator["mapping"];
+        var propertyName = this.consume(discriminator, "propertyName");
+        var mapping = this.consume(discriminator, "mapping");
         if (this.isDefined(propertyName)) {
             discriminatorModel.propertyName = propertyName;
         }
@@ -10352,6 +10495,7 @@ var Oas30JS2ModelReader = (function (_super) {
             discriminatorModel.mapping = mapping;
         }
         this.readExtensions(discriminator, discriminatorModel);
+        this.readExtraProperties(discriminator, discriminatorModel);
     };
     return Oas30JS2ModelReader;
 }(OasJS2ModelReader));
@@ -10414,6 +10558,8 @@ var OasDocumentFactory = (function () {
         if (oasObject.openapi && (oasObject.openapi === 3 || oasObject.openapi === 3.0 || oasObject.openapi === "3.0")) {
             oasObject.openapi = "3.0.0";
         }
+        // We side-effect the input object when reading it, so make a deep copy of it first.
+        oasObject = JSON.parse(JSON.stringify(oasObject));
         if (oasObject.swagger && oasObject.swagger === "2.0") {
             var reader = new Oas20JS2ModelReader();
             return reader.read(oasObject);
@@ -10482,6 +10628,17 @@ var OasModelToJSVisitor = (function () {
     OasModelToJSVisitor.prototype.reset = function () {
         this._result = null;
         this._modelIdToJS = {};
+    };
+    /**
+     * Adds any "extra properties" found on the model onto the object.
+     * @param object
+     * @param model
+     */
+    OasModelToJSVisitor.prototype.addExtraProperties = function (object, model) {
+        model.getExtraPropertyNames().forEach(function (pname) {
+            var value = model.getExtraProperty(pname);
+            object[pname] = value;
+        });
     };
     /**
      * Returns the result that was built up during the visit of the model.
@@ -10596,6 +10753,7 @@ var OasModelToJSVisitor = (function () {
             license: null,
             version: node.version
         };
+        this.addExtraProperties(info, node);
         parentJS.info = info;
         this.updateIndex(node, info);
     };
@@ -10610,6 +10768,7 @@ var OasModelToJSVisitor = (function () {
             url: node.url,
             email: node.email
         };
+        this.addExtraProperties(contact, node);
         parentJS.contact = contact;
         this.updateIndex(node, contact);
     };
@@ -10623,6 +10782,7 @@ var OasModelToJSVisitor = (function () {
             name: node.name,
             url: node.url,
         };
+        this.addExtraProperties(license, node);
         parentJS.license = license;
         this.updateIndex(node, license);
     };
@@ -10632,6 +10792,7 @@ var OasModelToJSVisitor = (function () {
      */
     OasModelToJSVisitor.prototype.visitPaths = function (node) {
         var paths = {};
+        this.addExtraProperties(paths, node);
         var parentJS = this.lookupParentJS(node);
         parentJS.paths = paths;
         this.updateIndex(node, paths);
@@ -10645,6 +10806,7 @@ var OasModelToJSVisitor = (function () {
         var responses = {
             default: null
         };
+        this.addExtraProperties(responses, node);
         parentJS.responses = responses;
         this.updateIndex(node, responses);
     };
@@ -10661,6 +10823,7 @@ var OasModelToJSVisitor = (function () {
             attribute: node.attribute,
             wrapped: node.wrapped
         };
+        this.addExtraProperties(xml, node);
         parent.xml = xml;
         this.updateIndex(node, xml);
     };
@@ -10697,6 +10860,7 @@ var OasModelToJSVisitor = (function () {
             description: node.description,
             externalDocs: null
         };
+        this.addExtraProperties(tag, node);
         parentJS.tags.push(tag);
         this.updateIndex(node, tag);
     };
@@ -10710,6 +10874,7 @@ var OasModelToJSVisitor = (function () {
             description: node.description,
             url: node.url
         };
+        this.addExtraProperties(parentJS.externalDocs, node);
         this.updateIndex(node, parentJS.externalDocs);
     };
     /**
@@ -10760,6 +10925,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
             tags: null,
             externalDocs: null
         };
+        this.addExtraProperties(root, node);
         this.updateIndex(node, root);
     };
     /**
@@ -10779,6 +10945,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
             patch: null,
             parameters: null
         };
+        this.addExtraProperties(pathItem, node);
         parentJS[node.path()] = pathItem;
         this.updateIndex(node, pathItem);
     };
@@ -10802,6 +10969,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
             deprecated: node.deprecated,
             security: null
         };
+        this.addExtraProperties(operation, node);
         parentJS[node.method()] = operation;
         this.updateIndex(node, operation);
     };
@@ -10819,6 +10987,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
             schema: null,
             allowEmptyValue: node.allowEmptyValue
         };
+        this.addExtraProperties(parameter, node);
         parameter = this.merge(parameter, items);
         return parameter;
     };
@@ -10854,12 +11023,14 @@ var Oas20ModelToJSVisitor = (function (_super) {
      * @param node
      */
     Oas20ModelToJSVisitor.prototype.createResponseObject = function (node) {
-        return {
+        var response = {
             description: node.description,
             schema: null,
             headers: null,
             examples: null
         };
+        this.addExtraProperties(response, node);
+        return response;
     };
     /**
      * Visits a node.
@@ -11046,6 +11217,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
             tokenUrl: node.tokenUrl,
             scopes: null
         };
+        this.addExtraProperties(scheme, node);
         parent[node.schemeName()] = scheme;
         this.updateIndex(node, scheme);
     };
@@ -11108,7 +11280,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
      * @param node
      */
     Oas20ModelToJSVisitor.prototype.createItemsObject = function (node) {
-        return {
+        var items = {
             type: node.type,
             format: node.format,
             items: null,
@@ -11127,6 +11299,8 @@ var Oas20ModelToJSVisitor = (function (_super) {
             enum: node.enum,
             multipleOf: node.multipleOf
         };
+        this.addExtraProperties(items, node);
+        return items;
     };
     /**
      * Shared method used to create a schema JS object.
@@ -11169,6 +11343,7 @@ var Oas20ModelToJSVisitor = (function (_super) {
         if (typeof node.additionalProperties === "boolean") {
             schema.additionalProperties = node.additionalProperties;
         }
+        this.addExtraProperties(schema, node);
         return schema;
     };
     return Oas20ModelToJSVisitor;
@@ -11198,6 +11373,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             tags: null,
             externalDocs: null
         };
+        this.addExtraProperties(root, node);
         this.updateIndex(node, root);
     };
     /**
@@ -11221,6 +11397,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             servers: null,
             parameters: null
         };
+        this.addExtraProperties(pathItem, node);
         parentJS[node.path()] = pathItem;
         this.updateIndex(node, pathItem);
     };
@@ -11244,6 +11421,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             security: null,
             servers: null
         };
+        this.addExtraProperties(operation, node);
         parentJS[node.method()] = operation;
         this.updateIndex(node, operation);
     };
@@ -11279,6 +11457,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             examples: null,
             content: null
         };
+        this.addExtraProperties(header, node);
         return header;
     };
     /**
@@ -11302,6 +11481,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             examples: null,
             content: null
         };
+        this.addExtraProperties(parameter, node);
         return parameter;
     };
     /**
@@ -11322,13 +11502,15 @@ var Oas30ModelToJSVisitor = (function (_super) {
      * @param node
      */
     Oas30ModelToJSVisitor.prototype.createResponseObject = function (node) {
-        return {
+        var response = {
             $ref: node.$ref,
             description: node.description,
             headers: null,
             content: null,
             links: null
         };
+        this.addExtraProperties(response, node);
+        return response;
     };
     /**
      * Visits a node.
@@ -11373,6 +11555,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             description: node.description,
             server: null
         };
+        this.addExtraProperties(link, node);
         return link;
     };
     /**
@@ -11386,6 +11569,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             description: node.description,
             variables: null
         };
+        this.addExtraProperties(server, node);
         parentJS.server = server;
         this.updateIndex(node, server);
     };
@@ -11430,6 +11614,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             propertyName: node.propertyName,
             mapping: node.mapping
         };
+        this.addExtraProperties(discriminator, node);
         parentJS.discriminator = discriminator;
         this.updateIndex(node, discriminator);
     };
@@ -11547,6 +11732,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             content: null,
             required: node.required
         };
+        this.addExtraProperties(requestBody, node);
         return requestBody;
     };
     /**
@@ -11561,6 +11747,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             examples: null,
             encoding: null
         };
+        this.addExtraProperties(mediaType, node);
         if (!this.isDefined(parentJS["content"])) {
             parentJS["content"] = {};
         }
@@ -11580,6 +11767,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             explode: node.explode,
             allowReserved: node.allowReserved
         };
+        this.addExtraProperties(encoding, node);
         if (!this.isDefined(parentJS["encoding"])) {
             parentJS["encoding"] = {};
         }
@@ -11611,6 +11799,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             value: node.value,
             externalValue: node.externalValue
         };
+        this.addExtraProperties(example, node);
         return example;
     };
     /**
@@ -11619,6 +11808,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
      */
     Oas30ModelToJSVisitor.prototype.visitCallback = function (node) {
         var callback = {};
+        this.addExtraProperties(callback, node);
         var parentJS = this.lookupParentJS(node);
         if (this.isDefined(node.$ref)) {
             callback.$ref = node.$ref;
@@ -11642,6 +11832,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
      */
     Oas30ModelToJSVisitor.prototype.visitComponents = function (node) {
         var components = {};
+        this.addExtraProperties(components, node);
         var parentJS = this.lookupParentJS(node);
         parentJS.components = components;
         this.updateIndex(node, components);
@@ -11736,6 +11927,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             clientCredentials: null,
             authorizationCode: null
         };
+        this.addExtraProperties(oauthFlows, node);
         parentJS.flows = oauthFlows;
         this.updateIndex(node, oauthFlows);
     };
@@ -11791,6 +11983,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             refreshUrl: node.refreshUrl,
             scopes: node.scopes
         };
+        this.addExtraProperties(flow, node);
         return flow;
     };
     /**
@@ -11810,6 +12003,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             flows: null,
             openIdConnectUrl: node.openIdConnectUrl
         };
+        this.addExtraProperties(securityScheme, node);
         if (!this.isDefined(parentJS["securitySchemes"])) {
             parentJS["securitySchemes"] = {};
         }
@@ -11839,6 +12033,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
         if (this.isDefined(node.$ref)) {
             callback.$ref = node.$ref;
         }
+        this.addExtraProperties(callback, node);
         if (!this.isDefined(parentJS["callbacks"])) {
             parentJS["callbacks"] = {};
         }
@@ -11859,6 +12054,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             description: node.description,
             variables: null
         };
+        this.addExtraProperties(server, node);
         parentJS.servers.push(server);
         this.updateIndex(node, server);
     };
@@ -11873,6 +12069,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
             default: node.default,
             description: node.description
         };
+        this.addExtraProperties(serverVariable, node);
         if (!this.isDefined(parentJS["variables"])) {
             parentJS["variables"] = {};
         }
@@ -11926,6 +12123,7 @@ var Oas30ModelToJSVisitor = (function (_super) {
         if (typeof node.additionalProperties === "boolean") {
             schema.additionalProperties = node.additionalProperties;
         }
+        this.addExtraProperties(schema, node);
         return schema;
     };
     return Oas30ModelToJSVisitor;
@@ -14053,10 +14251,10 @@ var Oas20RequiredPropertyValidationRule = (function (_super) {
             this.requirePropertyWhen("PAR-004", node, "schema", "in", "body", "Body Parameters must have a schema defined.");
         }
         if (node.in !== "body" && !this.isDefined(node.type)) {
-            this.report("PAR-005", node, "type", "Parameter is missing a type.");
+            this.report("PAR-005", node, "type", "Parameter '" + node.name + "' is missing a type.");
         }
         if (node.in !== "body" && node.type === "array" && !this.isDefined(node.items)) {
-            this.report("PAR-006", node, "items", "Parameter marked as array but no array type provided..");
+            this.report("PAR-006", node, "items", "Parameter '" + node.name + "' marked as array but no array type provided..");
         }
     };
     Oas20RequiredPropertyValidationRule.prototype.visitItems = function (node) {
@@ -14322,7 +14520,7 @@ var Oas20NodePathVisitor = (function (_super) {
         this._path.prependSegment("responses");
     };
     Oas20NodePathVisitor.prototype.visitResponse = function (node) {
-        this._path.prependSegment(node.statusCode(), true);
+        this._path.prependSegment(node.statusCode() == null ? "default" : node.statusCode(), true);
     };
     Oas20NodePathVisitor.prototype.visitHeaders = function (node) {
         this._path.prependSegment("headers");
@@ -14752,6 +14950,55 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
         this.reportIfInvalid("SS-013", this.isValidDefinitionName(node.schemeName()), node, "schemeName", "Security Scheme Name is not valid.");
     };
     return Oas20InvalidPropertyNameValidationRule;
+}(Oas20ValidationRule));
+var Oas20UnknownPropertyValidationRule = (function (_super) {
+    __extends$85(Oas20UnknownPropertyValidationRule, _super);
+    function Oas20UnknownPropertyValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Oas20UnknownPropertyValidationRule.prototype.validateNode = function (node) {
+        var _this = this;
+        if (node.hasExtraProperties()) {
+            node.getExtraPropertyNames().forEach(function (pname) {
+                _this.report("UNKNOWN-001", node, pname, "An unexpected property \"" + pname + "\" was found.  Extension properties should begin with \"x-\".");
+            });
+        }
+    };
+    Oas20UnknownPropertyValidationRule.prototype.visitDocument = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitInfo = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitContact = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitLicense = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitPaths = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitPathItem = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitResponses = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitSchema = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitHeader = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitOperation = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitXML = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitSecurityScheme = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitSecurityRequirement = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitTag = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitExternalDocumentation = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitExtension = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitValidationProblem = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitParameter = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitParameterDefinition = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitResponse = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitHeaders = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitResponseDefinition = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitExample = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitItems = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitSecurityDefinitions = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitScopes = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitPropertySchema = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitItemsSchema = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitAllOfSchema = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitSchemaDefinition = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitDefinitions = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitParametersDefinitions = function (node) { this.validateNode(node); };
+    Oas20UnknownPropertyValidationRule.prototype.visitResponsesDefinitions = function (node) { this.validateNode(node); };
+    return Oas20UnknownPropertyValidationRule;
 }(Oas20ValidationRule));
 
 /**
@@ -15622,6 +15869,74 @@ var Oas30InvalidPropertyNameValidationRule = (function (_super) {
     };
     return Oas30InvalidPropertyNameValidationRule;
 }(Oas30ValidationRule));
+var Oas30UnknownPropertyValidationRule = (function (_super) {
+    __extends$93(Oas30UnknownPropertyValidationRule, _super);
+    function Oas30UnknownPropertyValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Oas30UnknownPropertyValidationRule.prototype.validateNode = function (node) {
+        var _this = this;
+        if (node.hasExtraProperties()) {
+            node.getExtraPropertyNames().forEach(function (pname) {
+                _this.report("UNKNOWN-3-001", node, pname, "An unexpected property \"" + pname + "\" was found.  Extension properties should begin with \"x-\".");
+            });
+        }
+    };
+    Oas30UnknownPropertyValidationRule.prototype.visitDocument = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitInfo = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitContact = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLicense = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitPaths = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitPathItem = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitResponses = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitHeader = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitOperation = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitXML = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitSecurityScheme = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitSecurityRequirement = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitTag = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitExternalDocumentation = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitExtension = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitValidationProblem = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitParameter = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitParameterDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitResponse = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLink = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLinkParameterExpression = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLinkRequestBodyExpression = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLinkServer = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitResponseDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitRequestBody = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitMediaType = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitExample = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitEncoding = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitCallback = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitCallbackPathItem = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitAllOfSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitAnyOfSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitOneOfSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitNotSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitPropertySchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitItemsSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitComponents = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitExampleDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitRequestBodyDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitHeaderDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitOAuthFlows = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitImplicitOAuthFlow = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitPasswordOAuthFlow = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitClientCredentialsOAuthFlow = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitAuthorizationCodeOAuthFlow = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitLinkDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitCallbackDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitSchemaDefinition = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitServer = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitServerVariable = function (node) { this.validateNode(node); };
+    Oas30UnknownPropertyValidationRule.prototype.visitDiscriminator = function (node) { this.validateNode(node); };
+    return Oas30UnknownPropertyValidationRule;
+}(Oas30ValidationRule));
 
 /**
  * @license
@@ -16297,6 +16612,77 @@ var Oas30UniquenessValidationRule = (function (_super) {
 
 /**
  * @license
+ * Copyright 2018 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$99 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var allowedTypes = ["string", "number", "integer", "boolean", "array", "object"];
+/**
+ * Implements the Invalid Property Type validation rule.  This rule is responsible
+ * for reporting whenever the **type** and **items** of a property fails to conform to the required
+ * format defined by the specification
+ */
+var Oas30InvalidPropertyTypeValidationRule = (function (_super) {
+    __extends$99(Oas30InvalidPropertyTypeValidationRule, _super);
+    function Oas30InvalidPropertyTypeValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Returns true if the type node has a valid type.
+     * @param type
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyTypeValidationRule.prototype.isValidType = function (type) {
+        if (this.hasValue(type)) {
+            return OasValidationRuleUtil.isValidEnumItem(type, allowedTypes);
+        }
+        return true;
+    };
+    /**
+     * Returns true if the type is array and items is defined
+     * @param type
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyTypeValidationRule.prototype.isValidItems = function (node) {
+        var type = node.type, items = node.items;
+        if (type == 'array' && !this.hasValue(items))
+            return false;
+        if (type !== 'array' && this.hasValue(items))
+            return false;
+        return true;
+    };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitSchema = function (node) {
+        this.reportIfInvalid("SCH-3-003", this.isValidType(node.type), node, "type", "Schema type value of \"" + node.type + "\" is not allowed.  Must be one of: [" + allowedTypes.join(", ") + "]");
+        this.reportIfInvalid("SCH-3-004", this.isValidItems(node), node, "items", "Schema items must be present only for schemas of type 'array'.");
+    };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitAnyOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitOneOfSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitNotSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitPropertySchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitItemsSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.visitSchema(node); };
+    Oas30InvalidPropertyTypeValidationRule.prototype.visitSchemaDefinition = function (node) { this.visitSchema(node); };
+    return Oas30InvalidPropertyTypeValidationRule;
+}(Oas30ValidationRule));
+
+/**
+ * @license
  * Copyright 2017 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16350,7 +16736,8 @@ var Oas20ValidationVisitor = (function (_super) {
             new Oas20InvalidPropertyValueValidationRule(_this),
             new Oas20UniquenessValidationRule(_this),
             new Oas20MutuallyExclusiveValidationRule(_this),
-            new Oas20InvalidReferenceValidationRule(_this)
+            new Oas20InvalidReferenceValidationRule(_this),
+            new Oas20UnknownPropertyValidationRule(_this)
         ]);
         return _this;
     }
@@ -16407,12 +16794,14 @@ var Oas30ValidationVisitor = (function (_super) {
         _this.addVisitors([
             new Oas30InvalidPropertyFormatValidationRule(_this),
             new Oas30IgnoredPropertyNameValidationRule(_this),
+            new Oas30InvalidPropertyTypeValidationRule(_this),
             new Oas30InvalidPropertyNameValidationRule(_this),
             new Oas30InvalidPropertyValueValidationRule(_this),
             new Oas30InvalidReferenceValidationRule(_this),
             new Oas30MutuallyExclusiveValidationRule(_this),
             new Oas30RequiredPropertyValidationRule(_this),
-            new Oas30UniquenessValidationRule(_this)
+            new Oas30UniquenessValidationRule(_this),
+            new Oas30UnknownPropertyValidationRule(_this)
         ]);
         return _this;
     }
@@ -16518,6 +16907,10 @@ var OasLibraryUtils = (function () {
         }
         if (typeof source === "string") {
             source = JSON.parse(source);
+        }
+        else {
+            // If the source is an object, clone it (the reader is destructive to the input).
+            source = JSON.parse(JSON.stringify(source));
         }
         if (node.ownerDocument().is2xDocument()) {
             var reader = new Oas20JS2ModelReader();

@@ -47,6 +47,12 @@ public class HubConfiguration extends Configuration {
     private static final String GITLAB_API_URL_ENV = "APICURIO_GITLAB_API_URL";
     private static final String GITLAB_API_URL_SYSPROP = "apicurio.hub.gitlab.api";
 
+    private static final String GITLAB_GROUP_ALL_AVAILABLE_ENV = "APICURIO_GITLAB_GROUP_ALL_AVAILABLE";
+    private static final String GITLAB_GROUP_ALL_AVAILABLE_SYSPROP = "apicurio.hub.gitlab.group.all.available";
+
+    private static final String GITLAB_GROUP_MIN_ACCESS_LEVEL_ENV = "APICURIO_GITLAB_GROUP_MIN_ACCESS_LEVEL";
+    private static final String GITLAB_GROUP_MIN_ACCESS_LEVEL_SYSPROP = "apicurio.hub.gitlab.group.min.access.level";
+
     private static final String BITBUCKET_API_URL_ENV = "APICURIO_BITBUCKET_API_URL";
     private static final String BITBUCKET_API_URL_SYSPROP = "apicurio.hub.bitbucket.api";
 
@@ -90,6 +96,20 @@ public class HubConfiguration extends Configuration {
      */
     public String getGitHubApiUrl() {
         return getConfigurationProperty(GITHUB_API_URL_ENV, GITHUB_API_URL_SYSPROP, "https://api.github.com");
+    }
+
+    /**
+     * @return the configured GitLab Group access mode
+     */
+    public String getGitLabGroupAllAvailable() {
+        return getConfigurationProperty(GITLAB_GROUP_ALL_AVAILABLE_ENV, GITLAB_GROUP_ALL_AVAILABLE_SYSPROP, "false");
+    }
+
+    /**
+     * @return the configured GitLab Group min access level
+     */
+    public String getGitLabGroupMinAccessLevel() {
+        return getConfigurationProperty(GITLAB_GROUP_MIN_ACCESS_LEVEL_ENV, GITLAB_GROUP_MIN_ACCESS_LEVEL_SYSPROP, null);
     }
 
     /**

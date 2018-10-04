@@ -32,7 +32,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -311,11 +310,11 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         Collection<GitLabGroup> rval = new HashSet<>();
         Endpoint endpoint = this.endpoint("/api/v4/groups", page, perPage);
         String allAvailable = this.config.getGitLabGroupAllAvailable();
-        if(!org.apache.commons.lang3.StringUtils.isEmpty(allAvailable)){
+        if(allAvailable != null && !allAvailable.isEmpty()){
             endpoint.queryParam("all_available", allAvailable);
         }
         String minAccessLevel = this.config.getGitLabGroupMinAccessLevel();
-        if(!org.apache.commons.lang3.StringUtils.isEmpty(minAccessLevel)){
+        if(minAccessLevel != null && !minAccessLevel.isEmpty()){
             endpoint.queryParam("min_access_level", minAccessLevel);
         }
         HttpGet get = new HttpGet(endpoint.toString());

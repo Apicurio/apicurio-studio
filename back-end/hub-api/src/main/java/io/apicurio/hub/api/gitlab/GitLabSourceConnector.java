@@ -32,6 +32,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -77,6 +78,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
     protected static final Object TOKEN_TYPE_PAT = "PAT";
     protected static final Object TOKEN_TYPE_OAUTH = "OAUTH";
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     @Inject
     private HubConfiguration config;
@@ -285,10 +287,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     }
                 }
             }
-
             
             // Now get all the groups the user has access to
-            Collection<GitLabGroup> groups = getAllGroups(httpClient);
+            Endpoint endpoint = pagedEndpoint("/api/v4/groups", 1, DEFAULT_PAGE_SIZE);
+            Collection<GitLabGroup> groups = getAllGroups(httpClient, endpoint);
             rval.addAll(groups);
         } catch (IOException e) {
             throw new GitLabException("Error getting GitLab groups.", e);
@@ -296,25 +298,41 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         return rval;
     }
 
-    private Collection<GitLabGroup> getAllGroups(CloseableHttpClient httpClient) throws IOException, SourceConnectorException {
-        int page = 1;
-        int perPage = 100;
-        Collection<GitLabGroup> groups = getGroups(httpClient, page, perPage);
-        while (groups.size() == page*perPage){
-            groups.addAll(getGroups(httpClient, ++page, perPage));
+    /**
+     * Gets the full list of groups - handles paged results.
+     * @param httpClient
+     * @param endpoint
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private Collection<GitLabGroup> getAllGroups(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
+        Collection<GitLabGroup> groups = new ArrayList<>();
+        
+        String nextPageUrl = addGroups(httpClient, endpoint, groups);
+        while (nextPageUrl != null) {
+            Endpoint nextEndpoint = new Endpoint(nextPageUrl);
+            nextPageUrl = addGroups(httpClient, nextEndpoint, groups);
         }
         return groups;
     }
 
-    private Collection<GitLabGroup> getGroups(CloseableHttpClient httpClient, int page, int perPage) throws IOException, SourceConnectorException {
-        Collection<GitLabGroup> rval = new HashSet<>();
-        Endpoint endpoint = this.endpoint("/api/v4/groups", page, perPage);
+    /**
+     * Queries the given endpoint, reads the resulting groups, adds all of the groups it finds
+     * to the collection of groups, and then returns a URL of the next page of results.
+     * @param httpClient
+     * @param endpoint
+     * @param groups
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private String addGroups(CloseableHttpClient httpClient, Endpoint endpoint,
+            Collection<GitLabGroup> groups) throws IOException, SourceConnectorException {
         String allAvailable = this.config.getGitLabGroupAllAvailable();
-        if(allAvailable != null && !allAvailable.isEmpty()){
+        if (allAvailable != null && !allAvailable.isEmpty()) {
             endpoint.queryParam("all_available", allAvailable);
         }
         String minAccessLevel = this.config.getGitLabGroupMinAccessLevel();
-        if(minAccessLevel != null && !minAccessLevel.isEmpty()){
+        if (minAccessLevel != null && !minAccessLevel.isEmpty()) {
             endpoint.queryParam("min_access_level", minAccessLevel);
         }
         HttpGet get = new HttpGet(endpoint.toString());
@@ -322,7 +340,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         addSecurity(get);
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw new SourceConnectorException("Error getting GitLab groups: " + response.getStatusLine().getReasonPhrase());
+                throw new SourceConnectorException(
+                        "Error getting GitLab groups: " + response.getStatusLine().getReasonPhrase());
             }
             try (InputStream contentStream = response.getEntity().getContent()) {
                 JsonNode node = mapper.readTree(contentStream);
@@ -337,12 +356,13 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         glg.setId(id);
                         glg.setName(name);
                         glg.setPath(path);
-                        rval.add(glg);
+                        groups.add(glg);
                     });
                 }
             }
+            Header linkHeader = response.getFirstHeader("Link");
+            return getNextPage(linkHeader);
         }
-        return rval;
     }
     
     /**
@@ -377,12 +397,14 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             if (group != null && group.equalsIgnoreCase(gitLabUsername)) {
                 // List all user projects
                 //////////////////////////////
-                Collection<GitLabProject> projects = getAllUserProjects(httpClient, gitLabUserId);
+                Endpoint endpoint = pagedEndpoint("/api/v4/users/:user_id/projects", 1, DEFAULT_PAGE_SIZE).bind("user_id", gitLabUserId);
+                Collection<GitLabProject> projects = getAllProjects(httpClient, endpoint);
                 rval.addAll(projects);
             } else {
                 // List all group projects
                 //////////////////////////////
-                Collection<GitLabProject> projects = getAllGroupProjects(httpClient, group);
+                Endpoint endpoint = pagedEndpoint("/api/v4/groups/:group/projects", 1, DEFAULT_PAGE_SIZE).bind("group", group);
+                Collection<GitLabProject> projects = getAllProjects(httpClient, endpoint);
                 rval.addAll(projects);
             }
         } catch (IOException e) {
@@ -391,47 +413,40 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         return rval;
     }
 
-    private Collection<GitLabProject> getAllGroupProjects(CloseableHttpClient httpClient, String group) throws IOException, SourceConnectorException {
-        int page = 1;
-        int perPage = 100;
-        Collection<GitLabProject> projects = getGroupProjects(httpClient, page, perPage, group);
-        while (projects.size() == page*perPage){
-            projects.addAll(getGroupProjects(httpClient, ++page, perPage, group));
+    /**
+     * Gets all of the projects using the given endpoint.  This handles paging by following the Link
+     * HTTP header returned by GitLab.
+     * @param httpClient
+     * @param endpoint
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private Collection<GitLabProject> getAllProjects(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
+        Collection<GitLabProject> projects = new ArrayList<>();
+        
+        String nextPageUrl = addProjects(httpClient, endpoint, projects);
+        while (nextPageUrl != null) {
+            Endpoint nextEndpoint = new Endpoint(nextPageUrl);
+            nextPageUrl = addProjects(httpClient, nextEndpoint, projects);
         }
         return projects;
     }
 
-    private Collection<GitLabProject> getAllUserProjects(CloseableHttpClient httpClient, String gitLabUserId) throws IOException, SourceConnectorException {
-        int page = 1;
-        int perPage = 100;
-        Collection<GitLabProject> projects = getUserProjects(httpClient, page, perPage, gitLabUserId);
-        while (projects.size() == page*perPage){
-            projects.addAll(getUserProjects(httpClient, ++page, perPage, gitLabUserId));
-        }
-        return projects;
-    }
-
-    private Collection<GitLabProject> getUserProjects(CloseableHttpClient httpClient, int page, int perPage, String gitLabUserId) throws IOException, SourceConnectorException {
-        Collection<GitLabProject> rval = new HashSet<>();
-        Endpoint endpoint = this.endpoint("/api/v4/users/:user_id/projects", page, perPage).bind("user_id", gitLabUserId);
+    /**
+     * Queries the given endpoint, reads the resulting projects, adds all of the projects it finds
+     * to the collection of projects, and then returns a URL of the next page of results.
+     * @param httpClient
+     * @param endpoint
+     * @param projects
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private String addProjects(CloseableHttpClient httpClient, Endpoint endpoint,
+            Collection<GitLabProject> projects) throws IOException, SourceConnectorException {
         HttpGet get = new HttpGet(endpoint.toString());
         get.addHeader("Accept", "application/json");
         addSecurity(get);
-        addProjects(httpClient, rval, get);
-        return rval;
-    }
 
-    private Collection<GitLabProject> getGroupProjects(CloseableHttpClient httpClient, int page, int perPage, String group) throws IOException, SourceConnectorException {
-        Collection<GitLabProject> rval = new HashSet<>();
-        Endpoint endpoint = this.endpoint("/api/v4/groups/:group/projects", page, perPage).bind("group", group);
-        HttpGet get = new HttpGet(endpoint.toString());
-        get.addHeader("Accept", "application/json");
-        addSecurity(get);
-        addProjects(httpClient, rval, get);
-        return rval;
-    }
-
-    private void addProjects(CloseableHttpClient httpClient, Collection<GitLabProject> rval, HttpGet get) throws IOException {
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             try (InputStream contentStream = response.getEntity().getContent()) {
                 JsonNode node = mapper.readTree(contentStream);
@@ -446,10 +461,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         glp.setId(id);
                         glp.setName(name);
                         glp.setPath(path);
-                        rval.add(glp);
+                        projects.add(glp);
                     });
                 }
             }
+            Header linkHeader = response.getFirstHeader("Link");
+            return getNextPage(linkHeader);
         }
     }
 
@@ -462,26 +479,44 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         logger.debug("Getting the branches from {} / {}", group, project);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            return getAllBranches(httpClient, group, project);
+            Endpoint endpoint = pagedEndpoint("/api/v4/projects/:id/repository/branches", 1, DEFAULT_PAGE_SIZE)
+                    .bind("id", toEncodedId(group, project));
+            return getAllBranches(httpClient, endpoint);
         } catch (IOException e) {
             throw new GitLabException("Error getting GitLab branches.", e);
         }
     }
 
-    private Collection<SourceCodeBranch> getAllBranches(CloseableHttpClient httpClient, String group, String project) throws IOException, SourceConnectorException {
-        int page = 1;
-        int perPage = 100;
-        Collection<SourceCodeBranch> branches = getBranches(httpClient, page, perPage, group, project);
-        while (branches.size() == page*perPage){
-            branches.addAll(getBranches(httpClient, ++page, perPage, group, project));
+    /**
+     * Gets all branches using the given endpoint.  Handles paging by following the Link HTTP header
+     * returned by GitLab.
+     * @param httpClient
+     * @param endpoint
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private Collection<SourceCodeBranch> getAllBranches(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
+        Collection<SourceCodeBranch> branches = new ArrayList<>();
+        
+        String nextPageUrl = addBranches(httpClient, endpoint, branches);
+        while (nextPageUrl != null) {
+            Endpoint nextEndpoint = new Endpoint(nextPageUrl);
+            nextPageUrl = addBranches(httpClient, nextEndpoint, branches);
         }
         return branches;
     }
 
-    private Collection<SourceCodeBranch> getBranches(CloseableHttpClient httpClient, int page, int perPage, String group, String project) throws IOException, SourceConnectorException {
-        Collection<SourceCodeBranch> rval = new HashSet<>();
-        Endpoint endpoint = this.endpoint("/api/v4/projects/:id/repository/branches", page, perPage)
-                .bind("id", toEncodedId(group, project));
+    /**
+     * Queries the given endpoint, reads the resulting branches, adds all of the branches it finds
+     * to the collection of branches, and then returns a URL of the next page of results.
+     * @param httpClient
+     * @param endpoint
+     * @param branches
+     * @throws IOException
+     * @throws SourceConnectorException
+     */
+    private String addBranches(CloseableHttpClient httpClient, Endpoint endpoint,
+            Collection<SourceCodeBranch> branches) throws IOException, SourceConnectorException {
         HttpGet get = new HttpGet(endpoint.toString());
         get.addHeader("Accept", "application/json");
         addSecurity(get);
@@ -496,15 +531,22 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         SourceCodeBranch glBranch = new SourceCodeBranch();
                         glBranch.setName(branch.get("name").asText());
                         glBranch.setCommitId(branch.get("commit").get("id").asText());
-                        rval.add(glBranch);
+                        branches.add(glBranch);
                     });
                 }
-                return rval;
             }
+            Header linkHeader = response.getFirstHeader("Link");
+            return getNextPage(linkHeader);
         }
     }
 
-    private Endpoint endpoint(String path, int page, int perPage){
+    /**
+     * Convenience for getting an endpoint with the page and page size configured.
+     * @param path
+     * @param page
+     * @param perPage
+     */
+    private Endpoint pagedEndpoint(String path, int page, int perPage){
         return this.endpoint(path)
                 .queryParam("page", String.valueOf(page))
                 .queryParam("per_page", String.valueOf(perPage));
@@ -662,4 +704,21 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         return urlEncodedBranch;
     }
     
+    private String getNextPage(Header linkHeader) {
+        String linkValue = linkHeader.getValue();
+        if (linkValue != null) {
+            String[] links = linkValue.split(",");
+            for (String link : links) {
+                link = link.trim();
+                int idx = link.indexOf(">; rel=\"");
+                if (idx > 0) {
+                    String label = link.substring(idx + 8, link.length() - 1);
+                    if (label.equals("next")) {
+                        return link.substring(1, idx);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

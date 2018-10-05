@@ -15,13 +15,18 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
+import {
+    CodeEditorComponent,
+    CodeEditorMode,
+    CodeEditorTheme
+} from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
-import {Oas30Example} from "oai-ts-core";
+import {Oas30Example, Oas30Schema} from "oai-ts-core";
 import {StringUtils} from "../../_util/object.util";
+import {ModelUtils} from "../../_util/model.util";
 
 
 export interface EditExampleEvent {
@@ -32,13 +37,16 @@ export interface EditExampleEvent {
 @Component({
     moduleId: module.id,
     selector: "edit-example-dialog",
-    templateUrl: "edit-example.component.html"
+    templateUrl: "edit-example.component.html",
+    styleUrls: [ "edit-example.component.css" ]
 })
 export class EditExampleDialogComponent {
 
+    @Input() schema: Oas30Schema;
     @Output() onEdit: EventEmitter<EditExampleEvent> = new EventEmitter<EditExampleEvent>();
 
     @ViewChildren("editExampleModal") editExampleModal: QueryList<ModalDirective>;
+    @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
     private example: Oas30Example;
     protected _isOpen: boolean = false;
@@ -158,6 +166,16 @@ export class EditExampleDialogComponent {
                 this.model.valid = true;
             } catch (e) {}
         }
+    }
+
+    public canGenerateExample(): boolean {
+        return this.schema !== null && this.schema !== undefined;
+    }
+
+    public generate(): void {
+        let example: any = ModelUtils.generateExampleFromSchema(this.schema);
+        let exampleStr: string = JSON.stringify(example, null, 4);
+        this.codeEditor.first.setText(exampleStr);
     }
 
 }

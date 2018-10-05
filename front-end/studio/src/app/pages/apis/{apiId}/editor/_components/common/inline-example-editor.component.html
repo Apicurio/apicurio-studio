@@ -9,8 +9,11 @@
     <code-editor [mode]="codeEditorMode()" #codeEditor
                  [debounceTime]="150"
                  [(text)]="evalue"
+                 (textChange)="updateModeFromContent($event)"
                  wordWrap="true"
                  [editorStyle]="{ position: 'relative', height: '220px', border: '1px solid #ccc', width: '100%' }"></code-editor>
     <button title="Save changes." class="btn btn-xs btn-primary" (click)="onSave()"><span class="fa fa-fw fa-check"></span></button>
     <button title="Cancel changes." class="btn btn-xs btn-default" (click)="onCancel()"><span class="fa fa-fw fa-close"></span></button>
+    <button title="Generate example." class="btn btn-xs btn-default btn-generate" (click)="generate()"
+            *ngIf="canGenerateExample()"><span class="fa fa-fw fa-code"></span> Generate</button>
 </div>

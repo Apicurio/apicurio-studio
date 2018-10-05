@@ -15,24 +15,33 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
+import {
+    CodeEditorComponent,
+    CodeEditorMode,
+    CodeEditorTheme
+} from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
 import {StringUtils} from "../../_util/object.util";
+import {ModelUtils} from "../../_util/model.util";
+import {Oas20Schema} from "oai-ts-core";
 
 
 @Component({
     moduleId: module.id,
     selector: "add-example-20-dialog",
-    templateUrl: "add-example-20.component.html"
+    templateUrl: "add-example-20.component.html",
+    styleUrls: [ "add-example.component.css" ]
 })
 export class AddExample20DialogComponent {
 
+    @Input() schema: Oas20Schema;
     @Output() onAdd: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren("addExampleModal") addExampleModal: QueryList<ModalDirective>;
+    @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
     protected _isOpen: boolean = false;
 
@@ -141,4 +150,15 @@ export class AddExample20DialogComponent {
     public hasValue(): boolean {
         return !ObjectUtils.isNullOrUndefined(this.model.value);
     }
+
+    public canGenerateExample(): boolean {
+        return this.schema !== null && this.schema !== undefined;
+    }
+
+    public generate(): void {
+        let example: any = ModelUtils.generateExampleFromSchema(this.schema);
+        let exampleStr: string = JSON.stringify(example, null, 4);
+        this.codeEditor.first.setText(exampleStr);
+    }
+
 }

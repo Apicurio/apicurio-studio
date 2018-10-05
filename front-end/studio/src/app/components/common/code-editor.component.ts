@@ -115,4 +115,8 @@ export class CodeEditorComponent {
     public focus(): void {
         this.editor.focus();
     }
+
+    public setText(text: string): void {
+        this.editor.setText(text);
+    }
 }

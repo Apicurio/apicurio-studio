@@ -15,9 +15,12 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, Component, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
+import {AfterViewInit, Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {TextAreaEditorComponent} from "./inline-editor.base";
 import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/common/code-editor.component";
+import {Oas20Schema, Oas30Schema} from "oai-ts-core";
+import {ModelUtils} from "../../_util/model.util";
+import {StringUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
@@ -28,7 +31,11 @@ import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/
 })
 export class InlineExampleEditorComponent extends TextAreaEditorComponent implements AfterViewInit {
 
+    @Input() schema: Oas20Schema | Oas30Schema;
+
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
+
+    _mode: CodeEditorMode = CodeEditorMode.JSON;
 
     ngAfterViewInit(): void {
         this.codeEditor.changes.subscribe(changes => {
@@ -39,7 +46,7 @@ export class InlineExampleEditorComponent extends TextAreaEditorComponent implem
     }
 
     public codeEditorMode(): CodeEditorMode {
-        return CodeEditorMode.Text;
+        return this._mode;
     }
 
     public onKeypress(event: KeyboardEvent): void {
@@ -48,6 +55,26 @@ export class InlineExampleEditorComponent extends TextAreaEditorComponent implem
         }
         if (event.ctrlKey && event.key === "Enter" && this.isValid()) {
             this.onSave();
+        }
+    }
+
+    public canGenerateExample(): boolean {
+        return this.schema !== null && this.schema !== undefined;
+    }
+
+    public generate(): void {
+        let example: any = ModelUtils.generateExampleFromSchema(this.schema);
+        let exampleStr: string = JSON.stringify(example, null, 4);
+        this.codeEditor.first.setText(exampleStr);
+    }
+
+    public updateModeFromContent(text: string): void {
+        if (StringUtils.isJSON(text)) {
+            this._mode = CodeEditorMode.JSON;
+        } else if (StringUtils.isXml(text)) {
+            this._mode = CodeEditorMode.XML;
+        } else {
+            this._mode = CodeEditorMode.YAML;
         }
     }
 

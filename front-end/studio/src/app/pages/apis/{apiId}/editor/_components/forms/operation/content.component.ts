@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from "@angular/core";
-import {Oas30Document, Oas30MediaType, Oas30RequestBodyContent, Oas30ResponseContent} from "oai-ts-core";
+import {Oas30Document, Oas30MediaType, Oas30RequestBodyContent, Oas30ResponseContent, Oas30Schema} from "oai-ts-core";
 import {SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
@@ -358,6 +358,17 @@ export class ContentComponent implements OnInit {
         this.mediaTypeNames().forEach( mtName => {
             this.onRemoveMediaType.emit(mtName);
         });
+    }
+
+    public schemaForExample(): Oas30Schema {
+        let mtNames: string[] = Object.keys(this.content);
+        if (mtNames && mtNames.length > 0) {
+            let mt: Oas30MediaType = this.content[mtNames[0]];
+            if (mt) {
+                return mt.schema;
+            }
+        }
+        return null;
     }
 
 }

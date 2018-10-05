@@ -97,5 +97,5 @@
 </div>
 
 <add-media-type-dialog #addMediaTypeDialog (onAdd)="addMediaType($event)"></add-media-type-dialog>
-<add-example-dialog #addExampleDialog (onAdd)="addExample($event)"></add-example-dialog>
-<edit-example-dialog #editExampleDialog (onEdit)="editExample($event)"></edit-example-dialog>
+<add-example-dialog #addExampleDialog (onAdd)="addExample($event)" [schema]="schemaForExample()"></add-example-dialog>
+<edit-example-dialog #editExampleDialog (onEdit)="editExample($event)" [schema]="schemaForExample()"></edit-example-dialog>

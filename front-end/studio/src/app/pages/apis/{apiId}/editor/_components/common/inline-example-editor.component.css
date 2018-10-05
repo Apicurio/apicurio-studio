@@ -20,4 +20,12 @@
 }
 
 .inline-example-editor {
+  position: relative;
+}
+
+.inline-example-editor .btn-generate {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
 }

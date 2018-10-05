@@ -94,5 +94,5 @@
         </div>
     </div>
 </div>
-<add-example-20-dialog #addExampleDialog (onAdd)="addExample($event)"></add-example-20-dialog>
-<edit-example-20-dialog #editExampleDialog (onEdit)="editExample($event)"></edit-example-20-dialog>
+<add-example-20-dialog #addExampleDialog (onAdd)="addExample($event)" [schema]="response.schema"></add-example-20-dialog>
+<edit-example-20-dialog #editExampleDialog (onEdit)="editExample($event)" [schema]="response.schema"></edit-example-20-dialog>

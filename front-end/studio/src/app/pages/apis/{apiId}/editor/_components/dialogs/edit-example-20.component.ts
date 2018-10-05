@@ -15,13 +15,18 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
+import {
+    CodeEditorComponent,
+    CodeEditorMode,
+    CodeEditorTheme
+} from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
-import {Oas30Example} from "oai-ts-core";
+import {Oas20Schema, Oas30Example} from "oai-ts-core";
 import {StringUtils} from "../../_util/object.util";
+import {ModelUtils} from "../../_util/model.util";
 
 
 export interface EditExample20Event {
@@ -32,13 +37,16 @@ export interface EditExample20Event {
 @Component({
     moduleId: module.id,
     selector: "edit-example-20-dialog",
-    templateUrl: "edit-example-20.component.html"
+    templateUrl: "edit-example-20.component.html",
+    styleUrls: [ "edit-example.component.css" ]
 })
 export class EditExample20DialogComponent {
 
+    @Input() schema: Oas20Schema;
     @Output() onEdit: EventEmitter<EditExample20Event> = new EventEmitter<EditExample20Event>();
 
     @ViewChildren("editExampleModal") editExampleModal: QueryList<ModalDirective>;
+    @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
     private example: Oas30Example;
     protected _isOpen: boolean = false;
@@ -163,6 +171,16 @@ export class EditExample20DialogComponent {
                 this.model.valid = true;
             } catch (e) {}
         }
+    }
+
+    public canGenerateExample(): boolean {
+        return this.schema !== null && this.schema !== undefined;
+    }
+
+    public generate(): void {
+        let example: any = ModelUtils.generateExampleFromSchema(this.schema);
+        let exampleStr: string = JSON.stringify(example, null, 4);
+        this.codeEditor.first.setText(exampleStr);
     }
 
 }

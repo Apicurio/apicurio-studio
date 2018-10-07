@@ -6914,7 +6914,7 @@ var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
  */
 function createDeleteExampleCommand(document, example) {
     if (document.getSpecVersion() === "2.0") {
-        throw new Error("Media Types are not supported in OpenAPI 2.0.");
+        throw new Error("Not supported in OpenAPI 2.0.");
     }
     else {
         return new DeleteExampleCommand_30(example);
@@ -8142,6 +8142,212 @@ var RenamePathItemCommand = (function (_super) {
     return RenamePathItemCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2018 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createSetExtensionCommand(document, parent, name, value) {
+    return new SetExtensionCommand(parent, name, value);
+}
+/**
+ * A command used to set the Extension for a 3.0 MediaType or a 2.0 Response.
+ */
+var SetExtensionCommand = (function (_super) {
+    __extends$60(SetExtensionCommand, _super);
+    /**
+     * Constructor.
+     */
+    function SetExtensionCommand(parent, name, value) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        _this._name = name;
+        _this._value = value;
+        return _this;
+    }
+    SetExtensionCommand.prototype.type = function () {
+        return "SetExtensionCommand";
+    };
+    SetExtensionCommand.prototype.execute = function (document) {
+        console.info("[SetExtensionCommand] Executing.");
+        this._oldValue = null;
+        this._hasOldValue = false;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Find any existing extension with this name
+        var extension = parent.extension(this._name);
+        // Either update the existing extension or add a new one
+        if (extension) {
+            this._hasOldValue = true;
+            this._oldValue = extension.value;
+            extension.value = this._value;
+        }
+        else {
+            this._hasOldValue = false;
+            this._oldValue = null;
+            parent.addExtension(this._name, this._value);
+        }
+    };
+    SetExtensionCommand.prototype.undo = function (document) {
+        console.info("[SetExtensionCommand] Reverting.");
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Find any existing extension with this name
+        var extension = parent.extension(this._name);
+        if (this._hasOldValue && extension) {
+            extension.value = this._oldValue;
+        }
+        if (!this._hasOldValue && extension) {
+            parent.removeExtension(this._name);
+        }
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    SetExtensionCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    SetExtensionCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    return SetExtensionCommand;
+}(AbstractCommand));
+
+/**
+ * @license
+ * Copyright 2018 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteExtensionCommand(document, extension) {
+    return new DeleteExtensionCommand(extension);
+}
+/**
+ * A command used to delete a single mediaType from an operation.
+ */
+var DeleteExtensionCommand = (function (_super) {
+    __extends$61(DeleteExtensionCommand, _super);
+    /**
+     * C'tor.
+     * @param extension
+     */
+    function DeleteExtensionCommand(extension) {
+        var _this = _super.call(this) || this;
+        if (!_this.isNullOrUndefined(extension)) {
+            _this._parentPath = _this.oasLibrary().createNodePath(extension.parent());
+            _this._name = extension.name;
+        }
+        return _this;
+    }
+    DeleteExtensionCommand.prototype.type = function () {
+        return "DeleteExtensionCommand";
+    };
+    DeleteExtensionCommand.prototype.execute = function (document) {
+        console.info("[DeleteExtensionCommand] Executing.");
+        this._oldValue = null;
+        this._hasOldValue = false;
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Find any existing extension with this name
+        var extension = parent.extension(this._name);
+        // If found, remove it.
+        if (extension) {
+            this._hasOldValue = true;
+            this._oldValue = extension.value;
+            parent.removeExtension(this._name);
+        }
+        else {
+            this._hasOldValue = false;
+        }
+    };
+    DeleteExtensionCommand.prototype.undo = function (document) {
+        console.info("[DeleteExtensionCommand] Reverting.");
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Find any existing extension with this name
+        var extension = parent.extension(this._name);
+        if (this._hasOldValue && extension) {
+            extension.value = this._oldValue;
+        }
+        if (this._hasOldValue && !extension) {
+            parent.addExtension(this._name, this._oldValue);
+        }
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteExtensionCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteExtensionCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    return DeleteExtensionCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -8201,6 +8407,7 @@ var commandFactory = {
     "DeleteAllSecuritySchemesCommand": function () { return new DeleteAllSecuritySchemesCommand(); },
     "DeleteExampleCommand_20": function () { return new DeleteExampleCommand_20(null, null); },
     "DeleteExampleCommand_30": function () { return new DeleteExampleCommand_30(null); },
+    "DeleteExtensionCommand": function () { return new DeleteExtensionCommand(null); },
     "DeleteMediaTypeCommand": function () { return new DeleteMediaTypeCommand(null); },
     "DeleteOperationCommand_20": function () { return new DeleteOperationCommand_20(null, null); },
     "DeleteOperationCommand_30": function () { return new DeleteOperationCommand_30(null, null); },
@@ -8259,6 +8466,7 @@ var commandFactory = {
     "ReplaceSecurityRequirementCommand": function () { return new ReplaceSecurityRequirementCommand(null, null); },
     "SetExampleCommand_20": function () { return new SetExampleCommand_20(null, null, null); },
     "SetExampleCommand_30": function () { return new SetExampleCommand_30(null, null); },
+    "SetExtensionCommand": function () { return new SetExtensionCommand(null, null, null); },
 };
 var MarshallUtils = (function () {
     function MarshallUtils() {
@@ -8975,6 +9183,8 @@ exports.createDeleteExampleCommand = createDeleteExampleCommand;
 exports.createDelete20ExampleCommand = createDelete20ExampleCommand;
 exports.DeleteExampleCommand_20 = DeleteExampleCommand_20;
 exports.DeleteExampleCommand_30 = DeleteExampleCommand_30;
+exports.createDeleteExtensionCommand = createDeleteExtensionCommand;
+exports.DeleteExtensionCommand = DeleteExtensionCommand;
 exports.createDeleteLicenseCommand = createDeleteLicenseCommand;
 exports.AbstractDeleteLicenseCommand = AbstractDeleteLicenseCommand;
 exports.DeleteLicenseCommand_20 = DeleteLicenseCommand_20;
@@ -9085,6 +9295,8 @@ exports.createSetExampleCommand = createSetExampleCommand;
 exports.SetExampleCommand = SetExampleCommand;
 exports.SetExampleCommand_20 = SetExampleCommand_20;
 exports.SetExampleCommand_30 = SetExampleCommand_30;
+exports.createSetExtensionCommand = createSetExtensionCommand;
+exports.SetExtensionCommand = SetExtensionCommand;
 exports.OtCommand = OtCommand;
 exports.OtEngine = OtEngine;
 

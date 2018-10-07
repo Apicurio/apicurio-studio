@@ -1,0 +1,44 @@
+<!-- Metric Dialog -->
+<div bsModal #metricModal="bs-modal" class="modal fade" id="metricModal" tabindex="-1" role="dialog" aria-labelledby="metricModalLabel"
+     role="dialog" aria-hidden="true" (onShown)="doSelect()"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="metricModalLabel">Add 3scale Metric</h4>
+            </div>
+            <div class="modal-body">
+                <p *ngIf="_mode === 'add'">Enter information about the new metric below and then click <strong>Add</strong>.</p>
+                <p *ngIf="_mode === 'edit'">Update information about the new metric below and then click <strong>Edit</strong>.</p>
+                <form id="metric-form" class="form-horizontal" (submit)="add()" #metricForm="ngForm" data-dismiss="modal">
+                    <div class="form-group" *ngIf="_mode === 'add'">
+                        <label class="col-sm-2 control-label required" for="metric">Metric Name</label>
+                        <div class="col-sm-10">
+                            <input #metricInput name="metric" type="text" id="metric" class="form-control" placeholder="Metric Name"
+                                   required [(ngModel)]="metric.metric" #name="ngModel">
+                            <form-error-message [inputModel]="metric" [type]="'required'">Metric name is required.</form-error-message>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required" for="increment">Increment</label>
+                        <div class="col-sm-10">
+                            <input #incrementInput name="increment" type="text" id="increment" class="form-control" placeholder="Metric Increment"
+                                   required [(ngModel)]="metric.increment" #name="ngModel" pattern="[0-9]+">
+                            <form-error-message [inputModel]="metric" [type]="'required'">Increment is required.</form-error-message>
+                            <form-error-message [inputModel]="metric" [type]="'pattern'">Increment must be numeric.</form-error-message>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button *ngIf="_mode === 'add'" type="button" class="btn btn-primary" (click)="add()" [disabled]="!metricForm.form.valid">Add</button>
+                <button *ngIf="_mode === 'edit'" type="button" class="btn btn-primary" (click)="edit()" [disabled]="!metricForm.form.valid">Edit</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

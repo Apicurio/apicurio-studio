@@ -102,6 +102,9 @@ import {CounterComponent} from "./pages/apis/{apiId}/editor/_components/common/c
 import {InlineExampleEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-example-editor.component";
 import {DefinitionExampleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/example-section.component";
 import {PathInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/info-section.component";
+import {Operation3scaleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-section.component";
+import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/metric-dialog.component";
+import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
 
 @NgModule({
     imports: [
@@ -125,7 +128,8 @@ import {PathInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
-        InlineExampleEditorComponent, DefinitionExampleSectionComponent, PathInfoSectionComponent
+        InlineExampleEditorComponent, DefinitionExampleSectionComponent, PathInfoSectionComponent,
+        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

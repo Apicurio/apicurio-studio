@@ -1,0 +1,18 @@
+<div class="metric">
+    <div class="header">
+        <div class="name">
+            <span class="fa fa-bar-chart"></span>
+            <span>{{ metric.metric }}</span>
+        </div>
+        <div class="increment">
+            <strong>Increment: </strong>
+            <span>{{ metric.increment }}</span>
+        </div>
+        <div class="actions">
+            <icon-button (onClick)="onEdit.emit()" [type]="'edit'"
+                         [title]="'Edit the metric.'"></icon-button>
+            <icon-button (onClick)="onDelete.emit()" [type]="'delete'"
+                         [title]="'Delete the metric.'"></icon-button>
+        </div>
+    </div>
+</div>

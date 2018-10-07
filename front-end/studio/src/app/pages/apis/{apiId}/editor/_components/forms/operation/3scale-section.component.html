@@ -1,0 +1,34 @@
+<!-- 3scale Section -->
+<div class="section 3scale-section panel-group" *ngIf="is3scaleEnabled()">
+    <div class="section-header panel-title">
+        <a data-toggle="collapse" data-target="#3scale-section-body">
+            <span class="section-label">API MANAGEMENT METRICS</span>
+        </a>
+        <context-help>
+            <p>
+                In this section you can configure 3scale API Management metrics.
+            </p>
+        </context-help>
+        <icon-button (onClick)="metricDialog.open()" [pullRight]="true" [type]="'add'"
+                     [title]="'Add a new metric.'"></icon-button>
+        <icon-button (onClick)="deleteAll()" [disabled]="!hasMetrics()"
+                     [pullRight]="true" [type]="'delete'"
+                     [title]="'Delete all metrics.'"></icon-button>
+    </div>
+    <div class="section-body collapse in" id="3scale-section-body">
+
+        <signpost *ngIf="metrics().length === 0">
+            <span>No metrics have been defined.</span>
+            <a (click)="metricDialog.open()">Add a metric</a>
+        </signpost>
+
+        <!-- The list of metrics -->
+        <div class="metrics" *ngIf="metrics().length > 0">
+            <three-scale-metric-row *ngFor="let metric of metrics()" [metric]="metric"
+                                    (onEdit)="metricDialog.open(metric)"
+                                    (onDelete)="delete(metric)"></three-scale-metric-row>
+        </div>
+
+    </div>
+</div>
+<metric-dialog (onAdd)="add($event)" #metricDialog></metric-dialog>

@@ -245,6 +245,21 @@ var OasExtensibleNode = (function (_super) {
         return this._extensions;
     };
     /**
+     * Gets a single extension by name or null if not found.
+     * @param name
+     */
+    OasExtensibleNode.prototype.extension = function (name) {
+        var rval = null;
+        if (this._extensions) {
+            this._extensions.forEach(function (extension) {
+                if (extension.name === name) {
+                    rval = extension;
+                }
+            });
+        }
+        return rval;
+    };
+    /**
      * Creates an extension.
      * @return {OasExtension}
      */
@@ -268,6 +283,26 @@ var OasExtensibleNode = (function (_super) {
         }
         this._extensions.push(ext);
         return ext;
+    };
+    /**
+     * Removes an extension by name.
+     * @param name
+     */
+    OasExtensibleNode.prototype.removeExtension = function (name) {
+        var rval = null;
+        if (this._extensions) {
+            var idx_1 = -1;
+            this._extensions.forEach(function (extension, index) {
+                if (extension.name === name) {
+                    rval = extension;
+                    idx_1 = index;
+                }
+            });
+            if (idx_1 !== -1) {
+                this._extensions.splice(idx_1, 1);
+            }
+        }
+        return rval;
     };
     return OasExtensibleNode;
 }(OasNode));

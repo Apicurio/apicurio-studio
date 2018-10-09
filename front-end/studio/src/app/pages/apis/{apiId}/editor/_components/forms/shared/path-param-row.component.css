@@ -130,3 +130,11 @@
   margin-left: 3px;
   margin-right: 3px;
 }
+
+.path-param.overridable > .header > div > .fa-angle-right {
+  display: none;
+}
+.path-param.overridable .header .description:hover, .path-param.overridable .header .summary:hover {
+  color: inherit;
+  cursor: default;
+}

@@ -82,9 +82,7 @@ export class MetricDialogComponent {
      * Called when the user clicks "edit".
      */
     protected edit(): void {
-        console.info("User clicked EDIT", this.metric);
         let value: ThreeScaleMetric = this.normalize(this.metric);
-        console.info("Firing EDIT event:", value);
         this.onEdit.emit(value);
         this.cancel();
     }

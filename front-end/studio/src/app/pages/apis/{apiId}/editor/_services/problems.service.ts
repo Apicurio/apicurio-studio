@@ -438,7 +438,7 @@ var PROBLEM_EXPLANATIONS = {
     "OP-3-004"   : `Every Operation must include at least one Response.`,
     "PAR-3-003"  : `Every Parameter must have a name.`,
     "PAR-3-004"  : `For every Parameter, where it can be found in the Request must be indicated (e.g. path, query, header).`,
-    "R-3-001"    : `The API definition must contain an "openapi" property (with a value of e.g. 3.0.1).`,
+    "R-3-001"    : `The API definition must contain an "openapi" property (with a value of e.g. 3.0.2).`,
     "R-3-002"    : `The API definition must include an Info child (which must contain the API title and version).`,
     "R-3-003"    : `Every API definition must include a "paths" property even if there are no actual Path Items contained in it.`,
     "RB-3-002"   : `Every Request Body must define its Content so that clients know what format the Operation's input data must be.`,

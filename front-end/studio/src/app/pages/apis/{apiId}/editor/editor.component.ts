@@ -168,7 +168,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             } catch (e) {
                 console.error(e);
                 // If we can't process the document, then just create a new one
-                this._document = this._library.createDocument("3.0.1");
+                this._document = this._library.createDocument("3.0.2");
             }
             this.validateModel();
         }

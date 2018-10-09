@@ -116,6 +116,7 @@ export class ActivityItemComponent {
             case "ChangeVersionCommand_30":
             case "SetExampleCommand_20":
             case "SetExampleCommand_30":
+            case "SetExtension":
             case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
                 break;
@@ -151,6 +152,7 @@ export class ActivityItemComponent {
             case "DeleteLicenseCommand_30":
             case "DeleteExampleCommand_20":
             case "DeleteExampleCommand_30":
+            case "DeleteExtensionCommand":
                 rval = "trash-o";
                 break;
             case "NewMediaTypeCommand":
@@ -426,19 +428,25 @@ export class ActivityItemComponent {
                 rval = "renamed a schema definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
                 break;
             case "DeleteExampleCommand_20":
-                rval = "deleted an example for content-type '" + this.command()["_exampleContentType"] + "' from the Response at location " + this.command()["_responsePath"] + "."
+                rval = "deleted an example for content-type '" + this.command()["_exampleContentType"] + "' from the Response at location " + this.command()["_responsePath"] + ".";
                 break;
             case "DeleteExampleCommand_30":
-                rval = "deleted an example named '" + this.command()["_exampleName"] + "' from the MediaType at location " + this.command()["_mediaTypePath"] + "."
+                rval = "deleted an example named '" + this.command()["_exampleName"] + "' from the MediaType at location " + this.command()["_mediaTypePath"] + ".";
+                break;
+            case "DeleteExtensionCommand":
+                rval = `removed the extension named '${ this.command()["_name"] }'.`;
                 break;
             case "AddExampleCommand_30":
-                rval = "added an example named '" + this.command()["_newExampleName"] + "' to the MediaType at location " + this.command()["_parentPath"] + "."
+                rval = "added an example named '" + this.command()["_newExampleName"] + "' to the MediaType at location " + this.command()["_parentPath"] + ".";
                 break;
             case "SetExampleCommand_20":
-                rval = "changed the value of the example for content-type '" + this.command()["_newContentType"] + "' for the Response at location " + this.command()["_parentPath"] + "."
+                rval = "changed the value of the example for content-type '" + this.command()["_newContentType"] + "' for the Response at location " + this.command()["_parentPath"] + ".";
                 break;
             case "SetExampleCommand_30":
-                rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the MediaType at location " + this.command()["_parentPath"] + "."
+                rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the MediaType at location " + this.command()["_parentPath"] + ".";
+                break;
+            case "SetExtensionCommand":
+                rval = `changed the value of the extension named '${ this.command()["_name"] }'.`;
                 break;
 
             case "AggregateCommand":

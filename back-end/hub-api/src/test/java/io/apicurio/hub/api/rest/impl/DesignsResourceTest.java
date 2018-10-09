@@ -250,7 +250,7 @@ public class DesignsResourceTest {
         
         // 3.0 document
         info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("My 3.0 API");
         info.setDescription("Description of my 3.0 API.");
         design = resource.createDesign(info);
@@ -266,7 +266,7 @@ public class DesignsResourceTest {
         version = jsonData.get("info").get("version").asText();
         Assert.assertEquals("1.0.0", version);
         oaiVersion = jsonData.get("openapi").asText();
-        Assert.assertEquals("3.0.1", oaiVersion);
+        Assert.assertEquals("3.0.2", oaiVersion);
     }
 
     @Test
@@ -411,7 +411,7 @@ public class DesignsResourceTest {
     @Test
     public void testCreateInvitation() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testCreateInvitation");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -438,7 +438,7 @@ public class DesignsResourceTest {
     @Test
     public void testGetInvitations() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testGetInvitations");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -458,7 +458,7 @@ public class DesignsResourceTest {
     @Test
     public void testGetInvitation() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testGetInvitation");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -478,7 +478,7 @@ public class DesignsResourceTest {
     @Test
     public void testAcceptInvitation() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testAcceptInvitation");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -510,7 +510,7 @@ public class DesignsResourceTest {
     @Test
     public void testRejectInvitation() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testRejectInvitation");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -528,7 +528,7 @@ public class DesignsResourceTest {
     @Test
     public void testGetCollaborators() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testGetCollaborators");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -557,7 +557,7 @@ public class DesignsResourceTest {
     @Test
     public void testDeleteCollaborator() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testDeleteCollaborator");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
@@ -592,7 +592,7 @@ public class DesignsResourceTest {
     @Test
     public void testUpdateCollaborator() throws ServerError, NotFoundException, AccessDeniedException {
         NewApiDesign info = new NewApiDesign();
-        info.setSpecVersion("3.0.1");
+        info.setSpecVersion("3.0.2");
         info.setName("API: testUpdateCollaborator");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);

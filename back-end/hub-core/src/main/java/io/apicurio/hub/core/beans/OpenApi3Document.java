@@ -21,7 +21,7 @@ package io.apicurio.hub.core.beans;
  */
 public class OpenApi3Document extends OpenApiDocument {
     
-    private String openapi = "3.0.1";
+    private String openapi = "3.0.2";
     
     /**
      * Constructor.

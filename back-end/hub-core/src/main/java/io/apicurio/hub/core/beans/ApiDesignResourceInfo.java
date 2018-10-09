@@ -48,6 +48,7 @@ public class ApiDesignResourceInfo {
         SUPPORTED_OPENAPI_VERSIONS.add("2.0");
         SUPPORTED_OPENAPI_VERSIONS.add("3.0.0");
         SUPPORTED_OPENAPI_VERSIONS.add("3.0.1");
+        SUPPORTED_OPENAPI_VERSIONS.add("3.0.2");
     }
 
     public static ApiDesignResourceInfo fromContent(String content) throws Exception, ApiValidationException {

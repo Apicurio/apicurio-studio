@@ -128,9 +128,9 @@ export class GitLabResourceComponent implements OnInit {
             });
             this.gettingProjects = false;
 
-            if (this.model.branch) {
-                this.updateBranches();
-            }
+            // if (this.model.branch) {
+            //     this.updateBranches();
+            // }
         }).catch(error => {
             // TODO handle an error!
             this.gettingProjects = false;

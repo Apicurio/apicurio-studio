@@ -705,16 +705,18 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     }
     
     private String getNextPage(Header linkHeader) {
-        String linkValue = linkHeader.getValue();
-        if (linkValue != null) {
-            String[] links = linkValue.split(",");
-            for (String link : links) {
-                link = link.trim();
-                int idx = link.indexOf(">; rel=\"");
-                if (idx > 0) {
-                    String label = link.substring(idx + 8, link.length() - 1);
-                    if (label.equals("next")) {
-                        return link.substring(1, idx);
+        if (linkHeader != null) {
+            String linkValue = linkHeader.getValue();
+            if (linkValue != null) {
+                String[] links = linkValue.split(",");
+                for (String link : links) {
+                    link = link.trim();
+                    int idx = link.indexOf(">; rel=\"");
+                    if (idx > 0) {
+                        String label = link.substring(idx + 8, link.length() - 1);
+                        if (label.equals("next")) {
+                            return link.substring(1, idx);
+                        }
                     }
                 }
             }

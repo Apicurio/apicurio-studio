@@ -1,6 +1,6 @@
 
 #api-vertical-nav {
-  position: absolute;
+  position: fixed;
   left: 0;
   width: 120px;
   top: 48px;

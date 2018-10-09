@@ -88,6 +88,7 @@ export class Operation3scaleSectionComponent {
     }
 
     public edit(metric: ThreeScaleMetric): void {
+        console.info("[Operation3scaleSectionComponent] Editing the metric: ", metric);
         let metricsExtension: OasExtension = this.getMetricsExtension();
         if (metricsExtension) {
             let metrics: any = JSON.parse(JSON.stringify(metricsExtension.value));

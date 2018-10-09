@@ -73,7 +73,8 @@ export class MetricDialogComponent {
      * Called when the user clicks "add".
      */
     protected add(): void {
-        this.onAdd.emit(this.metric);
+        let value: ThreeScaleMetric = this.normalize(this.metric);
+        this.onAdd.emit(value);
         this.cancel();
     }
 
@@ -81,7 +82,10 @@ export class MetricDialogComponent {
      * Called when the user clicks "edit".
      */
     protected edit(): void {
-        this.onEdit.emit(this.metric);
+        console.info("User clicked EDIT", this.metric);
+        let value: ThreeScaleMetric = this.normalize(this.metric);
+        console.info("Firing EDIT event:", value);
+        this.onEdit.emit(value);
         this.cancel();
     }
 
@@ -107,6 +111,14 @@ export class MetricDialogComponent {
         if (this.metricInput && this.metricInput.first) {
             this.metricInput.first.nativeElement.focus();
         }
+    }
+
+    private normalize(metric: ThreeScaleMetric): ThreeScaleMetric {
+        let value: ThreeScaleMetric = JSON.parse(JSON.stringify(metric));
+        if (typeof value.increment === "string") {
+            value.increment = parseInt(value.increment);
+        }
+        return value;
     }
 
 }

@@ -116,7 +116,7 @@ export class ActivityItemComponent {
             case "ChangeVersionCommand_30":
             case "SetExampleCommand_20":
             case "SetExampleCommand_30":
-            case "SetExtension":
+            case "SetExtensionCommand":
             case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
                 break;

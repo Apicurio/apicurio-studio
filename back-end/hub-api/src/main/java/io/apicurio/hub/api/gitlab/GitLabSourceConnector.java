@@ -18,6 +18,7 @@ package io.apicurio.hub.api.gitlab;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -282,6 +283,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         glg.setId(id);
                         glg.setName(fullName);
                         glg.setPath(username);
+                        glg.setFull_path(username);
                         glg.setUserGroup(true);
                         rval.add(glg);
                     }
@@ -352,10 +354,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         int id = org.get("id").asInt();
                         String name = org.get("name").asText();
                         String path = org.get("path").asText();
+                        String fullPath = org.get("full_path").asText();
                         GitLabGroup glg = new GitLabGroup();
                         glg.setId(id);
                         glg.setName(name);
                         glg.setPath(path);
+                        glg.setFull_path(fullPath);
                         groups.add(glg);
                     });
                 }
@@ -403,7 +407,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             } else {
                 // List all group projects
                 //////////////////////////////
-                Endpoint endpoint = pagedEndpoint("/api/v4/groups/:group/projects", 1, DEFAULT_PAGE_SIZE).bind("group", group);
+                String gid = toId(group);
+                Endpoint endpoint = pagedEndpoint("/api/v4/groups/:group/projects", 1, DEFAULT_PAGE_SIZE).bind("group", gid);
                 Collection<GitLabProject> projects = getAllProjects(httpClient, endpoint);
                 rval.addAll(projects);
             }
@@ -457,10 +462,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                         int id = project.get("id").asInt();
                         String name = project.get("name").asText();
                         String path = project.get("path").asText();
+                        String fullPath = project.get("path_with_namespace").asText();
                         GitLabProject glp = new GitLabProject();
                         glp.setId(id);
                         glp.setName(name);
                         glp.setPath(path);
+                        glp.setFull_path(fullPath);
                         projects.add(glp);
                     });
                 }
@@ -669,39 +676,29 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             ZipInputStream generatedContent) throws SourceConnectorException {
         return null;
     }
+    
+    private String toId(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            return value;
+        }
+    }
 
     private String toEncodedId(GitLabResource resource) {
         return toEncodedId(resource.getGroup(), resource.getProject());
     }
 
     private String toEncodedId(String group, String project) {
-        String urlEncodedId;
-        try {
-            urlEncodedId = URLEncoder.encode(String.format("%s/%s", group, project), StandardCharsets.UTF_8.name());
-        } catch (Exception ex) {
-            return "";
-        }
-        return urlEncodedId;
+        return toId(String.format("%s/%s", group, project));
     }
 
     private String toEncodedPath(GitLabResource resource) {
-        String urlEncodedPath;
-        try {
-            urlEncodedPath = URLEncoder.encode(resource.getResourcePath(), StandardCharsets.UTF_8.name());
-        } catch (Exception ex) {
-            return "";
-        }
-        return urlEncodedPath;
+        return toId(resource.getResourcePath());
     }
 
     private String toEncodedBranch(GitLabResource resource) {
-        String urlEncodedBranch;
-        try {
-            urlEncodedBranch = URLEncoder.encode(resource.getBranch(), StandardCharsets.UTF_8.name());
-        } catch (Exception ex) {
-            return "";
-        }
-        return urlEncodedBranch;
+        return toId(resource.getBranch());
     }
     
     private String getNextPage(Header linkHeader) {

@@ -179,7 +179,7 @@ public class GitLabSourceConnectorTest {
         Assert.assertTrue(groups.size() > 0);
         System.out.println("Found " + groups.size() + " groups!");
         groups.forEach( group -> {
-            System.out.println("\t" + group.getName() + (group.isUserGroup() ? " (*)" : "") + " [" + group.getPath() + "] {" + group.getId() + "}");
+            System.out.println("\t" + group.getName() + (group.isUserGroup() ? " (*)" : "") + " [" + group.getFull_path() + "] {" + group.getId() + "}");
         });
     }
 
@@ -189,11 +189,11 @@ public class GitLabSourceConnectorTest {
     @Test
     @Ignore
     public void testGetProjects() throws GitLabException, SourceConnectorException {
-        Collection<GitLabProject> projects = service.getProjects("apicurio");
+        Collection<GitLabProject> projects = service.getProjects("apicurio-private/apicurio-private-sub2");
         Assert.assertNotNull(projects);
         System.out.println("Found " + projects.size() + " projects!");
         projects.forEach( project -> {
-            System.out.println("\t" + project.getName());
+            System.out.println("\t" + project.getName() + " [" + project.getFull_path() + "]");
         });
         Assert.assertTrue(projects.size() > 0);
 

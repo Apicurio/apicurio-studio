@@ -47,7 +47,7 @@ export abstract class AbstractHubService {
     protected endpoint(path: string, params?: any, queryParams?: any): string {
         if (params) {
             for (let key in params) {
-                let value: string = params[key];
+                let value: string = encodeURIComponent(params[key]);
                 path = path.replace(":" + key, value);
             }
         }
@@ -55,7 +55,7 @@ export abstract class AbstractHubService {
         if (queryParams) {
             let first: boolean = true;
             for (let key in queryParams) {
-                let value: string = queryParams[key];
+                let value: string = encodeURIComponent(queryParams[key]);
                 if (first) {
                     rval = rval + "?" + key;
                 } else {
@@ -79,7 +79,7 @@ export abstract class AbstractHubService {
     protected editingEndpoint(path: string, params?: any): string {
         if (params) {
             for (let key in params) {
-                let value: string = params[key];
+                let value: string = encodeURIComponent(params[key]);
                 path = path.replace(":" + key, value);
             }
         }

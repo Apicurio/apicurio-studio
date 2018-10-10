@@ -20,11 +20,13 @@ export class GitLabProject {
     id: number;
     name: string;
     path: string;
+    full_path: string;
 
     constructor() {
         this.id = null;
         this.name = null;
         this.path = null;
+        this.full_path = null;
     }
 
 }

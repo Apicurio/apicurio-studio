@@ -24,6 +24,12 @@ public class GitLabResourceResolverTest {
         Assert.assertEquals("api-samples", resource.getProject());
         Assert.assertEquals("jjackf", resource.getBranch());
         Assert.assertEquals("3.0/simple-api.json", resource.getResourcePath());
+
+        resource = GitLabResourceResolver.resolve("https://gitlab.com/apicurio-private/apicurio-private-sub2/sub2-project-2/blob/master/README.md");
+        Assert.assertEquals("apicurio-private/apicurio-private-sub2", resource.getGroup());
+        Assert.assertEquals("sub2-project-2", resource.getProject());
+        Assert.assertEquals("master", resource.getBranch());
+        Assert.assertEquals("README.md", resource.getResourcePath());
     }
 
     @Test

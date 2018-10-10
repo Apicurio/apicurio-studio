@@ -24,6 +24,7 @@ public class GitLabGroup {
     private int id;
     private String name;
     private String path;
+    private String full_path;
     private boolean userGroup;
 
     /**
@@ -86,6 +87,20 @@ public class GitLabGroup {
      */
     public void setUserGroup(boolean userGroup) {
         this.userGroup = userGroup;
+    }
+
+    /**
+     * @return the full_path
+     */
+    public String getFull_path() {
+        return full_path;
+    }
+
+    /**
+     * @param full_path the full_path to set
+     */
+    public void setFull_path(String full_path) {
+        this.full_path = full_path;
     }
 
 }

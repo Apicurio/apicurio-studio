@@ -20,12 +20,14 @@ export class GitLabGroup {
     id: number;
     name: string;
     path: string;
+    full_path: string;
     userGroup: boolean;
 
     constructor() {
         this.id = null;
         this.name = null;
         this.path = null;
+        this.full_path = null;
         this.userGroup = null;
     }
 

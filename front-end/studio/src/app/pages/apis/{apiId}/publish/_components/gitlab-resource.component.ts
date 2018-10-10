@@ -18,7 +18,15 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption} from "../../../../../components/common/drop-down.component";
+import {GitLabGroup} from "../../../../../models/gitlab-group.model";
+import {GitLabProject} from "../../../../../models/gitlab-project.model";
 
+
+export interface GitLabEventData {
+    group: GitLabGroup;
+    project: GitLabProject;
+    branch: string;
+}
 
 @Component({
     moduleId: module.id,
@@ -31,7 +39,7 @@ export class GitLabResourceComponent implements OnInit {
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
 
-    public model: any = {
+    public model: GitLabEventData = {
         group: null,
         project: null,
         branch: "master"
@@ -68,7 +76,7 @@ export class GitLabResourceComponent implements OnInit {
                 if (group.userGroup) {
                     this._groupOptions.push({
                         name: group.name,
-                        value: group.path
+                        value: group
                     });
                     this._groupOptions.push({
                         divider: true
@@ -79,7 +87,7 @@ export class GitLabResourceComponent implements OnInit {
                 if (!group.userGroup) {
                     this._groupOptions.push({
                         name: group.name,
-                        value: group.name
+                        value: group
                     });
                 }
             });
@@ -102,12 +110,12 @@ export class GitLabResourceComponent implements OnInit {
         return this._groupOptions;
     }
 
-    public changeGroup(value: string): void {
+    public changeGroup(value: GitLabGroup): void {
         this.model.group = value;
         this.model.project = null;
         this.model.branch = "master";
 
-        this.onChange.emit(this.model);
+        this.fireOnChange();
         this.onValid.emit(this.isValid());
 
         this.updateProjects();
@@ -115,7 +123,7 @@ export class GitLabResourceComponent implements OnInit {
 
     public updateProjects(): void {
         this.gettingProjects = true;
-        this.linkedAccounts.getAccountProjects("GitLab", this.model.group).then( projects => {
+        this.linkedAccounts.getAccountProjects("GitLab", this.model.group.full_path).then( projects => {
             projects.sort( (project1, project2) => {
                 return project1.name.localeCompare(project2.name);
             });
@@ -123,7 +131,7 @@ export class GitLabResourceComponent implements OnInit {
             projects.forEach( project => {
                 this._projectOptions.push({
                     name: project.name,
-                    value: project.name
+                    value: project
                 });
             });
             this.gettingProjects = false;
@@ -142,11 +150,11 @@ export class GitLabResourceComponent implements OnInit {
         return this._projectOptions;
     }
 
-    public changeProject(value: string): void {
+    public changeProject(value: GitLabProject): void {
         this.model.project = value;
         this.model.branch = "master";
 
-        this.onChange.emit(this.model);
+        this.fireOnChange();
         this.onValid.emit(this.isValid());
 
         this.updateBranches();
@@ -154,7 +162,7 @@ export class GitLabResourceComponent implements OnInit {
 
     public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAccounts.getAccountBranches("GitLab", this.model.group, this.model.project).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitLab", this.model.group.full_path, this.model.project.path).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });
@@ -184,19 +192,26 @@ export class GitLabResourceComponent implements OnInit {
     public changeBranch(value: string): void {
         this.model.branch = value;
 
-        this.onChange.emit(this.model);
+        this.fireOnChange();
         this.onValid.emit(this.isValid());
     }
 
     private isValid(): boolean {
         return this.model.group != null &&
             this.model.group != undefined &&
-            this.model.group.length > 0 &&
             this.model.project != null &&
             this.model.project != undefined &&
-            this.model.project.length > 0 &&
             this.model.branch != null &&
             this.model.branch != undefined &&
             this.model.branch.length > 0;
+    }
+
+    private fireOnChange(): void {
+        let model: any = {
+            group: this.model.group ? this.model.group.full_path : null,
+            project: this.model.project ? this.model.project.path : null,
+            branch: this.model.branch
+        }
+        this.onChange.emit(model);
     }
 }

@@ -48,6 +48,9 @@ import {
 } from "./operation/content.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
 import {EditExampleEvent} from "../dialogs/edit-example.component";
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
@@ -74,6 +77,11 @@ export class Operation30FormComponent extends SourceFormComponent<Oas30Operation
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
     public showRequestBody: boolean;
+
+    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
+                       protected documentService: DocumentService) {
+        super(selectionService, commandService, documentService);
+    }
 
     public ngOnInit(): void {
         super.ngOnInit();

@@ -99,7 +99,7 @@ export abstract class SourceFormComponent<T extends OasNode> implements OnInit, 
     private _changeSubscription: Subscription;
 
     public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                          protected documentService: DocumentService) {}
+                       protected documentService: DocumentService) {}
 
     /**
      * Called when the component is initialized.

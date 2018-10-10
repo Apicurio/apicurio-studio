@@ -38,6 +38,9 @@ import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
 import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
@@ -63,6 +66,11 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
     public showRequestBody: boolean;
+
+    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
+                       protected documentService: DocumentService) {
+        super(selectionService, commandService, documentService);
+    }
 
     public ngOnInit(): void {
         super.ngOnInit();

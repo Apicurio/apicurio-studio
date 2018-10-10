@@ -43,6 +43,9 @@ import {SourceFormComponent} from "./source-form.base";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
 import {RenamePathDialogComponent} from "../dialogs/rename-path.component";
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
@@ -68,6 +71,11 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
     @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
+
+    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
+                       protected documentService: DocumentService) {
+        super(selectionService, commandService, documentService);
+    }
 
     protected createEmptyNodeForSource(): OasPathItem {
         return (<OasPaths>this.path.parent()).createPathItem(this.path.path());

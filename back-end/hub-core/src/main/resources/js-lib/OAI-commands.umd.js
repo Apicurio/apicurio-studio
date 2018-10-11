@@ -8348,6 +8348,121 @@ var DeleteExtensionCommand = (function (_super) {
     return DeleteExtensionCommand;
 }(AbstractCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createReplaceDocumentCommand(document, replacement) {
+    return new ReplaceDocumentCommand(document, replacement);
+}
+/**
+ * A command used to replace a path item with a newer version.
+ */
+var ReplaceDocumentCommand = (function (_super) {
+    __extends$62(ReplaceDocumentCommand, _super);
+    function ReplaceDocumentCommand() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @return {string}
+     */
+    ReplaceDocumentCommand.prototype.type = function () {
+        return "ReplaceDocumentCommand";
+    };
+    /**
+     * Removes the old node.  In this case it's the root document, which can't be removed.  So
+     * instead we will null out all of the document's properties.
+     * @param doc
+     * @param node
+     */
+    ReplaceDocumentCommand.prototype.removeNode = function (doc, node) {
+        if (node.is2xDocument()) {
+            this.reset2xDocument(node);
+        }
+        else {
+            this.reset3xDocument(node);
+        }
+    };
+    /**
+     * Adds the node to the model.  In this case it's the root document, so there's nothing to
+     * do here.
+     * @param doc
+     * @param node
+     */
+    ReplaceDocumentCommand.prototype.addNode = function (doc, node) {
+        // Do nothing - the node being "added" is the root document node.
+    };
+    /**
+     * Read the data into a new node.  In this case we're reading the data into the
+     * root document node.
+     * @param doc
+     * @param node
+     */
+    ReplaceDocumentCommand.prototype.readNode = function (doc, node) {
+        this.oasLibrary().readNode(node, doc);
+        return doc;
+    };
+    /**
+     * Resets a 2.0 OAI document by nulling out all of its properties.
+     * @param doc
+     */
+    ReplaceDocumentCommand.prototype.reset2xDocument = function (doc) {
+        doc.host = null;
+        doc.basePath = null;
+        doc.schemes = null;
+        doc.consumes = null;
+        doc.produces = null;
+        doc.definitions = null;
+        doc.parameters = null;
+        doc.responses = null;
+        doc.securityDefinitions = null;
+        this.resetDocument(doc);
+    };
+    /**
+     * Resets a 3.x OAI document by nulling out all of its properties.
+     * @param doc
+     */
+    ReplaceDocumentCommand.prototype.reset3xDocument = function (doc) {
+        doc.servers = null;
+        doc.components = null;
+        this.resetDocument(doc);
+    };
+    /**
+     * Resets the common properties.
+     * @param doc
+     */
+    ReplaceDocumentCommand.prototype.resetDocument = function (doc) {
+        doc.info = null;
+        doc.paths = null;
+        doc.security = null;
+        doc.tags = null;
+        doc.externalDocs = null;
+        doc["_extensions"] = null;
+        doc["_extraProperties"] = {};
+    };
+    return ReplaceDocumentCommand;
+}(ReplaceNodeCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -8457,6 +8572,7 @@ var commandFactory = {
     "RenamePathItemCommand": function () { return new RenamePathItemCommand(null, null); },
     "RenameSchemaDefinitionCommand_20": function () { return new RenameSchemaDefinitionCommand_20(null, null); },
     "RenameSchemaDefinitionCommand_30": function () { return new RenameSchemaDefinitionCommand_30(null, null); },
+    "ReplaceDocumentCommand": function () { return new ReplaceDocumentCommand(null, null); },
     "ReplaceOperationCommand_20": function () { return new ReplaceOperationCommand_20(null, null); },
     "ReplaceOperationCommand_30": function () { return new ReplaceOperationCommand_30(null, null); },
     "ReplacePathItemCommand_20": function () { return new ReplacePathItemCommand_20(null, null); },
@@ -9278,6 +9394,8 @@ exports.SchemaRefFinder = SchemaRefFinder;
 exports.createRenamePathItemCommand = createRenamePathItemCommand;
 exports.RenamePathItemCommand = RenamePathItemCommand;
 exports.ReplaceNodeCommand = ReplaceNodeCommand;
+exports.createReplaceDocumentCommand = createReplaceDocumentCommand;
+exports.ReplaceDocumentCommand = ReplaceDocumentCommand;
 exports.createReplaceOperationCommand = createReplaceOperationCommand;
 exports.AbstractReplaceOperationCommand = AbstractReplaceOperationCommand;
 exports.ReplaceOperationCommand_20 = ReplaceOperationCommand_20;

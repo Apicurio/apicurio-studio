@@ -8178,7 +8178,7 @@ var Oas30Document = (function (_super) {
     __extends$71(Oas30Document, _super);
     function Oas30Document() {
         var _this = _super.call(this) || this;
-        _this.openapi = "3.0.1";
+        _this.openapi = "3.0.2";
         _this._ownerDocument = _this;
         return _this;
     }
@@ -9432,7 +9432,7 @@ var Oas20JS2ModelReaderVisitor = (function () {
         this.jsData = jsData;
     }
     Oas20JS2ModelReaderVisitor.prototype.visitDocument = function (node) {
-        // Not supported - call the reader directly if you want to read a full document.
+        this.reader.readDocument(this.jsData, node);
     };
     Oas20JS2ModelReaderVisitor.prototype.visitInfo = function (node) {
         this.reader.readInfo(this.jsData, node);
@@ -9551,7 +9551,7 @@ var Oas30JS2ModelReaderVisitor = (function () {
         this.jsData = jsData;
     }
     Oas30JS2ModelReaderVisitor.prototype.visitDocument = function (node) {
-        // Not supported - call the reader directly if you want to read a full document.
+        this.reader.readDocument(this.jsData, node);
     };
     Oas30JS2ModelReaderVisitor.prototype.visitInfo = function (node) {
         this.reader.readInfo(this.jsData, node);

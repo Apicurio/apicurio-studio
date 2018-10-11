@@ -187,6 +187,7 @@ export class ActivityItemComponent {
             case "ReplacePathItemCommand_30":
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
+            case "ReplaceDocumentCommand":
                 rval = "code";
                 break;
             case "RenamePathItemCommand":
@@ -408,6 +409,9 @@ export class ActivityItemComponent {
             case "ReplacePathItemCommand_20":
             case "ReplacePathItemCommand_30":
                 rval = "fully replaced the source for Path '" + this.command()["_pathName"] + "'.";
+                break;
+            case "ReplaceDocumentCommand":
+                rval = `fully replaced the source for the entire API!`;
                 break;
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":

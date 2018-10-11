@@ -16,7 +16,12 @@
  */
 
 import {Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument} from "oai-ts-core";
+import {OasDocument, OasLibraryUtils} from "oai-ts-core";
+import {SourceFormComponent} from "./source-form.base";
+import {SelectionService} from "../../_services/selection.service";
+import {CommandService} from "../../_services/command.service";
+import {DocumentService} from "../../_services/document.service";
+import {createReplaceDocumentCommand, ICommand} from "oai-ts-commands";
 
 
 @Component({
@@ -25,15 +30,50 @@ import {OasDocument} from "oai-ts-core";
     templateUrl: "main-form.component.html",
     encapsulation: ViewEncapsulation.None
 })
-export class MainFormComponent {
+export class MainFormComponent extends SourceFormComponent<OasDocument> {
 
-    @Input() document: OasDocument;
+    library: OasLibraryUtils = new OasLibraryUtils();
+
+    _document: OasDocument;
+    @Input()
+    set document(doc: OasDocument) {
+        this._document = doc;
+        this.sourceNode = doc;
+        this.revertSource();
+    }
+    get document(): OasDocument {
+        return this._document;
+    }
+
+    /**
+     * C'tor.
+     * @param selectionService
+     * @param commandService
+     * @param documentService
+     */
+    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
+                       protected documentService: DocumentService) {
+        super(selectionService, commandService, documentService);
+    }
 
     /**
      * Returns true if the form is for an OpenAPI 3.x document.
-     * @return
      */
     public is3xForm(): boolean {
         return this.document.is3xDocument();
     }
+
+    protected createEmptyNodeForSource(): OasDocument {
+        return this.library.createDocument(this.document.getSpecVersion());
+    }
+
+    protected createReplaceNodeCommand(node: OasDocument): ICommand {
+        return createReplaceDocumentCommand(this.document, node);
+    }
+
+    public saveSource(): void {
+        super.saveSource();
+        this.sourceNode = this._document;
+    }
+
 }

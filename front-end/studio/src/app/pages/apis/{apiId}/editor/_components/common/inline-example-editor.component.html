@@ -1,6 +1,6 @@
 <div class="inline-example-editor-label" *ngIf="!editing" (click)="onStartEditing()" title="Click to edit.">
     <pre *ngIf="!isEmpty()">{{ displayValue() }}</pre>
-    <div *ngIf="isEmpty()">
+    <div class="no-value" *ngIf="isEmpty()">
         <span class="empty">{{ noValueMessage }}</span>
         <i class="glyphicon glyphicon-pencil"></i>
     </div>

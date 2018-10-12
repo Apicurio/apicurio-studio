@@ -3,7 +3,7 @@
   width: 100%;
 }
 .inline-example-editor-label:hover > pre {
-  filter: brightness(92%);
+  filter: brightness(95%);
   cursor: pointer;
 }
 
@@ -28,4 +28,16 @@
   top: 0;
   right: 0;
   z-index: 10;
+}
+
+.inline-example-editor-label .no-value {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+  margin-left: -6px;
+  display: inline-block;
+  width: 100%;
+}
+.inline-example-editor-label .no-value:hover {
+  border-color: #bbb;
+  cursor: pointer;
 }

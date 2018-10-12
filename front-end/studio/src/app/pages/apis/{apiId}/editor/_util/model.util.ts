@@ -167,6 +167,8 @@ export class ModelUtils {
 
 export class ExampleGenerator {
 
+    private refStack: any[] = [];
+
     public generate(schema: Oas20Schema | Oas30Schema): any {
         console.info("[ExampleGenerator] Generating example from schema of type: ", schema.type);
         let object: any;
@@ -186,10 +188,16 @@ export class ExampleGenerator {
     }
 
     private generateFromRef(schema: Oas20Schema | Oas30Schema): any {
+        if (this.refStack.indexOf(schema.$ref) !== -1) {
+            return {};
+        }
         let refSchema: Oas20Schema | Oas30Schema = OasValidationRuleUtil.resolveRef(schema.$ref, schema) as Oas20Schema | Oas30Schema;
         if (refSchema) {
             console.info("[ExampleGenerator] Successfully resolved $ref: ", schema.$ref);
-            return this.generate(refSchema);
+            this.refStack.push(schema.$ref);
+            let rval: any = this.generate(refSchema);
+            this.refStack.pop();
+            return rval;
         } else {
             return {};
         }

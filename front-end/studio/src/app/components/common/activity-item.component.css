@@ -23,4 +23,8 @@
   padding-top: 5px;
   color: #646484;
   font-size: 11px;
+  cursor: help;
+}
+.activity-item .activity-item-date:hover {
+  color: #0088ce;
 }

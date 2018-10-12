@@ -1397,11 +1397,11 @@ public class JdbcStorage implements IStorage {
         public Invitation map(ResultSet rs, StatementContext ctx) throws SQLException {
             Invitation invite = new Invitation();
             invite.setCreatedBy(rs.getString("created_by"));
-            invite.setCreatedOn(rs.getDate("created_on"));
+            invite.setCreatedOn(rs.getTimestamp("created_on"));
             invite.setDesignId(rs.getString("design_id"));
             invite.setInviteId(rs.getString("invite_id"));
             invite.setModifiedBy(rs.getString("modified_by"));
-            invite.setModifiedOn(rs.getDate("modified_on"));
+            invite.setModifiedOn(rs.getTimestamp("modified_on"));
             invite.setStatus(rs.getString("status"));
             invite.setRole(rs.getString("role"));
             invite.setSubject(rs.getString("subject"));
@@ -1451,7 +1451,7 @@ public class JdbcStorage implements IStorage {
                 change.setApiName(rs.getString("name"));
                 change.setBy(rs.getString("created_by"));
                 change.setData(IOUtils.toString(rs.getCharacterStream("data")));
-                change.setOn(rs.getDate("created_on"));
+                change.setOn(rs.getTimestamp("created_on"));
                 change.setType(ApiContentType.fromId(rs.getInt("type")));
                 change.setVersion(rs.getLong("version"));
                 return change;
@@ -1479,7 +1479,7 @@ public class JdbcStorage implements IStorage {
                 ApiPublication change = new ApiPublication();
                 change.setBy(rs.getString("created_by"));
                 change.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
-                change.setOn(rs.getDate("created_on"));
+                change.setOn(rs.getTimestamp("created_on"));
                 return change;
             } catch (IOException e) {
                 throw new SQLException(e);
@@ -1505,9 +1505,9 @@ public class JdbcStorage implements IStorage {
                 CodegenProject project = new CodegenProject();
                 project.setId(String.valueOf(rs.getLong("id")));
                 project.setCreatedBy(rs.getString("created_by"));
-                project.setCreatedOn(rs.getDate("created_on"));
+                project.setCreatedOn(rs.getTimestamp("created_on"));
                 project.setModifiedBy(rs.getString("modified_by"));
-                project.setModifiedOn(rs.getDate("modified_on"));
+                project.setModifiedOn(rs.getTimestamp("modified_on"));
                 project.setDesignId(String.valueOf(rs.getLong("design_id")));
                 project.setType(CodegenProjectType.valueOf(rs.getString("ptype")));
                 project.setAttributes(toMap(IOUtils.toString(rs.getCharacterStream("attributes"))));

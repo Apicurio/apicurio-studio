@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OasDocument, OasLibraryUtils, OasNode} from "oai-ts-core";
+import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
 import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";

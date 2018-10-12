@@ -19,6 +19,7 @@ import {Component, Input} from "@angular/core";
 import {ApiDesignChange} from "../../models/api-design-change.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
 import {PublishApi} from "../../models/publish-api.model";
+import * as moment from "moment";
 
 
 @Component({
@@ -486,6 +487,10 @@ export class ActivityItemComponent {
             return this.item.apiName.substring(0, 50) + "...";
         }
         return this.item.apiName;
+    }
+
+    public on(): string {
+        return moment(this.item.on).fromNow();
     }
 
 }

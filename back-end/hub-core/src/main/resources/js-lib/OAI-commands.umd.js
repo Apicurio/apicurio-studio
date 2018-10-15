@@ -3632,13 +3632,15 @@ var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-function createNewParamCommand(document, parent, paramName, paramType, override) {
+function createNewParamCommand(document, parent, paramName, paramType, description, newType, override) {
+    if (description === void 0) { description = null; }
+    if (newType === void 0) { newType = null; }
     if (override === void 0) { override = false; }
     if (document.getSpecVersion() === "2.0") {
-        return new NewParamCommand_20(parent, paramName, paramType, override);
+        return new NewParamCommand_20(parent, paramName, paramType, description, newType, override);
     }
     else {
-        return new NewParamCommand_30(parent, paramName, paramType, override);
+        return new NewParamCommand_30(parent, paramName, paramType, description, newType, override);
     }
 }
 /**
@@ -3653,14 +3655,15 @@ var NewParamCommand = (function (_super) {
      * @param paramType
      * @param override
      */
-    function NewParamCommand(parent, paramName, paramType, override) {
-        if (override === void 0) { override = false; }
+    function NewParamCommand(parent, paramName, paramType, description, newType, override) {
         var _this = _super.call(this) || this;
         if (parent) {
             _this._parentPath = _this.oasLibrary().createNodePath(parent);
         }
         _this._paramName = paramName;
         _this._paramType = paramType;
+        _this._description = description;
+        _this._newType = newType;
         _this._override = override;
         return _this;
     }
@@ -3700,10 +3703,46 @@ var NewParamCommand = (function (_super) {
             if (param.in === "path") {
                 param.required = true;
             }
+            if (this._description) {
+                param.description = this._description;
+            }
+            if (this._newType) {
+                this._setParameterType(param);
+            }
         }
         parent.addParameter(param);
         console.info("[NewParamCommand] Param %s of type %s created successfully.", param.name, param.in);
         this._created = true;
+    };
+    /**
+     * Sets the parameter type.
+     * @param parameter
+     */
+    NewParamCommand.prototype._setParameterType = function (parameter) {
+        var schema = parameter.createSchema();
+        if (this._newType.isRef()) {
+            schema.$ref = this._newType.type;
+        }
+        if (this._newType.isSimpleType()) {
+            schema.type = this._newType.type;
+            schema.format = this._newType.as;
+        }
+        if (this._newType.isArray()) {
+            schema.type = "array";
+            schema.items = schema.createItemsSchema();
+            if (this._newType.of) {
+                schema.items.type = this._newType.of.type;
+                schema.items.format = this._newType.of.as;
+            }
+        }
+        parameter.schema = schema;
+        var required = this._newType.required;
+        if (parameter.in === "path") {
+            required = true;
+        }
+        if (required || !this.isNullOrUndefined(this._newType.required)) {
+            parameter.required = required;
+        }
     };
     /**
      * Removes the previously created param.
@@ -3753,6 +3792,7 @@ var NewParamCommand = (function (_super) {
     NewParamCommand.prototype.marshall = function () {
         var obj = _super.prototype.marshall.call(this);
         obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        obj._newType = MarshallUtils.marshallSimplifiedParameterType(obj._newType);
         return obj;
     };
     /**
@@ -3762,6 +3802,7 @@ var NewParamCommand = (function (_super) {
     NewParamCommand.prototype.unmarshall = function (obj) {
         _super.prototype.unmarshall.call(this, obj);
         this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+        this._newType = MarshallUtils.unmarshallSimplifiedParameterType(this._newType);
     };
     /**
      * Tries to find the parameter being overridden (if any).  Returns null if it can't
@@ -8552,8 +8593,8 @@ var commandFactory = {
     "NewMediaTypeCommand": function () { return new NewMediaTypeCommand(null, null); },
     "NewOperationCommand_20": function () { return new NewOperationCommand_20(null, null); },
     "NewOperationCommand_30": function () { return new NewOperationCommand_30(null, null); },
-    "NewParamCommand_20": function () { return new NewParamCommand_20(null, null, null); },
-    "NewParamCommand_30": function () { return new NewParamCommand_30(null, null, null); },
+    "NewParamCommand_20": function () { return new NewParamCommand_20(null, null, null, null, null, null); },
+    "NewParamCommand_30": function () { return new NewParamCommand_30(null, null, null, null, null, null); },
     "NewPathCommand_20": function () { return new NewPathCommand_20(null); },
     "NewPathCommand_30": function () { return new NewPathCommand_30(null); },
     "NewRequestBodyCommand_20": function () { return new NewRequestBodyCommand_20(null); },

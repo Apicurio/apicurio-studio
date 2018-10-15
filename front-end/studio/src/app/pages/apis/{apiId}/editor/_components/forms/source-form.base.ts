@@ -65,7 +65,6 @@ export abstract class SourceFormComponent<T extends OasNode> implements OnInit, 
     private _sourceText: string;
     get source() {
         if (this._sourceText === null || this._sourceText === undefined) {
-            console.info("[SourceFormComponent] ++++++++++++++++++++  source text is void - generating it from JS");
             if (this._sourceFormat === CodeEditorMode.YAML) {
                 this._sourceText = YAML.stringify(this.sourceJs(), 100, 4);
             } else {

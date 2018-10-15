@@ -45,6 +45,11 @@ import {
 } from "oai-ts-commands";
 import {Subscription} from "rxjs/Subscription";
 import {DocumentService} from "../../../_services/document.service";
+import {EditorsService} from "../../../_services/editors.service";
+import {
+    IQueryParameterEditorHandler, QueryParameterData,
+    QueryParameterEditorComponent, QueryParameterEditorEvent
+} from "../../editors/query-parameter-editor.component";
 
 
 @Component({
@@ -58,15 +63,14 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
-    @ViewChild("addQueryParamDialog") public addQueryParamDialog: AddQueryParamDialogComponent;
-
     private _queryParameters: (Oas30Parameter | Oas20Parameter)[] = null;
     private _docSub: Subscription;
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
     public showSectionBody: boolean;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) {}
+    constructor(private commandService: CommandService, private documentService: DocumentService,
+                private editors: EditorsService) {}
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
@@ -141,8 +145,16 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
         return this._queryParameters;
     }
 
-    public openAddQueryParamModal(): void {
-        this.addQueryParamDialog.open(this.parent);
+    public openAddQueryParamEditor(): void {
+        let editor: QueryParameterEditorComponent = this.editors.getQueryParameterEditor();
+        let handler: IQueryParameterEditorHandler = {
+            onSave: (event) => {
+                // TODO the event data also might include other bits of info about the query param
+                this.addQueryParam(event.data);
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.parent);
     }
 
     public deleteAllQueryParams(): void {
@@ -155,8 +167,9 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
         this.commandService.emit(command);
     }
 
-    public addQueryParam(name: string): void {
-        let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, name, "query");
+    public addQueryParam(data: QueryParameterData): void {
+        let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, data.name,
+            "query", data.description, data.type);
         this.commandService.emit(command);
     }
 

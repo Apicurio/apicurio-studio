@@ -223,7 +223,7 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
 
     public override(): void {
         let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
-            this.parameter.name, "path", true);
+            this.parameter.name, "path", null, null, true);
         this.commandService.emit(command);
     }
 

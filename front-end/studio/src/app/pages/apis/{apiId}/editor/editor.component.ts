@@ -55,6 +55,7 @@ import {ArrayUtils} from "./_util/object.util";
 import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
 import {SecurityRequirementEditorComponent} from "./_components/editors/security-requirement-editor.component";
 import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
+import {QueryParameterEditorComponent} from "./_components/editors/query-parameter-editor.component";
 
 
 @Component({
@@ -95,6 +96,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
     @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
     @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("queryParameterEditor") queryParameterEditor: QueryParameterEditorComponent;
 
     formType: string;
 
@@ -466,6 +468,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public getDataTypeEditor(): DataTypeEditorComponent {
         return this.dataTypeEditor;
+    }
+
+    public getQueryParameterEditor(): QueryParameterEditorComponent {
+        return this.queryParameterEditor;
     }
 
 }

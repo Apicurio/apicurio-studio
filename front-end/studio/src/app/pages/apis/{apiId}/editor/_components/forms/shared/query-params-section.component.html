@@ -19,7 +19,7 @@
                 can be overridden (though not removed) at the operation level.
             </p>
         </context-help>
-        <icon-button (onClick)="openAddQueryParamModal()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openAddQueryParamEditor()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a new query parameter.'"></icon-button>
         <icon-button (onClick)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()"
                      [pullRight]="true" [type]="'delete'"
@@ -29,7 +29,7 @@
 
         <signpost *ngIf="!hasQueryParameters()">
             <span>No query parameters have been defined.</span>
-            <a (click)="openAddQueryParamModal()">Add a query parameter</a>
+            <a (click)="openAddQueryParamEditor()">Add a query parameter</a>
         </signpost>
 
         <!-- The list of query parameters -->
@@ -39,4 +39,3 @@
         </div>
     </div>
 </div>
-<add-query-param-dialog #addQueryParamDialog (onAdd)="addQueryParam($event)"></add-query-param-dialog>

@@ -37,6 +37,7 @@ export class MarkdownEditorComponent {
     @Output() public valueChange = new EventEmitter<string>();
     set value(value: string) {
         this._value = value;
+        this.valueChange.emit(value);
     }
 
     public codeEditorMode(): CodeEditorMode {

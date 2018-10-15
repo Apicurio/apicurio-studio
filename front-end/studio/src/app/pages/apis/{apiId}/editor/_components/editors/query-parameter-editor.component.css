@@ -1,0 +1,13 @@
+
+.type-section .param-required {
+  margin-bottom: 20px;
+}
+.type-section .param-type {
+  margin-bottom: 10px;
+}
+
+.type-section .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}

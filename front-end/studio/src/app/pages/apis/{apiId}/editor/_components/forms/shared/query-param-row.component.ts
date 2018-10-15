@@ -233,7 +233,7 @@ export class QueryParamRowComponent extends TypedRow implements OnChanges, OnIni
 
     public override(): void {
         let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
-            this.parameter.name, "query", true);
+            this.parameter.name, "query", null, null, true);
         this.commandService.emit(command);
     }
 

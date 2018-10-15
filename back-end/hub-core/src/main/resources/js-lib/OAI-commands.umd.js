@@ -3719,23 +3719,43 @@ var NewParamCommand = (function (_super) {
      * @param parameter
      */
     NewParamCommand.prototype._setParameterType = function (parameter) {
-        var schema = parameter.createSchema();
-        if (this._newType.isRef()) {
-            schema.$ref = this._newType.type;
-        }
-        if (this._newType.isSimpleType()) {
-            schema.type = this._newType.type;
-            schema.format = this._newType.as;
-        }
-        if (this._newType.isArray()) {
-            schema.type = "array";
-            schema.items = schema.createItemsSchema();
-            if (this._newType.of) {
-                schema.items.type = this._newType.of.type;
-                schema.items.format = this._newType.of.as;
+        if (parameter.ownerDocument().is2xDocument()) {
+            var param = parameter;
+            if (this._newType.isRef()) {
+                param.$ref = this._newType.type;
+            }
+            if (this._newType.isSimpleType()) {
+                param.type = this._newType.type;
+                param.format = this._newType.as;
+            }
+            if (this._newType.isArray()) {
+                param.type = "array";
+                param.items = param.createItems();
+                if (this._newType.of) {
+                    param.items.type = this._newType.of.type;
+                    param.items.format = this._newType.of.as;
+                }
             }
         }
-        parameter.schema = schema;
+        else {
+            var schema = parameter.createSchema();
+            if (this._newType.isRef()) {
+                schema.$ref = this._newType.type;
+            }
+            if (this._newType.isSimpleType()) {
+                schema.type = this._newType.type;
+                schema.format = this._newType.as;
+            }
+            if (this._newType.isArray()) {
+                schema.type = "array";
+                schema.items = schema.createItemsSchema();
+                if (this._newType.of) {
+                    schema.items.type = this._newType.of.type;
+                    schema.items.format = this._newType.of.as;
+                }
+            }
+            parameter.schema = schema;
+        }
         var required = this._newType.required;
         if (parameter.in === "path") {
             required = true;

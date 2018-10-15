@@ -15,16 +15,7 @@
  * limitations under the License.
  */
 
-import {
-    Component,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    SimpleChanges,
-    ViewChild,
-    ViewEncapsulation
-} from "@angular/core";
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -36,7 +27,6 @@ import {
     OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {AddQueryParamDialogComponent} from "../../dialogs/add-query-param.component";
 import {
     createDeleteAllParametersCommand,
     createDeleteParameterCommand,
@@ -47,9 +37,10 @@ import {Subscription} from "rxjs/Subscription";
 import {DocumentService} from "../../../_services/document.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {
-    IQueryParameterEditorHandler, QueryParameterData,
-    QueryParameterEditorComponent, QueryParameterEditorEvent
-} from "../../editors/query-parameter-editor.component";
+    IParameterEditorHandler,
+    ParameterData,
+    ParameterEditorComponent
+} from "../../editors/parameter-editor.component";
 
 
 @Component({
@@ -146,10 +137,10 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
     }
 
     public openAddQueryParamEditor(): void {
-        let editor: QueryParameterEditorComponent = this.editors.getQueryParameterEditor();
-        let handler: IQueryParameterEditorHandler = {
+        let editor: ParameterEditorComponent = this.editors.getParameterEditor();
+        editor.setParamType("query");
+        let handler: IParameterEditorHandler = {
             onSave: (event) => {
-                // TODO the event data also might include other bits of info about the query param
                 this.addQueryParam(event.data);
             },
             onCancel: () => {}
@@ -167,7 +158,7 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
         this.commandService.emit(command);
     }
 
-    public addQueryParam(data: QueryParameterData): void {
+    public addQueryParam(data: ParameterData): void {
         let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, data.name,
             "query", data.description, data.type);
         this.commandService.emit(command);

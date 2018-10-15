@@ -370,7 +370,7 @@ export class ActivityItemComponent {
                 break;
             case "NewParamCommand_20":
             case "NewParamCommand_30":
-                rval = "added a new Parameter named '" + this.command()["_paramName"] + "' at location " + this.command()["_parentPath"] + ".";
+                rval = `added a new ${ this.command()["_paramType"] } parameter named '${ this.command()["_paramName"] }' at location ${ this.command()["_parentPath"] }.`;
                 break;
             case "NewPathCommand_20":
             case "NewPathCommand_30":

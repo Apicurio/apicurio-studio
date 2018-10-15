@@ -36,11 +36,12 @@ import {
 import {AddResponseDialogComponent} from "../dialogs/add-response.component";
 import {SourceFormComponent} from "./source-form.base";
 import {ObjectUtils} from "../../_util/object.util";
-import {AddFormDataParamDialogComponent} from "../dialogs/add-formData-param.component";
 import {DropDownOption} from '../../../../../../components/common/drop-down.component';
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
+import {IParameterEditorHandler, ParameterData, ParameterEditorComponent} from "../editors/parameter-editor.component";
+import {EditorsService} from "../../_services/editors.service";
 
 
 @Component({
@@ -62,13 +63,12 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return this._operation;
     }
 
-    @ViewChild("addFormDataParamDialog") public addFormDataParamDialog: AddFormDataParamDialogComponent;
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
     public showRequestBody: boolean;
 
     public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService) {
+                       protected documentService: DocumentService, protected editors: EditorsService) {
         super(selectionService, commandService, documentService);
     }
 
@@ -454,12 +454,21 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         this.commandService.emit(command);
     }
 
-    public openAddFormDataParamModal(): void {
-        this.addFormDataParamDialog.open(this.operation);
+    public openAddFormDataParamEditor(): void {
+        let editor: ParameterEditorComponent = this.editors.getParameterEditor();
+        editor.setParamType("formData");
+        let handler: IParameterEditorHandler = {
+            onSave: (event) => {
+                this.addFormDataParam(event.data);
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.operation);
     }
 
-    public addFormDataParam(name: string): void {
-        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, name, "formData");
+    public addFormDataParam(data: ParameterData): void {
+        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, data.name,
+            "formData", data.description, data.type);
         this.commandService.emit(command);
     }
 

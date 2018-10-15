@@ -44,7 +44,6 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
-import {AddFormDataParamDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-formData-param.component";
 import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-definition.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
@@ -104,7 +103,7 @@ import {PathInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/
 import {Operation3scaleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-section.component";
 import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/metric-dialog.component";
 import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
-import {QueryParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/query-parameter-editor.component";
+import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
 
 @NgModule({
     imports: [
@@ -117,8 +116,8 @@ import {QueryParameterEditorComponent} from "./pages/apis/{apiId}/editor/_compon
         AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
         ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
-        EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent,
-        AddResponseDialogComponent, AddFormDataParamDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
+        EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
+        AddResponseDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
@@ -129,8 +128,7 @@ import {QueryParameterEditorComponent} from "./pages/apis/{apiId}/editor/_compon
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PathInfoSectionComponent,
-        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent,
-        QueryParameterEditorComponent
+        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

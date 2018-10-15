@@ -23,41 +23,46 @@ import {SimplifiedParameterType, SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../_util/object.util";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
 
-export interface QueryParameterData {
+export interface ParameterData {
     name: string;
     description: string;
     type: SimplifiedParameterType;
 }
 
-export interface QueryParameterEditorEvent extends EntityEditorEvent<Oas20Parameter | Oas30Parameter> {
-    data: QueryParameterData;
+export interface ParameterEditorEvent extends EntityEditorEvent<Oas20Parameter | Oas30Parameter> {
+    data: ParameterData;
 }
 
-export interface IQueryParameterEditorHandler extends IEntityEditorHandler<Oas20Parameter | Oas30Parameter, QueryParameterEditorEvent> {
-    onSave(event: QueryParameterEditorEvent): void;
-    onCancel(event: QueryParameterEditorEvent): void;
+export interface IParameterEditorHandler extends IEntityEditorHandler<Oas20Parameter | Oas30Parameter, ParameterEditorEvent> {
+    onSave(event: ParameterEditorEvent): void;
+    onCancel(event: ParameterEditorEvent): void;
 }
 
 
 @Component({
     moduleId: module.id,
-    selector: "query-parameter-editor",
-    templateUrl: "query-parameter-editor.component.html",
-    styleUrls: ["query-parameter-editor.component.css"],
+    selector: "parameter-editor",
+    templateUrl: "parameter-editor.component.html",
+    styleUrls: ["parameter-editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class QueryParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas30Parameter, QueryParameterEditorEvent> {
+export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas30Parameter, ParameterEditorEvent> {
 
     protected paramChanged: Subject<string> = new Subject<string>();
     protected params: string[] = [];
     protected paramExists: boolean = false;
 
-    public model: QueryParameterData;
+    public model: ParameterData;
+    public _paramType: string = "query";
+
+    public setParamType(paramType: string): void {
+        this._paramType = paramType;
+    }
 
     public doAfterOpen(): void {
         this.params = [];
         this.paramExists = false;
-        let parameters: (Oas20Parameter | Oas30Parameter)[] = this.getQueryParams();
+        let parameters: (Oas20Parameter | Oas30Parameter)[] = this.getParams();
         this.params = parameters.map(p => p.name);
         this.paramChanged
             .debounceTime(150)
@@ -96,8 +101,8 @@ export class QueryParameterEditorComponent extends EntityEditor<Oas20Parameter |
     /**
      * Creates an entity event specific to this entity editor.
      */
-    public entityEvent(): QueryParameterEditorEvent {
-        let event: QueryParameterEditorEvent = {
+    public entityEvent(): ParameterEditorEvent {
+        let event: ParameterEditorEvent = {
             entity: this.entity,
             data: this.model
         };
@@ -105,10 +110,10 @@ export class QueryParameterEditorComponent extends EntityEditor<Oas20Parameter |
     }
 
     /**
-     * Gets the array of query parameters for the current context.
+     * Gets the array of parameters for the current context.
      */
-    private getQueryParams(): (Oas20Parameter | Oas30Parameter)[] {
-        return (this.context as IOasParameterParent).getParameters("query") as any;
+    private getParams(): (Oas20Parameter | Oas30Parameter)[] {
+        return (this.context as IOasParameterParent).getParameters(this._paramType) as any;
     }
 
     public isRequired(): boolean {
@@ -239,6 +244,15 @@ export class QueryParameterEditorComponent extends EntityEditor<Oas20Parameter |
         }
         if (this.model.type.isArray() && this.model.type.of) {
             this.model.type.of.as = typeAs;
+        }
+    }
+
+    public heading(): string {
+        if (this._paramType === "query") {
+            return "Define a New Query Parameter";
+        }
+        if (this._paramType === "formData") {
+            return "Define a New Form Data Parameter";
         }
     }
 

@@ -56,6 +56,9 @@
 
 .api-card .api-tags .label {
   margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 5px;
+  display: inline-block;
 }
 .api-card .api-tags .label:hover {
   filter: brightness(120%);

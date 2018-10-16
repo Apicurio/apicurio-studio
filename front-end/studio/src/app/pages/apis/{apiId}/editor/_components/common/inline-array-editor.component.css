@@ -10,7 +10,9 @@
 }
 .inline-array-editor-label .label {
   margin-right: 5px;
-  padding-right: 2px;
+  margin-bottom: 3px;
+  padding: 5px 5px 5px 8px;
+  display: inline-block;
 }
 .inline-array-editor-label .label:hover {
   margin-right: 5px;
@@ -24,7 +26,8 @@
 }
 .inline-array-editor-label .pficon {
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: 5px;
+  margin-right: 2px;
 }
 .inline-array-editor-label .pficon:hover {
   color: #dde;
@@ -44,6 +47,8 @@
   cursor: pointer;
   margin-right: 5px;
   padding: 3px 6px;
+  margin-bottom: 3px;
+  display: inline-block;
 }
 
 .inline-array-editor .apriori-items .apriori-item.selected {

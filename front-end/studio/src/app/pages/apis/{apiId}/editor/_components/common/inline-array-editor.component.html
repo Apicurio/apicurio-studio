@@ -22,9 +22,9 @@
                 aria-label="Cancel" (click)="onCancel()"><i class="glyphicon glyphicon-remove"></i></button>
     </div>
     <div class="apriori-items" *ngIf="hasItems()">
-        <span class="apriori-item" *ngFor="let item of items" (click)="toggleItem(item)" [class.selected]="hasItem(item)">
-            <span class="fa fa-circle-o" *ngIf="!hasItem(item)"></span>
-            <span class="fa fa-check-circle-o" *ngIf="hasItem(item)"></span>
+        <span class="apriori-item" *ngFor="let item of getItems()" (click)="toggleItem(item)" [class.selected]="hasItem(item)">
+            <span class="fa fa-square-o" *ngIf="!hasItem(item)"></span>
+            <span class="fa fa-check-square-o" *ngIf="hasItem(item)"></span>
             <span>{{ item }}</span>
         </span>
     </div>

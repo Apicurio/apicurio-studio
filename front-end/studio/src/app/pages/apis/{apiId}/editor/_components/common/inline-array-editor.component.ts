@@ -39,7 +39,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
 
     @Input() value: string[];
     @Input() noValueMessage: string;
-    @Input() items: string[];
+    @Input() items: string[] | (()=>string[]);
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
@@ -101,7 +101,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         if (this.value && this.value.length > 0) {
             let rval: string[] = [];
             this.value.forEach( value => {
-                if (this.items && this.items.indexOf(value) === -1) {
+                if (this.items && this.getItems().indexOf(value) === -1) {
                     rval.push(value);
                 }
             });
@@ -115,7 +115,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         if (this.value && this.value.length > 0) {
             let rval: any = {};
             this.value.forEach( value => {
-                if (this.items && this.items.indexOf(value) !== -1) {
+                if (this.items && this.getItems().indexOf(value) !== -1) {
                     rval[value] = true;
                 }
             });
@@ -153,12 +153,13 @@ export class InlineArrayEditorComponent implements AfterViewInit {
 
     public clearValue(): void {
         this.evalue = "";
+        this.evalues = {};
         this.input.last.nativeElement.focus();
         this.input.last.nativeElement.select();
     }
 
     public hasItems(): boolean {
-        return this.items && this.items.length > 0;
+        return this.items && this.getItems().length > 0;
     }
 
     public hasItem(item: string): boolean {
@@ -170,6 +171,16 @@ export class InlineArrayEditorComponent implements AfterViewInit {
             this.evalues[item] = false;
         } else {
             this.evalues[item] = true;
+        }
+    }
+
+    public getItems(): string[] {
+        let t: string = typeof this.items;
+        if (t === "array") {
+            return this.items as string[];
+        }
+        if (t === "function") {
+            return (this.items as (()=>string[]))();
         }
     }
 

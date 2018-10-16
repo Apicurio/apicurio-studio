@@ -173,7 +173,6 @@ export class OperationInfoSectionComponent {
         }
 
         return this.hasGlobalProduces();
-
     }
 
     public inheritedProduces(): string[] {
@@ -195,11 +194,15 @@ export class OperationInfoSectionComponent {
         }, 50);
     }
 
-    public tagDefs(): string[] {
-        if (this.operation.ownerDocument().tags && this.operation.ownerDocument().tags.length > 0) {
-            return this.operation.ownerDocument().tags.map( tagDef => tagDef.name);
-        } else {
-            return [];
+    public tagDefs(): ()=>string[] {
+        return ()=> {
+            if (this.operation.ownerDocument().tags && this.operation.ownerDocument().tags.length > 0) {
+                let tagDefs: string[] = this.operation.ownerDocument().tags.map(tagDef => tagDef.name);
+                tagDefs.sort();
+                return tagDefs;
+            } else {
+                return [];
+            }
         }
     }
 

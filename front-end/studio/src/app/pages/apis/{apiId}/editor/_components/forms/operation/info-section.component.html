@@ -59,7 +59,7 @@
             <validation-problem [model]="operation" [shallow]="true" [property]="'tags'"></validation-problem>
             <span>Tags</span>
         </div>
-        <div class="section-field description">
+        <div class="section-field tags">
             <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
                                  (onChange)="changeTags($event)"></inline-array-editor>
         </div>

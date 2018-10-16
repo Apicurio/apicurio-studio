@@ -8,6 +8,9 @@
 }
 .api-tags .label {
   margin-right: 5px;
+  padding: 5px;
+  display: inline-block;
+  margin-bottom: 3px;
 }
 .api-tags .label:hover {
   filter: brightness(110%);

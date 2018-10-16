@@ -42,6 +42,7 @@
             </div>
             <div class="section-field consumes">
                 <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
+                                     [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                         (onChange)="onConsumesChange($event)"></inline-array-editor>
             </div>
             <!-- Produces -->
@@ -51,6 +52,7 @@
             </div>
             <div class="section-field produces">
                 <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'"
+                                     [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                      (onChange)="onProducesChange($event)"></inline-array-editor>
             </div>
         </div>

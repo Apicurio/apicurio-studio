@@ -195,4 +195,12 @@ export class OperationInfoSectionComponent {
         }, 50);
     }
 
+    public tagDefs(): string[] {
+        if (this.operation.ownerDocument().tags && this.operation.ownerDocument().tags.length > 0) {
+            return this.operation.ownerDocument().tags.map( tagDef => tagDef.name);
+        } else {
+            return [];
+        }
+    }
+
 }

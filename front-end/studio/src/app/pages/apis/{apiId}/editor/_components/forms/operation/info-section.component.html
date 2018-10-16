@@ -60,7 +60,7 @@
             <span>Tags</span>
         </div>
         <div class="section-field description">
-            <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags"
+            <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
                                  (onChange)="changeTags($event)"></inline-array-editor>
         </div>
 
@@ -81,6 +81,7 @@
                     <span class="fa fa-arrow-circle-up icon-overridden" title="Overrides the global consumes setting."
                           *ngIf="hasGlobalConsumes()"></span>
                     <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'"
+                                         [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #consumesEditor
                                          (onClose)="onConsumesClose()"
                                          (onChange)="onConsumesChange($event)"></inline-array-editor>
@@ -101,6 +102,7 @@
                     <span class="fa fa-arrow-circle-up icon-overridden" title="Overrides the global produces setting."
                           *ngIf="hasGlobalProduces()"></span>
                     <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'"
+                                         [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #producesEditor
                                          (onClose)="onProducesClose()"
                                          (onChange)="onProducesChange($event)"></inline-array-editor>

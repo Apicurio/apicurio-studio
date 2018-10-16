@@ -39,20 +39,32 @@ export class InlineArrayEditorComponent implements AfterViewInit {
 
     @Input() value: string[];
     @Input() noValueMessage: string;
+    @Input() items: string[];
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
     public editing: boolean = false;
     public evalue: string;
+    public evalues: {};
+
+    public firstEnter: boolean;
 
     ngAfterViewInit(): void {
         this.input.changes.subscribe(changes => {
-            if (changes.last) {
+            if (changes.last && this.firstEnter) {
                 changes.last.nativeElement.focus();
                 changes.last.nativeElement.select();
+                this.firstEnter = false;
             }
         });
+    }
+
+    public placeholderText(): string {
+        if (this.hasItems()) {
+            return "Enter a comma-separated list of values and/or select from known options below.";
+        }
+        return "Enter a comma-separated list of values.";
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
@@ -69,6 +81,7 @@ export class InlineArrayEditorComponent implements AfterViewInit {
     }
 
     public onStartEditing(): void {
+        this.firstEnter = true;
         if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
             AbstractInlineEditor.s_activeEditor.onCancel();
         }
@@ -77,16 +90,51 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         this.editing = true;
         if (this.isEmpty()) {
             this.evalue = "";
+            this.evalues = [];
         } else {
-            this.evalue = this.value.join(", ");
+            this.evalue = this.adHocValues().join(", ");
+            this.evalues = this.aprioriValues();
+        }
+    }
+
+    private adHocValues(): string[] {
+        if (this.value && this.value.length > 0) {
+            let rval: string[] = [];
+            this.value.forEach( value => {
+                if (this.items && this.items.indexOf(value) === -1) {
+                    rval.push(value);
+                }
+            });
+            return rval;
+        } else {
+            return [];
+        }
+    }
+
+    private aprioriValues(): any {
+        if (this.value && this.value.length > 0) {
+            let rval: any = {};
+            this.value.forEach( value => {
+                if (this.items && this.items.indexOf(value) !== -1) {
+                    rval[value] = true;
+                }
+            });
+            return rval;
+        } else {
+            return {};
         }
     }
 
     public onSave(): void {
-        let newValue: string[] = [];
+        let result: any = {};
         if (this.evalue && this.evalue.length > 0) {
-            newValue = this.evalue.split(/[ ,]+/);
+            this.evalue.split(/[ ,]+/).forEach( val => result[val] = true);
         }
+        if (this.evalues) {
+            Object.keys(this.evalues).forEach( key => result[key] = true);
+        }
+
+        let newValue: string[] = Object.keys(result);
         this.onChange.emit(newValue);
         this.editing = false;
     }
@@ -107,6 +155,22 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         this.evalue = "";
         this.input.last.nativeElement.focus();
         this.input.last.nativeElement.select();
+    }
+
+    public hasItems(): boolean {
+        return this.items && this.items.length > 0;
+    }
+
+    public hasItem(item: string): boolean {
+        return this.evalues && this.evalues[item];
+    }
+
+    public toggleItem(item: string): void {
+        if (this.hasItem(item)) {
+            this.evalues[item] = false;
+        } else {
+            this.evalues[item] = true;
+        }
     }
 
 }

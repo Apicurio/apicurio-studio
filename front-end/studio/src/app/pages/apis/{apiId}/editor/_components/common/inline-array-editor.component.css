@@ -33,3 +33,23 @@
 .inline-array-editor .form-control-pf-textbox {
   width: 100%;
 }
+
+.inline-array-editor .apriori-items {
+  margin-top: 4px;
+}
+
+.inline-array-editor .apriori-items .apriori-item {
+  background-color: #9c9c9c;
+  color: white;
+  cursor: pointer;
+  margin-right: 5px;
+  padding: 3px 6px;
+}
+
+.inline-array-editor .apriori-items .apriori-item.selected {
+  background-color: #39a5dc;
+}
+
+.inline-array-editor .apriori-items .apriori-item:hover {
+  filter: brightness(90%);
+}

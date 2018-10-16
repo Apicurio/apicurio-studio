@@ -55,16 +55,18 @@ export abstract class AbstractHubService {
         if (queryParams) {
             let first: boolean = true;
             for (let key in queryParams) {
-                let value: string = encodeURIComponent(queryParams[key]);
-                if (first) {
-                    rval = rval + "?" + key;
-                } else {
-                    rval = rval + "&" + key;
+                if (queryParams[key]) {
+                    let value: string = encodeURIComponent(queryParams[key]);
+                    if (first) {
+                        rval = rval + "?" + key;
+                    } else {
+                        rval = rval + "&" + key;
+                    }
+                    if (value != null && value != undefined) {
+                        rval = rval + "=" + value;
+                    }
+                    first = false;
                 }
-                if (value != null && value != undefined) {
-                    rval = rval + "=" + value;
-                }
-                first = false;
             }
         }
         return rval;

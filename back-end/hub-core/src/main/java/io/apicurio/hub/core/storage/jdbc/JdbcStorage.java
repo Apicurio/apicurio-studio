@@ -1463,7 +1463,7 @@ public class JdbcStorage implements IStorage {
     }
 
     /**
-     * A row mapper to read a single row from the content db as an {@link ApiDesignChange}.
+     * A row mapper to read a single row from the content db as an {@link ApiPublication}.
      * @author eric.wittmann@gmail.com
      */
     private static class ApiPublicationRowMapper implements RowMapper<ApiPublication> {

@@ -68,7 +68,7 @@
         <div *ngIf="operation.ownerDocument().is2xDocument()">
             <!-- Consumes -->
             <div class="section-field-label">
-                <validation-problem [model]="operation.ownerDocument()" property="consumes"></validation-problem>
+                <validation-problem [model]="operation.ownerDocument()" property="consumes" [shallow]="true"></validation-problem>
                 <span>Consumes (Inputs)</span>
             </div>
             <div class="section-field consumes">
@@ -88,7 +88,7 @@
             </div>
             <!-- Produces -->
             <div class="section-field-label">
-                <validation-problem [model]="operation.ownerDocument()" property="produces"></validation-problem>
+                <validation-problem [model]="operation.ownerDocument()" property="produces" [shallow]="true"></validation-problem>
                 <span>Produces (Outputs)</span>
             </div>
             <div class="section-field produces">

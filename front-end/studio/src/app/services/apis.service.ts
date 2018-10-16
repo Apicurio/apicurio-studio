@@ -36,6 +36,7 @@ import {CodegenProject} from "../models/codegen-project.model";
 import {NewCodegenProject} from "../models/new-codegen-project.model";
 import {UpdateCodegenProject} from "../models/update-codegen-project.model";
 import {Injectable} from "@angular/core";
+import {ApiPublication} from "../models/api-publication.model";
 
 
 export interface IConnectionHandler {
@@ -339,12 +340,12 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.getApis
      */
     public getApis(): Promise<Api[]> {
-        console.info("[HubApisService] Getting all APIs");
+        console.info("[ApisService] Getting all APIs");
 
         let listApisUrl: string = this.endpoint("/designs");
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching API list: %s", listApisUrl);
+        console.info("[ApisService] Fetching API list: %s", listApisUrl);
         return this.httpGet<Api[]>(listApisUrl, options, (apis) => {
             this.cachedApis = apis;
             return apis;
@@ -355,12 +356,12 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.getRecentApis
      */
     public getRecentApis(): Promise<Api[]> {
-        console.info("[HubApisService] Getting *recent* APIs");
+        console.info("[ApisService] Getting *recent* APIs");
 
         let listRecentApisUrl: string = this.endpoint("/currentuser/recent/designs");
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching recent API list: %s", listRecentApisUrl);
+        console.info("[ApisService] Fetching recent API list: %s", listRecentApisUrl);
         return this.httpGet<Api[]>(listRecentApisUrl, options);
     }
 
@@ -368,12 +369,12 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.createApi
      */
     public createApi(api: NewApi): Promise<Api> {
-        console.info("[HubApisService] Creating the API via the hub API");
+        console.info("[ApisService] Creating the API via the hub API");
 
         let createApiUrl: string = this.endpoint("/designs");
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Creating an API Design: %s", createApiUrl);
+        console.info("[ApisService] Creating an API Design: %s", createApiUrl);
         return this.httpPostWithReturn<NewApi, Api>(createApiUrl, api, options);
     }
 
@@ -381,12 +382,12 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.importApi
      */
     public importApi(api: ImportApi): Promise<Api> {
-        console.info("[HubApisService] Importing an API design via the hub API");
+        console.info("[ApisService] Importing an API design via the hub API");
 
         let importApiUrl: string = this.endpoint("/designs");
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Importing an API Design: %s", importApiUrl);
+        console.info("[ApisService] Importing an API Design: %s", importApiUrl);
         return this.httpPutWithReturn<ImportApi, Api>(importApiUrl, api, options);
     }
 
@@ -394,14 +395,14 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.publishApi
      */
     public publishApi(apiId: string, info: PublishApi): Promise<void> {
-        console.info("[HubApisService] Importing an API design via the hub API");
+        console.info("[ApisService] Importing an API design via the hub API");
 
         let publishApiUrl: string = this.endpoint("/designs/:designId/publications", {
             designId: apiId
         });
         let options: any = this.options({ "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Publishing an API Design: %s", publishApiUrl);
+        console.info("[ApisService] Publishing an API Design: %s", publishApiUrl);
         return this.httpPost<PublishApi>(publishApiUrl, info, options);
     }
 
@@ -409,17 +410,17 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.deleteApi
      */
     public deleteApi(api: Api): Promise<void> {
-        console.info("[HubApisService] Deleting an API design via the hub API");
+        console.info("[ApisService] Deleting an API design via the hub API");
 
         let deleteApiUrl: string = this.endpoint("/designs/:designId", {
             designId: api.id
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Deleting an API Design: %s", deleteApiUrl);
+        console.info("[ApisService] Deleting an API Design: %s", deleteApiUrl);
         return this.httpDelete(deleteApiUrl, options, () => {
             this.cachedApis = null;
-            console.info("[HubApisService] Successfully deleted API %s", api.id);
+            console.info("[ApisService] Successfully deleted API %s", api.id);
         });
     }
 
@@ -432,7 +433,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Getting an API Design: %s", getApiUrl);
+        console.info("[ApisService] Getting an API Design: %s", getApiUrl);
         return this.httpGet<Api>(getApiUrl, options);
     }
 
@@ -446,7 +447,7 @@ export class ApisService extends AbstractHubService {
             });
             let options: any = this.options({ "Accept": "application/json" });
 
-            console.info("[HubApisService] Editing API Design: %s", editApiUrl);
+            console.info("[ApisService] Editing API Design: %s", editApiUrl);
             options["observe"] = "response";
             return this.http.get(editApiUrl, options).map( event => {
                 let response: HttpResponse<any> = <any>event as HttpResponse<any>;
@@ -455,8 +456,8 @@ export class ApisService extends AbstractHubService {
                 let editingSessionUuid: string = rheaders.get("X-Apicurio-EditingSessionUuid");
                 let contentVersion: string = rheaders.get("X-Apicurio-ContentVersion");
 
-                console.info("[HubApisService] Editing Session UUID: %s", editingSessionUuid);
-                console.info("[HubApisService] Content Version: %s", contentVersion);
+                console.info("[ApisService] Editing Session UUID: %s", editingSessionUuid);
+                console.info("[ApisService] Content Version: %s", contentVersion);
 
                 let def: EditableApiDefinition = EditableApiDefinition.fromApi(api);
                 def.spec = openApiSpec;
@@ -485,7 +486,7 @@ export class ApisService extends AbstractHubService {
             secret: secret
         });
 
-        console.info("[HubApisService] Opening editing session on URL: %s", url);
+        console.info("[ApisService] Opening editing session on URL: %s", url);
 
         let websocket: WebSocket = new WebSocket(url);
 
@@ -502,7 +503,7 @@ export class ApisService extends AbstractHubService {
                 designId: apiId
             });
             let options: any = this.options({ "Accept": "application/json" });
-            console.info("[HubApisService] Getting API Design content: %s", getContentUrl);
+            console.info("[ApisService] Getting API Design content: %s", getContentUrl);
             options["observe"] = "response";
             return this.http.get<any>(getContentUrl, options).map( event => {
                 let response: HttpResponse<any> = <any>event as HttpResponse<any>;
@@ -523,7 +524,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Getting contributors: %s", contributorsUrl);
+        console.info("[ApisService] Getting contributors: %s", contributorsUrl);
         options["observe"] = "response";
         return this.http.get<any[]>(contributorsUrl, options).map( event => {
             let response: HttpResponse<any[]> = <any>event as HttpResponse<any[]>;
@@ -548,14 +549,14 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.getCollaborators
      */
     public getCollaborators(apiId: string): Promise<ApiCollaborator[]> {
-        console.info("[HubApisService] Getting collaborators for API Design %s", apiId);
+        console.info("[ApisService] Getting collaborators for API Design %s", apiId);
 
         let getCollaboratorsUrl: string = this.endpoint("/designs/:designId/collaborators", {
             designId: apiId
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching collaborator list: %s", getCollaboratorsUrl);
+        console.info("[ApisService] Fetching collaborator list: %s", getCollaboratorsUrl);
         return this.httpGet<ApiCollaborator[]>(getCollaboratorsUrl, options);
     }
 
@@ -563,7 +564,7 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.deleteCollaborator
      */
     public deleteCollaborator(apiId: string, userId: string): Promise<void> {
-        console.info("[HubApisService] Deleting an API collaborator for API %s", apiId);
+        console.info("[ApisService] Deleting an API collaborator for API %s", apiId);
 
         let deleteCollaboratorUrl: string = this.endpoint("/designs/:designId/collaborators/:userId", {
             designId: apiId,
@@ -571,7 +572,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Deleting an API collaborator: %s", deleteCollaboratorUrl);
+        console.info("[ApisService] Deleting an API collaborator: %s", deleteCollaboratorUrl);
         return this.httpDelete(deleteCollaboratorUrl, options);
     }
 
@@ -579,7 +580,7 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.getInvitations
      */
     public getInvitations(apiId: string): Promise<Invitation[]> {
-        console.info("[HubApisService] Getting all invitations for API %s", apiId);
+        console.info("[ApisService] Getting all invitations for API %s", apiId);
 
         let getInvitationsUrl: string = this.endpoint("/designs/:designId/invitations", {
             designId: apiId
@@ -587,7 +588,7 @@ export class ApisService extends AbstractHubService {
 
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching collaboration invitations: %s", getInvitationsUrl);
+        console.info("[ApisService] Fetching collaboration invitations: %s", getInvitationsUrl);
         return this.httpGet<Invitation[]>(getInvitationsUrl, options);
     }
 
@@ -601,7 +602,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Getting an Invitation: %s", getInviteUrl);
+        console.info("[ApisService] Getting an Invitation: %s", getInviteUrl);
         return this.httpGet<Invitation>(getInviteUrl, options);
     }
 
@@ -609,14 +610,14 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.createInvitation
      */
     public createInvitation(apiId: string): Promise<Invitation> {
-        console.info("[HubApisService] Creating a collaboration invitation for API %s", apiId);
+        console.info("[ApisService] Creating a collaboration invitation for API %s", apiId);
 
         let createInviteUrl: string = this.endpoint("/designs/:designId/invitations", {
             designId: apiId
         });
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Creating an API Design collaboration invite: %s", createInviteUrl);
+        console.info("[ApisService] Creating an API Design collaboration invite: %s", createInviteUrl);
         return this.httpPostWithReturn<void, Invitation>(createInviteUrl, null, options);
     }
 
@@ -624,7 +625,7 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.rejectInvitation
      */
     public rejectInvitation(apiId: string, inviteId: string): Promise<void> {
-        console.info("[HubApisService] Rejecting an API invitation to collaborate for API %s", apiId);
+        console.info("[ApisService] Rejecting an API invitation to collaborate for API %s", apiId);
 
         let deleteInviteUrl: string = this.endpoint("/designs/:designId/invitations/:inviteId", {
             designId: apiId,
@@ -632,7 +633,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({});
 
-        console.info("[HubApisService] Rejecting an API invitation: %s", deleteInviteUrl);
+        console.info("[ApisService] Rejecting an API invitation: %s", deleteInviteUrl);
         return this.httpDelete(deleteInviteUrl, options);
     }
 
@@ -640,7 +641,7 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.acceptInvitation
      */
     public acceptInvitation(apiId: string, inviteId: string): Promise<void> {
-        console.info("[HubApisService] Accepting an API invitation to collaborate for API %s", apiId);
+        console.info("[ApisService] Accepting an API invitation to collaborate for API %s", apiId);
 
         let acceptInviteUrl: string = this.endpoint("/designs/:designId/invitations/:inviteId", {
             designId: apiId,
@@ -648,7 +649,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({});
 
-        console.info("[HubApisService] Accepting an API invitation: %s", acceptInviteUrl);
+        console.info("[ApisService] Accepting an API invitation: %s", acceptInviteUrl);
         return this.httpPut(acceptInviteUrl, null, options);
     }
 
@@ -656,7 +657,7 @@ export class ApisService extends AbstractHubService {
      * @see ApisService.getActivity
      */
     public getActivity(apiId: string, start: number, end: number): Promise<ApiDesignChange[]> {
-        console.info("[HubApisService] Getting all activity for API %s", apiId);
+        console.info("[ApisService] Getting all activity for API %s", apiId);
 
         let activityUrl: string = this.endpoint("/designs/:designId/activity", {
             designId: apiId
@@ -667,7 +668,7 @@ export class ApisService extends AbstractHubService {
 
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching API design activity: %s", activityUrl);
+        console.info("[ApisService] Fetching API design activity: %s", activityUrl);
         return this.httpGet<ApiDesignChange[]>(activityUrl, options);
     }
 
@@ -678,14 +679,14 @@ export class ApisService extends AbstractHubService {
      * 
      */
     public createCodegenProject(apiId: string, project: NewCodegenProject): Promise<CodegenProject> {
-        console.info("[HubApisService] Creating a codegen project for API %s", apiId);
+        console.info("[ApisService] Creating a codegen project for API %s", apiId);
 
         let createProjectUrl: string = this.endpoint("/designs/:designId/codegen/projects", {
             designId: apiId
         });
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Creating a codegen project: %s", createProjectUrl);
+        console.info("[ApisService] Creating a codegen project: %s", createProjectUrl);
         return this.httpPostWithReturn<NewCodegenProject, CodegenProject>(createProjectUrl, project, options);
     }
 
@@ -697,7 +698,7 @@ export class ApisService extends AbstractHubService {
      * 
      */
     public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<CodegenProject> {
-        console.info("[HubApisService] Updating a codegen project for API %s", apiId);
+        console.info("[ApisService] Updating a codegen project for API %s", apiId);
 
         let updateProjectUrl: string = this.endpoint("/designs/:designId/codegen/projects/:projectId", {
             designId: apiId,
@@ -705,7 +706,7 @@ export class ApisService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubApisService] Updating a codegen project: %s", updateProjectUrl);
+        console.info("[ApisService] Updating a codegen project: %s", updateProjectUrl);
         return this.httpPutWithReturn<UpdateCodegenProject, CodegenProject>(updateProjectUrl, project, options);
     }
 
@@ -715,15 +716,37 @@ export class ApisService extends AbstractHubService {
      * 
      */
     public getCodegenProjects(apiId: string): Promise<CodegenProject[]> {
-        console.info("[HubApisService] Getting codegen projects for API Design %s", apiId);
+        console.info("[ApisService] Getting codegen projects for API Design %s", apiId);
 
         let getProjectsUrl: string = this.endpoint("/designs/:designId/codegen/projects", {
             designId: apiId
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubApisService] Fetching codegen project list: %s", getProjectsUrl);
+        console.info("[ApisService] Fetching codegen project list: %s", getProjectsUrl);
         return this.httpGet<CodegenProject[]>(getProjectsUrl, options);
+    }
+
+    /**
+     * Gets the list of publications for a given API id.
+     * @param apiId
+     * @param from
+     * @param to
+     */
+    public getPublications(apiId: string, from?: number, to?: number): Promise<ApiPublication[]> {
+        console.info("[ApisService] Getting all publications for API %s", apiId);
+
+        let getPublicationsUrl: string = this.endpoint("/designs/:designId/publications", {
+            designId: apiId
+        }, {
+            start: from,
+            end: to
+        });
+
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ApisService] Fetching API publications: %s", getPublicationsUrl);
+        return this.httpGet<ApiPublication[]>(getPublicationsUrl, options);
     }
 
 }

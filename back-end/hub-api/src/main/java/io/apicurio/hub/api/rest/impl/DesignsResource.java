@@ -772,12 +772,12 @@ public class DesignsResource implements IDesignsResource {
             ObjectNode data = JsonNodeFactory.instance.objectNode();
             data.set("type", JsonNodeFactory.instance.textNode(info.getType().name()));
             data.set("org", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("repo", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("team", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("group", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("project", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("branch", JsonNodeFactory.instance.textNode(info.getOrg()));
-            data.set("resource", JsonNodeFactory.instance.textNode(info.getOrg()));
+            data.set("repo", JsonNodeFactory.instance.textNode(info.getRepo()));
+            data.set("team", JsonNodeFactory.instance.textNode(info.getTeam()));
+            data.set("group", JsonNodeFactory.instance.textNode(info.getGroup()));
+            data.set("project", JsonNodeFactory.instance.textNode(info.getProject()));
+            data.set("branch", JsonNodeFactory.instance.textNode(info.getBranch()));
+            data.set("resource", JsonNodeFactory.instance.textNode(info.getResource()));
             data.set("format", JsonNodeFactory.instance.textNode(info.getFormat().name()));
             data.set("commitMessage", JsonNodeFactory.instance.textNode(info.getCommitMessage()));
             return mapper.writeValueAsString(data);

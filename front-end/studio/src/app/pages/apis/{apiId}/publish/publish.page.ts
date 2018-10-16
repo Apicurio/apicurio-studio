@@ -28,6 +28,7 @@ import {PublishApi} from "../../../../models/publish-api.model";
 import {Title} from "@angular/platform-browser";
 import {ApisService} from "../../../../services/apis.service";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
+import {ApiPublication} from "../../../../models/api-publication.model";
 
 @Component({
     moduleId: module.id,
@@ -101,6 +102,47 @@ export class PublishPageComponent extends AbstractPageComponent {
             console.error("[PublishPageComponent] Error getting Accounts");
             this.error(error);
         });
+        this.apis.getPublications(apiId, 0, 1).then( publications => {
+            if (publications && publications.length > 0) {
+                this.loadStateFromPublication(publications[0]);
+            } else {
+                console.info("[PublishPageComponent] No prior publications found.");
+            }
+            this.dataLoaded["publications"] = true;
+        }).catch(error => {
+            console.error("[PublishPageComponent] Error getting Publications");
+            this.error(error);
+        });
+    }
+
+    private loadStateFromPublication(publication: ApiPublication): void {
+        console.info("[PublishPageComponent] Loading page state from: ", publication);
+        let info: any = JSON.parse(publication.info);
+        console.info("[PublishPageComponent] Page state info: ", info);
+        if (info.type === "GitHub") {
+            this.model = {
+                org: info.org,
+                repo: info.repo,
+                branch: info.branch
+            };
+        }
+        if (info.type === "GitLab") {
+            this.model = {
+                group: info.group,
+                project: info.project,
+                branch: info.branch
+            };
+        }
+        if (info.type === "Bitbucket") {
+            this.model = {
+                team: info.team,
+                repo: info.repo,
+                branch: info.branch
+            };
+        }
+        this.resource = info.resource;
+        this.format = info.format;
+        this._selectedType = info.type;
     }
 
     public isDataLoaded(): boolean {

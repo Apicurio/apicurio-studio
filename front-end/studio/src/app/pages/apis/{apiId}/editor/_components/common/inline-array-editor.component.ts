@@ -131,7 +131,11 @@ export class InlineArrayEditorComponent implements AfterViewInit {
             this.evalue.split(/[ ,]+/).forEach( val => result[val] = true);
         }
         if (this.evalues) {
-            Object.keys(this.evalues).forEach( key => result[key] = true);
+            Object.keys(this.evalues).forEach( key => {
+                if (this.evalues[key]) {
+                    result[key] = true;
+                }
+            });
         }
 
         let newValue: string[] = Object.keys(result);
@@ -176,11 +180,10 @@ export class InlineArrayEditorComponent implements AfterViewInit {
 
     public getItems(): string[] {
         let t: string = typeof this.items;
-        if (t === "array") {
-            return this.items as string[];
-        }
         if (t === "function") {
             return (this.items as (()=>string[]))();
+        } else {
+            return this.items as string[];
         }
     }
 

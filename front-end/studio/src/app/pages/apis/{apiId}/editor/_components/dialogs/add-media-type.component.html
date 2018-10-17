@@ -1,7 +1,6 @@
 <!-- Add Media Type Dialog -->
-<div bsModal #addMediaTypeModal="bs-modal" class="modal fade" id="addMediaTypeModal" tabindex="-1" role="dialog" aria-labelledby="addMediaTypeModalLabel"
-     role="dialog" (onShown)="doSelect()"
-     (onHidden)="close()" *ngIf="isOpen()">
+<div bsModal #addMediaTypeModal="bs-modal" class="modal fade" id="addMediaTypeModal" tabindex="-1" role="dialog"
+     aria-labelledby="addMediaTypeModalLabel" role="dialog" (onHidden)="close()" *ngIf="isOpen()">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,15 +10,22 @@
                 <h4 class="modal-title" id="addMediaTypeModalLabel">Add Media Type</h4>
             </div>
             <div class="modal-body">
-                <p>Enter a new Media Type (e.g. application/json) below and then click Add.</p>
+                <p>Choose a Media Type (e.g. application/json) below and then click Add.</p>
                 <form id="addmediaType-form" class="form-horizontal" (submit)="add()" #addMediaTypeForm="ngForm" data-dismiss="modal">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label required" for="mediaType">Media Type</label>
+                        <label class="col-sm-3 control-label required" for="mt">Media Type</label>
                         <div class="col-sm-9">
-                            <input #addMediaTypeInput name="mediaType" type="text" id="mediaType" class="form-control"
-                                   placeholder="Enter a Media Type (e.g. application/json)"
-                                   required [(ngModel)]="mediaType" #mtype="ngModel">
-                            <form-error-message [inputModel]="mtype" [type]="'required'">Media Type is required.</form-error-message>
+                            <drop-down id="mt" [id]="'api-mediaType'" [value]="mediaType" [options]="mediaTypeOptions()"
+                                       (onValueChange)="mediaType = $event" noSelectionLabel="Choose Media Type"></drop-down>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="mediaType === 'custom'">
+                        <label class="col-sm-3 control-label required" for="mediaType">Custom Type</label>
+                        <div class="col-sm-9">
+                            <input #customMediaTypeInput name="mediaType" type="text" id="mediaType" class="form-control"
+                                   placeholder="Enter a custom Media Type"
+                                   required [(ngModel)]="customType" #mtype="ngModel">
+                            <form-error-message [inputModel]="mtype" [type]="'required'">Custom media type is required.</form-error-message>
                         </div>
                     </div>
                 </form>

@@ -17,6 +17,10 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
+import {DropDownOption} from "../../../../../../components/common/drop-down.component";
+
+
+const STANDARD_TYPES = [ "application/json", "text/xml", "multipart/form-data" ];
 
 
 @Component({
@@ -26,29 +30,68 @@ import {ModalDirective} from "ngx-bootstrap";
 })
 export class AddMediaTypeDialogComponent {
 
+    private static CUSTOM_TYPES_STORAGE_KEY = "apicurio.add-media-type.custom-types";
+
     @Output() onAdd: EventEmitter<string> = new EventEmitter<string>();
 
     @ViewChildren("addMediaTypeModal") addMediaTypeModal: QueryList<ModalDirective>;
-    @ViewChildren("addMediaTypeInput") addMediaTypeInput: QueryList<ElementRef>;
 
     protected _isOpen: boolean = false;
+    protected _typeOptions: DropDownOption[];
 
     protected mediaType: string = "";
+    protected customType: string = "";
 
     /**
      * Called to open the dialog.
+     * @param mediaType
      */
     public open(mediaType?: string): void {
-        this.mediaType = mediaType;
         if (!mediaType) {
             this.mediaType = "application/json";
+            this.customType = "";
+        } else if (this.isStandardType(this.mediaType)) {
+            this.mediaType = mediaType;
+            this.customType = "";
+        } else {
+            this.mediaType = "custom";
+            this.customType = mediaType;
         }
         this._isOpen = true;
+
         this.addMediaTypeModal.changes.subscribe( thing => {
             if (this.addMediaTypeModal.first) {
                 this.addMediaTypeModal.first.show();
             }
         });
+
+        // Add the standard types.
+        this._typeOptions = STANDARD_TYPES.map( stype => {
+            return { name: stype, value: stype };
+        });
+        // Add "remembered" custom types (if any)
+        let ctypes: string[] = this.getCustomTypes();
+        if (ctypes && ctypes.length > 0) {
+            this._typeOptions.push({
+                divider: true
+            });
+            ctypes.forEach( ctype => {
+                this._typeOptions.push({
+                    name: ctype,
+                    value: ctype
+                });
+            });
+        }
+        // Add the "Custom Type" option.
+        this._typeOptions.push({ divider: true });
+        this._typeOptions.push({
+            name: "Custom Type",
+            value: "custom"
+        })
+    }
+
+    public mediaTypeOptions(): DropDownOption[] {
+        return this._typeOptions;
     }
 
     /**
@@ -63,7 +106,12 @@ export class AddMediaTypeDialogComponent {
      * Called when the user clicks "add".
      */
     protected add(): void {
-        this.onAdd.emit(this.mediaType);
+        let mt: string = this.mediaType;
+        if (mt === 'custom') {
+            mt = this.customType;
+            this.rememberCustomType(mt);
+        }
+        this.onAdd.emit(mt);
         this.cancel();
     }
 
@@ -83,11 +131,31 @@ export class AddMediaTypeDialogComponent {
     }
 
     /**
-     * Called to initialize the selection/focus to the addMediaTypeInput field.
+     * Stores the custom type in browser local storage.
+     * @param type
      */
-    public doSelect(): void {
-        this.addMediaTypeInput.first.nativeElement.focus();
-        this.addMediaTypeInput.first.nativeElement.selectionStart = this.addMediaTypeInput.first.nativeElement.selectionEnd = this.mediaType.length
+    private rememberCustomType(type: string): void {
+        if (!this.isStandardType(type)) {
+            let ctypes: string[] = this.getCustomTypes();
+            if (ctypes.indexOf(type) === -1) {
+                ctypes.push(type);
+                let storage: Storage = window.localStorage;
+                storage.setItem(AddMediaTypeDialogComponent.CUSTOM_TYPES_STORAGE_KEY, JSON.stringify(ctypes));
+            }
+        }
+    }
+
+    private getCustomTypes(): string[] {
+        let storage: Storage = window.localStorage;
+        let ctypesRaw: string = storage.getItem(AddMediaTypeDialogComponent.CUSTOM_TYPES_STORAGE_KEY);
+        if (ctypesRaw && ctypesRaw.indexOf('[') === 0) {
+            return JSON.parse(ctypesRaw);
+        }
+        return [];
+    }
+
+    private isStandardType(type: string): boolean {
+        return STANDARD_TYPES.indexOf(type) !== -1;
     }
 
 }

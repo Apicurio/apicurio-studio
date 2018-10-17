@@ -195,12 +195,22 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
         // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
-        if (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) {
+        if (ApiEditorComponent.isUndo(event)) {
             this.undoLastCommand();
         }
-        if (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) {
+        if (ApiEditorComponent.isRedo(event)) {
             this.redoLastCommand();
         }
+    }
+
+    private static isUndo(event: KeyboardEvent): boolean {
+        return (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) ||
+            (event.metaKey && event.key === 'z' && !event.ctrlKey && !event.altKey);  // macOS: cmd + z
+    }
+
+    private static isRedo(event: KeyboardEvent): boolean {
+        return (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) ||
+            (event.metaKey && event.shiftKey && event.key === 'z' && !event.ctrlKey && !event.altKey); // macOS: cmd + shift + z
     }
 
     /**

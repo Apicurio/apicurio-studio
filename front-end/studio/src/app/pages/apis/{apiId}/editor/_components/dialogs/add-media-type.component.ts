@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
 

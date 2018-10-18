@@ -104,6 +104,8 @@ import {Operation3scaleSectionComponent} from "./pages/apis/{apiId}/editor/_comp
 import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/metric-dialog.component";
 import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
 import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
+import {InheritIconComponent} from "./pages/apis/{apiId}/editor/_components/common/inherit-icon.component";
+import {OverrideIconComponent} from "./pages/apis/{apiId}/editor/_components/common/override-icon.component";
 
 @NgModule({
     imports: [
@@ -117,7 +119,7 @@ import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/
         ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
-        AddResponseDialogComponent, AddDefinitionDialogComponent, RedoIconComponent,
+        AddResponseDialogComponent, AddDefinitionDialogComponent, RedoIconComponent, InheritIconComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
@@ -128,7 +130,7 @@ import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PathInfoSectionComponent,
-        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent
+        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent, OverrideIconComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

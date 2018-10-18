@@ -1,31 +1,39 @@
 
-.inherited-labels {
-  margin-top: 5px;
-}
 .inherited-labels .inherited-label {
   margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 5px 5px 5px 8px;
+  display: inline-block;
 }
 .inherited-labels .inherited-label:hover {
   filter: brightness(110%);
 }
 
-.overridden-labels {
-  padding-left: 20px;
+.inherited-labels, .overridden-labels {
+  padding-left: 28px;
   position: relative;
 }
-.overridden-labels .icon-overridden {
+
+.overridden-labels .icon-override, .inherited-labels .icon-inherit {
   position: absolute;
   top: 7px;
-  left: 0px;
+  left: 1px;
 }
 
-.icon-override {
+.icon-inherit {
   margin-right: 5px;
   cursor: help;
-  color: #666;
 }
-.icon-overridden {
+.icon-override {
   margin-right: 12px;
   cursor: help;
-  color: #666;
+}
+
+.inherited-labels-inner {
+  display: inline-block;
+  padding-top: 3px;
+}
+.inherited-labels button {
+  display: inline-block;
+  margin-top: -2px;
 }

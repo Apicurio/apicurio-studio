@@ -141,14 +141,18 @@
                                                         [inputClass]="'api-item-editor api-summary-editor name'"
                                                         (onChange)="changeSummary($event, path.put)"></pf-inline-text-editor>
                                 </div>
-                                <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPut()"
-                                        (click)="deleteOperation('put')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                <div class="delete">
+                                    <button class="btn btn-sm btn-default pull-right delete-operation" *ngIf="hasPut()"
+                                            (click)="deleteOperation('put')"><span class="fa fa-trash"></span> <span>Delete</span></button>
+                                </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.put)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasPut()" [value]="putDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.put)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasPut()">
                                 <button class="btn btn-default" (click)="createOperation('put')">Create Operation</button>
                             </div>
@@ -168,11 +172,13 @@
                                             (click)="deleteOperation('post')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                                 </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.post)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasPost()" [value]="postDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.post)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasPost()">
                                 <button class="btn btn-default" (click)="createOperation('post')">Create Operation</button>
                             </div>
@@ -192,11 +198,13 @@
                                             (click)="deleteOperation('delete')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                                 </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.delete)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasDelete()" [value]="deleteDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.delete)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasDelete()">
                                 <button class="btn btn-default" (click)="createOperation('delete')">Create Operation</button>
                             </div>
@@ -216,11 +224,13 @@
                                             (click)="deleteOperation('options')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                                 </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.options)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasOptions()" [value]="optionsDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.options)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasOptions()">
                                 <button class="btn btn-default" (click)="createOperation('options')">Create Operation</button>
                             </div>
@@ -240,11 +250,13 @@
                                             (click)="deleteOperation('head')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                                 </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.head)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasHead()" [value]="headDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.head)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasHead()">
                                 <button class="btn btn-default" (click)="createOperation('head')">Create Operation</button>
                             </div>
@@ -264,11 +276,13 @@
                                             (click)="deleteOperation('patch')"><span class="fa fa-trash"></span> <span>Delete</span></button>
                                 </div>
                             </div>
-                            <inline-markdown-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
-                                                    [labelClass]="'description api-item-description'"
-                                                    [formClass]="'api-description-editor-form'"
-                                                    [inputClass]="'api-item-editor api-description-editor description api-item-description'"
-                                                    (onChange)="changeDescription($event, path.patch)"></inline-markdown-editor>
+                            <div class="description">
+                                <inline-markdown-editor *ngIf="hasPatch()" [value]="patchDescription()" [noValueMessage]="'No description.'"
+                                                        [labelClass]="'description api-item-description'"
+                                                        [formClass]="'api-description-editor-form'"
+                                                        [inputClass]="'api-item-editor api-description-editor description api-item-description'"
+                                                        (onChange)="changeDescription($event, path.patch)"></inline-markdown-editor>
+                            </div>
                             <div class="actions" *ngIf="!hasPatch()">
                                 <button class="btn btn-default" (click)="createOperation('patch')">Create Operation</button>
                             </div>

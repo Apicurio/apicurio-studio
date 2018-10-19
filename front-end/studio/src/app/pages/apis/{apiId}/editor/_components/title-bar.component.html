@@ -14,8 +14,12 @@
         <input #newtitle required [(ngModel)]="newTitle" type="text" class="form-control title-editor-input"
                name="title-input" autocomplete="off" required (keypress)="onInputKeypress($event)">
         <div class="edit-buttons">
-            <button title="Save changes." [disabled]="!editform.form.valid" class="btn btn-lg btn-primary" type="submit">Save</button>
-            <button title="Cancel changes." class="btn btn-lg btn-default" (click)="cancel()">Cancel</button>
+            <button title="Save changes." [disabled]="!editform.form.valid" class="btn btn-primary btn-save" type="submit">
+                <i class="glyphicon glyphicon-ok"></i>
+            </button>
+            <button title="Cancel changes." class="btn btn-default btn-cancel" (click)="cancel()">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
         </div>
     </form>
 </div>

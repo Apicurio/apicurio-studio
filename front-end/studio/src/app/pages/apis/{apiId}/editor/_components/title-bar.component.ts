@@ -44,7 +44,8 @@ import {CommandService} from "../_services/command.service";
 @Component({
     moduleId: module.id,
     selector: "title-bar",
-    templateUrl: "title-bar.component.html"
+    templateUrl: "title-bar.component.html",
+    styleUrls: [ "title-bar.component.css" ]
 })
 export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit {
 

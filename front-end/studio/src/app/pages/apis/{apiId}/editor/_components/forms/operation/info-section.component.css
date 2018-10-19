@@ -14,7 +14,8 @@
   position: relative;
 }
 
-.overridden-labels .icon-override, .inherited-labels .icon-inherit {
+
+.overridden-labels .icon-override, .inherited-labels .icon-inherit, .overridden-labels .icon-local {
   position: absolute;
   top: 7px;
   left: 1px;

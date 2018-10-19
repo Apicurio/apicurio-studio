@@ -81,6 +81,7 @@
                 </div>
                 <div class="overridden-labels" *ngIf="!showInheritedConsumes()">
                     <span *ngIf="hasGlobalConsumes()" class="apicurio-icon-override icon-override" title="Overrides the global 'consumes' setting."></span>
+                    <span *ngIf="!hasGlobalConsumes()" class="apicurio-icon-local icon-local" title="Content types defined in this operation only (no global setting)."></span>
                     <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'"
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #consumesEditor
@@ -103,6 +104,7 @@
                 </div>
                 <div class="overridden-labels" *ngIf="!showInheritedProduces()">
                     <span *ngIf="hasGlobalProduces()" class="apicurio-icon-override icon-override" title="Overrides the global 'produces' setting."></span>
+                    <span *ngIf="!hasGlobalProduces()" class="apicurio-icon-local icon-local" title="Content types defined in this operation only (no global setting)."></span>
                     <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'"
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #producesEditor

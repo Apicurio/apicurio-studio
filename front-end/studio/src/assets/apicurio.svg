@@ -9,4 +9,5 @@
 <glyph unicode="&#x20;" horiz-adv-x="512" d="" />
 <glyph unicode="&#xe900;" glyph-name="inherit" d="M0 960h448v-448h-448v448zM192 512h64v-384h-64v384zM256 192h320v-64h-320v64zM576 384h64v-448h-64v448zM960 384h64v-448h-64v448zM640 384h320v-64h-320v64zM640 0h320v-64h-320v64z" />
 <glyph unicode="&#xe901;" glyph-name="override" d="M0 960h448v-448h-448v448zM576 384h448v-448h-448v448zM192 512h64v-384h-64v384zM256 192h320v-64h-320v64z" />
+<glyph unicode="&#xe902;" glyph-name="local" d="M576 384h448v-448h-448v448zM0 960h64v-448h-64v448zM384 960h64v-448h-64v448zM64 960h320v-64h-320v64zM64 576h320v-64h-320v64zM192 512h64v-384h-64v384zM256 192h320v-64h-320v64z" />
 </font></defs></svg>

@@ -1,111 +1,122 @@
 
 body {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 #api-page-body {
-    margin-left: 120px;
+  margin-left: 120px;
 }
 
 #api-page-body .modal-header {
-    background-color: rgb(57, 165, 220);
-    color: white;
+  background-color: rgb(57, 165, 220);
+  color: white;
 }
 
 #api-page-body .modal-header button.close {
-    color: white;
+  color: white;
 }
 
 #api-page-body .modal-footer {
-    border-top: 1px solid rgb(221, 221, 221);
-    background-color: rgb(239, 239, 239);
+  border-top: 1px solid rgb(221, 221, 221);
+  background-color: rgb(239, 239, 239);
 }
 
 #login-form {
-    background-color: black;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  background-color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .modal-dialog {
-    margin-top: 50px;
-}
-
-/**
-   PACE Theme:  minimal
- */
-.pace {
-    -webkit-pointer-events: none;
-    pointer-events: none;
-
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-
-.pace-inactive {
-    display: none;
-}
-
-.pace .pace-progress {
-    background: #ef6366;
-    position: fixed;
-    z-index: 2000;
-    top: 0;
-    right: 100%;
-    width: 100%;
-    height: 3px;
+  margin-top: 50px;
 }
 
 form input.ng-invalid.ng-touched {
-    border-color: red;
+  border-color: red;
 }
 
 .center-text {
-    text-align: center;
+  text-align: center;
 }
 
 .dropdown-menu > li > a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #api-breadcrumb-bar {
-    background: white;
-    border-bottom: 1px solid #ccc;
-    height: 37px;
+  background: white;
+  border-bottom: 1px solid #ccc;
+  height: 37px;
 }
 
 #api-breadcrumb-bar .api-breadcrumbs {
-    height: 37px;
+  height: 37px;
 }
 
 .dropdown-menu {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 div.notice-of-required {
-    margin-top: 15px;
-    font-size: 11px;
+  margin-top: 15px;
+  font-size: 11px;
 }
+
 div.notice-of-required .required-icon {
-    color: red;
+  color: red;
 }
+
 div.modal-notice-of-required {
-    margin-bottom: -12px;
-    padding-left: 15px;
+  margin-bottom: -12px;
+  padding-left: 15px;
 }
 
 .form-group .control-label {
-    white-space: nowrap;
+  white-space: nowrap;
 }
+
 .form-group .control-label.required::after {
-    color: red;
-    content: '*'
+  color: red;
+  content: '*'
 }
 
 .form-group .form-error-message {
-    color: red;
+  color: red;
+}
+
+@font-face {
+  font-family: 'apicurio';
+  src: url('assets/apicurio.eot?utffxi');
+  src: url('assets/apicurio.eot?utffxi#iefix') format('embedded-opentype'),
+  url('assets/apicurio.ttf?utffxi') format('truetype'),
+  url('assets/apicurio.woff?utffxi') format('woff'),
+  url('assets/apicurio.svg?utffxi#apicurio') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="apicurio-icon-"], [class*=" apicurio-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'apicurio' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.apicurio-icon-inherit:before {
+  content: "\e900";
+}
+
+.apicurio-icon-override:before {
+  content: "\e901";
 }

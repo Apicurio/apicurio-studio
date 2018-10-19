@@ -73,14 +73,14 @@
             </div>
             <div class="section-field consumes">
                 <div class="inherited-labels" *ngIf="showInheritedConsumes()">
-                    <inherit-icon class="icon-inherit" color="#666" title="Content types inherited from global scope."></inherit-icon>
+                    <span class="apicurio-icon-inherit icon-inherit" title="Content types inherited from global scope."></span>
                     <div class="inherited-labels-inner">
                         <span class="inherited-label label label-default" *ngFor="let item of inheritedConsumes()">{{ item }}</span>
                     </div>
                     <button class="btn btn-default btn-xs btn-override" title="Override the 'consumes' setting." (click)="overrideConsumes()">Override</button>
                 </div>
                 <div class="overridden-labels" *ngIf="!showInheritedConsumes()">
-                    <override-icon *ngIf="hasGlobalConsumes()" class="icon-override" color="#666" title="Overrides the global 'consumes' setting."></override-icon>
+                    <span *ngIf="hasGlobalConsumes()" class="apicurio-icon-override icon-override" title="Overrides the global 'consumes' setting."></span>
                     <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'"
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #consumesEditor
@@ -95,14 +95,14 @@
             </div>
             <div class="section-field produces">
                 <div class="inherited-labels" *ngIf="showInheritedProduces()">
-                    <inherit-icon class="icon-inherit" color="#666" title="Content types inherited from global scope."></inherit-icon>
+                    <span class="apicurio-icon-inherit icon-inherit" title="Content types inherited from global scope."></span>
                     <div class="inherited-labels-inner">
                         <span class="inherited-label label label-default" *ngFor="let item of inheritedProduces()">{{ item }}</span>
                     </div>
                     <button class="btn btn-default btn-xs btn-override" title="Override the produces setting." (click)="overrideProduces()">Override</button>
                 </div>
                 <div class="overridden-labels" *ngIf="!showInheritedProduces()">
-                    <override-icon *ngIf="hasGlobalProduces()" class="icon-override" color="#666" title="Overrides the global 'produces' setting."></override-icon>
+                    <span *ngIf="hasGlobalProduces()" class="apicurio-icon-override icon-override" title="Overrides the global 'produces' setting."></span>
                     <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'"
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
                                          #producesEditor

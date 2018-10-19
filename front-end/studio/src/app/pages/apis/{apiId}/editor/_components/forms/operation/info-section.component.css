@@ -18,14 +18,8 @@
   position: absolute;
   top: 7px;
   left: 1px;
-}
-
-.icon-inherit {
-  margin-right: 5px;
-  cursor: help;
-}
-.icon-override {
-  margin-right: 12px;
+  font-size: 16px;
+  color: #666;
   cursor: help;
 }
 

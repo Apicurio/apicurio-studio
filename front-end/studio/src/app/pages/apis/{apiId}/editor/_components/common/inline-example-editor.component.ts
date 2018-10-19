@@ -49,15 +49,6 @@ export class InlineExampleEditorComponent extends TextAreaEditorComponent implem
         return this._mode;
     }
 
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.onCancel();
-        }
-        if (event.ctrlKey && event.key === "Enter" && this.isValid()) {
-            this.onSave();
-        }
-    }
-
     public canGenerateExample(): boolean {
         return this.schema !== null && this.schema !== undefined;
     }

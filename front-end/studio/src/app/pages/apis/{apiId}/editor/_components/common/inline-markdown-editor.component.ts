@@ -42,13 +42,4 @@ export class InlineMarkdownEditorComponent extends TextAreaEditorComponent imple
         return CodeEditorMode.Markdown;
     }
 
-    public onKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
-            this.onCancel();
-        }
-        if (event.ctrlKey && event.key === "Enter" && this.isValid()) {
-            this.onSave();
-        }
-    }
-
 }

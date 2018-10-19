@@ -80,7 +80,7 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+        if (this.isEscapeKey(event)) {
             this.onCancel();
         }
     }
@@ -89,6 +89,14 @@ export abstract class AbstractInlineEditor<T> {
         if (this.inputFocus !== isFocus) {
             this.inputFocus = isFocus;
         }
+    }
+
+    protected isEscapeKey(event: KeyboardEvent): boolean {
+        return event.key === "Escape" || event.keyCode === 27;
+    }
+
+    protected isEnterKey(event: KeyboardEvent): boolean {
+        return event.key === "Enter" || event.keyCode === 10 || event.keyCode === 13;
     }
 
 }
@@ -170,7 +178,7 @@ export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
     public onInputKeypress(event: KeyboardEvent): void {
         super.onInputKeypress(event);
 
-        if (event.ctrlKey && event.key === "Enter" && this.isValid()) {
+        if (event.ctrlKey && this.isEnterKey(event) && this.isValid()) {
             this.onSave();
         }
     }

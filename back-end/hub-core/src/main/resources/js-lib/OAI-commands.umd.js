@@ -4508,12 +4508,12 @@ var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
 /**
  * Factory function.
  */
-function createNewSchemaPropertyCommand(document, schema, propertyName) {
+function createNewSchemaPropertyCommand(document, schema, propertyName, description, newType) {
     if (document.getSpecVersion() === "2.0") {
-        return new NewSchemaPropertyCommand_20(schema, propertyName);
+        return new NewSchemaPropertyCommand_20(schema, propertyName, description, newType);
     }
     else {
-        return new NewSchemaPropertyCommand_30(schema, propertyName);
+        return new NewSchemaPropertyCommand_30(schema, propertyName, description, newType);
     }
 }
 /**
@@ -4525,13 +4525,17 @@ var NewSchemaPropertyCommand = (function (_super) {
      * Constructor.
      * @param schema
      * @param propertyName
+     * @param description
+     * @param newType
      */
-    function NewSchemaPropertyCommand(schema, propertyName) {
+    function NewSchemaPropertyCommand(schema, propertyName, description, newType) {
         var _this = _super.call(this) || this;
         if (schema) {
             _this._schemaPath = _this.oasLibrary().createNodePath(schema);
         }
         _this._propertyName = propertyName;
+        _this._description = description;
+        _this._newType = newType;
         return _this;
     }
     /**
@@ -4550,9 +4554,59 @@ var NewSchemaPropertyCommand = (function (_super) {
             console.info("[NewSchemaPropertyCommand] Property already exists.");
             return;
         }
-        schema.addProperty(this._propertyName, schema.createPropertySchema(this._propertyName));
+        var property = schema.createPropertySchema(this._propertyName);
+        if (this._description) {
+            property.description = this._description;
+        }
+        if (this._newType) {
+            this._setPropertyType(property);
+        }
+        schema.addProperty(this._propertyName, property);
         console.info("[NewSchemaPropertyCommand] Property [%s] created successfully.", this._propertyName);
         this._created = true;
+    };
+    /**
+     * Sets the property type.
+     * @param property
+     */
+    NewSchemaPropertyCommand.prototype._setPropertyType = function (prop) {
+        // Update the schema's type
+        if (this._newType.isSimpleType()) {
+            prop.$ref = null;
+            prop.type = this._newType.type;
+            prop.format = this._newType.as;
+            prop.items = null;
+        }
+        if (this._newType.isRef()) {
+            prop.$ref = this._newType.type;
+            prop.type = null;
+            prop.format = null;
+            prop.items = null;
+        }
+        if (this._newType.isArray()) {
+            prop.$ref = null;
+            prop.type = "array";
+            prop.format = null;
+            prop.items = prop.createItemsSchema();
+            if (this._newType.of) {
+                if (this._newType.of.isRef()) {
+                    prop.items.$ref = this._newType.of.type;
+                }
+                else {
+                    prop.items.type = this._newType.of.type;
+                    prop.items.format = this._newType.of.as;
+                }
+            }
+        }
+        if (this._newType && this._newType.required) {
+            var required = prop.parent()["required"];
+            if (this.isNullOrUndefined(required)) {
+                required = [];
+                prop.parent()["required"] = required;
+                this._nullRequired = true;
+            }
+            required.push(prop.propertyName());
+        }
     };
     /**
      * Removes the previously created property.
@@ -4571,6 +4625,11 @@ var NewSchemaPropertyCommand = (function (_super) {
             return;
         }
         schema.removeProperty(this._propertyName);
+        // if the property was marked as required - need to remove it from the parent's "required" array
+        if (this._newType && this._newType.required) {
+            var required = schema["required"];
+            required.splice(required.indexOf(this._propertyName), 1);
+        }
     };
     /**
      * Marshall the command into a JS object.
@@ -4579,6 +4638,7 @@ var NewSchemaPropertyCommand = (function (_super) {
     NewSchemaPropertyCommand.prototype.marshall = function () {
         var obj = _super.prototype.marshall.call(this);
         obj._schemaPath = MarshallUtils.marshallNodePath(obj._schemaPath);
+        obj._newType = MarshallUtils.marshallSimplifiedParameterType(obj._newType);
         return obj;
     };
     /**
@@ -4588,6 +4648,7 @@ var NewSchemaPropertyCommand = (function (_super) {
     NewSchemaPropertyCommand.prototype.unmarshall = function (obj) {
         _super.prototype.unmarshall.call(this, obj);
         this._schemaPath = MarshallUtils.unmarshallNodePath(this._schemaPath);
+        this._newType = MarshallUtils.unmarshallSimplifiedParameterType(this._newType);
     };
     return NewSchemaPropertyCommand;
 }(AbstractCommand));
@@ -8623,8 +8684,8 @@ var commandFactory = {
     "NewResponseCommand_30": function () { return new NewResponseCommand_30(null, null); },
     "NewSchemaDefinitionCommand_20": function () { return new NewSchemaDefinitionCommand_20(null, null); },
     "NewSchemaDefinitionCommand_30": function () { return new NewSchemaDefinitionCommand_30(null, null); },
-    "NewSchemaPropertyCommand_20": function () { return new NewSchemaPropertyCommand_20(null, null); },
-    "NewSchemaPropertyCommand_30": function () { return new NewSchemaPropertyCommand_30(null, null); },
+    "NewSchemaPropertyCommand_20": function () { return new NewSchemaPropertyCommand_20(null, null, null, null); },
+    "NewSchemaPropertyCommand_30": function () { return new NewSchemaPropertyCommand_30(null, null, null, null); },
     "NewSecuritySchemeCommand_20": function () { return new NewSecuritySchemeCommand_20(null); },
     "NewSecuritySchemeCommand_30": function () { return new NewSecuritySchemeCommand_30(null); },
     "NewServerCommand": function () { return new NewServerCommand(null, null); },

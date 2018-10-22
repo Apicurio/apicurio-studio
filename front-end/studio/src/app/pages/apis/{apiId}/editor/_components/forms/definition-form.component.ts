@@ -31,13 +31,11 @@ import {
 } from "oai-ts-commands";
 
 import {SourceFormComponent} from "./source-form.base";
-import {AddSchemaPropertyDialogComponent} from "../dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
 import {RenameDefinitionDialogComponent} from "../dialogs/rename-definition.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
-import {IParameterEditorHandler, ParameterEditorComponent} from "../editors/parameter-editor.component";
 import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../editors/property-editor.component";
 import {EditorsService} from "../../_services/editors.service";
 

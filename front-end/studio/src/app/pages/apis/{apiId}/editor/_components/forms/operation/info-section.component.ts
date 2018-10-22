@@ -144,6 +144,16 @@ export class OperationInfoSectionComponent {
         return false;
     }
 
+    public hasLocalConsumes(): boolean {
+        let consumes: string[] = this.consumes();
+        return consumes && consumes.length > 0;
+    }
+
+    public hasLocalProduces(): boolean {
+        let produces: string[] = this.produces();
+        return produces && produces.length > 0;
+    }
+
     public showInheritedConsumes(): boolean {
         let consumes: string[] = (this.operation as Oas20Operation).consumes;
         if (consumes !== null && consumes !== undefined) {

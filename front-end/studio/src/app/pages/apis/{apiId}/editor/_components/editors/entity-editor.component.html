@@ -1,11 +1,11 @@
 <div class="entity-editor {{ entityType }}-entity-editor container-fluid" (window:keydown)="onGlobalKeyDown($event)">
-    <!--<a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>-->
+    <a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>
     <form id="server-entity-form" #entityEditorForm="ngForm">
         <div class="row-fluid header">
             <div class="col-md-12">
                 <h1 class="title">{{ heading }}</h1>
             </div>
-            <div class="context" *ngIf="contextIs !== 'document'">
+            <div class="context" *ngIf="contextIs === 'operation' || contextIs === 'pathItem'">
                 <div class="col-md-6 path">
                     <div class="context-label">Path</div>
                     <div path-item class="context-value" [path]="pathItem().path()"></div>
@@ -17,6 +17,15 @@
                           [class.label-success]="operation().method() === 'get'"
                           [class.label-warning]="operation().method() === 'post'"
                           [class.label-danger]="operation().method() === 'delete'">{{ operation().method() }}</span>
+                </div>
+            </div>
+            <div class="context" *ngIf="contextIs === 'dataType'">
+                <div class="col-md-6 dataType">
+                    <div class="context-label">Data Type</div>
+                    <div class="context-value">
+                        <span class="fa fa-code"></span>
+                        <span>{{ dataTypeName() }}</span>
+                    </div>
                 </div>
             </div>
         </div>

@@ -37,6 +37,9 @@ import {RenameDefinitionDialogComponent} from "../dialogs/rename-definition.comp
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
+import {IParameterEditorHandler, ParameterEditorComponent} from "../editors/parameter-editor.component";
+import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../editors/property-editor.component";
+import {EditorsService} from "../../_services/editors.service";
 
 
 @Component({
@@ -59,12 +62,11 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this._definition;
     }
 
-    @ViewChild("addSchemaPropertyDialog") public addSchemaPropertyDialog: AddSchemaPropertyDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
 
     public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService) {
+                       protected documentService: DocumentService, private editors: EditorsService) {
         super(selectionService, commandService, documentService);
     }
 
@@ -88,8 +90,15 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return createReplaceSchemaDefinitionCommand(node.ownerDocument(), this.definition, node);
     }
 
-    public openAddSchemaPropertyModal(): void {
-        this.addSchemaPropertyDialog.open();
+    public openAddSchemaPropertyEditor(): void {
+        let editor: PropertyEditorComponent = this.editors.getPropertyEditor();
+        let handler: IPropertyEditorHandler = {
+            onSave: (event) => {
+                this.addSchemaProperty(event.data);
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.definition);
     }
 
     public hasProperties(): boolean {
@@ -120,8 +129,9 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         this.commandService.emit(command);
     }
 
-    public addSchemaProperty(name: string): void {
-        let command: ICommand = createNewSchemaPropertyCommand(this.definition.ownerDocument(), this.definition, name);
+    public addSchemaProperty(data: PropertyData): void {
+        let command: ICommand = createNewSchemaPropertyCommand(this.definition.ownerDocument(), this.definition,
+            data.name, data.description, data.type);
         this.commandService.emit(command);
     }
 

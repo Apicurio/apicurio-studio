@@ -22,6 +22,7 @@ import {SecuritySchemeEditorComponent} from "../_components/editors/security-sch
 import {SecurityRequirementEditorComponent} from "../_components/editors/security-requirement-editor.component";
 import {DataTypeEditorComponent} from "../_components/editors/data-type-editor.component";
 import {ParameterEditorComponent} from "../_components/editors/parameter-editor.component";
+import {PropertyEditorComponent} from "../_components/editors/property-editor.component";
 
 export interface IEditorsProvider {
 
@@ -30,6 +31,7 @@ export interface IEditorsProvider {
     getSecurityRequirementEditor(): SecurityRequirementEditorComponent;
     getDataTypeEditor(): DataTypeEditorComponent;
     getParameterEditor(): ParameterEditorComponent;
+    getPropertyEditor(): PropertyEditorComponent;
 
 }
 
@@ -69,6 +71,10 @@ export class EditorsService implements IEditorsProvider {
 
     public getParameterEditor(): ParameterEditorComponent {
         return this.provider.getParameterEditor();
+    }
+
+    public getPropertyEditor(): PropertyEditorComponent {
+        return this.provider.getPropertyEditor();
     }
 
 }

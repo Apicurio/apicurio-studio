@@ -79,7 +79,7 @@
                                 Use this section to define the properties that make up this data type.
                             </p>
                         </context-help>
-                        <icon-button (onClick)="openAddSchemaPropertyModal()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" [type]="'add'"
                                      [title]="'Add a property to the schema.'"></icon-button>
                         <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete all properties from the schema.'"></icon-button>
@@ -88,7 +88,7 @@
                         <!-- Warning when no properties exist -->
                         <signpost *ngIf="!hasProperties()">
                             <span>No schema properties have been defined.</span>
-                            <a (click)="openAddSchemaPropertyModal()">Add a property</a>
+                            <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
                         </signpost>
 
                         <!-- The list of schema properties -->
@@ -109,6 +109,5 @@
     </div>
 </div>
 
-<add-schema-property-dialog #addSchemaPropertyDialog (onAdd)="addSchemaProperty($event)"></add-schema-property-dialog>
 <clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>
 <rename-definition-dialog #renameDefinitionDialog (onRename)="rename($event)"></rename-definition-dialog>

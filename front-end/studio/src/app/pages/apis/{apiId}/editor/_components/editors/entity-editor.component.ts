@@ -15,7 +15,15 @@
  * limitations under the License.
  */
 
-import {OasDocument, OasLibraryUtils, OasNode, OasOperation, OasPathItem} from "oai-ts-core";
+import {
+    Oas20SchemaDefinition,
+    Oas30SchemaDefinition,
+    OasDocument,
+    OasLibraryUtils,
+    OasNode,
+    OasOperation,
+    OasPathItem
+} from "oai-ts-core";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 
 export interface EntityEditorEvent<T extends OasNode> {
@@ -39,7 +47,7 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
     public _mode: string = "create";
 
     public handler: IEntityEditorHandler<T, E>;
-    public context: OasDocument | OasPathItem | OasOperation;
+    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition;
     public entity: T;
 
     /**
@@ -48,7 +56,9 @@ export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEven
      * @param context
      * @param entity
      */
-    public open(handler: IEntityEditorHandler<T, E>, context: OasDocument | OasPathItem | OasOperation, entity?: T): void {
+    public open(handler: IEntityEditorHandler<T, E>,
+                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition,
+                entity?: T): void {
         this.context = context;
         this.handler = handler;
         this.entity = entity;
@@ -168,7 +178,8 @@ export class EntityEditorComponent implements OnChanges {
     protected _expandedContext: any = {
         document: null,
         pathItem: null,
-        operation: null
+        operation: null,
+        dataType: null
     };
 
     /**
@@ -185,7 +196,7 @@ export class EntityEditorComponent implements OnChanges {
      * Figures out what the context is based on what is passed to it.
      * @param context
      */
-    public expandContext(context: OasDocument | OasPathItem | OasOperation): void {
+    public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         if (context['_method']) {
             this.contextIs = "operation";
             this._expandedContext.operation = context as OasOperation;
@@ -195,9 +206,12 @@ export class EntityEditorComponent implements OnChanges {
             this.contextIs = "pathItem";
             this._expandedContext.pathItem = context as OasPathItem;
             this._expandedContext.document = context.ownerDocument();
-        } else {
+        } else if (context.ownerDocument() === context) {
             this.contextIs = "document";
             this._expandedContext.document = context as OasDocument;
+        } else {
+            this.contextIs = "dataType";
+            this._expandedContext.dataType = context as Oas20SchemaDefinition | Oas30SchemaDefinition;
         }
     }
 
@@ -213,6 +227,27 @@ export class EntityEditorComponent implements OnChanges {
      */
     public operation(): OasOperation {
         return this._expandedContext.operation;
+    }
+
+    /**
+     * Gets the data type (if any).
+     */
+    public dataType(): Oas20SchemaDefinition | Oas30SchemaDefinition {
+        return this._expandedContext.dataType;
+    }
+
+    /**
+     * Gets the data type name.
+     */
+    public dataTypeName(): string {
+        if (this._expandedContext.dataType) {
+            if (this._expandedContext.dataType["_definitionName"]) {
+                return (this._expandedContext.dataType as Oas20SchemaDefinition).definitionName();
+            } else {
+                return (this._expandedContext.dataType as Oas30SchemaDefinition).name();
+            }
+        }
+        return null;
     }
 
     /**

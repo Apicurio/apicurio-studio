@@ -137,6 +137,7 @@ export class ApiEditingSession implements IApiEditingSession {
                 // Process a 'command' style message
                 console.info("                    Content Version: %o", msg.contentVersion);
                 console.info("                    Command: %o", msg.command);
+                console.info("                    Reverted: %o", msg.reverted);
                 if (this._commandHandler) {
                     let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
                     let otCmd: OtCommand = new OtCommand();

@@ -56,6 +56,7 @@ import {SecuritySchemeEditorComponent} from "./_components/editors/security-sche
 import {SecurityRequirementEditorComponent} from "./_components/editors/security-requirement-editor.component";
 import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
 import {ParameterEditorComponent} from "./_components/editors/parameter-editor.component";
+import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
 
 
 @Component({
@@ -97,6 +98,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
     @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
     @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
+    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
 
     formType: string;
 
@@ -482,6 +484,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public getParameterEditor(): ParameterEditorComponent {
         return this.parameterEditor;
+    }
+
+    public getPropertyEditor(): PropertyEditorComponent {
+        return this.propertyEditor;
     }
 
 }

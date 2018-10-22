@@ -27,7 +27,6 @@ import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/comm
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
 import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
 import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-tag.component";
-import {AddSchemaPropertyDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema-property.component";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
 import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
@@ -104,6 +103,7 @@ import {Operation3scaleSectionComponent} from "./pages/apis/{apiId}/editor/_comp
 import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/metric-dialog.component";
 import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
 import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
+import {PropertyEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/property-editor.component";
 
 @NgModule({
     imports: [
@@ -113,7 +113,7 @@ import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent,FormDataParamRowComponent, InlineMarkdownEditorComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-        AddTagDialogComponent, AddSchemaPropertyDialogComponent, ResponseRow30Component, UndoIconComponent,
+        AddTagDialogComponent, ResponseRow30Component, UndoIconComponent,
         ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
@@ -127,7 +127,7 @@ import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
-        InlineExampleEditorComponent, DefinitionExampleSectionComponent,
+        InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent,
 
         Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent
     ],

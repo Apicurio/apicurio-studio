@@ -3,8 +3,14 @@
     <div class="header">
         <div class="name">
             <validation-problem [model]="parameter"></validation-problem>
-            <span class="fa fa-arrow-circle-up icon-override" *ngIf="isOverride()" title="Overrides a parameter defined at the Path level."></span>
-            <span class="fa fa-share fa-flip-vertical icon-override" *ngIf="isOverridable()" title="Path parameter inherited from the Path level."></span>
+            <span class="apicurio-icon-undefined-d icon-override" *ngIf="isParentOperation() && isMissing()"
+                  title="Parameter in path spec but is not defined."></span>
+            <span class="apicurio-icon-override icon-override" *ngIf="isParentOperation() && isOverride()"
+                  title="Overrides a parameter defined at the Path level."></span>
+            <span class="apicurio-icon-inherit-d icon-override" *ngIf="isParentOperation() && isInherited()"
+                  title="Path parameter inherited from the Path level."></span>
+            <span class="apicurio-icon-local-d icon-override" *ngIf="isParentOperation() && isLocalOnly()"
+                  title="Path parameter defined in the operation only."></span>
             <span title="{{ parameter.name }}">{{ parameter.name }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">

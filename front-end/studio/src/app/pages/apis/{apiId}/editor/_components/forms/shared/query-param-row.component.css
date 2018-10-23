@@ -36,8 +36,10 @@
   color: #39a5dc;
 }
 .query-param .header .name .icon-override {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: normal;
   cursor: help;
+  margin-right: 3px;
 }
 
 .query-param .header .description {

@@ -61,12 +61,13 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
     private overrideFlag: boolean;
     private missingFlag: boolean;
     private _docSub: Subscription;
+    private _parentType: string;
 
     constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
-            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
+            this.updateModel();
         });
     }
 
@@ -76,11 +77,24 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
 
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes["parameter"]) {
-            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
-            this.missingFlag = this.parameter.n_attribute("missing") === true;
-            this._overriddenParam = this.getOverriddenParam(this.parameter);
-            this.overrideFlag = this._overriddenParam !== null;
+            this.updateModel();
         }
+    }
+
+    private updateModel(): void {
+        this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
+        this.missingFlag = this.parameter.n_attribute("missing") === true;
+        this._overriddenParam = this.getOverriddenParam(this.parameter);
+        this.overrideFlag = this._overriddenParam !== null;
+        this._parentType = this.detectParentType();
+    }
+
+    public isParentOperation(): boolean {
+        return this._parentType === "operation";
+    }
+
+    public isParentPath(): boolean {
+        return this._parentType === "pathItem";
     }
 
     public model(): SimplifiedParameterType {
@@ -240,13 +254,27 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
     }
 
     public isOverridable(): boolean {
+        return this.isInherited();
+    }
+
+    public isInherited(): boolean {
         return this.missingFlag && this.overrideFlag;
+    }
+
+    public isLocalOnly(): boolean {
+        return !this.overrideFlag && !this.missingFlag;
     }
 
     public getOverriddenParam(param: OasParameterBase): OasParameterBase {
         let viz: DetectOverrideVisitor = new DetectOverrideVisitor(param);
         param.parent().accept(viz);
         return viz.overriddenParam;
+    }
+
+    private detectParentType(): string {
+        let viz: DetectParentTypeVisitor = new DetectParentTypeVisitor();
+        this.parameter.parent().accept(viz);
+        return viz.parentType;
     }
 
 }
@@ -262,6 +290,21 @@ class DetectOverrideVisitor extends OasCombinedVisitorAdapter {
 
     public visitOperation(node: OasOperation): void {
         this.overriddenParam = (<OasPathItem>node.parent()).parameter(this.param.in, this.param.name) as OasParameterBase;
+    }
+
+}
+
+
+class DetectParentTypeVisitor extends OasCombinedVisitorAdapter {
+
+    public parentType: string = null;
+
+    public visitOperation(node: OasOperation): void {
+        this.parentType = "operation";
+    }
+
+    public visitPathItem(node: OasPathItem): void {
+        this.parentType = "pathItem";
     }
 
 }

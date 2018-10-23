@@ -706,6 +706,9 @@ var ChangeMediaTypeTypeCommand = (function (_super) {
             mediaType.schema.format = this._newType.as;
             mediaType.schema.items = null;
         }
+        if (this._newType.isEnum()) {
+            mediaType.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
+        }
         if (this._newType.isRef()) {
             mediaType.schema.$ref = this._newType.type;
             mediaType.schema.type = null;
@@ -913,6 +916,9 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
                 param.schema.type = this._newType.type;
                 param.schema.format = this._newType.as;
             }
+            if (this._newType.isEnum()) {
+                param.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
+            }
             if (this._newType.isRef()) {
                 param.schema.$ref = this._newType.type;
             }
@@ -925,6 +931,9 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
                         param.schema.items.type = this._newType.of.type;
                         param.schema.items.format = this._newType.of.as;
                     }
+                    if (this._newType.of.isEnum()) {
+                        param.schema.items.enum = JSON.parse(JSON.stringify(this._newType.of.enum));
+                    }
                     if (this._newType.of.isRef()) {
                         param.schema.items.$ref = this._newType.of.type;
                     }
@@ -936,6 +945,9 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
                 param.type = this._newType.type;
                 param.format = this._newType.as;
                 param.items = null;
+            }
+            if (this._newType.isEnum()) {
+                param.enum = JSON.parse(JSON.stringify(this._newType.enum));
             }
             if (this._newType.isArray()) {
                 param.type = "array";
@@ -1029,6 +1041,9 @@ var ChangeParameterTypeCommand_30 = (function (_super) {
         if (this._newType.isSimpleType()) {
             schema.type = this._newType.type;
             schema.format = this._newType.as;
+        }
+        if (this._newType.isEnum()) {
+            schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
         }
         if (this._newType.isArray()) {
             schema.type = "array";
@@ -1420,6 +1435,9 @@ var ChangePropertyTypeCommand = (function (_super) {
             prop.format = this._newType.as;
             prop.items = null;
         }
+        if (this._newType.isEnum()) {
+            prop.enum = JSON.parse(JSON.stringify(this._newType.enum));
+        }
         if (this._newType.isRef()) {
             prop.$ref = this._newType.type;
             prop.type = null;
@@ -1475,11 +1493,13 @@ var ChangePropertyTypeCommand = (function (_super) {
         // Restore the schema attributes
         prop.$ref = null;
         prop.type = null;
+        prop.enum = null;
         prop.format = null;
         prop.items = null;
         if (oldProp) {
             prop.$ref = oldProp.$ref;
             prop.type = oldProp.type;
+            prop.enum = oldProp.enum;
             prop.format = oldProp.format;
             prop.items = oldProp.items;
             if (prop.items) {
@@ -1638,6 +1658,9 @@ var ChangeResponseTypeCommand_20 = (function (_super) {
             response.schema.type = this._newType.type;
             response.schema.format = this._newType.as;
         }
+        if (this._newType.isEnum()) {
+            response.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
+        }
         if (this._newType.isRef()) {
             response.schema.$ref = this._newType.type;
         }
@@ -1648,6 +1671,9 @@ var ChangeResponseTypeCommand_20 = (function (_super) {
                 if (this._newType.of.isSimpleType()) {
                     response.schema.items.type = this._newType.of.type;
                     response.schema.items.format = this._newType.of.as;
+                }
+                if (this._newType.of.isEnum()) {
+                    response.schema.items.enum = JSON.parse(JSON.stringify(this._newType.of.enum));
                 }
                 if (this._newType.of.isRef()) {
                     response.schema.items.$ref = this._newType.of.type;
@@ -3728,6 +3754,9 @@ var NewParamCommand = (function (_super) {
                 param.type = this._newType.type;
                 param.format = this._newType.as;
             }
+            if (this._newType.isEnum()) {
+                param.enum = JSON.parse(JSON.stringify(this._newType.enum));
+            }
             if (this._newType.isArray()) {
                 param.type = "array";
                 param.items = param.createItems();
@@ -3745,6 +3774,9 @@ var NewParamCommand = (function (_super) {
             if (this._newType.isSimpleType()) {
                 schema.type = this._newType.type;
                 schema.format = this._newType.as;
+            }
+            if (this._newType.isEnum()) {
+                schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
             }
             if (this._newType.isArray()) {
                 schema.type = "array";
@@ -4576,6 +4608,9 @@ var NewSchemaPropertyCommand = (function (_super) {
             prop.type = this._newType.type;
             prop.format = this._newType.as;
             prop.items = null;
+        }
+        if (this._newType.isEnum()) {
+            prop.enum = JSON.parse(JSON.stringify(this._newType.enum));
         }
         if (this._newType.isRef()) {
             prop.$ref = this._newType.type;
@@ -5463,6 +5498,10 @@ var SimplifiedType = (function () {
     }
     SimplifiedType.fromItems = function (items) {
         var rval = new SimplifiedType();
+        if (items.enum && items.enum.length >= 0) {
+            // Need to clone the enum values
+            rval.enum = JSON.parse(JSON.stringify(items.enum));
+        }
         if (items && items.type && items.type !== "array" && items.type !== "object" && items.type !== "file") {
             rval.type = items.type;
             if (items.format) {
@@ -5480,6 +5519,10 @@ var SimplifiedType = (function () {
         if (schema && schema.$ref) {
             rval.type = schema.$ref;
         }
+        if (schema.enum && schema.enum.length >= 0) {
+            // Need to clone the enum values
+            rval.enum = JSON.parse(JSON.stringify(schema.enum));
+        }
         if (schema && schema.type && schema.type !== "array" &&
             schema.type !== "object" && schema.type !== "file") {
             rval.type = schema.type;
@@ -5495,6 +5538,9 @@ var SimplifiedType = (function () {
     };
     SimplifiedType.prototype.isSimpleType = function () {
         return ["string", "number", "integer", "boolean"].indexOf(this.type) !== -1;
+    };
+    SimplifiedType.prototype.isEnum = function () {
+        return this.enum !== null && this.enum !== undefined && this.enum.length >= 0;
     };
     SimplifiedType.prototype.isArray = function () {
         return this.type === "array";
@@ -5527,6 +5573,7 @@ var SimplifiedParameterType = (function (_super) {
             st = SimplifiedType.fromSchema(param.schema);
         }
         rval.type = st.type;
+        rval.enum = st.enum;
         rval.of = st.of;
         rval.as = st.as;
         rval.required = param.required;
@@ -5545,6 +5592,7 @@ var SimplifiedPropertyType = (function (_super) {
         var required = schema.parent()["required"];
         var st = SimplifiedType.fromSchema(schema);
         rval.type = st.type;
+        rval.enum = st.enum;
         rval.of = st.of;
         rval.as = st.as;
         rval.required = false;
@@ -8766,6 +8814,7 @@ var MarshallUtils = (function () {
         }
         var obj = {
             type: sType.type,
+            enum: sType.enum,
             of: MarshallUtils.marshallSimplifiedType(sType.of),
             as: sType.as
         };
@@ -8782,6 +8831,7 @@ var MarshallUtils = (function () {
         }
         var type = new SimplifiedType();
         type.type = object.type;
+        type.enum = object.enum;
         type.of = MarshallUtils.unmarshallSimplifiedType(object.of);
         type.as = object.as;
         return type;
@@ -8797,6 +8847,7 @@ var MarshallUtils = (function () {
         }
         var obj = {
             type: sType.type,
+            enum: sType.enum,
             of: MarshallUtils.marshallSimplifiedType(sType.of),
             as: sType.as,
             required: sType.required
@@ -8814,6 +8865,7 @@ var MarshallUtils = (function () {
         }
         var type = new SimplifiedParameterType();
         type.type = object.type;
+        type.enum = object.enum;
         type.of = MarshallUtils.unmarshallSimplifiedType(object.of);
         type.as = object.as;
         type.required = object.required;
@@ -8830,6 +8882,7 @@ var MarshallUtils = (function () {
         }
         var obj = {
             type: sType.type,
+            enum: sType.enum,
             of: MarshallUtils.marshallSimplifiedType(sType.of),
             as: sType.as,
             required: sType.required
@@ -8847,6 +8900,7 @@ var MarshallUtils = (function () {
         }
         var type = new SimplifiedPropertyType();
         type.type = object.type;
+        type.enum = object.enum;
         type.of = MarshallUtils.unmarshallSimplifiedType(object.of);
         type.as = object.as;
         type.required = object.required;

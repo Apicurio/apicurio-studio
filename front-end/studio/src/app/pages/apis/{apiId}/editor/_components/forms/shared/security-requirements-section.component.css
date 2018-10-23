@@ -1,23 +1,19 @@
 .security-requirement {
     margin-top: 10px;
+    width: 100%;
+    padding: 5px;
 }
 
-.security-requirement .label {
-    margin-right: 8px;
-    cursor: default;
+.security-requirement:hover {
+    background-color: #edf8ff;
 }
 
-.security-requirement .label:hover {
-    filter: brightness(120%);
+.security-requirement .name {
+    display: inline-block;
 }
 
-.security-requirement .fa {
-    visibility: hidden;
-    cursor: pointer;
-    margin-right: 5px;
-    color: #0088ce;
-}
-.security-requirement:hover .fa {
-    visibility: visible;
-    color: #00659c;
+.security-requirement .actions {
+    display: inline-block;
+    float: right;
+    padding-right: 15px;
 }

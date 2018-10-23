@@ -44,13 +44,24 @@
             <div *ngIf="global" class="api-label">Security Requirements needed to access <strong>Operations in this API</strong> (clients must choose one combination):</div>
             <div *ngIf="!global" class="api-label">Security Requirements needed to access <strong>this Operation</strong> (clients must choose one combination):</div>
             <div class="security-requirement" *ngFor="let requirement of securityRequirements()">
-                <validation-problem [model]="requirement" [shallow]="true"></validation-problem>
-                <span class="label label-info" *ngFor="let name of requirement.securityRequirementNames()"
-                      title="{{ requirementScopes(requirement, name) }}">{{ name }}</span>
-                <span class="fa fa-pencil" title="Edit the security requirement."
-                      (click)="openSecurityRequirementEditor(requirement)"></span>
-                <span class="fa fa-trash" title="Delete the security requirement."
-                      (click)="deleteSecurityRequirement(requirement)"></span>
+                <div class="name">
+                    <validation-problem [model]="requirement" [shallow]="true"></validation-problem>
+                    <span class="fa fa-lock fa-fw"></span>
+                    <span class="requirement-label">{{ requirement.securityRequirementNames().join(", ") }}</span>
+                </div>
+                <div class="actions">
+                    <div class="dropdown dropdown-kebab-pf">
+                        <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <span class="fa fa-ellipsis-v"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a (click)="openSecurityRequirementEditor(requirement)"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a (click)="deleteSecurityRequirement(requirement)"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

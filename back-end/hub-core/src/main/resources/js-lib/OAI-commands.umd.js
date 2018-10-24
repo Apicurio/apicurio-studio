@@ -4,22 +4,11 @@
 	(factory((global.OAI_commands = global.OAI_commands || {}),global.OAI));
 }(this, (function (exports,oaiTsCore) { 'use strict';
 
-/**
- * @license
- * Copyright 2017 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+var __extends = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var ModelUtils = (function () {
     function ModelUtils() {
     }
@@ -51,6 +40,71 @@ var ModelUtils = (function () {
     };
     return ModelUtils;
 }());
+var SimplifiedTypeUtil = (function () {
+    function SimplifiedTypeUtil() {
+    }
+    SimplifiedTypeUtil.setSimplifiedType = function (node, type) {
+        node.$ref = null;
+        node.type = null;
+        node.enum = null;
+        node.format = null;
+        node.items = null;
+        if (type.isSimpleType()) {
+            node.type = type.type;
+            node.format = type.as;
+        }
+        if (type.isEnum()) {
+            node.enum = JSON.parse(JSON.stringify(type.enum));
+        }
+        if (type.isRef()) {
+            node.$ref = type.type;
+        }
+        if (type.isArray()) {
+            node.type = "array";
+            var viz = new SetItemsTypeVisitor(type);
+            oaiTsCore.OasVisitorUtil.visitNode(node, viz);
+        }
+    };
+    return SimplifiedTypeUtil;
+}());
+var SetItemsTypeVisitor = (function (_super) {
+    __extends(SetItemsTypeVisitor, _super);
+    function SetItemsTypeVisitor(type) {
+        var _this = _super.call(this) || this;
+        _this.type = type;
+        return _this;
+    }
+    SetItemsTypeVisitor.prototype.visitSchema = function (node) {
+        node.items = node.createItemsSchema();
+        if (this.type.of) {
+            if (this.type.of.isRef()) {
+                node.items.$ref = this.type.of.type;
+            }
+            else {
+                node.items.type = this.type.of.type;
+                node.items.format = this.type.of.as;
+            }
+        }
+    };
+    SetItemsTypeVisitor.prototype.visitParameterBase = function (node) {
+        if (node.ownerDocument().is2xDocument()) {
+            var param = node;
+            param.items = param.createItems();
+            if (this.type.of) {
+                param.items.type = this.type.of.type;
+                param.items.format = this.type.of.as;
+            }
+        }
+    };
+    SetItemsTypeVisitor.prototype.visitSchemaDefinition = function (node) { this.visitSchema(node); };
+    SetItemsTypeVisitor.prototype.visitPropertySchema = function (node) { this.visitSchema(node); };
+    SetItemsTypeVisitor.prototype.visitAdditionalPropertiesSchema = function (node) { this.visitSchema(node); };
+    SetItemsTypeVisitor.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
+    SetItemsTypeVisitor.prototype.visitItemsSchema = function (node) { this.visitSchema(node); };
+    SetItemsTypeVisitor.prototype.visitParameter = function (node) { this.visitParameterBase(node); };
+    SetItemsTypeVisitor.prototype.visitParameterDefinition = function (node) { this.visitParameterBase(node); };
+    return SetItemsTypeVisitor;
+}(oaiTsCore.OasCombinedVisitorAdapter));
 
 /**
  * @license
@@ -137,7 +191,7 @@ AbstractCommand._oasLibrary = new oaiTsCore.OasLibraryUtils();
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends = (undefined && undefined.__extends) || function (d, b) {
+var __extends$1 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -159,7 +213,7 @@ function createAddPathItemCommand(document, pathItemName, obj) {
  * pathItem object and then added to the data model.
  */
 var AddPathItemCommand = (function (_super) {
-    __extends(AddPathItemCommand, _super);
+    __extends$1(AddPathItemCommand, _super);
     /**
      * C'tor.
      * @param {string} pathItemName
@@ -214,7 +268,7 @@ var AddPathItemCommand = (function (_super) {
  * The OAI 2.0 impl.
  */
 var AddPathItemCommand_20 = (function (_super) {
-    __extends(AddPathItemCommand_20, _super);
+    __extends$1(AddPathItemCommand_20, _super);
     function AddPathItemCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -227,7 +281,7 @@ var AddPathItemCommand_20 = (function (_super) {
  * The OAI 3.0 impl.
  */
 var AddPathItemCommand_30 = (function (_super) {
-    __extends(AddPathItemCommand_30, _super);
+    __extends$1(AddPathItemCommand_30, _super);
     function AddPathItemCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -253,7 +307,7 @@ var AddPathItemCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$1 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$2 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -275,7 +329,7 @@ function createAddSchemaDefinitionCommand(document, definitionName, obj) {
  * definition object and then added to the data model.
  */
 var AddSchemaDefinitionCommand = (function (_super) {
-    __extends$1(AddSchemaDefinitionCommand, _super);
+    __extends$2(AddSchemaDefinitionCommand, _super);
     /**
      * Constructor.
      * @param {string} definitionName
@@ -320,7 +374,7 @@ var AddSchemaDefinitionCommand = (function (_super) {
  * OAI version 2.0 impl.
  */
 var AddSchemaDefinitionCommand_20 = (function (_super) {
-    __extends$1(AddSchemaDefinitionCommand_20, _super);
+    __extends$2(AddSchemaDefinitionCommand_20, _super);
     function AddSchemaDefinitionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -361,7 +415,7 @@ var AddSchemaDefinitionCommand_20 = (function (_super) {
  * OAI version 3.0.x impl.
  */
 var AddSchemaDefinitionCommand_30 = (function (_super) {
-    __extends$1(AddSchemaDefinitionCommand_30, _super);
+    __extends$2(AddSchemaDefinitionCommand_30, _super);
     function AddSchemaDefinitionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -418,7 +472,7 @@ var AddSchemaDefinitionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$2 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$3 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -438,7 +492,7 @@ function createChangeDescriptionCommand(document, newDescription) {
  * A command used to modify the description of a document.
  */
 var ChangeDescriptionCommand = (function (_super) {
-    __extends$2(ChangeDescriptionCommand, _super);
+    __extends$3(ChangeDescriptionCommand, _super);
     /**
      * C'tor.
      * @param {string} newDescription
@@ -483,7 +537,7 @@ var ChangeDescriptionCommand = (function (_super) {
  * The OAI 2.0 impl.
  */
 var ChangeDescriptionCommand_20 = (function (_super) {
-    __extends$2(ChangeDescriptionCommand_20, _super);
+    __extends$3(ChangeDescriptionCommand_20, _super);
     function ChangeDescriptionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -496,7 +550,7 @@ var ChangeDescriptionCommand_20 = (function (_super) {
  * The OAI 3.0 impl.
  */
 var ChangeDescriptionCommand_30 = (function (_super) {
-    __extends$2(ChangeDescriptionCommand_30, _super);
+    __extends$3(ChangeDescriptionCommand_30, _super);
     function ChangeDescriptionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -522,7 +576,7 @@ var ChangeDescriptionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$3 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$4 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -542,7 +596,7 @@ function createChangeLicenseCommand(document, name, url) {
  * A command used to modify the license information of a document.
  */
 var ChangeLicenseCommand = (function (_super) {
-    __extends$3(ChangeLicenseCommand, _super);
+    __extends$4(ChangeLicenseCommand, _super);
     /**
      * C'tor.
      * @param {string} name
@@ -600,7 +654,7 @@ var ChangeLicenseCommand = (function (_super) {
  * The OAI 2.0 impl.
  */
 var ChangeLicenseCommand_20 = (function (_super) {
-    __extends$3(ChangeLicenseCommand_20, _super);
+    __extends$4(ChangeLicenseCommand_20, _super);
     function ChangeLicenseCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -613,7 +667,7 @@ var ChangeLicenseCommand_20 = (function (_super) {
  * The OAI 3.0 impl.
  */
 var ChangeLicenseCommand_30 = (function (_super) {
-    __extends$3(ChangeLicenseCommand_30, _super);
+    __extends$4(ChangeLicenseCommand_30, _super);
     function ChangeLicenseCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -639,7 +693,7 @@ var ChangeLicenseCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$4 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$5 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -659,7 +713,7 @@ function createChangeMediaTypeTypeCommand(document, mediaType, newType) {
  * A command used to modify the type of a mediaType of a schema.
  */
 var ChangeMediaTypeTypeCommand = (function (_super) {
-    __extends$4(ChangeMediaTypeTypeCommand, _super);
+    __extends$5(ChangeMediaTypeTypeCommand, _super);
     /**
      * C'tor.
      * @param {Oas20MediaTypeSchema | Oas30MediaTypeSchema} mediaType
@@ -700,36 +754,7 @@ var ChangeMediaTypeTypeCommand = (function (_super) {
             this._oldMediaTypeSchema = this.oasLibrary().writeNode(mediaType.schema);
         }
         // Update the media type schema's type
-        if (this._newType.isSimpleType()) {
-            mediaType.schema.$ref = null;
-            mediaType.schema.type = this._newType.type;
-            mediaType.schema.format = this._newType.as;
-            mediaType.schema.items = null;
-        }
-        if (this._newType.isEnum()) {
-            mediaType.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
-        }
-        if (this._newType.isRef()) {
-            mediaType.schema.$ref = this._newType.type;
-            mediaType.schema.type = null;
-            mediaType.schema.format = null;
-            mediaType.schema.items = null;
-        }
-        if (this._newType.isArray()) {
-            mediaType.schema.$ref = null;
-            mediaType.schema.type = "array";
-            mediaType.schema.format = null;
-            mediaType.schema.items = mediaType.schema.createItemsSchema();
-            if (this._newType.of) {
-                if (this._newType.of.isRef()) {
-                    mediaType.schema.items.$ref = this._newType.of.type;
-                }
-                else {
-                    mediaType.schema.items.type = this._newType.of.type;
-                    mediaType.schema.items.format = this._newType.of.as;
-                }
-            }
-        }
+        SimplifiedTypeUtil.setSimplifiedType(mediaType.schema, this._newType);
         this._changed = true;
     };
     /**
@@ -791,7 +816,7 @@ var ChangeMediaTypeTypeCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$5 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$6 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -822,7 +847,7 @@ function createChangeParameterDefinitionTypeCommand(document, parameter, newType
  * A command used to modify the type of a parameter of an operation.
  */
 var ChangeParameterTypeCommand = (function (_super) {
-    __extends$5(ChangeParameterTypeCommand, _super);
+    __extends$6(ChangeParameterTypeCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Parameter | Oas30Parameter | Oas20ParameterDefinition | Oas30ParameterDefinition} parameter
@@ -893,7 +918,7 @@ var ChangeParameterTypeCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangeParameterTypeCommand_20 = (function (_super) {
-    __extends$5(ChangeParameterTypeCommand_20, _super);
+    __extends$6(ChangeParameterTypeCommand_20, _super);
     function ChangeParameterTypeCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -912,51 +937,10 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
         // If it's a body param, change the schema child.  Otherwise change the param itself.
         if (param.in === "body") {
             param.schema = param.createSchema();
-            if (this._newType.isSimpleType()) {
-                param.schema.type = this._newType.type;
-                param.schema.format = this._newType.as;
-            }
-            if (this._newType.isEnum()) {
-                param.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
-            }
-            if (this._newType.isRef()) {
-                param.schema.$ref = this._newType.type;
-            }
-            if (this._newType.isArray()) {
-                param.schema.type = "array";
-                param.schema.format = null;
-                param.schema.items = param.schema.createItemsSchema();
-                if (this._newType.of) {
-                    if (this._newType.of.isSimpleType()) {
-                        param.schema.items.type = this._newType.of.type;
-                        param.schema.items.format = this._newType.of.as;
-                    }
-                    if (this._newType.of.isEnum()) {
-                        param.schema.items.enum = JSON.parse(JSON.stringify(this._newType.of.enum));
-                    }
-                    if (this._newType.of.isRef()) {
-                        param.schema.items.$ref = this._newType.of.type;
-                    }
-                }
-            }
+            SimplifiedTypeUtil.setSimplifiedType(param.schema, this._newType);
         }
         else {
-            if (this._newType.isSimpleType()) {
-                param.type = this._newType.type;
-                param.format = this._newType.as;
-                param.items = null;
-            }
-            if (this._newType.isEnum()) {
-                param.enum = JSON.parse(JSON.stringify(this._newType.enum));
-            }
-            if (this._newType.isArray()) {
-                param.type = "array";
-                param.items = param.createItems();
-                if (this._newType.of) {
-                    param.items.type = this._newType.of.type;
-                    param.items.format = this._newType.of.as;
-                }
-            }
+            SimplifiedTypeUtil.setSimplifiedType(param, this._newType);
         }
         var required = this._newType.required;
         if (param.in === "path") {
@@ -997,7 +981,7 @@ var ChangeParameterTypeCommand_20 = (function (_super) {
  * the undo logic.
  */
 var ChangeParameterDefinitionTypeCommand_20 = (function (_super) {
-    __extends$5(ChangeParameterDefinitionTypeCommand_20, _super);
+    __extends$6(ChangeParameterDefinitionTypeCommand_20, _super);
     /**
      * C'tor.
      * @param {Oas20ParameterDefinition} parameter
@@ -1018,7 +1002,7 @@ var ChangeParameterDefinitionTypeCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangeParameterTypeCommand_30 = (function (_super) {
-    __extends$5(ChangeParameterTypeCommand_30, _super);
+    __extends$6(ChangeParameterTypeCommand_30, _super);
     function ChangeParameterTypeCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1035,24 +1019,7 @@ var ChangeParameterTypeCommand_30 = (function (_super) {
      */
     ChangeParameterTypeCommand_30.prototype.doChangeParameter = function (document, parameter) {
         var schema = parameter.createSchema();
-        if (this._newType.isRef()) {
-            schema.$ref = this._newType.type;
-        }
-        if (this._newType.isSimpleType()) {
-            schema.type = this._newType.type;
-            schema.format = this._newType.as;
-        }
-        if (this._newType.isEnum()) {
-            schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
-        }
-        if (this._newType.isArray()) {
-            schema.type = "array";
-            schema.items = schema.createItemsSchema();
-            if (this._newType.of) {
-                schema.items.type = this._newType.of.type;
-                schema.items.format = this._newType.of.as;
-            }
-        }
+        SimplifiedTypeUtil.setSimplifiedType(schema, this._newType);
         parameter.schema = schema;
         var required = this._newType.required;
         if (parameter.in === "path") {
@@ -1082,7 +1049,7 @@ var ChangeParameterTypeCommand_30 = (function (_super) {
  * the undo logic.
  */
 var ChangeParameterDefinitionTypeCommand_30 = (function (_super) {
-    __extends$5(ChangeParameterDefinitionTypeCommand_30, _super);
+    __extends$6(ChangeParameterDefinitionTypeCommand_30, _super);
     /**
      * C'tor.
      * @param {Oas30ParameterDefinition} parameter
@@ -1133,7 +1100,7 @@ var ChangeParameterDefinitionTypeCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$6 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$7 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1155,7 +1122,7 @@ function createChangePropertyCommand(document, node, property, newValue) {
  * string, boolean, number, etc.
  */
 var ChangePropertyCommand = (function (_super) {
-    __extends$6(ChangePropertyCommand, _super);
+    __extends$7(ChangePropertyCommand, _super);
     /**
      * C'tor.
      * @param {OasNode} node
@@ -1220,7 +1187,7 @@ var ChangePropertyCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangePropertyCommand_20 = (function (_super) {
-    __extends$6(ChangePropertyCommand_20, _super);
+    __extends$7(ChangePropertyCommand_20, _super);
     function ChangePropertyCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1233,7 +1200,7 @@ var ChangePropertyCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangePropertyCommand_30 = (function (_super) {
-    __extends$6(ChangePropertyCommand_30, _super);
+    __extends$7(ChangePropertyCommand_30, _super);
     function ChangePropertyCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1259,7 +1226,7 @@ var ChangePropertyCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$7 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$8 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1279,7 +1246,7 @@ function createChangeContactCommand(document, name, email, url) {
  * A command used to modify the contact information of a document.
  */
 var ChangeContactCommand = (function (_super) {
-    __extends$7(ChangeContactCommand, _super);
+    __extends$8(ChangeContactCommand, _super);
     /**
      * C'tor.
      * @param {string} name
@@ -1340,7 +1307,7 @@ var ChangeContactCommand = (function (_super) {
  * The OAI 2.0 impl.
  */
 var ChangeContactCommand_20 = (function (_super) {
-    __extends$7(ChangeContactCommand_20, _super);
+    __extends$8(ChangeContactCommand_20, _super);
     function ChangeContactCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1353,7 +1320,7 @@ var ChangeContactCommand_20 = (function (_super) {
  * The OAI 3.0 impl.
  */
 var ChangeContactCommand_30 = (function (_super) {
-    __extends$7(ChangeContactCommand_30, _super);
+    __extends$8(ChangeContactCommand_30, _super);
     function ChangeContactCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1379,7 +1346,7 @@ var ChangeContactCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$8 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$9 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1399,7 +1366,7 @@ function createChangePropertyTypeCommand(document, property, newType) {
  * A command used to modify the type of a property of a schema.
  */
 var ChangePropertyTypeCommand = (function (_super) {
-    __extends$8(ChangePropertyTypeCommand, _super);
+    __extends$9(ChangePropertyTypeCommand, _super);
     /**
      * C'tor.
      * @param {Oas20PropertySchema | Oas30PropertySchema} property
@@ -1429,36 +1396,7 @@ var ChangePropertyTypeCommand = (function (_super) {
         this._oldProperty = this.oasLibrary().writeNode(prop);
         this._oldRequired = required && required.length > 0 && required.indexOf(prop.propertyName()) != -1;
         // Update the schema's type
-        if (this._newType.isSimpleType()) {
-            prop.$ref = null;
-            prop.type = this._newType.type;
-            prop.format = this._newType.as;
-            prop.items = null;
-        }
-        if (this._newType.isEnum()) {
-            prop.enum = JSON.parse(JSON.stringify(this._newType.enum));
-        }
-        if (this._newType.isRef()) {
-            prop.$ref = this._newType.type;
-            prop.type = null;
-            prop.format = null;
-            prop.items = null;
-        }
-        if (this._newType.isArray()) {
-            prop.$ref = null;
-            prop.type = "array";
-            prop.format = null;
-            prop.items = prop.createItemsSchema();
-            if (this._newType.of) {
-                if (this._newType.of.isRef()) {
-                    prop.items.$ref = this._newType.of.type;
-                }
-                else {
-                    prop.items.type = this._newType.of.type;
-                    prop.items.format = this._newType.of.as;
-                }
-            }
-        }
+        SimplifiedTypeUtil.setSimplifiedType(prop, this._newType);
         if (!this.isNullOrUndefined(this._newType.required)) {
             // Going from optional to required
             if (this._newType.required && !this._oldRequired) {
@@ -1549,7 +1487,7 @@ var ChangePropertyTypeCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangePropertyTypeCommand_20 = (function (_super) {
-    __extends$8(ChangePropertyTypeCommand_20, _super);
+    __extends$9(ChangePropertyTypeCommand_20, _super);
     function ChangePropertyTypeCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1562,7 +1500,7 @@ var ChangePropertyTypeCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangePropertyTypeCommand_30 = (function (_super) {
-    __extends$8(ChangePropertyTypeCommand_30, _super);
+    __extends$9(ChangePropertyTypeCommand_30, _super);
     function ChangePropertyTypeCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1588,7 +1526,7 @@ var ChangePropertyTypeCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$9 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$10 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1619,7 +1557,7 @@ function createChangeResponseDefinitionTypeCommand(document, response, newType) 
  * A command used to modify the type of a response.
  */
 var ChangeResponseTypeCommand_20 = (function (_super) {
-    __extends$9(ChangeResponseTypeCommand_20, _super);
+    __extends$10(ChangeResponseTypeCommand_20, _super);
     /**
      * C'tor.
      * @param {Oas20Response | Oas20ResponseDefinition} response
@@ -1654,32 +1592,7 @@ var ChangeResponseTypeCommand_20 = (function (_super) {
             this._oldSchema = this.oasLibrary().writeNode(response.schema);
         }
         response.schema = response.createSchema();
-        if (this._newType.isSimpleType()) {
-            response.schema.type = this._newType.type;
-            response.schema.format = this._newType.as;
-        }
-        if (this._newType.isEnum()) {
-            response.schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
-        }
-        if (this._newType.isRef()) {
-            response.schema.$ref = this._newType.type;
-        }
-        if (this._newType.isArray()) {
-            response.schema.type = "array";
-            response.schema.items = response.schema.createItemsSchema();
-            if (this._newType.of) {
-                if (this._newType.of.isSimpleType()) {
-                    response.schema.items.type = this._newType.of.type;
-                    response.schema.items.format = this._newType.of.as;
-                }
-                if (this._newType.of.isEnum()) {
-                    response.schema.items.enum = JSON.parse(JSON.stringify(this._newType.of.enum));
-                }
-                if (this._newType.of.isRef()) {
-                    response.schema.items.$ref = this._newType.of.type;
-                }
-            }
-        }
+        SimplifiedTypeUtil.setSimplifiedType(response.schema, this._newType);
     };
     /**
      * Resets the response type back to its previous state.
@@ -1724,7 +1637,7 @@ var ChangeResponseTypeCommand_20 = (function (_super) {
  * Changes the type of a response definition.
  */
 var ChangeResponseDefinitionTypeCommand_20 = (function (_super) {
-    __extends$9(ChangeResponseDefinitionTypeCommand_20, _super);
+    __extends$10(ChangeResponseDefinitionTypeCommand_20, _super);
     /**
      * C'tor.
      * @param {Oas20Response | Oas20ResponseDefinition} response
@@ -1758,7 +1671,7 @@ var ChangeResponseDefinitionTypeCommand_20 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$10 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$11 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1778,7 +1691,7 @@ function createChangeSecuritySchemeCommand(document, scheme) {
  * A command used to modify a security scheme.
  */
 var ChangeSecuritySchemeCommand = (function (_super) {
-    __extends$10(ChangeSecuritySchemeCommand, _super);
+    __extends$11(ChangeSecuritySchemeCommand, _super);
     /**
      * C'tor.
      * @param {Oas20SecurityScheme} scheme
@@ -1848,7 +1761,7 @@ var ChangeSecuritySchemeCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangeSecuritySchemeCommand_20 = (function (_super) {
-    __extends$10(ChangeSecuritySchemeCommand_20, _super);
+    __extends$11(ChangeSecuritySchemeCommand_20, _super);
     function ChangeSecuritySchemeCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1883,7 +1796,7 @@ var ChangeSecuritySchemeCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangeSecuritySchemeCommand_30 = (function (_super) {
-    __extends$10(ChangeSecuritySchemeCommand_30, _super);
+    __extends$11(ChangeSecuritySchemeCommand_30, _super);
     function ChangeSecuritySchemeCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -1932,7 +1845,7 @@ var ChangeSecuritySchemeCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$11 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$12 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -1952,7 +1865,7 @@ function createChangeTitleCommand(document, newTitle) {
  * A command used to modify the title of a document.
  */
 var ChangeTitleCommand = (function (_super) {
-    __extends$11(ChangeTitleCommand, _super);
+    __extends$12(ChangeTitleCommand, _super);
     /**
      * C'tor.
      * @param {string} newTitle
@@ -1997,7 +1910,7 @@ var ChangeTitleCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangeTitleCommand_20 = (function (_super) {
-    __extends$11(ChangeTitleCommand_20, _super);
+    __extends$12(ChangeTitleCommand_20, _super);
     function ChangeTitleCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2010,7 +1923,7 @@ var ChangeTitleCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangeTitleCommand_30 = (function (_super) {
-    __extends$11(ChangeTitleCommand_30, _super);
+    __extends$12(ChangeTitleCommand_30, _super);
     function ChangeTitleCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2036,7 +1949,7 @@ var ChangeTitleCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$12 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$13 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2056,7 +1969,7 @@ function createChangeVersionCommand(document, newVersion) {
  * A command used to modify the version of a document.
  */
 var ChangeVersionCommand = (function (_super) {
-    __extends$12(ChangeVersionCommand, _super);
+    __extends$13(ChangeVersionCommand, _super);
     /**
      * C'tor.
      * @param {string} newVersion
@@ -2101,7 +2014,7 @@ var ChangeVersionCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var ChangeVersionCommand_20 = (function (_super) {
-    __extends$12(ChangeVersionCommand_20, _super);
+    __extends$13(ChangeVersionCommand_20, _super);
     function ChangeVersionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2114,7 +2027,7 @@ var ChangeVersionCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var ChangeVersionCommand_30 = (function (_super) {
-    __extends$12(ChangeVersionCommand_30, _super);
+    __extends$13(ChangeVersionCommand_30, _super);
     function ChangeVersionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2140,7 +2053,7 @@ var ChangeVersionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$13 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$14 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2160,7 +2073,7 @@ function createDeleteAllParametersCommand(document, parent, type) {
  * A command used to delete all parameters from an operation.
  */
 var DeleteAllParametersCommand = (function (_super) {
-    __extends$13(DeleteAllParametersCommand, _super);
+    __extends$14(DeleteAllParametersCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Operation | Oas20PathItem} parent
@@ -2244,7 +2157,7 @@ var DeleteAllParametersCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteAllParametersCommand_20 = (function (_super) {
-    __extends$13(DeleteAllParametersCommand_20, _super);
+    __extends$14(DeleteAllParametersCommand_20, _super);
     function DeleteAllParametersCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2257,7 +2170,7 @@ var DeleteAllParametersCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteAllParametersCommand_30 = (function (_super) {
-    __extends$13(DeleteAllParametersCommand_30, _super);
+    __extends$14(DeleteAllParametersCommand_30, _super);
     function DeleteAllParametersCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2283,7 +2196,7 @@ var DeleteAllParametersCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$14 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$15 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2303,7 +2216,7 @@ function createDeleteAllPropertiesCommand(document, schema) {
  * A command used to delete all properties from a schema.
  */
 var DeleteAllPropertiesCommand = (function (_super) {
-    __extends$14(DeleteAllPropertiesCommand, _super);
+    __extends$15(DeleteAllPropertiesCommand, _super);
     /**
      * C'tor.
      * @param {OasSchema} schema
@@ -2377,7 +2290,7 @@ var DeleteAllPropertiesCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteAllPropertiesCommand_20 = (function (_super) {
-    __extends$14(DeleteAllPropertiesCommand_20, _super);
+    __extends$15(DeleteAllPropertiesCommand_20, _super);
     function DeleteAllPropertiesCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2390,7 +2303,7 @@ var DeleteAllPropertiesCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteAllPropertiesCommand_30 = (function (_super) {
-    __extends$14(DeleteAllPropertiesCommand_30, _super);
+    __extends$15(DeleteAllPropertiesCommand_30, _super);
     function DeleteAllPropertiesCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2416,7 +2329,7 @@ var DeleteAllPropertiesCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$15 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$16 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2436,7 +2349,7 @@ function createDeleteMediaTypeCommand(document, mediaType) {
  * A command used to delete a single mediaType from an operation.
  */
 var DeleteMediaTypeCommand = (function (_super) {
-    __extends$15(DeleteMediaTypeCommand, _super);
+    __extends$16(DeleteMediaTypeCommand, _super);
     /**
      * C'tor.
      * @param {Oas30MediaType} mediaType
@@ -2523,7 +2436,7 @@ var DeleteMediaTypeCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$16 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$17 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2543,7 +2456,7 @@ function createDeleteParameterCommand(document, parameter) {
  * A command used to delete a single parameter from an operation.
  */
 var DeleteParameterCommand = (function (_super) {
-    __extends$16(DeleteParameterCommand, _super);
+    __extends$17(DeleteParameterCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Parameter | Oas30Parameter} parameter
@@ -2616,7 +2529,7 @@ var DeleteParameterCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteParameterCommand_20 = (function (_super) {
-    __extends$16(DeleteParameterCommand_20, _super);
+    __extends$17(DeleteParameterCommand_20, _super);
     function DeleteParameterCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2629,7 +2542,7 @@ var DeleteParameterCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteParameterCommand_30 = (function (_super) {
-    __extends$16(DeleteParameterCommand_30, _super);
+    __extends$17(DeleteParameterCommand_30, _super);
     function DeleteParameterCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2655,7 +2568,7 @@ var DeleteParameterCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$17 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$18 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2675,7 +2588,7 @@ function createDeletePathCommand(document, path) {
  * A command used to delete a path.
  */
 var DeletePathCommand = (function (_super) {
-    __extends$17(DeletePathCommand, _super);
+    __extends$18(DeletePathCommand, _super);
     /**
      * C'tor.
      * @param {string} path
@@ -2718,7 +2631,7 @@ var DeletePathCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeletePathCommand_20 = (function (_super) {
-    __extends$17(DeletePathCommand_20, _super);
+    __extends$18(DeletePathCommand_20, _super);
     function DeletePathCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2731,7 +2644,7 @@ var DeletePathCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeletePathCommand_30 = (function (_super) {
-    __extends$17(DeletePathCommand_30, _super);
+    __extends$18(DeletePathCommand_30, _super);
     function DeletePathCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2757,7 +2670,7 @@ var DeletePathCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$18 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$19 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2777,7 +2690,7 @@ function createDeletePropertyCommand(document, property) {
  * A command used to delete a single property from a schema.
  */
 var DeletePropertyCommand = (function (_super) {
-    __extends$18(DeletePropertyCommand, _super);
+    __extends$19(DeletePropertyCommand, _super);
     /**
      * C'tor.
      * @param {Oas20PropertySchema | Oas30PropertySchema} property
@@ -2847,7 +2760,7 @@ var DeletePropertyCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeletePropertyCommand_20 = (function (_super) {
-    __extends$18(DeletePropertyCommand_20, _super);
+    __extends$19(DeletePropertyCommand_20, _super);
     function DeletePropertyCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2860,7 +2773,7 @@ var DeletePropertyCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeletePropertyCommand_30 = (function (_super) {
-    __extends$18(DeletePropertyCommand_30, _super);
+    __extends$19(DeletePropertyCommand_30, _super);
     function DeletePropertyCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -2886,7 +2799,7 @@ var DeletePropertyCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$19 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$20 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2906,7 +2819,7 @@ function createDeleteResponseCommand(document, response) {
  * A command used to delete a single response from an operation.
  */
 var DeleteResponseCommand = (function (_super) {
-    __extends$19(DeleteResponseCommand, _super);
+    __extends$20(DeleteResponseCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Response | Oas30Response} response
@@ -2987,7 +2900,7 @@ var DeleteResponseCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteResponseCommand_20 = (function (_super) {
-    __extends$19(DeleteResponseCommand_20, _super);
+    __extends$20(DeleteResponseCommand_20, _super);
     function DeleteResponseCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3000,7 +2913,7 @@ var DeleteResponseCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteResponseCommand_30 = (function (_super) {
-    __extends$19(DeleteResponseCommand_30, _super);
+    __extends$20(DeleteResponseCommand_30, _super);
     function DeleteResponseCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3026,7 +2939,7 @@ var DeleteResponseCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$20 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$21 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3046,7 +2959,7 @@ function createDeleteSchemaDefinitionCommand(document, definitionName) {
  * A command used to delete a schema definition.
  */
 var DeleteSchemaDefinitionCommand = (function (_super) {
-    __extends$20(DeleteSchemaDefinitionCommand, _super);
+    __extends$21(DeleteSchemaDefinitionCommand, _super);
     /**
      * C'tor.
      * @param {string} definitionName
@@ -3081,7 +2994,7 @@ var DeleteSchemaDefinitionCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteSchemaDefinitionCommand_20 = (function (_super) {
-    __extends$20(DeleteSchemaDefinitionCommand_20, _super);
+    __extends$21(DeleteSchemaDefinitionCommand_20, _super);
     function DeleteSchemaDefinitionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3121,7 +3034,7 @@ var DeleteSchemaDefinitionCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteSchemaDefinitionCommand_30 = (function (_super) {
-    __extends$20(DeleteSchemaDefinitionCommand_30, _super);
+    __extends$21(DeleteSchemaDefinitionCommand_30, _super);
     function DeleteSchemaDefinitionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3171,7 +3084,7 @@ var DeleteSchemaDefinitionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$21 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$22 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3191,7 +3104,7 @@ function createDeleteSecuritySchemeCommand(document, schemeName) {
  * A command used to delete a security scheme.
  */
 var DeleteSecuritySchemeCommand = (function (_super) {
-    __extends$21(DeleteSecuritySchemeCommand, _super);
+    __extends$22(DeleteSecuritySchemeCommand, _super);
     /**
      * C'tor.
      * @param {string} schemeName
@@ -3224,7 +3137,7 @@ var DeleteSecuritySchemeCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteSecuritySchemeCommand_20 = (function (_super) {
-    __extends$21(DeleteSecuritySchemeCommand_20, _super);
+    __extends$22(DeleteSecuritySchemeCommand_20, _super);
     function DeleteSecuritySchemeCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3263,7 +3176,7 @@ var DeleteSecuritySchemeCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteSecuritySchemeCommand_30 = (function (_super) {
-    __extends$21(DeleteSecuritySchemeCommand_30, _super);
+    __extends$22(DeleteSecuritySchemeCommand_30, _super);
     function DeleteSecuritySchemeCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3314,7 +3227,7 @@ var DeleteSecuritySchemeCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$22 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$23 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3334,7 +3247,7 @@ function createDeleteTagCommand(document, tagName) {
  * A command used to delete a single tag definition from the document.
  */
 var DeleteTagCommand = (function (_super) {
-    __extends$22(DeleteTagCommand, _super);
+    __extends$23(DeleteTagCommand, _super);
     /**
      * C'tor.
      * @param {string} tagName
@@ -3389,7 +3302,7 @@ var DeleteTagCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteTagCommand_20 = (function (_super) {
-    __extends$22(DeleteTagCommand_20, _super);
+    __extends$23(DeleteTagCommand_20, _super);
     function DeleteTagCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3402,7 +3315,7 @@ var DeleteTagCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteTagCommand_30 = (function (_super) {
-    __extends$22(DeleteTagCommand_30, _super);
+    __extends$23(DeleteTagCommand_30, _super);
     function DeleteTagCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3428,7 +3341,7 @@ var DeleteTagCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$23 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$24 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3448,7 +3361,7 @@ function createNewMediaTypeCommand(document, node, newMediaType) {
  * A command used to create a new media type.
  */
 var NewMediaTypeCommand = (function (_super) {
-    __extends$23(NewMediaTypeCommand, _super);
+    __extends$24(NewMediaTypeCommand, _super);
     /**
      * C'tor.
      * @param {Oas30ParameterBase | Oas30RequestBody | Oas30ResponseBase} node
@@ -3537,7 +3450,7 @@ var NewMediaTypeCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$24 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3557,7 +3470,7 @@ function createNewOperationCommand(document, path, method) {
  * A command used to create a new operation in a path.
  */
 var NewOperationCommand = (function (_super) {
-    __extends$24(NewOperationCommand, _super);
+    __extends$25(NewOperationCommand, _super);
     /**
      * C'tor.
      * @param {string} path
@@ -3611,7 +3524,7 @@ var NewOperationCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewOperationCommand_20 = (function (_super) {
-    __extends$24(NewOperationCommand_20, _super);
+    __extends$25(NewOperationCommand_20, _super);
     function NewOperationCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3624,7 +3537,7 @@ var NewOperationCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewOperationCommand_30 = (function (_super) {
-    __extends$24(NewOperationCommand_30, _super);
+    __extends$25(NewOperationCommand_30, _super);
     function NewOperationCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3650,7 +3563,7 @@ var NewOperationCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$25 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$26 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3673,7 +3586,7 @@ function createNewParamCommand(document, parent, paramName, paramType, descripti
  * A command used to create a new parameter.
  */
 var NewParamCommand = (function (_super) {
-    __extends$25(NewParamCommand, _super);
+    __extends$26(NewParamCommand, _super);
     /**
      * Constructor.
      * @param parent
@@ -3747,45 +3660,11 @@ var NewParamCommand = (function (_super) {
     NewParamCommand.prototype._setParameterType = function (parameter) {
         if (parameter.ownerDocument().is2xDocument()) {
             var param = parameter;
-            if (this._newType.isRef()) {
-                param.$ref = this._newType.type;
-            }
-            if (this._newType.isSimpleType()) {
-                param.type = this._newType.type;
-                param.format = this._newType.as;
-            }
-            if (this._newType.isEnum()) {
-                param.enum = JSON.parse(JSON.stringify(this._newType.enum));
-            }
-            if (this._newType.isArray()) {
-                param.type = "array";
-                param.items = param.createItems();
-                if (this._newType.of) {
-                    param.items.type = this._newType.of.type;
-                    param.items.format = this._newType.of.as;
-                }
-            }
+            SimplifiedTypeUtil.setSimplifiedType(param, this._newType);
         }
         else {
             var schema = parameter.createSchema();
-            if (this._newType.isRef()) {
-                schema.$ref = this._newType.type;
-            }
-            if (this._newType.isSimpleType()) {
-                schema.type = this._newType.type;
-                schema.format = this._newType.as;
-            }
-            if (this._newType.isEnum()) {
-                schema.enum = JSON.parse(JSON.stringify(this._newType.enum));
-            }
-            if (this._newType.isArray()) {
-                schema.type = "array";
-                schema.items = schema.createItemsSchema();
-                if (this._newType.of) {
-                    schema.items.type = this._newType.of.type;
-                    schema.items.format = this._newType.of.as;
-                }
-            }
+            SimplifiedTypeUtil.setSimplifiedType(schema, this._newType);
             parameter.schema = schema;
         }
         var required = this._newType.required;
@@ -3879,7 +3758,7 @@ var NewParamCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewParamCommand_20 = (function (_super) {
-    __extends$25(NewParamCommand_20, _super);
+    __extends$26(NewParamCommand_20, _super);
     function NewParamCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3892,7 +3771,7 @@ var NewParamCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewParamCommand_30 = (function (_super) {
-    __extends$25(NewParamCommand_30, _super);
+    __extends$26(NewParamCommand_30, _super);
     function NewParamCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -3918,7 +3797,7 @@ var NewParamCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$26 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$27 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3938,7 +3817,7 @@ function createNewPathCommand(document, newPath) {
  * A command used to create a new path item in a document.
  */
 var NewPathCommand = (function (_super) {
-    __extends$26(NewPathCommand, _super);
+    __extends$27(NewPathCommand, _super);
     /**
      * C'tor.
      * @param {string} newPath
@@ -3992,7 +3871,7 @@ var NewPathCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewPathCommand_20 = (function (_super) {
-    __extends$26(NewPathCommand_20, _super);
+    __extends$27(NewPathCommand_20, _super);
     function NewPathCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4005,7 +3884,7 @@ var NewPathCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewPathCommand_30 = (function (_super) {
-    __extends$26(NewPathCommand_30, _super);
+    __extends$27(NewPathCommand_30, _super);
     function NewPathCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4031,7 +3910,7 @@ var NewPathCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$27 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$28 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4051,7 +3930,7 @@ function createNewRequestBodyCommand(document, operation) {
  * A command used to create a new request body (parameter of an operation).
  */
 var NewRequestBodyCommand = (function (_super) {
-    __extends$27(NewRequestBodyCommand, _super);
+    __extends$28(NewRequestBodyCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Operation} operation
@@ -4118,7 +3997,7 @@ var NewRequestBodyCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewRequestBodyCommand_20 = (function (_super) {
-    __extends$27(NewRequestBodyCommand_20, _super);
+    __extends$28(NewRequestBodyCommand_20, _super);
     function NewRequestBodyCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4178,7 +4057,7 @@ var NewRequestBodyCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewRequestBodyCommand_30 = (function (_super) {
-    __extends$27(NewRequestBodyCommand_30, _super);
+    __extends$28(NewRequestBodyCommand_30, _super);
     function NewRequestBodyCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4229,7 +4108,7 @@ var NewRequestBodyCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$28 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4249,7 +4128,7 @@ function createNewResponseCommand(document, operation, statusCode) {
  * A command used to create a new response in an operation.
  */
 var NewResponseCommand = (function (_super) {
-    __extends$28(NewResponseCommand, _super);
+    __extends$29(NewResponseCommand, _super);
     /**
      * C'tor.
      * @param {Oas20Operation | Oas30Operation} operation
@@ -4328,7 +4207,7 @@ var NewResponseCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewResponseCommand_20 = (function (_super) {
-    __extends$28(NewResponseCommand_20, _super);
+    __extends$29(NewResponseCommand_20, _super);
     function NewResponseCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4341,7 +4220,7 @@ var NewResponseCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewResponseCommand_30 = (function (_super) {
-    __extends$28(NewResponseCommand_30, _super);
+    __extends$29(NewResponseCommand_30, _super);
     function NewResponseCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4367,7 +4246,7 @@ var NewResponseCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$29 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4387,7 +4266,7 @@ function createNewSchemaDefinitionCommand(document, definitionName, example, des
  * A command used to create a new definition in a document.
  */
 var NewSchemaDefinitionCommand = (function (_super) {
-    __extends$29(NewSchemaDefinitionCommand, _super);
+    __extends$30(NewSchemaDefinitionCommand, _super);
     /**
      * C'tor.
      * @param {string} definitionName
@@ -4406,7 +4285,7 @@ var NewSchemaDefinitionCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewSchemaDefinitionCommand_20 = (function (_super) {
-    __extends$29(NewSchemaDefinitionCommand_20, _super);
+    __extends$30(NewSchemaDefinitionCommand_20, _super);
     function NewSchemaDefinitionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4462,7 +4341,7 @@ var NewSchemaDefinitionCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewSchemaDefinitionCommand_30 = (function (_super) {
-    __extends$29(NewSchemaDefinitionCommand_30, _super);
+    __extends$30(NewSchemaDefinitionCommand_30, _super);
     function NewSchemaDefinitionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4532,7 +4411,7 @@ var NewSchemaDefinitionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$30 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$31 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4552,7 +4431,7 @@ function createNewSchemaPropertyCommand(document, schema, propertyName, descript
  * A command used to create a new schema property.
  */
 var NewSchemaPropertyCommand = (function (_super) {
-    __extends$30(NewSchemaPropertyCommand, _super);
+    __extends$31(NewSchemaPropertyCommand, _super);
     /**
      * Constructor.
      * @param schema
@@ -4603,36 +4482,7 @@ var NewSchemaPropertyCommand = (function (_super) {
      */
     NewSchemaPropertyCommand.prototype._setPropertyType = function (prop) {
         // Update the schema's type
-        if (this._newType.isSimpleType()) {
-            prop.$ref = null;
-            prop.type = this._newType.type;
-            prop.format = this._newType.as;
-            prop.items = null;
-        }
-        if (this._newType.isEnum()) {
-            prop.enum = JSON.parse(JSON.stringify(this._newType.enum));
-        }
-        if (this._newType.isRef()) {
-            prop.$ref = this._newType.type;
-            prop.type = null;
-            prop.format = null;
-            prop.items = null;
-        }
-        if (this._newType.isArray()) {
-            prop.$ref = null;
-            prop.type = "array";
-            prop.format = null;
-            prop.items = prop.createItemsSchema();
-            if (this._newType.of) {
-                if (this._newType.of.isRef()) {
-                    prop.items.$ref = this._newType.of.type;
-                }
-                else {
-                    prop.items.type = this._newType.of.type;
-                    prop.items.format = this._newType.of.as;
-                }
-            }
-        }
+        SimplifiedTypeUtil.setSimplifiedType(prop, this._newType);
         if (this._newType && this._newType.required) {
             var required = prop.parent()["required"];
             if (this.isNullOrUndefined(required)) {
@@ -4691,7 +4541,7 @@ var NewSchemaPropertyCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewSchemaPropertyCommand_20 = (function (_super) {
-    __extends$30(NewSchemaPropertyCommand_20, _super);
+    __extends$31(NewSchemaPropertyCommand_20, _super);
     function NewSchemaPropertyCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4704,7 +4554,7 @@ var NewSchemaPropertyCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewSchemaPropertyCommand_30 = (function (_super) {
-    __extends$30(NewSchemaPropertyCommand_30, _super);
+    __extends$31(NewSchemaPropertyCommand_30, _super);
     function NewSchemaPropertyCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4730,7 +4580,7 @@ var NewSchemaPropertyCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$31 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$32 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4750,7 +4600,7 @@ function createNewSecuritySchemeCommand(document, scheme) {
  * A command used to create a new definition in a document.
  */
 var NewSecuritySchemeCommand = (function (_super) {
-    __extends$31(NewSecuritySchemeCommand, _super);
+    __extends$32(NewSecuritySchemeCommand, _super);
     /**
      * C'tor.
      * @param {Oas20SecurityScheme} scheme
@@ -4769,7 +4619,7 @@ var NewSecuritySchemeCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewSecuritySchemeCommand_20 = (function (_super) {
-    __extends$31(NewSecuritySchemeCommand_20, _super);
+    __extends$32(NewSecuritySchemeCommand_20, _super);
     function NewSecuritySchemeCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4821,7 +4671,7 @@ var NewSecuritySchemeCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewSecuritySchemeCommand_30 = (function (_super) {
-    __extends$31(NewSecuritySchemeCommand_30, _super);
+    __extends$32(NewSecuritySchemeCommand_30, _super);
     function NewSecuritySchemeCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4886,7 +4736,7 @@ var NewSecuritySchemeCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$32 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$33 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -4906,7 +4756,7 @@ function createNewTagCommand(document, name, description) {
  * A command used to create a new tag.
  */
 var NewTagCommand = (function (_super) {
-    __extends$32(NewTagCommand, _super);
+    __extends$33(NewTagCommand, _super);
     /**
      * Constructor.
      * @param {string} name
@@ -4971,7 +4821,7 @@ var NewTagCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var NewTagCommand_20 = (function (_super) {
-    __extends$32(NewTagCommand_20, _super);
+    __extends$33(NewTagCommand_20, _super);
     function NewTagCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -4984,7 +4834,7 @@ var NewTagCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var NewTagCommand_30 = (function (_super) {
-    __extends$32(NewTagCommand_30, _super);
+    __extends$33(NewTagCommand_30, _super);
     function NewTagCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5010,7 +4860,7 @@ var NewTagCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$35 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5019,7 +4869,7 @@ var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
  * A command used to replace a path item with a newer version.
  */
 var ReplaceNodeCommand = (function (_super) {
-    __extends$34(ReplaceNodeCommand, _super);
+    __extends$35(ReplaceNodeCommand, _super);
     /**
      * C'tor.
      * @param {T} old
@@ -5105,7 +4955,7 @@ var ReplaceNodeCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$33 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$34 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5125,7 +4975,7 @@ function createReplaceOperationCommand(document, old, replacement) {
  * A command used to replace an operation with a newer version.
  */
 var AbstractReplaceOperationCommand = (function (_super) {
-    __extends$33(AbstractReplaceOperationCommand, _super);
+    __extends$34(AbstractReplaceOperationCommand, _super);
     /**
      * @param {T} old
      * @param {T} replacement
@@ -5176,7 +5026,7 @@ var AbstractReplaceOperationCommand = (function (_super) {
  * A command used to replace an operation with a newer version.
  */
 var ReplaceOperationCommand_20 = (function (_super) {
-    __extends$33(ReplaceOperationCommand_20, _super);
+    __extends$34(ReplaceOperationCommand_20, _super);
     function ReplaceOperationCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5192,7 +5042,7 @@ var ReplaceOperationCommand_20 = (function (_super) {
  * A command used to replace an operation with a newer version.
  */
 var ReplaceOperationCommand_30 = (function (_super) {
-    __extends$33(ReplaceOperationCommand_30, _super);
+    __extends$34(ReplaceOperationCommand_30, _super);
     function ReplaceOperationCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5221,7 +5071,7 @@ var ReplaceOperationCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$35 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$36 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5241,7 +5091,7 @@ function createReplacePathItemCommand(document, old, replacement) {
  * A command used to replace a path item with a newer version.
  */
 var AbstractReplacePathItemCommand = (function (_super) {
-    __extends$35(AbstractReplacePathItemCommand, _super);
+    __extends$36(AbstractReplacePathItemCommand, _super);
     /**
      * @param {OasPathItem} old
      * @param {OasPathItem} replacement
@@ -5288,7 +5138,7 @@ var AbstractReplacePathItemCommand = (function (_super) {
  * A command used to replace a path item with a newer version.
  */
 var ReplacePathItemCommand_20 = (function (_super) {
-    __extends$35(ReplacePathItemCommand_20, _super);
+    __extends$36(ReplacePathItemCommand_20, _super);
     function ReplacePathItemCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5304,7 +5154,7 @@ var ReplacePathItemCommand_20 = (function (_super) {
  * A command used to replace a path item with a newer version.
  */
 var ReplacePathItemCommand_30 = (function (_super) {
-    __extends$35(ReplacePathItemCommand_30, _super);
+    __extends$36(ReplacePathItemCommand_30, _super);
     function ReplacePathItemCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5333,7 +5183,7 @@ var ReplacePathItemCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$36 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$37 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5353,7 +5203,7 @@ function createReplaceSchemaDefinitionCommand(document, old, replacement) {
  * A command used to replace a definition schema with a newer version.
  */
 var ReplaceSchemaDefinitionCommand_20 = (function (_super) {
-    __extends$36(ReplaceSchemaDefinitionCommand_20, _super);
+    __extends$37(ReplaceSchemaDefinitionCommand_20, _super);
     /**
      * @param {Oas20SchemaDefinition} old
      * @param {Oas20SchemaDefinition} replacement
@@ -5406,7 +5256,7 @@ var ReplaceSchemaDefinitionCommand_20 = (function (_super) {
  * A command used to replace a definition schema with a newer version.
  */
 var ReplaceSchemaDefinitionCommand_30 = (function (_super) {
-    __extends$36(ReplaceSchemaDefinitionCommand_30, _super);
+    __extends$37(ReplaceSchemaDefinitionCommand_30, _super);
     /**
      * @param {Oas20SchemaDefinition} old
      * @param {Oas20SchemaDefinition} replacement
@@ -5472,7 +5322,7 @@ var ReplaceSchemaDefinitionCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$37 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$38 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5554,7 +5404,7 @@ var SimplifiedType = (function () {
  * Adds the "required" property to the standard SimplifiedType.
  */
 var SimplifiedParameterType = (function (_super) {
-    __extends$37(SimplifiedParameterType, _super);
+    __extends$38(SimplifiedParameterType, _super);
     function SimplifiedParameterType() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5582,7 +5432,7 @@ var SimplifiedParameterType = (function (_super) {
     return SimplifiedParameterType;
 }(SimplifiedType));
 var SimplifiedPropertyType = (function (_super) {
-    __extends$37(SimplifiedPropertyType, _super);
+    __extends$38(SimplifiedPropertyType, _super);
     function SimplifiedPropertyType() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5620,7 +5470,7 @@ var SimplifiedPropertyType = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$40 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5629,7 +5479,7 @@ var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
  * A command used to delete a child node.
  */
 var DeleteNodeCommand = (function (_super) {
-    __extends$39(DeleteNodeCommand, _super);
+    __extends$40(DeleteNodeCommand, _super);
     /**
      * C'tor.
      * @param {string} property
@@ -5714,7 +5564,7 @@ var DeleteNodeCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$38 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$39 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5734,7 +5584,7 @@ function createDeleteOperationCommand(document, opMethod, pathItem) {
  * A command used to delete an operation.
  */
 var AbstractDeleteOperationCommand = (function (_super) {
-    __extends$38(AbstractDeleteOperationCommand, _super);
+    __extends$39(AbstractDeleteOperationCommand, _super);
     function AbstractDeleteOperationCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5756,7 +5606,7 @@ var AbstractDeleteOperationCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteOperationCommand_20 = (function (_super) {
-    __extends$38(DeleteOperationCommand_20, _super);
+    __extends$39(DeleteOperationCommand_20, _super);
     function DeleteOperationCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5769,7 +5619,7 @@ var DeleteOperationCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteOperationCommand_30 = (function (_super) {
-    __extends$38(DeleteOperationCommand_30, _super);
+    __extends$39(DeleteOperationCommand_30, _super);
     function DeleteOperationCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5795,7 +5645,7 @@ var DeleteOperationCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$40 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$41 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5815,7 +5665,7 @@ function createDeleteRequestBodyCommand(document, operation) {
  * A command used to delete an operation.
  */
 var DeleteRequestBodyCommand_30 = (function (_super) {
-    __extends$40(DeleteRequestBodyCommand_30, _super);
+    __extends$41(DeleteRequestBodyCommand_30, _super);
     function DeleteRequestBodyCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5853,7 +5703,7 @@ var DeleteRequestBodyCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$41 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$42 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5873,7 +5723,7 @@ function createDeleteAllResponsesCommand(document, operation) {
  * A command used to delete an operation.
  */
 var AbstractDeleteAllResponsesCommand = (function (_super) {
-    __extends$41(AbstractDeleteAllResponsesCommand, _super);
+    __extends$42(AbstractDeleteAllResponsesCommand, _super);
     function AbstractDeleteAllResponsesCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5895,7 +5745,7 @@ var AbstractDeleteAllResponsesCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteAllResponsesCommand_20 = (function (_super) {
-    __extends$41(DeleteAllResponsesCommand_20, _super);
+    __extends$42(DeleteAllResponsesCommand_20, _super);
     function DeleteAllResponsesCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5908,7 +5758,7 @@ var DeleteAllResponsesCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteAllResponsesCommand_30 = (function (_super) {
-    __extends$41(DeleteAllResponsesCommand_30, _super);
+    __extends$42(DeleteAllResponsesCommand_30, _super);
     function DeleteAllResponsesCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5934,7 +5784,7 @@ var DeleteAllResponsesCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$42 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$43 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -5956,7 +5806,7 @@ function createDeleteContactCommand(document) {
  * A command used to delete the license.
  */
 var AbstractDeleteContactCommand = (function (_super) {
-    __extends$42(AbstractDeleteContactCommand, _super);
+    __extends$43(AbstractDeleteContactCommand, _super);
     function AbstractDeleteContactCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5977,7 +5827,7 @@ var AbstractDeleteContactCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteContactCommand_20 = (function (_super) {
-    __extends$42(DeleteContactCommand_20, _super);
+    __extends$43(DeleteContactCommand_20, _super);
     function DeleteContactCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -5990,7 +5840,7 @@ var DeleteContactCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteContactCommand_30 = (function (_super) {
-    __extends$42(DeleteContactCommand_30, _super);
+    __extends$43(DeleteContactCommand_30, _super);
     function DeleteContactCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6016,7 +5866,7 @@ var DeleteContactCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$43 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6038,7 +5888,7 @@ function createDeleteLicenseCommand(document) {
  * A command used to delete the license.
  */
 var AbstractDeleteLicenseCommand = (function (_super) {
-    __extends$43(AbstractDeleteLicenseCommand, _super);
+    __extends$44(AbstractDeleteLicenseCommand, _super);
     function AbstractDeleteLicenseCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6059,7 +5909,7 @@ var AbstractDeleteLicenseCommand = (function (_super) {
  * OAI 2.0 impl.
  */
 var DeleteLicenseCommand_20 = (function (_super) {
-    __extends$43(DeleteLicenseCommand_20, _super);
+    __extends$44(DeleteLicenseCommand_20, _super);
     function DeleteLicenseCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6072,7 +5922,7 @@ var DeleteLicenseCommand_20 = (function (_super) {
  * OAI 3.0 impl.
  */
 var DeleteLicenseCommand_30 = (function (_super) {
-    __extends$43(DeleteLicenseCommand_30, _super);
+    __extends$44(DeleteLicenseCommand_30, _super);
     function DeleteLicenseCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6098,7 +5948,7 @@ var DeleteLicenseCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$44 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6118,7 +5968,7 @@ function createNewServerCommand(document, parent, server) {
  * A command used to create a new server in a document.
  */
 var NewServerCommand = (function (_super) {
-    __extends$44(NewServerCommand, _super);
+    __extends$45(NewServerCommand, _super);
     /**
      * C'tor.
      * @param {Oas30Document | Oas30PathItem | Oas30Operation} parent
@@ -6262,7 +6112,7 @@ var NewServerCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$45 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6282,7 +6132,7 @@ function createDeleteServerCommand(document, server) {
  * A command used to delete a single server from an operation.
  */
 var DeleteServerCommand = (function (_super) {
-    __extends$45(DeleteServerCommand, _super);
+    __extends$46(DeleteServerCommand, _super);
     /**
      * C'tor.
      * @param {Oas30Server} server
@@ -6392,7 +6242,7 @@ var DeleteServerCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$46 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6412,7 +6262,7 @@ function createChangeServerCommand(document, server) {
  * A command used to modify a server.
  */
 var ChangeServerCommand = (function (_super) {
-    __extends$46(ChangeServerCommand, _super);
+    __extends$47(ChangeServerCommand, _super);
     /**
      * C'tor.
      * @param {Oas30Server} server
@@ -6532,7 +6382,7 @@ var ChangeServerCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$47 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6552,7 +6402,7 @@ function createSetExampleCommand(document, parent, example, nameOrContentType) {
  * A command used to set the Example for a 3.0 MediaType or a 2.0 Response.
  */
 var SetExampleCommand = (function (_super) {
-    __extends$47(SetExampleCommand, _super);
+    __extends$48(SetExampleCommand, _super);
     /**
      * Constructor.
      * @param {Oas30MediaType | Oas20Response} parent
@@ -6586,7 +6436,7 @@ var SetExampleCommand = (function (_super) {
     return SetExampleCommand;
 }(AbstractCommand));
 var SetExampleCommand_20 = (function (_super) {
-    __extends$47(SetExampleCommand_20, _super);
+    __extends$48(SetExampleCommand_20, _super);
     /**
      * C'tor.
      * @param {Oas20Response} parent
@@ -6647,7 +6497,7 @@ var SetExampleCommand_20 = (function (_super) {
     return SetExampleCommand_20;
 }(SetExampleCommand));
 var SetExampleCommand_30 = (function (_super) {
-    __extends$47(SetExampleCommand_30, _super);
+    __extends$48(SetExampleCommand_30, _super);
     /**
      * Constructor.
      * @param {Oas30MediaType} parent
@@ -6731,7 +6581,7 @@ var SetExampleCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$48 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6751,7 +6601,7 @@ function createRenameSchemaDefinitionCommand(document, oldName, newName) {
  * A command used to rename a schema definition, along with all references to it.
  */
 var RenameSchemaDefinitionCommand = (function (_super) {
-    __extends$48(RenameSchemaDefinitionCommand, _super);
+    __extends$49(RenameSchemaDefinitionCommand, _super);
     /**
      * C'tor.
      * @param oldName
@@ -6832,7 +6682,7 @@ var RenameSchemaDefinitionCommand = (function (_super) {
  * The OAI 2.0 impl.
  */
 var RenameSchemaDefinitionCommand_20 = (function (_super) {
-    __extends$48(RenameSchemaDefinitionCommand_20, _super);
+    __extends$49(RenameSchemaDefinitionCommand_20, _super);
     function RenameSchemaDefinitionCommand_20() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6860,7 +6710,7 @@ var RenameSchemaDefinitionCommand_20 = (function (_super) {
  * The OAI 3.0 impl.
  */
 var RenameSchemaDefinitionCommand_30 = (function (_super) {
-    __extends$48(RenameSchemaDefinitionCommand_30, _super);
+    __extends$49(RenameSchemaDefinitionCommand_30, _super);
     function RenameSchemaDefinitionCommand_30() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -6890,7 +6740,7 @@ var RenameSchemaDefinitionCommand_30 = (function (_super) {
  * Class used to find all schemas that reference a particular schema definition.
  */
 var SchemaRefFinder = (function (_super) {
-    __extends$48(SchemaRefFinder, _super);
+    __extends$49(SchemaRefFinder, _super);
     function SchemaRefFinder(reference) {
         var _this = _super.call(this) || this;
         _this._schemas = [];
@@ -6955,7 +6805,7 @@ var SchemaRefFinder = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$49 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -6976,7 +6826,7 @@ function createAddExampleCommand(document, parent, example, exampleName, example
  * already exists, this command does nothing.
  */
 var AddExampleCommand_30 = (function (_super) {
-    __extends$49(AddExampleCommand_30, _super);
+    __extends$50(AddExampleCommand_30, _super);
     /**
      * Constructor.
      * @param {Oas30MediaType} parent
@@ -7074,7 +6924,7 @@ var AddExampleCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$50 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7105,7 +6955,7 @@ function createDelete20ExampleCommand(document, response, contentType) {
  * A command used to delete a single mediaType from an operation.
  */
 var DeleteExampleCommand_20 = (function (_super) {
-    __extends$50(DeleteExampleCommand_20, _super);
+    __extends$51(DeleteExampleCommand_20, _super);
     /**
      * C'tor.
      * @param {Oas20Response} response
@@ -7178,7 +7028,7 @@ var DeleteExampleCommand_20 = (function (_super) {
  * A command used to delete a single mediaType from an operation.
  */
 var DeleteExampleCommand_30 = (function (_super) {
-    __extends$50(DeleteExampleCommand_30, _super);
+    __extends$51(DeleteExampleCommand_30, _super);
     /**
      * C'tor.
      * @param {Oas30Example} example
@@ -7263,7 +7113,7 @@ var DeleteExampleCommand_30 = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$51 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7278,7 +7128,7 @@ function createAddSecurityRequirementCommand(document, parent, requirement) {
  * A command used to create a new definition in a document.
  */
 var AddSecurityRequirementCommand = (function (_super) {
-    __extends$51(AddSecurityRequirementCommand, _super);
+    __extends$52(AddSecurityRequirementCommand, _super);
     /**
      * C'tor.
      * @param {OasOperation | OasDocument} parent
@@ -7395,7 +7245,7 @@ var AddSecurityRequirementCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$52 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7410,7 +7260,7 @@ function createDeleteSecurityRequirementCommand(document, parent, requirement) {
  * A command used to delete a single securityRequirement from an operation.
  */
 var DeleteSecurityRequirementCommand = (function (_super) {
-    __extends$52(DeleteSecurityRequirementCommand, _super);
+    __extends$53(DeleteSecurityRequirementCommand, _super);
     /**
      * C'tor.
      * @param {OasDocument | OasOperation} parent
@@ -7526,7 +7376,7 @@ var DeleteSecurityRequirementCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$53 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7541,7 +7391,7 @@ function createReplaceSecurityRequirementCommand(document, old, replacement) {
  * A command used to replace a definition schema with a newer version.
  */
 var ReplaceSecurityRequirementCommand = (function (_super) {
-    __extends$53(ReplaceSecurityRequirementCommand, _super);
+    __extends$54(ReplaceSecurityRequirementCommand, _super);
     /**
      * C'tor.
      * @param {OasSecurityRequirement} old
@@ -7670,7 +7520,7 @@ var ReplaceSecurityRequirementCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$54 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$55 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7685,7 +7535,7 @@ function createDeleteAllTagsCommand() {
  * A command used to delete all tags from a document.
  */
 var DeleteAllTagsCommand = (function (_super) {
-    __extends$54(DeleteAllTagsCommand, _super);
+    __extends$55(DeleteAllTagsCommand, _super);
     /**
      * C'tor.
      */
@@ -7749,7 +7599,7 @@ var DeleteAllTagsCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$55 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7764,7 +7614,7 @@ function createDeleteAllServersCommand(parent) {
  * A command used to delete all servers from a document.
  */
 var DeleteAllServersCommand = (function (_super) {
-    __extends$55(DeleteAllServersCommand, _super);
+    __extends$56(DeleteAllServersCommand, _super);
     /**
      * C'tor.
      */
@@ -7857,7 +7707,7 @@ var DeleteAllServersCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$56 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7872,7 +7722,7 @@ function createDeleteAllSecurityRequirementsCommand(parent) {
  * A command used to delete all security requirements from a document or operation.
  */
 var DeleteAllSecurityRequirementsCommand = (function (_super) {
-    __extends$56(DeleteAllSecurityRequirementsCommand, _super);
+    __extends$57(DeleteAllSecurityRequirementsCommand, _super);
     /**
      * C'tor.
      */
@@ -7965,7 +7815,7 @@ var DeleteAllSecurityRequirementsCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$57 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -7980,7 +7830,7 @@ function createDeleteAllSecuritySchemesCommand() {
  * A command used to delete all security schemes from a document or operation.
  */
 var DeleteAllSecuritySchemesCommand = (function (_super) {
-    __extends$57(DeleteAllSecuritySchemesCommand, _super);
+    __extends$58(DeleteAllSecuritySchemesCommand, _super);
     /**
      * C'tor.
      */
@@ -8081,7 +7931,7 @@ var DeleteAllSecuritySchemesCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8097,7 +7947,7 @@ var __extends$58 = (undefined && undefined.__extends) || function (d, b) {
  * for example to make multiple changes as a single "undoable" change.
  */
 var AggregateCommand = (function (_super) {
-    __extends$58(AggregateCommand, _super);
+    __extends$59(AggregateCommand, _super);
     /**
      * Constructor.
      * @param name
@@ -8169,7 +8019,7 @@ var AggregateCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$59 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8185,7 +8035,7 @@ function createRenamePathItemCommand(document, oldPath, newPath, alsoRenameSubpa
  * A command used to rename a path item, along with all references to it.
  */
 var RenamePathItemCommand = (function (_super) {
-    __extends$59(RenamePathItemCommand, _super);
+    __extends$60(RenamePathItemCommand, _super);
     /**
      * C'tor.
      * @param oldPath
@@ -8328,7 +8178,7 @@ var RenamePathItemCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$60 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8343,7 +8193,7 @@ function createSetExtensionCommand(document, parent, name, value) {
  * A command used to set the Extension for a 3.0 MediaType or a 2.0 Response.
  */
 var SetExtensionCommand = (function (_super) {
-    __extends$60(SetExtensionCommand, _super);
+    __extends$61(SetExtensionCommand, _super);
     /**
      * Constructor.
      */
@@ -8432,7 +8282,7 @@ var SetExtensionCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$61 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8447,7 +8297,7 @@ function createDeleteExtensionCommand(document, extension) {
  * A command used to delete a single mediaType from an operation.
  */
 var DeleteExtensionCommand = (function (_super) {
-    __extends$61(DeleteExtensionCommand, _super);
+    __extends$62(DeleteExtensionCommand, _super);
     /**
      * C'tor.
      * @param extension
@@ -8534,7 +8384,7 @@ var DeleteExtensionCommand = (function (_super) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __extends$62 = (undefined && undefined.__extends) || function (d, b) {
+var __extends$63 = (undefined && undefined.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -8549,7 +8399,7 @@ function createReplaceDocumentCommand(document, replacement) {
  * A command used to replace a path item with a newer version.
  */
 var ReplaceDocumentCommand = (function (_super) {
-    __extends$62(ReplaceDocumentCommand, _super);
+    __extends$63(ReplaceDocumentCommand, _super);
     function ReplaceDocumentCommand() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -9384,6 +9234,8 @@ var OtEngine = (function () {
 
 exports.AbstractCommand = AbstractCommand;
 exports.ModelUtils = ModelUtils;
+exports.SimplifiedTypeUtil = SimplifiedTypeUtil;
+exports.SetItemsTypeVisitor = SetItemsTypeVisitor;
 exports.MarshallUtils = MarshallUtils;
 exports.SimplifiedType = SimplifiedType;
 exports.SimplifiedParameterType = SimplifiedParameterType;

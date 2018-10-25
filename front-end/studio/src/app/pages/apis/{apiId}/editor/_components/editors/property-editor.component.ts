@@ -143,6 +143,9 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
 
     public type(): string {
         if (!ObjectUtils.isNullOrUndefined(this.model.type)) {
+            if (this.model.type.isEnum()) {
+                return "enum";
+            }
             return ObjectUtils.undefinedAsNull(this.model.type.type);
         }
         return null;
@@ -151,6 +154,7 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
             { value: "array", name: "Array" },
+            { value: "enum", name: "Enum" },
             { divider: true },
             { value: "string", name: "String" },
             { value: "integer", name: "Integer" },
@@ -223,6 +227,10 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
         return options;
     }
 
+    public shouldShowEnumEditor(): boolean {
+        return this.model.type && this.model.type.isEnum();
+    }
+
     public shouldShowFormattedAs(): boolean {
         let st: SimplifiedType = this.model.type;
         if (this.model.type && this.model.type.isArray() && this.model.type.of && this.model.type.of.isSimpleType()) {
@@ -231,15 +239,24 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
         return st && st.isSimpleType() && (st.type !== "boolean");
     }
 
-
     public changeRequired(newValue: string): void {
         this.model.type.required = newValue === "required";
     }
 
     public changeType(type: string): void {
-        this.model.type.type = type;
-        this.model.type.of = null;
-        this.model.type.as = null;
+        if (type === "enum") {
+            this.model.type.type = null;
+            this.model.type.enum = [];
+        } else {
+            this.model.type.type = type;
+            this.model.type.enum = null;
+            this.model.type.of = null;
+            this.model.type.as = null;
+        }
+    }
+
+    public changeTypeEnum(value: string[]): void {
+        this.model.type.enum = value;
     }
 
     public changeTypeOf(typeOf: string): void {

@@ -108,7 +108,7 @@
   margin-bottom: 10px;
 }
 
-.formData-param .body .param-required .dropdown, .formData-param .body .param-type .dropdown {
+.formData-param .body .param-required .dropdown {
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;

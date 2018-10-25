@@ -11,3 +11,13 @@
   margin-left: 3px;
   margin-right: 3px;
 }
+
+.type-section .prop-enum .enum-label {
+  display: block;
+  font-weight: 600;
+}
+
+.type-section .prop-enum .inline-array-editor > .form-control-pf-edit > .form-control-pf-textbox > input {
+  width: 100%;
+  min-width: auto;
+}

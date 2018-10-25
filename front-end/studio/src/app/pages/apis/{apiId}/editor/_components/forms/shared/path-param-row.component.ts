@@ -19,7 +19,8 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges, OnDestroy,
+    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
@@ -35,7 +36,6 @@ import {
 } from "oai-ts-commands";
 import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {TypedRow} from "./typed-row.base";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
 
@@ -47,7 +47,7 @@ import {DocumentService} from "../../../_services/document.service";
     styleUrls: [ "path-param-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
+export class PathParamRowComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -63,7 +63,7 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
     private _docSub: Subscription;
     private _parentType: string;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { }
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
@@ -193,37 +193,13 @@ export class PathParamRowComponent extends TypedRow implements OnChanges, OnInit
         this.commandService.emit(command);
     }
 
-    public changeType(type: string): void {
+    public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.required = this.model().required;
-        nt.type = type;
-        nt.of = null;
-        nt.as = null;
-        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeOf(typeOf: string): void {
-        let nt: SimplifiedParameterType = SimplifiedParameterType.fromParameter(this.parameter as any);
-        nt.required = this.model().required;
-        nt.of = new SimplifiedType();
-        nt.of.type = typeOf;
-        nt.as = null;
-        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeAs(typeAs: string): void {
-        let nt: SimplifiedParameterType = SimplifiedParameterType.fromParameter(this.parameter as any);
-        nt.required = this.model().required;
-        if (nt.isSimpleType()) {
-            nt.as = typeAs;
-        }
-        if (nt.isArray() && nt.of) {
-            nt.of.as = typeAs;
-        }
+        nt.type = newType.type;
+        nt.enum = newType.enum;
+        nt.of = newType.of;
+        nt.as = newType.as;
         let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
         this.commandService.emit(command);
         this._model = nt;

@@ -104,6 +104,7 @@ import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dia
 import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
 import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/property-editor.component";
+import {SchemaTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/schema-type-editor.component";
 
 @NgModule({
     imports: [
@@ -113,7 +114,7 @@ import {PropertyEditorComponent} from "./pages/apis/{apiId}/editor/_components/e
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent,FormDataParamRowComponent, InlineMarkdownEditorComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-        AddTagDialogComponent, ResponseRow30Component, UndoIconComponent,
+        AddTagDialogComponent, ResponseRow30Component, UndoIconComponent, SchemaTypeEditorComponent,
         ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
         OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,

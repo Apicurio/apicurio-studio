@@ -84,14 +84,14 @@
                 <div class="create-option" (click)="model.template = null" [class.selected]="model.template === null">
                     <span class="check fa"
                           [class.fa-circle-o]="model.template !== null"
-                          [class.fa-check-circle-o]="model.template === null"></span>
+                          [class.fa-dot-circle-o]="model.template === null"></span>
                     <span class="icon fa fa-ban"></span>
                     <span class="option-label">No Resource</span>
                 </div>
                 <div class="create-option" (click)="model.template = 'resource'" [class.selected]="model.template === 'resource'">
                     <span class="check fa"
                           [class.fa-circle-o]="model.template !== 'resource'"
-                          [class.fa-check-circle-o]="model.template === 'resource'"></span>
+                          [class.fa-dot-circle-o]="model.template === 'resource'"></span>
                     <span class="icon fa fa-align-left"></span>
                     <span class="option-label">REST Resource</span>
                 </div>

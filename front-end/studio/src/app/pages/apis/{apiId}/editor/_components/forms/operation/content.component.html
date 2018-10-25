@@ -19,27 +19,8 @@
         <div class="panel-body">
 
             <div class="media-type">
-                <validation-problem [model]="mediaType()" [property]="'schema'"></validation-problem>
-                <span class="strong">Type:</span>
-                <drop-down [id]="'api-media-type-type'"
-                           [value]="mediaTypeType()"
-                           [options]="mediaTypeTypeOptions()"
-                           (onValueChange)="changeMediaTypeType($event)"
-                           [noSelectionLabel]="'Choose Type'"></drop-down>
-                <span *ngIf="shouldShowMediaTypeTypeOf()">of</span>
-                <drop-down *ngIf="shouldShowMediaTypeTypeOf()"
-                           [id]="'api-media-type-type-of'"
-                           [value]="mediaTypeTypeOf()"
-                           [options]="mediaTypeTypeOfOptions()"
-                           (onValueChange)="changeMediaTypeTypeOf($event)"
-                           [noSelectionLabel]="'Choose Type'"></drop-down>
-                <span *ngIf="shouldShowMediaTypeTypeAs()">as</span>
-                <drop-down *ngIf="shouldShowMediaTypeTypeAs()"
-                           [id]="'api-media-type-type-as'"
-                           [value]="mediaTypeTypeAs()"
-                           [options]="mediaTypeTypeAsOptions()"
-                           (onValueChange)="changeMediaTypeTypeAs($event)"
-                           [noSelectionLabel]="'Format'"></drop-down>
+                <schema-type-editor [document]="document" [value]="mediaTypeType()" [isParameter]="false" [validationModel]="mediaTypeSchema()"
+                                    (onChange)="changeMediaTypeType($event)"></schema-type-editor>
             </div>
 
             <div class="examples">

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,41 @@
  * limitations under the License.
  */
 
+import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {SimplifiedType} from "oai-ts-commands";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasNode, OasVisitorUtil} from "oai-ts-core";
-import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
-import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {ObjectUtils} from "../../../_util/object.util";
+import {DropDownOption} from "../../../../../../../components/common/drop-down.component";
+import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 
 
-export abstract class TypedRow {
+@Component({
+    moduleId: module.id,
+    selector: "schema-type-editor",
+    templateUrl: "schema-type-editor.component.html",
+    styleUrls: [ "schema-type-editor.component.css" ],
+    encapsulation: ViewEncapsulation.None
+})
+export class SchemaTypeEditorComponent {
+    
+    @Input() document: OasDocument;
+    @Input() value: SimplifiedType;
+    @Input() typeLabel: string = "Type";
+    @Input() validationModel: OasNode;
+    @Input() validationProperty: string;
+    @Input() isParameter: boolean = false;
+    @Output() onChange: EventEmitter<SimplifiedType> = new EventEmitter<SimplifiedType>();
 
-    public abstract model(): SimplifiedType;
-    public abstract document(): OasDocument;
-    public abstract isParameter(): boolean;
+    public hasValidationModel(): boolean {
+        return this.validationModel !== null && this.validationModel !== undefined;
+    }
 
     public type(): string {
-        if (!ObjectUtils.isNullOrUndefined(this.model())) {
-            return ObjectUtils.undefinedAsNull(this.model().type);
+        if (!ObjectUtils.isNullOrUndefined(this.value)) {
+            if (this.value.isEnum()) {
+                return "enum";
+            }
+            return ObjectUtils.undefinedAsNull(this.value.type);
         }
         return null;
     }
@@ -38,6 +57,7 @@ export abstract class TypedRow {
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
             { value: "array", name: "Array" },
+            { value: "enum", name: "Enum" },
             { divider: true },
             { value: "string", name: "String" },
             { value: "integer", name: "Integer" },
@@ -45,14 +65,14 @@ export abstract class TypedRow {
             { value: "number", name: "Number" }
         ];
 
-        if (!this.isParameter()) {
+        if (!this.isParameter) {
             let refPrefix: string = "#/components/schemas/";
-            if (this.document().is2xDocument()) {
+            if (this.document.is2xDocument()) {
                 refPrefix = "#/definitions/";
             }
 
             let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document(), viz);
+            OasVisitorUtil.visitTree(this.document, viz);
             let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
             if (defs.length > 0) {
                 options.push({divider: true});
@@ -70,8 +90,8 @@ export abstract class TypedRow {
     }
 
     public typeOf(): string {
-        if (this.model() && this.model().of) {
-            return ObjectUtils.undefinedAsNull(this.model().of.type);
+        if (this.value && this.value.of) {
+            return ObjectUtils.undefinedAsNull(this.value.of.type);
         }
         return null;
     }
@@ -84,14 +104,14 @@ export abstract class TypedRow {
             { value: "number", name: "Number" }
         ];
 
-        if (!this.isParameter()) {
+        if (!this.isParameter) {
             let refPrefix: string = "#/components/schemas/";
-            if (this.document().is2xDocument()) {
+            if (this.document.is2xDocument()) {
                 refPrefix = "#/definitions/";
             }
 
             let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document(), viz);
+            OasVisitorUtil.visitTree(this.document, viz);
             let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
             if (defs.length > 0) {
                 options.push({divider: true});
@@ -109,23 +129,23 @@ export abstract class TypedRow {
     }
 
     public typeAs(): string {
-        if (ObjectUtils.isNullOrUndefined(this.model())) {
+        if (ObjectUtils.isNullOrUndefined(this.value)) {
             return null;
         }
-        if (this.model().isArray() && this.model().of && this.model().of.isSimpleType()) {
-            return ObjectUtils.undefinedAsNull(this.model().of.as);
+        if (this.value.isArray() && this.value.of && this.value.of.isSimpleType()) {
+            return ObjectUtils.undefinedAsNull(this.value.of.as);
         }
-        if (this.model().isSimpleType()) {
-            return ObjectUtils.undefinedAsNull(this.model().as);
+        if (this.value.isSimpleType()) {
+            return ObjectUtils.undefinedAsNull(this.value.as);
         }
         return null;
     }
 
     public typeAsOptions(): DropDownOption[] {
         let options: DropDownOption[];
-        let st: SimplifiedType = this.model();
-        if (this.model() && this.model().isArray() && this.model().of && this.model().of.isSimpleType()) {
-            st = this.model().of;
+        let st: SimplifiedType = this.value;
+        if (this.value && this.value.isArray() && this.value.of && this.value.of.isSimpleType()) {
+            st = this.value.of;
         }
         if (st.type === "string") {
             options = [
@@ -153,11 +173,70 @@ export abstract class TypedRow {
     }
 
     public shouldShowFormattedAs(): boolean {
-        let st: SimplifiedType = this.model();
-        if (this.model() && this.model().isArray() && this.model().of && this.model().of.isSimpleType()) {
-            st = this.model().of;
+        let st: SimplifiedType = this.value;
+        if (this.value && this.value.isArray() && this.value.of && this.value.of.isSimpleType()) {
+            st = this.value.of;
         }
         return st && st.isSimpleType() && (st.type !== "boolean");
     }
 
+    public shouldShowEnumEditor(): boolean {
+        return this.value && this.value.isEnum();
+    }
+
+    public changeType(type: string): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        if (type === "enum") {
+            nt.type = null;
+            nt.enum = [];
+            nt.of = null;
+            nt.as = null;
+        } else {
+            nt.type = type;
+            nt.enum = null;
+            nt.of = null;
+            nt.as = null;
+        }
+        this.onChange.emit(nt);
+    }
+
+    public changeTypeEnum(value: string[]): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = null;
+        nt.enum = value;
+        nt.of = null;
+        nt.as = null;
+        this.onChange.emit(nt);
+    }
+
+    public changeTypeOf(typeOf: string): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = this.value.type;
+        nt.of = new SimplifiedType();
+        nt.of.type = typeOf;
+        nt.as = null;
+        this.onChange.emit(nt);
+    }
+
+    public changeTypeAs(typeAs: string): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = this.value.type;
+        nt.enum = null;
+        if (nt.isSimpleType()) {
+            nt.of = null;
+            nt.as = typeAs;
+        }
+        if (nt.isArray()) {
+            nt.of = new SimplifiedType();
+            nt.of.as = typeAs;
+            if (this.value.of) {
+                nt.of.type = this.value.of.type;
+            }
+        }
+        this.onChange.emit(nt);
+    }
+
+    public isArray(): boolean {
+        return this.value && this.value.type === "array";
+    }
 }

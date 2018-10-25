@@ -74,6 +74,11 @@
                                    (onValueChange)="changeTypeAs($event)"
                                    [noSelectionLabel]="'Format'"></drop-down>
                     </div>
+                    <div class="prop-enum" id="prop-enum" *ngIf="shouldShowEnumEditor()">
+                        <span class="enum-label">Enum Values: </span>
+                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum" (onChange)="changeTypeEnum($event)"
+                                             noValueMessage="Click to define enum values."></inline-array-editor>
+                    </div>
                 </div>
             </div>
         </div>

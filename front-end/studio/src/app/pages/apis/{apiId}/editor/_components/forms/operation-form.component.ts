@@ -145,35 +145,10 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         return params;
     }
 
-    public requestBodyType(): string {
+    public requestBodyType(): SimplifiedType {
         let bodyParam: Oas20Parameter = this.bodyParam();
         if (bodyParam && bodyParam.schema) {
-            return ObjectUtils.undefinedAsNull(SimplifiedType.fromSchema(bodyParam.schema).type);
-        }
-        return null;
-    }
-
-    public requestBodyTypeOf(): string {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        if (bodyParam && bodyParam.schema) {
-            let st: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
-            if (st.of) {
-                return ObjectUtils.undefinedAsNull(st.of.type);
-            }
-        }
-        return null;
-    }
-
-    public requestBodyTypeAs(): string {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        if (bodyParam && bodyParam.schema) {
-            let st: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
-            if (st.isArray() && st.of) {
-                return ObjectUtils.undefinedAsNull(st.of.as);
-            }
-            if (st.isSimpleType()) {
-                return ObjectUtils.undefinedAsNull(st.as);
-            }
+            return SimplifiedType.fromSchema(bodyParam.schema);
         }
         return null;
     }
@@ -186,147 +161,16 @@ export class OperationFormComponent extends SourceFormComponent<Oas20Operation> 
         }
     }
 
-    public requestBodyTypeOptions(): DropDownOption[] {
-        let options: DropDownOption[] = [
-            { value: "array", name: "Array" },
-            { divider: true },
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
-        ];
-
-        let doc: Oas20Document = (<Oas20Document>this.operation.ownerDocument());
-        if (doc.definitions) {
-            let co: DropDownOption[] = doc.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
-            });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
-        }
-
-        return options;
-    }
-
-    public requestBodyTypeOfOptions(): DropDownOption[] {
-        let options: DropDownOption[] = [
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
-        ];
-
-        let doc: Oas20Document = (<Oas20Document>this.operation.ownerDocument());
-        if (doc.definitions) {
-            let co: DropDownOption[] = doc.definitions.definitions().sort( (def1, def2) => {
-                return def1.definitionName().toLocaleLowerCase().localeCompare(def2.definitionName().toLocaleLowerCase());
-            }).map( def => {
-                return {
-                    value: "#/definitions/" + def.definitionName(),
-                    name: def.definitionName()
-                };
-            });
-            if (co && co.length > 0) {
-                options.push({ divider: true });
-                co.forEach( o => options.push(o) );
-            }
-        }
-
-        return options;
-    }
-
-    public requestBodyTypeAsOptions(): DropDownOption[] {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        if (ObjectUtils.isNullOrUndefined(bodyParam)) {
-            return [];
-        }
-        if (ObjectUtils.isNullOrUndefined(bodyParam.schema)) {
-            return [];
-        }
-        let options: DropDownOption[] = [];
-        let st: SimplifiedType = SimplifiedType.fromSchema(this.bodyParam().schema);
-        if (st.isArray() && st.of && st.of.isSimpleType()) {
-            st = st.of;
-        }
-        if (st.type === "string") {
-            options = [
-                { value: null, name: "String" },
-                { value: "byte", name: "Byte" },
-                { value: "binary", name: "Binary" },
-                { value: "date", name: "Date" },
-                { value: "date-time", name: "DateTime" },
-                { value: "password", name: "Password" }
-            ];
-        } else if (st.type === "integer") {
-            options = [
-                { value: null, name: "Integer" },
-                { value: "int32", name: "32-Bit Integer" },
-                { value: "int64", name: "64-Bit Integer" }
-            ];
-        } else if (st.type === "number") {
-            options = [
-                { value: null, name: "Number" },
-                { value: "float", name: "Float" },
-                { value: "double", name: "Double" }
-            ];
-        }
-        return options;
-    }
-
-    public shouldShowRequestBodyTypeOf(): boolean {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        if (!bodyParam) {
-            return false;
-        }
-        let nt: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
-        return nt.isArray();
-    }
-
-    public shouldShowRequestBodyTypeAs(): boolean {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        if (!bodyParam) {
-            return false;
-        }
-        let nt: SimplifiedType = SimplifiedType.fromSchema(bodyParam.schema);
-        return (nt.isSimpleType() && nt.type !== "boolean") ||
-               (nt.isArray() && nt.of && nt.of.isSimpleType() && nt.of.type !== "boolean");
-    }
-
-    public changeRequestBodyType(newType: string): void {
+    public changeRequestBodyType(newType: SimplifiedType): void {
         let bodyParam: Oas20Parameter = this.bodyParam();
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
-        nt.type = newType;
+        nt.type = newType.type;
+        nt.enum = newType.enum;
+        nt.of = newType.of;
+        nt.as = newType.as;
+        nt.required = true; // Body params are always required
+
         let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, nt);
-        this.commandService.emit(command);
-    }
-
-    public changeRequestBodyTypeOf(newOf: string): void {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        let newType: SimplifiedParameterType = SimplifiedParameterType.fromParameter(bodyParam);
-        newType.of = new SimplifiedType();
-        newType.of.type = newOf;
-        newType.as = null;
-        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
-        this.commandService.emit(command);
-    }
-
-    public changeRequestBodyTypeAs(newAs: string): void {
-        let bodyParam: Oas20Parameter = this.bodyParam();
-        let newType: SimplifiedParameterType = SimplifiedParameterType.fromParameter(bodyParam);
-        if (newType.isSimpleType()) {
-            newType.as = newAs;
-        }
-        if (newType.isArray() && newType.of) {
-            newType.of.as = newAs;
-        }
-        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, newType);
         this.commandService.emit(command);
     }
 

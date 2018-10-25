@@ -19,7 +19,8 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges, OnDestroy,
+    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
@@ -32,13 +33,12 @@ import {
     createChangeResponseTypeCommand,
     createDelete20ExampleCommand,
     createSetExampleCommand,
-    ICommand, SimplifiedParameterType,
+    ICommand,
     SimplifiedType
 } from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {EditExample20Event} from "../../dialogs/edit-example-20.component";
 import {CommandService} from "../../../_services/command.service";
-import {TypedRow} from "../shared/typed-row.base";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
 
@@ -50,7 +50,7 @@ import {DocumentService} from "../../../_services/document.service";
     styleUrls: [ "response-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class ResponseRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
+export class ResponseRowComponent implements OnChanges, OnInit, OnDestroy {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 
@@ -63,7 +63,7 @@ export class ResponseRowComponent extends TypedRow implements OnChanges, OnInit,
     protected _model: SimplifiedType = null;
     private _docSub: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) { }
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
@@ -210,34 +210,12 @@ export class ResponseRowComponent extends TypedRow implements OnChanges, OnInit,
         alert("Not yet implemented!");
     }
 
-    public changeType(type: string): void {
+    public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedType = new SimplifiedType();
-        nt.type = type;
-        nt.of = null;
-        nt.as = null;
-        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeOf(typeOf: string): void {
-        let nt: SimplifiedType = SimplifiedType.fromSchema(this.response.schema);
-        nt.of = new SimplifiedType();
-        nt.of.type = typeOf;
-        nt.as = null;
-        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeAs(typeAs: string): void {
-        let nt: SimplifiedType = SimplifiedType.fromSchema(this.response.schema);
-        if (nt.isSimpleType()) {
-            nt.as = typeAs;
-        }
-        if (nt.isArray() && nt.of) {
-            nt.of.as = typeAs;
-        }
+        nt.type = newType.type;
+        nt.enum = newType.enum;
+        nt.of = newType.of;
+        nt.as = newType.as;
         let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
         this.commandService.emit(command);
         this._model = nt;

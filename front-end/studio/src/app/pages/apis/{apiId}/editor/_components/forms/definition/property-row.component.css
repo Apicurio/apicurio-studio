@@ -99,7 +99,7 @@
   margin-bottom: 10px;
 }
 
-.property .body .property-required .dropdown, .property .body .property-type .dropdown {
+.property .body .property-required .dropdown {
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;

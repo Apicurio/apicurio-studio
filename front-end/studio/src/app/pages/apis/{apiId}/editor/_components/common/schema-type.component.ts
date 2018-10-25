@@ -29,10 +29,12 @@ export class SchemaTypeComponent {
     @Input() type: SimplifiedType;
 
     public displayType(): string {
-        if (ObjectUtils.isNullOrUndefined(this.type) || ObjectUtils.isNullOrUndefined(this.type.type)) {
+        if (ObjectUtils.isNullOrUndefined(this.type)) {
             return "No Type";
         }
-        if (this.type.isArray()) {
+        if (this.type.isRef()) {
+            return this.type.type.substr(this.type.type.lastIndexOf('/') + 1);
+        } else if (this.type.isArray()) {
             if (this.type.of && this.type.of.as) {
                 return "Array of: " + this.type.of.type + " as " + this.type.of.as;
             }
@@ -42,22 +44,23 @@ export class SchemaTypeComponent {
             if (this.type.of && this.type.of.isRef()) {
                 return "Array of: " + this.type.of.type.substr(this.type.of.type.lastIndexOf('/') + 1);
             }
-        }
-        if (this.type.isSimpleType()) {
+            return "Array";
+        } else if (this.type.isEnum()) {
+            return `Enum (${ this.type.enum.length } items)`;
+        } else if (this.type.isSimpleType()) {
             if (this.type.as) {
                 return this.type.type + " as " + this.type.as;
             } else {
                 return this.type.type;
             }
+        } else {
+            return "No Type";
         }
-        if (this.type.isRef()) {
-            return this.type.type.substr(this.type.type.lastIndexOf('/') + 1);
-        }
-        return "Unknown Type";
     }
 
     public hasType(): boolean {
-        return !ObjectUtils.isNullOrUndefined(this.type.type);
+        return !ObjectUtils.isNullOrUndefined(this.type) && (this.type.isRef() || this.type.isEnum() ||
+            this.type.isSimpleType() || this.type.isArray());
     }
 
 }

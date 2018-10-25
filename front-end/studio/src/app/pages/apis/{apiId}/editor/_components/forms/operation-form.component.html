@@ -105,27 +105,9 @@
                                                     [formClass]="'api-description-editor-form'"
                                                     (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
                             <div class="request-body-type">
-                                <span class="strong">Request Body Type:</span>
-                                <validation-problem [model]="bodyParam()"></validation-problem>
-                                <drop-down [id]="'api-request-body-type'"
-                                           [value]="requestBodyType()"
-                                           [options]="requestBodyTypeOptions()"
-                                           (onValueChange)="changeRequestBodyType($event)"
-                                           [noSelectionLabel]="'Choose Type'"></drop-down>
-                                <span *ngIf="shouldShowRequestBodyTypeOf()">of</span>
-                                <drop-down *ngIf="shouldShowRequestBodyTypeOf()"
-                                           [id]="'api-request-body-type-of'"
-                                           [value]="requestBodyTypeOf()"
-                                           [options]="requestBodyTypeOfOptions()"
-                                           (onValueChange)="changeRequestBodyTypeOf($event)"
-                                           [noSelectionLabel]="'Choose Type'"></drop-down>
-                                <span *ngIf="shouldShowRequestBodyTypeAs()">as</span>
-                                <drop-down *ngIf="shouldShowRequestBodyTypeAs()"
-                                           [id]="'api-request-body-type-as'"
-                                           [value]="requestBodyTypeAs()"
-                                           [options]="requestBodyTypeAsOptions()"
-                                           (onValueChange)="changeRequestBodyTypeAs($event)"
-                                           [noSelectionLabel]="'Format'"></drop-down>
+                                <schema-type-editor [document]="operation.ownerDocument()" [isParameter]="false" [value]="requestBodyType()"
+                                                    typeLabel="Request Body Type" [validationModel]="bodyParam()"
+                                                    (onChange)="changeRequestBodyType($event)"></schema-type-editor>
                             </div>
                         </div>
 

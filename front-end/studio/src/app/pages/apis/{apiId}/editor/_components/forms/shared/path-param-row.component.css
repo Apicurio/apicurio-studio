@@ -127,7 +127,7 @@
   margin-bottom: 10px;
 }
 
-.path-param .body .param-required .dropdown, .path-param .body .param-type .dropdown {
+.path-param .body .param-required .dropdown {
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;

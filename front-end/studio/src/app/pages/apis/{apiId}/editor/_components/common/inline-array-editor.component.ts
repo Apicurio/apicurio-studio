@@ -101,7 +101,8 @@ export class InlineArrayEditorComponent implements AfterViewInit {
         if (this.value && this.value.length > 0) {
             let rval: string[] = [];
             this.value.forEach( value => {
-                if (this.items && this.getItems().indexOf(value) === -1) {
+                if ( (this.items === null || this.items === undefined) ||
+                     (this.items && this.getItems().indexOf(value) === -1)) {
                     rval.push(value);
                 }
             });

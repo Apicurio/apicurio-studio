@@ -51,27 +51,8 @@
                     </div>
                     <div class="param-content" *ngIf="isEditingSummary()">
                         <div class="param-type">
-                            <!--<validation-problem [model]="mediaType()" [param]="'schema'"></validation-problem>-->
-                            <span class="strong">Type:</span>
-                            <drop-down [id]="'api-param-type'"
-                                       [value]="type()"
-                                       [options]="typeOptions()"
-                                       (onValueChange)="changeType($event)"
-                                       [noSelectionLabel]="'Choose Type'"></drop-down>
-                            <span *ngIf="type() === 'array'">of</span>
-                            <drop-down *ngIf="type() === 'array'"
-                                       [id]="'api-param-type-of'"
-                                       [value]="typeOf()"
-                                       [options]="typeOfOptions()"
-                                       (onValueChange)="changeTypeOf($event)"
-                                       [noSelectionLabel]="'Choose Type'"></drop-down>
-                            <span *ngIf="shouldShowFormattedAs()">as</span>
-                            <drop-down *ngIf="shouldShowFormattedAs()"
-                                       [id]="'api-param-type-as'"
-                                       [value]="typeAs()"
-                                       [options]="typeAsOptions()"
-                                       (onValueChange)="changeTypeAs($event)"
-                                       [noSelectionLabel]="'Format'"></drop-down>
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="isParameter()"
+                                                (onChange)="changeType($event)"></schema-type-editor>
                         </div>
                     </div>
                 </div>

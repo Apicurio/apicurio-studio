@@ -19,7 +19,8 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges, OnDestroy,
+    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
@@ -36,7 +37,6 @@ import {
 import {Oas20PropertySchema, Oas30PropertySchema, OasDocument} from "oai-ts-core";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
-import {TypedRow} from "../shared/typed-row.base";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
 
@@ -48,7 +48,7 @@ import {DocumentService} from "../../../_services/document.service";
     styleUrls: [ "property-row.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class PropertyRowComponent extends TypedRow implements OnChanges, OnInit, OnDestroy {
+export class PropertyRowComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() property: Oas20PropertySchema | Oas30PropertySchema;
 
@@ -59,7 +59,7 @@ export class PropertyRowComponent extends TypedRow implements OnChanges, OnInit,
     protected _model: SimplifiedParameterType = null;
     private _docSub: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { super(); }
+    constructor(private commandService: CommandService, private documentService: DocumentService) {}
 
     public ngOnInit(): void {
         this._docSub = this.documentService.change().subscribe( () => {
@@ -186,37 +186,13 @@ export class PropertyRowComponent extends TypedRow implements OnChanges, OnInit,
         this.commandService.emit(command);
     }
 
-    public changeType(type: string): void {
+    public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedPropertyType = new SimplifiedPropertyType();
         nt.required = this.model().required;
-        nt.type = type;
-        nt.of = null;
-        nt.as = null;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeOf(typeOf: string): void {
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
-        nt.required = this.model().required;
-        nt.of = new SimplifiedType();
-        nt.of.type = typeOf;
-        nt.as = null;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
-        this.commandService.emit(command);
-        this._model = nt;
-    }
-
-    public changeTypeAs(typeAs: string): void {
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
-        nt.required = this.model().required;
-        if (nt.isSimpleType()) {
-            nt.as = typeAs;
-        }
-        if (nt.isArray() && nt.of) {
-            nt.of.as = typeAs;
-        }
+        nt.type = newType.type;
+        nt.enum = newType.enum;
+        nt.of = newType.of;
+        nt.as = newType.as;
         let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
         this.commandService.emit(command);
         this._model = nt;

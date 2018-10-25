@@ -19,7 +19,8 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges, OnDestroy,
+    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
@@ -27,16 +28,15 @@ import {
 } from "@angular/core";
 import {
     createChangeParameterTypeCommand,
-    createChangePropertyCommand, createChangePropertyTypeCommand,
+    createChangePropertyCommand,
     createNewParamCommand,
     ICommand,
-    SimplifiedParameterType, SimplifiedPropertyType,
+    SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
 import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
-import {TypedRow} from "./typed-row.base";
 import {DocumentService} from "../../../_services/document.service";
 import {Subscription} from "rxjs";
 

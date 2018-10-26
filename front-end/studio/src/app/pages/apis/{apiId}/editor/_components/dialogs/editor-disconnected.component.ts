@@ -22,7 +22,8 @@ import {ModalDirective} from "ngx-bootstrap";
 @Component({
     moduleId: module.id,
     selector: "editor-disconnected-dialog",
-    templateUrl: "editor-disconnected.component.html"
+    templateUrl: "editor-disconnected.component.html",
+    styleUrls: [ "editor-disconnected-dialog.css" ]
 })
 export class EditorDisconnectedDialogComponent {
 

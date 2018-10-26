@@ -1,18 +1,27 @@
 <div bsModal #editorDisconnectedModal="bs-modal" class="modal fade" id="editorDisconnectedModal" tabindex="-1" role="dialog"
      aria-labelledby="editorDisconnectedModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
-    <div class="modal-dialog">
+    <div class="modal-dialog editor-disconnected-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
-                    <span class="pficon pficon-close"></span>
-                </button>
                 <h4 class="modal-title" id="editorDisconnectedModalLabel">Editor Disconnected</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-danger">
-                    <span class="pficon pficon-error-circle-o"></span>
-                    <strong>Editor Disconnected!</strong> The socket connecting you to the server has been dropped (unexpectedly).
-                    It is likely that none of your changes have been lost, but you must reload this page to reconnect.
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <span class="fa fa-plug icon"></span>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="title"><strong>Lost Connection</strong></div>
+                            <div class="message">
+                                Connection to the server has been lost.  Any changes you have made prior
+                                to this have been saved.
+                            </div>
+                            <div class="reload">
+                                Reload the page to reconnect.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

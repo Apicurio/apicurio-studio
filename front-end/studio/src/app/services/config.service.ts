@@ -32,7 +32,8 @@ let DEFAULT_CONFIG: any = {
 
 
 /**
- * An abstract base class for services that need to make API calls to Github.
+ * A simple configuration service.  Reads information from a global "ApicurioStudioConfig" variable
+ * that is typically included via JSONP.
  */
 @Injectable()
 export class ConfigService {

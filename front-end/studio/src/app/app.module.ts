@@ -64,6 +64,7 @@ import {ApicurioEditorModule} from "./editor.module";
 import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {ActivityItemComponent} from "./components/common/activity-item.component";
 import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component';
+import {TemplateService} from './services/template.service';
 
 @NgModule({
     imports: [
@@ -82,7 +83,7 @@ import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_co
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,
-        AuthenticationCanActivateGuard, CurrentUserService
+        AuthenticationCanActivateGuard, CurrentUserService, TemplateService
     ],
     bootstrap: [AppComponent]
 })

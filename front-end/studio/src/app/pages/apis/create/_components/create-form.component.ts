@@ -22,7 +22,15 @@ import {NewApi} from "../../../../models/new-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
 import {ApisService} from "../../../../services/apis.service";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
+import {TemplateService} from "../../../../services/template.service";
+import {ApiDesignTemplate} from "../../../../models/api-design-template.model";
 
+export interface CreateApiFormData {
+    type: string;
+    name: string;
+    description: string;
+    template?: ApiDesignTemplate
+}
 
 @Component({
     moduleId: module.id,
@@ -32,12 +40,13 @@ import {LinkedAccountsService} from "../../../../services/accounts.service";
 })
 export class CreateApiFormComponent {
 
-    @Output() onCreateApi = new EventEmitter<NewApi>();
+    @Output() onCreateApi = new EventEmitter<CreateApiFormData>();
 
-    model: any = {
+    model: CreateApiFormData = {
         type: "3.0.2",
         name: null,
-        description: null
+        description: null,
+        template: null
     };
     creatingApi: boolean = false;
     error: string;
@@ -52,10 +61,11 @@ export class CreateApiFormComponent {
      * @param apisService
      * @param authService
      * @param accountsService
+     * @param templateService
      */
     constructor(private apisService: ApisService,
-            @Inject(IAuthenticationService) private authService: IAuthenticationService,
-            private accountsService: LinkedAccountsService)
+                @Inject(IAuthenticationService) private authService: IAuthenticationService,
+                private accountsService: LinkedAccountsService, private templateService: TemplateService)
     {
         this.creatingApi = false;
 
@@ -75,19 +85,15 @@ export class CreateApiFormComponent {
         this.model.type = value;
     }
 
+    public templates(): ApiDesignTemplate[] {
+        return this.templateService.getTemplates(this.model.type);
+    }
 
     /**
      * Called when the user clicks the "Create API" submit button on the form.
      */
     public createApi(): void {
-        let api: NewApi = new NewApi();
-        api.specVersion = this.model.type;
-        api.name = this.model.name;
-        api.description = this.model.description;
-
-        console.info("[CreateApiFormComponent] Firing 'create-api' event: %o", api);
-
         this.creatingApi = true;
-        this.onCreateApi.emit(api);
+        this.onCreateApi.emit(this.model);
     }
 }

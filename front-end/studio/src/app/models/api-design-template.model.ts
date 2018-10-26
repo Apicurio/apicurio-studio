@@ -1,5 +1,6 @@
-/*
- * Copyright 2017 JBoss Inc
+/**
+ * @license
+ * Copyright 2018 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +15,11 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.beans;
+export interface ApiDesignTemplate {
 
-/**
- * @author eric.wittmann@gmail.com
- */
-public class OpenApi2Document extends OpenApiDocument {
-    
-    private String swagger = "2.0";
-    
-    /**
-     * Constructor.
-     */
-    public OpenApi2Document() {
-        
-    }
-
-    /**
-     * @return the swagger
-     */
-    public String getSwagger() {
-        return swagger;
-    }
-
-    /**
-     * @param swagger the swagger to set
-     */
-    public void setSwagger(String swagger) {
-        this.swagger = swagger;
-    }
+    specVersion: string;
+    name: string;
+    description: string;
+    content: any;
 
 }

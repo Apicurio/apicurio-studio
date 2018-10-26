@@ -1,13 +1,7 @@
 <div class="createapi-form-panel panel panel-default">
     <div class="panel-body">
+        <h1>Create a New API Design</h1>
         <form id="createapi-form" class="form-horizontal" (submit)="createApi()" #apiForm="ngForm">
-            <div class="form-group">
-                <label class="col-sm-2 control-label required" for="api-type">Type</label>
-                <div class="col-sm-10">
-                    <drop-down id="api-type" [id]="'api-create-api-specVersion'" [value]="model.type" [options]="typeOptions()"
-                               (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
-                </div>
-            </div>
             <div class="form-group">
                 <label class="col-sm-2 control-label required" for="api-name">Name</label>
                 <div class="col-sm-10">
@@ -21,6 +15,37 @@
                 <div class="col-sm-10">
                     <textarea name="description" id="api-description" class="form-control" placeholder="Type a short description of the API"
                               [(ngModel)]="model.description"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label required" for="api-type">Type</label>
+                <div class="col-sm-10">
+                    <drop-down id="api-type" [id]="'api-create-api-specVersion'" [value]="model.type" [options]="typeOptions()"
+                               (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                </div>
+            </div>
+            <!-- Templates -->
+            <div class="form-group">
+                <label class="col-sm-2 control-label required" for="api-template">Template</label>
+                <div class="col-sm-10">
+                    <div class="template-option-group" id="api-template">
+                        <div class="template-option" (click)="model.template = null" [class.selected]="model.template === null"
+                             title="Creates an empty/blank API definition.">
+                            <span class="check fa"
+                                  [class.fa-circle-o]="model.template !== null"
+                                  [class.fa-dot-circle-o]="model.template === null"></span>
+                            <span class="icon fa fa-plus-circle"></span>
+                            <span class="option-label">Blank API</span>
+                        </div>
+                        <div class="template-option" *ngFor="let template of templates()" (click)="model.template = template"
+                             [class.selected]="model.template === template" title="{{ template.description }}">
+                            <span class="check fa"
+                                  [class.fa-circle-o]="model.template !== template"
+                                  [class.fa-dot-circle-o]="model.template === template"></span>
+                            <span class="icon fa fa-align-left"></span>
+                            <span class="option-label">{{ template.name }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -7,6 +7,15 @@
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
 <div class="container-fluid" *ngIf="!pageError">
     <div class="importapi-form row">
+        <div class="col-md-7">
+            <importapi-form (onImportApi)="onImportApi($event)" [importing]="importing" #importApiForm></importapi-form>
+            <div class="alert alert-warning" *ngIf="importError">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
+                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
+                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
+            </div>
+        </div>
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
@@ -23,15 +32,6 @@
                     <li>Import raw content from URL</li>
                     <li>Copy/Paste raw content directly</li>
                 </ul>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <importapi-form (onImportApi)="onImportApi($event)" [importing]="importing" #importApiForm></importapi-form>
-            <div class="alert alert-warning" *ngIf="importError">
-                <span class="pficon pficon-warning-triangle-o"></span>
-                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
-                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
-                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
             </div>
         </div>
     </div>

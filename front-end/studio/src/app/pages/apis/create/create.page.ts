@@ -20,10 +20,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApisService} from "../../../services/apis.service";
 import {Api} from "../../../models/api.model";
-import {CreateApiFormComponent} from "./_components/create-form.component";
+import {CreateApiFormComponent, CreateApiFormData} from "./_components/create-form.component";
 import {NewApi} from "../../../models/new-api.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
+import {ImportApi} from "../../../models/import-api.model";
 
 @Component({
     moduleId: module.id,
@@ -48,7 +49,6 @@ export class CreateApiPageComponent extends AbstractPageComponent {
 
     /**
      * The page title.
-     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Create API";
@@ -59,16 +59,52 @@ export class CreateApiPageComponent extends AbstractPageComponent {
      * from the createapi.page.html template.
      * @param newApi
      */
-    public onCreateApi(newApi: NewApi) {
-        console.log("[CreateApiPageComponent] onCreateApi(): " + JSON.stringify(newApi))
-        this.apis.createApi(newApi).then(api => {
-            let link: string[] = [ "/apis", api.id ];
-            console.info("[CreateApiPageComponent] Navigating to: %o", link);
-            this.router.navigate(link);
-        }).catch( error => {
-            console.error("[CreateApiPageComponent] Error creating an API");
-            this.error(error);
-        })
+    public onCreateApi(eventData: CreateApiFormData) {
+        if (!eventData.template) {
+            let newApi: NewApi = new NewApi();
+            newApi.specVersion = eventData.type;
+            newApi.name = eventData.name;
+            newApi.description = eventData.description;
+
+            console.log("[CreateApiPageComponent] Creating a new (blank) API: " + JSON.stringify(newApi))
+            this.apis.createApi(newApi).then(api => {
+                let link: string[] = ["/apis", api.id];
+                console.info("[CreateApiPageComponent] Navigating to: %o", link);
+                this.router.navigate(link);
+            }).catch(error => {
+                console.error("[CreateApiPageComponent] Error creating an API");
+                this.error(error);
+            });
+        } else {
+            let importApi: ImportApi = new ImportApi();
+            let spec: any = JSON.parse(JSON.stringify(eventData.template.content));
+            this.updateSpec(spec, eventData);
+            importApi.data = btoa(JSON.stringify(spec));
+
+            this.apis.importApi(importApi).then(updatedApi => {
+                let link: string[] = [ "/apis", updatedApi.id ];
+                console.info("[CreateApiPageComponent] Navigating to: %o", link);
+                this.router.navigate(link);
+            }).catch( error => {
+                console.error("[CreateApiPageComponent] Error creating API: %o", error);
+                this.error(error);
+            })
+        }
+    }
+
+    public updateSpec(spec: any, eventData: CreateApiFormData): void {
+        if (eventData.type === "2.0") {
+            spec.swagger = "2.0";
+        } else {
+            spec.openapi = eventData.type;
+        }
+        if (!spec.info) {
+            spec.info = {};
+        }
+        spec.info.title = eventData.name;
+        if (eventData.description) {
+            spec.info.description = eventData.description;
+        }
     }
 
 }

@@ -7,10 +7,9 @@ select {
   background-color: #eef;
 }
 
-.importapi-form-panel {
-  padding-top: 25px;
-}
-
-hr {
-  margin-top: 5px;
+.importapi-form-panel h1 {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
 }

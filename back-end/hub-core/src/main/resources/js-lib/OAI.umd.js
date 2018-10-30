@@ -1349,6 +1349,9 @@ var OasSchema = (function (_super) {
      * @return {string[]}
      */
     OasSchema.prototype.propertyNames = function () {
+        if (!this.properties) {
+            return [];
+        }
         var rval = [];
         for (var name_1 in this.properties) {
             rval.push(name_1);
@@ -10564,20 +10567,25 @@ var OasDocumentFactory = (function () {
      * @return {OasDocument}
      */
     OasDocumentFactory.prototype.createEmpty = function (oasVersion) {
+        if (typeof oasVersion === "number") {
+            oasVersion = "" + oasVersion;
+        }
         if (oasVersion === "2") {
             oasVersion = "2.0";
         }
         if (oasVersion === "3") {
-            oasVersion = "3.0.0";
+            oasVersion = "3.0.2";
         }
         if (oasVersion === "3.0") {
-            oasVersion = "3.0.0";
+            oasVersion = "3.0.2";
         }
         if (oasVersion === "2.0") {
             return new Oas20Document();
         }
         if (oasVersion.indexOf("3.") === 0) {
-            return new Oas30Document();
+            var doc = new Oas30Document();
+            doc.openapi = oasVersion;
+            return doc;
         }
         throw new Error("Unsupported OAS version: " + oasVersion);
     };
@@ -10587,27 +10595,32 @@ var OasDocumentFactory = (function () {
      * @return {Oas20Document}
      */
     OasDocumentFactory.prototype.createFromObject = function (oasObject) {
-        if (oasObject.swagger && oasObject.swagger === 2) {
-            oasObject.swagger = "2.0";
+        var ver = oasObject.swagger;
+        if (oasObject.openapi) {
+            ver = oasObject.openapi;
         }
-        if (oasObject.openapi && (oasObject.openapi === 3 || oasObject.openapi === 3.0 || oasObject.openapi === "3.0")) {
-            oasObject.openapi = "3.0.0";
+        if (ver && typeof ver !== "string") {
+            ver = "" + ver;
+        }
+        if (ver === "2") {
+            ver = "2.0";
+        }
+        if (ver === "3" || ver === "3.0") {
+            ver = "3.0.2";
         }
         // We side-effect the input object when reading it, so make a deep copy of it first.
         oasObject = JSON.parse(JSON.stringify(oasObject));
-        if (oasObject.swagger && oasObject.swagger === "2.0") {
+        if (ver === "2.0") {
+            oasObject.swagger = ver;
             var reader = new Oas20JS2ModelReader();
             return reader.read(oasObject);
         }
-        else if (oasObject.openapi && oasObject.openapi.indexOf("3.") === 0) {
+        else if (ver && ver.indexOf("3.") === 0) {
+            oasObject.openapi = ver;
             var reader = new Oas30JS2ModelReader();
             return reader.read(oasObject);
         }
         else {
-            var ver = oasObject.swagger;
-            if (!ver) {
-                ver = oasObject.openapi;
-            }
             throw new Error("Unsupported OAS version: " + ver);
         }
     };
@@ -15463,8 +15476,14 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
+        var _this = this;
         if (this.hasValue(node.$ref)) {
             this.reportIfInvalid("SCH-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
+        }
+        if (this.hasValue(node.required)) {
+            node.required.forEach(function (pname) {
+                _this.reportIfInvalid("SCH-002", _this.hasSchemaProperty(node, pname), node, "required", "Schema lists property \"" + pname + "\" as required, but it does not exist.");
+            });
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitPropertySchema = function (node) {
@@ -15479,11 +15498,17 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
     Oas20InvalidReferenceValidationRule.prototype.visitAllOfSchema = function (node) {
         this.visitSchema(node);
     };
+    Oas20InvalidReferenceValidationRule.prototype.visitSchemaDefinition = function (node) {
+        this.visitSchema(node);
+    };
     Oas20InvalidReferenceValidationRule.prototype.visitSecurityRequirement = function (node) {
         var _this = this;
         node.securityRequirementNames().forEach(function (name) {
             _this.reportIfInvalid("SREQ-001", _this.isValidSecurityRequirementName(name, node.ownerDocument()), node, null, "Security Requirement '" + name + "' must refer to a valid Security Definition.");
         });
+    };
+    Oas20InvalidReferenceValidationRule.prototype.hasSchemaProperty = function (schema, propertyName) {
+        return this.hasValue(schema.properties) && this.hasValue(schema.properties[propertyName]);
     };
     return Oas20InvalidReferenceValidationRule;
 }(Oas20ValidationRule));
@@ -16351,8 +16376,14 @@ var Oas30InvalidReferenceValidationRule = (function (_super) {
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
+        var _this = this;
         if (this.hasValue(node.$ref)) {
             this.reportIfInvalid("SCH-3-002", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
+        }
+        if (this.hasValue(node.required)) {
+            node.required.forEach(function (pname) {
+                _this.reportIfInvalid("SCH-3-005", _this.hasSchemaProperty(node, pname), node, "required", "Schema lists property \"" + pname + "\" as required, but it does not exist.");
+            });
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
@@ -16363,6 +16394,9 @@ var Oas30InvalidReferenceValidationRule = (function (_super) {
     Oas30InvalidReferenceValidationRule.prototype.visitItemsSchema = function (node) { this.visitSchema(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.visitSchema(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitSchemaDefinition = function (node) { this.visitSchema(node); };
+    Oas30InvalidReferenceValidationRule.prototype.hasSchemaProperty = function (schema, propertyName) {
+        return this.hasValue(schema.properties) && this.hasValue(schema.properties[propertyName]);
+    };
     return Oas30InvalidReferenceValidationRule;
 }(Oas30ValidationRule));
 

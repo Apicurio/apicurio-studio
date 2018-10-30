@@ -2243,9 +2243,11 @@ var DeleteAllPropertiesCommand = (function (_super) {
         schema.propertyNames().forEach(function (pname) {
             _this._oldProperties.push({
                 name: pname,
-                schema: _this.oasLibrary().writeNode(schema.removeProperty(pname))
+                schema: _this.oasLibrary().writeNode(schema.removeProperty(pname)),
+                required: _this.isPropertyRequired(schema, pname)
             });
         });
+        schema.required = null;
     };
     /**
      * Restore the old (deleted) property.
@@ -2261,10 +2263,16 @@ var DeleteAllPropertiesCommand = (function (_super) {
         if (this.isNullOrUndefined(schema)) {
             return;
         }
+        if (!schema.required) {
+            schema.required = [];
+        }
         this._oldProperties.forEach(function (oldProp) {
             var prop = schema.createPropertySchema(oldProp.name);
             _this.oasLibrary().readNode(oldProp.schema, prop);
             schema.addProperty(oldProp.name, prop);
+            if (oldProp.required) {
+                schema.required.push(oldProp.name);
+            }
         });
     };
     /**
@@ -2283,6 +2291,14 @@ var DeleteAllPropertiesCommand = (function (_super) {
     DeleteAllPropertiesCommand.prototype.unmarshall = function (obj) {
         _super.prototype.unmarshall.call(this, obj);
         this._schemaPath = MarshallUtils.unmarshallNodePath(this._schemaPath);
+    };
+    /**
+     * Returns true if the property is required.
+     * @param schema
+     * @param propertyName
+     */
+    DeleteAllPropertiesCommand.prototype.isPropertyRequired = function (schema, propertyName) {
+        return schema.required && schema.required.indexOf(propertyName) !== -1;
     };
     return DeleteAllPropertiesCommand;
 }(AbstractCommand));
@@ -2717,6 +2733,10 @@ var DeletePropertyCommand = (function (_super) {
         }
         var schema = property.parent();
         this._oldProperty = this.oasLibrary().writeNode(schema.removeProperty(this._propertyName));
+        this._oldRequired = schema.required && schema.required.indexOf(this._propertyName) !== -1;
+        if (this._oldRequired) {
+            schema.required.splice(schema.required.indexOf(this._propertyName), 1);
+        }
     };
     /**
      * Restore the old (deleted) property.
@@ -2734,6 +2754,12 @@ var DeletePropertyCommand = (function (_super) {
         var propSchema = schema.createPropertySchema(this._propertyName);
         this.oasLibrary().readNode(this._oldProperty, propSchema);
         schema.addProperty(this._propertyName, propSchema);
+        if (this._oldRequired) {
+            if (!schema.required) {
+                schema.required = [];
+            }
+            schema.required.push(this._propertyName);
+        }
     };
     /**
      * Marshall the command into a JS object.

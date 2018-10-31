@@ -140,4 +140,13 @@ export class SecurityRequirementsSectionComponent implements OnInit {
         }
     }
 
+    /**
+     * Returns true if the given security requirement represents "anonymous" access (no security).
+     * @param requirement
+     */
+    public isAnonSecurity(requirement: OasSecurityRequirement): boolean {
+        let schemes: string[] = requirement.securityRequirementNames();
+        return !schemes || schemes.length === 0;
+    }
+
 }

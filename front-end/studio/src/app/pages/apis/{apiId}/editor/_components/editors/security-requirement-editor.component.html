@@ -29,12 +29,35 @@
                 </div>
 
                 <!-- Select from list of Schemes -->
+                <div class="list-group-item anonymous" [class.active]="anonEnabled" *ngIf="schemes.length > 0">
+                    <div class="list-group-item-header">
+                        <div class="list-view-pf-expand" [style.visibility]="'hidden'">
+                            <span class="fa fa-angle-right"></span>
+                        </div>
+                        <div class="list-view-pf-checkbox">
+                            <input type="checkbox" [checked]="anonEnabled" (change)="setAnon($event.target.checked)">
+                        </div>
+                        <div class="list-view-pf-main-info" (click)="setAnon(!anonEnabled)">
+                            <div class="list-view-pf-body">
+                                <div class="list-view-pf-description">
+                                    <div class="list-group-item-heading">
+                                        <span class="name">No Security</span>
+                                        <span class="type">anonymous</span>
+                                    </div>
+                                </div>
+                                <div class="list-view-pf-additional-info">
+                                    <div class="list-group-item-text">Allow access to the API without authentication (cannot be <strong>combined</strong> with other security).</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="list-group-item" *ngFor="let scheme of schemes" [class.active]="isChecked(scheme)"
                      [class.list-view-pf-expand-active]="isExpanded(scheme)">
                     <div class="list-group-item-header">
                         <div class="list-view-pf-expand" [style.visibility]="canExpand(scheme) ? 'visible' : 'hidden'">
-                                    <span class="fa fa-angle-right" [class.fa-angle-down]="isExpanded(scheme)"
-                                          (click)="toggleExpansion(scheme)"></span>
+                            <span class="fa fa-angle-right" [class.fa-angle-down]="isExpanded(scheme)"
+                                  (click)="toggleExpansion(scheme)"></span>
                         </div>
                         <div class="list-view-pf-checkbox">
                             <input type="checkbox" [checked]="isChecked(scheme)" (change)="toggleSecurityScheme(scheme, $event.target.checked)">

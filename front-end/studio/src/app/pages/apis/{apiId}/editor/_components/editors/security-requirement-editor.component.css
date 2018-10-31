@@ -6,6 +6,10 @@
   padding-top: 24px;
 }
 
+.security-scheme-list .list-group-item.anonymous {
+  border-bottom: 1px dashed #999;
+}
+
 .security-scheme-list .list-group-item-heading .type::before {
   content: '(';
 }

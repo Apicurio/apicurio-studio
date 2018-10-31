@@ -17,3 +17,7 @@
     float: right;
     padding-right: 15px;
 }
+
+.security-requirement .requirement-label.no-security {
+    font-style: italic;
+}

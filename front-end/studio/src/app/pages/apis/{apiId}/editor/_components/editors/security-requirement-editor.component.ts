@@ -64,6 +64,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
     public _expanded: any;
 
     protected model: SecurityRequirementData;
+    protected anonEnabled: boolean = false;
     protected schemes: OasSecurityScheme[];
     protected scopeCache: any;
 
@@ -87,15 +88,21 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      */
     public initializeModelFromEntity(entity: OasSecurityRequirement): void {
         let names: string[] = entity.securityRequirementNames();
-        names.forEach( name => {
-            this.model[name] = entity.scopes(name);
-        });
+        if (names.length === 0) {
+            this.anonEnabled = true;
+        } else {
+            names.forEach( name => {
+                this.model[name] = entity.scopes(name);
+            });
+        }
     }
 
     /**
      * Initializes the editor's data model to an empty state.
      */
     public initializeModel(): void {
+        this.anonEnabled = false;
+        this.model = {};
     }
 
     /**
@@ -110,13 +117,25 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
     }
 
     /**
+     * Enables/disable anonymous access.
+     * @param isAnon
+     */
+    public setAnon(isAnon: boolean): void {
+        this.anonEnabled = isAnon;
+        if (isAnon) {
+            // anonymous access is mutually exclusive with all other security types
+            this.model = {};
+        }
+    }
+
+    /**
      * Returns true if the editor is currently valid.
      */
     public isValid(): boolean {
         for (let n in this.model) {
             return true;
         }
-        return false;
+        return this.anonEnabled;
     }
 
     /**
@@ -189,6 +208,8 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
             enable = !this.isChecked(scheme);
         }
         if (enable) {
+            // any other security scheme is mutually exclusive with anonymous access
+            this.anonEnabled = false;
             this.model[scheme.schemeName()] = [];
             if (this.canExpand(scheme)) {
                 this.expand(scheme);

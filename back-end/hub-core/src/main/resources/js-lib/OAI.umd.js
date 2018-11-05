@@ -16913,6 +16913,628 @@ var Oas30ValidationVisitor = (function (_super) {
     return Oas30ValidationVisitor;
 }(Oas30CompositeVisitor));
 
+var __extends$100 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * A visitor used to transform an OpenAPI 2.0 document into an OpenAPI 3.0.x document.
+ */
+var Oas20to30TransformationVisitor = (function () {
+    function Oas20to30TransformationVisitor() {
+        this._library = new OasLibraryUtils();
+        this._nodeMap = {};
+    }
+    Oas20to30TransformationVisitor.prototype.getResult = function () {
+        return this.doc30;
+    };
+    Oas20to30TransformationVisitor.prototype.visitDocument = function (node) {
+        this.doc30 = this._library.createDocument("3.0.2");
+        if (node.host) {
+            var basePath = node.basePath;
+            if (!basePath) {
+                basePath = "";
+            }
+            var schemes = node.schemes;
+            if (!schemes || schemes.length === 0) {
+                schemes = ["http"];
+            }
+            var server30 = this.doc30.createServer();
+            this.doc30.servers = [server30];
+            if (schemes.length === 1) {
+                server30.url = schemes[0] + "://" + node.host + basePath;
+            }
+            else {
+                server30.url = "{scheme}://" + node.host + basePath;
+                var var30 = server30.createServerVariable("scheme");
+                server30.addServerVariable("scheme", var30);
+                var30.default = schemes[0];
+                var30.enum = schemes.slice(0);
+                var30.description = "The supported protocol schemes.";
+            }
+        }
+        this.mapNode(node, this.doc30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitInfo = function (node) {
+        this.doc30.info = this.doc30.createInfo();
+        this.doc30.info.title = node.title;
+        this.doc30.info.description = node.description;
+        this.doc30.info.termsOfService = node.termsOfService;
+        this.doc30.info.version = node.version;
+        this.mapNode(node, this.doc30.info);
+    };
+    Oas20to30TransformationVisitor.prototype.visitContact = function (node) {
+        var info30 = this.lookup(node.parent());
+        var contact30 = info30.createContact();
+        info30.contact = contact30;
+        contact30.name = node.name;
+        contact30.url = node.url;
+        contact30.email = node.email;
+        this.mapNode(node, contact30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitLicense = function (node) {
+        var info30 = this.lookup(node.parent());
+        var license30 = info30.createLicense();
+        license30.name = node.name;
+        license30.url = node.url;
+        this.mapNode(node, license30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitPaths = function (node) {
+        this.doc30.paths = this.doc30.createPaths();
+        this.mapNode(node, this.doc30.paths);
+    };
+    Oas20to30TransformationVisitor.prototype.visitPathItem = function (node) {
+        var paths30 = this.lookup(node.parent());
+        var pathItem30 = paths30.createPathItem(node.path());
+        paths30.addPathItem(node.path(), pathItem30);
+        pathItem30.$ref = node.$ref;
+        this.mapNode(node, pathItem30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitOperation = function (node) {
+        var pathItem30 = this.lookup(node.parent());
+        var operation30 = pathItem30.createOperation(node.method());
+        pathItem30[node.method()] = operation30;
+        operation30.tags = node.tags;
+        operation30.summary = node.summary;
+        operation30.description = node.description;
+        operation30.operationId = node.operationId;
+        operation30.deprecated = node.deprecated;
+        if (node.schemes && node.schemes.length > 0 && this.doc30.servers && this.doc30.servers.length > 0) {
+            var server30 = operation30.createServer();
+            operation30.servers = [server30];
+            server30.url = this.doc30.servers[0].url;
+            if (node.schemes.length === 1) {
+                server30.url = server30.url.replace("{scheme}", node.schemes[0]);
+                server30.removeServerVariable("scheme");
+            }
+            else {
+                server30.url = "{scheme}" + server30.url.substring(server30.url.indexOf("://"));
+                var var30 = server30.createServerVariable("scheme");
+                server30.addServerVariable("scheme", var30);
+                var30.description = "The supported protocol schemes.";
+                var30.default = node.schemes[0];
+                var30.enum = node.schemes.slice(0);
+            }
+        }
+        // Note: consumes/produces will be handled elsewhere (when Request Body and Response models are created)
+        this.mapNode(node, operation30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitParameter = function (node) {
+        // TODO handle a $ref to a formData parameter found in the definitions
+        var _this = this;
+        if (node.in === "body") {
+            var operation30 = this.lookup(this.findParentOperation(node));
+            if (operation30) {
+                var body30_1 = operation30.createRequestBody();
+                operation30.requestBody = body30_1;
+                body30_1.description = node.description;
+                body30_1.required = node.required;
+                if (node.schema) {
+                    var consumes = this.findConsumes(node);
+                    var schema_1 = node.schema;
+                    consumes.forEach(function (ct) {
+                        var mediaType30 = body30_1.createMediaType(ct);
+                        body30_1.addMediaType(ct, mediaType30);
+                        var schema30 = mediaType30.createSchema();
+                        mediaType30.schema = _this.toSchema(schema_1, schema30, true);
+                        _this.mapNode(schema_1, schema30);
+                    });
+                }
+            }
+        }
+        else if (node.in === "formData") {
+            var operation30_1 = this.lookup(this.findParentOperation(node));
+            if (operation30_1) {
+                var consumes = this.findConsumes(node);
+                if (!this.hasFormDataMimeType(consumes)) {
+                    consumes = ["application/x-www-form-urlencoded"];
+                }
+                consumes.forEach(function (ct) {
+                    if (_this.isFormDataMimeType(ct)) {
+                        var body30 = operation30_1.requestBody;
+                        if (!body30) {
+                            body30 = operation30_1.createRequestBody();
+                            operation30_1.requestBody = body30;
+                            body30.required = true;
+                        }
+                        var mediaType30 = body30.getMediaType(ct);
+                        if (!mediaType30) {
+                            mediaType30 = body30.createMediaType(ct);
+                            body30.addMediaType(ct, mediaType30);
+                        }
+                        var schema30 = mediaType30.schema;
+                        if (!schema30) {
+                            schema30 = mediaType30.createSchema();
+                            mediaType30.schema = schema30;
+                            schema30.type = "object";
+                        }
+                        var property30 = schema30.createPropertySchema(node.name);
+                        schema30.addProperty(node.name, property30);
+                        property30.description = node.description;
+                        _this.toSchema(node, property30, false);
+                    }
+                });
+            }
+        }
+        else {
+            // TODO handle a $ref to a body parameter found in the definitions
+            var parent30 = this.lookup(node.parent());
+            var param30 = parent30.createParameter();
+            parent30.addParameter(param30);
+            this.transformParam(node, param30);
+            this.mapNode(node, param30);
+        }
+    };
+    Oas20to30TransformationVisitor.prototype.transformParam = function (node, param30) {
+        param30.$ref = node["$ref"];
+        if (param30.$ref) {
+            return param30;
+        }
+        param30.name = node.name;
+        param30.in = node.in;
+        param30.description = node.description;
+        param30.required = node.required;
+        param30.allowEmptyValue = node.allowEmptyValue;
+        param30.schema = this.toSchema(node, param30.createSchema(), false);
+        this.collectionFormatToStyleAndExplode(node, param30);
+        return param30;
+    };
+    Oas20to30TransformationVisitor.prototype.visitParameterDefinition = function (node) {
+        var _this = this;
+        if (node.in === "body") {
+            var parent30 = this.getOrCreateComponents();
+            var bodyDef30_1 = parent30.createRequestBodyDefinition(node.parameterName());
+            parent30.addRequestBodyDefinition(node.parameterName(), bodyDef30_1);
+            bodyDef30_1.description = node.description;
+            bodyDef30_1.required = node.required;
+            if (node.schema) {
+                var consumes = this.findConsumes(node);
+                var schema_2 = node.schema;
+                consumes.forEach(function (ct) {
+                    var mediaType30 = bodyDef30_1.createMediaType(ct);
+                    bodyDef30_1.addMediaType(ct, mediaType30);
+                    var schema30 = mediaType30.createSchema();
+                    mediaType30.schema = _this.toSchema(schema_2, schema30, true);
+                    _this.mapNode(schema_2, schema30);
+                });
+            }
+        }
+        else if (node.in === "formData") {
+        }
+        else {
+            var components30 = this.getOrCreateComponents();
+            var paramDef30 = components30.createParameterDefinition(node.parameterName());
+            components30.addParameterDefinition(node.parameterName(), paramDef30);
+            this.transformParam(node, paramDef30);
+            this.mapNode(node, paramDef30);
+        }
+    };
+    Oas20to30TransformationVisitor.prototype.visitExternalDocumentation = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var externalDocs30 = parent30.createExternalDocumentation();
+        parent30.externalDocs = externalDocs30;
+        externalDocs30.description = node.description;
+        externalDocs30.url = node.url;
+        this.mapNode(node, externalDocs30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitSecurityRequirement = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var securityRequirement30 = parent30.createSecurityRequirement();
+        if (!parent30.security) {
+            parent30.security = [];
+        }
+        parent30.security.push(securityRequirement30);
+        node.securityRequirementNames().forEach(function (name) {
+            securityRequirement30.addSecurityRequirementItem(name, node.scopes(name));
+        });
+        this.mapNode(node, securityRequirement30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitResponses = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var responses30 = parent30.createResponses();
+        parent30.responses = responses30;
+        this.mapNode(node, responses30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitResponse = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var response30 = parent30.createResponse(node.statusCode());
+        parent30.addResponse(node.statusCode(), response30);
+        response30.$ref = node.$ref;
+        this.transformResponse(node, response30);
+        this.mapNode(node, response30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitResponseDefinition = function (node) {
+        var parent30 = this.getOrCreateComponents();
+        var responseDef30 = parent30.createResponseDefinition(node.name());
+        parent30.addResponseDefinition(node.name(), responseDef30);
+        this.transformResponse(node, responseDef30);
+        this.mapNode(node, responseDef30);
+    };
+    Oas20to30TransformationVisitor.prototype.transformResponse = function (node, response30) {
+        var _this = this;
+        response30.description = node.description;
+        if (node.schema) {
+            var produces = this.findProduces(node);
+            var schema_3 = node.schema;
+            produces.forEach(function (ct) {
+                var mediaType30 = response30.createMediaType(ct);
+                response30.addMediaType(ct, mediaType30);
+                var schema30 = mediaType30.createSchema();
+                mediaType30.schema = _this.toSchema(schema_3, schema30, true);
+                if (node.examples) {
+                    var ctexample = node.examples.example(ct);
+                    if (ctexample) {
+                        mediaType30.example = ctexample;
+                    }
+                }
+                _this.mapNode(schema_3, schema30);
+            });
+        }
+    };
+    Oas20to30TransformationVisitor.prototype.visitSchema = function (node) {
+        // In 2.0, Schemas can only be located on responses and parameters.  In both cases, we
+        // handle processing and indexing the schema in their respective visit methods - so we
+        // can skip doing that here.
+    };
+    Oas20to30TransformationVisitor.prototype.visitHeaders = function (node) {
+        var parent30 = this.lookup(node.parent());
+        // No processing to do here, because 3.0 doesn't have a "headers" node.  So instead
+        // we'll map the headers node to the 3.0 response node, because that will be the
+        // effective parent for any 3.0 Header nodes.
+        this.mapNode(node, parent30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitHeader = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var header30 = parent30.createHeader(node.headerName());
+        parent30.addHeader(node.headerName(), header30);
+        header30.description = node.description;
+        header30.schema = this.toSchema(node, header30.createSchema(), false);
+        this.mapNode(node, header30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitExample = function (node) {
+        // Examples are processed as part of "transformResponse"
+    };
+    Oas20to30TransformationVisitor.prototype.visitItems = function (node) {
+        var parent30 = this.findItemsParent(node);
+        var items30 = parent30.createItemsSchema();
+        parent30.items = items30;
+        this.toSchema(node, items30, false);
+        this.mapNode(node, items30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitTag = function (node) {
+        var parent30 = this.doc30;
+        if (!parent30.tags) {
+            parent30.tags = [];
+        }
+        var tag30 = parent30.createTag();
+        tag30.name = node.name;
+        tag30.description = node.description;
+        parent30.tags.push(tag30);
+        this.mapNode(node, tag30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitSecurityDefinitions = function (node) {
+        // OpenAPI has no "Security Definitions" wrapper entity.
+    };
+    Oas20to30TransformationVisitor.prototype.visitSecurityScheme = function (node) {
+        var parent30 = this.getOrCreateComponents();
+        var scheme30 = parent30.createSecurityScheme(node.schemeName());
+        parent30.addSecurityScheme(node.schemeName(), scheme30);
+        scheme30.type = node.type;
+        scheme30.description = node.description;
+        scheme30.name = node.name;
+        scheme30.in = node.in;
+        if (node.type === "oauth2") {
+            if (node.flow === "implicit") {
+                scheme30.flows = scheme30.createOAuthFlows();
+                scheme30.flows.implicit = scheme30.flows.createImplicitOAuthFlow();
+                scheme30.flows.implicit.authorizationUrl = node.authorizationUrl;
+                if (node.scopes) {
+                    node.scopes.scopes().forEach(function (scopeName) {
+                        scheme30.flows.implicit.addScope(scopeName, node.scopes.getScopeDescription(scopeName));
+                    });
+                }
+            }
+            if (node.flow === "accessCode") {
+                scheme30.flows = scheme30.createOAuthFlows();
+                scheme30.flows.authorizationCode = scheme30.flows.createAuthorizationCodeOAuthFlow();
+                scheme30.flows.authorizationCode.authorizationUrl = node.authorizationUrl;
+                scheme30.flows.authorizationCode.tokenUrl = node.tokenUrl;
+                if (node.scopes) {
+                    node.scopes.scopes().forEach(function (scopeName) {
+                        scheme30.flows.authorizationCode.addScope(scopeName, node.scopes.getScopeDescription(scopeName));
+                    });
+                }
+            }
+            if (node.flow === "password") {
+                scheme30.flows = scheme30.createOAuthFlows();
+                scheme30.flows.password = scheme30.flows.createPasswordOAuthFlow();
+                scheme30.flows.password.tokenUrl = node.tokenUrl;
+                if (node.scopes) {
+                    node.scopes.scopes().forEach(function (scopeName) {
+                        scheme30.flows.password.addScope(scopeName, node.scopes.getScopeDescription(scopeName));
+                    });
+                }
+            }
+            if (node.flow === "application") {
+                scheme30.flows = scheme30.createOAuthFlows();
+                scheme30.flows.clientCredentials = scheme30.flows.createClientCredentialsOAuthFlow();
+                scheme30.flows.clientCredentials.tokenUrl = node.tokenUrl;
+                if (node.scopes) {
+                    node.scopes.scopes().forEach(function (scopeName) {
+                        scheme30.flows.clientCredentials.addScope(scopeName, node.scopes.getScopeDescription(scopeName));
+                    });
+                }
+            }
+        }
+        this.mapNode(node, scheme30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitScopes = function (node) {
+        // Note: scopes are handled during the processing of the security scheme.  See `visitSecurityScheme` for details.
+    };
+    Oas20to30TransformationVisitor.prototype.visitXML = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var xml30 = parent30.createXML();
+        parent30.xml = xml30;
+        xml30.name = node.name;
+        xml30.namespace = node.namespace;
+        xml30.prefix = node.prefix;
+        xml30.attribute = node.attribute;
+        xml30.wrapped = node.wrapped;
+        this.mapNode(node, xml30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitSchemaDefinition = function (node) {
+        var parent30 = this.getOrCreateComponents();
+        var schemaDef30 = parent30.createSchemaDefinition(node.definitionName());
+        parent30.addSchemaDefinition(node.definitionName(), schemaDef30);
+        this.toSchema(node, schemaDef30, true);
+        this.mapNode(node, schemaDef30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitPropertySchema = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var property30 = parent30.createPropertySchema(node.propertyName());
+        parent30.addProperty(node.propertyName(), property30);
+        this.toSchema(node, property30, true);
+        this.mapNode(node, property30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitAdditionalPropertiesSchema = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var additionalProps30 = parent30.createAdditionalPropertiesSchema();
+        parent30.additionalProperties = additionalProps30;
+        this.toSchema(node, additionalProps30, true);
+        this.mapNode(node, additionalProps30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitAllOfSchema = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var allOf30 = parent30.createAllOfSchema();
+        if (!parent30.allOf) {
+            parent30.allOf = [];
+        }
+        parent30.allOf.push(allOf30);
+        this.toSchema(node, allOf30, true);
+        this.mapNode(node, allOf30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitItemsSchema = function (node) {
+        var parent30 = this.lookup(node.parent());
+        var items30 = parent30.createItemsSchema();
+        if (parent30.items && typeof parent30.items === "object") {
+            parent30.items = [parent30.items];
+            parent30.items.push(items30);
+        }
+        else {
+            parent30.items = items30;
+        }
+        this.toSchema(node, items30, true);
+        this.mapNode(node, items30);
+    };
+    Oas20to30TransformationVisitor.prototype.visitDefinitions = function (node) {
+        // Note: there is no "definitions" entity in 3.0, so nothing to do here.
+    };
+    Oas20to30TransformationVisitor.prototype.visitParametersDefinitions = function (node) {
+        // Note: there is no "parameters definitions" entity in 3.0, so nothing to do here.
+    };
+    Oas20to30TransformationVisitor.prototype.visitResponsesDefinitions = function (node) {
+        // Note: there is no "responses definitions" entity in 3.0, so nothing to do here.
+    };
+    Oas20to30TransformationVisitor.prototype.visitExtension = function (node) {
+        var parent30 = this.lookup(node.parent());
+        parent30.addExtension(node.name, node.value);
+    };
+    Oas20to30TransformationVisitor.prototype.visitValidationProblem = function (node) {
+        // Note: nothing to do for a validation problem
+    };
+    Oas20to30TransformationVisitor.prototype.mapNode = function (from, to) {
+        var nodePath = this._library.createNodePath(from);
+        var mapIndex = nodePath.toString();
+        this._nodeMap[mapIndex] = to;
+    };
+    Oas20to30TransformationVisitor.prototype.lookup = function (node) {
+        var nodePath = this._library.createNodePath(node);
+        var mapIndex = nodePath.toString();
+        return this._nodeMap[mapIndex];
+    };
+    Oas20to30TransformationVisitor.prototype.getOrCreateComponents = function () {
+        if (!this.doc30.components) {
+            this.doc30.components = this.doc30.createComponents();
+        }
+        return this.doc30.components;
+    };
+    Oas20to30TransformationVisitor.prototype.toSchema = function (from, schema30, isSchema) {
+        schema30.type = from.type;
+        schema30.format = from.format;
+        if (from.items && typeof from.items !== "array") {
+            from.items.n_attribute("_transformation_items-parent", schema30);
+        }
+        else if (from.items && typeof from.items === "array") {
+        }
+        // Note: Not sure what to do with the "collectionFormat" of a schema.  Dropping it for now.
+        //schema30.collectionFormat = from.collectionFormat;
+        schema30.default = from.default;
+        schema30.maximum = from.maximum;
+        schema30.exclusiveMaximum = from.exclusiveMaximum;
+        schema30.minimum = from.minimum;
+        schema30.exclusiveMinimum = from.exclusiveMinimum;
+        schema30.maxLength = from.maxLength;
+        schema30.minLength = from.minLength;
+        schema30.pattern = from.pattern;
+        schema30.maxItems = from.maxItems;
+        schema30.minItems = from.minItems;
+        schema30.uniqueItems = from.uniqueItems;
+        schema30.enum = from.enum;
+        schema30.multipleOf = from.multipleOf;
+        if (isSchema) {
+            var schema20 = from;
+            schema30.$ref = schema20.$ref;
+            if (typeof schema20.additionalProperties === "boolean") {
+                schema30.additionalProperties = schema20.additionalProperties;
+            }
+            schema30.readOnly = schema20.readOnly;
+            schema30.example = schema20.example;
+            schema30.title = schema20.title;
+            schema30.description = schema20.description;
+            schema30.maxProperties = schema20.maxProperties;
+            schema30.minProperties = schema20.minProperties;
+            schema30.required = schema20.required;
+            if (schema20.discriminator) {
+                schema30.discriminator = schema30.createDiscriminator();
+                schema30.discriminator.propertyName = schema20.discriminator;
+            }
+        }
+        return schema30;
+    };
+    Oas20to30TransformationVisitor.prototype.findItemsParent = function (node) {
+        var itemsParent = node.n_attribute("_transformation_items-parent");
+        if (!itemsParent) {
+            itemsParent = this.lookup(node.parent());
+        }
+        return itemsParent;
+    };
+    Oas20to30TransformationVisitor.prototype.findParentOperation = function (node) {
+        var visitor = new ParentOperationFinderVisitor();
+        OasVisitorUtil.visitTree(node, visitor, exports.OasTraverserDirection.up);
+        return visitor.operation;
+    };
+    Oas20to30TransformationVisitor.prototype.findProduces = function (node) {
+        var visitor = new ProducesFinderVisitor();
+        OasVisitorUtil.visitTree(node, visitor, exports.OasTraverserDirection.up);
+        return visitor.produces;
+    };
+    Oas20to30TransformationVisitor.prototype.findConsumes = function (node) {
+        var visitor = new ConsumesFinderVisitor();
+        OasVisitorUtil.visitTree(node, visitor, exports.OasTraverserDirection.up);
+        return visitor.consumes;
+    };
+    Oas20to30TransformationVisitor.prototype.collectionFormatToStyleAndExplode = function (node, param30) {
+        if (node.type === "array" && node.collectionFormat === "multi" && (node.in === "query" || node.in === "cookie")) {
+            param30.style = "form";
+            param30.explode = true;
+            return;
+        }
+        if (node.type === "array" && node.collectionFormat === "csv" && (node.in === "query" || node.in === "cookie")) {
+            param30.style = "form";
+            param30.explode = false;
+            return;
+        }
+        if (node.type === "array" && node.collectionFormat === "csv" && (node.in === "path" || node.in === "header")) {
+            param30.style = "simple";
+            return;
+        }
+        if (node.type === "array" && node.collectionFormat === "ssv" && node.in === "query") {
+            param30.style = "spaceDelimited";
+            return;
+        }
+        if (node.type === "array" && node.collectionFormat === "pipes" && node.in === "query") {
+            param30.style = "pipeDelimited";
+            return;
+        }
+    };
+    Oas20to30TransformationVisitor.prototype.isFormDataMimeType = function (mimetype) {
+        return mimetype && (mimetype === "multipart/form-data" || mimetype === "application/x-www-form-urlencoded");
+    };
+    Oas20to30TransformationVisitor.prototype.hasFormDataMimeType = function (mimetypes) {
+        if (mimetypes) {
+            for (var _i = 0, mimetypes_1 = mimetypes; _i < mimetypes_1.length; _i++) {
+                var mt = mimetypes_1[_i];
+                if (this.isFormDataMimeType(mt)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    return Oas20to30TransformationVisitor;
+}());
+var ProducesFinderVisitor = (function (_super) {
+    __extends$100(ProducesFinderVisitor, _super);
+    function ProducesFinderVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.produces = ["*/*"];
+        return _this;
+    }
+    ProducesFinderVisitor.prototype.visitDocument = function (node) {
+        if (node.produces && node.produces.length > 0) {
+            this.produces = node.produces;
+        }
+    };
+    ProducesFinderVisitor.prototype.visitOperation = function (node) {
+        if (node.produces && node.produces.length > 0) {
+            this.produces = node.produces;
+        }
+    };
+    return ProducesFinderVisitor;
+}(Oas20NodeVisitorAdapter));
+var ConsumesFinderVisitor = (function (_super) {
+    __extends$100(ConsumesFinderVisitor, _super);
+    function ConsumesFinderVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.consumes = ["*/*"];
+        return _this;
+    }
+    ConsumesFinderVisitor.prototype.visitDocument = function (node) {
+        if (node.consumes && node.consumes.length > 0) {
+            this.consumes = node.consumes;
+        }
+    };
+    ConsumesFinderVisitor.prototype.visitOperation = function (node) {
+        if (node.consumes && node.consumes.length > 0) {
+            this.consumes = node.consumes;
+        }
+    };
+    return ConsumesFinderVisitor;
+}(Oas20NodeVisitorAdapter));
+var ParentOperationFinderVisitor = (function (_super) {
+    __extends$100(ParentOperationFinderVisitor, _super);
+    function ParentOperationFinderVisitor() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.operation = null;
+        return _this;
+    }
+    ParentOperationFinderVisitor.prototype.visitOperation = function (node) {
+        this.operation = node;
+    };
+    return ParentOperationFinderVisitor;
+}(Oas20NodeVisitorAdapter));
+
 /**
  * @license
  * Copyright 2017 Red Hat
@@ -16962,6 +17584,15 @@ var OasLibraryUtils = (function () {
             }
         }
         throw new Error("Invalid input (must be either a string or object).");
+    };
+    /**
+     * Transforms from a 2.0 document into a 3.0 document.
+     * @param source
+     */
+    OasLibraryUtils.prototype.transformDocument = function (source) {
+        var transformer = new Oas20to30TransformationVisitor();
+        OasVisitorUtil.visitTree(source, transformer);
+        return transformer.getResult();
     };
     /**
      * Reads a partial model from the given source.  The caller must specify what type of
@@ -17404,6 +18035,10 @@ exports.OasValidationRuleUtil = OasValidationRuleUtil;
 exports.OasResetValidationProblemsVisitor = OasResetValidationProblemsVisitor;
 exports.Oas20ValidationVisitor = Oas20ValidationVisitor;
 exports.Oas30ValidationVisitor = Oas30ValidationVisitor;
+exports.Oas20to30TransformationVisitor = Oas20to30TransformationVisitor;
+exports.ProducesFinderVisitor = ProducesFinderVisitor;
+exports.ConsumesFinderVisitor = ConsumesFinderVisitor;
+exports.ParentOperationFinderVisitor = ParentOperationFinderVisitor;
 exports.OasSchemaFactory = OasSchemaFactory;
 
 Object.defineProperty(exports, '__esModule', { value: true });

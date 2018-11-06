@@ -8310,6 +8310,88 @@ var Oas30Document = (function (_super) {
 
 /**
  * @license
+ * Copyright 2018 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var ReferenceUtil = (function () {
+    function ReferenceUtil() {
+    }
+    /**
+     * Resolves a reference from a relative position in the data model.  Returns null if the
+     * $ref is null or cannot be resolved.
+     * @param $ref
+     * @param from
+     */
+    ReferenceUtil.resolveRef = function ($ref, from) {
+        if (!$ref) {
+            return null;
+        }
+        // TODO implement a proper reference resolver including external file resolution: https://github.com/EricWittmann/oai-ts-core/issues/8
+        var split = $ref.split("/");
+        var cnode = null;
+        split.forEach(function (seg) {
+            if (seg === "#") {
+                cnode = from.ownerDocument();
+            }
+            else if (ReferenceUtil.hasValue(cnode)) {
+                if (cnode["__instanceof_IOasIndexedNode"]) {
+                    cnode = cnode["getItem"](seg);
+                }
+                else {
+                    cnode = cnode[seg];
+                }
+            }
+        });
+        return cnode;
+    };
+    /**
+     * Returns true only if the given reference can be resolved relative to the given document.  Examples
+     * of $ref values include:
+     *
+     * #/definitions/ExampleDefinition
+     * #/parameters/fooId
+     * #/responses/NotFoundResponse
+     *
+     * @param $ref
+     * @param oasDocument
+     */
+    ReferenceUtil.canResolveRef = function ($ref, from) {
+        // Don't try to resolve e.g. external references.
+        if ($ref.indexOf('#/') !== 0) {
+            return true;
+        }
+        return ReferenceUtil.hasValue(ReferenceUtil.resolveRef($ref, from));
+    };
+    /**
+     * Check if the property value exists (is not undefined and is not null).
+     * @param propertyValue
+     * @return {boolean}
+     */
+    ReferenceUtil.hasValue = function (value) {
+        if (value === undefined) {
+            return false;
+        }
+        if (value === null) {
+            return false;
+        }
+        return true;
+    };
+    return ReferenceUtil;
+}());
+
+/**
+ * @license
  * Copyright 2017 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14042,49 +14124,6 @@ var OasValidationRuleUtil = (function () {
         return items.indexOf(value) != -1;
     };
     /**
-     * Resolves a reference from a relative position in the data model.
-     * @param $ref
-     * @param from
-     */
-    OasValidationRuleUtil.resolveRef = function ($ref, from) {
-        var _this = this;
-        // TODO implement a proper reference resolver including external file resolution: https://github.com/EricWittmann/oai-ts-core/issues/8
-        var split = $ref.split("/");
-        var cnode = null;
-        split.forEach(function (seg) {
-            if (seg === "#") {
-                cnode = from.ownerDocument();
-            }
-            else if (_this.hasValue(cnode)) {
-                if (cnode["__instanceof_IOasIndexedNode"]) {
-                    cnode = cnode["getItem"](seg);
-                }
-                else {
-                    cnode = cnode[seg];
-                }
-            }
-        });
-        return cnode;
-    };
-    /**
-     * Returns true only if the given reference can be resolved relative to the given document.  Examples
-     * of $ref values include:
-     *
-     * #/definitions/ExampleDefinition
-     * #/parameters/fooId
-     * #/responses/NotFoundResponse
-     *
-     * @param $ref
-     * @param oasDocument
-     */
-    OasValidationRuleUtil.canResolveRef = function ($ref, from) {
-        // Don't try to resolve e.g. external references.
-        if ($ref.indexOf('#/') !== 0) {
-            return true;
-        }
-        return this.hasValue(OasValidationRuleUtil.resolveRef($ref, from));
-    };
-    /**
      * Returns true only if the given value is a valid host.
      * @param propertyValue
      * @return {boolean}
@@ -15462,23 +15501,23 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
     };
     Oas20InvalidReferenceValidationRule.prototype.visitParameter = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("PAR-018", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Parameter Reference must refer to a valid Parameter Definition.");
+            this.reportIfInvalid("PAR-018", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Parameter Reference must refer to a valid Parameter Definition.");
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitPathItem = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("PATH-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Path Item Reference must refer to a valid Path Item Definition.");
+            this.reportIfInvalid("PATH-001", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Path Item Reference must refer to a valid Path Item Definition.");
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitResponse = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("RES-002", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Response Reference must refer to a valid Response Definition.");
+            this.reportIfInvalid("RES-002", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Response Reference must refer to a valid Response Definition.");
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
         var _this = this;
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("SCH-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
+            this.reportIfInvalid("SCH-001", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
         }
         if (this.hasValue(node.required)) {
             node.required.forEach(function (pname) {
@@ -16326,59 +16365,59 @@ var Oas30InvalidReferenceValidationRule = (function (_super) {
     // }
     Oas30InvalidReferenceValidationRule.prototype.visitCallback = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("CALL-3-001", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Callback Reference must refer to a valid Callback Definition.");
+            this.reportIfInvalid("CALL-3-001", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Callback Reference must refer to a valid Callback Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitCallbackDefinition = function (node) { this.visitCallback(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitExample = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("EX-3-003", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Example Reference must refer to a valid Example Definition.");
+            this.reportIfInvalid("EX-3-003", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Example Reference must refer to a valid Example Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitExampleDefinition = function (node) { this.visitExample(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitHeader = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("HEAD-3-005", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Header Reference must refer to a valid Header Definition.");
+            this.reportIfInvalid("HEAD-3-005", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Header Reference must refer to a valid Header Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitHeaderDefinition = function (node) { this.visitHeader(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitLink = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("LINK-3-005", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Link Reference must refer to a valid Link Definition.");
+            this.reportIfInvalid("LINK-3-005", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Link Reference must refer to a valid Link Definition.");
         }
         if (this.hasValue(node.operationRef)) {
-            this.reportIfInvalid("LINK-3-003", OasValidationRuleUtil.canResolveRef(node.operationRef, node), node, "operationRef", "Link \"Operation Reference\" must refer to a valid Operation Definition.");
+            this.reportIfInvalid("LINK-3-003", ReferenceUtil.canResolveRef(node.operationRef, node), node, "operationRef", "Link \"Operation Reference\" must refer to a valid Operation Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitLinkDefinition = function (node) { this.visitLink(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitParameter = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("PAR-3-017", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Parameter Reference must refer to a valid Parameter Definition.");
+            this.reportIfInvalid("PAR-3-017", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Parameter Reference must refer to a valid Parameter Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitParameterDefinition = function (node) { this.visitParameter(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitRequestBody = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("RB-3-003", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Request Body Reference must refer to a valid Request Body Definition.");
+            this.reportIfInvalid("RB-3-003", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Request Body Reference must refer to a valid Request Body Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitRequestBodyDefinition = function (node) { this.visitRequestBody(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitResponseBase = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("RES-3-004", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Response Reference must refer to a valid Response Definition.");
+            this.reportIfInvalid("RES-3-004", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Response Reference must refer to a valid Response Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitResponse = function (node) { this.visitResponseBase(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitResponseDefinition = function (node) { this.visitResponseBase(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitSecurityScheme = function (node) {
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("SS-3-012", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Security Scheme Reference must refer to a valid Security Scheme Definition.");
+            this.reportIfInvalid("SS-3-012", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Security Scheme Reference must refer to a valid Security Scheme Definition.");
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
         var _this = this;
         if (this.hasValue(node.$ref)) {
-            this.reportIfInvalid("SCH-3-002", OasValidationRuleUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
+            this.reportIfInvalid("SCH-3-002", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
         }
         if (this.hasValue(node.required)) {
             node.required.forEach(function (pname) {
@@ -16988,7 +17027,7 @@ var Oas20to30TransformationVisitor = (function () {
         var paths30 = this.lookup(node.parent());
         var pathItem30 = paths30.createPathItem(node.path());
         paths30.addPathItem(node.path(), pathItem30);
-        pathItem30.$ref = node.$ref;
+        pathItem30.$ref = this.updateRef(node.$ref);
         this.mapNode(node, pathItem30);
     };
     Oas20to30TransformationVisitor.prototype.visitOperation = function (node) {
@@ -17021,7 +17060,6 @@ var Oas20to30TransformationVisitor = (function () {
         this.mapNode(node, operation30);
     };
     Oas20to30TransformationVisitor.prototype.visitParameter = function (node) {
-        // TODO handle a $ref to a formData parameter found in the definitions
         var _this = this;
         if (node.in === "body") {
             var operation30 = this.lookup(this.findParentOperation(node));
@@ -17073,12 +17111,37 @@ var Oas20to30TransformationVisitor = (function () {
                         schema30.addProperty(node.name, property30);
                         property30.description = node.description;
                         _this.toSchema(node, property30, false);
+                        _this.mapNode(node, schema30);
                     }
                 });
             }
         }
         else {
-            // TODO handle a $ref to a body parameter found in the definitions
+            if (this.isRef(node)) {
+                var paramDef = ReferenceUtil.resolveRef(node.$ref, node);
+                // Handle the case where there is a parameter $ref to a "body" param.  All body params become
+                // Request Bodies.  So a reference to a "body" param should become a reference to a request body.
+                if (paramDef && paramDef.in === "body") {
+                    var parent30_1 = this.lookup(this.findParentOperation(node));
+                    if (parent30_1) {
+                        var body30 = parent30_1.createRequestBody();
+                        parent30_1.requestBody = body30;
+                        body30.$ref = "#/components/requestBodies/" + paramDef.parameterName();
+                        this.mapNode(node, body30);
+                        return;
+                    }
+                }
+                // Handle the case where the parameter is a $ref to a formData param.  In this case we want to
+                // treat the param as though it is inlined (which will result in a requestBody model).
+                if (paramDef && paramDef.in === "formData") {
+                    // Inline the parameter definition and then re-visit it.
+                    this._library.readNode(this._library.writeNode(paramDef), node);
+                    node.$ref = null;
+                    this.visitParameter(node);
+                    return;
+                }
+            }
+            // Now we have normal handling of a parameter, examples include path params, query params, header params, etc.
             var parent30 = this.lookup(node.parent());
             var param30 = parent30.createParameter();
             parent30.addParameter(param30);
@@ -17087,7 +17150,7 @@ var Oas20to30TransformationVisitor = (function () {
         }
     };
     Oas20to30TransformationVisitor.prototype.transformParam = function (node, param30) {
-        param30.$ref = node["$ref"];
+        param30.$ref = this.updateRef(node["$ref"]);
         if (param30.$ref) {
             return param30;
         }
@@ -17160,7 +17223,7 @@ var Oas20to30TransformationVisitor = (function () {
         var parent30 = this.lookup(node.parent());
         var response30 = parent30.createResponse(node.statusCode());
         parent30.addResponse(node.statusCode(), response30);
-        response30.$ref = node.$ref;
+        response30.$ref = this.updateRef(node.$ref);
         this.transformResponse(node, response30);
         this.mapNode(node, response30);
     };
@@ -17404,7 +17467,7 @@ var Oas20to30TransformationVisitor = (function () {
         schema30.multipleOf = from.multipleOf;
         if (isSchema) {
             var schema20 = from;
-            schema30.$ref = schema20.$ref;
+            schema30.$ref = this.updateRef(schema20.$ref);
             if (typeof schema20.additionalProperties === "boolean") {
                 schema30.additionalProperties = schema20.additionalProperties;
             }
@@ -17481,6 +17544,27 @@ var Oas20to30TransformationVisitor = (function () {
             }
         }
         return false;
+    };
+    Oas20to30TransformationVisitor.prototype.isRef = function (node) {
+        return node.$ref && node.$ref.length > 0;
+    };
+    Oas20to30TransformationVisitor.prototype.updateRef = function ($ref) {
+        if (!$ref || $ref.length === 0) {
+            return $ref;
+        }
+        var split = $ref.split("/");
+        if (split[0] === "#") {
+            if (split[1] === "definitions") {
+                split.splice(1, 1, "components", "schemas");
+            }
+            else if (split[1] === "parameters") {
+                split.splice(1, 1, "components", "parameters");
+            }
+            else if (split[1] === "responses") {
+                split.splice(1, 1, "components", "responses");
+            }
+        }
+        return split.join("/");
     };
     return Oas20to30TransformationVisitor;
 }());
@@ -17590,9 +17674,17 @@ var OasLibraryUtils = (function () {
      * @param source
      */
     OasLibraryUtils.prototype.transformDocument = function (source) {
+        var clone = this.cloneDocument(source);
         var transformer = new Oas20to30TransformationVisitor();
-        OasVisitorUtil.visitTree(source, transformer);
+        OasVisitorUtil.visitTree(clone, transformer);
         return transformer.getResult();
+    };
+    /**
+     * Clones the given document by serializing it to a JS object, and then re-parsing it.
+     * @param source
+     */
+    OasLibraryUtils.prototype.cloneDocument = function (source) {
+        return this.createDocument(this.writeNode(source));
     };
     /**
      * Reads a partial model from the given source.  The caller must specify what type of
@@ -18014,6 +18106,7 @@ exports.Oas30ServerVariables = Oas30ServerVariables;
 exports.Oas30ServerVariable = Oas30ServerVariable;
 exports.Oas30Tag = Oas30Tag;
 exports.Oas30XML = Oas30XML;
+exports.ReferenceUtil = ReferenceUtil;
 exports.OasLibraryUtils = OasLibraryUtils;
 exports.OasNodeVisitorAdapter = OasNodeVisitorAdapter;
 exports.Oas20NodeVisitorAdapter = Oas20NodeVisitorAdapter;

@@ -1,0 +1,259 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: apicurio-auth
+message: |-
+  Congratulations on deploying Apicurio Studio into OpenShift!
+  
+  The following secret(s) have been created in your project:
+
+         Keycloak Username: ${GENERATED_KC_USER}
+         Keycloak Password: ${GENERATED_KC_PASS}
+
+  Please not that the authentication component (Keycloak) requires additional 
+  configuration for it to support all Apicurio functionality (specifically account linking).
+  In addition, you may want to configure Keycloak to your particular taste (for
+  example you may want to enable social logins).  To configure Keycloak you
+  can go here (and log in with the Keycloak username/password listed above):
+  
+         Keycloak URL: https://${AUTH_ROUTE}/auth
+
+objects:
+# Image Streams for the Apicurio components
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: auth
+  spec:
+    tags:
+      - name: latest-release
+        from:
+          kind: DockerImage
+          name: apicurio/apicurio-studio-auth:latest-release
+        importPolicy:
+          scheduled: true
+# Persistent volumes: Keycloak
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: keycloak-data
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+# Secrets for: Keycloak
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: apicurio-studio-auth
+    labels:
+      app: apicurio-studio-auth
+      template: apicurio-studio
+  stringData:
+    keycloak-user: "${GENERATED_KC_USER}"
+    keycloak-password: "${GENERATED_KC_PASS}"
+# Services for: Keycloak, API, WS, UI
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-auth
+      template: apicurio-studio
+    name: apicurio-studio-auth
+  spec:
+    ports:
+    - name: apicurio-studio-auth
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: apicurio-studio-auth
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+# Keycloak Deployment Configuration
+# #################################
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-auth
+      template: apicurio-studio
+    name: apicurio-studio-auth
+  spec:
+    replicas: 1
+    selector:
+      app: apicurio-studio-auth
+      deploymentconfig: apicurio-studio-auth
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: apicurio-studio-auth
+          deploymentconfig: apicurio-studio-auth
+          template: apicurio-studio
+      spec:
+        replicas: 1
+        volumes:
+          - name: keycloak-data
+            persistentVolumeClaim:
+              claimName: keycloak-data
+        containers:
+        - image: auth:latest-release
+          imagePullPolicy: Always
+          name: apicurio-studio-auth
+          volumeMounts:
+          - mountPath: /opt/jboss/keycloak/standalone/data
+            name: keycloak-data
+            readOnly: false
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          env:
+             - name: APICURIO_KEYCLOAK_USER
+               valueFrom:
+                 secretKeyRef:
+                   name: apicurio-studio-auth
+                   key: keycloak-user
+             - name: APICURIO_KEYCLOAK_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: apicurio-studio-auth
+                   key: keycloak-password
+             - name: APICURIO_UI_URL
+               value: https://${UI_ROUTE}
+             - name: DB_VENDOR
+               value: "${DB_VENDOR}"
+             - name: DB_DATABASE
+               value: "${DB_NAME}"
+             - name: DB_USER
+               value: "${DB_USER}"
+             - name: DB_PASSWORD
+               value: "${DB_PASS}"
+          resources:
+            limits:
+              cpu: ${AUTH_CPU_LIMIT}
+              memory: ${AUTH_MEM_LIMIT}
+            requests:
+              cpu: ${AUTH_CPU_REQUEST}
+              memory: ${AUTH_MEM_REQUEST}
+          livenessProbe:
+            httpGet:
+              path: /auth
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 90
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /auth
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 80
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - apicurio-studio-auth
+        from:
+          kind: ImageStreamTag
+          name: 'auth:latest-release'
+  status: {}
+# The Routes: auth, api, ws, ui (no route needed for postgresql)
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: apicurio-studio-auth
+    creationTimestamp: null
+    labels:
+      app: apicurio-studio-auth
+      template: apicurio-studio
+  spec:
+    host: ${AUTH_ROUTE}
+    to:
+      kind: Service
+      name: apicurio-studio-auth
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+# Template Parameters
+parameters:
+- name: KC_REALM
+  displayName: Keycloak Realm
+  description: The name of the Keycloak realm to use for authentication.
+  value: apicurio
+  required: true
+- name: GENERATED_KC_USER
+  displayName: Keycloak Admin Username
+  description: Username for the Keycloak admin user.
+  generate: expression
+  from: admin[A-Z0-9]{3}
+  required: true
+- name: GENERATED_KC_PASS
+  displayName: Keycloak Admin Password
+  description: Password for the Keycloak admin user.
+  generate: expression
+  from: "[a-zA-Z0-9]{16}"
+  required: true
+- name: AUTH_MEM_LIMIT
+  displayName: AUTH Max Memory Limit
+  description: AUTH Pods Max Memory Limit
+  value: 1300Mi
+  required: true
+- name: AUTH_MEM_REQUEST
+  displayName: AUTH Memory Request
+  description: AUTH Pods Memory Request
+  value: 600Mi
+  required: true
+- name: AUTH_CPU_LIMIT
+  displayName: AUTH Max CPU Limit
+  description: AUTH Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: AUTH_CPU_REQUEST
+  displayName: AUTH CPU Request
+  description: AUTH Pods CPU Request
+  value: 100m
+  required: true
+- name: AUTH_ROUTE
+  displayName: AUTH_ROUTE
+  description: AUTH route
+  required: true
+- name: UI_ROUTE
+  displayName: UI_ROUTE
+  description: UI route
+  required: true
+- name: DB_USER
+  required: true
+- name: DB_PASS
+  required: true
+- name: DB_NAME
+  required: true
+- name: DB_VENDOR
+  required: true

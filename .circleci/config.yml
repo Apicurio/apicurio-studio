@@ -25,6 +25,8 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      - run: java -version
+      - run: mvn --version
       - run: mvn install -DskipTests
 
       - save_cache:

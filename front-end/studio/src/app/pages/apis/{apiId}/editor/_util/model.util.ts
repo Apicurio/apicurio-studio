@@ -22,7 +22,7 @@ import {
     Oas30Schema,
     OasNode,
     OasOperation,
-    OasValidationRuleUtil
+    ReferenceUtil
 } from "oai-ts-core";
 import {ObjectUtils} from "./object.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
@@ -191,7 +191,7 @@ export class ExampleGenerator {
         if (this.refStack.indexOf(schema.$ref) !== -1) {
             return {};
         }
-        let refSchema: Oas20Schema | Oas30Schema = OasValidationRuleUtil.resolveRef(schema.$ref, schema) as Oas20Schema | Oas30Schema;
+        let refSchema: Oas20Schema | Oas30Schema = ReferenceUtil.resolveRef(schema.$ref, schema) as Oas20Schema | Oas30Schema;
         if (refSchema) {
             console.info("[ExampleGenerator] Successfully resolved $ref: ", schema.$ref);
             this.refStack.push(schema.$ref);

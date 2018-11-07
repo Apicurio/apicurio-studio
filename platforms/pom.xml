@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <name>apicurio-studio-platforms</name>
     <modules>
-        <module>swarm</module>
+        <module>thorntail</module>
         <module>wildfly</module>
     </modules>
     <build>

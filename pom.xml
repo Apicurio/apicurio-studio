@@ -61,8 +61,8 @@
         <!-- Wildfly Version -->
         <version.wildfly>10.1.0.Final</version.wildfly>
 
-        <!-- Wildfly Swarm Version -->
-        <version.wildfly.swarm>2018.5.0</version.wildfly.swarm>
+        <!-- Thorntail Version -->
+        <version.io.thorntail>2.2.1.Final</version.io.thorntail>
 
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>
@@ -128,12 +128,12 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- Wildfly Swarm -->
+            
+            <!-- Thorntail -->
             <dependency>
-                <groupId>org.wildfly.swarm</groupId>
+                <groupId>io.thorntail</groupId>
                 <artifactId>bom-all</artifactId>
-                <version>${version.wildfly.swarm}</version>
+                <version>${version.io.thorntail}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

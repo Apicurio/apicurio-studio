@@ -1,6 +1,6 @@
 FROM centos:7
 LABEL authors="Eric Wittmann <eric.wittmann@redhat.com>"
-ENV RELEASE_PATH target/apicurio-studio-ui-swarm.jar
+ENV RELEASE_PATH target/apicurio-studio-ui-thorntail.jar
 RUN yum install -y \
     java-1.8.0-openjdk-headless \
   && yum clean all
@@ -33,12 +33,12 @@ ENV APICURIO_MIN_HEAP=512m
 ENV APICURIO_MAX_HEAP=2048m
 
 
-CMD java -jar /opt/apicurio/apicurio-studio-ui-swarm.jar \
+CMD java -jar /opt/apicurio/apicurio-studio-ui-thorntail.jar \
     -Xms${APICURIO_MIN_HEAP} \
     -Xmx${APICURIO_MAX_HEAP} \
-    -Dswarm.port.offset=${APICURIO_PORT_OFFSET} \
+    -Dthorntail.port.offset=${APICURIO_PORT_OFFSET} \
     -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL} \
     -Dapicurio-ui.editing.url=${APICURIO_UI_EDITING_URL} \
     -Dapicurio.kc.auth.rootUrl=${APICURIO_KC_AUTH_URL} \
     -Dapicurio.kc.auth.realm=${APICURIO_KC_REALM} \
-    -Dswarm.logging=${APICURIO_LOGGING_LEVEL}
+    -Dthorntail.logging=${APICURIO_LOGGING_LEVEL}

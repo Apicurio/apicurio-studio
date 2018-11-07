@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.apicurio</groupId>
-        <artifactId>apicurio-studio-platforms-swarm</artifactId>
+        <artifactId>apicurio-studio-platforms-thorntail</artifactId>
         <version>0.2.19-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>apicurio-studio-platforms-swarm-api</artifactId>
+    <artifactId>apicurio-studio-platforms-thorntail-api</artifactId>
     <packaging>war</packaging>
-    <name>apicurio-studio-platforms-swarm-api</name>
+    <name>apicurio-studio-platforms-thorntail-api</name>
 
     <dependencies>
         <!-- Project Dependencies -->
@@ -19,25 +19,25 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- WildFly Swarm Fractions -->
+        <!-- Thorntail Fractions -->
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>datasources</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>cdi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>jaxrs</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>keycloak</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>logging</artifactId>
         </dependency>
 
@@ -67,9 +67,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>wildfly-swarm-plugin</artifactId>
-                <version>${version.wildfly.swarm}</version>
+                <groupId>io.thorntail</groupId>
+                <artifactId>thorntail-maven-plugin</artifactId>
+                <version>${version.io.thorntail}</version>
                 <executions>
                     <execution>
                         <goals>

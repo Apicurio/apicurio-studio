@@ -15515,15 +15515,15 @@ var Oas20InvalidReferenceValidationRule = (function (_super) {
         }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
-        var _this = this;
         if (this.hasValue(node.$ref)) {
             this.reportIfInvalid("SCH-001", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
         }
-        if (this.hasValue(node.required)) {
-            node.required.forEach(function (pname) {
-                _this.reportIfInvalid("SCH-002", _this.hasSchemaProperty(node, pname), node, "required", "Schema lists property \"" + pname + "\" as required, but it does not exist.");
-            });
-        }
+        // if (this.hasValue(node.required)) {
+        //     node.required.forEach( pname => {
+        //         this.reportIfInvalid("SCH-002", this.hasSchemaProperty(node, pname), node, "required",
+        //             `Schema lists property "${ pname }" as required, but it does not exist.`);
+        //     });
+        // }
     };
     Oas20InvalidReferenceValidationRule.prototype.visitPropertySchema = function (node) {
         this.visitSchema(node);
@@ -16415,15 +16415,15 @@ var Oas30InvalidReferenceValidationRule = (function (_super) {
         }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitSchema = function (node) {
-        var _this = this;
         if (this.hasValue(node.$ref)) {
             this.reportIfInvalid("SCH-3-002", ReferenceUtil.canResolveRef(node.$ref, node), node, "$ref", "Schema Reference must refer to a valid Schema Definition.");
         }
-        if (this.hasValue(node.required)) {
-            node.required.forEach(function (pname) {
-                _this.reportIfInvalid("SCH-3-005", _this.hasSchemaProperty(node, pname), node, "required", "Schema lists property \"" + pname + "\" as required, but it does not exist.");
-            });
-        }
+        // if (this.hasValue(node.required)) {
+        //     node.required.forEach( pname => {
+        //         this.reportIfInvalid("SCH-3-005", this.hasSchemaProperty(node, pname), node, "required",
+        //             `Schema lists property "${ pname }" as required, but it does not exist.`);
+        //     });
+        // }
     };
     Oas30InvalidReferenceValidationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
     Oas30InvalidReferenceValidationRule.prototype.visitAnyOfSchema = function (node) { this.visitSchema(node); };

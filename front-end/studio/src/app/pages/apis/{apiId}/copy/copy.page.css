@@ -1,0 +1,27 @@
+
+.api-copy {
+}
+
+.api-copy .copyapi-form {
+  margin-top: 20px;
+}
+
+.api-copy .copyapi-form .copyapi-panel {
+}
+
+.api-copy .copyapi-form h2 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.api-copy .copyapi-form .control-label {
+  padding-right: 0px;
+}
+
+hr {
+  margin-top: 5px;
+}
+
+.api-copy .notice-of-required {
+  margin-top: 30px;
+}

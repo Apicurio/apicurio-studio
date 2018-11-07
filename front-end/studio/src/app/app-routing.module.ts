@@ -31,6 +31,7 @@ import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
 import {ApiEditorPageComponent} from './pages/apis/{apiId}/editor/api-editor.page';
 import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
+import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 
 const routes: Routes = [
     {
@@ -86,6 +87,11 @@ const routes: Routes = [
     {
         path: "apis/:apiId/publish",
         component: PublishPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId/copy",
+        component: CopyPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {

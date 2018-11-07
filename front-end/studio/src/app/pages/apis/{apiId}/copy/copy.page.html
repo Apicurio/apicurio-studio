@@ -1,0 +1,81 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Copy" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-copy" *ngIf="!pageError">
+
+    <!-- Loading API (spinner) -->
+    <div class="row-fluid" *ngIf="!isDataLoaded()">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="container-fluid container-cards-pf api-editor-overview">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <div class="card-pf card-pf-accented">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyapi-form row" *ngIf="isDataLoaded()">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What is this page?</strong>
+                <p style="line-height: 18px">
+                    Use this page to make a copy of an existing API.  If the API is in the OpenAPI/Swagger 2.0 format,
+                    you can also optionally convert it to OpenAPI 3.0 when making a copy.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="copyapi-panel panel panel-default">
+                <div class="panel-body" *ngIf="!copied">
+                    <h2>Copy API "{{ api.name }}"?</h2>
+                    <form id="copy-form" class="form-horizontal" (submit)="copyApi()" #copyForm="ngForm">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label required" for="title">Title</label>
+                            <div class="col-sm-10">
+                                <input name="title" type="text" id="title" class="form-control"
+                                       placeholder="Enter a title for the API..." required #apiTitle="ngModel"
+                                       [(ngModel)]="title">
+                                <form-error-message [inputModel]="apiTitle" [type]="'required'">Title is required.</form-error-message>
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="document.is2xDocument()">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" [checked]="convertApi" (change)="convertApi = $event.target.checked" id="apiConvert">
+                                <label for="apiConvert">Convert from OpenAPI/Swagger 2.0 to OpenAPI 3.0.x</label>
+                            </div>
+                        </div>
+
+                        <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <hr />
+
+                        <div class="form-group" >
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || copying">
+                                    <span *ngIf="!copying">Copy API</span>
+                                    <span *ngIf="copying"><span class="spinner spinner-xs spinner-inline"></span> Copying...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -65,6 +65,7 @@ import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {ActivityItemComponent} from "./components/common/activity-item.component";
 import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component';
 import {TemplateService} from './services/template.service';
+import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 
 @NgModule({
     imports: [
@@ -76,7 +77,7 @@ import {TemplateService} from './services/template.service';
         VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
         NotFoundPageComponent, SettingsNavComponent, CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent,
         ProfilePageComponent, SettingsPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
-        ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent,
+        ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent

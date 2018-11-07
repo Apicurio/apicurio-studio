@@ -62,8 +62,8 @@ export class ImportApiPageComponent extends AbstractPageComponent {
         this.importing = true;
         this.importError = null;
         console.log("[ImportApiPageComponent] onImportApi(): " + JSON.stringify(api))
-        this.apis.importApi(api).then(updatedApi => {
-            let link: string[] = [ "/apis", updatedApi.id ];
+        this.apis.importApi(api).then(importedApi => {
+            let link: string[] = [ "/apis", importedApi.id ];
             console.info("[ImportApiPageComponent] Navigating to: %o", link);
             this.router.navigate(link);
         }).catch( error => {
@@ -74,7 +74,7 @@ export class ImportApiPageComponent extends AbstractPageComponent {
             } else {
                 this.error(error);
             }
-        })
+        });
     }
 
 }

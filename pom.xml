@@ -62,7 +62,7 @@
         <version.wildfly>10.1.0.Final</version.wildfly>
 
         <!-- Wildfly Swarm Version -->
-        <version.wildfly.swarm>2018.2.0</version.wildfly.swarm>
+        <version.wildfly.swarm>2018.5.0</version.wildfly.swarm>
 
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>

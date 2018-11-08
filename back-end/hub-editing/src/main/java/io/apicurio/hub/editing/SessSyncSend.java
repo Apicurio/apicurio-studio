@@ -2,17 +2,21 @@ package io.apicurio.hub.editing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.inject.Inject;
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
+import javax.jms.JMSProducer;
+import javax.jms.Message;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
-import java.util.Map;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -22,54 +26,128 @@ import java.util.Map;
 //@Singleton
 @javax.ejb.Singleton
 public class SessSyncSend {
-    public static final String SESSION_SYNC_TOPIC = "java:/jms/topic/sessionsync";
+//    public static final String SESSION_SYNC_TOPIC = "java:/jms/topic/sessionsync";
+    public static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/session/";
 
-    @Inject
+    // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
+    @Resource(lookup = "java:/ConnectionFactory") 
+    private ConnectionFactory connectionFactory;
+    
     private JMSContext context;
 
-    @Resource(lookup = SESSION_SYNC_TOPIC)
-    private Topic topic;
-
     private static ObjectMapper mapper = new ObjectMapper();
-    static {
-        //mapper.setSerializationInclusion(Include.NON_NULL);
-    }
     
-//    public static final class SessionCommand {
-//    	public String sessionId;
-//    	public Operation operation;
-//    }
-
-    private Map<String, Topic> activeSessions;
+    public static final class SessionCommand {
+    	public String sessionId;
+    	//public Operation operation;
+    }
 
     @PostConstruct
     public void setup() {
-        listenForSessions();
+    	context = connectionFactory.createContext();
     }
 
-    private void listenForSessions() {
-        System.out.println("listenForSessions");
-        JMSConsumer consumer = context.createConsumer(topic);
-        consumer.setMessageListener(message -> {
-            try {
-                String sessionId = ((TextMessage) message).getText();
-                if (activeSessions.containsKey(sessionId)) {
+    public interface CommandHandler {
+        void consumeCommand(ApiDesignCommand apiDesignCommand);
+        // ConsumeAck?
+    }
 
-                } else {
-                    System.out.println("A new session has been instantiated " + sessionId);
+    public final class SessionContainer implements Closeable {
+        private final String sessionId;
+        private final Topic topic;
+        private final JMSConsumer consumer;
+        private final JMSProducer producer;
+        private CommandHandler commandHandler;
 
+        public SessionContainer(String sessionId,
+                                Topic topic,
+                                JMSConsumer consumer,
+                                JMSProducer producer,
+                                CommandHandler commandHandler) {
+
+            this.sessionId = sessionId;
+            this.topic = topic;
+            this.consumer = consumer;
+            this.producer = producer;
+            setupHandler();
+        }
+
+        private void setupHandler() {
+            consumer.setMessageListener(message -> {
+                try {
+                    ApiDesignCommand incomingCommand = fromTextMessage(message, ApiDesignCommand.class);
+                    commandHandler.consumeCommand(incomingCommand);
+                } catch (JMSException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (JMSException e) {
-                throw new RuntimeException(e);
-            }
-        });
+            });
+        }
+
+        public void sendCommand(ApiDesignCommand command) {
+            producer.send(topic, toJson(command));
+        }
+
+        public void setCommandHandler(CommandHandler commandHandler) {
+            this.commandHandler = commandHandler; 
+        }
+
+        public void close() {
+            consumer.close();
+        }
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
+        public Topic getTopic() {
+            return topic;
+        }
     }
-    
-    public void notifySession(ApiDesignEditingSession session) {
-    	// Send design ID 
-    	context.createProducer().send(topic, session.getDesignId());
-    	//context
+
+    // Suggest API ID
+    public SessionContainer joinSession(String id, CommandHandler handler) {
+//        if (activeConsumers.containsKey(id)) {
+//            // If we already have this subscription, then we can exit immediately.
+//            return;
+//        }
+
+        Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
+
+        // Subscribe to the topic
+        JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
+
+        return new SessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
+
+
+
+//        consumer.setMessageListener(sessionData -> {
+//            System.out.println("Received something! " + sessionData);
+//        });
+
+        // Cache consumer, as we need to close it later.
+//        activeConsumers.put(id, consumer);
     }
+
+//    public void endSession(ApiDesignEditingSession session) {
+//        String id = session.getDesignId();
+//
+//        if (!activeConsumers.containsKey(id)) {
+//            // If we already have this subscription, then we can exit immediately.
+//            return;
+//        }
+//        JMSConsumer consumer = activeConsumers.get(id);
+//        consumer.close();
+//    }
+
+//    public int sessionCount() {
+//        return activeConsumers.size();
+//    }
+
+//    public void notifySession(ApiDesignEditingSession session) {
+//    	// Send design ID
+//    	context.createProducer().send(topic, session.getDesignId());
+//    	//context
+//    }
 
     private static <O> String toJson(O object) {
         try {
@@ -79,13 +157,24 @@ public class SessSyncSend {
         }
     }
 
-    public void shareSession(ApiDesignEditingSession session) {
+    private static <O> O fromTextMessage(Message input, Class<O> klazz) throws JMSException {
+        return fromJson(((TextMessage)input).getText(), klazz);
+    }
+
+        private static <O> O fromJson(String input, Class<O> klazz) {
+        try {
+            return mapper.readValue(input, klazz);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
+//    public void shareSession(ApiDesignEditingSession session) {
         // Create a shared topic, assuming we don't already have it.
         //if ()
 
-        Topic sessionTopic = context.createTopic(session.getDesignId());
+        //Topic sessionTopic = context.createTopic(session.getDesignId());
         //TextMessage message = context.createTextMessage(toJson());
-
 
 
 
@@ -104,6 +193,6 @@ public class SessSyncSend {
 //                throw new RuntimeException(e);
 //            }
 //        }
-    }
+//    }
 
 }

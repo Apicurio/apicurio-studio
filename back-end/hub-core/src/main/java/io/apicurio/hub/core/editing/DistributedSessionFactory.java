@@ -1,4 +1,4 @@
-package io.apicurio.hub.editing;
+package io.apicurio.hub.core.editing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,6 +6,7 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -22,10 +23,10 @@ import java.io.UncheckedIOException;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 
-//@ApplicationScoped -- there seems to be a bug where if I use @applicationscoped Weld breaks?
+@ApplicationScoped //-- there seems to be a bug where if I use @applicationscoped Weld breaks?
 //@Singleton
-@javax.ejb.Singleton
-public class SessSyncSend {
+//@javax.ejb.Singleton
+public class DistributedSessionFactory {
 //    public static final String SESSION_SYNC_TOPIC = "java:/jms/topic/sessionsync";
     public static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/session/";
 
@@ -37,10 +38,10 @@ public class SessSyncSend {
 
     private static ObjectMapper mapper = new ObjectMapper();
     
-    public static final class SessionCommand {
-    	public String sessionId;
-    	//public Operation operation;
-    }
+//    public static final class SessionCommand {
+//    	public String sessionId;
+//    	//public Operation operation;
+//    }
 
     @PostConstruct
     public void setup() {
@@ -52,23 +53,24 @@ public class SessSyncSend {
         // ConsumeAck?
     }
 
-    public final class SessionContainer implements Closeable {
+    public final class MessagingSessionContainer implements Closeable {
         private final String sessionId;
         private final Topic topic;
         private final JMSConsumer consumer;
         private final JMSProducer producer;
         private CommandHandler commandHandler;
 
-        public SessionContainer(String sessionId,
-                                Topic topic,
-                                JMSConsumer consumer,
-                                JMSProducer producer,
-                                CommandHandler commandHandler) {
+        public MessagingSessionContainer(String sessionId,
+                                         Topic topic,
+                                         JMSConsumer consumer,
+                                         JMSProducer producer,
+                                         CommandHandler commandHandler) {
 
             this.sessionId = sessionId;
             this.topic = topic;
             this.consumer = consumer;
             this.producer = producer;
+            this.commandHandler = commandHandler;
             setupHandler();
         }
 
@@ -105,49 +107,12 @@ public class SessSyncSend {
     }
 
     // Suggest API ID
-    public SessionContainer joinSession(String id, CommandHandler handler) {
-//        if (activeConsumers.containsKey(id)) {
-//            // If we already have this subscription, then we can exit immediately.
-//            return;
-//        }
-
+    public MessagingSessionContainer joinSession(String id, CommandHandler handler) {
         Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
-
         // Subscribe to the topic
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
-
-        return new SessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
-
-
-
-//        consumer.setMessageListener(sessionData -> {
-//            System.out.println("Received something! " + sessionData);
-//        });
-
-        // Cache consumer, as we need to close it later.
-//        activeConsumers.put(id, consumer);
+        return new MessagingSessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
     }
-
-//    public void endSession(ApiDesignEditingSession session) {
-//        String id = session.getDesignId();
-//
-//        if (!activeConsumers.containsKey(id)) {
-//            // If we already have this subscription, then we can exit immediately.
-//            return;
-//        }
-//        JMSConsumer consumer = activeConsumers.get(id);
-//        consumer.close();
-//    }
-
-//    public int sessionCount() {
-//        return activeConsumers.size();
-//    }
-
-//    public void notifySession(ApiDesignEditingSession session) {
-//    	// Send design ID
-//    	context.createProducer().send(topic, session.getDesignId());
-//    	//context
-//    }
 
     private static <O> String toJson(O object) {
         try {
@@ -161,7 +126,7 @@ public class SessSyncSend {
         return fromJson(((TextMessage)input).getText(), klazz);
     }
 
-        private static <O> O fromJson(String input, Class<O> klazz) {
+    private static <O> O fromJson(String input, Class<O> klazz) {
         try {
             return mapper.readValue(input, klazz);
         } catch (IOException ioe) {

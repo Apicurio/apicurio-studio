@@ -16,22 +16,28 @@
 
 package io.apicurio.hub.core.editing;
 
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignCommandAck;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
+import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
+import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
+import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
+import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandAction;
+import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
+import io.apicurio.hub.core.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.websocket.RemoteEndpoint;
+import javax.websocket.Session;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.websocket.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignCommandAck;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 
 /**
  * Models a single, shared editing session for an API Design.
@@ -44,13 +50,17 @@ public class ApiDesignEditingSession implements Closeable {
     private final String designId;
     private final Map<String, Session> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
-    
+    private final DistributedSessionFactory.MessagingSessionContainer distributedSession;
+
     /**
      * Constructor.
      * @param designId
      */
-    public ApiDesignEditingSession(String designId) {
+    public ApiDesignEditingSession(String designId, DistributedSessionFactory factory) {
         this.designId = designId;
+        this.distributedSession = factory.joinSession(designId, incomingCommand -> {
+            sendCommandToOthers(null, null, incomingCommand); // TODO user doesn't seem to be used?
+        });
     }
 
     /**
@@ -117,25 +127,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param contentVersion
      */
     public void sendCommandToOthers(Session excludeSession, String user, ApiDesignCommand command) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"command\", ");
-        builder.append("\"contentVersion\": ");
-        builder.append(command.getContentVersion());
-        builder.append(", ");
-        builder.append("\"command\": ");
-        builder.append(command.getCommand());
-        builder.append("}");
-        
-        for (Session otherSession : this.sessions.values()) {
-            if (otherSession != excludeSession) {
-                try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
-                } catch (IOException e) {
-                    logger.error("Error sending command to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
+        VersionedCommandAction versionedCommand = VersionedCommandAction.command(command.getContentVersion(), command.getCommand());
+        sendToAllSessions(excludeSession, versionedCommand);
     }
 
     /**
@@ -145,22 +138,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param undo
      */
     public void sendUndoToOthers(Session excludeSession, String user, ApiDesignUndoRedo undo) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"undo\", ");
-        builder.append("\"contentVersion\": ");
-        builder.append(undo.getContentVersion());
-        builder.append("}");
-        
-        for (Session otherSession : this.sessions.values()) {
-            if (otherSession != excludeSession) {
-                try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
-                } catch (IOException e) {
-                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
+        VersionedOperation undoOperation = VersionedOperation.undo(undo.getContentVersion());
+        sendToAllSessions(excludeSession, undoOperation);
     }
 
     /**
@@ -170,22 +149,24 @@ public class ApiDesignEditingSession implements Closeable {
      * @param redo
      */
     public void sendRedoToOthers(Session excludeSession, String user, ApiDesignUndoRedo redo) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"redo\", ");
-        builder.append("\"contentVersion\": ");
-        builder.append(redo.getContentVersion());
-        builder.append("}");
-        
+        VersionedOperation redoOperation = VersionedOperation.redo(redo.getContentVersion());
+        sendToAllSessions(excludeSession, redoOperation);
+    }
+
+    private void sendToAllSessions(Session excludeSession, BaseOperation undoOperation) {
         for (Session otherSession : this.sessions.values()) {
             if (otherSession != excludeSession) {
                 try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
+                    sendTextToRemote(otherSession.getBasicRemote(), undoOperation);
                 } catch (IOException e) {
                     logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
                 }
             }
         }
+    }
+
+    private <O> void sendTextToRemote(RemoteEndpoint.Basic remote, O objectToSend) throws IOException {
+        remote.sendText(JsonUtil.toJson(objectToSend));
     }
 
     /**
@@ -195,29 +176,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param newSelection
      */
     public void sendUserSelectionToOthers(Session excludeSession, String user, String newSelection) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"selection\", ");
-        builder.append("\"user\": \"");
-        builder.append(user);
-        builder.append("\", ");
-        builder.append("\"id\": \"");
-        builder.append(excludeSession.getId());
-        builder.append("\", ");
-        builder.append("\"selection\": \"");
-        // TODO may need to escape this string for JSON, or else build the payload using jackson instead of StringBuilder
-        builder.append(newSelection);
-        builder.append("\"}");
-        
-        for (Session otherSession : this.sessions.values()) {
-            if (otherSession != excludeSession) {
-                try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
-                } catch (IOException e) {
-                    logger.error("Error sending selection event to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
+        SelectionOperation selectionOperation = SelectionOperation.select(user, excludeSession.getId(), newSelection);
+        sendToAllSessions(excludeSession, selectionOperation);
     }
 
     /**
@@ -226,17 +186,10 @@ public class ApiDesignEditingSession implements Closeable {
      * @param ack
      */
     public void sendAckTo(Session toSession, ApiDesignCommandAck ack) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"ack\", ");
-        builder.append("\"contentVersion\": ");
-        builder.append(ack.getContentVersion());
-        builder.append(", ");
-        builder.append("\"commandId\": ");
-        builder.append(ack.getCommandId());
-        builder.append("}");
+        // TODO can we meld this with ApiDesignCommandAck ?
+        VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion(), ack.getCommandId());
         try {
-            toSession.getBasicRemote().sendText(builder.toString());
+            toSession.getBasicRemote().sendText(JsonUtil.toJson(commandIdAction));
         } catch (IOException e) {
             logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
         }
@@ -248,14 +201,9 @@ public class ApiDesignEditingSession implements Closeable {
      * @param ack
      */
     public void sendAckTo(Session toSession, ApiDesignUndoRedoAck ack) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"ack\", ");
-        builder.append("\"contentVersion\": ");
-        builder.append(ack.getContentVersion());
-        builder.append("}");
+        VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion());
         try {
-            toSession.getBasicRemote().sendText(builder.toString());
+            toSession.getBasicRemote().sendText(JsonUtil.toJson(commandIdAction));
         } catch (IOException e) {
             logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
         }
@@ -267,27 +215,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param joinedUser
      */
     public void sendJoinToOthers(Session joinedSession, String joinedUser) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"join\", ");
-        builder.append("\"user\": \"");
-        builder.append(joinedUser);
-        builder.append("\", ");
-        builder.append("\"id\": \"");
-        builder.append(joinedSession.getId());
-        builder.append("\"");
-        builder.append("}");
-        
-        for (Session otherSession : this.sessions.values()) {
-            // Don't send the message to the user who is joining
-            if (otherSession != joinedSession) {
-                try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
-                } catch (IOException e) {
-                    logger.error("Error sending 'join' to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
+        JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedSession.getId());
+        sendToAllSessions(joinedSession, joinOperation);
     }
 
     /**
@@ -296,27 +225,9 @@ public class ApiDesignEditingSession implements Closeable {
      * @param leftUser
      */
     public void sendLeaveToOthers(Session leftSession, String leftUser) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"leave\", ");
-        builder.append("\"user\": \"");
-        builder.append(leftUser);
-        builder.append("\", ");
-        builder.append("\"id\": \"");
-        builder.append(leftSession.getId());
-        builder.append("\"");
-        builder.append("}");
-        
-        for (Session otherSession : this.sessions.values()) {
-            // Don't send the message to the user who is leaving
-            if (otherSession != leftSession) {
-                try {
-                    otherSession.getBasicRemote().sendText(builder.toString());
-                } catch (IOException e) {
-                    logger.error("Error sending 'join' to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
+        JoinLeaveOperation leaveOperation = JoinLeaveOperation.leave(leftUser, leftSession.getId());
+        // Don't send the message to the user who is leaving
+        sendToAllSessions(leftSession, leaveOperation);
     }
 
     /**
@@ -327,19 +238,9 @@ public class ApiDesignEditingSession implements Closeable {
      * @param joinedId
      */
     public void sendJoinTo(Session toSession, String joinedUser, String joinedId) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        builder.append("\"type\": \"join\", ");
-        builder.append("\"user\": \"");
-        builder.append(joinedUser);
-        builder.append("\", ");
-        builder.append("\"id\": \"");
-        builder.append(joinedId);
-        builder.append("\"");
-        builder.append("}");
-        
+        JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedId);
         try {
-            toSession.getBasicRemote().sendText(builder.toString());
+            toSession.getBasicRemote().sendText(JsonUtil.toJson(joinOperation));
         } catch (IOException e) {
             logger.error("Error sending 'join' to websocket with sessionId: " + toSession.getId(), e);
         }

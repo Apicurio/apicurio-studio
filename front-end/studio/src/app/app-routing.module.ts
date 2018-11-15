@@ -32,10 +32,16 @@ import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/
 import {ApiEditorPageComponent} from './pages/apis/{apiId}/editor/api-editor.page';
 import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
+import {DefaultPageComponent} from "./pages/default.page";
 
 const routes: Routes = [
     {
-        path: '',
+        path: "",
+        component: DefaultPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: 'dashboard',
         component: DashboardPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },

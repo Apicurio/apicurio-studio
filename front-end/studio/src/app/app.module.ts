@@ -66,6 +66,7 @@ import {ActivityItemComponent} from "./components/common/activity-item.component
 import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component';
 import {TemplateService} from './services/template.service';
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
+import {DefaultPageComponent} from "./pages/default.page";
 
 @NgModule({
     imports: [
@@ -80,7 +81,7 @@ import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
         ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
-        GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent
+        GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, DefaultPageComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

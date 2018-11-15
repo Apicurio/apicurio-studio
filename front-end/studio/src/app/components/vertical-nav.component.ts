@@ -57,7 +57,7 @@ export class VerticalNavComponent implements OnInit {
      * Navigates the user to the Dashboard.
      */
     public goToDashboard(): void {
-        this.router.navigate(["/"]);
+        this.router.navigate(["/dashboard"]);
     }
 
     /**
@@ -75,7 +75,7 @@ export class VerticalNavComponent implements OnInit {
      * @returns {boolean}
      */
     isDashboardRoute(): boolean {
-        return this.isRouteActive("/", true);
+        return this.isRouteActive("/dashboard", true);
     }
 
     /**

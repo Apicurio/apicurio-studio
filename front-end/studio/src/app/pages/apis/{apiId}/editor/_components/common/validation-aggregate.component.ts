@@ -81,13 +81,14 @@ export class ValidationAggregateComponent implements OnInit, OnDestroy {
         }
     }
 
+    @HostListener("document:scroll", ["$event"])
+    public onDocumentScroll(event: MouseEvent): void {
+        this.onDocumentClick(event);
+    }
+
     @HostListener("window:resize", ["$event"])
     public onWindowResize(event: MouseEvent): void {
-        if (this._open) {
-            this.close();
-            event.preventDefault();
-            event.stopPropagation();
-        }
+        this.onDocumentClick(event);
     }
 
     public open(event: MouseEvent): void {

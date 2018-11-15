@@ -42,4 +42,8 @@ export class InlineMarkdownEditorComponent extends TextAreaEditorComponent imple
         return CodeEditorMode.Markdown;
     }
 
+    protected getValueForSave(): string {
+        return this.codeEditor.first.text;
+    }
+
 }

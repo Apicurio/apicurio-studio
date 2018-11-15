@@ -90,11 +90,11 @@ div.modal-notice-of-required {
 
 @font-face {
   font-family: 'apicurio';
-  src:  url('assets/apicurio.eot?ggk3k6');
-  src:  url('assets/apicurio.eot?ggk3k6#iefix') format('embedded-opentype'),
-  url('assets/apicurio.ttf?ggk3k6') format('truetype'),
-  url('assets/apicurio.woff?ggk3k6') format('woff'),
-  url('assets/apicurio.svg?ggk3k6#apicurio') format('svg');
+  src:  url('assets/apicurio.eot?pfuxc0');
+  src:  url('assets/apicurio.eot?pfuxc0#iefix') format('embedded-opentype'),
+  url('assets/apicurio.ttf?pfuxc0') format('truetype'),
+  url('assets/apicurio.woff?pfuxc0') format('woff'),
+  url('assets/apicurio.svg?pfuxc0#apicurio') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -131,4 +131,12 @@ div.modal-notice-of-required {
 }
 .apicurio-icon-override:before {
   content: "\e901";
+}
+.apicurio-icon-no-parent-some-children .path1:before {
+  content: "\e906";
+  color: rgb(187, 187, 187);
+}
+.apicurio-icon-no-parent-some-children .path2:before {
+  content: "\e907";
+  margin-left: -1em;
 }

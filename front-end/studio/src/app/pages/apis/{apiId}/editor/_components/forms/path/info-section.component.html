@@ -1,15 +1,8 @@
-<div class="section info-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#info-section-body">
-            <span class="section-label">INFO</span>
-            <validation-aggregate [models]="[path]" [properties]="['description']" [shallow]="true"></validation-aggregate>
-        </a>
-        <context-help>
-            In this section you can easily edit the <strong>Summary</strong> and
-            <strong>Description</strong> of the Path Item.
-        </context-help>
-    </div>
-    <div class="section-body collapse in" id="info-section-body">
+<section type="info" label="INFO"
+         contextHelp="In this section you can easily edit the Summary and Description of the Path Item."
+         [validationModels]="[path]" [validationProperties]="['description']" [validationShallow]="true">
+    <span actions></span>
+    <div body>
         <!-- Summary -->
         <div class="section-field-label">
             <validation-problem [model]="path" [shallow]="true" [property]="'summary'"></validation-problem>
@@ -35,4 +28,4 @@
                                     [noValueMessage]="'No description.'" (onChange)="changeDescription($event)"></inline-markdown-editor>
         </div>
     </div>
-</div>
+</section>

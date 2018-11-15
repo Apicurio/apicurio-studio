@@ -1,0 +1,72 @@
+<section type="operations" label="OPERATIONS" [counterItems]="operations()" [inForm]="false"
+         contextHelp="In this section you can manage the operations defined for the path."
+         [validationModels]="operations()">
+    <span actions></span>
+    <div body>
+        <div class="operation-tabs">
+            <div class="operation-tab get-tab" [class.selected]="tab === 'get'" [class.enabled]="isDefined('get')" (click)="selectTab('get')">
+                <div class="tab-label">Get</div>
+                <validation-aggregate [models]="[ path.get ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab put-tab" [class.selected]="tab === 'put'" [class.enabled]="isDefined('put')" (click)="selectTab('put')">
+                <div class="tab-label">Put</div>
+                <validation-aggregate [models]="[ path.put ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab post-tab" [class.selected]="tab === 'post'" [class.enabled]="isDefined('post')" (click)="selectTab('post')">
+                <div class="tab-label">Post</div>
+                <validation-aggregate [models]="[ path.post ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab delete-tab" [class.selected]="tab === 'delete'" [class.enabled]="isDefined('delete')" (click)="selectTab('delete')">
+                <div class="tab-label">Delete</div>
+                <validation-aggregate [models]="[ path.delete ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab options-tab" [class.selected]="tab === 'options'" [class.enabled]="isDefined('options')" (click)="selectTab('options')">
+                <div class="tab-label">Options</div>
+                <validation-aggregate [models]="[ path.options ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab head-tab" [class.selected]="tab === 'head'" [class.enabled]="isDefined('head')" (click)="selectTab('head')">
+                <div class="tab-label">Head</div>
+                <validation-aggregate [models]="[ path.head ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab patch-tab" [class.selected]="tab === 'patch'" [class.enabled]="isDefined('patch')" (click)="selectTab('patch')">
+                <div class="tab-label">Patch</div>
+                <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
+            </div>
+            <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
+                <div class="tab-label">Trace</div>
+                <validation-aggregate [models]="[ path.trace ]"></validation-aggregate>
+            </div>
+        </div>
+
+        <div class="operation" *ngIf="hasSelectedOperation()">
+            <!-- Info Section -->
+            <operation-info-section [operation]="operation()"></operation-info-section>
+
+            <!-- Servers (3.0 only) -->
+            <servers-section [parent]="operation()" [collapsed]="true" *ngIf="operation().ownerDocument().is3xDocument()"
+                             description="Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port)."></servers-section>
+
+            <!-- Path Parameters Section -->
+            <path-params-section [parent]="operation()" [path]="path"></path-params-section>
+
+            <!-- Query Parameters Section -->
+            <query-params-section [parent]="operation()" [path]="path"></query-params-section>
+
+            <!-- Request Body Section -->
+            <requestBody-section [operation]="operation()"></requestBody-section>
+
+            <!-- Responses Section -->
+            <responses-section [operation]="operation()"></responses-section>
+
+            <!-- Security Requirements -->
+            <security-requirements-section [parent]="operation()" [global]="false"></security-requirements-section>
+
+        </div>
+
+        <div class="no-operation" *ngIf="!hasSelectedOperation()">
+            <no-operation [method]="tab" (add)="addOperation()"></no-operation>
+        </div>
+    </div>
+</section>
+
+

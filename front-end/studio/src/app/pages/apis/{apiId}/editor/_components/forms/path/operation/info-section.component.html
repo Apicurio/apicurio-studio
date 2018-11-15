@@ -1,18 +1,8 @@
-<!-- Info Section -->
-<div class="section info-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#info-section-body">
-            <span class="section-label">INFO</span>
-            <validation-aggregate [models]="[operation]" [shallow]="true" [properties]="[ 'operationId', 'summary', 'description' ]"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>
-                In this section you can easily edit the <strong>Summary</strong>, <strong>ID</strong>, and
-                <strong>Description</strong> of the Operation.
-            </p>
-        </context-help>
-    </div>
-    <div class="section-body collapse in" id="info-section-body">
+<section type="info" label="INFO"
+         contextHelp="In this section you can easily edit the Summary, ID, and Description of the Operation."
+         [validationModels]="[operation]" [validationShallow]="true" [validationProperties]="[ 'operationId', 'summary', 'description' ]">
+    <span actions></span>
+    <div body>
         <div class="half-section">
             <!-- Summary -->
             <div class="section-field-label">
@@ -112,8 +102,8 @@
                                          #producesEditor
                                          (onClose)="onProducesClose()"
                                          (onChange)="onProducesChange($event)"></inline-array-editor>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
+</section>

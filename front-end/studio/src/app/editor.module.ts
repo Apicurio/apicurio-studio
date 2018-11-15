@@ -29,11 +29,6 @@ import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components
 import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-tag.component";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
-import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row-30.component";
-import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/response-row.component";
-import {OperationFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-form.component";
-import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/content.component";
-import {Operation30FormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation-30-form.component";
 import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
 import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/servers-section.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
@@ -43,7 +38,6 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
-import {AddDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-definition.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
@@ -88,23 +82,28 @@ import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_c
 import {EntityEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/entity-editor.component";
 import {QueryParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-param-row.component";
 import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-param-row.component";
-import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/formData-param-row.component";
 import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-markdown-editor.component";
 import {DataTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/data-type-editor.component";
 import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/info-section.component";
 import {RestResourceService} from "./pages/apis/{apiId}/editor/_services/rest-resource.service";
-import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/info-section.component";
 import {RenamePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-path.component";
 import {CounterComponent} from "./pages/apis/{apiId}/editor/_components/common/counter.component";
 import {InlineExampleEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-example-editor.component";
 import {DefinitionExampleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/example-section.component";
 import {PathInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/info-section.component";
-import {Operation3scaleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-section.component";
-import {MetricDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/metric-dialog.component";
-import {ThreeScaleMetricRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/operation/3scale-metric-row.component";
 import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/property-editor.component";
 import {SchemaTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/schema-type-editor.component";
+import {OperationsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operations-section.component";
+import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/info-section.component";
+import {NoOperationComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/no-operation.component";
+import {SectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/section.component";
+import {RequestBodySectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/requestBody-section.component";
+import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/formData-param-row.component";
+import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/content.component";
+import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row.component";
+import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row-30.component";
+import {ResponsesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/responses-section.component";
 
 @NgModule({
     imports: [
@@ -112,13 +111,13 @@ import {SchemaTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components
     ],
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
-        PathItemComponent, ContextHelpComponent,FormDataParamRowComponent, InlineMarkdownEditorComponent,
+        PathItemComponent, ContextHelpComponent, InlineMarkdownEditorComponent, OperationInfoSectionComponent,
         SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
-        AddTagDialogComponent, ResponseRow30Component, UndoIconComponent, SchemaTypeEditorComponent,
-        ResponseRowComponent, ContentComponent, PropertyRowComponent, PathFormComponent, QueryParamRowComponent,
-        OperationFormComponent, Operation30FormComponent, DefinitionItemComponent, DefinitionFormComponent,
+        AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
+        PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
+        DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseRowComponent,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
-        AddResponseDialogComponent, AddDefinitionDialogComponent, RedoIconComponent, PathInfoSectionComponent,
+        AddResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseRow30Component,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
@@ -127,10 +126,9 @@ import {SchemaTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
-        DefinitionInfoSectionComponent, OperationInfoSectionComponent, RenamePathDialogComponent, CounterComponent,
+        DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent,
-
-        Operation3scaleSectionComponent, MetricDialogComponent, ThreeScaleMetricRowComponent
+        OperationsSectionComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

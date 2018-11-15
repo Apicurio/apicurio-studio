@@ -16,23 +16,13 @@
  */
 
 import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
-import {
-    Oas20PathItem,
-    Oas30PathItem,
-    OasDocument,
-    OasOperation,
-    OasParameterBase,
-    OasPathItem,
-    OasPaths
-} from "oai-ts-core";
+import {Oas20PathItem, Oas30PathItem, OasDocument, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
 import {
     createAddPathItemCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
-    createDeleteOperationCommand,
     createDeleteParameterCommand,
     createDeletePathCommand,
-    createNewOperationCommand,
     createNewPathCommand,
     createRenamePathItemCommand,
     createReplacePathItemCommand,
@@ -87,161 +77,6 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
     public document(): OasDocument {
         return this.path.ownerDocument();
-    }
-
-    public trace(): OasOperation {
-        return (this.path as Oas30PathItem).trace;
-    }
-
-    public hasGet(): boolean {
-        return this.path.get !== undefined && this.path.get !== null;
-    }
-    public hasPut(): boolean {
-        return this.path.put !== undefined && this.path.put !== null;
-    }
-    public hasPost(): boolean {
-        return this.path.post !== undefined && this.path.post !== null;
-    }
-    public hasDelete(): boolean {
-        return this.path.delete !== undefined && this.path.delete !== null;
-    }
-    public hasOptions(): boolean {
-        return this.path.options !== undefined && this.path.options !== null;
-    }
-    public hasHead(): boolean {
-        return this.path.head !== undefined && this.path.head !== null;
-    }
-    public hasPatch(): boolean {
-        return this.path.patch !== undefined && this.path.patch !== null;
-    }
-    public hasTrace(): boolean {
-        return this.trace() !== undefined && this.trace() !== null;
-    }
-
-    public operations(): OasOperation[] {
-        let ops: OasOperation[] = [
-            this.path.get,
-            this.path.put,
-            this.path.post,
-            this.path.delete,
-            this.path.options,
-            this.path.head,
-            this.path.patch,
-            this.path["trace"]
-        ];
-        return ops;
-    }
-
-    public getSummary(): string {
-        return this.summary(this.path.get);
-    }
-
-    public putSummary(): string {
-        return this.summary(this.path.put);
-    }
-
-    public postSummary(): string {
-        return this.summary(this.path.post);
-    }
-
-    public deleteSummary(): string {
-        return this.summary(this.path.delete);
-    }
-
-    public optionsSummary(): string {
-        return this.summary(this.path.options);
-    }
-
-    public patchSummary(): string {
-        return this.summary(this.path.patch);
-    }
-
-    public headSummary(): string {
-        return this.summary(this.path.head);
-    }
-
-    public traceSummary(): string {
-        return this.summary(this.trace());
-    }
-
-    private summary(operation: OasOperation): string {
-        if (operation === null || operation === undefined) {
-            return "Not Supported";
-        } else {
-            if (operation.summary) {
-                return operation.summary;
-            } else {
-                return null;
-            }
-        }
-    }
-
-    public getDescription(): string {
-        return this.description(this.path.get);
-    }
-
-    public putDescription(): string {
-        return this.description(this.path.put);
-    }
-
-    public postDescription(): string {
-        return this.description(this.path.post);
-    }
-
-    public deleteDescription(): string {
-        return this.description(this.path.delete);
-    }
-
-    public optionsDescription(): string {
-        return this.description(this.path.options);
-    }
-
-    public patchDescription(): string {
-        return this.description(this.path.patch);
-    }
-
-    public headDescription(): string {
-        return this.description(this.path.head);
-    }
-
-    public traceDescription(): string {
-        return this.description(this.trace());
-    }
-
-    private description(operation: OasOperation): string {
-        if (operation === null || operation === undefined) {
-            return "Not Supported";
-        } else {
-            if (operation.description) {
-                return operation.description;
-            } else {
-                return null;
-            }
-        }
-    }
-
-    public selectOperation(operation: OasOperation): void {
-        this.selectionService.selectNode(operation, operation.ownerDocument());
-    }
-
-    public createOperation(operationType: string): void {
-        let command: ICommand = createNewOperationCommand(this.path.ownerDocument(), this.path.path(), operationType);
-        this.commandService.emit(command);
-    }
-
-    public deleteOperation(operationType: string): void {
-        let command: ICommand = createDeleteOperationCommand(this.document(), operationType, this.path);
-        this.commandService.emit(command);
-    }
-
-    public changeSummary(newSummary: string, operation: OasOperation): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), operation, "summary", newSummary);
-        this.commandService.emit(command);
-    }
-
-    public changeDescription(newDescription: string, operation: OasOperation): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), operation, "description", newDescription);
-        this.commandService.emit(command);
     }
 
     public delete(): void {
@@ -324,7 +159,4 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         super.enableSourceMode();
     }
 
-    public supportsTraceOperation(): boolean {
-        return this.document().is3xDocument();
-    }
 }

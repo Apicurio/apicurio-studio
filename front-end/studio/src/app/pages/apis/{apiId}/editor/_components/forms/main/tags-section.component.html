@@ -1,20 +1,11 @@
-<div class="section tags-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#tags-section-body">
-            <span class="section-label">TAG DEFINITIONS  <counter [items]="tags()"></counter></span>
-            <validation-aggregate [models]="tags()"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>
-                Configure tags for your API in this section.  Once defined, tags can be used to organize
-                your API's <strong>operations</strong> by arbitrary criteria.
-            </p>
-        </context-help>
+<section type="tags" label="TAG DEFINITIONS" [counterItems]="tags()"
+         contextHelp="Configure tags for your API in this section.  Once defined, tags can be used to organize your API's operations by arbitrary criteria."
+         [validationModels]="tags()">
+    <span actions>
         <icon-button (onClick)="addTagDialog.open()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a tag to the API.'"></icon-button>
-    </div>
-    <div class="section-body collapse in" id="tags-section-body">
-
+    </span>
+    <div body>
         <signpost *ngIf="tags().length === 0">
             <span>No tags have been configured.</span>
             <a (click)="addTagDialog.open()">Add a tag</a>
@@ -27,5 +18,5 @@
                      [document]="document"></tag-row>
         </div>
     </div>
-</div>
+</section>
 <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>

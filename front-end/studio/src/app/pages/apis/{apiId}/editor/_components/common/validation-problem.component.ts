@@ -80,6 +80,15 @@ export class ValidationProblemComponent implements OnInit, OnDestroy {
         }
     }
 
+    @HostListener("window:resize", ["$event"])
+    public onWindowResize(event: MouseEvent): void {
+        if (this._open) {
+            this.close();
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
     public hasProblems(): boolean {
         if (!this.model) {
             return false;

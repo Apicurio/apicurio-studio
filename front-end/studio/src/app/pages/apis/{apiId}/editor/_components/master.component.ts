@@ -17,10 +17,12 @@
 
 import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
-    Oas20Document, Oas20PathItem,
+    Oas20Document,
+    Oas20PathItem,
     Oas20ResponseDefinition,
     Oas20SchemaDefinition,
-    Oas30Document, Oas30PathItem,
+    Oas30Document,
+    Oas30PathItem,
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasAllNodeVisitor,
@@ -28,7 +30,6 @@ import {
     OasLibraryUtils,
     OasNode,
     OasNodePath,
-    OasOperation,
     OasPathItem,
     OasVisitorUtil
 } from "oai-ts-core";
@@ -41,7 +42,6 @@ import {ObjectUtils} from "../_util/object.util";
 import {
     createAddPathItemCommand,
     createAddSchemaDefinitionCommand,
-    createDeleteOperationCommand,
     createDeletePathCommand,
     createDeleteSchemaDefinitionCommand,
     createNewPathCommand,
@@ -185,29 +185,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Returns true if the given operation is a valid operation contained within the
-     * current document.
-     * @param operation
-     * @return
-     */
-    protected isValidOperation(operation: OasOperation): boolean {
-        let pathItem: OasPathItem = operation.parent() as OasPathItem;
-
-        if (ObjectUtils.isNullOrUndefined(operation)) {
-            return false;
-        }
-
-        if (!this.isValidPathItem(pathItem)) {
-            return false;
-        }
-
-        let pi: any = this.document.paths.pathItem(pathItem.path());
-        let op: any = pi[operation.method()];
-
-        return op === operation;
-    }
-
-    /**
      * Returns true if the given schema definition is valid and contained within the
      * current document.
      * @param definition
@@ -253,28 +230,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      */
     public deselectPath(): void {
         this.selectMain();
-    }
-
-    /**
-     * Called when the user clicks an operation.
-     * @param operation
-     */
-    public selectOperation(operation: OasOperation): void {
-        if (this.isSelected(operation)) {
-            this.selectionService.selectNode(operation.parent(), this.document);
-        } else {
-            this.selectionService.selectNode(operation, this.document);
-        }
-    }
-
-    /**
-     * Called to deselect the currently selected operation.
-     */
-    public deselectOperation(): void {
-        let node: OasNode = this.selectionService.currentSelection().resolve(this.document);
-        if (node) {
-            this.selectionService.selectNode(node.parent(), this.document);
-        }
     }
 
     /**
@@ -360,17 +315,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Called to test whether the given resource path has an operation of the given type defined.
-     * @param pathItem
-     * @param operation
-     * @return
-     */
-    public hasOperation(pathItem: OasPathItem, operation: string): boolean {
-        let op: OasOperation = pathItem[operation];
-        return !ObjectUtils.isNullOrUndefined(op);
-    }
-
-    /**
      * Returns true if the given node is the currently selected item *or* is the parent
      * of the currently selected item.
      * @param node
@@ -398,38 +342,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             return false;
         }
         return this.contextMenuSelection.contains(node);
-    }
-
-    /**
-     * Returns true if the given path item has at least one operation.
-     * @param pathItem
-     * @return
-     */
-    public hasAtLeastOneOperation(pathItem: OasPathItem): boolean {
-        if (pathItem) {
-            if (pathItem.get) {
-                return true;
-            }
-            if (pathItem.put) {
-                return true;
-            }
-            if (pathItem.post) {
-                return true;
-            }
-            if (pathItem.delete) {
-                return true;
-            }
-            if (pathItem.options) {
-                return true;
-            }
-            if (pathItem.head) {
-                return true;
-            }
-            if (pathItem.patch) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -499,20 +411,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Called when the user right-clicks on an operation.
-     * @param event
-     * @param operation
-     */
-    public showOperationContextMenu(event: MouseEvent, operation: OasOperation): void {
-        event.preventDefault();
-        event.stopPropagation();
-        this.contextMenuPos.left = event.clientX + "px";
-        this.contextMenuPos.top = event.clientY + "px";
-        this.contextMenuSelection = this._library.createNodePath(operation);
-        this.contextMenuType = "operation";
-    }
-
-    /**
      * Called when the user clicks somewhere in the document.  Used to close the context
      * menu if it is open.
      */
@@ -567,16 +465,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
             let command: ICommand = createAddPathItemCommand(this.document, modalData.path, cloneSrcObj);
             this.commandService.emit(command);
         }
-    }
-
-    /**
-     * Called when the user clicks "Delete Operation" in the context-menu for a operation.
-     */
-    public deleteOperation(): void {
-        let operation: OasOperation = this.contextMenuSelection.resolve(this.document) as OasOperation;
-        let command: ICommand = createDeleteOperationCommand(this.document, operation.method(), operation.parent() as OasPathItem);
-        this.commandService.emit(command);
-        this.closeContextMenu();
     }
 
     /**
@@ -679,25 +567,6 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
      * @return
      */
     public pathClasses(node: OasPathItem): string {
-        let classes: string[] = [];
-        if (this.hasValidationProblem(node)) {
-            classes.push("problem-marker");
-        }
-        if (this.isContexted(node)) {
-            classes.push("contexted");
-        }
-        if (this.isSelected(node)) {
-            classes.push("selected");
-        }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
-    }
-
-    /**
-     * Returns the classes that should be applied to the operation in the master view.
-     * @param node
-     * @return
-     */
-    public operationClasses(node: OasOperation): string {
         let classes: string[] = [];
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");

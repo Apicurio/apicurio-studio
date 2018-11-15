@@ -34,10 +34,10 @@ import {
     SimplifiedType
 } from "oai-ts-commands";
 import {OasDocument, OasParameterBase} from "oai-ts-core";
-import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
-import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
-import {DocumentService} from "../../../_services/document.service";
+import {CommandService} from "../../../../_services/command.service";
+import {DocumentService} from "../../../../_services/document.service";
+import {DropDownOption} from "../../../../../../../../components/common/drop-down.component";
 
 
 @Component({

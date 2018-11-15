@@ -51,6 +51,24 @@ export class SecurityRequirementsSectionComponent implements OnInit {
         this.showSectionBody = this.global;
     }
 
+    public contextHelp(): string {
+        if (this.global) {
+            return `
+                Use this section to configure which of the Security Schemes are needed in order to invoke operations
+                in the API.  You can add multiple security requirements, resulting in consumers being allowed to
+                provided any one of them.  Each security requirement consists of one or more
+                Security Scheme and (in the case of certain security types like OAuth) a list of the scopes the
+                consumer must have.`;
+        } else {
+            return `
+                Use this section to configure which of the Security Schemes are needed in order to invoke this
+                specific operation.  You can add multiple security requirements, resulting in consumers being allowed to
+                provided any one of them.  Each security requirement consists of one or more
+                Security Scheme and (in the case of certain security types like OAuth) a list of the scopes the
+                consumer must have.`;
+        }
+    }
+
     /**
      * Called when the user adds a new security requirement.
      * @param event

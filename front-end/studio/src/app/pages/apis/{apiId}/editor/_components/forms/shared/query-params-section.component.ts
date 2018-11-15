@@ -82,6 +82,20 @@ export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges
         return this.parent === this.path;
     }
 
+    public contextHelp(): string {
+        if (this.isPathItem()) {
+            return `
+                Use this section to define HTTP Query Parameters for all of the Operations in this 
+                path.  These query parameters will apply to all operations and can be overridden 
+                (though not removed) at the operation level.`;
+        } else {
+            return `
+                An operation may, optionally, allow additional options to be sent via URL query
+                parameters.  This section allows you to document what query parameters are
+                accepted/expected by this operation.`;
+        }
+    }
+
     public hasParameters(type: string): boolean {
         if (!this.parent.parameters) {
             return false;

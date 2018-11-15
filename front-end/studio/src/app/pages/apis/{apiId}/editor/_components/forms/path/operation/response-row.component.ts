@@ -27,7 +27,6 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {Oas20Response, OasDocument} from "oai-ts-core";
-import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
 import {
     createChangePropertyCommand,
     createChangeResponseTypeCommand,
@@ -36,11 +35,12 @@ import {
     ICommand,
     SimplifiedType
 } from "oai-ts-commands";
-import {ObjectUtils} from "../../../_util/object.util";
-import {EditExample20Event} from "../../dialogs/edit-example-20.component";
-import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
-import {DocumentService} from "../../../_services/document.service";
+import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
+import {CommandService} from "../../../../_services/command.service";
+import {DocumentService} from "../../../../_services/document.service";
+import {ObjectUtils} from "../../../../_util/object.util";
+import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
 
 
 @Component({

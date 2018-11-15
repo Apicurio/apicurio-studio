@@ -1,21 +1,11 @@
-<div class="section license-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#license-section-body">
-            <span class="section-label">LICENSE</span>
-            <validation-aggregate [models]="[licenseModel()]"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>
-                Is your API <a href="https://en.wikipedia.org/wiki/Comparison_of_free_and_open-source_software_licenses" target="_blank">licensed</a>?
-                Configure that here!  We'll help by showing you the most common licenses
-                you can choose from (and even describe each one a little bit!).
-            </p>
-        </context-help>
+<section type="license" label="LICENSE"
+         contextHelp="Does your API have a license?  If it does, you can configure it here."
+         [validationModels]="[licenseModel()]">
+    <span actions>
         <icon-button (onClick)="deleteLicense()" [disabled]="!hasLicense()" [pullRight]="true" [type]="'delete'"
                      [title]="'Delete the license information.'"></icon-button>
-    </div>
-    <div class="section-body collapse in" id="license-section-body">
-
+    </span>
+    <div body>
         <signpost *ngIf="!hasLicense()">
             <span>No license has been set.</span>
             <a (click)="setLicenseDialog.open()">Set license</a>
@@ -59,7 +49,6 @@
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+</section>
 <set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>

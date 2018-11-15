@@ -22,19 +22,16 @@ import {
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem, OasCombinedVisitorAdapter, OasLibraryUtils, OasOperation, OasParameterBase,
+    Oas30PathItem,
+    OasCombinedVisitorAdapter,
+    OasLibraryUtils,
+    OasOperation,
+    OasParameterBase,
     OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {ModelUtils} from "../../../_util/model.util";
-import {
-    createChangeParameterTypeCommand,
-    createChangePropertyCommand,
-    createDeleteParameterCommand,
-    createNewParamCommand,
-    ICommand,
-    SimplifiedParameterType
-} from "oai-ts-commands";
+import {createDeleteParameterCommand, createNewParamCommand, ICommand} from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
 import {Subscription} from "rxjs/Subscription";
 
@@ -81,6 +78,21 @@ export class PathParamsSectionComponent implements OnInit, OnDestroy, OnChanges 
 
     public isPathItem(): boolean {
         return this.parent === this.path;
+    }
+
+    public contextHelp(): string {
+        if (this.isPathItem()) {
+            return `
+                This section is visible because this path has at least one dynamic path parameter.
+                Here you can configure information about the path parameter, such as its description
+                and type.  This information will be inherited by all operations in the path (but can
+                optionally be overridden by each respective operation).`;
+        } else {
+            return `
+                This section is visible because the path/endpoint this operation belongs to has dynamic 
+                parameters. Configure the parameters' descriptions and types below.`
+
+        }
     }
 
     public pathParameters(): (Oas30Parameter | Oas20Parameter)[] {

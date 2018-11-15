@@ -69,22 +69,16 @@
                 <definition-info-section [definition]="definition"></definition-info-section>
 
                 <!-- Properties -->
-                <div class="section properties-section panel-group">
-                    <div class="section-header panel-title">
-                        <a data-toggle="collapse" data-target="#properties-section-body">
-                            <span class="section-label">PROPERTIES</span>
-                        </a>
-                        <context-help>
-                            <p>
-                                Use this section to define the properties that make up this data type.
-                            </p>
-                        </context-help>
+                <section type="properties" label="PROPERTIES" [counterItems]="properties()"
+                         contextHelp="Use this section to define the properties that make up this data type."
+                         [validationModels]="properties()">
+                    <span actions>
                         <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" [type]="'add'"
                                      [title]="'Add a property to the schema.'"></icon-button>
                         <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
                                      [title]="'Delete all properties from the schema.'"></icon-button>
-                    </div>
-                    <div class="section-body collapse in" id="properties-section-body">
+                    </span>
+                    <div body>
                         <!-- Warning when no properties exist -->
                         <signpost *ngIf="!hasProperties()">
                             <span>No schema properties have been defined.</span>
@@ -99,7 +93,7 @@
                                           (onTypeChange)="changePropertyType(property, $event)"></property-row>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <!-- Definition Example -->
                 <definition-example-section [definition]="definition"></definition-example-section>

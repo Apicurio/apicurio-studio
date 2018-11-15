@@ -81,6 +81,15 @@ export class ValidationAggregateComponent implements OnInit, OnDestroy {
         }
     }
 
+    @HostListener("window:resize", ["$event"])
+    public onWindowResize(event: MouseEvent): void {
+        if (this._open) {
+            this.close();
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+
     public open(event: MouseEvent): void {
         this.left = event.clientX + "px";
         this.top = event.clientY + "px";

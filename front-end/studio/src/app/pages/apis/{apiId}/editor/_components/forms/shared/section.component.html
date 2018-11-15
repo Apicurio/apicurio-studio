@@ -1,0 +1,18 @@
+<div class="section {{ type }}-section panel-group">
+    <div class="section-header panel-title">
+        <a [class.collapsed]="!expanded" (click)="toggleExpansion()" (dblclick)="onDoubleClick($event)">
+            <span class="section-label">{{ label }} <counter [items]="counterItems" *ngIf="hasCounter()"></counter></span>
+            <validation-aggregate *ngIf="hasValidationAggregate()" [models]="validationModels"
+                                  [shallow]="validationShallow" [properties]="validationProperties"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>{{ contextHelp }}</p>
+        </context-help>
+        <div class="section-actions">
+            <ng-content select="[actions]"></ng-content>
+        </div>
+    </div>
+    <div class="section-body" [class.collapsed]="!expanded">
+        <ng-content select="[body]"></ng-content>
+    </div>
+</div>

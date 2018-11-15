@@ -16,21 +16,18 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
-import {ThreeScaleMetric} from "./3scale-section.component";
 
 
 @Component({
     moduleId: module.id,
-    selector: "three-scale-metric-row",
-    templateUrl: "3scale-metric-row.component.html",
-    styleUrls: [ "3scale-metric-row.component.css" ],
+    selector: "no-operation",
+    templateUrl: "no-operation.component.html",
+    styleUrls: [ "no-operation.component.css" ],
     encapsulation: ViewEncapsulation.None
 })
-export class ThreeScaleMetricRowComponent {
+export class NoOperationComponent {
 
-    @Input() metric: ThreeScaleMetric;
-
-    @Output() onEdit: EventEmitter<void> = new EventEmitter<void>();
-    @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Input() method: string;
+    @Output() add: EventEmitter<void> = new EventEmitter<void>();
 
 }

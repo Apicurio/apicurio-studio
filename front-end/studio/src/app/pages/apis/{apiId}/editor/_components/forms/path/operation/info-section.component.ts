@@ -16,15 +16,10 @@
  */
 
 import {Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
-import {Oas20Document, Oas20Operation, Oas30Operation, OasDocument, OasInfo} from "oai-ts-core";
-import {
-    createChangeDescriptionCommand,
-    createChangePropertyCommand,
-    createChangeVersionCommand,
-    ICommand
-} from "oai-ts-commands";
-import {CommandService} from "../../../_services/command.service";
-import {InlineArrayEditorComponent} from "../../common/inline-array-editor.component";
+import {Oas20Document, Oas20Operation, Oas30Operation} from "oai-ts-core";
+import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {InlineArrayEditorComponent} from "../../../common/inline-array-editor.component";
+import {CommandService} from "../../../../_services/command.service";
 
 
 @Component({

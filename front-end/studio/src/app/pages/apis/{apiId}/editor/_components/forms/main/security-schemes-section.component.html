@@ -1,25 +1,11 @@
-<div class="section security-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#security-section-body">
-            <span class="section-label">SECURITY SCHEMES <counter [items]="securitySchemes()"></counter></span>
-            <validation-aggregate [models]="securitySchemes()"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>
-                Use this section to configure your API's security options.  There are three types of
-                security you may choose from (each with its own specific configuration details):
-            </p>
-            <ul>
-                <li><a href="https://en.wikipedia.org/wiki/Basic_access_authentication" target="_blank">BASIC</a></li>
-                <li><a href="https://en.wikipedia.org/wiki/Application_programming_interface_key" target="_blank">API Key</a></li>
-                <li><a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a></li>
-            </ul>
-        </context-help>
+<section type="security" label="SECURITY SCHEMES" [counterItems]="securitySchemes()"
+         contextHelp="Use this section to configure your API's security options.  There are several schemes you can choose from, for example OAuth2."
+         [validationModels]="securitySchemes()">
+    <span actions>
         <icon-button (onClick)="openSecuritySchemeModal()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a security scheme to the API.'"></icon-button>
-    </div>
-    <div class="section-body collapse in" id="security-section-body">
-
+    </span>
+    <div body>
         <signpost *ngIf="!hasSecuritySchemes()">
             <span>No security options have been configured.</span>
             <a (click)="openSecuritySchemeModal()">Add a security scheme</a>
@@ -28,9 +14,9 @@
         <!-- The list of schemes -->
         <div class="schemes" *ngIf="hasSecuritySchemes()">
             <security-scheme-row *ngFor="let scheme of securitySchemes()" [scheme]="scheme"
-                     (onEdit)="openSecuritySchemeModal(scheme)"
-                     (onDelete)="deleteSecurityScheme(scheme)"
-                     [document]="document"></security-scheme-row>
+                                 (onEdit)="openSecuritySchemeModal(scheme)"
+                                 (onDelete)="deleteSecurityScheme(scheme)"
+                                 [document]="document"></security-scheme-row>
         </div>
     </div>
-</div>
+</section>

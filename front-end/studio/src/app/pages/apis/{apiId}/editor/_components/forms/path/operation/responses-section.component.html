@@ -1,0 +1,33 @@
+<section type="responses" label="RESPONSES" [counterItems]="responses()"
+         contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
+         [validationModels]="responses()">
+    <span actions>
+        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
+                     [title]="'Add a response to the operation.'"></icon-button>
+        <icon-button (onClick)="deleteAllResponses()" [disabled]="!hasResponses()"
+                     [pullRight]="true" [type]="'delete'"
+                     [title]="'Delete all responses from the operation.'"></icon-button>
+    </span>
+    <div body>
+
+        <signpost *ngIf="!hasResponses()">
+            <validation-problem [model]="operation" [code]="'OP-007'" *ngIf="is20Document()"></validation-problem>
+            <validation-problem [model]="operation" [code]="'OP-3-004'" *ngIf="is30Document()"></validation-problem>
+            <span>No responses have been defined.</span>
+            <a (click)="openAddResponseModal()">Add a response</a>
+        </signpost>
+
+        <!-- The list of responses -->
+        <div class="container-fluid responses typed-item-list" *ngIf="is20Document()">
+            <response-row *ngFor="let response of responses()"
+                          [response]="response"
+                          (onDelete)="deleteResponse(response)"></response-row>
+        </div>
+        <div class="responses" *ngIf="is30Document()">
+            <response-row-30 *ngFor="let response of responses()" [response]="response"
+                             (onDelete)="deleteResponse(response)"
+                             [document]="response.ownerDocument()"></response-row-30>
+        </div>
+    </div>
+</section>
+<add-response-dialog #addResponseDialog (onAdd)="addResponse($event)"></add-response-dialog>

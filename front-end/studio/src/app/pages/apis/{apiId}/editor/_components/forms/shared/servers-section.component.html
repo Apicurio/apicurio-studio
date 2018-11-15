@@ -1,17 +1,10 @@
-<div class="section servers-section panel-group">
-    <div class="section-header panel-title">
-        <a [class.collapsed]="!showSectionBody" data-toggle="collapse" data-target="#servers-section-body">
-            <span class="section-label">SERVERS <counter [items]="servers()"></counter></span>
-            <validation-aggregate [models]="servers()"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>{{ description }}</p>
-        </context-help>
+<section type="servers" label="SERVERS" [counterItems]="servers()" [contextHelp]="description"
+         [validationModels]="servers()" [expanded]="showSectionBody">
+    <span actions>
         <icon-button (onClick)="onAddServer()" [pullRight]="true" [type]="'add'"
                      [title]="'Add a server to the API.'"></icon-button>
-    </div>
-    <div class="section-body collapse" id="servers-section-body" [class.in]="showSectionBody">
-
+    </span>
+    <div body>
         <signpost *ngIf="servers().length === 0">
             <span>No servers have been defined.</span>
             <a (click)="onAddServer()">Add a server</a>
@@ -23,6 +16,5 @@
                         (onEdit)="changeServer($event)"
                         (onDelete)="deleteServer(server)"></server-row>
         </div>
-
     </div>
-</div>
+</section>

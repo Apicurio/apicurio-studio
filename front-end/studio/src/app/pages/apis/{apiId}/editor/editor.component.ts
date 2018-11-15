@@ -36,7 +36,6 @@ import {
     OasLibraryUtils,
     OasNode,
     OasNodePath,
-    OasOperation,
     OasPathItem,
     OasValidationProblem,
     OasVisitorUtil
@@ -396,17 +395,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     }
 
     /**
-     * Returns the currently selected operation.
-     */
-    public selectedOperation(): OasOperation {
-        if (this.currentSelectionType === "operation") {
-            return this.currentSelectionNode as OasOperation;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Returns the currently selected definition.
      * @return
      */
@@ -420,10 +408,6 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public deselectPath(): void {
         this.master.deselectPath();
-    }
-
-    public deselectOperation(): void {
-        this.master.deselectOperation();
     }
 
     public deselectDefinition(): void {
@@ -520,11 +504,6 @@ export class FormSelectionVisitor extends OasCombinedVisitorAdapter {
     public visitPathItem(node: OasPathItem): void {
         this._selectedNode = node;
         this._selectionType = "path";
-    }
-
-    public visitOperation(node: OasOperation): void {
-        this._selectedNode = node;
-        this._selectionType = "operation";
     }
 
     public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {

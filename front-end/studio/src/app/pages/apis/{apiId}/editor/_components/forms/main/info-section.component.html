@@ -1,14 +1,8 @@
-<div class="section info-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#info-section-body">
-            <span class="section-label">INFO</span>
-            <validation-aggregate [models]="[info()]" [properties]="['version', 'description']" [shallow]="true"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>This section allows you to modify the <strong>Version</strong> and <strong>Description</strong> of the API.</p>
-        </context-help>
-    </div>
-    <div class="section-body collapse in" id="info-section-body">
+<section type="info" label="INFO"
+         contextHelp="This section allows you to modify the Version and Description of the API."
+         [validationModels]="[info()]" [validationProperties]="['version', 'description']" [validationShallow]="true">
+    <span actions></span>
+    <div body>
         <!-- Version -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="version" [shallow]="true"></validation-problem>
@@ -43,7 +37,7 @@
             <div class="section-field consumes">
                 <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
                                      [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
-                        (onChange)="onConsumesChange($event)"></inline-array-editor>
+                                     (onChange)="onConsumesChange($event)"></inline-array-editor>
             </div>
             <!-- Produces -->
             <div class="section-field-label">
@@ -56,6 +50,5 @@
                                      (onChange)="onProducesChange($event)"></inline-array-editor>
             </div>
         </div>
-
     </div>
-</div>
+</section>

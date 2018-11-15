@@ -24,6 +24,7 @@ import {EditorsService} from "../../../_services/editors.service";
 import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
 
 
+
 @Component({
     moduleId: module.id,
     selector: "servers-section",

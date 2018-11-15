@@ -1,40 +1,10 @@
-<div class="section security-requirements-section panel-group">
-    <div class="section-header panel-title">
-        <a [class.collapsed]="!showSectionBody" data-toggle="collapse" data-target="#security-requirements-section-body">
-            <span class="section-label">SECURITY REQUIREMENTS <counter [items]="securityRequirements()"></counter></span>
-            <validation-aggregate [models]="securityRequirements()"></validation-aggregate>
-        </a>
-        <context-help *ngIf="global">
-            <p>
-                Use this section to configure which of the Security Schemes are needed in order to invoke operations
-                in the API.  You can add multiple security requirements, resulting in consumers being allowed to
-                provided <strong>any one</strong> of them.  Each security requirement consists of one or more
-                Security Scheme and (in the case of certain security types like OAuth) a list of the scopes the
-                consumer must have.
-            </p>
-            <p>
-                <i>Note</i>: security requirements can also be declared at the <strong>Operation</strong> level, which will
-                override the settings configured here.
-            </p>
-        </context-help>
-        <context-help *ngIf="!global">
-            <p>
-                Use this section to configure which of the Security Schemes are needed in order to invoke this
-                specific operation.  You can add multiple security requirements, resulting in consumers being allowed to
-                provided <strong>any one</strong> of them.  Each security requirement consists of one or more
-                Security Scheme and (in the case of certain security types like OAuth) a list of the scopes the
-                consumer must have.
-            </p>
-            <p>
-                <i>Note</i>: setting a Security Requirement for this operation will <strong>only</strong> apply to this
-                operation and will override any security requirements configured globally.
-            </p>
-        </context-help>
+<section type="security-requirements" label="SECURITY REQUIREMENTS" [counterItems]="securityRequirements()"
+         [contextHelp]="contextHelp()" [validationModels]="securityRequirements()">
+    <span actions>
         <icon-button (onClick)="openSecurityRequirementEditor()" [pullRight]="true" [type]="'add'"
                      [title]="global ? 'Add a security requirement to the API.' : 'Add a security requirement for the operation.'"></icon-button>
-    </div>
-    <div class="section-body collapse" id="security-requirements-section-body" [class.in]="showSectionBody">
-
+    </span>
+    <div body>
         <signpost *ngIf="!hasSecurityRequirements()">
             <span>No security requirements have been configured.</span>
             <a (click)="openSecurityRequirementEditor()">Add security requirement</a>
@@ -67,4 +37,4 @@
             </div>
         </div>
     </div>
-</div>
+</section>

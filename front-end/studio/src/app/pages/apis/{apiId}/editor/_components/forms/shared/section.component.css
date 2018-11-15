@@ -1,0 +1,7 @@
+.section .section-actions {
+  display: inline;
+}
+
+.section .section-body.collapsed {
+  display: none;
+}

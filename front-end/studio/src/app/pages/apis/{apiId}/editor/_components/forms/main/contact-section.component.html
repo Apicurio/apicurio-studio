@@ -1,25 +1,15 @@
-<div class="section contact-section panel-group">
-    <div class="section-header panel-title">
-        <a data-toggle="collapse" data-target="#contact-section-body">
-            <span class="section-label">CONTACT</span>
-            <validation-aggregate [models]="[contact()]"></validation-aggregate>
-        </a>
-        <context-help>
-            <p>
-                Update the information contained in this section to provide users of the API details
-                about how to contact you should they need help.
-            </p>
-        </context-help>
+<section type="contact" label="CONTACT"
+         contextHelp="Update the information contained in this section to provide users of the API details about how to contact you should they need help."
+         [validationModels]="[contact()]">
+    <span actions>
         <icon-button (onClick)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
                      [title]="'Delete the contact information.'"></icon-button>
-    </div>
-    <div class="section-body collapse in" id="contact-section-body">
-
+    </span>
+    <div body>
         <signpost *ngIf="!hasContact()">
             <span>No contact information has been entered.</span>
             <a (click)="setContactDialog.open()">Add contact info</a>
         </signpost>
-
         <div *ngIf="hasContact()">
             <!-- Contact Name -->
             <div class="section-field-label">
@@ -53,9 +43,7 @@
                                        [labelClass]="'contact-url'"
                                        [noValueMessage]="'No URL provided.'" (onChange)="changeContactURL($event)"></pf-inline-text-editor>
             </div>
-            <!--<button class="btn btn-default btn-sm" (click)="setContactDialog.open(contact())">Change Contact Info</button>-->
         </div>
-
     </div>
-</div>
+</section>
 <set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>

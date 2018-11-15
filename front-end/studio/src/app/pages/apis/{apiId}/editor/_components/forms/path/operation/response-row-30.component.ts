@@ -16,13 +16,11 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
-import {HttpCode, HttpCodeService} from "../../../_services/httpcode.service";
 import {Oas30Document, Oas30MediaType, Oas30Response} from "oai-ts-core";
 import {
     AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
     MediaTypeChangeEvent
 } from "./content.component";
-import {EditExampleEvent} from "../../dialogs/edit-example.component";
 import {
     createAddExampleCommand,
     createChangeMediaTypeTypeCommand,
@@ -30,7 +28,9 @@ import {
     createSetExampleCommand,
     ICommand
 } from "oai-ts-commands";
-import {CommandService} from "../../../_services/command.service";
+import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
+import {CommandService} from "../../../../_services/command.service";
+import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 
 
 @Component({

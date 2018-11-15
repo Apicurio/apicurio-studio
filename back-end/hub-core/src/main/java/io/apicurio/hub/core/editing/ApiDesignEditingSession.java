@@ -30,7 +30,6 @@ import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 import java.io.Closeable;
 import java.io.IOException;
@@ -123,8 +122,7 @@ public class ApiDesignEditingSession implements Closeable {
      * Sends the given command to all other members of the editing session.
      * @param excludeSession
      * @param user
-     * @param content
-     * @param contentVersion
+     * @param command
      */
     public void sendCommandToOthers(Session excludeSession, String user, ApiDesignCommand command) {
         VersionedCommandAction versionedCommand = VersionedCommandAction.command(command.getContentVersion(), command.getCommand());
@@ -153,22 +151,6 @@ public class ApiDesignEditingSession implements Closeable {
         sendToAllSessions(excludeSession, redoOperation);
     }
 
-    private void sendToAllSessions(Session excludeSession, BaseOperation undoOperation) {
-        for (Session otherSession : this.sessions.values()) {
-            if (otherSession != excludeSession) {
-                try {
-                    sendTextToRemote(otherSession.getBasicRemote(), undoOperation);
-                } catch (IOException e) {
-                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
-                }
-            }
-        }
-    }
-
-    private <O> void sendTextToRemote(RemoteEndpoint.Basic remote, O objectToSend) throws IOException {
-        remote.sendText(JsonUtil.toJson(objectToSend));
-    }
-
     /**
      * Sends the given selection change event to all other members of the editing session.
      * @param excludeSession
@@ -189,7 +171,7 @@ public class ApiDesignEditingSession implements Closeable {
         // TODO can we meld this with ApiDesignCommandAck ?
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion(), ack.getCommandId());
         try {
-            toSession.getBasicRemote().sendText(JsonUtil.toJson(commandIdAction));
+            sendToSession(toSession, commandIdAction);
         } catch (IOException e) {
             logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
         }
@@ -203,7 +185,7 @@ public class ApiDesignEditingSession implements Closeable {
     public void sendAckTo(Session toSession, ApiDesignUndoRedoAck ack) {
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion());
         try {
-            toSession.getBasicRemote().sendText(JsonUtil.toJson(commandIdAction));
+            sendToSession(toSession, commandIdAction);
         } catch (IOException e) {
             logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
         }
@@ -240,9 +222,25 @@ public class ApiDesignEditingSession implements Closeable {
     public void sendJoinTo(Session toSession, String joinedUser, String joinedId) {
         JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedId);
         try {
-            toSession.getBasicRemote().sendText(JsonUtil.toJson(joinOperation));
+            sendToSession(toSession, joinOperation);
         } catch (IOException e) {
             logger.error("Error sending 'join' to websocket with sessionId: " + toSession.getId(), e);
+        }
+    }
+
+    private <O> void sendToSession(Session toSession, O object) throws IOException {
+        toSession.getBasicRemote().sendText(JsonUtil.toJson(object));
+    }
+
+    private void sendToAllSessions(Session excludeSession, BaseOperation undoOperation) {
+        for (Session otherSession : this.sessions.values()) {
+            if (otherSession != excludeSession) {
+                try {
+                    otherSession.getBasicRemote().sendText(JsonUtil.toJson(undoOperation));
+                } catch (IOException e) {
+                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
+                }
+            }
         }
     }
 

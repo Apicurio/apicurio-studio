@@ -21,5 +21,4 @@ public class BaseOperation {
         return this;
     }
 
-
 }

@@ -202,6 +202,7 @@ public class EditApiDesignEndpoint {
         logger.debug("Received a \"{}\" message from a client.", msgType);
         logger.debug("\tdesignId: {}", designId);
 
+        // Put this into a processor/factory/something -- give that entity to ApicurioSessionFactory join operations?
         if (msgType.equals("command")) {
             String user = editingSession.getUser(session);
             long localCommandId = -1;

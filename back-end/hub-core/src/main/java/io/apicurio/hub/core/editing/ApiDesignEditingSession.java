@@ -24,7 +24,7 @@ import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandAction;
+import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
@@ -57,9 +57,27 @@ public class ApiDesignEditingSession implements Closeable {
      */
     public ApiDesignEditingSession(String designId, DistributedSessionFactory factory) {
         this.designId = designId;
-        this.distributedSession = factory.joinSession(designId, incomingCommand -> {
-            sendCommandToOthers(null, null, incomingCommand); // TODO user doesn't seem to be used?
-        });
+//        this.distributedSession = factory.joinSession(designId, incomingOperation -> {
+//            // TODO
+//            sendCommandToOthers(null, null, incomingOperation); // TODO user doesn't seem to be used?
+//        });
+
+
+        createOperationHandler();
+        this.distributedSession = factory.joinSession(designId, operationHandler);
+    }
+
+    private ApicurioOperationHandler createOperationHandler() {
+        //{"undo", "redo", undoredo},
+        //{"join", "leave", joinleave}
+        //{""}
+
+        //
+
+        ApicurioOperationHandler operationHandler = new ApicurioOperationHandler()
+                .setOperationListener();
+
+        return operationHandler;
     }
 
     /**
@@ -79,8 +97,6 @@ public class ApiDesignEditingSession implements Closeable {
 
     /**
      * Join the websocket session to this design editing session.
-     * @param session
-     * @param user
      */
     public void join(Session session, String user) {
         this.sessions.put(session.getId(), session);
@@ -109,6 +125,7 @@ public class ApiDesignEditingSession implements Closeable {
     @Override
     public void close() {
         // TODO anything to do here?
+        distributedSession.close();
     }
     
     /**
@@ -125,7 +142,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param command
      */
     public void sendCommandToOthers(Session excludeSession, String user, ApiDesignCommand command) {
-        VersionedCommandAction versionedCommand = VersionedCommandAction.command(command.getContentVersion(), command.getCommand());
+        VersionedCommandOperation versionedCommand = VersionedCommandOperation.command(command.getContentVersion(), command.getCommand());
         sendToAllSessions(excludeSession, versionedCommand);
     }
 
@@ -232,16 +249,18 @@ public class ApiDesignEditingSession implements Closeable {
         toSession.getBasicRemote().sendText(JsonUtil.toJson(object));
     }
 
-    private void sendToAllSessions(Session excludeSession, BaseOperation undoOperation) {
+    private void sendToAllSessions(Session excludeSession, BaseOperation operation) {
         for (Session otherSession : this.sessions.values()) {
             if (otherSession != excludeSession) {
                 try {
-                    otherSession.getBasicRemote().sendText(JsonUtil.toJson(undoOperation));
+                    otherSession.getBasicRemote().sendText(JsonUtil.toJson(operation));
                 } catch (IOException e) {
                     logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
                 }
             }
         }
+        // Finally, send on the shared channel.
+        distributedSession.sendOperation(operation);
     }
 
 }

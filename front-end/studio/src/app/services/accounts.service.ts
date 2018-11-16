@@ -54,12 +54,12 @@ export class LinkedAccountsService extends AbstractHubService {
      * @see LinkedAccountsService.getLinkedAccounts
      */
     public getLinkedAccounts(): Promise<LinkedAccount[]> {
-        console.info("[HubLinkedAccountsService] Getting all linked accounts");
+        console.info("[LinkedAccountsService] Getting all linked accounts");
 
         let url: string = this.endpoint("/accounts");
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Fetching linked accounts: %s", url);
+        console.info("[LinkedAccountsService] Fetching linked accounts: %s", url);
         return this.httpGet<LinkedAccount[]>(url, options);
     }
 
@@ -67,7 +67,7 @@ export class LinkedAccountsService extends AbstractHubService {
      * @see LinkedAccountsService.createLinkedAccount
      */
     public createLinkedAccount(accountType: string, redirectUrl: string): Promise<InitiatedLinkedAccount> {
-        console.info("[HubLinkedAccountsService] Creating a linked account via the hub API.  Type: %s", accountType);
+        console.info("[LinkedAccountsService] Creating a linked account via the hub API.  Type: %s", accountType);
         let cla: CreateLinkedAccount = new CreateLinkedAccount();
         cla.type = accountType;
         cla.redirectUrl = redirectUrl;
@@ -75,7 +75,7 @@ export class LinkedAccountsService extends AbstractHubService {
         let url: string = this.endpoint("/accounts");
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Creating a linked account: %s", url);
+        console.info("[LinkedAccountsService] Creating a linked account: %s", url);
         return this.httpPostWithReturn<CreateLinkedAccount, InitiatedLinkedAccount>(url, cla, options);
     }
 
@@ -83,14 +83,14 @@ export class LinkedAccountsService extends AbstractHubService {
      * @see LinkedAccountsService.deleteLinkedAccount
      */
     public deleteLinkedAccount(type: string): Promise<void> {
-        console.info("[HubLinkedAccountsService] Deleting a linked account via the hub API");
+        console.info("[LinkedAccountsService] Deleting a linked account via the hub API");
 
         let url: string = this.endpoint("/accounts/:accountType", {
             accountType: type
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Deleting a linked account: %s", url);
+        console.info("[LinkedAccountsService] Deleting a linked account: %s", url);
         return this.httpDelete(url, options);
     }
 
@@ -103,7 +103,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting a linked account: %s", url);
+        console.info("[LinkedAccountsService] Getting a linked account: %s", url);
         return this.httpGet<LinkedAccount>(url, options);
     }
 
@@ -111,7 +111,7 @@ export class LinkedAccountsService extends AbstractHubService {
      * @see LinkedAccountsService.completeLinkedAccount
      */
     public completeLinkedAccount(accountType: string, nonce: string): Promise<void> {
-        console.info("[HubLinkedAccountsService] Completing a linked account via the hub API.  Type: %s", accountType);
+        console.info("[LinkedAccountsService] Completing a linked account via the hub API.  Type: %s", accountType);
         let cla: CompleteLinkedAccount = new CompleteLinkedAccount();
         cla.nonce = nonce;
 
@@ -120,7 +120,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Finalizing/completing a linked account: %s", url);
+        console.info("[LinkedAccountsService] Finalizing/completing a linked account: %s", url);
         return this.httpPut<CompleteLinkedAccount>(url, cla, options);
     }
 
@@ -133,7 +133,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting organizations: %s", organizationsUrl);
+        console.info("[LinkedAccountsService] Getting organizations: %s", organizationsUrl);
         return this.httpGet<GitHubOrganization[]>(organizationsUrl, options);
     }
 
@@ -153,7 +153,7 @@ export class LinkedAccountsService extends AbstractHubService {
         }
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting repositories: %s", repositoriesUrl);
+        console.info("[LinkedAccountsService] Getting repositories: %s", repositoriesUrl);
         return this.httpGet<GitHubRepository[]|BitbucketRepository[]>(repositoriesUrl, options);
     }
 
@@ -174,7 +174,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting branches: %s", branchesUrl);
+        console.info("[LinkedAccountsService] Getting branches: %s", branchesUrl);
         return this.httpGet<SourceCodeBranch[]>(branchesUrl, options);
     }
 
@@ -187,7 +187,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting groups: %s", groupsUrl);
+        console.info("[LinkedAccountsService] Getting groups: %s", groupsUrl);
         return this.httpGet<GitLabGroup[]>(groupsUrl, options);
     }
 
@@ -201,7 +201,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting projects: %s", projectsUrl);
+        console.info("[LinkedAccountsService] Getting projects: %s", projectsUrl);
         return this.httpGet<GitLabProject[]>(projectsUrl, options);
     }
 
@@ -214,7 +214,7 @@ export class LinkedAccountsService extends AbstractHubService {
         });
         let options: any = this.options({ "Accept": "application/json" });
 
-        console.info("[HubLinkedAccountsService] Getting teams: %s", teamsUrl);
+        console.info("[LinkedAccountsService] Getting teams: %s", teamsUrl);
         return this.httpGet<BitbucketTeam[]>(teamsUrl, options);
     }
 

@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas30PathItem} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "path-info-section",
     templateUrl: "info-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PathInfoSectionComponent {
+export class PathInfoSectionComponent extends AbstractBaseComponent {
 
     @Input() path: Oas30PathItem;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Called when the user changes the summary.

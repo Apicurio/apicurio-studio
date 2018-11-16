@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-import {Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
 import {ObjectUtils} from "../../_util/object.util";
 import {SimplifiedType} from "oai-ts-commands";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "schema-type",
-    templateUrl: "schema-type.component.html"
+    templateUrl: "schema-type.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaTypeComponent {
+export class SchemaTypeComponent extends AbstractBaseComponent {
 
     @Input() type: SimplifiedType;
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public displayType(): string {
         if (ObjectUtils.isNullOrUndefined(this.type)) {

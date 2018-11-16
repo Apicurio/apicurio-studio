@@ -17,16 +17,17 @@
 
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
     HostListener,
     Input,
-    OnDestroy,
-    OnInit,
     Output,
     QueryList,
-    ViewChildren
+    ViewChildren,
+    ViewEncapsulation
 } from "@angular/core";
 import {OasDocument, OasNode, OasValidationProblem} from "oai-ts-core";
 import {createChangeTitleCommand, ICommand} from "oai-ts-commands";
@@ -34,6 +35,8 @@ import {ModelUtils} from "../_util/model.util";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
+import {AbstractBaseComponent} from "./common/base-component";
+import {DocumentService} from "../_services/document.service";
 
 
 /**
@@ -45,9 +48,11 @@ import {CommandService} from "../_services/command.service";
     moduleId: module.id,
     selector: "title-bar",
     templateUrl: "title-bar.component.html",
-    styleUrls: [ "title-bar.component.css" ]
+    styleUrls: [ "title-bar.component.css" ],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EditorTitleBarComponent extends AbstractBaseComponent implements AfterViewInit {
 
     @Input() document: OasDocument;
     @Input() validationErrors: OasValidationProblem[];
@@ -65,12 +70,9 @@ export class EditorTitleBarComponent implements OnInit, OnDestroy, AfterViewInit
 
     @ViewChildren("newtitle") titleInput: QueryList<ElementRef>;
 
-    constructor(private selectionService: SelectionService, private commandService: CommandService) {}
-
-    public ngOnInit(): void {
-    }
-
-    public ngOnDestroy(): void {
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService, private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
     public ngAfterViewInit(): void {

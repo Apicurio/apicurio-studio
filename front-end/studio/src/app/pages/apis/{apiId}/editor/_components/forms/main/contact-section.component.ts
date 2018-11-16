@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasContact, OasDocument} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
@@ -25,19 +25,25 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {ContactInfo} from "../../dialogs/set-contact.component";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "contact-section",
     templateUrl: "contact-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContactSectionComponent {
+export class ContactSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Returns true if the API has Contact Info defined.

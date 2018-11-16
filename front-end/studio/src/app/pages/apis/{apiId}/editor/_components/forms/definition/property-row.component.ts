@@ -16,6 +16,7 @@
  */
 
 import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -39,6 +40,7 @@ import {DropDownOption} from '../../../../../../../components/common/drop-down.c
 import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -46,9 +48,10 @@ import {DocumentService} from "../../../_services/document.service";
     selector: "property-row",
     templateUrl: "property-row.component.html",
     styleUrls: [ "property-row.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PropertyRowComponent implements OnChanges, OnInit, OnDestroy {
+export class PropertyRowComponent extends AbstractBaseComponent {
 
     @Input() property: Oas20PropertySchema | Oas30PropertySchema;
 
@@ -57,18 +60,14 @@ export class PropertyRowComponent implements OnChanges, OnInit, OnDestroy {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
-    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) {}
-
-    public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
+    protected onDocumentChange(): void {
+        this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {

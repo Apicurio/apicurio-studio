@@ -23,15 +23,15 @@ import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
-import {OnDestroy, OnInit} from "@angular/core";
 import {DocumentService} from "../../_services/document.service";
-import {Subscription} from "rxjs";
+import {AbstractBaseComponent} from "../common/base-component";
+import {ChangeDetectorRef} from "@angular/core";
 
 
 /**
  * Base class for all forms that support a "Source" tab.
  */
-export abstract class SourceFormComponent<T extends OasNode> implements OnInit, OnDestroy {
+export abstract class SourceFormComponent<T extends OasNode> extends AbstractBaseComponent {
 
     private static library: OasLibraryUtils = new OasLibraryUtils();
 
@@ -93,31 +93,22 @@ export abstract class SourceFormComponent<T extends OasNode> implements OnInit, 
             this._source.value = SourceFormComponent.library.readNode(newJsObject, this.createEmptyNodeForSource());
             this._source.valid = true;
         } catch (e) {
+            // TODO handle this error?
         }
     }
 
-    private _changeSubscription: Subscription;
-
-    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService) {}
-
-    /**
-     * Called when the component is initialized.
-     */
-    public ngOnInit(): void {
-        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
-            if (!this._source.dirty) {
-                this._sourceJsObj = null;
-                this._sourceText = null;
-            }
-        });
+    protected constructor(protected changeDetectorRef: ChangeDetectorRef,
+                       protected selectionService: SelectionService,
+                       protected commandService: CommandService,
+                       protected documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
     }
 
-    /**
-     * Called when the component is destroyed.
-     */
-    public ngOnDestroy(): void {
-        this._changeSubscription.unsubscribe();
+    protected onDocumentChange(): void {
+        if (!this._source.dirty) {
+            this._sourceJsObj = null;
+            this._sourceText = null;
+        }
     }
 
     protected abstract createEmptyNodeForSource(): T;

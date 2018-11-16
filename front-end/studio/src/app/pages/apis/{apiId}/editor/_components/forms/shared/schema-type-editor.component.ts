@@ -15,12 +15,23 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {SimplifiedType} from "oai-ts-commands";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasNode, OasVisitorUtil} from "oai-ts-core";
 import {ObjectUtils} from "../../../_util/object.util";
 import {DropDownOption} from "../../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
+import {CommandService} from "../../../_services/command.service";
 
 
 @Component({
@@ -28,9 +39,10 @@ import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definition
     selector: "schema-type-editor",
     templateUrl: "schema-type-editor.component.html",
     styleUrls: [ "schema-type-editor.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SchemaTypeEditorComponent {
+export class SchemaTypeEditorComponent extends AbstractBaseComponent {
     
     @Input() document: OasDocument;
     @Input() value: SimplifiedType;
@@ -39,6 +51,11 @@ export class SchemaTypeEditorComponent {
     @Input() validationProperty: string;
     @Input() isParameter: boolean = false;
     @Output() onChange: EventEmitter<SimplifiedType> = new EventEmitter<SimplifiedType>();
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public hasValidationModel(): boolean {
         return this.validationModel !== null && this.validationModel !== undefined;

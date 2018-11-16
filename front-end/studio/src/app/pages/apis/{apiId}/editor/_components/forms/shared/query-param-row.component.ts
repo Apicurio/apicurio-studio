@@ -16,6 +16,7 @@
  */
 
 import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -39,6 +40,7 @@ import {DropDownOption} from '../../../../../../../components/common/drop-down.c
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {Subscription} from "rxjs";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -46,9 +48,10 @@ import {Subscription} from "rxjs";
     selector: "query-param-row",
     templateUrl: "query-param-row.component.html",
     styleUrls: [ "query-param-row.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QueryParamRowComponent implements OnChanges, OnInit, OnDestroy {
+export class QueryParamRowComponent extends AbstractBaseComponent {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -58,25 +61,22 @@ export class QueryParamRowComponent implements OnChanges, OnInit, OnDestroy {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
-    private _docSub: Subscription;
     private _parentType: string;
 
     private overrideFlag: boolean;
     private missingFlag: boolean;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) {}
-
-    public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this.updateModel();
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
+    protected onDocumentChange(): void {
+        this.updateModel();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         if (changes["parameter"]) {
             this.updateModel();
         }

@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import {Component, HostListener} from "@angular/core";
+import {ChangeDetectionStrategy, Component, HostListener} from "@angular/core";
 
 @Component({
     moduleId: module.id,
     selector: "context-help",
-    templateUrl: "context-help.component.html"
+    templateUrl: "context-help.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContextHelpComponent {
 

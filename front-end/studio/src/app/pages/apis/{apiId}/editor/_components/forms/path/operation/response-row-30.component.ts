@@ -15,7 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas30Document, Oas30MediaType, Oas30Response} from "oai-ts-core";
 import {
     AddExampleEvent, DeleteExampleEvent, ExamplePropertyChangeEvent,
@@ -31,6 +39,8 @@ import {
 import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
 import {CommandService} from "../../../../_services/command.service";
 import {EditExampleEvent} from "../../../dialogs/edit-example.component";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
 
 
 @Component({
@@ -38,9 +48,10 @@ import {EditExampleEvent} from "../../../dialogs/edit-example.component";
     selector: "response-row-30",
     templateUrl: "response-row-30.component.html",
     styleUrls: ["response-row-30.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResponseRow30Component {
+export class ResponseRow30Component extends AbstractBaseComponent {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 
@@ -52,7 +63,10 @@ export class ResponseRow30Component {
     protected _editing: boolean = false;
     protected _tab: string = "description";
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public statusCodeLine(code: string): string {
         let httpCode: HttpCode = ResponseRow30Component.httpCodes.getCode(code);

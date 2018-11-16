@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "definition-info-section",
     templateUrl: "info-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionInfoSectionComponent {
+export class DefinitionInfoSectionComponent extends AbstractBaseComponent {
 
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * returns the description.

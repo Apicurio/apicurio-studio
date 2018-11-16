@@ -16,12 +16,11 @@
  */
 
 import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     Output,
     SimpleChanges,
     ViewEncapsulation
@@ -34,10 +33,10 @@ import {
     SimplifiedType
 } from "oai-ts-commands";
 import {OasDocument, OasParameterBase} from "oai-ts-core";
-import {Subscription} from "rxjs";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {DropDownOption} from "../../../../../../../../components/common/drop-down.component";
+import {AbstractBaseComponent} from "../../../common/base-component";
 
 
 @Component({
@@ -45,9 +44,10 @@ import {DropDownOption} from "../../../../../../../../components/common/drop-dow
     selector: "formData-param-row",
     templateUrl: "formData-param-row.component.html",
     styleUrls: [ "formData-param-row.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormDataParamRowComponent implements OnChanges, OnInit, OnDestroy {
+export class FormDataParamRowComponent  extends AbstractBaseComponent {
 
     @Input() parameter: OasParameterBase;
 
@@ -56,21 +56,18 @@ export class FormDataParamRowComponent implements OnChanges, OnInit, OnDestroy {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedParameterType = null;
-    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { }
-
-    public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
+    protected onDocumentChange(): void {
+        this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         if (changes["parameter"]) {
             this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
         }

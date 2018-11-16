@@ -15,18 +15,34 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
+import {AbstractBaseComponent} from "../common/base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "redo-icon",
     templateUrl: "redo-icon.component.html",
     styleUrls: ["redo-icon.component.css"],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RedoIconComponent {
+export class RedoIconComponent extends AbstractBaseComponent {
 
     @Input() commandStackCount: number;
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public isRedoable(): boolean {
         return this.commandStackCount > 0;

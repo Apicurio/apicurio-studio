@@ -16,7 +16,18 @@
  */
 
 import {OasNode} from "oai-ts-core";
-import {Component, Input, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from "@angular/core";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
+import {CommandService} from "../../../_services/command.service";
 
 
 @Component({
@@ -24,9 +35,10 @@ import {Component, Input, OnChanges, OnDestroy, OnInit, ViewEncapsulation} from 
     selector: "section",
     templateUrl: "section.component.html",
     styleUrls: ["section.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SectionComponent implements OnInit, OnDestroy, OnChanges {
+export class SectionComponent extends AbstractBaseComponent {
 
     private static allVisibleSections: SectionComponent[] = [];
 
@@ -42,20 +54,24 @@ export class SectionComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input() inForm: boolean = true;
 
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
+
     ngOnInit(): void {
+        super.ngOnInit();
         if (this.inForm) {
             SectionComponent.allVisibleSections.push(this);
         }
     }
 
     ngOnDestroy(): void {
+        super.ngOnDestroy();
         let idx: number = SectionComponent.allVisibleSections.indexOf(this);
         if (idx !== -1) {
             SectionComponent.allVisibleSections.splice(idx, 1);
         }
-    }
-
-    ngOnChanges(): void {
     }
 
     public hasCounter(): boolean {
@@ -86,6 +102,10 @@ export class SectionComponent implements OnInit, OnDestroy, OnChanges {
 
     public collapse(): void {
         this.expanded = false;
+        // The collapse() method is called from outside the normal chain of command, so we need
+        // to mark it as needing change detection (since we just changed its state).  This is because
+        // we're using OnPush as the change detection strategy across all editor components.
+        this.changeDetectorRef.markForCheck();
     }
 
 }

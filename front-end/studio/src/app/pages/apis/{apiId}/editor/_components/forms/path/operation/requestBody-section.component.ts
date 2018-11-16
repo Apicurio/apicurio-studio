@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20Operation, Oas20Parameter, Oas30MediaType, Oas30Operation, Oas30RequestBody, OasNode} from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {
@@ -51,27 +58,35 @@ import {
     MediaTypeChangeEvent
 } from "./content.component";
 import {EditExampleEvent} from "../../../dialogs/edit-example.component";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "requestBody-section",
     templateUrl: "requestBody-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RequestBodySectionComponent implements OnInit, OnChanges {
+export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
 
     public showRequestBody: boolean;
 
-    constructor(private commandService: CommandService, private editors: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editors: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         if (changes["operation"]) {
             this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
         }

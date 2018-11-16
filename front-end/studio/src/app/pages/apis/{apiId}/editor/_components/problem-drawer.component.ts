@@ -15,10 +15,20 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {OasValidationProblem, OasValidationProblemSeverity} from "oai-ts-core";
 import {SelectionService} from "../_services/selection.service";
 import {ProblemsService} from "../_services/problems.service";
+import {AbstractBaseComponent} from "./common/base-component";
+import {DocumentService} from "../_services/document.service";
 
 
 /**
@@ -28,19 +38,18 @@ import {ProblemsService} from "../_services/problems.service";
 @Component({
     moduleId: module.id,
     selector: "problem-drawer",
-    templateUrl: "problem-drawer.component.html"
+    templateUrl: "problem-drawer.component.html",
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorProblemDrawerComponent implements OnInit, OnDestroy {
+export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     @Input() validationErrors: OasValidationProblem[];
     @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private selectionService: SelectionService, private problemsService: ProblemsService) {}
-
-    public ngOnInit(): void {
-    }
-
-    public ngOnDestroy(): void {
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService, private problemsService: ProblemsService) {
+        super(changeDetectorRef, documentService);
     }
 
     public hasProblems(): boolean {

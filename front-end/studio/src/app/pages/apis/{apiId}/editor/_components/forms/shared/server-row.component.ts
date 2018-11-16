@@ -15,12 +15,22 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -28,9 +38,10 @@ import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-edi
     selector: "server-row",
     templateUrl: "server-row.component.html",
     styleUrls: ["server-row.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ServerRowComponent {
+export class ServerRowComponent extends AbstractBaseComponent {
 
     @Input() server: Oas30Server;
 
@@ -39,7 +50,10 @@ export class ServerRowComponent {
 
     protected _editing: boolean = false;
 
-    constructor(private commandService: CommandService, private editorsService: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editorsService: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public hasUrl(): boolean {
         return this.server.url ? true : false;

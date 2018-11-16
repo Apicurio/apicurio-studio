@@ -16,6 +16,7 @@
  */
 
 import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
@@ -38,6 +39,7 @@ import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, 
 import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -45,9 +47,10 @@ import {DocumentService} from "../../../_services/document.service";
     selector: "path-param-row",
     templateUrl: "path-param-row.component.html",
     styleUrls: [ "path-param-row.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PathParamRowComponent implements OnChanges, OnInit, OnDestroy {
+export class PathParamRowComponent extends AbstractBaseComponent {
 
     @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
@@ -60,22 +63,19 @@ export class PathParamRowComponent implements OnChanges, OnInit, OnDestroy {
 
     private overrideFlag: boolean;
     private missingFlag: boolean;
-    private _docSub: Subscription;
     private _parentType: string;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { }
-
-    public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this.updateModel();
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
+    protected onDocumentChange(): void {
+        this.updateModel();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         if (changes["parameter"]) {
             this.updateModel();
         }

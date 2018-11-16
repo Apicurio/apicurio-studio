@@ -15,24 +15,30 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLicense} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {createChangeLicenseCommand, createDeleteLicenseCommand, ICommand} from "oai-ts-commands";
 import {ILicense, LicenseService} from "../../../_services/license.service";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "license-section",
     templateUrl: "license-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LicenseSectionComponent {
+export class LicenseSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    constructor(public licenseService: LicenseService, private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, public licenseService: LicenseService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Returns true if a license has been configured for this API.

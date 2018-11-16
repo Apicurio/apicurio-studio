@@ -15,7 +15,17 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
@@ -23,9 +33,10 @@ import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angula
     selector: "icon-button",
     templateUrl: "icon-button.component.html",
     styleUrls: ["icon-button.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IconButtonComponent {
+export class IconButtonComponent extends AbstractBaseComponent {
 
     @Input() type: string;
     @Input() disabled: boolean = false;
@@ -33,6 +44,10 @@ export class IconButtonComponent {
     @Input() invisible: boolean = false;
     @Input() pullRight: boolean = false;
     @Output() onClick: EventEmitter<void> = new EventEmitter<void>();
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public pfIconType(): string {
         if (this.type === 'add') {

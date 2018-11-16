@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20PathItem, Oas30PathItem, OasDocument, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
 import {
     createAddPathItemCommand,
@@ -36,6 +43,7 @@ import {RenamePathDialogComponent} from "../dialogs/rename-path.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
+import {EditorsService} from "../../_services/editors.service";
 
 
 @Component({
@@ -43,7 +51,8 @@ import {DocumentService} from "../../_services/document.service";
     selector: "path-form",
     templateUrl: "path-form.component.html",
     styleUrls: [ "path-form.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PathFormComponent extends SourceFormComponent<OasPathItem> {
 
@@ -62,9 +71,12 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
     @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
 
-    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService) {
-        super(selectionService, commandService, documentService);
+    public constructor(protected changeDetectorRef: ChangeDetectorRef,
+                       protected selectionService: SelectionService,
+                       protected commandService: CommandService,
+                       protected documentService: DocumentService,
+                       private editors: EditorsService) {
+        super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
     protected createEmptyNodeForSource(): OasPathItem {

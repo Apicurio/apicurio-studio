@@ -15,17 +15,25 @@
  * limitations under the License.
  */
 
-import {Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "counter",
     templateUrl: "counter.component.html",
-    styleUrls: [ "counter.component.css" ]
+    styleUrls: [ "counter.component.css" ],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CounterComponent {
+export class CounterComponent extends AbstractBaseComponent {
 
     @Input() items: any[];
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public hasItems(): boolean {
         return this.items !== null && this.items !== undefined && this.items.length > 0;

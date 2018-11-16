@@ -15,11 +15,21 @@
  * limitations under the License.
  */
 
-import {Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    QueryList,
+    ViewChildren,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20Document, Oas20Operation, Oas30Operation} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {InlineArrayEditorComponent} from "../../../common/inline-array-editor.component";
 import {CommandService} from "../../../../_services/command.service";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
 
 
 @Component({
@@ -27,15 +37,19 @@ import {CommandService} from "../../../../_services/command.service";
     selector: "operation-info-section",
     templateUrl: "info-section.component.html",
     styleUrls: [ "info-section.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperationInfoSectionComponent {
+export class OperationInfoSectionComponent extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
     @ViewChildren("consumesEditor") consumesEditor: QueryList<InlineArrayEditorComponent>;
     @ViewChildren("producesEditor") producesEditor: QueryList<InlineArrayEditorComponent>;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Called when the user changes the summary.

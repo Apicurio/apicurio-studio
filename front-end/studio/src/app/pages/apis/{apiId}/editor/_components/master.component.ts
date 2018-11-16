@@ -15,7 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    HostListener,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     Oas20Document,
     Oas20PathItem,
@@ -61,6 +69,8 @@ import {DataTypeData, DataTypeEditorComponent, IDataTypeEditorHandler} from "./e
 import {AggregateCommand, createAggregateCommand} from "oai-ts-commands/src/commands/aggregate.command";
 import {RestResourceService} from "../_services/rest-resource.service";
 import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
+import {AbstractBaseComponent} from "./common/base-component";
+import {DocumentService} from "../_services/document.service";
 
 
 /**
@@ -72,9 +82,12 @@ import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 @Component({
     moduleId: module.id,
     selector: "master",
-    templateUrl: "master.component.html"
+    templateUrl: "master.component.html",
+    styleUrls: [ "master.component.css" ],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditorMasterComponent implements OnInit, OnDestroy {
+export class EditorMasterComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
@@ -97,15 +110,20 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     filterCriteria: string = null;
 
-    constructor(private selectionService: SelectionService, private commandService: CommandService,
-                private editors: EditorsService, private restResourceService: RestResourceService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService, private commandService: CommandService,
+                private editors: EditorsService, private restResourceService: RestResourceService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         this.selectionSubscription = this.selectionService.selection().subscribe( () => {});
         this.selectionService.selectRoot(this.document);
     }
 
     public ngOnDestroy(): void {
+        super.ngOnDestroy();
         this.selectionSubscription.unsubscribe();
     }
 
@@ -115,6 +133,10 @@ export class EditorMasterComponent implements OnInit, OnDestroy {
 
     public isSwagger2(): boolean {
         return this.document.is2xDocument();
+    }
+
+    public onPathsKeypress(event: KeyboardEvent): void {
+        console.info("***** keypress: ", event);
     }
 
     /**

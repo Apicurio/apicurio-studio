@@ -12,6 +12,9 @@
   padding-right: 10px;
   cursor: default;
 }
+.redo-icon button:hover, .redo-icon button:focus {
+  color: #c6c6c6;
+}
 .redo-icon button.enabled {
   color: #666;
   cursor: pointer;

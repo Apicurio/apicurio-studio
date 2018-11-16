@@ -15,11 +15,21 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas30Document, Oas30MediaType, Oas30RequestBodyContent, Oas30ResponseContent, Oas30Schema} from "oai-ts-core";
 import {SimplifiedType} from "oai-ts-commands";
 import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
 import {EditExampleEvent} from "../../../dialogs/edit-example.component";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
 
 export interface MediaTypeChangeEvent {
     name: string;
@@ -47,9 +57,10 @@ export interface ExamplePropertyChangeEvent {
     selector: "content",
     templateUrl: "content.component.html",
     styleUrls: [ "content.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContentComponent implements OnInit {
+export class ContentComponent extends AbstractBaseComponent {
 
     @Input() content: Oas30ResponseContent | Oas30RequestBodyContent;
     @Input() document: Oas30Document;
@@ -65,10 +76,15 @@ export class ContentComponent implements OnInit {
 
     protected mediaTypeName: string;
 
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
+
     /**
      * Called when the page is initialized.
      */
     public ngOnInit(): void {
+        super.ngOnInit();
         this.selectDefaultMediaType();
     }
 

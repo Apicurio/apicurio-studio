@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
-import {Component, Input, Output, EventEmitter} from "@angular/core";
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "search",
-    templateUrl: "search.component.html"
+    templateUrl: "search.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchComponent {
+export class SearchComponent extends AbstractBaseComponent {
 
     @Input() initialValue: string;
     @Input() placeholder: string;
@@ -34,7 +37,8 @@ export class SearchComponent {
     value: string;
     private _valueObs: BehaviorSubject<string> = new BehaviorSubject(null);
 
-    constructor() {
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
         this._valueObs.debounceTime(200).subscribe( value => {
             this.onSearch.emit(value);
         });

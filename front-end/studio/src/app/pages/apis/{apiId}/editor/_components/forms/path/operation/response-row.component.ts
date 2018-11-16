@@ -16,12 +16,11 @@
  */
 
 import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     Output,
     SimpleChanges,
     ViewEncapsulation
@@ -35,12 +34,12 @@ import {
     ICommand,
     SimplifiedType
 } from "oai-ts-commands";
-import {Subscription} from "rxjs";
 import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {ObjectUtils} from "../../../../_util/object.util";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
+import {AbstractBaseComponent} from "../../../common/base-component";
 
 
 @Component({
@@ -48,9 +47,10 @@ import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
     selector: "response-row",
     templateUrl: "response-row.component.html",
     styleUrls: [ "response-row.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResponseRowComponent implements OnChanges, OnInit, OnDestroy {
+export class ResponseRowComponent extends AbstractBaseComponent {
 
     private static httpCodes: HttpCodeService = new HttpCodeService();
 
@@ -61,21 +61,18 @@ export class ResponseRowComponent implements OnChanges, OnInit, OnDestroy {
     protected _editing: boolean = false;
     protected _tab: string = "description";
     protected _model: SimplifiedType = null;
-    private _docSub: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService) { }
-
-    public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this._model = SimplifiedType.fromSchema(this.response.schema);
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
+    protected onDocumentChange(): void {
+        this._model = SimplifiedType.fromSchema(this.response.schema);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         if (changes["response"]) {
             this._model = SimplifiedType.fromSchema(this.response.schema);
         }

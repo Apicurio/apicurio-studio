@@ -15,10 +15,20 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {OasDocument, OasTag} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -26,9 +36,10 @@ import {CommandService} from "../../../_services/command.service";
     selector: "tag-row",
     templateUrl: "tag-row.component.html",
     styleUrls: ["tag-row.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagRowComponent {
+export class TagRowComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
     @Input() tag: OasTag;
@@ -37,7 +48,10 @@ export class TagRowComponent {
 
     protected _editing: boolean = false;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public name(): string {
         if (this.tag.name) {

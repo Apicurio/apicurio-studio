@@ -15,18 +15,34 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
+import {AbstractBaseComponent} from "../common/base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "undo-icon",
     templateUrl: "undo-icon.component.html",
     styleUrls: ["undo-icon.component.css"],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UndoIconComponent {
+export class UndoIconComponent extends AbstractBaseComponent {
 
     @Input() commandStackCount: number;
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public isUndoable(): boolean {
         return this.commandStackCount > 0;

@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20Operation, Oas20Response, Oas30Operation, Oas30Response} from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
@@ -26,28 +33,26 @@ import {
     createNewResponseCommand,
     ICommand
 } from "oai-ts-commands";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "responses-section",
     templateUrl: "responses-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResponsesSectionComponent implements OnInit, OnChanges {
+export class ResponsesSectionComponent extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
-    constructor(private commandService: CommandService, private editors: EditorsService) {}
-
-    public ngOnInit(): void {
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes["operation"]) {
-        }
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editors: EditorsService) {
+        super(changeDetectorRef, documentService);
     }
 
     public is20Document(): boolean {

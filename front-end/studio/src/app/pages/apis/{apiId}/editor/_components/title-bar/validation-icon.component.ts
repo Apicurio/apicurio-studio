@@ -15,19 +15,35 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewEncapsulation
+} from "@angular/core";
 import {OasValidationProblem} from "oai-ts-core";
+import {AbstractBaseComponent} from "../common/base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "validation-icon",
     templateUrl: "validation-icon.component.html",
     styleUrls: ["validation-icon.component.css"],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ValidationIconComponent {
+export class ValidationIconComponent extends AbstractBaseComponent {
 
     @Input() validationErrors: OasValidationProblem[] = [];
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public message(): string {
         if (this.hasErrors()) {

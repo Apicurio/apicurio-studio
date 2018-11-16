@@ -15,24 +15,30 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasTag} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {ObjectUtils} from "../../../_util/object.util";
 import {createChangePropertyCommand, createDeleteTagCommand, createNewTagCommand, ICommand} from "oai-ts-commands";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "tags-section",
     templateUrl: "tags-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagsSectionComponent {
+export class TagsSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    constructor(private commandService: CommandService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Returns the list of tags defined in the document.

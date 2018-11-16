@@ -66,15 +66,16 @@
             <span actions>
                 <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" [type]="'add'"></icon-button>
             </span>
-            <div body>
+            <div body tabindex="0" class="path-list" (keypress)="onPathsKeypress($event)" #pathList>
                 <signpost *ngIf="paths().length === 0">
                     <span>No paths have been created.</span>
                     <a (click)="addPathDialog.open(document, '/')">Add a path</a>
                 </signpost>
 
-                <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
+                <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()" (click)="pathList.focus()">
                     <validation-aggregate [models]="[path]"></validation-aggregate>
-                    <div path-item [path]="path.path()" (click)="selectPath(path)" (contextmenu)="showPathContextMenu($event, path)"></div>
+                    <div path-item [path]="path.path()" (click)="selectPath(path)"
+                         (contextmenu)="showPathContextMenu($event, path)"></div>
                 </div>
             </div>
         </section>

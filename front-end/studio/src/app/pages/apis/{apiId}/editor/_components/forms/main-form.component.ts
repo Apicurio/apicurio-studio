@@ -15,20 +15,22 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLibraryUtils} from "oai-ts-core";
 import {SourceFormComponent} from "./source-form.base";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {createReplaceDocumentCommand, ICommand} from "oai-ts-commands";
+import {EditorsService} from "../../_services/editors.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "main-form",
     templateUrl: "main-form.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainFormComponent extends SourceFormComponent<OasDocument> {
 
@@ -45,15 +47,12 @@ export class MainFormComponent extends SourceFormComponent<OasDocument> {
         return this._document;
     }
 
-    /**
-     * C'tor.
-     * @param selectionService
-     * @param commandService
-     * @param documentService
-     */
-    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService) {
-        super(selectionService, commandService, documentService);
+    public constructor(protected changeDetectorRef: ChangeDetectorRef,
+                       protected selectionService: SelectionService,
+                       protected commandService: CommandService,
+                       protected documentService: DocumentService,
+                       private editors: EditorsService) {
+        super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
     /**

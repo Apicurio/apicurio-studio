@@ -15,19 +15,29 @@
  * limitations under the License.
  */
 
-import {Component, HostListener, Input, OnDestroy, OnInit} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit
+} from "@angular/core";
 import {OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
 import {Subscription} from "rxjs/Subscription";
+import {AbstractBaseComponent} from "./base-component";
 
 @Component({
     moduleId: module.id,
     selector: "validation-problem",
-    templateUrl: "validation-problem.component.html"
+    templateUrl: "validation-problem.component.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ValidationProblemComponent implements OnInit, OnDestroy {
+export class ValidationProblemComponent extends AbstractBaseComponent {
 
     protected _model: OasNode;
     @Input()
@@ -50,25 +60,15 @@ export class ValidationProblemComponent implements OnInit, OnDestroy {
     public top: string;
 
     private _problems: OasValidationProblem[] = undefined;
-    private _changeSubscription: Subscription;
 
-    constructor(private problemsService: ProblemsService, private documentService: DocumentService) {}
-
-    /**
-     * Called when the component is initialized.
-     */
-    public ngOnInit(): void {
-        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
-            console.info("[ValidationProblemComponent] Invalidating cache.");
-            this._problems = undefined;
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private problemsService: ProblemsService) {
+        super(changeDetectorRef, documentService);
     }
 
-    /**
-     * Called when the component is destroyed.
-     */
-    public ngOnDestroy(): void {
-        this._changeSubscription.unsubscribe();
+    protected onDocumentChange(): void {
+        console.info("[ValidationProblemComponent] Invalidating cache.");
+        this._problems = undefined;
     }
 
     @HostListener("document:click", ["$event"])

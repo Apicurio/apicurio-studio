@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Document,
     Oas20SecurityDefinitions,
@@ -40,19 +40,25 @@ import {
     SecuritySchemeData,
     SecuritySchemeEditorComponent, SecuritySchemeEditorEvent
 } from "../../editors/security-scheme-editor.component";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "security-schemes-section",
     templateUrl: "security-schemes-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SecuritySchemesSectionComponent {
+export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    constructor(private commandService: CommandService, private editors: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editors: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Opens the security scheme dialog.

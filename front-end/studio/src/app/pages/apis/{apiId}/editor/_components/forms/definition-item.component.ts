@@ -15,19 +15,26 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
+import {AbstractBaseComponent} from "../common/base-component";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "[definition-item]",
     templateUrl: "definition-item.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionItemComponent {
+export class DefinitionItemComponent extends AbstractBaseComponent {
 
     @Input() schema: Oas20SchemaDefinition | Oas30SchemaDefinition;
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     /**
      * Returns the name of the definition.

@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-import {Component, Input, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "[path-item]",
     templateUrl: "path-item.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PathItemComponent {
+export class PathItemComponent extends AbstractBaseComponent {
 
     @Input() path: string;
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public pathSegments(): string[] {
         let rval: string[] = this.path.split("/");

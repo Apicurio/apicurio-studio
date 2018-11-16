@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -34,42 +43,36 @@ import {ModelUtils} from "../../../_util/model.util";
 import {createDeleteParameterCommand, createNewParamCommand, ICommand} from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
 import {Subscription} from "rxjs/Subscription";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
     moduleId: module.id,
     selector: "path-params-section",
     templateUrl: "path-params-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PathParamsSectionComponent implements OnInit, OnDestroy, OnChanges {
+export class PathParamsSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
     private _pathParameters: (Oas30Parameter | Oas20Parameter)[] = null;
-    private _changeSubscription: Subscription;
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
-    /**
-     * C'tor.
-     * @param commandService
-     * @param documentService
-     */
-    constructor(private commandService: CommandService, private documentService: DocumentService) {}
-
-    public ngOnInit(): void {
-        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
-            this._pathParameters = null;
-        });
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService) {
+        super(changeDetectorRef, documentService);
     }
 
-    public ngOnChanges(changes: SimpleChanges): void {
+    protected onDocumentChange(): void {
         this._pathParameters = null;
     }
 
-    public ngOnDestroy(): void {
-        this._changeSubscription.unsubscribe();
+    public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+        this._pathParameters = null;
     }
 
     public canHavePathParams(): boolean {

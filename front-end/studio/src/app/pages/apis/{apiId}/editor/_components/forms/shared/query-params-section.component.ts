@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     Oas20Operation,
     Oas20Parameter,
@@ -33,7 +40,6 @@ import {
     createNewParamCommand,
     ICommand
 } from "oai-ts-commands";
-import {Subscription} from "rxjs/Subscription";
 import {DocumentService} from "../../../_services/document.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {
@@ -41,41 +47,43 @@ import {
     ParameterData,
     ParameterEditorComponent
 } from "../../editors/parameter-editor.component";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
     moduleId: module.id,
     selector: "query-params-section",
     templateUrl: "query-params-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QueryParamsSectionComponent implements OnInit, OnDestroy, OnChanges {
+export class QueryParamsSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
     private _queryParameters: (Oas30Parameter | Oas20Parameter)[] = null;
-    private _docSub: Subscription;
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
     public showSectionBody: boolean;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService,
-                private editors: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private commandService: CommandService,
+                private documentService: DocumentService, private editors: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
+
+    protected onDocumentChange(): void {
+        this._queryParameters = null;
+    }
 
     public ngOnInit(): void {
-        this._docSub = this.documentService.change().subscribe( () => {
-            this._queryParameters = null;
-        });
+        super.ngOnInit();
         this.showSectionBody = this.hasQueryParameters();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
         this._queryParameters = null;
-    }
-
-    public ngOnDestroy(): void {
-        this._docSub.unsubscribe();
     }
 
     public isPathItem(): boolean {

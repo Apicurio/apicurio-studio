@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, Component, ViewEncapsulation} from "@angular/core";
 
 @Component({
     moduleId: module.id,
     selector: "signpost",
     templateUrl: "signpost.component.html",
     styleUrls: ["signpost.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignpostComponent {
 

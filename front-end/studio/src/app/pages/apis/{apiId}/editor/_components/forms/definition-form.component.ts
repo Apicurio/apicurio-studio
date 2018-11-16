@@ -14,7 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, Input, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas20Document, Oas20SchemaDefinition, Oas30Document, Oas30SchemaDefinition, OasSchema} from "oai-ts-core";
 import {
     createAddSchemaDefinitionCommand,
@@ -44,7 +51,8 @@ import {EditorsService} from "../../_services/editors.service";
     moduleId: module.id,
     selector: "definition-form",
     templateUrl: "definition-form.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
@@ -63,9 +71,12 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
 
-    public constructor(protected selectionService: SelectionService, protected commandService: CommandService,
-                       protected documentService: DocumentService, private editors: EditorsService) {
-        super(selectionService, commandService, documentService);
+    public constructor(protected changeDetectorRef: ChangeDetectorRef,
+                       protected selectionService: SelectionService,
+                       protected commandService: CommandService,
+                       protected documentService: DocumentService,
+                       private editors: EditorsService) {
+        super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
     public definitionName(): string {

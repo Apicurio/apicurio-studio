@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 
 
 @Component({
@@ -23,7 +23,8 @@ import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angula
     selector: "no-operation",
     templateUrl: "no-operation.component.html",
     styleUrls: [ "no-operation.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoOperationComponent {
 

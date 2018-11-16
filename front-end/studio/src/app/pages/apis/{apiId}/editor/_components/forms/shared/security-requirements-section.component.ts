@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLibraryUtils, OasOperation, OasSecurityRequirement} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
@@ -29,6 +29,8 @@ import {
     ISecurityRequirementEditorHandler,
     SecurityRequirementEditorComponent, SecurityRequirementEditorEvent
 } from "../../editors/security-requirement-editor.component";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 @Component({
@@ -36,18 +38,23 @@ import {
     selector: "security-requirements-section",
     templateUrl: "security-requirements-section.component.html",
     styleUrls: [ "security-requirements-section.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SecurityRequirementsSectionComponent implements OnInit {
+export class SecurityRequirementsSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: OasDocument | OasOperation;
     @Input() global: boolean;
 
     public showSectionBody: boolean;
 
-    constructor(private commandService: CommandService, private editorsService: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editorsService: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         this.showSectionBody = this.global;
     }
 

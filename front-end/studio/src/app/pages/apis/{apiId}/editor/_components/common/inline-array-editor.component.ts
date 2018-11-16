@@ -16,7 +16,7 @@
  */
 
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -27,15 +27,18 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {AbstractInlineEditor} from "./inline-editor.base";
+import {AbstractBaseComponent} from "./base-component";
+import {DocumentService} from "../../_services/document.service";
 
 @Component({
     moduleId: module.id,
     selector: "inline-array-editor",
     templateUrl: "inline-array-editor.component.html",
     styleUrls: ["inline-array-editor.component.css"],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InlineArrayEditorComponent implements AfterViewInit {
+export class InlineArrayEditorComponent extends AbstractBaseComponent implements AfterViewInit {
 
     @Input() value: string[];
     @Input() noValueMessage: string;
@@ -49,6 +52,10 @@ export class InlineArrayEditorComponent implements AfterViewInit {
     public evalues: {};
 
     public firstEnter: boolean;
+
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
+        super(changeDetectorRef, documentService);
+    }
 
     ngAfterViewInit(): void {
         this.input.changes.subscribe(changes => {

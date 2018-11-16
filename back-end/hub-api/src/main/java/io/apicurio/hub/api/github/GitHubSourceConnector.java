@@ -148,6 +148,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
         } catch (ApiValidationException ave) {
             throw ave;
         } catch (Exception e) {
+            logger.error("Error checking that a GitHub resource exists.", e);
             throw new SourceConnectorException("Error checking that a GitHub resource exists.", e);
         }
     }
@@ -188,6 +189,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             rval.setSha(body.getSha());
             return rval;
         } catch (UnirestException e) {
+            logger.error("Error getting Github resource content.", e);
             throw new SourceConnectorException("Error getting Github resource content.", e);
         }
     }
@@ -231,6 +233,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             
             return newSha;
         } catch (UnirestException e) {
+            logger.error("Error updating Github resource content.", e);
             throw new SourceConnectorException("Error updating Github resource content.", e);
         }
     }
@@ -292,6 +295,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
         } catch (UnirestException e) {
+            logger.error("Error creating Github resource content.", e);
             throw new SourceConnectorException("Error creating Github resource content.", e);
         }
     }
@@ -324,6 +328,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 rval.add(gho);
             }
         } catch (IOException e) {
+            logger.error("Error getting GitHub organizations.", e);
             throw new GitHubException("Error getting GitHub organizations.", e);
         }
         return rval;
@@ -360,6 +365,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 rval.add(ghrepo);
             }
         } catch (IOException e) {
+            logger.error("Error getting GitHub repositories.", e);
             throw new GitHubException("Error getting GitHub repositories.", e);
         }
         return rval;
@@ -386,6 +392,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
                 rval.add(ghBranch);
             }
         } catch (IOException e) {
+            logger.error("Error getting GitHub branches.", e);
             throw new GitHubException("Error getting GitHub branches.", e);
         }
         return rval;
@@ -412,6 +419,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             GitHubPullRequest pullRequest = creator.create();
             return pullRequest.getHtml_url();
         } catch (Exception e) {
+            logger.error("Error creating pull request.", e);
             throw new SourceConnectorException("Error creating pull request.", e);
         }
     }

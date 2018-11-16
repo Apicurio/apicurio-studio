@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges,
+    ViewEncapsulation
+} from "@angular/core";
 import {Oas30PathItem, OasNodePath, OasOperation} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
@@ -23,6 +32,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {SelectionService} from "../../../_services/selection.service";
 import {createNewOperationCommand, ICommand} from "oai-ts-commands";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -30,33 +40,37 @@ import {createNewOperationCommand, ICommand} from "oai-ts-commands";
     selector: "operations-section",
     templateUrl: "operations-section.component.html",
     styleUrls: [ "operations-section.component.css" ],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperationsSectionComponent implements OnInit, OnDestroy, OnChanges {
+export class OperationsSectionComponent extends AbstractBaseComponent {
 
     @Input() path: Oas30PathItem;
 
     public tab: string;
 
     private _operations: OasOperation[] = [];
-    private _changeSubscription: Subscription;
     private _selectionSubscription: Subscription;
 
-    constructor(private commandService: CommandService, private documentService: DocumentService,
-                private selectionService: SelectionService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         console.info("[OperationsSectionComponent] ngOnInit() - set tab");
         this.setOperationTabFromSelection(this.selectionService.currentSelection());
 
-        this._changeSubscription = this.documentService.change().skip(1).subscribe( () => {
-            // TODO handle change to the document
-        });
         this._selectionSubscription = this.selectionService.selection().subscribe( selection => {
             let path: OasNodePath = selection;
             console.info("[OperationsSectionComponent] SELECTION CHANGED! - set tab");
             this.setOperationTabFromSelection(path);
         });
+    }
+
+    protected onDocumentChange(): void {
+        // TODO handle change to the document
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -65,7 +79,7 @@ export class OperationsSectionComponent implements OnInit, OnDestroy, OnChanges 
     }
 
     public ngOnDestroy(): void {
-        this._changeSubscription.unsubscribe();
+        super.ngOnDestroy();
         this._selectionSubscription.unsubscribe();
     }
 

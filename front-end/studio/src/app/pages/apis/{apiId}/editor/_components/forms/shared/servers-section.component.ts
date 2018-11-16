@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
 import {createChangeServerCommand, createDeleteServerCommand, createNewServerCommand, ICommand} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
+import {AbstractBaseComponent} from "../../common/base-component";
+import {DocumentService} from "../../../_services/document.service";
 
 
 
@@ -29,9 +31,10 @@ import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editor
     moduleId: module.id,
     selector: "servers-section",
     templateUrl: "servers-section.component.html",
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ServersSectionComponent implements OnInit {
+export class ServersSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: Oas30Document | Oas30PathItem | Oas30Operation;
     @Input() collapsed: boolean;
@@ -39,9 +42,13 @@ export class ServersSectionComponent implements OnInit {
 
     public showSectionBody: boolean;
 
-    constructor(private commandService: CommandService, private editorsService: EditorsService) {}
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private commandService: CommandService, private editorsService: EditorsService) {
+        super(changeDetectorRef, documentService);
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         this.showSectionBody = !this.collapsed;
     }
 

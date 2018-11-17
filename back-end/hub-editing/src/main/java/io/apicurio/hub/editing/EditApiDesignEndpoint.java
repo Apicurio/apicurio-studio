@@ -16,26 +16,22 @@
 
 package io.apicurio.hub.editing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
-import io.apicurio.hub.core.editing.IEditingMetrics;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
@@ -70,8 +66,7 @@ import java.util.Set;
 public class EditApiDesignEndpoint {
     
     private static Logger logger = LoggerFactory.getLogger(EditApiDesignEndpoint.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
-    
+
     @Inject
     private IEditingSessionManager editingSessionManager;
     @Inject
@@ -80,6 +75,8 @@ public class EditApiDesignEndpoint {
     private OaiCommandExecutor oaiCommandExecutor;
     @Inject
     private IEditingMetrics metrics;
+    @Inject
+    private ApicurioOperationProcessor operationProcessor;
     //@Inject
 //    private SessionSyncSend sessionSync = new SessionSyncSend();
     //@Inject
@@ -202,147 +199,150 @@ public class EditApiDesignEndpoint {
         logger.debug("Received a \"{}\" message from a client.", msgType);
         logger.debug("\tdesignId: {}", designId);
 
+        operationProcessor.process(editingSession, session, message);
+
+
         // Put this into a processor/factory/something -- give that entity to ApicurioSessionFactory join operations?
-        if (msgType.equals("command")) {
-            String user = editingSession.getUser(session);
-            long localCommandId = -1;
-            if (message.has("commandId")) {
-                localCommandId = message.get("commandId").asLong();
-            }
-            String content;
-            long cmdContentVersion;
-            
-            this.metrics.contentCommand(designId);
-            
-            logger.debug("\tuser:" + user);
-            try {
-                content = mapper.writeValueAsString(message.get("command"));
-            } catch (JsonProcessingException e) {
-                logger.error("Error writing command as string.", e);
-                // TODO do something sensible here - send a msg to the client?
-                return;
-            }
-            try {
-                cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, content);
-            } catch (StorageException e) {
-                logger.error("Error storing the command.", e);
-                // TODO do something sensible here - send a msg to the client?
-                return;
-            }
-            
-            // Send an ack message back to the user
-            ApiDesignCommandAck ack = new ApiDesignCommandAck();
-            ack.setCommandId(localCommandId);
-            ack.setContentVersion(cmdContentVersion);
-            editingSession.sendAckTo(session, ack);
-            logger.debug("ACK sent back to client.");
-            
-            // Now propagate the command to all other clients
-            ApiDesignCommand command = new ApiDesignCommand();
-            command.setCommand(content);
-            command.setContentVersion(cmdContentVersion);
-            command.setAuthor(user);
-            command.setReverted(false);
-            editingSession.sendCommandToOthers(session, user, command);
-            logger.debug("Command propagated to 'other' clients.");
-
-            return;
-        } else if (msgType.equals("selection")) {
-            String user = editingSession.getUser(session);
-            String selection = null;
-            if (message.has("selection")) {
-                JsonNode node = message.get("selection");
-                if (node != null) {
-                    selection = node.asText();
-                }
-            }
-            logger.debug("\tuser:" + user);
-            logger.debug("\tselection:" + selection);
-            editingSession.sendUserSelectionToOthers(session, user, selection);
-            logger.debug("User selection propagated to 'other' clients.");
-            return;
-        } else if (msgType.equals("ping")) {
-            logger.debug("PING message received.");
-            return;
-        } else if (msgType.equals("undo")) {
-            String user = editingSession.getUser(session);
-            
-            long contentVersion = -1;
-            if (message.has("contentVersion")) {
-                contentVersion = message.get("contentVersion").asLong();
-            }
-            
-            this.metrics.undoCommand(designId, contentVersion);
-            
-            logger.debug("\tuser:" + user);
-            boolean reverted = false;
-            try {
-                reverted = storage.undoContent(user, designId, contentVersion);
-            } catch (StorageException e) {
-                logger.error("Error undoing a command.", e);
-                // TODO do something sensible here - send a msg to the client?
-                return;
-            }
-            
-            // If the command wasn't successfully reverted (it was already reverted or didn't exist)
-            // then return without doing anything else.
-            if (!reverted) {
-                return;
-            }
-            
-            // Send an ack message back to the user
-            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
-            ack.setContentVersion(contentVersion);
-            editingSession.sendAckTo(session, ack);
-            logger.debug("ACK sent back to client.");
-            
-            // Now propagate the undo to all other clients
-            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
-            command.setContentVersion(contentVersion);
-            editingSession.sendUndoToOthers(session, user, command);
-            logger.debug("Undo sent to 'other' clients.");
-
-            return;
-        } else if (msgType.equals("redo")) {
-            String user = editingSession.getUser(session);
-            
-            long contentVersion = -1;
-            if (message.has("contentVersion")) {
-                contentVersion = message.get("contentVersion").asLong();
-            }
-            
-            this.metrics.redoCommand(designId, contentVersion);
-            
-            logger.debug("\tuser:" + user);
-            boolean restored = false;
-            try {
-                restored = storage.redoContent(user, designId, contentVersion);
-            } catch (StorageException e) {
-                logger.error("Error undoing a command.", e);
-                // TODO do something sensible here - send a msg to the client?
-                return;
-            }
-            
-            // If the command wasn't successfully restored (it was already restored or didn't exist)
-            // then return without doing anything else.
-            if (!restored) {
-                return;
-            }
-            
-            // Send an ack message back to the user
-            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
-            ack.setContentVersion(contentVersion);
-            editingSession.sendAckTo(session, ack);
-            logger.debug("ACK sent back to client.");
-            
-            // Now propagate the redo to all other clients
-            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
-            command.setContentVersion(contentVersion);
-            editingSession.sendRedoToOthers(session, user, command);
-            logger.debug("Redo sent to 'other' clients.");
-
-            return;
-        }
+//        if (msgType.equals("command")) {
+//            String user = editingSession.getUser(session);
+//            long localCommandId = -1;
+//            if (message.has("commandId")) {
+//                localCommandId = message.get("commandId").asLong();
+//            }
+//            String content;
+//            long cmdContentVersion;
+//
+//            this.metrics.contentCommand(designId);
+//
+//            logger.debug("\tuser:" + user);
+//            try {
+//                content = mapper.writeValueAsString(message.get("command"));
+//            } catch (JsonProcessingException e) {
+//                logger.error("Error writing command as string.", e);
+//                // TODO do something sensible here - send a msg to the client?
+//                return;
+//            }
+//            try {
+//                cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, content);
+//            } catch (StorageException e) {
+//                logger.error("Error storing the command.", e);
+//                // TODO do something sensible here - send a msg to the client?
+//                return;
+//            }
+//
+//            // Send an ack message back to the user
+//            ApiDesignCommandAck ack = new ApiDesignCommandAck();
+//            ack.setCommandId(localCommandId);
+//            ack.setContentVersion(cmdContentVersion);
+//            editingSession.sendAckTo(session, ack);
+//            logger.debug("ACK sent back to client.");
+//
+//            // Now propagate the command to all other clients
+//            ApiDesignCommand command = new ApiDesignCommand();
+//            command.setCommand(content);
+//            command.setContentVersion(cmdContentVersion);
+//            command.setAuthor(user);
+//            command.setReverted(false);
+//            editingSession.sendCommandToOthers(session, user, command);
+//            logger.debug("Command propagated to 'other' clients.");
+//
+//            return;
+//        } else if (msgType.equals("selection")) {
+//            String user = editingSession.getUser(session);
+//            String selection = null;
+//            if (message.has("selection")) {
+//                JsonNode node = message.get("selection");
+//                if (node != null) {
+//                    selection = node.asText();
+//                }
+//            }
+//            logger.debug("\tuser:" + user);
+//            logger.debug("\tselection:" + selection);
+//            editingSession.sendUserSelectionToOthers(session, user, selection);
+//            logger.debug("User selection propagated to 'other' clients.");
+//            return;
+//        } else if (msgType.equals("ping")) {
+//            logger.debug("PING message received.");
+//            return;
+//        } else if (msgType.equals("undo")) {
+//            String user = editingSession.getUser(session);
+//
+//            long contentVersion = -1;
+//            if (message.has("contentVersion")) {
+//                contentVersion = message.get("contentVersion").asLong();
+//            }
+//
+//            this.metrics.undoCommand(designId, contentVersion);
+//
+//            logger.debug("\tuser:" + user);
+//            boolean reverted = false;
+//            try {
+//                reverted = storage.undoContent(user, designId, contentVersion);
+//            } catch (StorageException e) {
+//                logger.error("Error undoing a command.", e);
+//                // TODO do something sensible here - send a msg to the client?
+//                return;
+//            }
+//
+//            // If the command wasn't successfully reverted (it was already reverted or didn't exist)
+//            // then return without doing anything else.
+//            if (!reverted) {
+//                return;
+//            }
+//
+//            // Send an ack message back to the user
+//            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
+//            ack.setContentVersion(contentVersion);
+//            editingSession.sendAckTo(session, ack);
+//            logger.debug("ACK sent back to client.");
+//
+//            // Now propagate the undo to all other clients
+//            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
+//            command.setContentVersion(contentVersion);
+//            editingSession.sendUndoToOthers(session, user, command);
+//            logger.debug("Undo sent to 'other' clients.");
+//
+//            return;
+//        } else if (msgType.equals("redo")) {
+//            String user = editingSession.getUser(session);
+//
+//            long contentVersion = -1;
+//            if (message.has("contentVersion")) {
+//                contentVersion = message.get("contentVersion").asLong();
+//            }
+//
+//            this.metrics.redoCommand(designId, contentVersion);
+//
+//            logger.debug("\tuser:" + user);
+//            boolean restored = false;
+//            try {
+//                restored = storage.redoContent(user, designId, contentVersion);
+//            } catch (StorageException e) {
+//                logger.error("Error undoing a command.", e);
+//                // TODO do something sensible here - send a msg to the client?
+//                return;
+//            }
+//
+//            // If the command wasn't successfully restored (it was already restored or didn't exist)
+//            // then return without doing anything else.
+//            if (!restored) {
+//                return;
+//            }
+//
+//            // Send an ack message back to the user
+//            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
+//            ack.setContentVersion(contentVersion);
+//            editingSession.sendAckTo(session, ack);
+//            logger.debug("ACK sent back to client.");
+//
+//            // Now propagate the redo to all other clients
+//            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
+//            command.setContentVersion(contentVersion);
+//            editingSession.sendRedoToOthers(session, user, command);
+//            logger.debug("Redo sent to 'other' clients.");
+//
+//            return;
+//        }
         logger.error("Unknown message type: {}", msgType);
         // TODO something went wrong if we got here - report an error of some kind
     }

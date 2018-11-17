@@ -5,7 +5,7 @@ package io.apicurio.hub.core.editing.sessionbeans;
  */
 public class VersionedCommandOperation extends VersionedOperation {
     private String command;
-    private String commandId;
+    private long commandId = -1;
 
     public String getCommand() {
         return command;
@@ -16,11 +16,11 @@ public class VersionedCommandOperation extends VersionedOperation {
         return this;
     }
 
-    public String getCommandId() {
+    public long getCommandId() {
         return commandId;
     }
 
-    public VersionedCommandOperation setCommandId(String commandId) {
+    public VersionedCommandOperation setCommandId(long commandId) {
         this.commandId = commandId;
         return this;
     }
@@ -32,7 +32,7 @@ public class VersionedCommandOperation extends VersionedOperation {
                 .setType("command");
     }
 
-    public static VersionedCommandOperation command(long contentVersion, String command, String commandId) {
+    public static VersionedCommandOperation command(long contentVersion, String command, long commandId) {
         return (VersionedCommandOperation) new VersionedCommandOperation()
                 .setCommand(command)
                 .setCommandId(commandId)

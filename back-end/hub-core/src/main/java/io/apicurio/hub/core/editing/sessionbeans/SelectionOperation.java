@@ -6,7 +6,7 @@ package io.apicurio.hub.core.editing.sessionbeans;
 public class SelectionOperation extends BaseOperation {
     private String user;
     private String id;
-    private String newSelection;
+    private String selection;
 
     public SelectionOperation() {}
 
@@ -28,20 +28,20 @@ public class SelectionOperation extends BaseOperation {
         return this;
     }
 
-    public String getNewSelection() {
-        return newSelection;
+    public String getSelection() {
+        return selection;
     }
 
-    public SelectionOperation setNewSelection(String newSelection) {
-        this.newSelection = newSelection;
+    public SelectionOperation setSelection(String selection) {
+        this.selection = selection;
         return this;
     }
 
-    public static SelectionOperation select(String user, String id, String newSelection) {
+    public static SelectionOperation select(String user, String id, String selection) {
         return (SelectionOperation) new SelectionOperation()
                 .setUser(user)
                 .setId(id)
-                .setNewSelection(newSelection)
+                .setSelection(selection)
                 .setType("selection");
     }
 }

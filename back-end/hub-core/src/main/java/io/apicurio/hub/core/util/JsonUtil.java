@@ -2,7 +2,9 @@ package io.apicurio.hub.core.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -32,6 +34,14 @@ public class JsonUtil {
             throw new RuntimeException(e);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
+        }
+    }
+
+    public static BaseOperation fromJson(JsonNode payload, Class<? extends BaseOperation> klazz) {
+        try {
+            return objectMapper.treeToValue(payload, klazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

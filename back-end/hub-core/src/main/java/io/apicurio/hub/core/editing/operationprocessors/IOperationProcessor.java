@@ -10,4 +10,6 @@ import javax.websocket.Session;
  */
 public interface IOperationProcessor {
     void process(ApiDesignEditingSession editingSession, Session session, BaseOperation op);
+    String getOperationName();
+    Class<? extends BaseOperation> unmarshallKlazz();
 }

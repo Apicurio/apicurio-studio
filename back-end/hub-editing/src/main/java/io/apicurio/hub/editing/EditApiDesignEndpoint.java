@@ -35,7 +35,7 @@ import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
-import io.apicurio.hub.editing.metrics.IEditingMetrics;
+import io.apicurio.hub.core.editing.IEditingMetrics;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
@@ -142,7 +142,7 @@ public class EditApiDesignEndpoint {
             for (ApiDesignCommand command : commands) {
                 String cmdData = command.getCommand();
 
-                StringBuilder builder = new StringBuilder();
+                StringBuilder builder = new StringBuilder(); // TODO beanify this
                 builder.append("{");
                 builder.append("\"contentVersion\": ");
                 builder.append(command.getContentVersion());

@@ -41,6 +41,7 @@ import {CommandService} from "../../../../_services/command.service";
 import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
+import {KeypressUtils} from "../../../../_util/object.util";
 
 
 @Component({
@@ -250,7 +251,7 @@ export class ResponseRow30Component extends AbstractBaseComponent {
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.cancel();
         }
     }

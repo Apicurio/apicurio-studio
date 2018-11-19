@@ -20,7 +20,7 @@ import {OasAllNodeVisitor, OasNode, OasValidationProblemSeverity, OasVisitorUtil
 import {OasValidationProblem} from "oai-ts-core/src/models/node.model";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
-import {ArrayUtils} from "../../_util/object.util";
+import {ArrayUtils, KeypressUtils} from "../../_util/object.util";
 import {AbstractBaseComponent} from "./base-component";
 
 @Component({
@@ -103,7 +103,7 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.close();
         }
     }

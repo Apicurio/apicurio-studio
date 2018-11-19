@@ -29,6 +29,7 @@ import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
+import {KeypressUtils} from "../../../_util/object.util";
 
 
 @Component({
@@ -125,7 +126,7 @@ export class SecuritySchemeRowComponent extends AbstractBaseComponent {
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.cancel();
         }
     }

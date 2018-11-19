@@ -29,6 +29,7 @@ import {
 import {AbstractInlineEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
+import {KeypressUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
@@ -75,10 +76,10 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.onCancel();
         }
-        if (event.key === "Enter") {
+        if (KeypressUtils.isEnterKey(event)) {
             this.onSave();
         }
     }

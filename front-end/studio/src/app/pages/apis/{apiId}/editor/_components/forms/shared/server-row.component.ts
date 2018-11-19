@@ -31,6 +31,7 @@ import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
+import {KeypressUtils} from "../../../_util/object.util";
 
 
 @Component({
@@ -99,7 +100,7 @@ export class ServerRowComponent extends AbstractBaseComponent {
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.cancel();
         }
     }

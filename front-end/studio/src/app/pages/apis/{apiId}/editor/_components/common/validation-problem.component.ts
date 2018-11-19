@@ -30,6 +30,7 @@ import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
 import {Subscription} from "rxjs/Subscription";
 import {AbstractBaseComponent} from "./base-component";
+import {KeypressUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
@@ -178,7 +179,7 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.close();
         }
     }

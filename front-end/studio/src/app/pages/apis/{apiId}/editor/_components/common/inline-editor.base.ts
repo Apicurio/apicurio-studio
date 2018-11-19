@@ -17,6 +17,7 @@
 
 import {AfterViewInit, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
+import {KeypressUtils} from "../../_util/object.util";
 
 
 /**
@@ -92,11 +93,11 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     protected isEscapeKey(event: KeyboardEvent): boolean {
-        return event.key === "Escape" || event.keyCode === 27;
+        return KeypressUtils.isEscapeKey(event);
     }
 
     protected isEnterKey(event: KeyboardEvent): boolean {
-        return event.key === "Enter" || event.keyCode === 10 || event.keyCode === 13;
+        return KeypressUtils.isEnterKey(event);
     }
 
 }
@@ -178,7 +179,7 @@ export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
     public onInputKeypress(event: KeyboardEvent): void {
         super.onInputKeypress(event);
 
-        if (event.ctrlKey && this.isEnterKey(event) && this.isValid()) {
+        if (KeypressUtils.isCtrlEnterKey(event) && this.isValid()) {
             this.onSave();
         }
     }

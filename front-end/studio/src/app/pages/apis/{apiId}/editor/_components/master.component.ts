@@ -46,7 +46,7 @@ import {ClonePathDialogComponent} from "./dialogs/clone-path.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
-import {ObjectUtils} from "../_util/object.util";
+import {KeypressUtils, ObjectUtils} from "../_util/object.util";
 import {
     createAddPathItemCommand,
     createAddSchemaDefinitionCommand,
@@ -109,6 +109,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
 
     filterCriteria: string = null;
+    _paths: OasPathItem[];
+    _defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[];
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private commandService: CommandService,
@@ -122,34 +124,78 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         this.selectionService.selectRoot(this.document);
     }
 
+    protected onDocumentChange(): void {
+        this._paths = null;
+        this._defs = null;
+    }
+
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.selectionSubscription.unsubscribe();
     }
 
-    public isOAI30(): boolean {
-        return this.document.is3xDocument();
-    }
-
-    public isSwagger2(): boolean {
-        return this.document.is2xDocument();
-    }
-
     public onPathsKeypress(event: KeyboardEvent): void {
-        console.info("***** keypress: ", event);
+        if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
+            let paths: OasPathItem[] = this.paths();
+            this.handleArrowKeypress(event, paths);
+        }
+    }
+
+    public onDefinitionsKeypress(event: KeyboardEvent): void {
+        if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
+            let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.definitions();
+            this.handleArrowKeypress(event, definitions);
+        }
+    }
+
+    protected handleArrowKeypress(event: KeyboardEvent, items: OasNode[]): void {
+        console.info("[EditorMasterComponent] Up/Down arrow detected.");
+        let selectedIdx: number = -1;
+        items.forEach( (item, idx) => {
+            if (ModelUtils.isSelected(item)) {
+                selectedIdx = idx;
+            }
+        });
+
+        console.info("[EditorMasterComponent] Current selection index: ", selectedIdx);
+
+        // Do nothing if we have no selection and the user hits the UP arrow
+        if (selectedIdx == -1 && KeypressUtils.isUpArrow(event)) {
+            return;
+        }
+
+        if (KeypressUtils.isDownArrow(event)) {
+            selectedIdx++;
+        } else {
+            selectedIdx--;
+        }
+        if (selectedIdx < 0) {
+            selectedIdx = 0;
+        }
+        if (selectedIdx >= items.length) {
+            selectedIdx = items.length - 1;
+        }
+
+        console.info("[EditorMasterComponent] New Selection Index: ", selectedIdx);
+
+        let newSelection: OasNode = items[selectedIdx];
+        this.selectionService.selectNode(newSelection, this.document);
     }
 
     /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
      */
     public paths(): OasPathItem[] {
-        let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
-        if (this.document && this.document.paths) {
-            this.document.paths.pathItems().forEach( pathItem => {
-                OasVisitorUtil.visitNode(pathItem, viz);
-            });
+        if (!this._paths) {
+            let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
+            if (this.document && this.document.paths) {
+                this.document.paths.pathItems().forEach(pathItem => {
+                    OasVisitorUtil.visitNode(pathItem, viz);
+                });
+            }
+            this._paths = viz.getSortedPathItems();
         }
-        return viz.getSortedPathItems();
+        return this._paths;
     }
 
     /**
@@ -289,7 +335,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.closeContextMenu();
         }
     }
@@ -416,6 +462,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (this.filterCriteria !== null) {
             this.filterCriteria = this.filterCriteria.toLowerCase();
         }
+        this._paths = null;
+        this._defs = null;
     }
 
     /**

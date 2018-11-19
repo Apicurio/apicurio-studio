@@ -37,6 +37,7 @@ import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
+import {KeypressUtils} from "../_util/object.util";
 
 
 /**
@@ -87,7 +88,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.cancel();
         }
     }

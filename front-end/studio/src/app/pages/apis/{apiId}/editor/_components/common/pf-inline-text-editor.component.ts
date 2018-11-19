@@ -17,6 +17,7 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {TextInputEditorComponent} from "./inline-editor.base";
+import {KeypressUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
@@ -28,10 +29,10 @@ import {TextInputEditorComponent} from "./inline-editor.base";
 export class PfInlineTextEditorComponent extends TextInputEditorComponent {
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.onCancel();
         }
-        if (event.key === "Enter") {
+        if (KeypressUtils.isEnterKey(event)) {
             this.onSave();
         }
     }

@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, HostListener} from "@angular/core";
+import {KeypressUtils} from "../../_util/object.util";
 
 @Component({
     moduleId: module.id,
@@ -53,7 +54,7 @@ export class ContextHelpComponent {
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.close();
         }
     }

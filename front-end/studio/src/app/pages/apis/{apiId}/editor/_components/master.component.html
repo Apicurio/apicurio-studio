@@ -66,15 +66,15 @@
             <span actions>
                 <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" [type]="'add'"></icon-button>
             </span>
-            <div body tabindex="0" class="path-list" (keypress)="onPathsKeypress($event)" #pathList>
+            <div body tabindex="0" class="path-list master-entity-list" (keypress)="onPathsKeypress($event)" #pathList>
                 <signpost *ngIf="paths().length === 0">
                     <span>No paths have been created.</span>
                     <a (click)="addPathDialog.open(document, '/')">Add a path</a>
                 </signpost>
 
-                <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()" (click)="pathList.focus()">
+                <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
                     <validation-aggregate [models]="[path]"></validation-aggregate>
-                    <div path-item [path]="path.path()" (click)="selectPath(path)"
+                    <div path-item [path]="path.path()" (click)="pathList.focus() ; selectPath(path)"
                          (contextmenu)="showPathContextMenu($event, path)"></div>
                 </div>
             </div>
@@ -86,14 +86,14 @@
             <span actions>
                 <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" [type]="'add'"></icon-button>
             </span>
-            <div body>
+            <div body tabindex="0" class="definition-list master-entity-list" (keypress)="onDefinitionsKeypress($event)" #defList>
                 <signpost *ngIf="definitions().length === 0">
                     <span>No reusable types have been created.</span>
                     <a (click)="openAddDefinitionEditor()">Add a data type</a>
                 </signpost>
 
                 <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
-                     (click)="selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
+                     (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
             </div>
         </section>
 

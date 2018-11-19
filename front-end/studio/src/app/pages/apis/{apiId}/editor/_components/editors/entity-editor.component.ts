@@ -25,6 +25,7 @@ import {
     OasPathItem
 } from "oai-ts-core";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
+import {KeypressUtils} from "../../_util/object.util";
 
 export interface EntityEditorEvent<T extends OasNode> {
     entity: T;
@@ -254,7 +255,7 @@ export class EntityEditorComponent implements OnChanges {
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (event.key === "Escape"  && !event.metaKey && !event.altKey && !event.ctrlKey) {
+        if (KeypressUtils.isEscapeKey(event)) {
             this.onClose.emit();
         }
     }

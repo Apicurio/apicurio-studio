@@ -8509,6 +8509,118 @@ var ReplaceDocumentCommand = (function (_super) {
     return ReplaceDocumentCommand;
 }(ReplaceNodeCommand));
 
+/**
+ * @license
+ * Copyright 2017 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __extends$64 = (undefined && undefined.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+/**
+ * Factory function.
+ */
+function createDeleteAllOperationsCommand(parent) {
+    return new DeleteAllOperationsCommand(parent);
+}
+/**
+ * A command used to delete all servers from a document.
+ */
+var DeleteAllOperationsCommand = (function (_super) {
+    __extends$64(DeleteAllOperationsCommand, _super);
+    /**
+     * C'tor.
+     */
+    function DeleteAllOperationsCommand(parent) {
+        var _this = _super.call(this) || this;
+        if (parent) {
+            _this._parentPath = _this.oasLibrary().createNodePath(parent);
+        }
+        return _this;
+    }
+    DeleteAllOperationsCommand.prototype.type = function () {
+        return "DeleteAllOperationsCommand";
+    };
+    /**
+     * Marshall the command into a JS object.
+     * @return {any}
+     */
+    DeleteAllOperationsCommand.prototype.marshall = function () {
+        var obj = _super.prototype.marshall.call(this);
+        obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+        return obj;
+    };
+    /**
+     * Unmarshall the JS object.
+     * @param obj
+     */
+    DeleteAllOperationsCommand.prototype.unmarshall = function (obj) {
+        _super.prototype.unmarshall.call(this, obj);
+        this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+    };
+    /**
+     * Deletes the servers.
+     * @param document
+     */
+    DeleteAllOperationsCommand.prototype.execute = function (document) {
+        var _this = this;
+        console.info("[DeleteAllOperationsCommand] Executing.");
+        this._oldOperations = [];
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        // Save the old operations (if any)
+        var allMethods = ["get", "put", "post", "delete", "head", "patch", "options", "trace"];
+        allMethods.forEach(function (method) {
+            var oldOp = parent[method];
+            if (!_this.isNullOrUndefined(oldOp)) {
+                var oldOpData = {
+                    "_method": method,
+                    "_operation": _this.oasLibrary().writeNode(oldOp)
+                };
+                _this._oldOperations.push(oldOpData);
+                delete parent[method];
+            }
+        });
+    };
+    /**
+     * Restore the old (deleted) property.
+     * @param document
+     */
+    DeleteAllOperationsCommand.prototype.undo = function (document) {
+        var _this = this;
+        console.info("[DeleteAllOperationsCommand] Reverting.");
+        if (!this._oldOperations || this._oldOperations.length === 0) {
+            return;
+        }
+        var parent = this._parentPath.resolve(document);
+        if (this.isNullOrUndefined(parent)) {
+            return;
+        }
+        this._oldOperations.forEach(function (oldOperationData) {
+            var method = oldOperationData["_method"];
+            var operation = parent.createOperation(method);
+            _this.oasLibrary().readNode(oldOperationData["_operation"], operation);
+            parent[method] = operation;
+        });
+    };
+    return DeleteAllOperationsCommand;
+}(AbstractCommand));
+
 ///<reference path="../commands/change-version.command.ts"/>
 /**
  * @license
@@ -8558,6 +8670,7 @@ var commandFactory = {
     "ChangeTitleCommand_30": function () { return new ChangeTitleCommand_30(null); },
     "ChangeVersionCommand_20": function () { return new ChangeVersionCommand_20(null); },
     "ChangeVersionCommand_30": function () { return new ChangeVersionCommand_30(null); },
+    "DeleteAllOperationsCommand": function () { return new DeleteAllOperationsCommand(null); },
     "DeleteAllParametersCommand_20": function () { return new DeleteAllParametersCommand_20(null, null); },
     "DeleteAllParametersCommand_30": function () { return new DeleteAllParametersCommand_30(null, null); },
     "DeleteAllPropertiesCommand_20": function () { return new DeleteAllPropertiesCommand_20(null); },
@@ -9325,6 +9438,8 @@ exports.createChangeVersionCommand = createChangeVersionCommand;
 exports.ChangeVersionCommand = ChangeVersionCommand;
 exports.ChangeVersionCommand_20 = ChangeVersionCommand_20;
 exports.ChangeVersionCommand_30 = ChangeVersionCommand_30;
+exports.createDeleteAllOperationsCommand = createDeleteAllOperationsCommand;
+exports.DeleteAllOperationsCommand = DeleteAllOperationsCommand;
 exports.createDeleteAllParametersCommand = createDeleteAllParametersCommand;
 exports.DeleteAllParametersCommand = DeleteAllParametersCommand;
 exports.DeleteAllParametersCommand_20 = DeleteAllParametersCommand_20;

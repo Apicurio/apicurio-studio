@@ -10642,6 +10642,9 @@ var Oas30JS2ModelReader = (function (_super) {
  */
 var OasDocumentFactory = (function () {
     function OasDocumentFactory() {
+        this.V2_DEFAULT_MINOR = "0";
+        this.V3_DEFAULT_MINOR = "0";
+        this.V3_DEFAULT_PATCH = "2";
     }
     /**
      * Creates a new, empty instance of an OAS document.
@@ -10649,27 +10652,18 @@ var OasDocumentFactory = (function () {
      * @return {OasDocument}
      */
     OasDocumentFactory.prototype.createEmpty = function (oasVersion) {
-        if (typeof oasVersion === "number") {
-            oasVersion = "" + oasVersion;
-        }
-        if (oasVersion === "2") {
-            oasVersion = "2.0";
-        }
-        if (oasVersion === "3") {
-            oasVersion = "3.0.2";
-        }
-        if (oasVersion === "3.0") {
-            oasVersion = "3.0.2";
-        }
-        if (oasVersion === "2.0") {
+        var ver = oasVersion;
+        oasVersion = this.parseVersion(oasVersion);
+        if (oasVersion && oasVersion === "2.0") {
             return new Oas20Document();
         }
-        if (oasVersion.indexOf("3.") === 0) {
+        if (oasVersion && oasVersion.indexOf("3.0") === 0) {
             var doc = new Oas30Document();
             doc.openapi = oasVersion;
             return doc;
         }
-        throw new Error("Unsupported OAS version: " + oasVersion);
+        // Use the original version when reporting error
+        throw new Error("Unsupported OAS version: " + ver);
     };
     /**
      * Reads the given object and creates a valid OAS document model.
@@ -10681,30 +10675,21 @@ var OasDocumentFactory = (function () {
         if (oasObject.openapi) {
             ver = oasObject.openapi;
         }
-        if (ver && typeof ver !== "string") {
-            ver = "" + ver;
-        }
-        if (ver === "2") {
-            ver = "2.0";
-        }
-        if (ver === "3" || ver === "3.0") {
-            ver = "3.0.2";
-        }
+        var oasVersion = this.parseVersion(ver);
         // We side-effect the input object when reading it, so make a deep copy of it first.
         oasObject = JSON.parse(JSON.stringify(oasObject));
-        if (ver === "2.0") {
-            oasObject.swagger = ver;
+        if (oasVersion && oasVersion === "2.0") {
+            oasObject.swagger = oasVersion;
             var reader = new Oas20JS2ModelReader();
             return reader.read(oasObject);
         }
-        else if (ver && ver.indexOf("3.") === 0) {
-            oasObject.openapi = ver;
+        if (oasVersion && oasVersion.indexOf("3.0") === 0) {
+            oasObject.openapi = oasVersion;
             var reader = new Oas30JS2ModelReader();
             return reader.read(oasObject);
         }
-        else {
-            throw new Error("Unsupported OAS version: " + ver);
-        }
+        // Use the original version as read from the document when reporting error
+        throw new Error("Unsupported OAS version: " + ver);
     };
     /**
      * Parses the given OAS definition source, parses it into an appropriate data model, and
@@ -10717,6 +10702,37 @@ var OasDocumentFactory = (function () {
     OasDocumentFactory.prototype.createFromJson = function (oasDefinition) {
         var jsObj = JSON.parse(oasDefinition);
         return this.createFromObject(jsObj);
+    };
+    /**
+     * @param ver
+     * @return {string | undefined}
+     */
+    OasDocumentFactory.prototype.parseVersion = function (ver) {
+        var version;
+        if (ver) {
+            if (typeof ver !== "string") {
+                ver = "" + ver;
+            }
+            // The regular expression may need to change if supported minor version for OAS 3 changes from 0 to 1 or later.
+            // Lenient regular expression which accepts "lower dotted" number beyond patch e.g. strings like "3.0.0.1.1", as well as revision labels after a dash.
+            // While semantic versioning has more strict rules about what follows after dash - this expression does not care.
+            var specVersionExp = new RegExp(/^(2|3)(\.(0)(\.(\d))?((\.\d)*))?(-(.+))?$/g);
+            // We can use the following expression, if we want to be more strict and do not want to allow anything after patch (still accepts revision after dash).
+            // const specVersionExp = new RegExp(/^(2|3)(\.(0)(\.(\d))?)?(-(.+))?$/g);
+            var match = void 0;
+            var major = void 0;
+            var minor = void 0;
+            var patch = void 0;
+            var revision = void 0; // We don't care about the revision but it is there
+            if (match = specVersionExp.exec(ver)) {
+                major = match[1];
+                minor = match[2] !== undefined ? match[3] : (major === "2" ? this.V2_DEFAULT_MINOR : this.V3_DEFAULT_MINOR);
+                patch = (match[2] !== undefined && match[4] !== undefined) ? match[5] : (major === "2" ? "" : this.V3_DEFAULT_PATCH);
+                revision = match[6] !== undefined ? match[7] : "";
+                version = major === "2" ? [].concat(major, minor).join(".") : [].concat(major, minor, patch).join(".");
+            }
+        }
+        return version;
     };
     return OasDocumentFactory;
 }());

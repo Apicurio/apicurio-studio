@@ -3,16 +3,16 @@
          [validationModels]="validationModels()">
     <span actions>
         <icon-button *ngIf="is20Document()"
-                     (onClick)="openAddFormDataParamEditor()" [pullRight]="true" [type]="'add'"
+                     (onClick)="openAddFormDataParamEditor()" [pullRight]="true" type="add"
                      [invisible]="!hasFormDataParams()"
                      [title]="'Add a response to the operation.'"></icon-button>
         <icon-button *ngIf="is20Document()"
                      (onClick)="deleteRequestBody()" [disabled]="!hasBodyParam() && !hasFormDataParams()"
-                     [pullRight]="true" [type]="'delete'"
+                     [pullRight]="true" type="delete"
                      [title]="'Delete the request body.'"></icon-button>
 
         <icon-button *ngIf="is30Document()"
-                     (onClick)="deleteRequestBody()" [pullRight]="true" [type]="'delete'" [disabled]="!hasRequestBody()"
+                     (onClick)="deleteRequestBody()" [pullRight]="true" type="delete" [disabled]="!hasRequestBody()"
                      [title]="'Delete the request body.'"></icon-button>
     </span>
     <div body>

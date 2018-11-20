@@ -4,14 +4,14 @@
             <a (click)="selectMediaType(mtName)">
                 <span>{{ mtName }}</span>
                 <validation-aggregate [models]="[ mediaTypeByName(mtName) ]"></validation-aggregate>
-                <icon-button (onClick)="removeMediaType(mtName)" [type]="'delete'"
+                <icon-button (onClick)="removeMediaType(mtName)" type="delete"
                              [title]="'Delete this media type.'"></icon-button>
             </a>
         </li>
 
-        <icon-button (onClick)="addMediaTypeDialog.open()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="addMediaTypeDialog.open()" [pullRight]="true" type="add"
                      [title]="'Add a new media type.'"></icon-button>
-        <icon-button (onClick)="deleteAllMediaTypes()" [pullRight]="true" [type]="'delete'"
+        <icon-button (onClick)="deleteAllMediaTypes()" [pullRight]="true" type="delete"
                      [title]="'Delete all media types.'"></icon-button>
 
     </ul>
@@ -52,7 +52,7 @@
                             </td>
                             <td class="actions">
                                 <div>
-                                    <icon-button (onClick)="deleteExample(example)" [pullRight]="true" [type]="'delete'"
+                                    <icon-button (onClick)="deleteExample(example)" [pullRight]="true" type="delete"
                                                  [title]="'Delete example.'"></icon-button>
                                     <icon-button (onClick)="editExampleDialog.open(example)" [pullRight]="true" [type]="'edit'"
                                                  [title]="'Edit example.'"></icon-button>

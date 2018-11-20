@@ -73,9 +73,9 @@
                          contextHelp="Use this section to define the properties that make up this data type."
                          [validationModels]="properties()">
                     <span actions>
-                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" [type]="'add'"
+                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
                                      [title]="'Add a property to the schema.'"></icon-button>
-                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" [type]="'delete'"
+                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
                                      [title]="'Delete all properties from the schema.'"></icon-button>
                     </span>
                     <div body>

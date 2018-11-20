@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {OasDocument, OasLibraryUtils, OasOperation, OasSecurityRequirement} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
     createAddSecurityRequirementCommand,
+    createDeleteAllSecurityRequirementsCommand,
     createDeleteSecurityRequirementCommand,
     createReplaceSecurityRequirementCommand,
     ICommand
@@ -27,7 +28,8 @@ import {
 import {EditorsService} from "../../../_services/editors.service";
 import {
     ISecurityRequirementEditorHandler,
-    SecurityRequirementEditorComponent, SecurityRequirementEditorEvent
+    SecurityRequirementEditorComponent,
+    SecurityRequirementEditorEvent
 } from "../../editors/security-requirement-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -172,6 +174,14 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
     public isAnonSecurity(requirement: OasSecurityRequirement): boolean {
         let schemes: string[] = requirement.securityRequirementNames();
         return !schemes || schemes.length === 0;
+    }
+
+    /**
+     * Called when the user clicks the trash icon to delete all the servers.
+     */
+    public deleteAllSecurityRequirements(): void {
+        let command: ICommand = createDeleteAllSecurityRequirementsCommand(this.parent);
+        this.commandService.emit(command);
     }
 
 }

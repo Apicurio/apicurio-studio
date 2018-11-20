@@ -2,10 +2,10 @@
          contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
          [validationModels]="responses()">
     <span actions>
-        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" type="add"
                      [title]="'Add a response to the operation.'"></icon-button>
         <icon-button (onClick)="deleteAllResponses()" [disabled]="!hasResponses()"
-                     [pullRight]="true" [type]="'delete'"
+                     [pullRight]="true" type="delete"
                      [title]="'Delete all responses from the operation.'"></icon-button>
     </span>
     <div body>

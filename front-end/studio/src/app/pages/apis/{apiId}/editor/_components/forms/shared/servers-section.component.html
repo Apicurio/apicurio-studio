@@ -1,8 +1,11 @@
 <section type="servers" label="SERVERS" [counterItems]="servers()" [contextHelp]="description"
          [validationModels]="servers()" [expanded]="showSectionBody">
     <span actions>
-        <icon-button (onClick)="onAddServer()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="onAddServer()" [pullRight]="true" type="add"
                      [title]="'Add a server to the API.'"></icon-button>
+        <icon-button (onClick)="deleteAllServers()" [disabled]="!hasServers()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete all servers.'"></icon-button>
     </span>
     <div body>
         <signpost *ngIf="servers().length === 0">

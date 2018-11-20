@@ -19,7 +19,13 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncaps
 import {OasDocument, OasTag} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {ObjectUtils} from "../../../_util/object.util";
-import {createChangePropertyCommand, createDeleteTagCommand, createNewTagCommand, ICommand} from "oai-ts-commands";
+import {
+    createChangePropertyCommand,
+    createDeleteAllTagsCommand,
+    createDeleteTagCommand,
+    createNewTagCommand,
+    ICommand
+} from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 
@@ -86,4 +92,18 @@ export class TagsSectionComponent extends AbstractBaseComponent {
         this.commandService.emit(command);
     }
 
+    /**
+     * Returns true if the document has at least one tag defined.
+     */
+    public hasTags(): boolean {
+        return this.document.tags && this.document.tags.length > 0;
+    }
+
+    /**
+     * Called when the user clicks the trash icon to delete all the tags.
+     */
+    public deleteAllTags(): void {
+        let command: ICommand = createDeleteAllTagsCommand();
+        this.commandService.emit(command);
+    }
 }

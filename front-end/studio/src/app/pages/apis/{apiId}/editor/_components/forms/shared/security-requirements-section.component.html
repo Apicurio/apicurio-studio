@@ -1,8 +1,11 @@
 <section type="security-requirements" label="SECURITY REQUIREMENTS" [counterItems]="securityRequirements()"
          [contextHelp]="contextHelp()" [validationModels]="securityRequirements()">
     <span actions>
-        <icon-button (onClick)="openSecurityRequirementEditor()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openSecurityRequirementEditor()" [pullRight]="true" type="add"
                      [title]="global ? 'Add a security requirement to the API.' : 'Add a security requirement for the operation.'"></icon-button>
+        <icon-button (onClick)="deleteAllSecurityRequirements()" [disabled]="!hasSecurityRequirements()"
+                     [pullRight]="true" type="delete"
+                     title="Delete all security requirements."></icon-button>
     </span>
     <div body>
         <signpost *ngIf="!hasSecurityRequirements()">

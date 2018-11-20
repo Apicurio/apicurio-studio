@@ -2,7 +2,7 @@
          contextHelp="Does your API have a license?  If it does, you can configure it here."
          [validationModels]="[licenseModel()]">
     <span actions>
-        <icon-button (onClick)="deleteLicense()" [disabled]="!hasLicense()" [pullRight]="true" [type]="'delete'"
+        <icon-button (onClick)="deleteLicense()" [disabled]="!hasLicense()" [pullRight]="true" type="delete"
                      [title]="'Delete the license information.'"></icon-button>
     </span>
     <div body>

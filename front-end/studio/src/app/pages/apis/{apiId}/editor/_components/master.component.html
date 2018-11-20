@@ -64,7 +64,7 @@
         <section type="path" label="Paths" [counterItems]="paths()" [inForm]="false"
                  contextHelp="The core of any REST API is the set of resources/paths it exposes.  Each path is of the form '/path/to/resource' and can support a number of operations.">
             <span actions>
-                <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" [type]="'add'"></icon-button>
+                <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" type="add"></icon-button>
             </span>
             <div body tabindex="0" class="path-list master-entity-list" (keypress)="onPathsKeypress($event)" #pathList>
                 <signpost *ngIf="paths().length === 0">
@@ -84,7 +84,7 @@
         <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false"
                  contextHelp="It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
             <span actions>
-                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" [type]="'add'"></icon-button>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add"></icon-button>
             </span>
             <div body tabindex="0" class="definition-list master-entity-list" (keypress)="onDefinitionsKeypress($event)" #defList>
                 <signpost *ngIf="definitions().length === 0">
@@ -104,7 +104,7 @@
                 <a class="collapsed" data-toggle="collapse" data-target="#response-section-body">
                     <span class="section-label">Responses</span>
                 </a>
-                <icon-button (onClick)="" [pullRight]="true" [type]="'add'"></icon-button>
+                <icon-button (onClick)="" [pullRight]="true" type="add"></icon-button>
             </div>
             <div class="section-body collapse" id="response-section-body">
                 <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"

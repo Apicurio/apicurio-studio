@@ -2,8 +2,11 @@
          contextHelp="Configure tags for your API in this section.  Once defined, tags can be used to organize your API's operations by arbitrary criteria."
          [validationModels]="tags()">
     <span actions>
-        <icon-button (onClick)="addTagDialog.open()" [pullRight]="true" [type]="'add'"
-                     [title]="'Add a tag to the API.'"></icon-button>
+        <icon-button (onClick)="addTagDialog.open()" [pullRight]="true" type="add"
+                     title="Add a tag to the API."></icon-button>
+        <icon-button (onClick)="deleteAllTags()" [disabled]="!hasTags()"
+                     [pullRight]="true" type="delete"
+                     title="Delete all tag definitions."></icon-button>
     </span>
     <div body>
         <signpost *ngIf="tags().length === 0">

@@ -58,7 +58,7 @@
                                     <td class="value pre-actions">{{ exampleValue(contentType) }}</td>
                                     <td class="actions">
                                         <div>
-                                            <icon-button (onClick)="deleteExample(contentType)" [pullRight]="true" [type]="'delete'"
+                                            <icon-button (onClick)="deleteExample(contentType)" [pullRight]="true" type="delete"
                                                          [title]="'Delete example.'"></icon-button>
                                             <icon-button (onClick)="editExampleDialog.open(contentType, exampleValue(contentType))" [pullRight]="true" [type]="'edit'"
                                                          [title]="'Edit example.'"></icon-button>

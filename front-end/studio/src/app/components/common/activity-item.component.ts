@@ -126,6 +126,10 @@ export class ActivityItemComponent {
             case "DeleteAllParametersCommand_30":
             case "DeleteAllPropertiesCommand_20":
             case "DeleteAllPropertiesCommand_30":
+            case "DeleteAllTagsCommand":
+            case "DeleteAllServersCommand":
+            case "DeleteAllSecurityRequirementsCommand":
+            case "DeleteAllSecuritySchemesCommand":
             case "DeleteMediaTypeCommand":
             case "DeleteOperationCommand_20":
             case "DeleteOperationCommand_30":
@@ -238,6 +242,7 @@ export class ActivityItemComponent {
 
     protected commandDescription(): string {
         let rval: string;
+        let ppath: string
         switch (this.command()["type"]()) {
             case "AddPathItemCommand_20":
             case "AddPathItemCommand_30":
@@ -300,6 +305,28 @@ export class ActivityItemComponent {
                 break;
             case "DeleteAllOperationsCommand":
                 rval = "deleted all of the operations from path " + this.command()["_parentPath"] + ".";
+                break;
+            case "DeleteAllTagsCommand":
+                rval = "deleted all of the tags from the API.";
+                break;
+            case "DeleteAllServersCommand":
+                ppath = this.command()["_parentPath"];
+                if (ppath == "/") {
+                    rval = "deleted all of the servers from the API.";
+                } else {
+                    rval = `deleted all of the servers from the operation at path ${ ppath }.`;
+                }
+                break;
+            case "DeleteAllSecurityRequirementsCommand":
+                ppath = this.command()["_parentPath"];
+                if (ppath == "/") {
+                    rval = "deleted all of the security requirements from the API.";
+                } else {
+                    rval = `deleted all of the security requirements from the operation at path ${ ppath }.`;
+                }
+                break;
+            case "DeleteAllSecuritySchemesCommand":
+                rval = "deleted all of the security schemes from the API.";
                 break;
             case "DeleteAllParametersCommand_20":
             case "DeleteAllParametersCommand_30":

@@ -28,17 +28,19 @@ import {
 import {CommandService} from "../../../_services/command.service";
 import {
     createChangeSecuritySchemeCommand,
+    createDeleteAllSecuritySchemesCommand,
     createDeleteSecuritySchemeCommand,
     createNewSecuritySchemeCommand,
     ICommand
 } from "oai-ts-commands";
 import {EditorsService} from "../../../_services/editors.service";
 import {
-    ISecuritySchemeEditorHandler, Scope,
+    ISecuritySchemeEditorHandler,
+    Scope,
     SecurityScheme20Data,
     SecurityScheme30Data,
-    SecuritySchemeData,
-    SecuritySchemeEditorComponent, SecuritySchemeEditorEvent
+    SecuritySchemeEditorComponent,
+    SecuritySchemeEditorEvent
 } from "../../editors/security-scheme-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -265,6 +267,14 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
         if (scheme.type === "openIdConnect") {
             scheme.openIdConnectUrl = event.openIdConnectUrl;
         }
+    }
+
+    /**
+     * Called when the user clicks the trash icon to delete all the servers.
+     */
+    public deleteAllSecuritySchemes(): void {
+        let command: ICommand = createDeleteAllSecuritySchemesCommand();
+        this.commandService.emit(command);
     }
 
 }

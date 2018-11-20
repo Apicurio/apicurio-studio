@@ -3,10 +3,10 @@
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
          [validationModels]="queryParameters()">
     <span actions>
-        <icon-button (onClick)="openAddQueryParamEditor()" [pullRight]="true" [type]="'add'"
+        <icon-button (onClick)="openAddQueryParamEditor()" [pullRight]="true" type="add"
                      [title]="'Add a new query parameter.'"></icon-button>
         <icon-button (onClick)="deleteAllQueryParams()" [disabled]="!hasQueryParameters()"
-                     [pullRight]="true" [type]="'delete'"
+                     [pullRight]="true" type="delete"
                      [title]="'Delete all query parameters.'"></icon-button>
     </span>
     <div body>

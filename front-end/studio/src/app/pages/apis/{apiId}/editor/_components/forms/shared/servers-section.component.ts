@@ -15,16 +15,21 @@
  * limitations under the License.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
-import {createChangeServerCommand, createDeleteServerCommand, createNewServerCommand, ICommand} from "oai-ts-commands";
+import {
+    createChangeServerCommand,
+    createDeleteAllServersCommand,
+    createDeleteServerCommand,
+    createNewServerCommand,
+    ICommand
+} from "oai-ts-commands";
 import {ObjectUtils} from "../../../_util/object.util";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
-
 
 
 @Component({
@@ -138,6 +143,18 @@ export class ServersSectionComponent extends AbstractBaseComponent {
                 toServer.addServerVariable(varName, serverVar);
             }
         }
+    }
+
+    public hasServers(): boolean {
+        return this.parent.servers && this.parent.servers.length > 0;
+    }
+
+    /**
+     * Called when the user clicks the trash icon to delete all the servers.
+     */
+    public deleteAllServers(): void {
+        let command: ICommand = createDeleteAllServersCommand(this.parent);
+        this.commandService.emit(command);
     }
 
 }

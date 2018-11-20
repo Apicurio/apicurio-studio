@@ -2,7 +2,7 @@
          contextHelp="Update the information contained in this section to provide users of the API details about how to contact you should they need help."
          [validationModels]="[contact()]">
     <span actions>
-        <icon-button (onClick)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" [type]="'delete'"
+        <icon-button (onClick)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" type="delete"
                      [title]="'Delete the contact information.'"></icon-button>
     </span>
     <div body>

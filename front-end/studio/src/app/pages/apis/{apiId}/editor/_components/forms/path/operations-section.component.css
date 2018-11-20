@@ -47,3 +47,8 @@
   right: -5px;
   top: -6px;
 }
+
+.operations-section .section-body .operation-tabs .actions {
+  float: right;
+  margin-right: 10px;
+}

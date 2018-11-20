@@ -16,22 +16,25 @@
  */
 
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas30PathItem, OasNodePath, OasOperation} from "oai-ts-core";
+import {Oas30PathItem, OasNodePath, OasOperation, OasPathItem} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {SelectionService} from "../../../_services/selection.service";
-import {createNewOperationCommand, ICommand} from "oai-ts-commands";
+import {
+    createDeleteAllOperationsCommand,
+    createDeleteOperationCommand,
+    createNewOperationCommand,
+    ICommand
+} from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
 
 
@@ -155,6 +158,20 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
 
     public addOperation(): void {
         let command: ICommand = createNewOperationCommand(this.path.ownerDocument(), this.path.path(), this.tab);
+        this.commandService.emit(command);
+    }
+
+    public deleteOperation(operation: OasOperation): void {
+        if (!operation) {
+            return;
+        }
+        let command: ICommand = createDeleteOperationCommand(operation.ownerDocument(), operation.method(),
+            operation.parent() as OasPathItem);
+        this.commandService.emit(command);
+    }
+
+    public deleteAllOperations(): void {
+        let command: ICommand = createDeleteAllOperationsCommand(this.path);
         this.commandService.emit(command);
     }
 

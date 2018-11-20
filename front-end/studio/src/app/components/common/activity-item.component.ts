@@ -121,6 +121,7 @@ export class ActivityItemComponent {
             case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
                 break;
+            case "DeleteAllOperationsCommand":
             case "DeleteAllParametersCommand_20":
             case "DeleteAllParametersCommand_30":
             case "DeleteAllPropertiesCommand_20":
@@ -296,6 +297,9 @@ export class ActivityItemComponent {
             case "ChangeVersionCommand_20":
             case "ChangeVersionCommand_30":
                 rval = "altered the API's version to '" + this.command()["_newVersion"] + "'";
+                break;
+            case "DeleteAllOperationsCommand":
+                rval = "deleted all of the operations from path " + this.command()["_parentPath"] + ".";
                 break;
             case "DeleteAllParametersCommand_20":
             case "DeleteAllParametersCommand_30":

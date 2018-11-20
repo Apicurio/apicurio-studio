@@ -40,6 +40,7 @@ import {DocumentService} from "../../../../_services/document.service";
 import {ObjectUtils} from "../../../../_util/object.util";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
+import {SelectionService} from "../../../../_services/selection.service";
 
 
 @Component({
@@ -63,8 +64,8 @@ export class ResponseRowComponent extends AbstractBaseComponent {
     protected _model: SimplifiedType = null;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     protected onDocumentChange(): void {

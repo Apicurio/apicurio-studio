@@ -73,7 +73,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private commandService: CommandService) {
-        super(changeDetectorRef, documentService);
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngAfterViewInit(): void {

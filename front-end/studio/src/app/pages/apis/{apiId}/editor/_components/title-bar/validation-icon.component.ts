@@ -27,6 +27,8 @@ import {
 import {OasValidationProblem} from "oai-ts-core";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
+import {CommandService} from "../../_services/command.service";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -41,8 +43,9 @@ export class ValidationIconComponent extends AbstractBaseComponent {
     @Input() validationErrors: OasValidationProblem[] = [];
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public message(): string {

@@ -44,6 +44,7 @@ import {createDeleteParameterCommand, createNewParamCommand, ICommand} from "oai
 import {DocumentService} from "../../../_services/document.service";
 import {Subscription} from "rxjs/Subscription";
 import {AbstractBaseComponent} from "../../common/base-component";
+import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
@@ -62,8 +63,8 @@ export class PathParamsSectionComponent extends AbstractBaseComponent {
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     protected onDocumentChange(): void {

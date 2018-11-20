@@ -57,7 +57,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
-        super(changeDetectorRef, documentService);
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {

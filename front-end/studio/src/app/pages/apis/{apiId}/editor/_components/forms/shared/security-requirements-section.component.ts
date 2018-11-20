@@ -33,6 +33,7 @@ import {
 } from "../../editors/security-requirement-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
+import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
@@ -51,8 +52,9 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
     public showSectionBody: boolean;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private editorsService: EditorsService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private editorsService: EditorsService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {

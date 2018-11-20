@@ -42,6 +42,7 @@ import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {KeypressUtils} from "../../../../_util/object.util";
+import {SelectionService} from "../../../../_services/selection.service";
 
 
 @Component({
@@ -65,8 +66,8 @@ export class ResponseRow30Component extends AbstractBaseComponent {
     protected _tab: string = "description";
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public statusCodeLine(code: string): string {

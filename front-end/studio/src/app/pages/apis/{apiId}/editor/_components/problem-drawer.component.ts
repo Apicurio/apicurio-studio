@@ -49,7 +49,7 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private problemsService: ProblemsService) {
-        super(changeDetectorRef, documentService);
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public hasProblems(): boolean {

@@ -48,6 +48,7 @@ import {
     ParameterEditorComponent
 } from "../../editors/parameter-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
+import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
@@ -68,8 +69,9 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     public showSectionBody: boolean;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private commandService: CommandService,
-                private documentService: DocumentService, private editors: EditorsService) {
-        super(changeDetectorRef, documentService);
+                private documentService: DocumentService, private editors: EditorsService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     protected onDocumentChange(): void {

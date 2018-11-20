@@ -4,39 +4,40 @@
     <span actions></span>
     <div body>
         <div class="operation-tabs">
-            <div class="operation-tab get-tab" [class.selected]="tab === 'get'" [class.enabled]="isDefined('get')" (click)="selectTab('get')">
-                <div class="tab-label">Get</div>
-                <validation-aggregate [models]="[ path.get ]"></validation-aggregate>
+            <div class="tabs">
+                <div class="operation-tab get-tab" [class.selected]="tab === 'get'" [class.enabled]="isDefined('get')" (click)="selectTab('get')">
+                    <div class="tab-label">Get</div>
+                    <validation-aggregate [models]="[ path.get ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab put-tab" [class.selected]="tab === 'put'" [class.enabled]="isDefined('put')" (click)="selectTab('put')">
+                    <div class="tab-label">Put</div>
+                    <validation-aggregate [models]="[ path.put ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab post-tab" [class.selected]="tab === 'post'" [class.enabled]="isDefined('post')" (click)="selectTab('post')">
+                    <div class="tab-label">Post</div>
+                    <validation-aggregate [models]="[ path.post ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab delete-tab" [class.selected]="tab === 'delete'" [class.enabled]="isDefined('delete')" (click)="selectTab('delete')">
+                    <div class="tab-label">Delete</div>
+                    <validation-aggregate [models]="[ path.delete ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab options-tab" [class.selected]="tab === 'options'" [class.enabled]="isDefined('options')" (click)="selectTab('options')">
+                    <div class="tab-label">Options</div>
+                    <validation-aggregate [models]="[ path.options ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab head-tab" [class.selected]="tab === 'head'" [class.enabled]="isDefined('head')" (click)="selectTab('head')">
+                    <div class="tab-label">Head</div>
+                    <validation-aggregate [models]="[ path.head ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab patch-tab" [class.selected]="tab === 'patch'" [class.enabled]="isDefined('patch')" (click)="selectTab('patch')">
+                    <div class="tab-label">Patch</div>
+                    <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
+                    <div class="tab-label">Trace</div>
+                    <validation-aggregate [models]="[ path.trace ]"></validation-aggregate>
+                </div>
             </div>
-            <div class="operation-tab put-tab" [class.selected]="tab === 'put'" [class.enabled]="isDefined('put')" (click)="selectTab('put')">
-                <div class="tab-label">Put</div>
-                <validation-aggregate [models]="[ path.put ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab post-tab" [class.selected]="tab === 'post'" [class.enabled]="isDefined('post')" (click)="selectTab('post')">
-                <div class="tab-label">Post</div>
-                <validation-aggregate [models]="[ path.post ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab delete-tab" [class.selected]="tab === 'delete'" [class.enabled]="isDefined('delete')" (click)="selectTab('delete')">
-                <div class="tab-label">Delete</div>
-                <validation-aggregate [models]="[ path.delete ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab options-tab" [class.selected]="tab === 'options'" [class.enabled]="isDefined('options')" (click)="selectTab('options')">
-                <div class="tab-label">Options</div>
-                <validation-aggregate [models]="[ path.options ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab head-tab" [class.selected]="tab === 'head'" [class.enabled]="isDefined('head')" (click)="selectTab('head')">
-                <div class="tab-label">Head</div>
-                <validation-aggregate [models]="[ path.head ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab patch-tab" [class.selected]="tab === 'patch'" [class.enabled]="isDefined('patch')" (click)="selectTab('patch')">
-                <div class="tab-label">Patch</div>
-                <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
-            </div>
-            <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
-                <div class="tab-label">Trace</div>
-                <validation-aggregate [models]="[ path.trace ]"></validation-aggregate>
-            </div>
-
             <div class="actions">
                 <div class="dropdown dropdown-kebab-pf">
                     <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"

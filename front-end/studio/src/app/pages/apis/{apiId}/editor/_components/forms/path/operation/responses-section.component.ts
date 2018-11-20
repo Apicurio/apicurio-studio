@@ -35,6 +35,7 @@ import {
 } from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
+import {SelectionService} from "../../../../_services/selection.service";
 
 
 @Component({
@@ -51,8 +52,9 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private editors: EditorsService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private editors: EditorsService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public is20Document(): boolean {

@@ -115,7 +115,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private commandService: CommandService,
                 private editors: EditorsService, private restResourceService: RestResourceService) {
-        super(changeDetectorRef, documentService);
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {
@@ -135,6 +135,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     public onPathsKeypress(event: KeyboardEvent): void {
+        console.info("+++++++++++ keyboard event: ", event);
         if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
             let paths: OasPathItem[] = this.paths();
             this.handleArrowKeypress(event, paths);
@@ -161,7 +162,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
         // Do nothing if we have no selection and the user hits the UP arrow
         if (selectedIdx == -1 && KeypressUtils.isUpArrow(event)) {
-            return;
+            selectedIdx = items.length;
         }
 
         if (KeypressUtils.isDownArrow(event)) {

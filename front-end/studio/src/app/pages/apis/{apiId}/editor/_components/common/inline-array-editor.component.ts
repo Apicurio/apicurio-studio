@@ -30,6 +30,8 @@ import {AbstractInlineEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {KeypressUtils} from "../../_util/object.util";
+import {CommandService} from "../../_services/command.service";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -54,8 +56,9 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
 
     public firstEnter: boolean;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     ngAfterViewInit(): void {

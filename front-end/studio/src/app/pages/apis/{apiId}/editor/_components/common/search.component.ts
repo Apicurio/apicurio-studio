@@ -19,6 +19,8 @@ import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeD
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
+import {CommandService} from "../../_services/command.service";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -37,8 +39,9 @@ export class SearchComponent extends AbstractBaseComponent {
     value: string;
     private _valueObs: BehaviorSubject<string> = new BehaviorSubject(null);
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
         this._valueObs.debounceTime(200).subscribe( value => {
             this.onSearch.emit(value);
         });

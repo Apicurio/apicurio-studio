@@ -21,6 +21,7 @@ import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
+import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
@@ -35,8 +36,8 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     /**

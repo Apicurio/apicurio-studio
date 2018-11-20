@@ -20,6 +20,8 @@ import {ObjectUtils} from "../../_util/object.util";
 import {SimplifiedType} from "oai-ts-commands";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
+import {CommandService} from "../../_services/command.service";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -31,8 +33,9 @@ export class SchemaTypeComponent extends AbstractBaseComponent {
 
     @Input() type: SimplifiedType;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public displayType(): string {

@@ -30,6 +30,8 @@ import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
 import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
+import {CommandService} from "../../../../_services/command.service";
+import {SelectionService} from "../../../../_services/selection.service";
 
 export interface MediaTypeChangeEvent {
     name: string;
@@ -76,8 +78,9 @@ export class ContentComponent extends AbstractBaseComponent {
 
     protected mediaTypeName: string;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     /**

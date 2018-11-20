@@ -1,6 +1,11 @@
 .operations-section .section-body .operation-tabs {
   border-bottom: 1px solid #ddd;
   margin-top: 15px;
+  display: flex;
+}
+
+.operations-section .section-body .operation-tabs .tabs {
+  flex-grow: 1;
 }
 
 .operations-section .section-body .operation-tabs .operation-tab {
@@ -51,4 +56,5 @@
 .operations-section .section-body .operation-tabs .actions {
   float: right;
   margin-right: 10px;
+  padding-top: 8px;
 }

@@ -101,7 +101,7 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
                        protected selectionService: SelectionService,
                        protected commandService: CommandService,
                        protected documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     protected onDocumentChange(): void {

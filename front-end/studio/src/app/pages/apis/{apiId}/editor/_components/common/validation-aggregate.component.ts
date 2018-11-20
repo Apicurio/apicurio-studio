@@ -22,6 +22,8 @@ import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
 import {ArrayUtils, KeypressUtils} from "../../_util/object.util";
 import {AbstractBaseComponent} from "./base-component";
+import {CommandService} from "../../_services/command.service";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -54,8 +56,8 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
     private _problems: OasValidationProblem[] = undefined;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private problemsService: ProblemsService) {
-        super(changeDetectorRef, documentService);
+                private problemsService: ProblemsService, private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     protected onDocumentChange(): void {

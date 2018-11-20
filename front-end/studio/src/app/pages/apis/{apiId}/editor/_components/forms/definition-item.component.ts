@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncaps
 import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
+import {SelectionService} from "../../_services/selection.service";
 
 
 @Component({
@@ -32,8 +33,9 @@ export class DefinitionItemComponent extends AbstractBaseComponent {
 
     @Input() schema: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService) {
-        super(changeDetectorRef, documentService);
+    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     /**

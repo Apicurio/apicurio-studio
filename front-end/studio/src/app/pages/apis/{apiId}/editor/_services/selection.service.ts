@@ -93,6 +93,14 @@ class CollaboratorSelections {
     }
 
     /**
+     * Gets the current selection for the given collaborator.
+     * @param user
+     */
+    public getSelection(user: ApiEditorUser): OasNodePath {
+        return this.selections[user.userId];
+    }
+
+    /**
      * Sets the selection for a user.
      * @param user
      * @param selection
@@ -202,6 +210,9 @@ export class SelectionService {
 
     private _selectionSubject: BehaviorSubject<OasNodePath> = new BehaviorSubject(new OasNodePath("/"));
     private _selection: Observable<OasNodePath> = this._selectionSubject.asObservable();
+
+    private _collaboratorSelectionSubject: BehaviorSubject<ApiEditorUser> = new BehaviorSubject(null);
+    private _collaboratorSelection: Observable<ApiEditorUser> = this._collaboratorSelectionSubject.asObservable();
     private _collaboratorSelections: CollaboratorSelections = new CollaboratorSelections();
 
     constructor() {
@@ -214,6 +225,14 @@ export class SelectionService {
 
     public selection(): Observable<OasNodePath> {
         return this._selection;
+    }
+
+    public collaboratorSelection(): Observable<ApiEditorUser> {
+        return this._collaboratorSelection;
+    }
+
+    public currentCollaboratorSelection(user: ApiEditorUser): OasNodePath {
+        return this._collaboratorSelections.getSelection(user);
     }
 
     public select(path: OasNodePath, document: OasDocument): void {
@@ -240,6 +259,7 @@ export class SelectionService {
 
     public setCollaboratorSelection(user: ApiEditorUser, selection: string, document: OasDocument): void {
         this._collaboratorSelections.setSelection(user, selection, document);
+        this._collaboratorSelectionSubject.next(user);
     }
 
     public reset(): void {

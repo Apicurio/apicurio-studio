@@ -3,4 +3,5 @@
 }
 .editor-master .editor-outline .master-entity-list:focus {
   border: 1px dashed #ccc;
+  outline: none;
 }

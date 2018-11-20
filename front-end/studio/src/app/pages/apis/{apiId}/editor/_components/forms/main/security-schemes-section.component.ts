@@ -44,6 +44,7 @@ import {
 } from "../../editors/security-scheme-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
+import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
@@ -58,8 +59,9 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
     @Input() document: OasDocument;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private editors: EditorsService) {
-        super(changeDetectorRef, documentService);
+                private commandService: CommandService, private editors: EditorsService,
+                private selectionService: SelectionService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     /**

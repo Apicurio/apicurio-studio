@@ -26,6 +26,7 @@ import {Invitation} from "../../../../models/invitation.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {User} from "../../../../models/user.model";
 import {Title} from "@angular/platform-browser";
+import {ClipboardService} from "ngx-clipboard";
 
 @Component({
     moduleId: module.id,
@@ -41,7 +42,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     private _isOwner: boolean = false;
     public _copyLink: string = "";
-
+    public copied: boolean = false;
 
     /**
      * Constructor.
@@ -53,9 +54,17 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
      */
     constructor(private router: Router, route: ActivatedRoute, private apis: ApisService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService,
-                titleService: Title) {
+                titleService: Title, private clipboardService: ClipboardService) {
         super(route, titleService);
         this.api = new Api();
+    }
+
+    /**
+     * Copies the URL to the clipboard.
+     */
+    public copyToClipboard(): void {
+        this.clipboardService.copyFromContent(this._copyLink);
+        this.copied = true;
     }
 
     /**

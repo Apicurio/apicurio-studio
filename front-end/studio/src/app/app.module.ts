@@ -67,11 +67,12 @@ import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_co
 import {TemplateService} from './services/template.service';
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 import {DefaultPageComponent} from "./pages/default.page";
+import {ClipboardModule} from "ngx-clipboard";
 
 @NgModule({
     imports: [
         BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
-        ApicurioCommonComponentsModule, ApicurioEditorModule
+        ApicurioCommonComponentsModule, ApicurioEditorModule, ClipboardModule
     ],
     declarations: [
         AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,

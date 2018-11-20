@@ -144,6 +144,13 @@
 <copy-url-dialog #copyUrlDialog>
     <p>Copy the following link to your clipboard and then send it to someone you want to collaborate with!</p>
     <div>
-        <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="_copyLink">
+        <div class="form-control-apicurio-copybox">
+            <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="_copyLink">
+            <button (click)="copyToClipboard()" class="btn btn-default" type="button"><span class="fa fa-clipboard"></span></button>
+        </div>
+    </div>
+    <div class="copybox-success" *ngIf="copied">
+        <span class="fa fa-info-circle"></span>
+        <span>URL successfully copied to the clipboard!</span>
     </div>
 </copy-url-dialog>

@@ -1476,11 +1476,11 @@ public class JdbcStorage implements IStorage {
         @Override
         public ApiPublication map(ResultSet rs, StatementContext ctx) throws SQLException {
             try {
-                ApiPublication change = new ApiPublication();
-                change.setBy(rs.getString("created_by"));
-                change.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
-                change.setOn(rs.getTimestamp("created_on"));
-                return change;
+                ApiPublication publication = new ApiPublication();
+                publication.setBy(rs.getString("created_by"));
+                publication.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
+                publication.setOn(rs.getTimestamp("created_on"));
+                return publication;
             } catch (IOException e) {
                 throw new SQLException(e);
             }

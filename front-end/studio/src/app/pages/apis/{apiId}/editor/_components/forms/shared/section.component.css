@@ -5,3 +5,8 @@
 .section .section-body.collapsed {
   display: none;
 }
+
+.section .section-context-menu {
+  display: block;
+  position: fixed;
+}

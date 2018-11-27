@@ -44,6 +44,7 @@ import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
+import {SectionComponent} from "./shared/section.component";
 
 
 @Component({

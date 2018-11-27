@@ -26,6 +26,7 @@ import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "../common/base-component";
 import {ChangeDetectorRef} from "@angular/core";
+import {SectionComponent} from "./shared/section.component";
 
 
 /**
@@ -242,4 +243,17 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
     public sourceEditorMode(): CodeEditorMode {
         return this._sourceFormat;
     }
+
+    public collapseAllSections(): void {
+        SectionComponent.allVisibleSections.forEach( section => {
+            section.collapse();
+        });
+    }
+
+    public expandAllSections(): void {
+        SectionComponent.allVisibleSections.forEach( section => {
+            section.expand();
+        });
+    }
+
 }

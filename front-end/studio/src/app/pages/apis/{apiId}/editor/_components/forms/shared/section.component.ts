@@ -18,17 +18,18 @@
 import {OasNode} from "oai-ts-core";
 import {
     ChangeDetectionStrategy, ChangeDetectorRef,
-    Component,
+    Component, ElementRef, HostListener,
     Input,
     OnChanges,
     OnDestroy,
-    OnInit,
+    OnInit, ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {CommandService} from "../../../_services/command.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {KeypressUtils} from "../../../_util/object.util";
 
 
 @Component({
@@ -41,7 +42,7 @@ import {SelectionService} from "../../../_services/selection.service";
 })
 export class SectionComponent extends AbstractBaseComponent {
 
-    private static allVisibleSections: SectionComponent[] = [];
+    public static allVisibleSections: SectionComponent[] = [];
 
     @Input() type: string;
     @Input() label: string;
@@ -54,6 +55,13 @@ export class SectionComponent extends AbstractBaseComponent {
     @Input() validationProperties: string[];
 
     @Input() inForm: boolean = true;
+
+    @ViewChild("sectionHeader") sectionHeader: ElementRef;
+    showContextMenu: boolean = false;
+    contextMenuPos: any = {
+        top: "0px",
+        left: "0px"
+    }
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
@@ -87,18 +95,44 @@ export class SectionComponent extends AbstractBaseComponent {
         this.expanded = !this.expanded;
     }
 
-    public onDoubleClick(event: MouseEvent): void {
-        if (this.inForm) {
-            this.expanded = true;
-            let me: SectionComponent = this;
-            SectionComponent.allVisibleSections.forEach( section => {
-                if (section !== me) {
-                    section.collapse();
-                }
-            });
-            event.preventDefault();
-            event.stopPropagation();
+    public openContextMenu(event: MouseEvent): void {
+        if (!this.inForm) {
+            return;
         }
+        event.preventDefault();
+        event.stopPropagation();
+
+        var box = this.sectionHeader.nativeElement.getBoundingClientRect();
+
+        var body = document.body;
+        var docEl = document.documentElement;
+
+        var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+        var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+        var clientTop = docEl.clientTop || body.clientTop || 0;
+        var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+        var top  = box.top +  scrollTop - clientTop;
+        var left = box.left + scrollLeft - clientLeft;
+
+        this.contextMenuPos.left = Math.round(left) + "px";
+        this.contextMenuPos.top = (Math.round(top) + box.height - 5) + "px";
+        this.showContextMenu = true;
+    }
+
+    public closeContextMenu(): void {
+        this.showContextMenu = false;
+    }
+
+    public collapseAllOtherSections(): void {
+        this.expanded = true;
+        let me: SectionComponent = this;
+        SectionComponent.allVisibleSections.forEach( section => {
+            if (section !== me) {
+                section.collapse();
+            }
+        });
     }
 
     public collapse(): void {
@@ -107,6 +141,41 @@ export class SectionComponent extends AbstractBaseComponent {
         // to mark it as needing change detection (since we just changed its state).  This is because
         // we're using OnPush as the change detection strategy across all editor components.
         this.changeDetectorRef.markForCheck();
+    }
+
+    public expand(): void {
+        this.expanded = true;
+        // The expand() method is called from outside the normal chain of command, so we need
+        // to mark it as needing change detection (since we just changed its state).  This is because
+        // we're using OnPush as the change detection strategy across all editor components.
+        this.changeDetectorRef.markForCheck();
+    }
+
+    public collapseAllSections(): void {
+        SectionComponent.allVisibleSections.forEach( section => {
+            section.collapse();
+        });
+    }
+
+    public expandAllSections(): void {
+        SectionComponent.allVisibleSections.forEach( section => {
+            section.expand();
+        });
+    }
+
+    /**
+     * Called whenever the user presses a key.
+     * @param event
+     */
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        if (KeypressUtils.isEscapeKey(event)) {
+            this.closeContextMenu();
+        }
+    }
+
+    @HostListener("document:click", ["$event"])
+    public onDocumentClick(event: MouseEvent): void {
+        this.closeContextMenu();
     }
 
 }

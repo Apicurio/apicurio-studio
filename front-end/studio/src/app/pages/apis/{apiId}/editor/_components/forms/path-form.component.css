@@ -1,3 +1,7 @@
+.detail-content .api-path-detail {
+  padding-bottom: 40px;
+}
+
 .operations-section .section-body .api-operation > .header {
   display: flex;
 }

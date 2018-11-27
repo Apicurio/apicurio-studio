@@ -1,6 +1,7 @@
 <div class="editor-master">
     <!-- Path Context Menu -->
     <ul id="path-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'path'"
+        (window:keydown)="onGlobalKeyDown($event)"
         [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
         <li>
             <a href="#" onclick="return false" (click)="newPath()">
@@ -31,6 +32,7 @@
 
     <!-- Data Type Context Menu -->
     <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
+        (window:keydown)="onGlobalKeyDown($event)"
         [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
         <li>
             <a href="#" onclick="return false" (click)="renameDefinition()">

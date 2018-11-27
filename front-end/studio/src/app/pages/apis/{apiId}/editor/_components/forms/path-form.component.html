@@ -7,6 +7,19 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownKebab">
                 <li>
+                    <a href="#" onclick="return false" (click)="collapseAllSections()">
+                        <span class="fa fa-compress"></span>
+                        <span>Collapse All Sections</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="expandAllSections()">
+                        <span class="fa fa-expand"></span>
+                        <span>Expand All Sections</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
                     <a href="#" onclick="return false" (click)="newPath()">
                         <span class="pficon pficon-add-circle-o"></span>
                         <span>New Sub-Path</span>

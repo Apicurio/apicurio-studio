@@ -18,7 +18,7 @@ public class SelectionProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(SelectionProcessor.class);
 
     @Override
-    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
         SelectionOperation selectionOperation = (SelectionOperation) bo;
         String user = editingSession.getUser(session);
         String selection = selectionOperation.getSelection();

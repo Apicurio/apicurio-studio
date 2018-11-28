@@ -28,20 +28,20 @@ public class CommandProcessor implements IOperationProcessor {
 
     @Inject
     private IEditingMetrics metrics;
+//
+//    @Override
+//    public void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+//        process(editingSession, session, bo, true);
+//    }
+//
+//    @Override
+//    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+//        process(editingSession, session, bo, false);
+//    }
+//
 
-    @Override
-    public void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        process(editingSession, session, bo, true);
-    }
 
-    @Override
-    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        process(editingSession, session, bo, false);
-    }
-
-
-
-    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo, boolean isRemote) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
         String user = editingSession.getUser(session);
         VersionedCommandOperation vco = (VersionedCommandOperation) bo;
 
@@ -76,9 +76,7 @@ public class CommandProcessor implements IOperationProcessor {
         command.setAuthor(user);
         command.setReverted(false);
 
-        if () {
-            editingSession.sendCommandToOthers(session, user, command);
-        }
+        editingSession.sendCommandToOthers(session, user, command);
         logger.debug("Command propagated to 'other' clients.");
     }
 

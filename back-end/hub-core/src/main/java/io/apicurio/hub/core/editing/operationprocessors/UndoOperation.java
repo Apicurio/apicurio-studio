@@ -30,7 +30,7 @@ public class UndoOperation implements IOperationProcessor {
     private IEditingMetrics metrics;
 
     @Override
-    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
         VersionedOperation undoOperation = (VersionedOperation) op;
         String user = editingSession.getUser(session);
         String designId = editingSession.getDesignId();

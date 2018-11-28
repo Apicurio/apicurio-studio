@@ -20,15 +20,18 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
+import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
+import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,11 +46,13 @@ import java.util.Set;
 public class ApiDesignEditingSession implements Closeable {
 
     private static Logger logger = LoggerFactory.getLogger(ApiDesignEditingSession.class);
-
     private final String designId;
     private final Map<String, ApicurioSessionContext> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
     private final SharedApicurioSession distributedSession;
+
+    @Inject
+    private ApicurioOperationProcessor operationProcessor;
 
     /**
      * Constructor.
@@ -61,8 +66,8 @@ public class ApiDesignEditingSession implements Closeable {
 
 
         //createOperationHandler();
-        this.distributedSession = factory.joinSession(designId, (elem) -> {
-
+        this.distributedSession = factory.joinSession(designId, payload -> {
+            operationProcessor.process(this, xxx, JsonUtil.toJsonTree(payload));
         });
     }
 
@@ -258,4 +263,12 @@ public class ApiDesignEditingSession implements Closeable {
         distributedSession.sendOperation(operation);
     }
 
+//    private class ApicurioOperationHandler implements OperationHandler {
+//
+//
+//        @Override
+//        public void consumeOperation(String operation) {
+//            operationProcessor.process();
+//        }
+//    }
 }

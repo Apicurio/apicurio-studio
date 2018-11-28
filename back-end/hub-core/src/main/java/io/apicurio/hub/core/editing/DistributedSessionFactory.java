@@ -2,6 +2,8 @@ package io.apicurio.hub.core.editing;
 
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -11,7 +13,6 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
-import javax.jms.Message;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import java.io.Closeable;
@@ -24,12 +25,13 @@ import java.io.Closeable;
 //@Singleton
 //@javax.ejb.Singleton
 public class DistributedSessionFactory implements ApicurioSessionFactory {
+    private static final Logger logger = LoggerFactory.getLogger(DistributedSessionFactory.class);
     private static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/session/";
 
     // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
     @Resource(lookup = "java:/ConnectionFactory") 
     private ConnectionFactory connectionFactory;
-    
+
     private JMSContext context;
 
     @PostConstruct
@@ -61,7 +63,6 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
         private void setupHandler() {
             consumer.setMessageListener(message -> {
                 try {
-                    //BaseOperation incomingOperation = fromTextMessage(message, BaseOperation.class);
                     commandHandler.consumeOperation(((TextMessage) message).getText());
                 } catch (JMSException e) {
                     throw new RuntimeException(e);
@@ -70,7 +71,11 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
         }
 
         public void sendOperation(BaseOperation command) {
-            producer.send(topic, JsonUtil.toJson(command));
+            if (command.getSource() == BaseOperation.SourceEnum.LOCAL) {
+                producer.send(topic, JsonUtil.toJson(command));
+            } else {
+                logger.trace("Will not retransmit remote operation over bus (prevents cycle): {}", command);
+            }
         }
 
         public void setOperationHandler(OperationHandler commandHandler) {
@@ -93,14 +98,11 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
     // Suggest API ID
     @Override
     public MessagingSessionContainer joinSession(String id, OperationHandler handler) {
+        logger.debug("Joining session {}", id);
         Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
         // Subscribe to the topic
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
         return new MessagingSessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
-    }
-
-    private static <O> O fromTextMessage(Message input, Class<O> klazz) throws JMSException {
-        return JsonUtil.fromJson(((TextMessage) input).getText(), klazz);
     }
 
 }

@@ -27,6 +27,14 @@ public class JsonUtil {
         }
     }
 
+    public static JsonNode toJsonTree(String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
     public static <T> T fromJson(String json, Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);

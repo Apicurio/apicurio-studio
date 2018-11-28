@@ -30,7 +30,7 @@ public class RedoOperation implements IOperationProcessor {
     private IEditingMetrics metrics;
 
     @Override
-    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
         VersionedOperation redoOperation = (VersionedOperation) op;
         String user = editingSession.getUser(session);
 

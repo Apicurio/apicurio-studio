@@ -45,11 +45,10 @@ public class ApicurioOperationProcessor {
         if (processor != null) {
             Class<? extends BaseOperation> klazz = processor.unmarshallKlazz();
             BaseOperation operation = JsonUtil.fromJson(payload, klazz);
-            processor.processLocal(editingSession, session, operation);
+            processor.process(editingSession, session, operation);
         } else {
             logger.error("Unknown message type: {}", opType);
             // TODO something went wrong if we got here - report an error of some kind
         }
     }
-
 }

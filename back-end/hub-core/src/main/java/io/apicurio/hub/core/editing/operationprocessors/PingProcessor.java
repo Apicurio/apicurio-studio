@@ -17,7 +17,7 @@ public class PingProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
 
     @Override
-    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
         logger.debug("PING message received."); // TODO expand logging -- careful with session id
     }
 

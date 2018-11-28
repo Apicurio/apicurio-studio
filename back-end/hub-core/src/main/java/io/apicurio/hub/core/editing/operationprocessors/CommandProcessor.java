@@ -28,22 +28,18 @@ public class CommandProcessor implements IOperationProcessor {
 
     @Inject
     private IEditingMetrics metrics;
-//
-//    @Override
-//    public void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-//        process(editingSession, session, bo, true);
-//    }
-//
-//    @Override
-//    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-//        process(editingSession, session, bo, false);
-//    }
-//
-
 
     public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        String user = editingSession.getUser(session);
         VersionedCommandOperation vco = (VersionedCommandOperation) bo;
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            processLocal(editingSession, session, vco);
+        } else {
+            processRemote(editingSession, session, vco);
+        }
+    }
+
+    private void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedCommandOperation vco) {
+        String user = editingSession.getUser(session);
 
         long localCommandId = vco.getCommandId();
 
@@ -78,6 +74,11 @@ public class CommandProcessor implements IOperationProcessor {
 
         editingSession.sendCommandToOthers(session, user, command);
         logger.debug("Command propagated to 'other' clients.");
+    }
+
+    private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedCommandOperation vco) {
+        // This command operation will be labelled as remote, so we know not to send it back over the messaging bus
+        editingSession.sendToAllSessions(session, vco);
     }
 
     @Override

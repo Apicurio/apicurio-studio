@@ -31,7 +31,6 @@ import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,38 +50,17 @@ public class ApiDesignEditingSession implements Closeable {
     private final Map<String, String> users = new HashMap<>();
     private final SharedApicurioSession distributedSession;
 
-    @Inject
-    private ApicurioOperationProcessor operationProcessor;
-
     /**
      * Constructor.
      */
-    public ApiDesignEditingSession(String designId, DistributedSessionFactory factory) {
+    public ApiDesignEditingSession(String designId,
+                                   DistributedSessionFactory factory,
+                                   ApicurioOperationProcessor operationProcessor) {
         this.designId = designId;
-//        this.distributedSession = factory.joinSession(designId, incomingOperation -> {
-//            // TODO
-//            sendCommandToOthers(null, null, incomingOperation); // TODO user doesn't seem to be used?
-//        });
-
-
-        //createOperationHandler();
         this.distributedSession = factory.joinSession(designId, payload -> {
-            operationProcessor.process(this, xxx, JsonUtil.toJsonTree(payload));
+            operationProcessor.process(this, null, JsonUtil.toJsonTree(payload));
         });
     }
-
-//    private ApicurioOperationHandler createOperationHandler() {
-//        //{"undo", "redo", undoredo},
-//        //{"join", "leave", joinleave}
-//        //{""}
-//
-//        //
-//
-//        ApicurioOperationHandler operationHandler = new ApicurioOperationHandler()
-//                .setOperationListener();
-//
-//        return operationHandler;
-//    }
 
     /**
      * @return the designId
@@ -249,7 +227,7 @@ public class ApiDesignEditingSession implements Closeable {
         }
     }
 
-    private void sendToAllSessions(ApicurioSessionContext excludeSession, BaseOperation operation) {
+    public void sendToAllSessions(ApicurioSessionContext excludeSession, BaseOperation operation) {
         for (ApicurioSessionContext otherSession : this.sessions.values()) {
             if (otherSession != excludeSession) {
                 try {
@@ -262,13 +240,4 @@ public class ApiDesignEditingSession implements Closeable {
         // Finally, send on the shared channel.
         distributedSession.sendOperation(operation);
     }
-
-//    private class ApicurioOperationHandler implements OperationHandler {
-//
-//
-//        @Override
-//        public void consumeOperation(String operation) {
-//            operationProcessor.process();
-//        }
-//    }
 }

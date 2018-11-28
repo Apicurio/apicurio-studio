@@ -16,18 +16,17 @@
 
 package io.apicurio.hub.core.editing;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
+import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * A class used to manage the concurrent editing sessions used by clients to make
@@ -83,6 +82,12 @@ public class EditingSessionManager implements IEditingSessionManager {
             throw new ServerError(e);
         }
     }
+
+    @Inject
+    private DistributedSessionFactory distSessFactory;
+
+    @Inject
+    private ApicurioOperationProcessor operationProcessor;
     
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getOrCreateEditingSession(java.lang.String)
@@ -91,7 +96,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     public synchronized ApiDesignEditingSession getOrCreateEditingSession(String designId) {
         ApiDesignEditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new ApiDesignEditingSession(designId);
+            session = new ApiDesignEditingSession(designId, distSessFactory, operationProcessor);
             editingSessions.put(designId, session);
         }
         return session;

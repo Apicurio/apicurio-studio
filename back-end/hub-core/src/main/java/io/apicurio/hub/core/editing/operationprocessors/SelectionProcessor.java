@@ -17,15 +17,29 @@ public class SelectionProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(SelectionProcessor.class);
 
-    @Override
+
     public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        SelectionOperation selectionOperation = (SelectionOperation) bo;
+        SelectionOperation selectionOp = (SelectionOperation) bo;
+
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            processLocal(editingSession, session, selectionOp);
+        } else {
+            processRemote(editingSession, session, selectionOp);
+        }
+    }
+
+    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, SelectionOperation so) {
         String user = editingSession.getUser(session);
-        String selection = selectionOperation.getSelection();
+        String selection = so.getSelection();
         logger.debug("\tuser:" + user);
         logger.debug("\tselection:" + selection);
         editingSession.sendUserSelectionToOthers(session, user, selection);
         logger.debug("User selection propagated to 'other' clients.");
+    }
+
+    private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, SelectionOperation so) {
+        editingSession.sendToAllSessions(session, so);
+        logger.debug("Remote selection sent to local clients.");
     }
 
     @Override

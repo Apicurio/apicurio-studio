@@ -29,13 +29,20 @@ public class UndoOperation implements IOperationProcessor {
     @Inject
     private IEditingMetrics metrics;
 
-    @Override
-    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
-        VersionedOperation undoOperation = (VersionedOperation) op;
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+        VersionedOperation vOp = (VersionedOperation) bo;
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            processLocal(editingSession, session, vOp);
+        } else {
+            processRemote(editingSession, session, vOp);
+        }
+    }
+
+    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedOperation undo) {
         String user = editingSession.getUser(session);
         String designId = editingSession.getDesignId();
 
-        long contentVersion = undoOperation.getContentVersion();
+        long contentVersion = undo.getContentVersion();
 
         this.metrics.undoCommand(designId, contentVersion);
 
@@ -66,6 +73,11 @@ public class UndoOperation implements IOperationProcessor {
         command.setContentVersion(contentVersion);
         editingSession.sendUndoToOthers(session, user, command);
         logger.debug("Undo sent to 'other' clients.");
+    }
+
+    private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedOperation undo) {
+        editingSession.sendToAllSessions(session, undo);
+        logger.debug("Remote undo sent to local clients.");
     }
 
     @Override

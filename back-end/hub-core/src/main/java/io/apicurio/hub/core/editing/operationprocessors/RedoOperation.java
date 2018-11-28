@@ -29,12 +29,21 @@ public class RedoOperation implements IOperationProcessor {
     @Inject
     private IEditingMetrics metrics;
 
-    @Override
-    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
-        VersionedOperation redoOperation = (VersionedOperation) op;
+
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+        VersionedOperation redoOperation = (VersionedOperation) bo;
+
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            processLocal(editingSession, session, redoOperation);
+        } else {
+            processRemote(editingSession, session, redoOperation);
+        }
+    }
+
+    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedOperation redo) {
         String user = editingSession.getUser(session);
 
-        long contentVersion = redoOperation.getContentVersion();
+        long contentVersion = redo.getContentVersion();
         String designId = editingSession.getDesignId();
 
         this.metrics.redoCommand(designId, contentVersion);
@@ -66,7 +75,11 @@ public class RedoOperation implements IOperationProcessor {
         command.setContentVersion(contentVersion);
         editingSession.sendRedoToOthers(session, user, command);
         logger.debug("Redo sent to 'other' clients.");
+    }
 
+    private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, VersionedOperation redo) {
+        editingSession.sendToAllSessions(session, redo);
+        logger.debug("Remote redo sent to local clients.");
     }
 
     @Override

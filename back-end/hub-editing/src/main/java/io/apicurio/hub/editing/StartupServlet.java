@@ -17,7 +17,6 @@
 package io.apicurio.hub.editing;
 
 import io.apicurio.hub.core.Version;
-import io.apicurio.hub.core.editing.DistributedSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +41,6 @@ public class StartupServlet extends HttpServlet {
     @Inject
     private Version version;
 
-//    @Inject
-//    private SessionSyncSend sessionSync;
-    //@Inject
-    @Inject
-    private DistributedSessionFactory sessionSync;
-    
-    private SessionSyncReceive sessionRec = new SessionSyncReceive();
-
     @PostConstruct
     public void postConstruct() {
         StringBuilder builder = new StringBuilder();
@@ -73,7 +64,6 @@ public class StartupServlet extends HttpServlet {
 
 
         System.out.println("Hello!");
-        sessionSync.shareSession(null);
     }
 
 }

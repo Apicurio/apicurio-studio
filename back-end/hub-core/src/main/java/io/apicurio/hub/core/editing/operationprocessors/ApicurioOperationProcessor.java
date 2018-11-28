@@ -1,6 +1,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.apicurio.hub.core.editing.ApicurioSessionContext;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
@@ -11,7 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.websocket.Session;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,21 +33,22 @@ public class ApicurioOperationProcessor {
             logger.debug("Added operation processor: {} -> {}",
                     opProc.getOperationName(),
                     opProc.getClass().getCanonicalName());
-            
+
             processorMap.put(opProc.getOperationName(), opProc);
         }
     }
 
-    public void process(ApiDesignEditingSession editingSession, Session session, JsonNode payload) {
+    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, JsonNode payload) {
         String opType = payload.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 
         if (processor != null) {
             Class<? extends BaseOperation> klazz = processor.unmarshallKlazz();
             BaseOperation operation = JsonUtil.fromJson(payload, klazz);
-            processor.process(editingSession, session, operation);
+            processor.processLocal(editingSession, session, operation);
         } else {
             logger.error("Unknown message type: {}", opType);
+            // TODO something went wrong if we got here - report an error of some kind
         }
     }
 

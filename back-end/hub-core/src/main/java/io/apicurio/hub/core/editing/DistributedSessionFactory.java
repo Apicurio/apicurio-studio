@@ -1,6 +1,5 @@
 package io.apicurio.hub.core.editing;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 
@@ -33,8 +32,6 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
     
     private JMSContext context;
 
-    private static ObjectMapper mapper = new ObjectMapper();
-
     @PostConstruct
     public void setup() {
     	context = connectionFactory.createContext();
@@ -64,8 +61,8 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
         private void setupHandler() {
             consumer.setMessageListener(message -> {
                 try {
-                    BaseOperation incomingOperation = fromTextMessage(message, BaseOperation.class);
-                    commandHandler.consumeOperation(incomingOperation);
+                    //BaseOperation incomingOperation = fromTextMessage(message, BaseOperation.class);
+                    commandHandler.consumeOperation(((TextMessage) message).getText());
                 } catch (JMSException e) {
                     throw new RuntimeException(e);
                 }

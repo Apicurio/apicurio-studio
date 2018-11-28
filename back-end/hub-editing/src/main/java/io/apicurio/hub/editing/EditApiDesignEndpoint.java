@@ -23,15 +23,18 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.ApicurioSessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
+import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.core.util.JsonUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.slf4j.Logger;
@@ -77,16 +80,6 @@ public class EditApiDesignEndpoint {
     private IEditingMetrics metrics;
     @Inject
     private ApicurioOperationProcessor operationProcessor;
-    //@Inject
-//    private SessionSyncSend sessionSync = new SessionSyncSend();
-    //@Inject
-    //private SessionSyncReceive receive;
-    
-//    @PostConstruct
-//    public void foo() {
-//    	System.out.println("Hello!");
-//    	sessionSync.shareSession(null);
-//    }
 
     /**
      * Called when a web socket connection is made.  The format for the web socket URL endpoint is:
@@ -96,10 +89,12 @@ public class EditApiDesignEndpoint {
      * The uuid, user, and secret query parameters must be present for a connection to be 
      * successfully made.
      * 
-     * @param session
+     * @param sessionx
      */
     @OnOpen
-    public void onOpenSession(Session session) {
+    public void onOpenSession(Session sessionx) {
+        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+
         String designId = session.getPathParameters().get("designId");
         logger.debug("WebSocket opened: {}", session.getId());
         logger.debug("\tdesignId: {}", designId);
@@ -122,14 +117,19 @@ public class EditApiDesignEndpoint {
 
             // Join the editing session (or create a new one) for the API Design
             editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
-            Set<Session> otherSessions = editingSession.getSessions();
+
+            // If no existing sessions, emit metrics event for creating session
+            Set<ApicurioSessionContext> otherSessions = editingSession.getSessions();
             if (editingSession.isEmpty()) {
                 this.metrics.editingSessionCreated(designId);
             }
+
+
+            // Add session to local session list, and remote session if applicable
             editingSession.join(session, userId);
             
             // Send "join" messages for each user already in the session
-            for (Session otherSession : otherSessions) {
+            for (ApicurioSessionContext otherSession : otherSessions) {
                 String otherUser = editingSession.getUser(otherSession);
                 editingSession.sendJoinTo(session, otherUser, otherSession.getId());
             }
@@ -137,27 +137,12 @@ public class EditApiDesignEndpoint {
             // Send any commands that have been created since the user asked to join the editing session.
             List<ApiDesignCommand> commands = this.storage.listAllContentCommands(userId, designId, contentVersion);
             for (ApiDesignCommand command : commands) {
-                String cmdData = command.getCommand();
+                FullCommandOperation operation = FullCommandOperation.fullCommand(command);
+                String serialized = JsonUtil.toJson(operation);
 
-                StringBuilder builder = new StringBuilder(); // TODO beanify this
-                builder.append("{");
-                builder.append("\"contentVersion\": ");
-                builder.append(command.getContentVersion());
-                builder.append(", ");
-                builder.append("\"type\": \"command\", ");
-                builder.append("\"author\": \"");
-                builder.append(command.getAuthor());
-                builder.append("\", ");
-                builder.append("\"reverted\": ");
-                builder.append(command.isReverted());
-                builder.append(", ");
-                builder.append("\"command\": ");
-                builder.append(cmdData);
-                builder.append("}");
+                logger.debug("Sending command to client (onOpenSession): {}", serialized); // todo tostring instead?
                 
-                logger.debug("Sending command to client (onOpenSession): {}", builder.toString());
-                
-                session.getBasicRemote().sendText(builder.toString());
+                session.sendAsText(serialized);
             }
             
             editingSession.sendJoinToOthers(session, userId);
@@ -187,11 +172,13 @@ public class EditApiDesignEndpoint {
      * }
      * </pre>
      * 
-     * @param session
-     * @param message
+     * @param sessionx websocket session
+     * @param message payload as JSON
      */
     @OnMessage
-    public void onMessage(Session session, JsonNode message) {
+    public void onMessage(Session sessionx, JsonNode message) {
+        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+
         String designId = session.getPathParameters().get("designId");
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
@@ -199,156 +186,17 @@ public class EditApiDesignEndpoint {
         logger.debug("Received a \"{}\" message from a client.", msgType);
         logger.debug("\tdesignId: {}", designId);
 
+        // Route the call to an appropriate operation handler
         operationProcessor.process(editingSession, session, message);
 
-
-        // Put this into a processor/factory/something -- give that entity to ApicurioSessionFactory join operations?
-//        if (msgType.equals("command")) {
-//            String user = editingSession.getUser(session);
-//            long localCommandId = -1;
-//            if (message.has("commandId")) {
-//                localCommandId = message.get("commandId").asLong();
-//            }
-//            String content;
-//            long cmdContentVersion;
-//
-//            this.metrics.contentCommand(designId);
-//
-//            logger.debug("\tuser:" + user);
-//            try {
-//                content = mapper.writeValueAsString(message.get("command"));
-//            } catch (JsonProcessingException e) {
-//                logger.error("Error writing command as string.", e);
-//                // TODO do something sensible here - send a msg to the client?
-//                return;
-//            }
-//            try {
-//                cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, content);
-//            } catch (StorageException e) {
-//                logger.error("Error storing the command.", e);
-//                // TODO do something sensible here - send a msg to the client?
-//                return;
-//            }
-//
-//            // Send an ack message back to the user
-//            ApiDesignCommandAck ack = new ApiDesignCommandAck();
-//            ack.setCommandId(localCommandId);
-//            ack.setContentVersion(cmdContentVersion);
-//            editingSession.sendAckTo(session, ack);
-//            logger.debug("ACK sent back to client.");
-//
-//            // Now propagate the command to all other clients
-//            ApiDesignCommand command = new ApiDesignCommand();
-//            command.setCommand(content);
-//            command.setContentVersion(cmdContentVersion);
-//            command.setAuthor(user);
-//            command.setReverted(false);
-//            editingSession.sendCommandToOthers(session, user, command);
-//            logger.debug("Command propagated to 'other' clients.");
-//
-//            return;
-//        } else if (msgType.equals("selection")) {
-//            String user = editingSession.getUser(session);
-//            String selection = null;
-//            if (message.has("selection")) {
-//                JsonNode node = message.get("selection");
-//                if (node != null) {
-//                    selection = node.asText();
-//                }
-//            }
-//            logger.debug("\tuser:" + user);
-//            logger.debug("\tselection:" + selection);
-//            editingSession.sendUserSelectionToOthers(session, user, selection);
-//            logger.debug("User selection propagated to 'other' clients.");
-//            return;
-//        } else if (msgType.equals("ping")) {
-//            logger.debug("PING message received.");
-//            return;
-//        } else if (msgType.equals("undo")) {
-//            String user = editingSession.getUser(session);
-//
-//            long contentVersion = -1;
-//            if (message.has("contentVersion")) {
-//                contentVersion = message.get("contentVersion").asLong();
-//            }
-//
-//            this.metrics.undoCommand(designId, contentVersion);
-//
-//            logger.debug("\tuser:" + user);
-//            boolean reverted = false;
-//            try {
-//                reverted = storage.undoContent(user, designId, contentVersion);
-//            } catch (StorageException e) {
-//                logger.error("Error undoing a command.", e);
-//                // TODO do something sensible here - send a msg to the client?
-//                return;
-//            }
-//
-//            // If the command wasn't successfully reverted (it was already reverted or didn't exist)
-//            // then return without doing anything else.
-//            if (!reverted) {
-//                return;
-//            }
-//
-//            // Send an ack message back to the user
-//            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
-//            ack.setContentVersion(contentVersion);
-//            editingSession.sendAckTo(session, ack);
-//            logger.debug("ACK sent back to client.");
-//
-//            // Now propagate the undo to all other clients
-//            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
-//            command.setContentVersion(contentVersion);
-//            editingSession.sendUndoToOthers(session, user, command);
-//            logger.debug("Undo sent to 'other' clients.");
-//
-//            return;
-//        } else if (msgType.equals("redo")) {
-//            String user = editingSession.getUser(session);
-//
-//            long contentVersion = -1;
-//            if (message.has("contentVersion")) {
-//                contentVersion = message.get("contentVersion").asLong();
-//            }
-//
-//            this.metrics.redoCommand(designId, contentVersion);
-//
-//            logger.debug("\tuser:" + user);
-//            boolean restored = false;
-//            try {
-//                restored = storage.redoContent(user, designId, contentVersion);
-//            } catch (StorageException e) {
-//                logger.error("Error undoing a command.", e);
-//                // TODO do something sensible here - send a msg to the client?
-//                return;
-//            }
-//
-//            // If the command wasn't successfully restored (it was already restored or didn't exist)
-//            // then return without doing anything else.
-//            if (!restored) {
-//                return;
-//            }
-//
-//            // Send an ack message back to the user
-//            ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
-//            ack.setContentVersion(contentVersion);
-//            editingSession.sendAckTo(session, ack);
-//            logger.debug("ACK sent back to client.");
-//
-//            // Now propagate the redo to all other clients
-//            ApiDesignUndoRedo command = new ApiDesignUndoRedo();
-//            command.setContentVersion(contentVersion);
-//            editingSession.sendRedoToOthers(session, user, command);
-//            logger.debug("Redo sent to 'other' clients.");
-//
-//            return;
-//        }
-        logger.error("Unknown message type: {}", msgType);
+        // logger.error("Unknown message type: {}", msgType);
         // TODO something went wrong if we got here - report an error of some kind
     }
 
     @OnClose
-    public void onCloseSession(Session session, CloseReason reason) {
+    public void onCloseSession(Session sessionx, CloseReason reason) {
+        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+
         String designId = session.getPathParameters().get("designId");
         logger.debug("Closing a WebSocket due to: {}", reason.getReasonPhrase());
         logger.debug("\tdesignId: {}", designId);
@@ -375,8 +223,6 @@ public class EditApiDesignEndpoint {
      * Finds all commands executed since the last full content rollup and applies
      * them to the API design.  This produces a "latest" version of the API
      * and stores that as a new content entry in the storage.
-     * @param userId
-     * @param designId
      * @throws StorageException 
      * @throws NotFoundException 
      * @throws OaiCommandException 

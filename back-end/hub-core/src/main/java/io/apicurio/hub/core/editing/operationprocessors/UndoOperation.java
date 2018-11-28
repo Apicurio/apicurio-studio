@@ -3,6 +3,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.ApicurioSessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.websocket.Session;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -30,7 +30,7 @@ public class UndoOperation implements IOperationProcessor {
     private IEditingMetrics metrics;
 
     @Override
-    public void process(ApiDesignEditingSession editingSession, Session session, BaseOperation op) {
+    public void processLocal(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op) {
         VersionedOperation undoOperation = (VersionedOperation) op;
         String user = editingSession.getUser(session);
         String designId = editingSession.getDesignId();

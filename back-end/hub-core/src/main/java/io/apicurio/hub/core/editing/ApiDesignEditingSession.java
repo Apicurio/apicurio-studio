@@ -233,7 +233,7 @@ public class ApiDesignEditingSession implements Closeable {
                 try {
                     otherSession.sendAsText(operation);
                 } catch (IOException e) {
-                    logger.error("Error sending undo to websocket with sessionId: " + otherSession.getId(), e);
+                    logger.error("Error sending {} to websocket with sessionId: {}", operation.getType(), otherSession.getId(), e);
                 }
             }
         }

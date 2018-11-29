@@ -31,6 +31,7 @@ public class JsonUtil {
         try {
             return objectMapper.readTree(json);
         } catch (IOException ioe) {
+            System.err.println(json);
             throw new UncheckedIOException(ioe);
         }
     }
@@ -49,6 +50,7 @@ public class JsonUtil {
         try {
             return objectMapper.treeToValue(payload, klazz);
         } catch (JsonProcessingException e) {
+            System.err.println(payload.toString());
             throw new RuntimeException(e);
         }
     }

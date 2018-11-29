@@ -8,8 +8,6 @@ import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface IOperationProcessor {
-    //void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo);
-
     void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation op);
     String getOperationName();
     Class<? extends BaseOperation> unmarshallKlazz();

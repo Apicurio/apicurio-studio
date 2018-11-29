@@ -51,7 +51,7 @@ public class CommandProcessor implements IOperationProcessor {
         logger.debug("\tuser:" + user);
 
         try {
-            cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, vco.getCommand());
+            cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, vco.getCommandStr());
         } catch (StorageException e) {
             logger.error("Error storing the command {}.", vco.getCommandId(), e);
             // TODO do something sensible here - send a msg to the client?
@@ -67,7 +67,7 @@ public class CommandProcessor implements IOperationProcessor {
 
         // Now propagate the command to all other clients
         ApiDesignCommand command = new ApiDesignCommand();
-        command.setCommand(vco.getCommand());
+        command.setCommand(vco.getCommandStr());
         command.setContentVersion(cmdContentVersion);
         command.setAuthor(user);
         command.setReverted(false);

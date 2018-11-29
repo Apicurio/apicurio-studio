@@ -51,11 +51,11 @@ public class FullCommandOperation extends VersionedCommandOperation {
                 command.isReverted());
     }
 
-    public static final FullCommandOperation fullCommand(long contentVersion, String commandContent, String author, boolean reverted) {
+    public static FullCommandOperation fullCommand(long contentVersion, String commandContent, String author, boolean reverted) {
         return (FullCommandOperation) new FullCommandOperation()
                 .setAuthor(author)
                 .setReverted(reverted)
-                .setCommand(commandContent)
+                .setCommandStr(commandContent)
                 .setContentVersion(contentVersion)
                 .setType("command");
     }

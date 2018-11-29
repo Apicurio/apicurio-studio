@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.editing.metrics;
-
-import java.io.IOException;
-import java.io.StringWriter;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+package io.apicurio.hub.core.metrics;
 
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * An implementation of the metrics interface that exposes metrics to

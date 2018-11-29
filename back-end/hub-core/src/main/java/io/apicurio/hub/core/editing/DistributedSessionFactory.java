@@ -72,9 +72,12 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
 
         public void sendOperation(BaseOperation command) {
             if (command.getSource() == BaseOperation.SourceEnum.LOCAL) {
+                logger.debug("Sending local command to remote subscribers (if there are any): {} as {}",
+                        command,
+                        JsonUtil.toJson(command));
                 producer.send(topic, JsonUtil.toJson(command));
             } else {
-                logger.trace("Will not retransmit remote operation over bus (prevents cycle): {}", command);
+                logger.debug("Will not retransmit remote operation over bus (prevents cycle): {}", command);
             }
         }
 

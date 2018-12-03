@@ -28,15 +28,12 @@ var ModelUtils = (function () {
      * @return
      */
     ModelUtils.detectPathParamNames = function (path) {
-        var segments = path.split("/");
-        var pnames = segments.filter(function (segment) {
-            var startsWithOB = segment.charAt(0) === '{';
-            var endsWithCB = segment.charAt(segment.length - 1) === '}';
-            return startsWithOB && endsWithCB;
+        var segments = path.split("{");
+        return segments.filter(function (segment, idx) {
+            return idx > 0 && segment.indexOf("}") != -1;
         }).map(function (segment) {
-            return segment.substring(1, segment.length - 1);
+            return segment.substring(0, segment.indexOf("}")).trim();
         });
-        return pnames;
     };
     return ModelUtils;
 }());
@@ -4336,6 +4333,7 @@ var NewSchemaDefinitionCommand_20 = (function (_super) {
             }
             else {
                 definition = document.definitions.createSchemaDefinition(this._newDefinitionName);
+                definition.type = "object";
             }
             if (this._newDefinitionDescription) {
                 definition.description = this._newDefinitionDescription;
@@ -4393,6 +4391,7 @@ var NewSchemaDefinitionCommand_30 = (function (_super) {
             }
             else {
                 definition = document.components.createSchemaDefinition(this._newDefinitionName);
+                definition.type = "object";
             }
             if (this._newDefinitionDescription) {
                 definition.description = this._newDefinitionDescription;

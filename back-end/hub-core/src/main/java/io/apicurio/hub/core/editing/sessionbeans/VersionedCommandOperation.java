@@ -1,5 +1,21 @@
+/*
+ * Copyright 2018 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.apicurio.hub.core.editing.sessionbeans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.apicurio.hub.core.util.JsonUtil;
 
@@ -10,11 +26,12 @@ public class VersionedCommandOperation extends VersionedOperation {
     private JsonNode command;
     private long commandId = -1;
 
+    @JsonIgnore
     public String getCommandStr() {
         return command.toString();
     }
 
-    public JsonNode getCommand() {
+    public Object getCommand() {
         return command;
     }
 
@@ -23,7 +40,8 @@ public class VersionedCommandOperation extends VersionedOperation {
         return this;
     }
 
-    public VersionedCommandOperation setCommandStr(String command) {
+    @JsonIgnore
+    public VersionedCommandOperation setCommand(String command) {
         this.command = JsonUtil.toJsonTree(command);
         return this;
     }
@@ -39,27 +57,31 @@ public class VersionedCommandOperation extends VersionedOperation {
 
     public static VersionedCommandOperation command(long contentVersion, String command) {
         return (VersionedCommandOperation) new VersionedCommandOperation()
-                .setCommandStr(command)
+                .setCommand(command)
                 .setContentVersion(contentVersion)
                 .setType("command");
     }
 
     public static VersionedCommandOperation command(long contentVersion, String command, long commandId) {
         return (VersionedCommandOperation) new VersionedCommandOperation()
-                .setCommandStr(command)
+                .setCommand(command)
                 .setCommandId(commandId)
                 .setContentVersion(contentVersion)
                 .setType("command");
     }
 
-    public static void main(String[] args) {
-        String raw = "{\"type\":\"command\",\"commandId\":1543444583976,\"command\":{\"__type\":\"NewOperationCommand_30\",\"_path\":\"/pets\",\"_method\":\"head\",\"_created\":true}}";
+    public static void main(String... args) {
+        String str = "{\"type\":\"command\",\"commandId\":1543502845539," +
+                "\"command\":{\"__type\":\"NewOperationCommand_30\"," +
+                "\"_path\":\"/pets/{id}\",\"_method\":\"post\",\"_created\":true}}";
 
-        VersionedCommandOperation vco = JsonUtil.fromJson(raw, VersionedCommandOperation.class);
+        VersionedCommandOperation vco = JsonUtil.fromJson(str, VersionedCommandOperation.class);
 
-        System.out.println(vco.getCommandStr());
+        JsonNode tree = JsonUtil.toJsonTree(str);
 
-        System.out.println(vco.getCommand());
+        System.out.println(tree);
+
+        System.out.println(vco);
 
     }
 }

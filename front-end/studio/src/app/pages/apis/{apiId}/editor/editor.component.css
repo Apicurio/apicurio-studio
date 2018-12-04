@@ -234,9 +234,6 @@
 .api-editor span.server-variable {
   font-weight: 400;
 }
-.api-editor span.path-segment:before {
-  content: "/";
-}
 
 .api-editor .context-help {
   margin-left: 10px;

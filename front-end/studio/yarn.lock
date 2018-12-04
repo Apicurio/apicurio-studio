@@ -5099,18 +5099,18 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-oai-ts-commands@0.2.56:
-  version "0.2.56"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.56.tgz#cf8f8b23d00855ce71fba768c9584b932deccb30"
-  integrity sha512-HOL0B5nRdw8Bkja1zEUiFBtlIWXRM4gWhrAEccYIeEngt3AOhMKxC2egeySvY+bQRvgd3sbU6jQ3lTdowLhgQw==
+oai-ts-commands@0.2.58:
+  version "0.2.58"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.58.tgz#2df6567d6b5dc9632d3e9ba6b2b84bdecac68fbf"
+  integrity sha512-LcqSS3lFFUwGJIc7DHJGKavuMpBbXnOihBDzzYu33p7OD25fZPd6t3bHMW6ea4Rv3VguWa/HWPj7yFwDn95pXA==
   dependencies:
     core-js "2.4.1"
-    oai-ts-core "0.2.31"
+    oai-ts-core "0.2.32"
 
-oai-ts-core@0.2.31:
-  version "0.2.31"
-  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.31.tgz#abe0de7a4835e9647bbe1f156454c4a9836d9a9f"
-  integrity sha512-0BcFmYEB8c8BEYWNRrvsXrzX8Ogl2kkSMV9HFjHuSLdcgG3oxoU52jRIROw/ZK2g1QJj25KWGL9xx6rdCvpByg==
+oai-ts-core@0.2.32:
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.32.tgz#e841ad6a38bd8941be7672b1a2a56bf8b56ecb35"
+  integrity sha512-FnCm51dB/FgvV5EZbybyLaJlPMCueBHhQwDM/AYpkpZlpx7zcLE4n4/0V2DRZdaTxYKjhKvxxUfRIAcczbdXjA==
   dependencies:
     core-js "2.4.1"
 

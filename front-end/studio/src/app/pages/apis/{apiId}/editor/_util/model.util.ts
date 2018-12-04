@@ -15,65 +15,10 @@
  * limitations under the License.
  */
 
-import {
-    Oas20Parameter,
-    Oas20PathItem,
-    Oas20Schema,
-    Oas30Schema,
-    OasNode,
-    OasOperation,
-    ReferenceUtil
-} from "oai-ts-core";
-import {ObjectUtils} from "./object.util";
+import {Oas20Schema, Oas30Schema, OasNode, ReferenceUtil} from "oai-ts-core";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
 export class ModelUtils {
-
-    /**
-     * Detects the appropriate path parameter names from a path.  For example, if the
-     * string "/resources/{fooId}/subresources/{barId}" is passed in, the following
-     * string array will be returned:  [ "fooId", "barId" ]
-     * @param path
-     * @return
-     */
-    public static detectPathParamNames(path: string): string[] {
-        // TODO remove this in favor of the same method found in oai-ts-commands
-        let segments: string[] = path.split("/");
-        let pnames: string[] = segments.filter(segment => {
-            return segment.startsWith("{") && segment.endsWith("}");
-        }).map(segment => {
-            return segment.substring(1, segment.length - 1);
-        });
-        return pnames;
-    }
-
-    /**
-     * Goes through all of the operations defined on the given path item, then returns an array
-     * of the named path param (if it exists) for each operation.  This is useful when changing
-     * the description and/or type simultaneously for all path parameters with the same name
-     * for a given path.
-     * @param path
-     * @param paramName
-     * @return
-     */
-    public static getAllPathParams(path: Oas20PathItem, paramName: string): Oas20Parameter[] {
-        let operations: OasOperation[] = [
-            path.get, path.put, path.post, path.delete, path.options, path.head, path.patch
-        ];
-        let params: Oas20Parameter[] = [];
-        operations.filter(operation => {
-            return !ObjectUtils.isNullOrUndefined(operation);
-        }).forEach( operation => {
-            if (operation.parameters) {
-                operation.parameters.forEach( parameter => {
-                    if (parameter.name === paramName && parameter.in === "path") {
-                        params.push(parameter as Oas20Parameter);
-                    }
-                });
-            }
-        });
-        return params;
-    }
 
     /**
      * Clears any possible selection that may exist on the given node for the local user.

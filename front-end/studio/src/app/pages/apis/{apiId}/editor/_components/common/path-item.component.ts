@@ -39,11 +39,21 @@ export class PathItemComponent extends AbstractBaseComponent {
     }
 
     public pathSegments(): string[] {
-        let rval: string[] = this.path.split("/");
-        if (rval[0] === "") {
-            rval = rval.splice(1);
-        }
-        return rval;
+        let segments: string[] = [];
+        this.path.split("{").forEach( (segment, idx) => {
+            let endBraceIdx: number = segment.indexOf("}");
+            if (idx === 0) {
+                segments.push(segment);
+            } else if (endBraceIdx === -1) {
+                segments.push("{" + segment);
+            } else if (endBraceIdx === (segment.length - 1)) {
+                segments.push("{" + segment);
+            } else {
+                segments.push("{" + segment.substring(0, endBraceIdx + 1));
+                segments.push(segment.substring(endBraceIdx + 1));
+            }
+        });
+        return segments;
     }
 
 }

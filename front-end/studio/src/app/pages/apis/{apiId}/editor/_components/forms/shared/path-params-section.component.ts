@@ -16,12 +16,10 @@
  */
 
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
@@ -38,11 +36,10 @@ import {
     OasParameterBase,
     OasPathItem
 } from "oai-ts-core";
+import {ModelUtils as OaiModelUtils} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
-import {ModelUtils} from "../../../_util/model.util";
 import {createDeleteParameterCommand, createNewParamCommand, ICommand} from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
-import {Subscription} from "rxjs/Subscription";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
 
@@ -102,7 +99,7 @@ export class PathParamsSectionComponent extends AbstractBaseComponent {
     public pathParameters(): (Oas30Parameter | Oas20Parameter)[] {
         if (this._pathParameters === null) {
             let names: any = {};
-            ModelUtils.detectPathParamNames(this.path.path()).forEach( paramName => {
+            OaiModelUtils.detectPathParamNames(this.path.path()).forEach( paramName => {
                 names[paramName] = "detected";
             });
             this.parent.getParameters("path").forEach( param => {

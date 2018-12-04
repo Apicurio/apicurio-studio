@@ -14348,7 +14348,7 @@ var Oas20RequiredPropertyValidationRule = (function (_super) {
         this.requireProperty("PAR-001", node, "name", "Parameter is missing a name.");
         this.requireProperty("PAR-002", node, "in", "Parameter is missing a style (Query, Header, etc).");
         if (node.in === "path" && node.required !== true) {
-            this.report("PAR-003", node, "required", "Path Properties must be marked as required.");
+            this.report("PAR-003", node, "required", "Path Parameter \"" + node.name + "\" must be marked as required.");
         }
         if (node.in === "body") {
             this.requirePropertyWhen("PAR-004", node, "schema", "in", "body", "Body Parameters must have a schema defined.");
@@ -16125,15 +16125,12 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
      * @return {Array}
      */
     Oas30InvalidPropertyValueValidationRule.prototype.parsePathTemplate = function (pathTemplate) {
-        var segments = [];
-        var split = pathTemplate.split('/');
-        split.forEach(function (seg) {
-            if (seg.indexOf('{') === 0) {
-                var segment = seg.substring(1, seg.lastIndexOf('}')).trim();
-                segments.push(segment);
-            }
+        var segments = pathTemplate.split("{");
+        return segments.filter(function (segment, idx) {
+            return idx > 0 && segment.indexOf("}") != -1;
+        }).map(function (segment) {
+            return segment.substring(0, segment.indexOf("}")).trim();
         });
-        return segments;
     };
     /**
      * Parses the given server template for variable names.  For example, a server template might be
@@ -16271,8 +16268,8 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
             }
             var path = pathItem.path();
             var pathVars = this.parsePathTemplate(path);
-            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter not found in path template.");
-            this.reportIfInvalid("PAR-3-006", node.required === true, node, "required", "Path Parameters must be marked as \"required\".");
+            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter \"" + node.name + "\" not found in path template.");
+            this.reportIfInvalid("PAR-3-006", node.required === true, node, "required", "Path Parameter \"" + node.name + "\" must be marked as \"required\".");
             if (this.hasValue(node.style)) {
                 this.reportIfInvalid("PAR-3-010", OasValidationRuleUtil.isValidEnumItem(node.style, ["matrix", "label", "simple"]), node, "style", "Path Parameter Style must be one of: [\"matrix\", \"label\", \"simple\"]  (Found \"" + node.style + "\").");
             }
@@ -16633,7 +16630,6 @@ var Oas30RequiredPropertyValidationRule = (function (_super) {
     Oas30RequiredPropertyValidationRule.prototype.visitParameter = function (node) {
         this.requireProperty("PAR-3-003", node, "name", "Parameter is missing a name.");
         this.requireProperty("PAR-3-004", node, "in", "Parameter location is missing.");
-        this.requirePropertyWhen("PAR-3-020", node, "required", "in", "path", "Path Parameter must be marked as \"required\".");
     };
     Oas30RequiredPropertyValidationRule.prototype.visitParameterDefinition = function (node) {
         this.visitParameter(node);

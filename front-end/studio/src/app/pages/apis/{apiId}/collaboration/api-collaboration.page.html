@@ -35,7 +35,7 @@
                                     <div class="list-group-item list-view-pf-stacked collaborator-list-item" *ngFor="let collaborator of collaborators" [class.owner]="collaborator.role === 'owner'">
                                         <div class="list-view-pf-actions">
                                             <button (click)="removeCollaborator(collaborator)" class="btn btn-default"
-                                                    *ngIf="collaborator.role != 'owner' && isOwner()"><span class="fa fa-fw fa-trash"></span></button>
+                                                    *ngIf="canRemoveCollaborator(collaborator)"><span class="fa fa-fw fa-trash"></span></button>
                                         </div>
                                         <div class="list-view-pf-main-info">
                                             <div class="list-view-pf-left">
@@ -45,7 +45,13 @@
                                                 <div class="list-view-pf-description">
                                                     <div class="list-group-item-heading">
                                                         {{ collaborator.userName }}
-                                                        <small>{{ collaborator.role }}</small>
+                                                        <small *ngIf="!isOwner() || collaborator.role === 'owner'">{{ collaborator.role }}</small>
+                                                        <drop-down [id]="'api-request-body-required'"
+                                                                   *ngIf="isOwner() && collaborator.role !== 'owner'"
+                                                                   [value]="collaborator.role"
+                                                                   [options]="roleOptions()"
+                                                                   (onValueChange)="changeCollaboratorRole(collaborator, $event)"
+                                                                   noSelectionLabel="None"></drop-down>
                                                     </div>
                                                 </div>
                                                 <div class="list-view-pf-additional-info">

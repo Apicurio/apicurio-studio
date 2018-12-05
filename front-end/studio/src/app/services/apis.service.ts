@@ -37,6 +37,7 @@ import {NewCodegenProject} from "../models/new-codegen-project.model";
 import {UpdateCodegenProject} from "../models/update-codegen-project.model";
 import {Injectable} from "@angular/core";
 import {ApiPublication} from "../models/api-publication.model";
+import {UpdateCollaborator} from "../models/update-collaborator.model";
 
 
 export interface IConnectionHandler {
@@ -575,6 +576,19 @@ export class ApisService extends AbstractHubService {
 
         console.info("[ApisService] Deleting an API collaborator: %s", deleteCollaboratorUrl);
         return this.httpDelete(deleteCollaboratorUrl, options);
+    }
+
+    public updateCollaborator(apiId: string, userId: string, updateInfo: UpdateCollaborator): Promise<void> {
+        console.info("[ApisService] Updating an API collaborator for API %s", apiId);
+
+        let updateCollaboratorUrl: string = this.endpoint("/designs/:designId/collaborators/:userId", {
+            designId: apiId,
+            userId: userId
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[ApisService] Updating an API collaborator: %s", updateCollaboratorUrl);
+        return this.httpPut(updateCollaboratorUrl, updateInfo, options);
     }
 
     /**

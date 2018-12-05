@@ -27,6 +27,8 @@ import {IAuthenticationService} from "../../../../services/auth.service";
 import {User} from "../../../../models/user.model";
 import {Title} from "@angular/platform-browser";
 import {ClipboardService} from "ngx-clipboard";
+import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {UpdateCollaborator} from "../../../../models/update-collaborator.model";
 
 @Component({
     moduleId: module.id,
@@ -43,6 +45,8 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
     private _isOwner: boolean = false;
     public _copyLink: string = "";
     public copied: boolean = false;
+
+    private _roleOptions: DropDownOption[];
 
     /**
      * Constructor.
@@ -154,6 +158,19 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         });
     }
 
+    public canRemoveCollaborator(collaborator: ApiCollaborator): boolean {
+        if (!this.isOwner()) {
+            return false;
+        }
+
+        let user: User = this.authService.getAuthenticatedUserNow();
+        if (user.login === collaborator.userId) {
+            return true;
+        }
+
+        return collaborator.role != 'owner';
+    }
+
     /**
      * Called to remove a collaborator.  The user will no longer have access to the API.
      * @param collaborator
@@ -215,6 +232,44 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
                 }
             }
         }
+    }
+
+    public roleOptions(): DropDownOption[] {
+        if (!this._roleOptions) {
+            this._roleOptions = [
+                {
+                    name: "Owner",
+                    value: "owner"
+                },
+                {
+                    name: "Collaborator",
+                    value: "collaborator"
+                }
+            ];
+        }
+        return this._roleOptions;
+    }
+
+    public changeCollaboratorRole(collaborator: ApiCollaborator, newRole: string): void {
+        console.info("[ApiCollaborationPageComponent] Changing collaborator role to: ", newRole);
+
+        let update: UpdateCollaborator = new UpdateCollaborator();
+        update.newRole = newRole;
+
+        let designId: string = this.api.id;
+        let userId: string = collaborator.userId;
+
+        this.apis.updateCollaborator(designId, userId, update).then( () => {
+            // Implement a spinner for progress on this change?
+            this.collaborators.forEach( collab => {
+                if (collab.userId === collaborator.userId) {
+                    collab.role = newRole;
+                }
+            });
+        }).catch( error => {
+            console.error("[ApiCollaborationPageComponent] Error changing collaborator role");
+            this.error(error);
+        });
     }
 
 }

@@ -144,13 +144,23 @@
   border-bottom: 1px solid #ddd;
 }
 .api-editor .editor-detail .detail-title .detail-actions {
-  border-left: 1px solid #ddd;
+  float: right;
+}
+.api-editor .editor-detail .detail-title .detail-actions:hover {
+  cursor: pointer;
+  background-color: #d1eaf7;
+}
+.api-editor .editor-detail .detail-title .detail-actions .dropdown-menu {
+  left: auto;
+  right: 0;
 }
 .api-editor .editor-detail .detail-title .detail-actions .dropdown .btn {
   color: #333;
-}
-.api-editor .editor-detail .detail-title .detail-actions:hover {
-  background-color: #d1eaf7;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 38px;
+  font-size: 18px;
+  height: 44px;
 }
 .api-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
   color: #333;
@@ -612,23 +622,6 @@
 .api-editor .editor-detail .detail-title .detail-icon .label {
   border-radius: 2px;
   padding: 2px 8px 2px 8px;
-}
-.api-editor .editor-detail .detail-title .detail-actions {
-  float: right;
-}
-.api-editor .editor-detail .detail-title .detail-actions .dropdown-menu {
-  left: auto;
-  right: 0;
-}
-.api-editor .editor-detail .detail-title .detail-actions .dropdown .btn {
-  padding-left: 20px;
-  padding-right: 20px;
-  line-height: 38px;
-  font-size: 18px;
-  height: 44px;
-}
-.api-editor .editor-detail .detail-title .detail-actions:hover {
-  cursor: pointer;
 }
 .api-editor .editor-detail .editor-detail-form .detail-tabs ul {
   padding-left: 10px;

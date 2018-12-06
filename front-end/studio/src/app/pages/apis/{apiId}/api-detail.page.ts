@@ -24,6 +24,9 @@ import {ApiContributors} from "../../../models/api-contributors.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ApiDesignChange} from "../../../models/api-design-change.model";
 import {Title} from "@angular/platform-browser";
+import {IAuthenticationService} from "../../../services/auth.service";
+import {User} from "../../../models/user.model";
+import {ApiCollaborator} from "../../../models/api-collaborator.model";
 
 @Component({
     moduleId: module.id,
@@ -35,11 +38,13 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     public api: Api;
     public contributors: ApiContributors;
+    public collaborators: ApiCollaborator[];
     public activity: ApiDesignChange[] = [];
     public activityStart: number = 0;
     public activityEnd: number = 10;
     public hasMoreActivity: boolean = false;
     public gettingMoreActivity: boolean = false;
+    public canDelete: boolean = false;
 
     /**
      * Constructor.
@@ -47,9 +52,11 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
      * @param route
      * @param apis
      * @param titleService
+     * @param authService
      */
     constructor(private router: Router, route: ActivatedRoute,
-                private apis: ApisService, titleService: Title) {
+                private apis: ApisService, titleService: Title,
+                private authService: IAuthenticationService) {
         super(route, titleService);
         this.api = new Api();
     }
@@ -86,6 +93,13 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             this.api = api;
             this.dataLoaded["api"] = true;
             this.updatePageTitle();
+
+            // Note: this is a shortcut to make an initial guess/determination as to whether the
+            // user is allowed to delete the API.  The real check will happen when the list of
+            // collaborators comes back and we check that list against the authenticated user.  But
+            // this is quicker and a decent guess.
+            let user: User = this.authService.getAuthenticatedUserNow();
+            this.canDelete = api.createdBy === user.login;
         }).catch(error => {
             console.error("[ApiDetailPageComponent] Error getting API");
             this.error(error);
@@ -106,6 +120,18 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         }).catch(error => {
             console.error("[ApiDetailPageComponent] Error getting API activity");
             this.error(error);
+        });
+        this.apis.getCollaborators(apiId).then( collaborators => {
+            this.collaborators = collaborators;
+            this.dataLoaded["collaborators"] = true;
+
+            // Now for the true test of whether the logged-in user can delete the API.
+            let user: User = this.authService.getAuthenticatedUserNow();
+            collaborators.forEach( collaborator => {
+                if (collaborator.userId === user.login) {
+                    this.canDelete = collaborator.role === "owner";
+                }
+            });
         });
     }
 

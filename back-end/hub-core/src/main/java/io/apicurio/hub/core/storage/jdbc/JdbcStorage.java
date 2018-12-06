@@ -739,8 +739,8 @@ public class JdbcStorage implements IStorage {
         logger.debug("Deleting an API Design: {}", designId);
         try {
             this.jdbi.withHandle( handle -> {
-                // Check for permissions first
-                String statement = sqlStatements.hasWritePermission();
+                // Check for permissions first - must be owner to delete an API
+                String statement = sqlStatements.hasOwnerPermission();
                 Long did = Long.valueOf(designId);
                 int count = handle.createQuery(statement)
                     .bind(0, did)

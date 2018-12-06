@@ -78,9 +78,9 @@
                                                     </a>
                                                 </li>
 
-                                                <li role="separator" class="divider"></li>
+                                                <li role="separator" class="divider" *ngIf="canDelete"></li>
                                                 <li>
-                                                    <a (click)="confirmDeleteModal.open()">
+                                                    <a (click)="confirmDeleteModal.open()" *ngIf="canDelete">
                                                         <span class="fa fa-fw fa-trash"></span>
                                                         <span>Delete</span>
                                                     </a>

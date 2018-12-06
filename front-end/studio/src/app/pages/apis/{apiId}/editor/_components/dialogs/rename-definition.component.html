@@ -22,7 +22,7 @@
                                        required [(ngModel)]="name" (ngModelChange)="defChanged.next($event)">
                                 <div class="form-error-message" *ngIf="defExists">Data Type already exists.</div>
                                 <form-error-message [inputModel]="defName" [type]="'required'">Name is required.</form-error-message>
-                                <form-error-message [inputModel]="defName" [type]="'pattern'">Please enter a valid name (allowed: a-Z 0-9 . - _).</form-error-message>
+                                <form-error-message [inputModel]="defName" [type]="'pattern'">Enter a valid name (only alpha-numeric characters are allowed - no whitespace)..</form-error-message>
                             </div>
                         </div>
                     </form>

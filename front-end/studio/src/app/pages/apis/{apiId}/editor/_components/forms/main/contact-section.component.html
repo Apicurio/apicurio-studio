@@ -8,7 +8,7 @@
     <div body>
         <signpost *ngIf="!hasContact()">
             <span>No contact information has been entered.</span>
-            <a (click)="setContactDialog.open()">Add contact info</a>
+            <a (click)="createEmptyContact()">Add contact info</a>
         </signpost>
         <div *ngIf="hasContact()">
             <!-- Contact Name -->
@@ -46,4 +46,3 @@
         </div>
     </div>
 </section>
-<set-contact-dialog #setContactDialog (onContact)="setContactInfo($event)"></set-contact-dialog>

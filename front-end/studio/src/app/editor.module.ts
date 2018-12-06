@@ -25,7 +25,6 @@ import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/com
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
-import {SetContactDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-contact.component";
 import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-tag.component";
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
@@ -112,7 +111,7 @@ import {ResponsesSectionComponent} from "./pages/apis/{apiId}/editor/_components
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent, InlineMarkdownEditorComponent, OperationInfoSectionComponent,
-        SetLicenseDialogComponent, SetContactDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
+        SetLicenseDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
         AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseRowComponent,

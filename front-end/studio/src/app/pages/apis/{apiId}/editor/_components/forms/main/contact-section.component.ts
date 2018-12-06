@@ -21,10 +21,9 @@ import {CommandService} from "../../../_services/command.service";
 import {
     createChangeContactCommand,
     createChangePropertyCommand,
-    createDeleteContactCommand, createDeletePropertyCommand,
+    createDeleteContactCommand,
     ICommand
 } from "oai-ts-commands";
-import {ContactInfo} from "../../dialogs/set-contact.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -51,9 +50,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      */
     public hasContact(): boolean {
         if (this.document.info && this.document.info.contact) {
-            if (this.document.info.contact.email || this.document.info.contact.url || this.document.info.contact.name) {
-                return true;
-            }
+            return true;
         }
         return false;
     }
@@ -67,6 +64,14 @@ export class ContactSectionComponent extends AbstractBaseComponent {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Called to add empty contact info to the API definition.
+     */
+    public createEmptyContact(): void {
+        let command: ICommand = createChangeContactCommand(this.document, null, null, null);
+        this.commandService.emit(command);
     }
 
     /**
@@ -108,24 +113,6 @@ export class ContactSectionComponent extends AbstractBaseComponent {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Called to change the document's contact information.
-     * @param contactInfo
-     */
-    public setContactInfo(contactInfo: ContactInfo): void {
-        if (!contactInfo.name) {
-            contactInfo.name = null;
-        }
-        if (!contactInfo.email) {
-            contactInfo.email = null;
-        }
-        if (!contactInfo.url) {
-            contactInfo.url = null;
-        }
-        let command: ICommand = createChangeContactCommand(this.document, contactInfo.name, contactInfo.email, contactInfo.url);
-        this.commandService.emit(command);
     }
 
     /**

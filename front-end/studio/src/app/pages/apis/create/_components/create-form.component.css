@@ -69,6 +69,8 @@ hr {
 .template-option-group {
   display: flex;
   flex-direction: row;
+  overflow-x: auto;
+  padding-bottom: 5px;
 }
 
 .template-option {

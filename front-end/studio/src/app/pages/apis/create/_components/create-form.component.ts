@@ -83,6 +83,7 @@ export class CreateApiFormComponent {
 
     public changeType(value: string): void {
         this.model.type = value;
+        this.model.template = null;
     }
 
     public templates(): ApiDesignTemplate[] {

@@ -22,19 +22,49 @@
                             </div>
                         </div>
 
-                        <!-- Collaborators Card -->
-                        <div class="card-pf card-pf-accented" *ngIf="isLoaded('collaborators')">
+                        <!-- NO Collaborators Card -->
+                        <div class="card-pf no-collaborators-card" *ngIf="isLoaded('collaborators') && !hasCollaborators()">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
                                     <span class="fa fa-fw fa-users"></span>
                                     <span>Collaborators</span>
+                                    <button class="icon-button pull-right" (click)="createInvitation()"
+                                            title="Invite a Collaborator"><span class="pficon pficon-add-circle-o"></span></button>
+                                </h1>
+                            </div>
+                            <div class="card-pf-body">
+                                <div class="no-collaborators">
+                                    <h1>No Collaborators For This API</h1>
+                                    <p>
+                                        Collaborating with others allows users to simultaneously craft an API.
+                                        Users can see who is editing the API, including what changes they are making,
+                                        in real time.
+                                    </p>
+                                    <p>
+                                        <em>Send a new invitation to each person</em> you would like to collaborate with on this API.
+                                    </p>
+                                    <div class="actions">
+                                        <button class="btn btn-lg btn-primary" (click)="createInvitation()">Invite a Collaborator</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collaborators Card -->
+                        <div class="card-pf class.card-pf-accented collaborators-card" *ngIf="isLoaded('collaborators') && hasCollaborators()">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <span class="fa fa-fw fa-users"></span>
+                                    <span>Collaborators</span>
+                                    <button class="icon-button pull-right" (click)="createInvitation()"
+                                            title="Invite a Collaborator"><span class="pficon pficon-add-circle-o"></span></button>
                                 </h1>
                             </div>
                             <div class="card-pf-body">
                                 <div class="collaborator-list-group list-group list-view-pf">
                                     <div class="list-group-item list-view-pf-stacked collaborator-list-item" *ngFor="let collaborator of collaborators" [class.owner]="collaborator.role === 'owner'">
                                         <div class="list-view-pf-actions">
-                                            <button (click)="removeCollaborator(collaborator)" class="btn btn-default"
+                                            <button (click)="removeCollaborator(collaborator)" class="btn icon-button"
                                                     *ngIf="canRemoveCollaborator(collaborator)"><span class="fa fa-fw fa-trash"></span></button>
                                         </div>
                                         <div class="list-view-pf-main-info">
@@ -60,6 +90,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="actions">
+                                    <button class="btn btn-lg btn-primary" (click)="createInvitation()">Invite a Collaborator</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -67,12 +100,12 @@
             </div>
         </div>
         <!-- Right Column (Invitations) -->
-        <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="hasInvitations()">
             <div class="container-fluid container-cards-pf">
                 <div class="row row-cards-pf">
                     <div class="">
                         <!-- Loading Invitations Card -->
-                        <div class="card-pf card-pf-accented" *ngIf="!isLoaded('invitations')">
+                        <div class="card-pf" *ngIf="!isLoaded('invitations')">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
                                     <p><span class="spinner spinner-xs spinner-inline"></span> Loading invitations...</p>
@@ -81,12 +114,11 @@
                         </div>
 
                         <!-- Invitations Card -->
-                        <div class="card-pf" *ngIf="isLoaded('invitations')">
+                        <div class="card-pf invitations-card" *ngIf="isLoaded('invitations')">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
                                     <span class="fa fa-fw fa-envelope-o"></span>
                                     <span>Invitations</span>
-                                    <button *ngIf="isOwner()" (click)="createInvitation()" class="btn btn-primary pull-right">Create Invite</button>
                                 </h1>
                             </div>
                             <div class="card-pf-body">
@@ -102,8 +134,7 @@
                                          [class.rejecting]="invitation.status === 'rejecting'"
                                          [class.pending]="invitation.status === 'pending'">
                                         <div class="list-view-pf-actions">
-                                            <button *ngIf="isOwner() && invitation.status === 'pending'" (click)="cancelInvitation(invitation)" class="btn btn-default" title="Cancel this invitation."><span class="fa fa-fw fa-trash"></span></button>
-                                            <button *ngIf="isOwner() && invitation.status === 'pending'" (click)="copyInvitationLink(invitation); copyUrlDialog.open()" class="btn btn-default" title="Copy invitation link to Clipboard."><span class="fa fa-fw fa-clipboard"></span></button>
+                                            <button *ngIf="isOwner() && invitation.status === 'pending'" (click)="cancelInvitation(invitation)" class="btn btn-default icon-button" title="Cancel this invitation."><span class="fa fa-fw fa-trash"></span></button>
                                         </div>
                                         <div class="list-view-pf-main-info">
                                             <div class="list-view-pf-left">
@@ -116,12 +147,26 @@
                                             <div class="list-view-pf-body">
                                                 <div class="list-view-pf-description">
                                                     <div class="list-group-item-heading">
-                                                        Created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em>
-                                                        <small *ngIf="invitation.status === 'creating'">Creating, please wait...</small>
-                                                        <small *ngIf="invitation.status === 'rejecting'">Deleting invitation, please wait...</small>
-                                                        <small *ngIf="invitation.status === 'pending'">Pending (copy the link and send it to someone!)</small>
-                                                        <small *ngIf="invitation.status === 'accepted'">Accepted by {{ invitation.modifiedBy }} on {{ invitation.modifiedOn | date }}</small>
-                                                        <small *ngIf="invitation.status === 'rejected'">Rejected by {{ invitation.modifiedBy }} on {{ invitation.modifiedOn | date }}</small>
+                                                        <div *ngIf="invitation.status === 'creating'">
+                                                            Creating invitation, please wait...
+                                                            <small>Invitation creation by {{ invitation.createdBy }}</small>
+                                                        </div>
+                                                        <div *ngIf="invitation.status === 'rejecting'">
+                                                            Rejecting invitation, please wait...
+                                                            <small>Invitation previously created by {{ invitation.createdBy }}</small>
+                                                        </div>
+                                                        <div *ngIf="invitation.status === 'pending'">
+                                                            <a (click)="invitationDialog.open(api, invitation)">Created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em></a>
+                                                            <small>Pending (copy the link and send it to someone!)</small>
+                                                        </div>
+                                                        <div *ngIf="invitation.status === 'accepted'">
+                                                            <em>{{ invitation.modifiedBy }}</em> : Accepted on {{ invitation.modifiedOn | date }}
+                                                            <small>Invitation created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em></small>
+                                                        </div>
+                                                        <div *ngIf="invitation.status === 'rejected'">
+                                                            Created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em>
+                                                            <small>Rejected by {{ invitation.modifiedBy }} on {{ invitation.modifiedOn | date }}</small>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -147,16 +192,6 @@
         </span>
     </div>
 </confirm-delete-dialog>
-<copy-url-dialog #copyUrlDialog>
-    <p>Copy the following link to your clipboard and then send it to someone you want to collaborate with!</p>
-    <div>
-        <div class="form-control-apicurio-copybox">
-            <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="_copyLink">
-            <button (click)="copyToClipboard()" class="btn btn-default" type="button"><span class="fa fa-clipboard"></span></button>
-        </div>
-    </div>
-    <div class="copybox-success" *ngIf="copied">
-        <span class="fa fa-info-circle"></span>
-        <span>URL successfully copied to the clipboard!</span>
-    </div>
-</copy-url-dialog>
+
+<invitation-dialog #invitationDialog>
+</invitation-dialog>

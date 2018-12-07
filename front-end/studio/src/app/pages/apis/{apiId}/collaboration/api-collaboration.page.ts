@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from "@angular/core";
+import {Component, Inject, QueryList, ViewChildren} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApisService} from "../../../../services/apis.service";
@@ -29,6 +29,7 @@ import {Title} from "@angular/platform-browser";
 import {ClipboardService} from "ngx-clipboard";
 import {DropDownOption} from "../../../../components/common/drop-down.component";
 import {UpdateCollaborator} from "../../../../models/update-collaborator.model";
+import {InvitationDialogComponent} from "./_components/invitation.component";
 
 @Component({
     moduleId: module.id,
@@ -48,6 +49,8 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     private _roleOptions: DropDownOption[];
 
+    @ViewChildren("invitationDialog") invitationDialog: QueryList<InvitationDialogComponent>;
+
     /**
      * Constructor.
      * @param router
@@ -61,14 +64,6 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
                 titleService: Title, private clipboardService: ClipboardService) {
         super(route, titleService);
         this.api = new Api();
-    }
-
-    /**
-     * Copies the URL to the clipboard.
-     */
-    public copyToClipboard(): void {
-        this.clipboardService.copyFromContent(this._copyLink);
-        this.copied = true;
     }
 
     /**
@@ -118,7 +113,9 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         });
         this.apis.getInvitations(apiId).then(invitations => {
             console.info("[ApiCollaborationPageComponent] Invitations data loaded: %o", invitations);
-            this.invitations = invitations;
+            this.invitations = invitations.filter( invite => {
+                return invite.status !== "rejected";
+            });
             this.invitations.sort( (i1, i2) => {
                 if (i1.createdOn > i2.createdOn) {
                     return -1;
@@ -144,7 +141,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         newInvitation.createdOn = new Date();
         newInvitation.designId = this.api.id;
         newInvitation.status = "creating";
-        newInvitation.inviteId = "12345";
+        newInvitation.inviteId = "00000";
         this.invitations.unshift(newInvitation);
         this.apis.createInvitation(this.api.id).then( (invitation) => {
             newInvitation.createdBy = invitation.createdBy;
@@ -152,12 +149,18 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
             newInvitation.status = invitation.status;
             newInvitation.inviteId = invitation.inviteId;
             newInvitation.role = invitation.role;
+            // Open the "invitation info" dialog
+            this.invitationDialog.first.open(this.api, newInvitation);
         }).catch( error => {
             console.error("[ApiCollaborationPageComponent] Error creating invitation");
             this.error(error);
         });
     }
 
+    /**
+     * Returns true if the given collaborator can be removed.
+     * @param collaborator
+     */
     public canRemoveCollaborator(collaborator: ApiCollaborator): boolean {
         if (!this.isOwner()) {
             return false;
@@ -182,6 +185,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         }
         this.apis.deleteCollaborator(this.api.id, collaborator.userId).then( () => {
             // Nothing to do on success.
+            // FIXME if I just removed MYSELF as a collaborator, then redirect to the Dashboard
         }).catch( error => {
             this.error(error);
         });
@@ -189,6 +193,7 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
 
     /**
      * Called to cancel a pending invitation.
+     * @param invite
      */
     public cancelInvitation(invite: Invitation): void {
         invite.status = "rejecting";
@@ -196,6 +201,9 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
             invite.status = "rejected";
             invite.modifiedOn = new Date();
             invite.modifiedBy = this.authService.getAuthenticatedUserNow().login;
+            setTimeout(() => {
+                this.invitations.splice(this.invitations.indexOf(invite), 1);
+            }, 3000);
         }).catch( error => {
             this.error(error);
         });
@@ -250,6 +258,11 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         return this._roleOptions;
     }
 
+    /**
+     * Called when the user changes the role of one of the collaborators.
+     * @param collaborator
+     * @param newRole
+     */
     public changeCollaboratorRole(collaborator: ApiCollaborator, newRole: string): void {
         console.info("[ApiCollaborationPageComponent] Changing collaborator role to: ", newRole);
 
@@ -272,4 +285,17 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
         });
     }
 
+    /**
+     * Returns true if there are multiple collaborators.
+     */
+    public hasCollaborators(): boolean {
+        return this.collaborators && this.collaborators.length > 1;
+    }
+
+    /**
+     * Returns true if there are multiple invitations.
+     */
+    public hasInvitations(): boolean {
+        return this.invitations && this.invitations.length > 0;
+    }
 }

@@ -1,0 +1,31 @@
+.invitation-dialog {
+  width: 740px;
+}
+
+.invitation-dialog .form-label {
+  font-weight: 600;
+}
+
+.form-control-apicurio-copybox {
+  display: flex;
+  width: 100%;
+}
+.form-control-apicurio-copybox > input {
+  flex-grow: 1;
+}
+.form-control-apicurio-copybox > button {
+  box-shadow: none;
+  margin-left: -1px;
+}
+
+.copybox-success {
+  color: #0088ce;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  text-align: right;
+}
+
+.invitation-dialog .modal-body p, .invitation-dialog .modal-body ul {
+  margin-bottom: 15px;
+}

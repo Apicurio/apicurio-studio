@@ -33,7 +33,6 @@ import {VerticalNavComponent} from './components/vertical-nav.component';
 import {NavHeaderComponent} from './components/nav-header.component';
 import {AppRoutingModule} from './app-routing.module';
 import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.component';
-import {CopyUrlDialogComponent} from './components/dialogs/copy-url.component';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
 import {NotFoundPageComponent} from './pages/404.page';
 import {SettingsNavComponent} from './pages/settings/_components/settings-nav.component';
@@ -68,6 +67,7 @@ import {TemplateService} from './services/template.service';
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 import {DefaultPageComponent} from "./pages/default.page";
 import {ClipboardModule} from "ngx-clipboard";
+import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_components/invitation.component";
 
 @NgModule({
     imports: [
@@ -76,13 +76,14 @@ import {ClipboardModule} from "ngx-clipboard";
     ],
     declarations: [
         AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-        VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, CopyUrlDialogComponent,
+        VerticalNavComponent, NavHeaderComponent, ConfirmDeleteDialogComponent, InvitationDialogComponent,
         NotFoundPageComponent, SettingsNavComponent, CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent,
         ProfilePageComponent, SettingsPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
         ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, DefaultPageComponent
+
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,

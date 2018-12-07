@@ -4,7 +4,7 @@
 }
 
 .collaborator-list-item, .invitation-list-item {
-  background-color: #f8f8f8;
+  background: transparent;
   border-bottom: 1px solid transparent;
 }
 .collaborator-list-item {
@@ -41,26 +41,57 @@
   font-size: 12px;
 }
 
-.form-control-apicurio-copybox {
-  display: flex;
-  width: 100%;
-}
-.form-control-apicurio-copybox > input {
-  flex-grow: 1;
-}
-.form-control-apicurio-copybox > button {
-  box-shadow: none;
-  margin-left: -1px;
-}
-
-.copybox-success {
-  color: #0088ce;
-  width: 100%;
-  margin-top: 5px;
-  margin-bottom: 0px;
-  text-align: right;
-}
-
 .collaborator-list-group .collaborator-list-item .list-view-pf-body .list-view-pf-description .list-group-item-heading {
   overflow: visible;
+}
+
+.api-collaboration button.icon-button {
+  border: 0px;
+  background-color: transparent;
+  color: #776;
+  padding-left: 3px;
+  padding-right: 3px;
+  box-shadow: none;
+  font-size: 18px;
+}
+.api-collaboration button.icon-button:hover {
+  color: #3f4950;
+}
+
+.api-collaboration .card-pf-title button.icon-button {
+  font-size: 20px;
+}
+.api-collaboration .card-pf-body .no-collaborators {
+  padding-top: 30px;
+  padding-bottom: 50px;
+  text-align: center;
+}
+.api-collaboration .card-pf-body .no-collaborators h1 {
+  margin-bottom: 18px;
+}
+.api-collaboration .card-pf-body .no-collaborators button {
+  margin-top: 18px;
+}
+.api-collaboration .card-pf-body .no-collaborators em {
+  font-weight: 600;
+}
+.api-collaboration .card-pf-body .no-collaborators p {
+  font-size: 14px;
+  line-height: 16px;
+  margin-bottom: 25px;
+}
+
+.api-collaboration .invitation-list-group a {
+  cursor: pointer;
+}
+.api-collaboration .invitation-list-group .icon-button {
+  background: transparent;
+}
+
+.api-collaboration .invitations-card {
+  background: transparent;
+}
+
+.api-collaboration .collaborators-card .card-pf-body .actions {
+  text-align: right;
 }

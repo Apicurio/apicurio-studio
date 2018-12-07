@@ -92,7 +92,6 @@
                             </div>
                             <div class="card-pf-body">
                                 <markdown [data]="api.description" emptyText="No description."></markdown>
-                                <!--<h3 *ngIf="api.description" class="api-description">{{ api.description }}</h3>-->
                                 <h3 *ngIf="!api.description" class="no-description">No description available.</h3>
                                 <div class="api-created-info">
                                     <div class="info-full">
@@ -103,6 +102,13 @@
                                         <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
                                     </div>
+                                    <div class="info-full">
+                                        <span class="fa fa-fw fa-users"></span>
+                                        <a [routerLink]="[ 'collaboration' ]">
+                                            <span class="num-collaborators">{{ getNumberOfCollaborators() }}</span>
+                                            <span>Other Collaborator(s)</span>
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
                                     <span class="api-tags-label">Tags:</span>
@@ -110,8 +116,6 @@
                                 </div>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
-                                    <!--<a href="download?type=api&format=yaml&id={{ api.id }}" class="btn btn-default pull-right" download="{{ api.name }}.yaml"><span class="fa fa-fw fa-download"></span> Download</a>-->
-                                    <a [routerLink]="[ 'collaboration' ]" class="btn btn-default pull-right"><span class="fa fa-fw fa-users"></span> Collaborate</a>
                                 </div>
                             </div>
                         </div>

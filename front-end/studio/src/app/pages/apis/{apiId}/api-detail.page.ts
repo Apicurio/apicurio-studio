@@ -171,4 +171,15 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         });
     }
 
+    /**
+     * Returns the number of collaborators (or ? if that data is not yet loaded).
+     */
+    public getNumberOfCollaborators(): string {
+        if (!this.collaborators) {
+            return "?";
+        } else {
+            return "" + (this.collaborators.length - 1);
+        }
+    }
+
 }

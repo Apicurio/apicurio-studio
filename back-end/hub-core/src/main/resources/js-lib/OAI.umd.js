@@ -14038,6 +14038,16 @@ var DefaultValidationSeverityRegistry = (function () {
     return DefaultValidationSeverityRegistry;
 }());
 /**
+ * Regular expression to match path - accepts '/', '/1', /abc', '/abc/', /{var}', '/{var}/', '/abc/prefix{var}'
+ * Path expressions must not start with numerics.
+ */
+var PATH_MATCH_REGEX = /^(\/[^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+$/;
+var pathMatchEx = new RegExp(PATH_MATCH_REGEX);
+/**
+ * Regular expression to match path segments.
+ */
+var SEG_MATCH_REGEX = /\/([^{}\/]*)(\{([a-zA-Z_][0-9a-zA-Z_]*)\})?/g;
+/**
  * Base class for all validation rules.
  */
 var OasValidationRuleUtil = (function () {
@@ -14137,7 +14147,7 @@ var OasValidationRuleUtil = (function () {
      * @param items
      */
     OasValidationRuleUtil.isValidEnumItem = function (value, items) {
-        return items.indexOf(value) != -1;
+        return items.indexOf(value) !== -1;
     };
     /**
      * Returns true only if the given value is a valid host.
@@ -14166,7 +14176,54 @@ var OasValidationRuleUtil = (function () {
      * @return {boolean}
      */
     OasValidationRuleUtil.isValidHttpCode = function (statusCode) {
-        return OasValidationRuleUtil.HTTP_STATUS_CODES.indexOf(statusCode) != -1;
+        return OasValidationRuleUtil.HTTP_STATUS_CODES.indexOf(statusCode) !== -1;
+    };
+    /**
+     * Checks the path template against the regular expression and returns match result.
+     *
+     * @param pathTemplate
+     * @return {boolean}
+     */
+    OasValidationRuleUtil.isPathWellFormed = function (pathTemplate) {
+        return pathMatchEx.test(pathTemplate);
+    };
+    /**
+     * Finds all occurrences of path segment patterns in a path template.
+     *
+     * @param pathTemplate
+     * @return {PathSegment[]}
+     */
+    OasValidationRuleUtil.getPathSegments = function (pathTemplate) {
+        var pathSegments = [];
+        // If path is root '/', simply return empty segments
+        if (pathTemplate === "/") {
+            return pathSegments;
+        }
+        var normalizedPath = pathTemplate;
+        // Remove the trailing slash if the path ends with slash
+        if (pathTemplate.lastIndexOf("/") === pathTemplate.length - 1) {
+            normalizedPath = pathTemplate.substring(0, pathTemplate.length - 1);
+        }
+        // Look for all occurrence of string like {param1}
+        var match;
+        var segId = 0;
+        var segMatchEx = new RegExp(SEG_MATCH_REGEX);
+        match = segMatchEx.exec(normalizedPath);
+        while (match) {
+            var pathSegment = {
+                segId: segId,
+                prefix: match[1],
+            };
+            // parameter name is inside the curly braces (group 3)
+            if (match[3] !== undefined) {
+                pathSegment.formalName = match[3];
+                pathSegment.normalizedName = "__param__" + segId;
+            }
+            pathSegments.push(pathSegment);
+            segId = segId + 1;
+            match = segMatchEx.exec(normalizedPath);
+        }
+        return pathSegments;
     };
     return OasValidationRuleUtil;
 }());
@@ -14253,6 +14310,43 @@ var Oas20ValidationRule = (function (_super) {
     };
     return Oas20ValidationRule;
 }(Oas20NodeVisitorAdapter));
+/**
+ * Base class for all 2.0 validation rules that have to work with paths.
+ */
+var Oas20PathValidationRule = (function (_super) {
+    __extends$82(Oas20PathValidationRule, _super);
+    function Oas20PathValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Checks the path template against the regular expression and returns match result.
+     *
+     * @param pathTemplate
+     * @return {boolean}
+     */
+    Oas20PathValidationRule.prototype.isPathWellFormed = function (pathTemplate) {
+        return OasValidationRuleUtil.isPathWellFormed(pathTemplate);
+    };
+    /**
+     * Finds all occurences of path segment patterns in a path template.
+     *
+     * @param pathTemplate
+     * @return {PathSegment[]}
+     */
+    Oas20PathValidationRule.prototype.getPathSegments = function (pathTemplate) {
+        return OasValidationRuleUtil.getPathSegments(pathTemplate);
+    };
+    /**
+     * Utility function to report path related errors.
+     * @param code
+     * @param node
+     * @param message
+     */
+    Oas20PathValidationRule.prototype.reportPathError = function (code, node, message) {
+        this.report(code, node, null, message);
+    };
+    return Oas20PathValidationRule;
+}(Oas20ValidationRule));
 
 /**
  * @license
@@ -15000,7 +15094,7 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
      */
     Oas20InvalidPropertyNameValidationRule.prototype.isValidDefinitionName = function (name) {
         // TODO implement some reasonable rules for this
-        return name.indexOf("/") == -1;
+        return name.indexOf("/") === -1;
     };
     /**
      * Returns true if the scope name is valid.
@@ -15010,8 +15104,56 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
         // TODO implement some reasonable rules for this
         return true;
     };
+    /**
+     * Finds all occurences of path segments that are empty.
+     * i.e. they neither have a prefix nor a path variable within curly braces.
+     *
+     * @param pathSegments
+     * @return {PathSegment[]}
+     */
+    Oas20InvalidPropertyNameValidationRule.prototype.findEmptySegmentsInPath = function (pathSegments) {
+        return pathSegments.filter(function (pathSegment) {
+            return pathSegment.prefix === "" && pathSegment.formalName === undefined;
+        });
+    };
+    /**
+     * Finds path segments that are duplicates i.e. they have the same formal name used across multiple segments.
+     * For example, in a path like /prefix/{var1}/{var1}, var1 is used in multiple segments.
+     *
+     * @param pathSegments
+     * @return {PathSegment[]}
+     */
+    Oas20InvalidPropertyNameValidationRule.prototype.findDuplicateParametersInPath = function (pathSegments) {
+        var uniq = pathSegments
+            .filter(function (pathSegment) {
+            return pathSegment.formalName !== undefined;
+        })
+            .map(function (pathSegment) {
+            return { parameter: pathSegment.formalName, count: 1 };
+        })
+            .reduce(function (parameterCounts, segmentEntry) {
+            parameterCounts[segmentEntry.parameter] = (parameterCounts[segmentEntry.parameter] || 0) + segmentEntry.count;
+            return parameterCounts;
+        }, {});
+        return Object.keys(uniq).filter(function (a) { return uniq[a] > 1; });
+    };
     Oas20InvalidPropertyNameValidationRule.prototype.visitPathItem = function (node) {
-        this.reportIfInvalid("PATH-005", node.path().indexOf("/") === 0, node, null, "Paths must start with a '/' character.");
+        var pathTemplate = node.path();
+        var pathSegments;
+        if (this.isPathWellFormed(pathTemplate) === true) {
+            pathSegments = this.getPathSegments(pathTemplate);
+            var emptySegments = this.findEmptySegmentsInPath(pathSegments);
+            if (emptySegments.length > 0) {
+                this.reportPathError("PATH-006", node, "Path template \"" + node.path() + "\" contains one or more empty segment.");
+            }
+            var duplicateParameters = this.findDuplicateParametersInPath(pathSegments);
+            if (duplicateParameters.length > 0) {
+                this.reportPathError("PATH-007", node, "Path template \"" + node.path() + "\" contains duplicate variable names (" + duplicateParameters.join(", ") + ").");
+            }
+        }
+        else {
+            this.reportPathError("PATH-005", node, "Path template \"" + node.path() + "\" is not valid.");
+        }
     };
     Oas20InvalidPropertyNameValidationRule.prototype.visitResponse = function (node) {
         // The "default" response will have a statusCode of "null"
@@ -15021,8 +15163,8 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
     };
     Oas20InvalidPropertyNameValidationRule.prototype.visitExample = function (node) {
         var _this = this;
-        var produces = (node.ownerDocument()).produces;
-        var operation = (node.parent().parent().parent());
+        var produces = node.ownerDocument().produces;
+        var operation = node.parent().parent().parent();
         if (this.hasValue(operation.produces)) {
             produces = operation.produces;
         }
@@ -15031,7 +15173,7 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
         }
         var ctypes = node.exampleContentTypes();
         ctypes.forEach(function (ct) {
-            _this.reportIfInvalid("EX-001", produces.indexOf(ct) != -1, node, "produces", "Example '" + ct + "' must match one of the \"produces\" mime-types.");
+            _this.reportIfInvalid("EX-001", produces.indexOf(ct) !== -1, node, "produces", "Example '" + ct + "' must match one of the \"produces\" mime-types.");
         });
     };
     Oas20InvalidPropertyNameValidationRule.prototype.visitSchemaDefinition = function (node) {
@@ -15053,7 +15195,7 @@ var Oas20InvalidPropertyNameValidationRule = (function (_super) {
         this.reportIfInvalid("SS-013", this.isValidDefinitionName(node.schemeName()), node, "schemeName", "Security Scheme Name is not valid.");
     };
     return Oas20InvalidPropertyNameValidationRule;
-}(Oas20ValidationRule));
+}(Oas20PathValidationRule));
 var Oas20UnknownPropertyValidationRule = (function (_super) {
     __extends$85(Oas20UnknownPropertyValidationRule, _super);
     function Oas20UnknownPropertyValidationRule() {
@@ -15156,15 +15298,12 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
      * @return {Array}
      */
     Oas20InvalidPropertyValueValidationRule.prototype.parsePathTemplate = function (pathTemplate) {
-        var segments = [];
-        var split = pathTemplate.split('/');
-        split.forEach(function (seg) {
-            if (seg.indexOf('{') === 0) {
-                var segment = seg.substring(1, seg.lastIndexOf('}')).trim();
-                segments.push(segment);
-            }
+        var segments = pathTemplate.split("{");
+        return segments.filter(function (segment, idx) {
+            return idx > 0 && segment.indexOf("}") !== -1;
+        }).map(function (segment) {
+            return segment.substring(0, segment.indexOf("}")).trim();
         });
-        return segments;
     };
     /**
      * Returns true if it's OK to use "wrapped" in the XML node.  It's only OK to do this if
@@ -15224,19 +15363,19 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
         if (node.in === "path") {
             var pathItem = void 0;
             if (node.parent()["_path"]) {
-                pathItem = (node.parent());
+                pathItem = node.parent();
             }
             else {
-                pathItem = (node.parent().parent());
+                pathItem = node.parent().parent();
             }
             var path = pathItem.path();
-            var pathVars = this.parsePathTemplate(path);
-            this.reportIfInvalid("PAR-007", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter name \"" + node.name + "\" must match a variable in the Path Template.");
+            var pathSegs = this.getPathSegments(path);
+            this.reportIfInvalid("PAR-007", pathSegs.filter(function (pathSeg) { return pathSeg.formalName === node.name; }).length > 0, node, "name", "Path Parameter \"" + node.name + "\" not found in path template.");
         }
         if (node.in === "formData") {
-            var consumes = (node.ownerDocument()).consumes;
+            var consumes = node.ownerDocument().consumes;
             if (!node.parent()["_path"]) {
-                var operation = (node.parent());
+                var operation = node.parent();
                 if (this.hasValue(operation.consumes)) {
                     consumes = operation.consumes;
                 }
@@ -15338,7 +15477,7 @@ var Oas20InvalidPropertyValueValidationRule = (function (_super) {
         });
     };
     return Oas20InvalidPropertyValueValidationRule;
-}(Oas20ValidationRule));
+}(Oas20PathValidationRule));
 
 /**
  * @license
@@ -15659,6 +15798,43 @@ var Oas30ValidationRule = (function (_super) {
     };
     return Oas30ValidationRule;
 }(Oas30NodeVisitorAdapter));
+/**
+ * Base class for all 3.0 validation rules that have to work with paths.
+ */
+var Oas30PathValidationRule = (function (_super) {
+    __extends$91(Oas30PathValidationRule, _super);
+    function Oas30PathValidationRule() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Checks the path template against the regular expression and returns match result.
+     *
+     * @param pathTemplate
+     * @return {boolean}
+     */
+    Oas30PathValidationRule.prototype.isPathWellFormed = function (pathTemplate) {
+        return OasValidationRuleUtil.isPathWellFormed(pathTemplate);
+    };
+    /**
+     * Finds all occurences of path segment patterns in a path template.
+     *
+     * @param pathTemplate
+     * @return {PathSegment[]}
+     */
+    Oas30PathValidationRule.prototype.getPathSegments = function (pathTemplate) {
+        return OasValidationRuleUtil.getPathSegments(pathTemplate);
+    };
+    /**
+     * Utility function to report path related errors.
+     * @param code
+     * @param node
+     * @param message
+     */
+    Oas30PathValidationRule.prototype.reportPathError = function (code, node, message) {
+        this.report(code, node, null, message);
+    };
+    return Oas30PathValidationRule;
+}(Oas30ValidationRule));
 
 /**
  * @license
@@ -15909,7 +16085,9 @@ var __extends$93 = (undefined && undefined.__extends) || function (d, b) {
 var Oas30InvalidPropertyNameValidationRule = (function (_super) {
     __extends$93(Oas30InvalidPropertyNameValidationRule, _super);
     function Oas30InvalidPropertyNameValidationRule() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.indexedPathTemplates = {};
+        return _this;
     }
     /**
      * Returns true if the definition name is valid.
@@ -15932,8 +16110,137 @@ var Oas30InvalidPropertyNameValidationRule = (function (_super) {
         }
         return !this.isNullOrUndefined(schema.property(propertyName));
     };
+    /**
+     * Finds all occurences of path segments that are empty.
+     * i.e. they neither have a prefix nor a path variable within curly braces.
+     *
+     * @param pathSegments
+     * @return {PathSegment[]}
+     */
+    Oas30InvalidPropertyNameValidationRule.prototype.findEmptySegmentsInPath = function (pathSegments) {
+        return pathSegments.filter(function (pathSegment) {
+            return pathSegment.prefix === "" && pathSegment.formalName === undefined;
+        });
+    };
+    /**
+     * Finds path segments that are duplicates i.e. they have the same formal name used across multiple segments.
+     * For example, in a path like /prefix/{var1}/{var1}, var1 is used in multiple segments.
+     *
+     * @param pathSegments
+     * @return {string[]}
+     */
+    Oas30InvalidPropertyNameValidationRule.prototype.findDuplicateParametersInPath = function (pathSegments) {
+        var uniq = pathSegments
+            .filter(function (pathSegment) {
+            return pathSegment.formalName !== undefined;
+        })
+            .map(function (pathSegment) {
+            return { parameter: pathSegment.formalName, count: 1 };
+        })
+            .reduce(function (parameterCounts, segmentEntry) {
+            parameterCounts[segmentEntry.parameter] = (parameterCounts[segmentEntry.parameter] || 0) + segmentEntry.count;
+            return parameterCounts;
+        }, {});
+        return Object.keys(uniq).filter(function (a) { return uniq[a] > 1; });
+    };
+    /**
+     * Utility function to find other paths that are semantically similar to the path that is being checked against.
+     * Two paths that differ only in formal parameter name are considered identical.
+     * For example, paths /test/{var1} and /test/{var2} are identical.
+     * See OAS 3 Specification's Path Templates section for more details.
+     *
+     * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#path-templating-matching
+     *
+     * @param pathToCheck
+     * @param pathIndex
+     */
+    Oas30InvalidPropertyNameValidationRule.prototype.findIdenticalPaths = function (pathToCheck, pathIndex) {
+        var _this = this;
+        var identicalPaths = [];
+        var pathSegments = pathIndex[pathToCheck].pathSegments;
+        Object.keys(pathIndex)
+            .filter(function (checkAgainst) { return checkAgainst !== pathToCheck; })
+            .forEach(function (checkAgainst) {
+            var segmentsIdential = true;
+            var pathSegmentsToCheckAgainst = pathIndex[checkAgainst].pathSegments;
+            if (pathSegments.length !== pathSegmentsToCheckAgainst.length) {
+                segmentsIdential = false;
+            }
+            else {
+                pathSegments.forEach(function (pathSegment, index) {
+                    segmentsIdential =
+                        segmentsIdential && _this.isSegmentIdentical(pathSegment, pathSegmentsToCheckAgainst[index]);
+                });
+            }
+            if (segmentsIdential === true) {
+                identicalPaths.push(checkAgainst);
+            }
+        });
+        return identicalPaths;
+    };
+    /**
+     * Utility function to test the equality of two path segments.
+     * Segments are considered equal if they have same prefixes (if any) and same "normalized name".
+     *
+     * @param segment1
+     * @param segment2
+     * @return {boolean}
+     */
+    Oas30InvalidPropertyNameValidationRule.prototype.isSegmentIdentical = function (segment1, segment2) {
+        if (segment1.prefix === segment2.prefix) {
+            if (segment1.normalizedName === undefined && segment2.normalizedName === undefined) {
+                return true;
+            }
+            if ((segment1.normalizedName === undefined && segment2.normalizedName !== undefined) ||
+                (segment1.normalizedName !== undefined && segment2.normalizedName === undefined)) {
+                return false;
+            }
+            return segment1.normalizedName === segment2.normalizedName;
+        }
+        return false;
+    };
     Oas30InvalidPropertyNameValidationRule.prototype.visitPathItem = function (node) {
-        this.reportIfInvalid("PATH-3-004", node.path().indexOf("/") === 0, node, null, "Paths must start with a '/' character.");
+        var _this = this;
+        var pathTemplate = node.path();
+        var hasTemplateErrors = false;
+        var pathSegments;
+        if (this.isPathWellFormed(pathTemplate) === true) {
+            pathSegments = this.getPathSegments(pathTemplate);
+            var emptySegments = this.findEmptySegmentsInPath(pathSegments);
+            if (emptySegments.length > 0) {
+                this.reportPathError("PATH-3-005", node, "Path template \"" + node.path() + "\" contains one or more empty segment.");
+                hasTemplateErrors = hasTemplateErrors || true;
+            }
+            var duplicateParameters = this.findDuplicateParametersInPath(pathSegments);
+            if (duplicateParameters.length > 0) {
+                this.reportPathError("PATH-3-006", node, "Path template \"" + node.path() + "\" contains duplicate variable names (" + duplicateParameters.join(", ") + ").");
+                hasTemplateErrors = hasTemplateErrors || true;
+            }
+        }
+        else {
+            this.reportPathError("PATH-3-004", node, "Path template \"" + node.path() + "\" is not valid.");
+            hasTemplateErrors = hasTemplateErrors || true;
+        }
+        if (hasTemplateErrors === false) {
+            var currentPathRecord = {
+                identicalReported: false,
+                pathSegments: pathSegments,
+                node: node,
+            };
+            this.indexedPathTemplates[pathTemplate] = currentPathRecord;
+            var identicalPaths = this.findIdenticalPaths(pathTemplate, this.indexedPathTemplates);
+            if (identicalPaths.length > 0) {
+                this.reportPathError("PATH-3-007", node, "Path template \"" + node.path() + "\" is semantically identical to at least one other path.");
+                currentPathRecord.identicalReported = true;
+                identicalPaths.forEach(function (path) {
+                    var identicalPathRecord = _this.indexedPathTemplates[path];
+                    if (identicalPathRecord.identicalReported === false) {
+                        _this.reportPathError("PATH-3-007", identicalPathRecord.node, "Path template \"" + node.path() + "\" is semantically identical to at least one other path.");
+                        identicalPathRecord.identicalReported = true;
+                    }
+                });
+            }
+        }
     };
     Oas30InvalidPropertyNameValidationRule.prototype.visitResponse = function (node) {
         // The "default" response will have a statusCode of "null"
@@ -15983,7 +16290,7 @@ var Oas30InvalidPropertyNameValidationRule = (function (_super) {
         this.reportIfInvalid("ENC-3-006", this.isValidSchemaProperty(schema, name), node, name, "Encoding Property \"" + name + "\" not found in the associated schema.");
     };
     return Oas30InvalidPropertyNameValidationRule;
-}(Oas30ValidationRule));
+}(Oas30PathValidationRule));
 var Oas30UnknownPropertyValidationRule = (function (_super) {
     __extends$93(Oas30UnknownPropertyValidationRule, _super);
     function Oas30UnknownPropertyValidationRule() {
@@ -16098,7 +16405,7 @@ var Oas30OperationFinder = (function (_super) {
  * Implements the Invalid Property Value validation rule.  This rule is responsible
  * for reporting whenever the **value** of a property fails to conform to requirements
  * outlined by the specification.  This is typically things like enums, where the
- * *format* of the value is fine (e.g. correct data-type) but the valid is somehow
+ * *format* of the value is fine (e.g. correct data-type) but the value is somehow
  * invalid.
  */
 var Oas30InvalidPropertyValueValidationRule = (function (_super) {
@@ -16113,24 +16420,6 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
     Oas30InvalidPropertyValueValidationRule.prototype.isValidOperationId = function (id) {
         // TODO implement a regex for this? should be something like camelCase
         return true;
-    };
-    /**
-     * Parses the given path template for segments.  For example, a path template might be
-     *
-     * /foo/{fooId}/resources/{resourceId}
-     *
-     * In this case, this method will return [ "fooId", "resourceId" ]
-     *
-     * @param pathTemplate
-     * @return {Array}
-     */
-    Oas30InvalidPropertyValueValidationRule.prototype.parsePathTemplate = function (pathTemplate) {
-        var segments = pathTemplate.split("{");
-        return segments.filter(function (segment, idx) {
-            return idx > 0 && segment.indexOf("}") != -1;
-        }).map(function (segment) {
-            return segment.substring(0, segment.indexOf("}")).trim();
-        });
     };
     /**
      * Parses the given server template for variable names.  For example, a server template might be
@@ -16149,9 +16438,9 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
         var vars = [];
         var startIdx = serverTemplate.indexOf('{');
         var endIdx = -1;
-        while (startIdx != -1) {
+        while (startIdx !== -1) {
             endIdx = serverTemplate.indexOf('}', startIdx);
-            if (endIdx != -1) {
+            if (endIdx !== -1) {
                 vars.push(serverTemplate.substring(startIdx + 1, endIdx));
                 startIdx = serverTemplate.indexOf('{', endIdx);
             }
@@ -16177,7 +16466,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
      * @return {boolean}
      */
     Oas30InvalidPropertyValueValidationRule.prototype.isValidMultipartType = function (typeName) {
-        return typeName === "application/x-www-form-urlencoded" || typeName.indexOf("multipart") == 0;
+        return typeName === "application/x-www-form-urlencoded" || typeName.indexOf("multipart") === 0;
     };
     /**
      * Returns true if the given operation is one of:  POST, PUT, OPTIONS
@@ -16200,11 +16489,11 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
         }
         if (this.hasValue(node.explode)) {
             var mediaType = node.parent();
-            this.reportIf("ENC-3-003", mediaType.name() != "application/x-www-form-urlencoded", node, "explode", "\"Explode\" is not allowed for \"" + mediaType.name() + "\" media types.");
+            this.reportIf("ENC-3-003", mediaType.name() !== "application/x-www-form-urlencoded", node, "explode", "\"Explode\" is not allowed for \"" + mediaType.name() + "\" media types.");
         }
         if (this.hasValue(node.allowReserved)) {
             var mediaType = node.parent();
-            this.reportIf("ENC-3-004", mediaType.name() != "application/x-www-form-urlencoded", node, "allowReserved", "\"Allow Reserved\" is not allowed for \"" + mediaType.name() + "\" media types.");
+            this.reportIf("ENC-3-004", mediaType.name() !== "application/x-www-form-urlencoded", node, "allowReserved", "\"Allow Reserved\" is not allowed for \"" + mediaType.name() + "\" media types.");
         }
     };
     Oas30InvalidPropertyValueValidationRule.prototype.visitHeader = function (node) {
@@ -16261,14 +16550,14 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
         if (node.in === "path") {
             var pathItem = void 0;
             if (node.parent()["_path"]) {
-                pathItem = (node.parent());
+                pathItem = node.parent();
             }
             else {
-                pathItem = (node.parent().parent());
+                pathItem = node.parent().parent();
             }
             var path = pathItem.path();
-            var pathVars = this.parsePathTemplate(path);
-            this.reportIfInvalid("PAR-3-018", OasValidationRuleUtil.isValidEnumItem(node.name, pathVars), node, "name", "Path Parameter \"" + node.name + "\" not found in path template.");
+            var pathSegs = this.getPathSegments(path);
+            this.reportIfInvalid("PAR-3-018", pathSegs.filter(function (pathSeg) { return pathSeg.formalName === node.name; }).length > 0, node, "name", "Path Parameter \"" + node.name + "\" not found in path template.");
             this.reportIfInvalid("PAR-3-006", node.required === true, node, "required", "Path Parameter \"" + node.name + "\" must be marked as \"required\".");
             if (this.hasValue(node.style)) {
                 this.reportIfInvalid("PAR-3-010", OasValidationRuleUtil.isValidEnumItem(node.style, ["matrix", "label", "simple"]), node, "style", "Path Parameter Style must be one of: [\"matrix\", \"label\", \"simple\"]  (Found \"" + node.style + "\").");
@@ -16333,7 +16622,7 @@ var Oas30InvalidPropertyValueValidationRule = (function (_super) {
         this.reportIfInvalid("SVAR-3-003", OasValidationRuleUtil.isValidEnumItem(varName, vars), node, null, "Server Variable \"" + varName + "\" is not found in the server url template.");
     };
     return Oas30InvalidPropertyValueValidationRule;
-}(Oas30ValidationRule));
+}(Oas30PathValidationRule));
 
 /**
  * @license
@@ -18136,6 +18425,9 @@ exports.OasReverseTraverser = OasReverseTraverser;
 exports.Oas20ReverseTraverser = Oas20ReverseTraverser;
 exports.Oas30ReverseTraverser = Oas30ReverseTraverser;
 exports.DefaultValidationSeverityRegistry = DefaultValidationSeverityRegistry;
+exports.PATH_MATCH_REGEX = PATH_MATCH_REGEX;
+exports.pathMatchEx = pathMatchEx;
+exports.SEG_MATCH_REGEX = SEG_MATCH_REGEX;
 exports.OasValidationRuleUtil = OasValidationRuleUtil;
 exports.OasResetValidationProblemsVisitor = OasResetValidationProblemsVisitor;
 exports.Oas20ValidationVisitor = Oas20ValidationVisitor;

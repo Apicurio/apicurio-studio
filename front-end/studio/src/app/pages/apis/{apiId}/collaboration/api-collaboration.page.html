@@ -34,14 +34,12 @@
                             </div>
                             <div class="card-pf-body">
                                 <div class="no-collaborators">
-                                    <h1>No Collaborators For This API</h1>
-                                    <p>
-                                        Collaborating with others allows users to simultaneously craft an API.
-                                        Users can see who is editing the API, including what changes they are making,
-                                        in real time.
+                                    <h1>No invitations have been accepted to collaborate on "{{ api.name }}"</h1>
+                                    <p *ngIf="hasInvitations()">
+                                        You can resend an outstanding invitation link by clicking the invitation and copying the link.
                                     </p>
                                     <p>
-                                        <em>Send a new invitation to each person</em> you would like to collaborate with on this API.
+                                        To send new invitations, click the Invite button.
                                     </p>
                                     <div class="actions">
                                         <button class="btn btn-lg btn-primary" (click)="createInvitation()">Invite a Collaborator</button>
@@ -157,7 +155,7 @@
                                                         </div>
                                                         <div *ngIf="invitation.status === 'pending'">
                                                             <a (click)="invitationDialog.open(api, invitation)">Created on <em>{{ invitation.createdOn | date }} by {{ invitation.createdBy }}</em></a>
-                                                            <small>Pending (copy the link and send it to someone!)</small>
+                                                            <small>Pending (click above to copy the link and send it to someone!)</small>
                                                         </div>
                                                         <div *ngIf="invitation.status === 'accepted'">
                                                             <em>{{ invitation.modifiedBy }}</em> : Accepted on {{ invitation.modifiedOn | date }}

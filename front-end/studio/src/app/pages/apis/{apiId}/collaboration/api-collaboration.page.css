@@ -90,8 +90,18 @@
 
 .api-collaboration .invitations-card {
   background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
 }
 
 .api-collaboration .collaborators-card .card-pf-body .actions {
   text-align: right;
+}
+
+.api-collaboration .invitation-list-group .invitation-list-item {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+.api-collaboration .invitation-list-group .invitation-list-item:hover {
+  background-color: #c2deed;
 }

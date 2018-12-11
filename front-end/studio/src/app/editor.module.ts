@@ -103,6 +103,7 @@ import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/pa
 import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row.component";
 import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row-30.component";
 import {ResponsesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/responses-section.component";
+import {ScopesInputComponent} from "./pages/apis/{apiId}/editor/_components/common/scopes-input.component";
 
 @NgModule({
     imports: [
@@ -111,7 +112,7 @@ import {ResponsesSectionComponent} from "./pages/apis/{apiId}/editor/_components
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent, InlineMarkdownEditorComponent, OperationInfoSectionComponent,
-        SetLicenseDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent,
+        SetLicenseDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent, ScopesInputComponent,
         AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseRowComponent,

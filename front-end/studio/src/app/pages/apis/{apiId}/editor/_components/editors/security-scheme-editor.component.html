@@ -163,38 +163,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="scopes20">Scopes</label>
-                            <div>
-                                <table class="table table-striped table-bordered table-scopes" id="scopes20">
-                                    <thead>
-                                    <tr>
-                                        <th width="40%">Name</th>
-                                        <th class="pre-actions" width="60%">Description</th>
-                                        <th class="actions"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr *ngFor="let scope of model20().scopes">
-                                        <td nowrap="nowrap" class="scope-name">
-                                            <pf-inline-text-editor [noValueMessage]="'No Name'"
-                                                                   (onChange)="scope.name = $event"
-                                                                   [value]="scope.name"></pf-inline-text-editor>
-                                        </td>
-                                        <td class="description scope-description pre-actions">
-                                            <pf-inline-text-editor [noValueMessage]="'No description.'"
-                                                                   (onChange)="scope.description = $event"
-                                                                   [value]="scope.description"></pf-inline-text-editor>
-                                        </td>
-                                        <td nowrap="nowrap" class="actions">
-                                            <div>
-                                                <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope)"
-                                                        type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <button type="button" class="btn btn-default btn-sm" (click)="addScope()">Add Scope</button>
-                            </div>
+                            <scopes-input id="scopes20" [scopes]="model20().scopes" (onChange)="model20().scopes = $event"></scopes-input>
                         </div>
                     </div>
                 </div>
@@ -316,38 +285,8 @@
                                 <!-- Scopes -->
                                 <div class="form-group">
                                     <label class="control-label" for="implicit-scopes">Scopes</label>
-                                    <div>
-                                        <table class="table table-striped table-bordered table-scopes" id="implicit-scopes">
-                                            <thead>
-                                            <tr>
-                                                <th width="40%">Name</th>
-                                                <th class="pre-actions" width="60%">Description</th>
-                                                <th class="actions"></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let scope of model30().flows.implicit.scopes">
-                                                <td nowrap="nowrap" class="scope-name">
-                                                    <pf-inline-text-editor [noValueMessage]="'No Name'"
-                                                                           (onChange)="scope.name = $event"
-                                                                           [value]="scope.name"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="description pre-actions">
-                                                    <pf-inline-text-editor [noValueMessage]="'No description.'"
-                                                                           (onChange)="scope.description = $event"
-                                                                           [value]="scope.description"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="actions">
-                                                    <div>
-                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope, 'implicit')"
-                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('implicit')">Add Scope</button>
-                                    </div>
+                                    <scopes-input id="implicit-scopes" [scopes]="model30().flows.implicit.scopes"
+                                                  (onChange)="model30().flows.implicit.scopes = $event"></scopes-input>
                                 </div>
                             </div>
                             <!-- Password Flow -->
@@ -377,38 +316,8 @@
                                 <!-- Scopes -->
                                 <div class="form-group">
                                     <label class="control-label" for="password-scopes">Scopes</label>
-                                    <div>
-                                        <table class="table table-striped table-bordered table-scopes" id="password-scopes">
-                                            <thead>
-                                            <tr>
-                                                <th width="40%">Name</th>
-                                                <th class="pre-actions" width="60%">Description</th>
-                                                <th class="actions"></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let scope of model30().flows.password.scopes">
-                                                <td nowrap="nowrap" class="scope-name">
-                                                    <pf-inline-text-editor [noValueMessage]="'No Name'"
-                                                                           (onChange)="scope.name = $event"
-                                                                           [value]="scope.name"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="description pre-actions">
-                                                    <pf-inline-text-editor [noValueMessage]="'No description.'"
-                                                                           (onChange)="scope.description = $event"
-                                                                           [value]="scope.description"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="actions">
-                                                    <div>
-                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope, 'password')"
-                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('password')">Add Scope</button>
-                                    </div>
+                                    <scopes-input id="password-scopes" [scopes]="model30().flows.password.scopes"
+                                                  (onChange)="model30().flows.password.scopes = $event"></scopes-input>
                                 </div>
                             </div>
                             <!-- Client Credentials Flow -->
@@ -438,38 +347,8 @@
                                 <!-- Scopes -->
                                 <div class="form-group">
                                     <label class="control-label" for="cc-scopes">Scopes</label>
-                                    <div>
-                                        <table class="table table-striped table-bordered table-scopes" id="cc-scopes">
-                                            <thead>
-                                            <tr>
-                                                <th width="40%">Name</th>
-                                                <th class="pre-actions" width="60%">Description</th>
-                                                <th class="actions"></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let scope of model30().flows.clientCredentials.scopes">
-                                                <td nowrap="nowrap" class="scope-name">
-                                                    <pf-inline-text-editor [noValueMessage]="'No Name'"
-                                                                           (onChange)="scope.name = $event"
-                                                                           [value]="scope.name"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="description pre-actions">
-                                                    <pf-inline-text-editor [noValueMessage]="'No description.'"
-                                                                           (onChange)="scope.description = $event"
-                                                                           [value]="scope.description"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="actions">
-                                                    <div>
-                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope, 'clientCredentials')"
-                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('clientCredentials')">Add Scope</button>
-                                    </div>
+                                    <scopes-input id="cc-scopes" [scopes]="model30().flows.clientCredentials.scopes"
+                                                  (onChange)="model30().flows.clientCredentials.scopes = $event"></scopes-input>
                                 </div>
                             </div>
                             <!-- Authorization Code Flow -->
@@ -508,38 +387,8 @@
                                 <!-- Scopes -->
                                 <div class="form-group">
                                     <label class="control-label" for="authcode-scopes">Scopes</label>
-                                    <div>
-                                        <table class="table table-striped table-bordered table-scopes" id="authcode-scopes">
-                                            <thead>
-                                            <tr>
-                                                <th width="40%">Name</th>
-                                                <th class="pre-actions" width="60%">Description</th>
-                                                <th class="actions"></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr *ngFor="let scope of model30().flows.authorizationCode.scopes">
-                                                <td nowrap="nowrap" class="scope-name">
-                                                    <pf-inline-text-editor [noValueMessage]="'No Name'"
-                                                                           (onChange)="scope.name = $event"
-                                                                           [value]="scope.name"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="description pre-actions">
-                                                    <pf-inline-text-editor [noValueMessage]="'No description.'"
-                                                                           (onChange)="scope.description = $event"
-                                                                           [value]="scope.description"></pf-inline-text-editor>
-                                                </td>
-                                                <td class="actions">
-                                                    <div>
-                                                        <button class="btn btn-sm btn-default pull-right" (click)="deleteScope(scope, 'authorizationCode')"
-                                                                type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                        <button type="button" class="btn btn-default btn-sm" (click)="addScope('authorizationCode')">Add Scope</button>
-                                    </div>
+                                    <scopes-input id="authcode-scopes" [scopes]="model30().flows.authorizationCode.scopes"
+                                                  (onChange)="model30().flows.authorizationCode.scopes = $event"></scopes-input>
                                 </div>
                             </div>
                         </div>

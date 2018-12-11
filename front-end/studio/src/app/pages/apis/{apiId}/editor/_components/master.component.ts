@@ -135,7 +135,6 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     public onPathsKeypress(event: KeyboardEvent): void {
-        console.info("+++++++++++ keyboard event: ", event);
         if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
             let paths: OasPathItem[] = this.paths();
             this.handleArrowKeypress(event, paths);

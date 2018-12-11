@@ -36,7 +36,6 @@ import {
 import {EditorsService} from "../../../_services/editors.service";
 import {
     ISecuritySchemeEditorHandler,
-    Scope,
     SecurityScheme20Data,
     SecurityScheme30Data,
     SecuritySchemeEditorComponent,
@@ -45,6 +44,7 @@ import {
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {Scope} from "../../../_models/scope.model";
 
 
 @Component({

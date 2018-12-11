@@ -37,3 +37,33 @@
   margin-left: 15px;
   margin-right: 35px;
 }
+
+.security-scheme-list .scopes {
+}
+.security-scheme-list .scopes .scope {
+  display: flex;
+  margin-bottom: 5px;
+}
+.security-scheme-list .scopes .scope .scope-check {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-right: 1px solid #ccc;
+}
+.security-scheme-list .scopes .scope .scope-name {
+  padding-left: 10px;
+  flex-grow: 1;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+.security-scheme-list .scopes .scope .scope-name a {
+  color: rgb(54, 54, 54);
+  cursor: default;
+  text-decoration: none;
+}
+.security-scheme-list .scopes .scope .scope-name a:hover {
+  color: rgb(92, 92, 92);
+  text-decoration: none;
+}
+.security-scheme-list .scopes .scope .scope-name a.disabled {
+  color: rgb(187, 187, 187);
+}

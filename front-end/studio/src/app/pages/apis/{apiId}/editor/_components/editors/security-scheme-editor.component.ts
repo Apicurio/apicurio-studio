@@ -16,14 +16,17 @@
  */
 
 import {Component, ViewEncapsulation} from "@angular/core";
-import {Oas20SecurityScheme, Oas30OAuthFlow, Oas30SecurityScheme, OasDocument, OasSecurityScheme} from "oai-ts-core";
+import {
+    Oas20Scopes,
+    Oas20SecurityScheme,
+    Oas30OAuthFlow,
+    Oas30SecurityScheme,
+    OasDocument,
+    OasSecurityScheme
+} from "oai-ts-core";
 import {ObjectUtils} from "../../_util/object.util";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
-
-export interface Scope {
-    name: string;
-    description: string;
-}
+import {Scope} from "../../_models/scope.model";
 
 export interface Flow {
     enabled: boolean;
@@ -49,14 +52,14 @@ export interface SecuritySchemeData {
     flow: string;
     authorizationUrl: string;
     tokenUrl: string;
-    scopes: Scope[]
+    scopes: Scope[];
 }
 
 export interface SecurityScheme20Data extends SecuritySchemeData {
     flow: string;
     authorizationUrl: string;
     tokenUrl: string;
-    scopes: Scope[]
+    scopes: Scope[];
 }
 
 export interface SecurityScheme30Data extends SecuritySchemeData {
@@ -92,8 +95,6 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     public oauthTab: string = "implicit";
     public model: SecuritySchemeData;
 
-    private scopeIncrement: number;
-
     /**
      * Called to open the editor.
      * @param handler
@@ -101,7 +102,6 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
      * @param server
      */
     public open(handler: ISecuritySchemeEditorHandler, context: OasDocument, scheme?: OasSecurityScheme): void {
-        this.scopeIncrement = 1;
         super.open(handler, context, scheme);
     }
 
@@ -283,11 +283,10 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     /**
      * Converts from OAS30 scopes to an array of scope objects.
      * @param scopes
-     * @return
      */
     private toScopesArray(scopes: any): Scope[] {
-        let rval: Scope[] = [];
-        if (scopes) {
+        if (scopes && this.is3x()) {
+            let rval: Scope[] = [];
             for (let sk in scopes) {
                 let sd: string = scopes[sk]
                 rval.push({
@@ -295,8 +294,16 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
                     description: sd
                 });
             }
+            return rval;
+        } else if (scopes && this.is2x()) {
+            let scopes20: Oas20Scopes = scopes as Oas20Scopes;
+            return scopes20.scopes().map( sname => {
+                return {
+                    name: sname,
+                    description: scopes20.getScopeDescription(sname)
+                }
+            });
         }
-        return rval;
     }
 
     /**
@@ -315,37 +322,6 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
         }
         if (flow === "application") {
             this.model.authorizationUrl = null;
-        }
-    }
-
-    /**
-     * Called when the user clicks the "Add Scope" button.
-     * @param flow
-     */
-    public addScope(flow?: string): void {
-        if (!flow) {
-            this.model20().scopes.push({
-                name: "scope-" + this.scopeIncrement++,
-                description: ""
-            });
-        } else {
-            this.model30().flows[flow].scopes.push({
-                name: "scope-" + this.scopeIncrement++,
-                description: ""
-            });
-        }
-    }
-
-    /**
-     * Called to delete a scope.
-     * @param scope
-     * @param flow
-     */
-    public deleteScope(scope: Scope, flow?: string): void {
-        if (!flow) {
-            this.model20().scopes.splice(this.model.scopes.indexOf(scope), 1);
-        } else {
-            this.model30().flows[flow].scopes.splice(this.model30().flows[flow].scopes.indexOf(scope), 1);
         }
     }
 

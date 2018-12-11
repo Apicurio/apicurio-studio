@@ -89,16 +89,20 @@
                                         <strong>No Available Scopes</strong> No scopes have been configured for this Security Scheme.
                                     </div>
                                 </div>
+                                <div class="scopes" *ngIf="scopes(scheme).length > 0">
+                                    <div class="scope" *ngFor="let scope of scopes(scheme)">
+                                        <div class="scope-check">
+                                            <input type="checkbox" [checked]="isScopeChecked(scheme, scope.name)" [disabled]="!isChecked(scheme)"
+                                                   (change)="toggleScope(scheme, scope.name, $event.target.checked)">
+                                        </div>
+                                        <div class="scope-name">
+                                            <a [class.disabled]="!isChecked(scheme)" title="{{ scope.description }}"
+                                               (click)="toggleScope(scheme, scope.name)">{{ scope.name }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </td>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3" *ngFor="let scope of scopes(scheme)">
-                                <label title="{{ scope.description }}">
-                                    <input type="checkbox" [checked]="isScopeChecked(scheme, scope.name)" [disabled]="!isChecked(scheme)"
-                                           (change)="toggleScope(scheme, scope.name, $event.target.checked)">
-                                    <span>{{ scope.name }}</span>
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>

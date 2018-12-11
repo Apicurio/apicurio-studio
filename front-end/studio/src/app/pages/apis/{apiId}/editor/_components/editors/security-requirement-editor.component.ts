@@ -261,16 +261,21 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scope
      * @param enable
      */
-    public toggleScope(scheme: OasSecurityScheme, scope: string, enable: boolean): void {
+    public toggleScope(scheme: OasSecurityScheme, scope: string, enable?: boolean): void {
+        let checked: boolean = enable;
+        if (enable === undefined) {
+            checked = !this.isScopeChecked(scheme, scope);
+        }
+
         let modelScopes: string[] = this.model[scheme.schemeName()];
         if (modelScopes === undefined) {
             return;
         }
         let idx: number = modelScopes.indexOf(scope);
-        if (idx !== -1 && !enable) {
+        if (idx !== -1 && !checked) {
             modelScopes.splice(idx, 1);
         }
-        if (idx === -1 && enable) {
+        if (idx === -1 && checked) {
             modelScopes.push(scope);
         }
     }
@@ -306,9 +311,14 @@ class SecuritySchemeFinder extends OasCombinedVisitorAdapter {
 }
 
 
+/**
+ * Used to get an array of available scopes so that the user can choose which
+ * of them are required.
+ */
 class ScopeFinder extends OasCombinedVisitorAdapter {
 
     private _scopes: ScopeInfo[] = [];
+    private _scopeNames: string[] = [];
 
     public scopes(): ScopeInfo[] {
         return this._scopes;
@@ -316,19 +326,25 @@ class ScopeFinder extends OasCombinedVisitorAdapter {
 
     protected visitOAuthFlow(node: Oas30OAuthFlow): void {
         for (let scope of node.getScopes()) {
-            this._scopes.push({
-                name: scope,
-                description: node.scopes[scope]
-            });
+            if (this._scopeNames.indexOf(scope) === -1) {
+                this._scopes.push({
+                    name: scope,
+                    description: node.scopes[scope]
+                });
+                this._scopeNames.push(scope);
+            }
         }
     }
 
     public visitScopes(node: Oas20Scopes): void {
         for (let scope of node.scopes()) {
-            this._scopes.push({
-                name: scope,
-                description: node.getScopeDescription(scope)
-            });
+            if (this._scopeNames.indexOf(scope) === -1) {
+                this._scopes.push({
+                    name: scope,
+                    description: node.getScopeDescription(scope)
+                });
+                this._scopeNames.push(scope);
+            }
         }
     }
 

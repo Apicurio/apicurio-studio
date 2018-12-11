@@ -1,5 +1,7 @@
-package io.apicurio.hub.core.editing;
+package io.apicurio.hub.core.editing.distributed;
 
+import io.apicurio.hub.core.editing.OperationHandler;
+import io.apicurio.hub.core.editing.SharedApicurioSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
@@ -24,11 +26,12 @@ import java.io.Closeable;
 @ApplicationScoped //-- there seems to be a bug where if I use @applicationscoped Weld breaks?
 //@Singleton
 //@javax.ejb.Singleton
-public class DistributedSessionFactory implements ApicurioSessionFactory {
-    private static final Logger logger = LoggerFactory.getLogger(DistributedSessionFactory.class);
-    private static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/session/";
+public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
+    private static final Logger logger = LoggerFactory.getLogger(JMSSessionFactory.class);
+    private static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/apicurio/session/";
 
     // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
+    // because of some EE spec limitations that block listener callback handlers being registered.
     @Resource(lookup = "java:/ConnectionFactory") 
     private ConnectionFactory connectionFactory;
 
@@ -106,6 +109,11 @@ public class DistributedSessionFactory implements ApicurioSessionFactory {
         // Subscribe to the topic
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
         return new MessagingSessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
+    }
+
+    @Override
+    public String getSessionType() {
+        return "jms";
     }
 
 }

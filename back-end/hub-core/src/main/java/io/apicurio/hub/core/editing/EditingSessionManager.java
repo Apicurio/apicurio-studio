@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.editing;
 
+import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
@@ -84,7 +85,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     }
 
     @Inject
-    private DistributedSessionFactory distSessFactory;
+    private JMSSessionFactory distSessFactory;
 
     @Inject
     private ApicurioOperationProcessor operationProcessor;

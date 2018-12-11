@@ -16,9 +16,9 @@
 
 package io.apicurio.hub.core.config;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import io.apicurio.studio.shared.config.Configuration;
+
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -65,6 +65,8 @@ public class HubConfiguration extends Configuration {
     private static final String MICROCKS_CLIENT_SECRET_ENV = "APICURIO_MICROCKS_CLIENT_SECRET";
     private static final String MICROCKS_CLIENT_SECRET_SYSPROP = "apicurio.hub.microcks.clientSecret";
 
+    private static final String DISTRIBUTED_SESSION_ENV = "APICURIO_HUB_DISTRIBUTED_SESSION_TYPE";
+    private static final String DISTRIBUTED_SESSION_SYSPROP = "apicurio.hub.distributed.session.type";
 
     /**
      * @return the configured JDBC type (default: h2)
@@ -163,4 +165,12 @@ public class HubConfiguration extends Configuration {
     public String getMicrocksClientSecret() {
         return getConfigurationProperty(MICROCKS_CLIENT_SECRET_ENV, MICROCKS_CLIENT_SECRET_SYSPROP, null);
     }
+
+    /**
+     * @return the configured distributed session type
+     */
+    public String getDistributedSessionType() {
+        return getConfigurationProperty(DISTRIBUTED_SESSION_ENV, DISTRIBUTED_SESSION_SYSPROP, "noop");
+    }
+
 }

@@ -1,5 +1,5 @@
 <entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="{{ _paramType }}Parameter" *ngIf="isOpen()"
-               [showRequiredFieldsMessage]="true" [heading]="heading()" [valid]="isValid()">
+               [showRequiredFieldsMessage]="true" [heading]="heading()" [valid]="isValid() && nameInput.valid">
 
     <div class="row-fluid body-section">
         <div class="col-md-12">
@@ -17,7 +17,7 @@
                            [(ngModel)]="model.name" placeholder="Enter a unique parameter name." pattern="[a-zA-Z0-9\.\-_]+"
                            (ngModelChange)="paramChanged.next($event)" autocomplete="off">
                     <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
-                    <form-error-message [inputModel]="nameInput" [type]="'pattern'">Enter a valid name (only alpha-numeric characters are allowed - no whitespace)..</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
                     <div class="form-error-message" *ngIf="paramExists">Parameter named <strong>{{ model.name }}</strong> already exists.</div>
                 </div>
             </div>

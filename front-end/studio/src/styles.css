@@ -83,7 +83,7 @@ div.modal-notice-of-required {
   content: '*'
 }
 
-.form-group .form-error-message {
+.form-group .form-error-message.error {
   color: red;
 }
 

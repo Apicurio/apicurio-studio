@@ -28,8 +28,13 @@ export class FormErrorMessageComponent {
 
     @Input() inputModel: NgModel;
     @Input() type: string;
+    @Input() alwaysOn: boolean;
+
+    public isError(): boolean {
+        return this.inputModel.invalid && (this.inputModel.dirty || this.inputModel.touched) && this.inputModel.errors[this.type];
+    }
 
     public isVisible(): boolean {
-        return this.inputModel.invalid && (this.inputModel.dirty || this.inputModel.touched) && this.inputModel.errors[this.type];
+        return this.alwaysOn || this.isError();
     }
 }

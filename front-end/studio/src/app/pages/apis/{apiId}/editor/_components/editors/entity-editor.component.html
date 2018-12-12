@@ -37,7 +37,7 @@
                     </div>
                     <div class="actions">
                         <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
-                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid">Save</button>
+                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
                     </div>
                 </div>
                 <hr />
@@ -55,7 +55,7 @@
             <div class="col-md-12">
                 <div class="actions">
                     <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
-                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid">Save</button>
+                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
                 </div>
             </div>
         </div>

@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import {Component} from "@angular/core";
+import {Component, ViewChildren, QueryList} from "@angular/core";
 import {Oas30Server} from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
+import {NgModel} from "@angular/forms";
 
 export interface ServerVariableData {
     default: string;
@@ -48,6 +49,8 @@ export interface IServerEditorHandler extends IEntityEditorHandler<Oas30Server, 
     styleUrls: ["server-editor.component.css"]
 })
 export class ServerEditorComponent extends EntityEditor<Oas30Server, ServerEditorEvent> {
+
+    @ViewChildren("urlInput") urlInput: QueryList<NgModel>;
 
     public model: ServerData = {
         url: "",

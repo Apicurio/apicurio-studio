@@ -1030,7 +1030,7 @@
   color: red;
   content: '*'
 }
-.api-editor .form-group .form-error-message {
+.api-editor .form-group .form-error-message.error {
   color: red;
 }
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {
     Oas20Scopes,
     Oas20SecurityScheme,
@@ -27,6 +27,7 @@ import {
 import {ObjectUtils} from "../../_util/object.util";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {Scope} from "../../_models/scope.model";
+import {NgModel} from "@angular/forms";
 
 export interface Flow {
     enabled: boolean;
@@ -92,6 +93,8 @@ export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<OasSe
 })
 export class SecuritySchemeEditorComponent extends EntityEditor<OasSecurityScheme, SecuritySchemeEditorEvent> {
 
+    @ViewChildren("nameInput") nameInput: QueryList<NgModel>;
+
     public oauthTab: string = "implicit";
     public model: SecuritySchemeData;
 
@@ -134,7 +137,11 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     public isValid(): boolean {
         let hasSchemeName: boolean = !ObjectUtils.isNullOrUndefined(this.model.schemeName);
         let hasType: boolean = !ObjectUtils.isNullOrUndefined(this.model.type);
-        return hasSchemeName && hasType;
+        let validNameInput: boolean = true;
+        if (this.nameInput && this.nameInput.first) {
+            validNameInput = this.nameInput.first.valid;
+        }
+        return hasSchemeName && hasType && validNameInput;
     }
 
     /**

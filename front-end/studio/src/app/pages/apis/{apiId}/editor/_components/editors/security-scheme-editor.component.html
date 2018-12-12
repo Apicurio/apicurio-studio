@@ -13,10 +13,10 @@
             <div class="form-group">
                 <label class="control-label required" for="securitySchemeName">Name</label>
                 <div *ngIf="_mode === 'create'">
-                    <input #nameInput="ngModel" name="schemeName" type="text" id="securitySchemeName" class="form-control short"
+                    <input name="schemeName" type="text" id="securitySchemeName" class="form-control short" #nameInput="ngModel"
                            placeholder="Enter Security Scheme Name" required [(ngModel)]="model.schemeName" pattern="[a-zA-Z0-9\.\-_]+">
                     <form-error-message [inputModel]="nameInput" [type]="'required'">Security Scheme name is required.</form-error-message>
-                    <form-error-message [inputModel]="nameInput" [type]="'pattern'">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
                 </div>
                 <div *ngIf="_mode === 'edit'">
                     <input title="To change a security scheme name, choose the 'Rename' option from the previous screen."
@@ -26,8 +26,8 @@
             <div class="form-group">
                 <label class="control-label" for="description">Description</label>
                 <div>
-                        <textarea name="description" id="description" class="form-control" autosize #descriptionInput
-                                  placeholder="Server description" [(ngModel)]="model.description"></textarea>
+                    <textarea name="description" id="description" class="form-control" autosize #descriptionInput
+                              placeholder="Server description" [(ngModel)]="model.description"></textarea>
                 </div>
             </div>
             <div class="form-group">

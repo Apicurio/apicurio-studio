@@ -313,10 +313,6 @@ public class OpenApi2Thorntail {
                         .addMember("value", "$S", _interface.getPath()).build())
                 .addJavadoc("A JAX-RS interface.  An implementation of this interface must be provided.\n");
 
-        // NPE!!!
-        String foo = System.currentTimeMillis() < 0 ? "" : null;
-        foo.trim();
-        
         // Add specs for all the methods.
         for (CodegenJavaMethod cgMethod : _interface.getMethods()) {
             com.squareup.javapoet.MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(cgMethod.getName());

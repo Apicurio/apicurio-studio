@@ -18,11 +18,13 @@ package io.apicurio.hub.api.codegen;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,48 +41,9 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateOnly() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
-            /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
-             */
-            @Override
-            protected String processApiDoc() {
-                try {
-                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.codegen.json"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-        generator.setUpdateOnly(false);
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
-        ByteArrayOutputStream outputStream = generator.generate();
-        
-        //FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-//                    System.out.println(name);
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected/generated-api/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
-
-                    String actual = IOUtils.toString(zipInputStream);
-//                    System.out.println("-----");
-//                    System.out.println(actual);
-//                    System.out.println("-----");
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
-        
+        doGenerateOnlyTest("OpenApi2ThorntailTest/beer-api.codegen.json", 
+                "OpenApi2ThorntailTest/beer-api.json", "_expected/generated-api", 
+                "org.example.api", "generated-api", "org.example.api", false);
     }
 
     /**
@@ -88,49 +51,9 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateOnly_GatewayApiNoTypes() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
-            /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
-             */
-            @Override
-            protected String processApiDoc() {
-                try {
-                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api-notypes.codegen.json"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-        generator.setUpdateOnly(false);
-        generator.setSettings(new ThorntailProjectSettings("io.openapi.simple", "simple-api", "io.openapi.simple"));
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api.json"));
-        ByteArrayOutputStream outputStream = generator.generate();
-        
-//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output.zip"), outputStream.toByteArray());
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-//                    System.out.println(name);
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApiNoTypes/simple-api/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
-
-                    String actual = IOUtils.toString(zipInputStream);
-//                    System.out.println("-----");
-//                    System.out.println(actual);
-//                    System.out.println("-----");
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
-        
+        doGenerateOnlyTest("OpenApi2ThorntailTest/gateway-api-notypes.codegen.json", 
+                "OpenApi2ThorntailTest/gateway-api.json", "_expected-gatewayApiNoTypes/simple-api", 
+                "io.openapi.simple", "simple-api", "io.openapi.simple", false);
     }
 
     /**
@@ -138,35 +61,7 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateFull() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail();
-        generator.setUpdateOnly(false);
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
-        ByteArrayOutputStream outputStream = generator.generate();
-        
-//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\output-full.zip"), outputStream.toByteArray());
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-//                    System.out.println(name);
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/generated-api/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
-
-                    String actual = IOUtils.toString(zipInputStream);
-//                    System.out.println("-----");
-//                    System.out.println(actual);
-//                    System.out.println("-----");
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
+        doFullTest("OpenApi2ThorntailTest/beer-api.json", false, "_expected-full/generated-api", false);
     }
 
     /**
@@ -174,35 +69,7 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateFull_GatewayApi() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail();
-        generator.setUpdateOnly(false);
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/gateway-api.json"));
-        ByteArrayOutputStream outputStream = generator.generate();
-        
-//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_GatewayApi.zip"), outputStream.toByteArray());
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-//                    System.out.println(name);
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-gatewayApi-full/generated-api/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
-
-                    String actual = IOUtils.toString(zipInputStream);
-//                    System.out.println("-----");
-//                    System.out.println(actual);
-//                    System.out.println("-----");
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
+        doFullTest("OpenApi2ThorntailTest/gateway-api.json", false, "_expected-gatewayApi-full/generated-api", false);
     }
 
     /**
@@ -210,29 +77,7 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateUpdateOnly() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail();
-        generator.setUpdateOnly(true);
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/beer-api.json"));
-        ByteArrayOutputStream outputStream = generator.generate();
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-full/generated-api/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
-
-                    String actual = IOUtils.toString(zipInputStream);
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
+        doFullTest("OpenApi2ThorntailTest/beer-api.json", true, "_expected-full/generated-api", false);
     }
 
     /**
@@ -240,12 +85,39 @@ public class OpenApi2ThorntailTest {
      */
     @Test
     public void testGenerateFull_RdaApi() throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        doFullTest("OpenApi2ThorntailTest/rda-api.json", false, "_expected-rda", false);
+    }
+    
+    /**
+     * Shared test method.
+     * @throws IOException
+     */
+    private void doGenerateOnlyTest(String codegenSpec, String apiDef, String expectedFilesPath, String groupId, 
+            String artifactId, String _package, boolean debug) throws IOException {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
+            /**
+             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
+             */
+            @Override
+            protected String processApiDoc() {
+                try {
+                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
         generator.setUpdateOnly(false);
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/rda-api.json"));
+        generator.setSettings(new ThorntailProjectSettings(groupId, artifactId, _package));
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource(apiDef));
         ByteArrayOutputStream outputStream = generator.generate();
         
-//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_RdaApi.zip"), outputStream.toByteArray());
+        if (debug) {
+            File tempFile = File.createTempFile("api", "zip");
+            FileUtils.writeByteArrayToFile(File.createTempFile("api", "zip"), outputStream.toByteArray());
+            System.out.println("Generated ZIP (debug) can be found here: " + tempFile.getAbsolutePath());
+
+        }
 
         // Validate the result
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -253,17 +125,70 @@ public class OpenApi2ThorntailTest {
             while (zipEntry != null) {
                 if (!zipEntry.isDirectory()) {
                     String name = zipEntry.getName();
-//                    System.out.println(name);
+                    if (debug) {
+                        System.out.println(name);
+                    }
                     Assert.assertNotNull(name);
                     
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-rda/" + name);
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + 
+                            "/" + expectedFilesPath + "/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile);
 
                     String actual = IOUtils.toString(zipInputStream);
-//                    System.out.println("-----");
-//                    System.out.println(actual);
-//                    System.out.println("-----");
+                    if (debug) {
+                        System.out.println("-----");
+                        System.out.println(actual);
+                        System.out.println("-----");
+                    }
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        }
+    }
+    
+    /**
+     * Shared test method.
+     * @param apiDef
+     * @param updateOnly
+     * @param expectedFilesPath
+     * @param debug
+     * @throws IOException
+     */
+    private void doFullTest(String apiDef, boolean updateOnly, String expectedFilesPath, boolean debug) throws IOException {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        generator.setUpdateOnly(updateOnly);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource(apiDef));
+        ByteArrayOutputStream outputStream = generator.generate();
+        
+        if (debug) {
+            File tempFile = File.createTempFile("api", "zip");
+            FileUtils.writeByteArrayToFile(File.createTempFile("api", "zip"), outputStream.toByteArray());
+            System.out.println("Generated ZIP (debug) can be found here: " + tempFile.getAbsolutePath());
+        }
+
+        // Validate the result
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+                    if (debug) {
+                        System.out.println(name);
+                    }
+                    Assert.assertNotNull(name);
+                    
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/" + expectedFilesPath + "/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
+                    if (debug) {
+                        System.out.println("-----");
+                        System.out.println(actual);
+                        System.out.println("-----");
+                    }
                     Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
                 }
                 zipEntry = zipInputStream.getNextEntry();

@@ -33,25 +33,18 @@ public class BitbucketResourceResolverTest {
         Assert.assertNotNull(resource);
         Assert.assertEquals("innodays", resource.getTeam());
         Assert.assertEquals("apicurio_test", resource.getRepository());
-        Assert.assertEquals("notmaster", resource.getSlug());
-        Assert.assertNull(resource.getBranch());
+        Assert.assertEquals("notmaster", resource.getBranch());
         Assert.assertEquals("api/fourthAPI.json", resource.getResourcePath());
         
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json?at=master&fileviewer=file-view-default");
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json?fileviewer=file-view-default");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
-        Assert.assertEquals("46163f44a4a398e0101ee9ff10affbbf57e066f9", resource.getSlug());
         Assert.assertEquals("apis/pet-store.json", resource.getResourcePath());
 
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.json");
-        Assert.assertNotNull(resource);
-        Assert.assertEquals("apicurio", resource.getTeam());
-        Assert.assertEquals("apicurio-test", resource.getRepository());
-        Assert.assertNull(resource.getBranch());
-        Assert.assertEquals("46163f44a4a398e0101ee9ff10affbbf57e066f9", resource.getSlug());
-        Assert.assertEquals("apis/pet-store.json", resource.getResourcePath());
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/foo-branch/apis/pet-store.json");
+        Assert.assertNull(resource);
     }
 
     /**
@@ -63,25 +56,18 @@ public class BitbucketResourceResolverTest {
         Assert.assertNotNull(resource);
         Assert.assertEquals("innodays", resource.getTeam());
         Assert.assertEquals("apicurio_test", resource.getRepository());
-        Assert.assertEquals("notmaster", resource.getSlug());
-        Assert.assertNull(resource.getBranch());
+        Assert.assertEquals("notmaster", resource.getBranch());
         Assert.assertEquals("api/fourthAPI.yaml", resource.getResourcePath());
         
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.yml?at=master&fileviewer=file-view-default");
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/abcdefg/apis/pet-store.yml?at=master&fileviewer=file-view-default");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());
-        Assert.assertEquals("master", resource.getBranch());
-        Assert.assertEquals("46163f44a4a398e0101ee9ff10affbbf57e066f9", resource.getSlug());
+        Assert.assertEquals("abcdefg", resource.getBranch());
         Assert.assertEquals("apis/pet-store.yml", resource.getResourcePath());
 
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/46163f44a4a398e0101ee9ff10affbbf57e066f9/apis/pet-store.yaml");
-        Assert.assertNotNull(resource);
-        Assert.assertEquals("apicurio", resource.getTeam());
-        Assert.assertEquals("apicurio-test", resource.getRepository());
-        Assert.assertNull(resource.getBranch());
-        Assert.assertEquals("46163f44a4a398e0101ee9ff10affbbf57e066f9", resource.getSlug());
-        Assert.assertEquals("apis/pet-store.yaml", resource.getResourcePath());
+        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/master2/apis/pet-store.yaml");
+        Assert.assertNull(resource);
     }
 
 }

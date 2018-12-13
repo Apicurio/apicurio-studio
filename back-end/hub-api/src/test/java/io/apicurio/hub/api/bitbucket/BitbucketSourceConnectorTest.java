@@ -207,8 +207,7 @@ public class BitbucketSourceConnectorTest {
         String repositoryUrl = "https://bitbucket.org/apicurio/apicurio-test/src/1b684236c6434bc5c6644cbf62c46bbd8d40f3d1/junit-apis/test-update-content.json?at=master&fileviewer=file-view-default";
         
         ResourceContent content = service.getResourceContent(repositoryUrl);
-        Assert.assertTrue(content.getContent().contains("Animation API"));
-        Assert.assertNotNull(content.getSha());
+        Assert.assertTrue(content.getContent().contains("swagger"));
         
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(content.getContent());

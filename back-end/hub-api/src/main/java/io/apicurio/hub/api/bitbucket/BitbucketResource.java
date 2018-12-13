@@ -25,7 +25,6 @@ public class BitbucketResource {
     private String repository;
     private String branch;
     private String resourcePath;
-    private String slug;
 
     /**
      * Constructor.
@@ -45,15 +44,6 @@ public class BitbucketResource {
      */
     public void setResourcePath(String resourcePath) {
         this.resourcePath = resourcePath;
-    }
-
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
     }
 
     public String getTeam() {

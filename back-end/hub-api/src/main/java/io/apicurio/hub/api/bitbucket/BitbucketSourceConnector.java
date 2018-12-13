@@ -404,7 +404,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             HttpResponse<com.mashape.unirest.http.JsonNode> response = request
                     .field(resource.getResourcePath(), filesStream, resource.getResourcePath())
                     .field("message", commitMessage)
-                    /*.field("branch", resource.getSlug())*/ // for now, just put the content on master
+                    .field("branch", resource.getBranch())
                     .asJson();
             //@formatter:on
 
@@ -425,7 +425,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             String contentUrl = endpoint("/repositories/:team/:repo/src/:branch/:path")
                     .bind("team", resource.getTeam())
                     .bind("repo", resource.getRepository())
-                    .bind("branch", resource.getSlug())
+                    .bind("branch", resource.getBranch())
                     .bind("path", resource.getResourcePath())
                     .toString();
             //@formatter:on

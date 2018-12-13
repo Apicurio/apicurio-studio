@@ -18,11 +18,13 @@ package io.apicurio.hub.api.codegen;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -228,6 +230,42 @@ public class OpenApi2ThorntailTest {
                     String expected = IOUtils.toString(expectedFile);
 
                     String actual = IOUtils.toString(zipInputStream);
+                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
+                }
+                zipEntry = zipInputStream.getNextEntry();
+            }
+        }
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
+     */
+    @Test
+    public void testGenerateFull_RdaApi() throws IOException {
+        OpenApi2Thorntail generator = new OpenApi2Thorntail();
+        generator.setUpdateOnly(false);
+        generator.setOpenApiDocument(getClass().getClassLoader().getResource("OpenApi2ThorntailTest/rda-api.json"));
+        ByteArrayOutputStream outputStream = generator.generate();
+        
+//        FileUtils.writeByteArrayToFile(new File("C:\\Users\\ewittman\\tmp\\testGenerateFull_RdaApi.zip"), outputStream.toByteArray());
+
+        // Validate the result
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String name = zipEntry.getName();
+//                    System.out.println(name);
+                    Assert.assertNotNull(name);
+                    
+                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/_expected-rda/" + name);
+                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
+                    String expected = IOUtils.toString(expectedFile);
+
+                    String actual = IOUtils.toString(zipInputStream);
+//                    System.out.println("-----");
+//                    System.out.println(actual);
+//                    System.out.println("-----");
                     Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
                 }
                 zipEntry = zipInputStream.getNextEntry();

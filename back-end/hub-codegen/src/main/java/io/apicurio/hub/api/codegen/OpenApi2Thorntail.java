@@ -310,7 +310,8 @@ public class OpenApi2Thorntail {
                     }
                     TypeName paramType = generateTypeName(cgArgument.getCollection(), cgArgument.getType(),
                             cgArgument.getFormat(), cgArgument.getRequired(), defaultParamType);
-                    com.squareup.javapoet.ParameterSpec.Builder paramBuilder = ParameterSpec.builder(paramType, cgArgument.getName());
+                    com.squareup.javapoet.ParameterSpec.Builder paramBuilder = ParameterSpec.builder(paramType,
+                            paramNameToJavaArgName(cgArgument.getName()));
                     if (cgArgument.getIn().equals("path")) {
                         paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "PathParam"))
                                 .addMember("value", "$S", cgArgument.getName()).build());
@@ -510,6 +511,13 @@ public class OpenApi2Thorntail {
     
     private static String javaPackageToPath(String javaPackage) {
         return javaPackage.replaceAll("[^A-Za-z0-9.]", "").replace('.', '/') + "/";
+    }
+    
+    private static String paramNameToJavaArgName(String paramName) {
+        if (paramName == null) {
+            return null;
+        }
+        return paramName.replaceAll("[^a-zA-Z0-9_]", "_");
     }
 
     /**

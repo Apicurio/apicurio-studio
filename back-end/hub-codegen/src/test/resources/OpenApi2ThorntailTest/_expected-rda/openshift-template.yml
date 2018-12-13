@@ -1,0 +1,169 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: generated-api
+message: |-
+  Congratulations on deploying generated-api into OpenShift!
+
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: generated-api
+  spec:
+    tags:
+      - name: latest
+        from:
+          kind: DockerImage
+          name: ${DOCKER_IMAGE}
+        importPolicy:
+          scheduled: true
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: generated-api
+      template: generated-api
+    name: generated-api
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: generated-api
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: generated-api
+      template: generated-api
+    name: generated-api
+  spec:
+    replicas: 1
+    selector:
+      app: generated-api
+      deploymentconfig: generated-api
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: generated-api
+          deploymentconfig: generated-api
+          template: generated-api
+      spec:
+        replicas: 1
+        containers:
+        - image: api:latest
+          imagePullPolicy: Always
+          name: generated-api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          env:
+             - name: LOGGING_LEVEL
+               value: DEBUG
+          resources:
+            limits:
+              cpu: ${API_CPU_LIMIT}
+              memory: ${API_MEM_LIMIT}
+            requests:
+              cpu: ${API_CPU_REQUEST}
+              memory: ${API_MEM_REQUEST}
+          livenessProbe:
+            httpGet:
+              path: /openapi
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /openapi
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - generated-api
+        from:
+          kind: ImageStreamTag
+          name: 'generated-api:latest'
+    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: generated-api
+    creationTimestamp: null
+    labels:
+      app: generated-api
+      template: generated-api
+  spec:
+    host: ${API_ROUTE}
+    to:
+      kind: Service
+      name: generated-api
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+# Template Parameters
+parameters:
+- name: DOCKER_IMAGE
+  displayName: Application Docker Image
+  description: The docker image containing your application.
+  value: generated-api/generated-api:latest
+  required: true
+- name: API_ROUTE
+  displayName: API Route Name
+  description: The route name to use for the API.
+  value: generated-api.example.com
+  required: true
+- name: API_MEM_LIMIT
+  displayName: API Max Memory Limit
+  description: API Pods Max Memory Limit
+  value: 1700Mi
+  required: true
+- name: API_MEM_REQUEST
+  displayName: API Memory Request
+  description: API Pods Memory Request
+  value: 800Mi
+  required: true
+- name: API_CPU_LIMIT
+  displayName: API Max CPU Limit
+  description: API Pods Max CPU Limit
+  value: '1'
+  required: true
+- name: API_CPU_REQUEST
+  displayName: API CPU Request
+  description: API Pods CPU Request
+  value: 100m
+  required: true

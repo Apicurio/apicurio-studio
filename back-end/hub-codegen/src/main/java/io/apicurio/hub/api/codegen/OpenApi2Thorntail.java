@@ -30,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 import javax.lang.model.element.Modifier;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -469,7 +470,7 @@ public class OpenApi2Thorntail {
                     public Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
                         String beanClassname = schemaRefToFQCN(path);
                         for (CodegenJavaBean cgBean : info.getBeans()) {
-                            String cgBeanFQCN = cgBean.getPackage() + "." + cgBean.getName();
+                            String cgBeanFQCN = cgBean.getPackage() + "." + StringUtils.capitalize(cgBean.getName());
                             if (beanClassname.equals(cgBeanFQCN)) {
                                 Schema schema = new Schema(classnameToUri(beanClassname), cgBean.get$schema(), null);
                                 JType jclass = codeModel._getClass(beanClassname);
@@ -502,7 +503,7 @@ public class OpenApi2Thorntail {
         if (path.startsWith("#/components/schemas/")) {
             cname = path.substring(21);
         }
-        return this.settings.javaPackage + ".beans." + cname;
+        return this.settings.javaPackage + ".beans." + StringUtils.capitalize(cname);
     }
 
     private static String javaPackageToZipPath(String javaPackage) {

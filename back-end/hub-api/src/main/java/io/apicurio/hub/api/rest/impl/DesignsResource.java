@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.codec.binary.Base64;
@@ -935,25 +938,28 @@ public class DesignsResource implements IDesignsResource {
                 
                 boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
-                OpenApi2Thorntail generator = new OpenApi2Thorntail();
+                final OpenApi2Thorntail generator = new OpenApi2Thorntail();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(oaiContent);
                 generator.setUpdateOnly(updateOnly);
                 
-                ByteArrayOutputStream stream = generator.generate();
-                byte[] data = stream.toByteArray();
-    
+                StreamingOutput stream = new StreamingOutput() {
+                    @Override
+                    public void write(OutputStream output) throws IOException, WebApplicationException {
+                        generator.generate(output);
+                    }
+                };
+                
                 String fname = settings.artifactId + ".zip";
-                ResponseBuilder builder = Response.ok().entity(data)
+                ResponseBuilder builder = Response.ok().entity(stream)
                         .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
-                        .header("Content-Type", "application/zip")
-                        .header("Content-Length", String.valueOf(data.length));
+                        .header("Content-Type", "application/zip");
 
                 return builder.build();
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
-        } catch (IOException | StorageException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }

@@ -19,6 +19,8 @@ package io.apicurio.hub.api.codegen;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.util.Date;
@@ -123,62 +125,100 @@ public class OpenApi2Thorntail {
     }
     
     /**
+     * Generates a Thorntail project and streams the generated ZIP to the given
+     * output stream.
+     * @param output
+     * @throws IOException
+     */
+    public void generate(OutputStream output) throws IOException {
+        CodegenInfo info = getInfoFromApiDoc();
+        StringBuilder log = new StringBuilder();
+        
+        try (ZipOutputStream zos = new ZipOutputStream(output)) {
+            try {
+                if (!this.updateOnly) {
+                    log.append("Generating pom.xml\r\n");
+                    zos.putNextEntry(new ZipEntry("pom.xml"));
+                    zos.write(generatePomXml(info).getBytes());
+                    zos.closeEntry();
+        
+                    log.append("Generating Dockerfile\r\n");
+                    zos.putNextEntry(new ZipEntry("Dockerfile"));
+                    zos.write(generateDockerfile().getBytes());
+                    zos.closeEntry();
+        
+                    log.append("Generating openshift-template.yml\r\n");
+                    zos.putNextEntry(new ZipEntry("openshift-template.yml"));
+                    zos.write(generateOpenshiftTemplate().getBytes());
+                    zos.closeEntry();
+    
+                    log.append("Generating src/main/resources/META-INF/microprofile-config.properties\r\n");
+                    zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/microprofile-config.properties"));
+                    zos.write(generateMicroprofileConfigProperties().getBytes());
+                    zos.closeEntry();
+                }
+    
+                log.append("Generating src/main/resources/META-INF/openapi.json\r\n");
+                zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/openapi.json"));
+                zos.write(this.openApiDoc.getBytes());
+                zos.closeEntry();
+                
+                if (!this.updateOnly) {
+                    String appFileName = javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java";
+                    log.append("Generating " + appFileName + "\r\n");
+                    zos.putNextEntry(new ZipEntry(appFileName));
+                    zos.write(generateJaxRsApplication().getBytes());
+                    zos.closeEntry();
+                }
+                
+                for (CodegenJavaInterface iface : info.getInterfaces()) {
+                    log.append("Generating Interface: " + iface.getPackage() + "." + iface.getName() + "\r\n");
+                    String javaInterface = generateJavaInterface(iface);
+                    String javaInterfaceFileName = javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java";
+                    log.append("Adding to zip: " + javaInterfaceFileName + "\r\n");
+                    zos.putNextEntry(new ZipEntry(javaInterfaceFileName));
+                    zos.write(javaInterface.getBytes());
+                    zos.closeEntry();
+                }
+                
+                IndexedCodeWriter codeWriter = new IndexedCodeWriter();
+                for (CodegenJavaBean bean : info.getBeans()) {
+                    log.append("Generating Bean: " + bean.getPackage() + "." + bean.getName() + "\r\n");
+                    generateJavaBean(bean, info, codeWriter);
+                }
+                for (String key : codeWriter.getKeys()) {
+                    String javaClassFileName = javaClassToZipPath(key);
+                    log.append("Adding to zip: " + javaClassFileName + "\r\n");
+                    zos.putNextEntry(new ZipEntry(javaClassFileName));
+                    zos.write(codeWriter.get(key).getBytes());
+                    zos.closeEntry();
+                }
+            } catch (Exception e) {
+                // If we get an error, put an PROJECT_GENERATION_ERROR file into the ZIP.
+                zos.putNextEntry(new ZipEntry("PROJECT_GENERATION_FAILED.txt"));
+                zos.write("An unexpected server error was encountered while generating the project.  See\r\n".getBytes());
+                zos.write("the details of the error below.\r\n\r\n".getBytes());
+                zos.write("Generation Log:\r\n\r\n".getBytes());
+                zos.write(log.toString().getBytes());
+                zos.write("\r\n\r\nServer Stack Trace:\r\n".getBytes());
+                
+                PrintWriter writer = new PrintWriter(zos);
+                e.printStackTrace(writer);
+                writer.flush();
+                zos.closeEntry();
+            }
+        }
+    }
+    
+    /**
      * Generate the Thorntail project.
      * @throws IOException
      */
     public ByteArrayOutputStream generate() throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        
-        CodegenInfo info = getInfoFromApiDoc();
-        
-        try (ZipOutputStream zos = new ZipOutputStream(output)) {
-            if (!this.updateOnly) {
-                zos.putNextEntry(new ZipEntry("pom.xml"));
-                zos.write(generatePomXml(info).getBytes());
-                zos.closeEntry();
-    
-                zos.putNextEntry(new ZipEntry("Dockerfile"));
-                zos.write(generateDockerfile().getBytes());
-                zos.closeEntry();
-    
-                zos.putNextEntry(new ZipEntry("openshift-template.yml"));
-                zos.write(generateOpenshiftTemplate().getBytes());
-                zos.closeEntry();
-
-                zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/microprofile-config.properties"));
-                zos.write(generateMicroprofileConfigProperties().getBytes());
-                zos.closeEntry();
-            }
-
-            zos.putNextEntry(new ZipEntry("src/main/resources/META-INF/openapi.json"));
-            zos.write(this.openApiDoc.getBytes());
-            zos.closeEntry();
-            
-            if (!this.updateOnly) {
-                zos.putNextEntry(new ZipEntry(javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java"));
-                zos.write(generateJaxRsApplication().getBytes());
-                zos.closeEntry();
-            }
-            
-            for (CodegenJavaInterface iface : info.getInterfaces()) {
-                String javaInterface = generateJavaInterface(iface);
-                zos.putNextEntry(new ZipEntry(javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java"));
-                zos.write(javaInterface.getBytes());
-                zos.closeEntry();
-            }
-            
-            IndexedCodeWriter codeWriter = new IndexedCodeWriter();
-            for (CodegenJavaBean bean : info.getBeans()) {
-                generateJavaBean(bean, info, codeWriter);
-            }
-            for (String key : codeWriter.getKeys()) {
-                zos.putNextEntry(new ZipEntry(javaClassToZipPath(key)));
-                zos.write(codeWriter.get(key).getBytes());
-                zos.closeEntry();
-            }
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            this.generate(output);
+            return output;
         }
-        
-        return output;
     }
     
     private String javaClassToZipPath(String javaClass) {
@@ -273,6 +313,10 @@ public class OpenApi2Thorntail {
                         .addMember("value", "$S", _interface.getPath()).build())
                 .addJavadoc("A JAX-RS interface.  An implementation of this interface must be provided.\n");
 
+        // NPE!!!
+        String foo = System.currentTimeMillis() < 0 ? "" : null;
+        foo.trim();
+        
         // Add specs for all the methods.
         for (CodegenJavaMethod cgMethod : _interface.getMethods()) {
             com.squareup.javapoet.MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(cgMethod.getName());

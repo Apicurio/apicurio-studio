@@ -20,7 +20,7 @@
                                 <input name="pathName" type="text" id="pathName" class="form-control" #renamePathInput
                                        placeholder="Enter a Path Name" #pathName="ngModel"
                                        required [(ngModel)]="name" (ngModelChange)="pathChanged.next($event)">
-                                <div class="form-error-message" *ngIf="pathExists">Path already exists.</div>
+                                <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
                                 <form-error-message [inputModel]="pathName" [type]="'required'">Name is required.</form-error-message>
                             </div>
                         </div>

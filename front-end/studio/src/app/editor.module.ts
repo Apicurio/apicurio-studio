@@ -100,10 +100,11 @@ import {SectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/sh
 import {RequestBodySectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/requestBody-section.component";
 import {FormDataParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/formData-param-row.component";
 import {ContentComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/content.component";
-import {ResponseRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row.component";
-import {ResponseRow30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-row-30.component";
 import {ResponsesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/responses-section.component";
 import {ScopesInputComponent} from "./pages/apis/{apiId}/editor/_components/common/scopes-input.component";
+import {ResponseTabComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-tab.component";
+import {ResponseTab30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-tab-30.component";
+import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/media-type-row.component";
 
 @NgModule({
     imports: [
@@ -115,9 +116,9 @@ import {ScopesInputComponent} from "./pages/apis/{apiId}/editor/_components/comm
         SetLicenseDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent, ScopesInputComponent,
         AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
-        DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseRowComponent,
+        DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
-        AddResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseRow30Component,
+        AddResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
@@ -128,7 +129,7 @@ import {ScopesInputComponent} from "./pages/apis/{apiId}/editor/_components/comm
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent,
-        OperationsSectionComponent
+        OperationsSectionComponent, MediaTypeRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

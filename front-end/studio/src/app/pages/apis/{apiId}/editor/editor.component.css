@@ -171,18 +171,6 @@
 .api-editor td.query-parameter, .api-editor div.query-parameter, .api-editor span.query-parameter {
   color: #39a5dc;
 }
-.api-editor div.statusCode.success {
-  color: green;
-}
-.api-editor div.statusCode.redirect {
-  color: blue;
-}
-.api-editor div.statusCode.problem {
-  color: orange;
-}
-.api-editor div.statusCode.error {
-  color: red;
-}
 .api-editor .api-operation-parameters td.icons, .api-details table td.icons {
   color: #666;
 }

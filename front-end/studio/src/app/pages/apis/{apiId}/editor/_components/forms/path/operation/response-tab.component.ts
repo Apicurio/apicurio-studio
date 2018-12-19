@@ -19,9 +19,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter,
     Input,
-    Output,
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
@@ -34,7 +32,6 @@ import {
     ICommand,
     SimplifiedType
 } from "oai-ts-commands";
-import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {ObjectUtils} from "../../../../_util/object.util";
@@ -45,22 +42,16 @@ import {SelectionService} from "../../../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
-    selector: "response-row",
-    templateUrl: "response-row.component.html",
-    styleUrls: [ "response-row.component.css" ],
+    selector: "response-tab",
+    templateUrl: "response-tab.component.html",
+    styleUrls: [ "response-tab.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResponseRowComponent extends AbstractBaseComponent {
-
-    private static httpCodes: HttpCodeService = new HttpCodeService();
+export class ResponseTabComponent extends AbstractBaseComponent {
 
     @Input() response: Oas20Response;
 
-    @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
-
-    protected _editing: boolean = false;
-    protected _tab: string = "description";
     protected _model: SimplifiedType = null;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
@@ -87,91 +78,6 @@ export class ResponseRowComponent extends AbstractBaseComponent {
         return this.response.ownerDocument();
     }
 
-    public isParameter(): boolean {
-        return false;
-    }
-
-    public statusCodeLine(code: string): string {
-        let httpCode: HttpCode = ResponseRowComponent.httpCodes.getCode(code);
-        if (httpCode) {
-            return httpCode.line;
-        }
-        return "";
-    }
-
-    public statusCodeType(code: string): string {
-        if (code === "default") {
-            return "";
-        }
-
-        var icode: number = parseInt(code);
-        if (icode >= 200 && icode < 300) {
-            return "success";
-        }
-
-        if (icode >= 300 && icode < 400) {
-            return "redirect";
-        }
-
-        if (icode >= 400 && icode < 500) {
-            return "problem";
-        }
-
-        if (icode >= 500 && icode < 600) {
-            return "error";
-        }
-
-        return "";
-    }
-
-    public hasDescription(): boolean {
-        if (this.response.description) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public description(): string {
-        return this.response.description
-    }
-
-    public isEditing(): boolean {
-        return this._editing;
-    }
-
-    public isEditingDescription(): boolean {
-        return this._editing && this._tab === "description";
-    }
-
-    public isEditingSummary(): boolean {
-        return this._editing && this._tab === "summary";
-    }
-
-    public toggle(event: MouseEvent): void {
-        if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
-            this._editing = !this._editing;
-        }
-    }
-
-    public toggleDescription(): void {
-        if (this.isEditing() && this._tab === "description") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "description";
-        }
-    }
-
-    public toggleSummary(): void {
-        if (this.isEditing() && this._tab === "summary") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "summary";
-        }
-    }
-
     public hasExamples(): boolean {
         if (ObjectUtils.isNullOrUndefined(this.response.examples)) {
             return false;
@@ -185,27 +91,14 @@ export class ResponseRowComponent extends AbstractBaseComponent {
 
     public exampleValue(contentType: string): string {
         let evalue: any = this.response.examples.example(contentType);
-        if (typeof evalue === "object") {
+        if (typeof evalue === "object" || Array.isArray(evalue)) {
             evalue = JSON.stringify(evalue);
         }
         return evalue;
     }
 
-    public delete(): void {
-        this.onDelete.emit();
-    }
-
-    public isValid(): boolean {
-        return true;
-    }
-
     public displayType(): SimplifiedType {
         return SimplifiedType.fromSchema(this.response.schema);
-    }
-
-    public rename(): void {
-        // TODO implement this!
-        alert("Not yet implemented!");
     }
 
     public changeType(newType: SimplifiedType): void {

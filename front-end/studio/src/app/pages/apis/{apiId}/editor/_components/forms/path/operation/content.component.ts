@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    ViewEncapsulation
-} from "@angular/core";
-import {Oas30Document, Oas30MediaType, Oas30RequestBodyContent, Oas30ResponseContent, Oas30Schema} from "oai-ts-core";
-import {SimplifiedType} from "oai-ts-commands";
+    Oas30Document,
+    Oas30MediaType,
+    Oas30RequestBody,
+    Oas30RequestBodyContent,
+    Oas30Response,
+    Oas30ResponseContent
+} from "oai-ts-core";
+import {createNewMediaTypeCommand, ICommand, SimplifiedType} from "oai-ts-commands";
 import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
-import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
-import {CommandService} from "../../../../_services/command.service";
 import {SelectionService} from "../../../../_services/selection.service";
+import {CommandService} from "../../../../_services/command.service";
 
 export interface MediaTypeChangeEvent {
     name: string;
@@ -64,41 +62,14 @@ export interface ExamplePropertyChangeEvent {
 })
 export class ContentComponent extends AbstractBaseComponent {
 
+    @Input() parent: Oas30Response | Oas30RequestBody;
     @Input() content: Oas30ResponseContent | Oas30RequestBodyContent;
-    @Input() document: Oas30Document;
-
-    @Output() onNewMediaType: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onRemoveMediaType: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onMediaTypeChange: EventEmitter<MediaTypeChangeEvent> = new EventEmitter<MediaTypeChangeEvent>();
-    @Output() onAddExample: EventEmitter<AddExampleEvent> = new EventEmitter<AddExampleEvent>();
-    @Output() onDeleteExample: EventEmitter<DeleteExampleEvent> = new EventEmitter<DeleteExampleEvent>();
-    @Output() onExampleSummaryChange: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
-    @Output() onExampleDescriptionChange: EventEmitter<ExamplePropertyChangeEvent> = new EventEmitter<ExamplePropertyChangeEvent>();
-    @Output() onExampleValueChange: EventEmitter<EditExampleEvent> = new EventEmitter<EditExampleEvent>();
 
     protected mediaTypeName: string;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private selectionService: SelectionService) {
+                private selectionService: SelectionService, private commandService: CommandService) {
         super(changeDetectorRef, documentService, selectionService);
-    }
-
-    /**
-     * Called when the page is initialized.
-     */
-    public ngOnInit(): void {
-        super.ngOnInit();
-        this.selectDefaultMediaType();
-    }
-
-    public selectDefaultMediaType(): void {
-        this.mediaTypeName = null;
-        if (this.content) {
-            for (let key in this.content) {
-                this.mediaTypeName = key;
-                break;
-            }
-        }
     }
 
     public hasMediaTypes(): boolean {
@@ -115,116 +86,13 @@ export class ContentComponent extends AbstractBaseComponent {
         return [];
     }
 
-    public selectMediaType(typeName: string): void {
-        this.mediaTypeName = typeName;
-    }
-
-    public mediaType(): Oas30MediaType {
-        if (!this.mediaTypeName) {
-            this.selectDefaultMediaType();
-        }
-        return this.content[this.mediaTypeName];
-    }
-
     public mediaTypeByName(name: string): Oas30MediaType {
         return this.content[name];
     }
 
-    public mediaTypeSchema(): Oas30Schema {
-        let mt: Oas30MediaType = this.mediaType();
-        if (mt) {
-            return mt.schema;
-        }
-        return null;
-    }
-
-    public mediaTypeType(): SimplifiedType {
-        let mt: Oas30MediaType = this.mediaType();
-        if (mt) {
-            return SimplifiedType.fromSchema(mt.schema);
-        }
-        return null;
-    }
-
-    public mediaTypeExamples(): Oas30Example[] {
-        return this.mediaType().getExamples();
-    }
-
-    public mediaTypeHasExamples(): boolean {
-        return this.mediaTypeExamples().length > 0;
-    }
-
-    public addExample(exampleData: any): void {
-        let event: AddExampleEvent = {
-            mediaType: this.mediaType(),
-            name: exampleData.name,
-            value: exampleData.value
-        };
-        this.onAddExample.emit(event);
-    }
-
-    public changeExampleSummary(example: Oas30Example, summary: string): void {
-        let event: ExamplePropertyChangeEvent = {
-            example: example,
-            value: summary
-        };
-        this.onExampleSummaryChange.emit(event);
-    }
-
-    public changeExampleDescription(example: Oas30Example, description: string): void {
-        let event: ExamplePropertyChangeEvent = {
-            example: example,
-            value: description
-        };
-        this.onExampleDescriptionChange.emit(event);
-    }
-
-    public deleteExample(example: Oas30Example): void {
-        let event: DeleteExampleEvent = {
-            example: example
-        };
-        this.onDeleteExample.emit(event);
-    }
-
-    public editExample(event: EditExampleEvent): void {
-        this.onExampleValueChange.emit(event);
-    }
-
-    public changeMediaTypeType(newType: SimplifiedType): void {
-        this.onMediaTypeChange.emit({
-            name: this.mediaTypeName,
-            type: newType
-        });
-    }
-
     public addMediaType(mediaType: string): void {
-        this.onNewMediaType.emit(mediaType);
-        this.mediaTypeName = mediaType;
-    }
-
-    public removeMediaType(mtName: string): void {
-        this.onRemoveMediaType.emit(mtName);
-        if (mtName === this.mediaTypeName) {
-            this.selectDefaultMediaType();
-        }
-    }
-
-    public deleteAllMediaTypes(): void {
-        // TODO fire a separate "delete all" command so that we delete all media types in a single undoable command
-        this.mediaTypeNames().forEach( mtName => {
-            this.onRemoveMediaType.emit(mtName);
-        });
-    }
-
-    public schemaForExample(): Oas30Schema {
-        let mtNames: string[] = Object.keys(this.content);
-        if (mtNames && mtNames.length > 0) {
-            let mt: Oas30MediaType = this.content[mtNames[0]];
-            if (mt) {
-                return mt.schema;
-            }
-        }
-        return null;
+        let command: ICommand = createNewMediaTypeCommand(this.parent.ownerDocument(), this.parent, mediaType);
+        this.commandService.emit(command);
     }
 
 }

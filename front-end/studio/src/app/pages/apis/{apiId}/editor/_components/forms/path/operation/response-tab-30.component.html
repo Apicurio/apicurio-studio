@@ -1,0 +1,16 @@
+<div class="response">
+    <div class="response-description">
+        <div class="form-label">Description</div>
+        <div class="problem-flex">
+            <validation-problem [model]="response" property="description"></validation-problem>
+            <div class="grow">
+                <inline-markdown-editor [value]="response.description" noValueMessage="No description."
+                                        (onChange)="setDescription($event)"></inline-markdown-editor>
+            </div>
+        </div>
+    </div>
+    <div class="response-content">
+        <div class="form-label">Response Body</div>
+        <content [content]="response.content" [parent]="response"></content>
+    </div>
+</div>

@@ -107,18 +107,26 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
 
     public validationProblems(): OasValidationProblem[] {
         if (this._problems === undefined) {
-            //console.info("[ValidationProblemComponent] Cache empty, finding validation problems.");
-            let props: string[] = this.property ? [ this.property ] : null;
-            let codes: string[] = this.code ? [ this.code ] : null;
-            let finder: ProblemFinder = new ProblemFinder(props, codes);
+            if (this._model) {
 
-            if (this.shallow) {
-                OasVisitorUtil.visitNode(this.model, finder);
+                if (this.debug) {
+                    console.info("Getting the list of problems!");
+                }
+
+                let props: string[] = this.property ? [this.property] : null;
+                let codes: string[] = this.code ? [this.code] : null;
+                let finder: ProblemFinder = new ProblemFinder(props, codes);
+
+                if (this.shallow) {
+                    OasVisitorUtil.visitNode(this.model, finder);
+                } else {
+                    OasVisitorUtil.visitTree(this.model, finder);
+                }
+
+                this._problems = finder.getProblems();
             } else {
-                OasVisitorUtil.visitTree(this.model, finder);
+                this._problems = [];
             }
-
-            this._problems = finder.getProblems();
         }
         return this._problems;
     }

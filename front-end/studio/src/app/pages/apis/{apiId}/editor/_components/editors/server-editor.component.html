@@ -34,7 +34,7 @@
                         </tr>
                     </table>
                     <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
-                    <div *ngIf="canApply()" class="form-error-message">URL has been changed.  Press enter or click "Apply" to accept.</div>
+                    <div *ngIf="canApply()" class="form-error-message error">URL has been changed.  Press enter or click "Apply" to accept.</div>
                 </div>
                 <div *ngIf="_mode === 'edit'">
                     <input name="server" type="text" id="server_ro" class="form-control" required

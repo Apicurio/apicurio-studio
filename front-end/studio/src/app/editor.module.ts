@@ -66,6 +66,7 @@ import {SecurityRequirementsSectionComponent} from "./pages/apis/{apiId}/editor/
 import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-schemes-section.component";
 import {PathParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-params-section.component";
 import {QueryParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-params-section.component";
+import {HeaderParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-params-section.component";
 import {DocumentService} from "./pages/apis/{apiId}/editor/_services/document.service";
 import {PfInlineTextEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/pf-inline-text-editor.component";
 import {TagRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/tag-row.component";
@@ -81,6 +82,7 @@ import {SecurityRequirementEditorComponent} from "./pages/apis/{apiId}/editor/_c
 import {EntityEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/entity-editor.component";
 import {QueryParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/query-param-row.component";
 import {PathParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/path-param-row.component";
+import {HeaderParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-param-row.component";
 import {InlineMarkdownEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-markdown-editor.component";
 import {DataTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/data-type-editor.component";
 import {DefinitionInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/info-section.component";
@@ -128,8 +130,8 @@ import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/for
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
-        InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent,
-        OperationsSectionComponent, MediaTypeRowComponent
+        InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
+        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

@@ -17,7 +17,6 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Subject} from "rxjs";
 import {Oas20Operation, Oas30Operation} from "oai-ts-core";
 
 
@@ -40,10 +39,13 @@ export class AddResponseDialogComponent {
     }
     set statusCode(code: string) {
         this._statusCode = code;
-        this.codeChanged.next(code);
+        if (this.codes.indexOf(code) !== -1) {
+            this.codeExists = true;
+        } else {
+            this.codeExists = false;
+        }
     }
 
-    protected codeChanged: Subject<string> = new Subject<string>();
     protected codes: string[] = [];
     protected codeExists: boolean = false;
 
@@ -68,12 +70,6 @@ export class AddResponseDialogComponent {
         this.codeExists = false;
         if (parent.responses) {
             this.codes = parent.responses.responseStatusCodes();
-            this.codeChanged
-                .debounceTime(50)
-                .distinctUntilChanged()
-                .subscribe( name => {
-                    this.codeExists = this.codes.indexOf(name) != -1;
-                });
         }
     }
 

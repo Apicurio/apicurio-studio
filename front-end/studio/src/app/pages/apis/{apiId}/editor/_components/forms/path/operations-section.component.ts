@@ -62,12 +62,10 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
 
     public ngOnInit(): void {
         super.ngOnInit();
-        console.info("[OperationsSectionComponent] ngOnInit() - set tab");
         this.setOperationTabFromSelection(this.selectionService.currentSelection());
 
         this._selectionSubscription = this.selectionService.selection().subscribe( selection => {
             let path: OasNodePath = selection;
-            console.info("[OperationsSectionComponent] SELECTION CHANGED! - set tab");
             this.setOperationTabFromSelection(path);
         });
     }
@@ -90,9 +88,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         console.info("[OperationsSectionComponent] Selection operation tab from selection: ", selection);
         this.tab = null;
         for (let operation of this.operations()) {
-            console.info("[OperationsSectionComponent] Checking operation: ", operation.method());
             if (this.isSelected(operation)) {
-                console.info("[OperationsSectionComponent] Operation selected: ", operation.method());
                 this.tab = operation.method();
                 return;
             }

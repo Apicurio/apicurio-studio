@@ -58,3 +58,17 @@
   margin-right: 10px;
   padding-top: 8px;
 }
+
+.operations-section .section-body .operation {
+  background-color: #f1f2f3;
+  padding-bottom: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-top: 1px;
+}
+
+.operations-section .section-body .section .section-body {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+}

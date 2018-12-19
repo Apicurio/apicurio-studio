@@ -18,15 +18,29 @@
         </signpost>
 
         <!-- The list of responses -->
-        <div class="container-fluid responses typed-item-list" *ngIf="is20Document()">
-            <response-row *ngFor="let response of responses()"
-                          [response]="response"
-                          (onDelete)="deleteResponse(response)"></response-row>
+        <div class="response-tabs" *ngIf="hasResponses()">
+            <div class="tab statusCode {{ statusCodeType(response.statusCode()) }}" [class.active]="isTabActive(response)" *ngFor="let response of responses()">
+                <a (click)="setTab(response)">
+                    <span>{{ response.statusCode() }}</span>
+                    <span>{{ statusCodeLine(response.statusCode()) }}</span>
+                </a>
+                <validation-aggregate [models]="[ response ]"></validation-aggregate>
+            </div>
+            <div class="actions">
+                <div class="dropdown dropdown-kebab-pf">
+                    <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                            data-toggle="dropdown" aria-haspopup="true">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a (click)="deleteResponse(currentResponse())"><span class="fa fa-fw fa-trash"></span><span>Delete Response</span></a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="responses" *ngIf="is30Document()">
-            <response-row-30 *ngFor="let response of responses()" [response]="response"
-                             (onDelete)="deleteResponse(response)"
-                             [document]="response.ownerDocument()"></response-row-30>
+        <div class="response-tab-content" *ngIf="hasResponses()">
+            <response-tab [response]="currentResponse()" *ngIf="is20Document()"></response-tab>
+            <response-tab-30 [response]="currentResponse()" *ngIf="is30Document()"></response-tab-30>
         </div>
     </div>
 </section>

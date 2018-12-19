@@ -19,11 +19,11 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Input,
+    Input, SimpleChanges,
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Operation, Oas20Response, Oas30Operation, Oas30Response} from "oai-ts-core";
+import {Oas20Operation, Oas20Response, Oas30Operation, Oas30Response, OasResponse} from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
 import {AddResponseDialogComponent} from "../../../dialogs/add-response.component";
@@ -36,25 +36,45 @@ import {
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
+import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
 
 
 @Component({
     moduleId: module.id,
     selector: "responses-section",
     templateUrl: "responses-section.component.html",
+    styleUrls: [ "responses-section.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResponsesSectionComponent extends AbstractBaseComponent {
 
+    private static httpCodes: HttpCodeService = new HttpCodeService();
+
     @Input() operation: Oas20Operation | Oas30Operation;
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
+
+    private _responseTab: string;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private editors: EditorsService,
                 private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+        if (this.operation && this.operation.responses) {
+            this.selectDefaultTab();
+        }
+    }
+
+    public selectDefaultTab(): void {
+        let responses: OasResponse[] = this.operation.responses.responses();
+        if (responses && responses.length > 0) {
+            this._responseTab = (responses[0] as Oas20Response | Oas30Response).statusCode();
+        }
     }
 
     public is20Document(): boolean {
@@ -66,7 +86,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public openAddResponseModal(): void {
-        this.addResponseDialog.open(this.operation,"200");
+        this.addResponseDialog.open(this.operation, this.nextAvailableResponseCode());
     }
 
     public addResponse(statusCode: string): void {
@@ -104,9 +124,76 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         return true;
     }
 
-    public deleteResponse(response: Oas20Response): void {
+    public deleteResponse(response: Oas20Response | Oas30Response): void {
         let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
         this.commandService.emit(command);
+        if (this.isTabActive(response)) {
+            this.selectDefaultTab();
+        }
+    }
+
+    public statusCodeLine(code: string): string {
+        let httpCode: HttpCode = ResponsesSectionComponent.httpCodes.getCode(code);
+        if (httpCode) {
+            return httpCode.line;
+        }
+        return "";
+    }
+
+    public statusCodeType(code: string): string {
+        if (code === "default") {
+            return "default";
+        }
+
+        var icode: number = parseInt(code);
+        if (icode >= 200 && icode < 300) {
+            return "success";
+        }
+
+        if (icode >= 300 && icode < 400) {
+            return "redirect";
+        }
+
+        if (icode >= 400 && icode < 500) {
+            return "problem";
+        }
+
+        if (icode >= 500 && icode < 600) {
+            return "error";
+        }
+
+        return "";
+    }
+
+    public isTabActive(response: Oas20Response | Oas30Response): boolean {
+        return response.statusCode() === this._responseTab;
+    }
+
+    public setTab(response: Oas20Response | Oas30Response): void {
+        this._responseTab = response.statusCode();
+    }
+
+    public currentResponse(): Oas20Response | Oas30Response {
+        if (this._responseTab) {
+            return this.operation.responses.response(this._responseTab) as Oas20Response | Oas30Response;
+        }
+        return null;
+    }
+
+    public nextAvailableResponseCode(): string {
+        if (this.operation.responses) {
+            for (let httpCode of ResponsesSectionComponent.httpCodes.getCodes()) {
+                let code: string = httpCode.code;
+                if (code.indexOf("1") === 0) {
+                    continue;
+                }
+                let response: any = this.operation.responses.response(code);
+                if (!response) {
+                    return code;
+                }
+            }
+        }
+        return "200";
     }
 
 }

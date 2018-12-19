@@ -1,3 +1,6 @@
-.response .body form .form-label {
-  font-weight: 600;
+div.content > div.actions {
+  padding-left: 10px;
+}
+div.content > div.actions > a {
+  cursor: pointer;
 }

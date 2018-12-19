@@ -72,16 +72,8 @@
                 <span>that clients include the request body.</span>
             </div>
             <div class="request-body-content">
-                <content [content]="requestBody().content"
-                         [document]="operation.ownerDocument()"
-                         (onNewMediaType)="createRequestBodyMediaType($event)"
-                         (onMediaTypeChange)="changeRequestBodyMediaType($event)"
-                         (onAddExample)="addMediaTypeExample($event)"
-                         (onDeleteExample)="deleteMediaTypeExample($event)"
-                         (onExampleSummaryChange)="changeMediaTypeExampleSummary($event)"
-                         (onExampleDescriptionChange)="changeMediaTypeExampleDescription($event)"
-                         (onExampleValueChange)="changeMediaTypeExampleValue($event)"
-                         (onRemoveMediaType)="deleteRequestBodyMediaType($event)"></content>
+                <div class="form-label">Media Types</div>
+                <content [content]="requestBody().content" [parent]="requestBody()"></content>
             </div>
         </div>
 

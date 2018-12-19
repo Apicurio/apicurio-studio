@@ -19,7 +19,7 @@
                            (ngModelChange)="defChanged.next($event)" autocomplete="off">
                     <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
                     <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
-                    <div class="form-error-message" *ngIf="defExists">Data type named <strong>{{ model.name }}</strong> already exists.</div>
+                    <div class="form-error-message error" *ngIf="defExists">Data type named <strong>{{ model.name }}</strong> already exists.</div>
                 </div>
             </div>
             <div class="form-group">

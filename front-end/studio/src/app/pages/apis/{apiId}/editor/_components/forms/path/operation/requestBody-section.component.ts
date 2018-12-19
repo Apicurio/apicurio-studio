@@ -67,6 +67,7 @@ import {SelectionService} from "../../../../_services/selection.service";
     moduleId: module.id,
     selector: "requestBody-section",
     templateUrl: "requestBody-section.component.html",
+    styleUrls: [ "requestBody-section.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -280,58 +281,6 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     public changeRequestBodyRequired(value: string): void {
         let isRequired: boolean = value === "required";
         let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.requestBody(), "required", isRequired);
-        this.commandService.emit(command);
-    }
-
-    public createRequestBodyMediaType(mediaType: string): void {
-        console.info("[Operation30FormComponent] Creating request body media type: " + mediaType);
-        let command: ICommand = createNewMediaTypeCommand(this.operation.ownerDocument(), this.requestBody(), mediaType);
-        this.commandService.emit(command);
-    }
-
-    public deleteRequestBodyMediaType(mediaType: string): void {
-        console.info("[Operation30FormComponent] Deleting request body media type: " + mediaType);
-        let mt: Oas30MediaType = this.requestBody().getMediaType(mediaType);
-        let command: ICommand = createDeleteMediaTypeCommand(this.operation.ownerDocument(), mt);
-        this.commandService.emit(command);
-    }
-
-    public changeRequestBodyMediaType(event: MediaTypeChangeEvent): void {
-        console.info("[Operation30FormComponent] Changing request body media type: " + event.name);
-        let mt: Oas30MediaType = this.requestBody().getMediaType(event.name);
-        let command: ICommand = createChangeMediaTypeTypeCommand(this.operation.ownerDocument(), mt, event.type);
-        this.commandService.emit(command);
-    }
-
-    public addMediaTypeExample(event: AddExampleEvent): void {
-        console.info("[Operation30FormComponent] Adding an example named: " + event.name);
-        let mt: Oas30MediaType = event.mediaType;
-        let command: ICommand = createAddExampleCommand(this.operation.ownerDocument(), mt, event.value, event.name);
-        this.commandService.emit(command);
-    }
-
-    public deleteMediaTypeExample(event: DeleteExampleEvent): void {
-        console.info("[Operation30FormComponent] Deleting an example of a media type.");
-        let command: ICommand = createDeleteExampleCommand(this.operation.ownerDocument(), event.example);
-        this.commandService.emit(command);
-    }
-
-    public changeMediaTypeExampleSummary(event: ExamplePropertyChangeEvent): void {
-        console.info("[Operation30FormComponent] Changing the summary of a Media Type example.");
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "summary", event.value);
-        this.commandService.emit(command);
-    }
-
-    public changeMediaTypeExampleDescription(event: ExamplePropertyChangeEvent): void {
-        console.info("[Operation30FormComponent] Changing the description of a Media Type example.");
-        let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), event.example, "description", event.value);
-        this.commandService.emit(command);
-    }
-
-    public changeMediaTypeExampleValue(event: EditExampleEvent): void {
-        console.info("[Operation30FormComponent] Changing the value of a Media Type example.");
-        let mt: Oas30MediaType = event.example.parent() as Oas30MediaType;
-        let command: ICommand = createSetExampleCommand(this.operation.ownerDocument(), mt, event.value, event.example.name());
         this.commandService.emit(command);
     }
 

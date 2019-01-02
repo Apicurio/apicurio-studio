@@ -92,6 +92,8 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     public addResponse(statusCode: string): void {
         let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
         this.commandService.emit(command);
+        // FIXME fire a selection event here instead of simply setting the tab selection - doing this will let OTHER users know what we're looking at.
+        this._responseTab = statusCode;
     }
 
     public deleteAllResponses(): void {

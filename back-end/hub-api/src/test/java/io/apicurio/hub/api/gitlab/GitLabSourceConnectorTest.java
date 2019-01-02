@@ -210,7 +210,6 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getBranches(String, String)}.
      */
     @Test
-    @Ignore
     public void testGetBranches() throws GitLabException, SourceConnectorException {
         Collection<SourceCodeBranch> branches = service.getBranches("apicurio", "api-samples");
         Assert.assertNotNull(branches);
@@ -251,7 +250,7 @@ public class GitLabSourceConnectorTest {
     @Test
     @Ignore
     public void testCreateResourceContent() throws NotFoundException, SourceConnectorException, JsonProcessingException, IOException {
-        String repositoryUrl = "https://gitlab.com/Apicurio/api-samples/blob/master/junit/api-" + System.currentTimeMillis() + ".json";
+        String repositoryUrl = "https://gitlab.com/eric.wittmann/private-project/blob/feature-1%2Ffeature-name/junit/api-" + System.currentTimeMillis() + ".json";
         String content = "{ \"swagger\" : \"2.0\" }";
         service.createResourceContent(repositoryUrl, "Created resource (junit)", content);
     }

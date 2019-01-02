@@ -30,6 +30,14 @@ public class GitLabResourceResolverTest {
         Assert.assertEquals("sub2-project-2", resource.getProject());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("README.md", resource.getResourcePath());
+
+        resource = GitLabResourceResolver.resolve("https://gitlab.com/private.account/private-project/blob/feature-1%2Ffeature-name/apis/foo-api.yaml");
+        Assert.assertEquals("private.account", resource.getGroup());
+        Assert.assertEquals("private-project", resource.getProject());
+        Assert.assertEquals("feature-1/feature-name", resource.getBranch());
+        Assert.assertEquals("apis/foo-api.yaml", resource.getResourcePath());
+
+        
     }
 
     @Test

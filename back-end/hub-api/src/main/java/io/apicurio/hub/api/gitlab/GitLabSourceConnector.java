@@ -621,6 +621,12 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         }
     }
 
+    /**
+     * Gets the actual content of a resource.  Returns the raw content and the commit id.
+     * @param resource
+     * @throws NotFoundException
+     * @throws SourceConnectorException
+     */
     private ResourceContent getResourceContentFromGitLab(GitLabResource resource) throws NotFoundException, SourceConnectorException {
         try (CloseableHttpClient httpClient = HttpClients.createSystem()) {
             String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path?ref=:branch")

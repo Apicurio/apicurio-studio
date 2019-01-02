@@ -19,6 +19,8 @@ package io.apicurio.hub.api.bitbucket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.apicurio.hub.api.github.AbstractResourceResolver;
+
 public class BitbucketResourceResolver {
 
     // https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json
@@ -34,13 +36,14 @@ public class BitbucketResourceResolver {
         Matcher matcher = pattern1.matcher(url);
         if (matcher.matches()) {
             BitbucketResource resource = new BitbucketResource();
-            String team = matcher.group(1);
-            String repo = matcher.group(2);
-            String branch = matcher.group(3);
+            String team = AbstractResourceResolver.decode(matcher.group(1));
+            String repo = AbstractResourceResolver.decode(matcher.group(2));
+            String branch = AbstractResourceResolver.decode(matcher.group(3));
             String path = matcher.group(4);
             if (path.contains("?")) {
                 path = path.substring(0, path.indexOf("?"));
             }
+            path = AbstractResourceResolver.decode(path);
             resource.setTeam(team);
             resource.setRepository(repo);
             resource.setBranch(branch);
@@ -66,7 +69,10 @@ public class BitbucketResourceResolver {
         if (resource.startsWith("/")) {
             resource = resource.substring(1);
         }
-        return template.replace(":team", team).replace(":repo", repo).replace(":branch", branch).replace(":resource", resource);
+        return template.replace(":team", AbstractResourceResolver.encode(team))
+                .replace(":repo", AbstractResourceResolver.encode(repo))
+                .replace(":branch", AbstractResourceResolver.encode(branch))
+                .replace(":resource", resource);
     }
 
 }

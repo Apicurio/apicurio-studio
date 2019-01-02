@@ -8,8 +8,10 @@
   flex-grow: 1;
 }
 .response .problem-flex > *:first-child {
-  margin-right: 7px;
   margin-top: 2px;
+}
+.response .problem-flex > *:first-child > span {
+  margin-right: 8px;
 }
 
 .response div.form-label {

@@ -47,10 +47,10 @@ public class GitHubResourceResolver {
         
         if (matcher.matches()) {
             GitHubResource resource = new GitHubResource();
-            String org = matcher.group(1);
-            String repo = matcher.group(2);
-            String branch = matcher.group(3);
-            String path = matcher.group(4);
+            String org = AbstractResourceResolver.decode(matcher.group(1));
+            String repo = AbstractResourceResolver.decode(matcher.group(2));
+            String branch = AbstractResourceResolver.decode(matcher.group(3));
+            String path = AbstractResourceResolver.decode(matcher.group(4));
             resource.setOrganization(org);
             resource.setRepository(repo);
             resource.setBranch(branch);
@@ -76,7 +76,10 @@ public class GitHubResourceResolver {
         if (resource.startsWith("/")) {
             resource = resource.substring(1);
         }
-        return template.replace(":org", org).replace(":repo", repo).replace(":branch", branch).replace(":resource", resource);
+        return template.replace(":org", AbstractResourceResolver.encode(org))
+                .replace(":repo", AbstractResourceResolver.encode(repo))
+                .replace(":branch", AbstractResourceResolver.encode(branch))
+                .replace(":resource", resource);
     }
 
 }

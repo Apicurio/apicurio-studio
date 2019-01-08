@@ -1,0 +1,83 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Mock" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-mock" *ngIf="!pageError">
+
+    <!-- Loading API (spinner) -->
+    <div class="row-fluid" *ngIf="!isDataLoaded()">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="container-fluid container-cards-pf api-editor-overview">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <div class="card-pf card-pf-accented">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mockapi-form row" *ngIf="isDataLoaded()">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What is this page?</strong>
+                <p style="line-height: 18px">
+                    Use this page to create or update mocks from your API. If the API is using OpenAPI 3.0 format and you have a Microcks 
+                    instance configured, you may choose to publish once or create an importing job.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="mockapi-panel panel panel-default">
+                <div class="panel-body" *ngIf="!mocked">
+                    <h2>Publish mock for API "{{ api.name }}"?</h2>
+
+                    <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                    <hr />
+
+                    <form id="mock-form" class="form-horizontal" (submit)="mockApi()" #publishForm="ngForm">
+
+                        <div class="form-group" >
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || mocking">
+                                    <span *ngIf="!mocking">Mock API</span>
+                                    <span *ngIf="mocking"><span class="spinner spinner-xs spinner-inline"></span> Mocking...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel-body" *ngIf="mocked">
+                <div class="blank-slate-pf " id="">
+                    <div class="blank-slate-pf-icon">
+                        <span class="pficon pficon pficon-add-circle-o"></span>
+                    </div>
+                    <h1>API Mocked Successfully</h1>
+                    <p>
+                        Your API <strong>{{ api.name }}</strong> has been successfully mocked to Microcks server.  No additional
+                        steps need to be taken.
+                    </p>
+                    <p>
+                        Service Reference: <a href="{{ mockReference.mockURL }}" target="external">{{ mockReference.serviceRef }}</a>
+                    </p>
+                    <div class="blank-slate-pf-main-action">
+                        <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg">OK</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -65,6 +65,7 @@ import {ActivityItemComponent} from "./components/common/activity-item.component
 import {EditorDisconnectedDialogComponent} from './pages/apis/{apiId}/editor/_components/dialogs/editor-disconnected.component';
 import {TemplateService} from './services/template.service';
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
+import {MockPageComponent} from './pages/apis/{apiId}/mock/mock.page';
 import {DefaultPageComponent} from "./pages/default.page";
 import {ClipboardModule} from "ngx-clipboard";
 import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_components/invitation.component";
@@ -82,7 +83,8 @@ import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_com
         ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
-        GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, DefaultPageComponent
+        GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
+        DefaultPageComponent
 
     ],
     providers: [

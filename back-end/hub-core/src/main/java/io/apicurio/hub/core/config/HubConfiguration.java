@@ -56,6 +56,16 @@ public class HubConfiguration extends Configuration {
     private static final String BITBUCKET_API_URL_ENV = "APICURIO_BITBUCKET_API_URL";
     private static final String BITBUCKET_API_URL_SYSPROP = "apicurio.hub.bitbucket.api";
 
+    private static final String MICROCKS_API_URL_ENV = "APICURIO_MICROCKS_API_URL";
+    private static final String MICROCKS_API_URL_SYSPROP = "apicurio.hub.microcks.api";
+
+    private static final String MICROCKS_CLIENT_ID_ENV = "APICURIO_MICROCKS_CLIENT_ID";
+    private static final String MICROCKS_CLIENT_ID_SYSPROP = "apicurio.hub.microcks.clientId";
+
+    private static final String MICROCKS_CLIENT_SECRET_ENV = "APICURIO_MICROCKS_CLIENT_SECRET";
+    private static final String MICROCKS_CLIENT_SECRET_SYSPROP = "apicurio.hub.microcks.clientSecret";
+
+
     /**
      * @return the configured JDBC type (default: h2)
      */
@@ -125,5 +135,25 @@ public class HubConfiguration extends Configuration {
     public String getBitbucketApiUrl() {
         return getConfigurationProperty(BITBUCKET_API_URL_ENV, BITBUCKET_API_URL_SYSPROP, "https://api.bitbucket.org/2.0");
     }
-    
+
+    /**
+     * @return the configured Microcks API URL
+     */
+    public String getMicrocksApiUrl() {
+        return getConfigurationProperty(MICROCKS_API_URL_ENV, MICROCKS_API_URL_SYSPROP, null);
+    }
+
+    /**
+     * @return the configured Microcks ClientId
+     */
+    public String getMicrocksClientId() {
+        return getConfigurationProperty(MICROCKS_CLIENT_ID_ENV, MICROCKS_CLIENT_ID_SYSPROP, null);
+    }
+
+    /**
+     * @return the configured Microcks ClientSecret
+     */
+    public String getMicrocksClientSecret() {
+        return getConfigurationProperty(MICROCKS_CLIENT_SECRET_ENV, MICROCKS_CLIENT_SECRET_SYSPROP, null);
+    }
 }

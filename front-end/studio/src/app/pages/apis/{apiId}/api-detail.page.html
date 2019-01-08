@@ -58,6 +58,12 @@
                                                         <span>Publish...</span>
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    <a [routerLink]="[ 'mock' ]">
+                                                        <span class="fa fa-fw fa-cloud-upload"></span>
+                                                        <span>Mock with Microcks...</span>
+                                                    </a>
+                                                </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li>
                                                     <a href="download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">

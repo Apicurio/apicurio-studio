@@ -17,6 +17,7 @@
 
 import {Component, Input} from "@angular/core";
 import {ApiDesignChange} from "../../models/api-design-change.model";
+import { MockReference } from "../../models/mock-api.model";
 import {ICommand, MarshallUtils} from "oai-ts-commands";
 import {PublishApi} from "../../models/publish-api.model";
 import * as moment from "moment";
@@ -34,6 +35,7 @@ export class ActivityItemComponent {
     @Input() item: ApiDesignChange;
     _command: ICommand = null;
     _publication: PublishApi;
+    _mock: MockReference;
 
     /**
      * Constructor.
@@ -58,6 +60,13 @@ export class ActivityItemComponent {
         return this._publication;
     }
 
+    protected mock(): MockReference {
+        if (this._mock == null) {
+            this._mock = JSON.parse(this.item.data);
+        }
+        return this._mock;
+    }
+
     /**
      * Returns an appropriate icon for the activity item, based on its type.
      * 
@@ -68,6 +77,9 @@ export class ActivityItemComponent {
         }
         if (this.item.type == "Publish") {
             return this.publicationIcon();
+        }
+        if (this.item.type == "Mock") {
+            return this.mockIcon();
         }
         return "document";
     }
@@ -226,6 +238,10 @@ export class ActivityItemComponent {
         return this.publication().type.toLowerCase();
     }
 
+    protected mockIcon(): string {
+        return "cloud-upload";
+    }
+
     /**
      * Returns an appropriate description for the activity item, based on its type.
      * 
@@ -236,6 +252,9 @@ export class ActivityItemComponent {
         }
         if (this.item.type == "Publish") {
             return this.publicationDescription();
+        }
+        if (this.item.type == "Mock") {
+            return this.mockDescription();
         }
         return null;
     }
@@ -511,6 +530,11 @@ export class ActivityItemComponent {
 
     protected publicationDescription(): string {
         return "published the API to " + this.publication().type + ".";
+    }
+
+    protected mockDescription(): string {
+        return "mock the API to " + this.mock().serviceRef 
+            + " at " + this.mock().mockURL + ".";
     }
 
     public apiName(): string {

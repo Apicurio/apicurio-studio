@@ -239,6 +239,12 @@ public interface ISqlStatements {
     public String selectApiPublicationActivity();
 
     /**
+     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * only the mock rows.
+     */
+    public String selectApiMockActivity();
+
+    /**
      * A statement used to select the most recent 5 APIs for a given user.
      */
 	public String selectRecentApiDesigns();

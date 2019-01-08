@@ -39,8 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -72,7 +72,6 @@ import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.metrics.IApiMetrics;
 import io.apicurio.hub.api.microcks.IMicrocksConnector;
-import io.apicurio.hub.api.microcks.MicrocksConnector;
 import io.apicurio.hub.api.microcks.MicrocksConnectorException;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -83,6 +82,7 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.CodegenProjectType;
@@ -133,6 +133,8 @@ public class DesignsResource implements IDesignsResource {
     private OaiCommandExecutor oaiCommandExecutor;
     @Inject
     private IEditingSessionManager editingSessionManager;
+    @Inject
+    private IMicrocksConnector microcks;
 
     @Context
     private HttpServletRequest request;
@@ -769,16 +771,14 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#publishApiMock(java.lang.String)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#mockApi(java.lang.String)
      */
     @Override
-    public Response publishApiMock(String designId) throws ServerError, NotFoundException {
+    public Response mockApi(String designId) throws ServerError, NotFoundException {
         try {
             // First step - publish the content to the Microcks server API
             String content = getApiContent(designId, FormatType.YAML);
-            IMicrocksConnector mc = new MicrocksConnector(config.getMicrocksApiUrl(),
-                  config.getMicrocksClientId(), config.getMicrocksClientSecret());
-            String serviceRef = mc.uploadResourceContent(content);
+            String serviceRef = this.microcks.uploadResourceContent(content);
 
             // Build mockURL from microcksURL.
             String mockURL = null;
@@ -815,6 +815,32 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getMocks(java.lang.String, java.lang.Integer, java.lang.Integer)
+     */
+    @Override
+    public Collection<ApiMock> getMocks(String designId, Integer start, Integer end)
+            throws ServerError, NotFoundException {
+        int from = 0;
+        int to = 20;
+        if (start != null) {
+            from = start.intValue();
+        }
+        if (end != null) {
+            to = end.intValue();
+        }
+        
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            if (!this.storage.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            return this.storage.listApiDesignMocks(designId, from, to);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
      * Creates the JSON data to be stored in the data row representing a "publish API" event
      * (also known as an API publication).
      * @param info
@@ -849,6 +875,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode data = JsonNodeFactory.instance.objectNode();
+            data.set("mockType", JsonNodeFactory.instance.textNode("microcks"));
             data.set("serviceRef", JsonNodeFactory.instance.textNode(serviceRef));
             data.set("mockURL", JsonNodeFactory.instance.textNode(mockURL));
             return mapper.writeValueAsString(data);

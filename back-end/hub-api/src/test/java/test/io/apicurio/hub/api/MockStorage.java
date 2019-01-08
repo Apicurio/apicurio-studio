@@ -31,6 +31,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
@@ -578,6 +579,14 @@ public class MockStorage implements IStorage {
     @Override
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) 
             throws StorageException {
+        return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignMocks(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiMock> listApiDesignMocks(String designId, int from, int to) throws StorageException {
         return null;
     }
     

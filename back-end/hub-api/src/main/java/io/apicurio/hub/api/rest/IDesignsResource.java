@@ -39,6 +39,7 @@ import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
@@ -101,10 +102,16 @@ public interface IDesignsResource {
     @Path("{designId}/publications")
     public void publishApi(@PathParam("designId") String designId, NewApiPublication info) throws ServerError, NotFoundException;
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/mocks")
+    public Collection<ApiMock> getMocks(@PathParam("designId") String designId,
+            @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{designId}/publications/mock")
-    public Response publishApiMock(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+    @Path("{designId}/mocks")
+    public Response mockApi(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml" })

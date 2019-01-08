@@ -100,7 +100,7 @@ export class MockPageComponent extends AbstractPageComponent {
 
         this.mocking = true;
 
-        this.apis.publishApiMock(this.api.id).then( (reference) => {
+        this.apis.mockApi(this.api.id).then( (reference) => {
             console.log("[MockPageComponent] Published mock with serviceReference: " + reference.serviceRef);
             this.mocking = false;
             this.mocked = true;

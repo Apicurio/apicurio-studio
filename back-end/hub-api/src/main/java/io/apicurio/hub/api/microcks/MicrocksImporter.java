@@ -20,109 +20,109 @@ import java.util.Date;
 
 /**
  * A Microcks importer.
+ * 
  * @author laurent.broudoux@gmail.com
  */
 public class MicrocksImporter {
 
-   private String id;
-   private String name;
-   private String repositoryUrl;
-   private boolean repositoryDisableSSLValidation = false;
-   private String frequency;
-   private Date createdDate;
-   private Date lastImportDate;
-   private String lastImportError;
-   private boolean active = false;
-   private String etag;
+    private String id;
+    private String name;
+    private String repositoryUrl;
+    private boolean repositoryDisableSSLValidation = false;
+    private String frequency;
+    private Date createdDate;
+    private Date lastImportDate;
+    private String lastImportError;
+    private boolean active = false;
+    private String etag;
 
-   private MicrocksSecretRef secretRef;
+    private MicrocksSecretRef secretRef;
 
+    public String getId() {
+        return id;
+    }
 
-   public String getId() {
-      return id;
-   }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-   public void setId(String id) {
-      this.id = id;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public String getName() {
-      return name;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+    public String getRepositoryUrl() {
+        return repositoryUrl;
+    }
 
-   public String getRepositoryUrl() {
-      return repositoryUrl;
-   }
+    public void setRepositoryUrl(String repositoryUrl) {
+        this.repositoryUrl = repositoryUrl;
+    }
 
-   public void setRepositoryUrl(String repositoryUrl) {
-      this.repositoryUrl = repositoryUrl;
-   }
+    public boolean isRepositoryDisableSSLValidation() {
+        return repositoryDisableSSLValidation;
+    }
 
-   public boolean isRepositoryDisableSSLValidation() {
-      return repositoryDisableSSLValidation;
-   }
+    public void setRepositoryDisableSSLValidation(boolean repositoryDisableSSLValidation) {
+        this.repositoryDisableSSLValidation = repositoryDisableSSLValidation;
+    }
 
-   public void setRepositoryDisableSSLValidation(boolean repositoryDisableSSLValidation) {
-      this.repositoryDisableSSLValidation = repositoryDisableSSLValidation;
-   }
+    public String getFrequency() {
+        return frequency;
+    }
 
-   public String getFrequency() {
-      return frequency;
-   }
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
 
-   public void setFrequency(String frequency) {
-      this.frequency = frequency;
-   }
+    public Date getCreatedDate() {
+        return createdDate;
+    }
 
-   public Date getCreatedDate() {
-      return createdDate;
-   }
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
 
-   public void setCreatedDate(Date createdDate) {
-      this.createdDate = createdDate;
-   }
+    public Date getLastImportDate() {
+        return lastImportDate;
+    }
 
-   public Date getLastImportDate() {
-      return lastImportDate;
-   }
+    public void setLastImportDate(Date lastImportDate) {
+        this.lastImportDate = lastImportDate;
+    }
 
-   public void setLastImportDate(Date lastImportDate) {
-      this.lastImportDate = lastImportDate;
-   }
+    public String getLastImportError() {
+        return lastImportError;
+    }
 
-   public String getLastImportError() {
-      return lastImportError;
-   }
+    public void setLastImportError(String lastImportError) {
+        this.lastImportError = lastImportError;
+    }
 
-   public void setLastImportError(String lastImportError) {
-      this.lastImportError = lastImportError;
-   }
+    public boolean isActive() {
+        return active;
+    }
 
-   public boolean isActive() {
-      return active;
-   }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-   public void setActive(boolean active) {
-      this.active = active;
-   }
+    public String getEtag() {
+        return etag;
+    }
 
-   public String getEtag() {
-      return etag;
-   }
+    public void setEtag(String etag) {
+        this.etag = etag;
+    }
 
-   public void setEtag(String etag) {
-      this.etag = etag;
-   }
+    public MicrocksSecretRef getSecretRef() {
+        return secretRef;
+    }
 
-   public MicrocksSecretRef getSecretRef() {
-      return secretRef;
-   }
-
-   public void setSecretRef(MicrocksSecretRef secretRef) {
-      this.secretRef = secretRef;
-   }
+    public void setSecretRef(MicrocksSecretRef secretRef) {
+        this.secretRef = secretRef;
+    }
 }

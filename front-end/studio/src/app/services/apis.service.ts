@@ -410,18 +410,18 @@ export class ApisService extends AbstractHubService {
     }
 
     /**
-     * @see ApisService.publishApiMock
+     * @see ApisService.mockApi
      */
-    public publishApiMock(apiId: string): Promise<MockReference> {
-        console.info("[ApisService] Publishing an API mock via the hub API");
+    public mockApi(apiId: string): Promise<MockReference> {
+        console.info("[ApisService] Mocking an API");
 
-        let publishMockApiUrl: string = this.endpoint("/designs/:designId/publications/mock", {
+        let mockApiUrl: string = this.endpoint("/designs/:designId/mocks", {
             designId: apiId
         });
         let options: any = this.options({ "Content-Type": "application/json" });
         
-        console.info("[ApisService] Publishing an API mock: %s", publishMockApiUrl);
-        return this.httpPostWithReturn<Object, MockReference>(publishMockApiUrl, {}, options);
+        console.info("[ApisService] Mocking an API: %s", mockApiUrl);
+        return this.httpPostWithReturn<Object, MockReference>(mockApiUrl, {}, options);
     }
 
     /**

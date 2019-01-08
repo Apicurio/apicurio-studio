@@ -25,6 +25,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
@@ -368,6 +369,15 @@ public interface IStorage {
      * @param to
      */
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException;
+
+    /**
+     * Returns a collection of API mocks (recorded whenever a user mocks an API).  This
+     * is a paged method similar to listApiDesignActivity().
+     * @param designId
+     * @param from
+     * @param to
+     */
+    public Collection<ApiMock> listApiDesignMocks(String designId, int from, int to) throws StorageException;
     
     /**
      * Returns a collection of codegen projects for the given API design.

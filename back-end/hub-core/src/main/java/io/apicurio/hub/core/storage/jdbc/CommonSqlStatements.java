@@ -447,6 +447,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
 
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiMockActivity()
+     */
+    @Override
+    public String selectApiMockActivity() {
+        return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 3 ORDER BY created_on DESC LIMIT ? OFFSET ?";
+    }
+
+    /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectCodegenProjects()
      */
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 JBoss Inc
+ * Copyright 2017 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.microcks;
+package io.apicurio.hub.core.beans;
 
 /**
- * Exception related to Microcks backend connnection.
- * 
- * @author laurent.broudoux@gmail.com
+ * @author eric.wittmann@gmail.com
  */
-public class MicrocksConnectorException extends Exception {
+public enum ApiDesignType {
 
-    private static final long serialVersionUID = 527259357275701107L;
+    OpenAPI20, OpenAPI30
 
-    /**
-     * Cerate a MicrocksConnectorException with text message
-     * 
-     * @param message This exception text message
-     */
-    public MicrocksConnectorException(String message) {
-        super(message);
-    }
 }

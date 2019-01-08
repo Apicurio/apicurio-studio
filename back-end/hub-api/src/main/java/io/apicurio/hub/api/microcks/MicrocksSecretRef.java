@@ -18,34 +18,35 @@ package io.apicurio.hub.api.microcks;
 
 /**
  * A lightweight reference to a MicrocksSecret object.
+ * 
  * @author laurent.broudoux@gmail.com
  */
 public class MicrocksSecretRef {
 
-   public String secretId;
-   public String name;
+    public String secretId;
+    public String name;
 
-   public MicrocksSecretRef() {
-   }
+    public MicrocksSecretRef() {
+    }
 
-   public MicrocksSecretRef(String secretId, String name) {
-      this.secretId = secretId;
-      this.name = name;
-   }
+    public MicrocksSecretRef(String secretId, String name) {
+        this.secretId = secretId;
+        this.name = name;
+    }
 
-   public String getSecretId() {
-      return secretId;
-   }
+    public String getSecretId() {
+        return secretId;
+    }
 
-   public void setSecretId(String secretId) {
-      this.secretId = secretId;
-   }
+    public void setSecretId(String secretId) {
+        this.secretId = secretId;
+    }
 
-   public String getName() {
-      return name;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 }

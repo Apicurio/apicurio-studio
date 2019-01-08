@@ -16,160 +16,207 @@
 
 package io.apicurio.hub.api.microcks;
 
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.util.Collection;
+import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
- * Default implementation of a Microcks specific connector.
+ * Default implementation of a Microcks connector.
+ * 
  * @author laurent.broudoux@gmail.com
  */
+@ApplicationScoped
+@Default
 public class MicrocksConnector implements IMicrocksConnector {
 
-   private static Logger logger = LoggerFactory.getLogger(MicrocksConnector.class);
+    private static Logger logger = LoggerFactory.getLogger(MicrocksConnector.class);
 
-   /** Microcks API URL (should ends with /api). */
-   private String apiURL;
-   /** Keycloak URL including realm name (deduced from Microcks configuration). */
-   private String keycloakURL;
-   /** OAuth token associated to this connection. */
-   private String oauthToken;
+    @Inject
+    private HubConfiguration config;
 
-   /**
-    * Create a new connector for interacting with Microcks.
-    * @param microcksURL Microcks API URL (should ends with /api)
-    * @param keycloakClientId ClientId known from keycloak Microcks realm
-    * @param keycloakClientSecret ClientSecret known from keycloak Microcks realm
-    * @throws MicrocksConnectorException if connection fails for many reasons
-    */
-   public MicrocksConnector(String microcksURL, String keycloakClientId, String keycloakClientSecret) throws MicrocksConnectorException {
+    /** Microcks API URL (should ends with /api). */
+    private String apiURL;
+    private String _keycloakURL;
 
-      // Store and sanitize microcks API URL.
-      this.apiURL = microcksURL;
-      if (!this.apiURL.endsWith("/api")) {
-         this.apiURL += "/api";
-      }
+    /**
+     * Create a new connector for interacting with Microcks.
+     * 
+     * @param microcksURL Microcks API URL (should ends with /api)
+     * @param keycloakClientId ClientId known from keycloak Microcks realm
+     * @param keycloakClientSecret ClientSecret known from keycloak Microcks realm
+     * @throws MicrocksConnectorException if connection fails for many reasons
+     */
+    public MicrocksConnector() {
+    }
 
-      // Retrieve the Keycloak configuration to build keycloakURL.
-      HttpResponse<JsonNode> keycloakConfig = null;
-      try {
-         keycloakConfig = Unirest.get(this.apiURL + "/keycloak/config")
-               .header("Accept", "application/json").asJson();
-      } catch (UnirestException e) {
-         logger.error("Exception while connecting to Microcks backend", e);
-         throw new MicrocksConnectorException("Exception while connecting Microcks backend. Check URL.");
-      }
+    @PostConstruct
+    public void postConstruct() throws Exception {
+        String microcksURL = config.getMicrocksApiUrl();
+        // Store and sanitize microcks API URL.
+        this.apiURL = microcksURL;
+        if (!this.apiURL.endsWith("/api")) {
+            this.apiURL += "/api";
+        }
+    }
 
-      if (keycloakConfig.getStatus() != 200) {
-         logger.error("Keycloak config cannot be fetched from Microcks server, check configuration");
-         throw new MicrocksConnectorException("Keycloak configuration cannot be fetched from Microcks. Check URL.");
-      }
-      String authServer = keycloakConfig.getBody().getObject().getString("auth-server-url");
-      String realmName = keycloakConfig.getBody().getObject().getString("realm");
-      this.keycloakURL = authServer + "/realms/" + realmName;
+    /**
+     * Returns the OAuth token to use when accessing Microcks.
+     * 
+     * @throws MicrocksConnectorException
+     */
+    private String getKeycloakOAuthToken() throws MicrocksConnectorException {
+        String keycloakURL = getKeycloakURL();
+        String keycloakClientId = config.getMicrocksClientId();
+        String keycloakClientSecret = config.getMicrocksClientSecret();
 
-      // Retrieve a token using client_credentials flow.
-      HttpRequestWithBody tokenRequest = Unirest.post(this.keycloakURL + "/protocol/openid-connect/token")
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .header("Accept", "application/json")
-            .basicAuth(keycloakClientId, keycloakClientSecret);
+        // Retrieve a token using client_credentials flow.
+        HttpRequestWithBody tokenRequest = Unirest.post(keycloakURL + "/protocol/openid-connect/token")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Accept", "application/json").basicAuth(keycloakClientId, keycloakClientSecret);
 
-      HttpResponse<JsonNode> tokenResponse = null;
-      try {
-         tokenResponse = tokenRequest.body("grant_type=client_credentials").asJson();
-      } catch (UnirestException e) {
-         logger.error("Exception while connecting to Keycloak backend", e);
-         throw new MicrocksConnectorException("Exception while connecting Microcks Keycloak backend. Check Keycloak configuration.");
-      }
+        HttpResponse<JsonNode> tokenResponse = null;
+        try {
+            tokenResponse = tokenRequest.body("grant_type=client_credentials").asJson();
+        } catch (UnirestException e) {
+            logger.error("Exception while connecting to Keycloak backend", e);
+            throw new MicrocksConnectorException(
+                    "Exception while connecting Microcks Keycloak backend. Check Keycloak configuration.");
+        }
 
-      if (tokenResponse.getStatus() != 200) {
-         logger.error("OAuth token cannot be retrieved for Microcks server, check keycloakClient configuration");
-         throw new MicrocksConnectorException("OAuth token cannot be retrieved for Microcks. Check keycloakClient.");
-      }
-      this.oauthToken = tokenResponse.getBody().getObject().getString("access_token");
-   }
+        if (tokenResponse.getStatus() != 200) {
+            logger.error(
+                    "OAuth token cannot be retrieved for Microcks server, check keycloakClient configuration");
+            throw new MicrocksConnectorException(
+                    "OAuth token cannot be retrieved for Microcks. Check keycloakClient.");
+        }
+        return tokenResponse.getBody().getObject().getString("access_token");
+    }
 
-   /**
-    * Upload an OAS v3 specification content to Microcks. This will trigger service discovery and mock
-    * endpoint publication on the Microcks side.
-    * @param content OAS v3 specification content
-    * @throws MicrocksConnectorException if upload fails for many reasons
-    */
-   public String uploadResourceContent(String content) throws MicrocksConnectorException {
+    /**
+     * Figures out the URL of the Keycloak server that is protecting Microcks.
+     */
+    private String getKeycloakURL() throws MicrocksConnectorException {
+        if (this._keycloakURL == null) {
+            // Retrieve the Keycloak configuration to build keycloakURL.
+            HttpResponse<JsonNode> keycloakConfig = null;
+            try {
+                keycloakConfig = Unirest.get(this.apiURL + "/keycloak/config")
+                        .header("Accept", "application/json").asJson();
+            } catch (UnirestException e) {
+                logger.error("Exception while connecting to Microcks backend", e);
+                throw new MicrocksConnectorException(
+                        "Exception while connecting Microcks backend. Check URL.");
+            }
 
-      MultipartBody uploadRequest = Unirest.post(this.apiURL + "/artifact/upload")
-            .header("Authorization", "Bearer " + oauthToken)
-            .field("file", new ByteArrayInputStream(content.getBytes()), "open-api-contract.yml");
+            if (keycloakConfig.getStatus() != 200) {
+                logger.error("Keycloak config cannot be fetched from Microcks server, check configuration");
+                throw new MicrocksConnectorException(
+                        "Keycloak configuration cannot be fetched from Microcks. Check URL.");
+            }
+            String authServer = keycloakConfig.getBody().getObject().getString("auth-server-url");
+            String realmName = keycloakConfig.getBody().getObject().getString("realm");
+            this._keycloakURL = authServer + "/realms/" + realmName;
+        }
+        return this._keycloakURL;
+    }
 
-      HttpResponse<String> response = null;
-      try {
-         response = uploadRequest.asString();
-      } catch (UnirestException e) {
-         logger.error("Exception while connecting to Microcks backend", e);
-         throw new MicrocksConnectorException("Exception while connecting Microcks backend. Check URL.");
-      }
+    /**
+     * Upload an OAS v3 specification content to Microcks. This will trigger service discovery and mock
+     * endpoint publication on the Microcks side.
+     * 
+     * @param content OAS v3 specification content
+     * @throws MicrocksConnectorException if upload fails for many reasons
+     */
+    public String uploadResourceContent(String content) throws MicrocksConnectorException {
+        String oauthToken = this.getKeycloakOAuthToken();
+        MultipartBody uploadRequest = Unirest.post(this.apiURL + "/artifact/upload")
+                .header("Authorization", "Bearer " + oauthToken)
+                .field("file", new ByteArrayInputStream(content.getBytes()), "open-api-contract.yml");
 
-      switch (response.getStatus()) {
-         case 201:
-            String serviceRef = response.getBody();
-            logger.info("Microcks mocks have been created/updated for " + serviceRef);
-            return serviceRef;
-         case 204:
-            logger.warn("NoContent returned by Microcks server");
-            throw new MicrocksConnectorException("NoContent returned by Microcks server is unexpected return");
-         case 400:
-            logger.error("ClientRequestMalformed returned by Microcks server: " + response.getStatusText());
-            throw new MicrocksConnectorException("ClientRequestMalformed returned by Microcks server");
-         case 500:
-            logger.error("InternalServerError returned by Microcks server");
-            throw new MicrocksConnectorException("InternalServerError returned by Microcks server");
-         default:
-            logger.error("Unexpected response from Microcks server: " + response.getStatusText());
-            throw new MicrocksConnectorException("Unexpected response by Microcks server: " + response.getStatusText());
-      }
-   }
+        HttpResponse<String> response = null;
+        try {
+            response = uploadRequest.asString();
+        } catch (UnirestException e) {
+            logger.error("Exception while connecting to Microcks backend", e);
+            throw new MicrocksConnectorException("Exception while connecting Microcks backend. Check URL.");
+        }
 
-   /**
-    * Reserved for future usage.
-    * @return List of repository secrets managed by Microcks server
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public Collection<MicrocksSecret> getSecrets() throws MicrocksConnectorException {
-      return null;
-   }
+        switch (response.getStatus()) {
+            case 201:
+                String serviceRef = response.getBody();
+                logger.info("Microcks mocks have been created/updated for " + serviceRef);
+                return serviceRef;
+            case 204:
+                logger.warn("NoContent returned by Microcks server");
+                throw new MicrocksConnectorException(
+                        "NoContent returned by Microcks server is unexpected return");
+            case 400:
+                logger.error(
+                        "ClientRequestMalformed returned by Microcks server: " + response.getStatusText());
+                throw new MicrocksConnectorException("ClientRequestMalformed returned by Microcks server");
+            case 500:
+                logger.error("InternalServerError returned by Microcks server");
+                throw new MicrocksConnectorException("InternalServerError returned by Microcks server");
+            default:
+                logger.error("Unexpected response from Microcks server: " + response.getStatusText());
+                throw new MicrocksConnectorException(
+                        "Unexpected response by Microcks server: " + response.getStatusText());
+        }
+    }
 
-   /**
-    * Reserved for future usage.
-    * @return List of import jobs managed by Microcks server
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public Collection<MicrocksImporter> getImportJobs() throws MicrocksConnectorException {
-      return null;
-   }
+    /**
+     * Reserved for future usage.
+     * 
+     * @return List of repository secrets managed by Microcks server
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public Collection<MicrocksSecret> getSecrets() throws MicrocksConnectorException {
+        return null;
+    }
 
-   /**
-    * Reserved for future usage.
-    * @param job Import job to create in Microcks server.
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public void createImportJob(MicrocksImporter job) throws MicrocksConnectorException {
-      throw new MicrocksConnectorException("Not implemented");
-   }
+    /**
+     * Reserved for future usage.
+     * 
+     * @return List of import jobs managed by Microcks server
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public Collection<MicrocksImporter> getImportJobs() throws MicrocksConnectorException {
+        return null;
+    }
 
-   /**
-    * Reserved for future usage.
-    * @param job Import job to force import in Microcks server.
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public void forceResourceImport(MicrocksImporter job) throws MicrocksConnectorException {
-      throw new MicrocksConnectorException("Not implemented");
-   }
+    /**
+     * Reserved for future usage.
+     * 
+     * @param job Import job to create in Microcks server.
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public void createImportJob(MicrocksImporter job) throws MicrocksConnectorException {
+        throw new MicrocksConnectorException("Not implemented");
+    }
+
+    /**
+     * Reserved for future usage.
+     * 
+     * @param job Import job to force import in Microcks server.
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public void forceResourceImport(MicrocksImporter job) throws MicrocksConnectorException {
+        throw new MicrocksConnectorException("Not implemented");
+    }
 }

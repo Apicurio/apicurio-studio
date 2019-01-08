@@ -20,43 +20,49 @@ import java.util.Collection;
 
 /**
  * A Microcks specific connector.
+ * 
  * @author laurent.broudoux@gmail.com
  */
 public interface IMicrocksConnector {
 
-   /**
-    * Upload an OAS v3 specification content to Microcks. This will trigger service discovery and mock
-    * endpoint publication on the Microcks side.
-    * @param content OAS v3 specification content
-    * @throws MicrocksConnectorException if upload fails for any reasons
-    */
-   public String uploadResourceContent(String content) throws MicrocksConnectorException;
+    /**
+     * Upload an OAS v3 specification content to Microcks. This will trigger service discovery and mock
+     * endpoint publication on the Microcks side.
+     * 
+     * @param content OAS v3 specification content
+     * @throws MicrocksConnectorException if upload fails for any reasons
+     */
+    public String uploadResourceContent(String content) throws MicrocksConnectorException;
 
-   /**
-    * Reserved for future usage.
-    * @return List of repository secrets managed by Microcks server
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public Collection<MicrocksSecret> getSecrets() throws MicrocksConnectorException;
+    /**
+     * Reserved for future usage.
+     * 
+     * @return List of repository secrets managed by Microcks server
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public Collection<MicrocksSecret> getSecrets() throws MicrocksConnectorException;
 
-   /**
-    * Reserved for future usage.
-    * @return List of import jobs managed by Microcks server
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public Collection<MicrocksImporter> getImportJobs() throws MicrocksConnectorException;
+    /**
+     * Reserved for future usage.
+     * 
+     * @return List of import jobs managed by Microcks server
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public Collection<MicrocksImporter> getImportJobs() throws MicrocksConnectorException;
 
-   /**
-    * Reserved for future usage.
-    * @param job Import job to create in Microcks server.
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public void createImportJob(MicrocksImporter job) throws MicrocksConnectorException;
+    /**
+     * Reserved for future usage.
+     * 
+     * @param job Import job to create in Microcks server.
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public void createImportJob(MicrocksImporter job) throws MicrocksConnectorException;
 
-   /**
-    * Reserved for future usage.
-    * @param job Import job to force import in Microcks server.
-    * @throws MicrocksConnectorException if connection fails for any reasons
-    */
-   public void forceResourceImport(MicrocksImporter job) throws MicrocksConnectorException;
+    /**
+     * Reserved for future usage.
+     * 
+     * @param job Import job to force import in Microcks server.
+     * @throws MicrocksConnectorException if connection fails for any reasons
+     */
+    public void forceResourceImport(MicrocksImporter job) throws MicrocksConnectorException;
 }

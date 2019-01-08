@@ -40,6 +40,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.CodegenProjectType;
@@ -1016,6 +1017,48 @@ public class JdbcStorageTest {
         Assert.assertEquals("{Publish-3}", second.getInfo());
     }
 
+    @Test
+    public void testGetMocks() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("API Name");
+        
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        // Note: the thread.sleep calls are needed to ensure time-based ordering of the content rows.  Without
+        // these calls the test would be somewhat non-deterministic (two rows with the same moment in time).
+        
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{1}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{2}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Mock, "{Mock-3}");
+        Thread.sleep(5);
+        /*long sinceVersion = */storage.addContent("user2", id, ApiContentType.Document, "{ROLLUP:123}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Command, "{4}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Publish, "{Publish-5}");
+        Thread.sleep(5);
+        storage.addContent("user", id, ApiContentType.Mock, "{Mock-6}");
+        
+        Collection<ApiMock> activity = storage.listApiDesignMocks(id, 0, 10);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(2, activity.size());
+        Iterator<ApiMock> iter = activity.iterator();
+        ApiMock first = iter.next();
+        ApiMock second = iter.next();
+        Assert.assertEquals("{Mock-6}", first.getInfo());
+        Assert.assertEquals("{Mock-3}", second.getInfo());
+    }
+
+    
     @Test
     public void testGetRecentApiDesigns() throws Exception {
         Collection<ApiDesign> designs = storage.listApiDesigns("user");

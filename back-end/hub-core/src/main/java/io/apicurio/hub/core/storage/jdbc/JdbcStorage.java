@@ -57,6 +57,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.CodegenProjectType;
@@ -1125,6 +1126,27 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignMocks(java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiMock> listApiDesignMocks(String designId, int from, int to) throws StorageException {
+        logger.debug("Selecting mock activity for API Design: {} from {} to {}", designId, from, to);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiMockActivity();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, to - from)
+                        .bind(2, from)
+                        .map(ApiMockRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting contributors.", e);
+        }
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.IStorage#listCodegenProjects(java.lang.String, java.lang.String)
      */
     @Override
@@ -1477,6 +1499,32 @@ public class JdbcStorage implements IStorage {
         public ApiPublication map(ResultSet rs, StatementContext ctx) throws SQLException {
             try {
                 ApiPublication publication = new ApiPublication();
+                publication.setBy(rs.getString("created_by"));
+                publication.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
+                publication.setOn(rs.getTimestamp("created_on"));
+                return publication;
+            } catch (IOException e) {
+                throw new SQLException(e);
+            }
+        }
+
+    }
+
+    /**
+     * A row mapper to read a single row from the content db as an {@link ApiMock}.
+     * @author eric.wittmann@gmail.com
+     */
+    private static class ApiMockRowMapper implements RowMapper<ApiMock> {
+        
+        public static final ApiMockRowMapper instance = new ApiMockRowMapper();
+
+        /**
+         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
+         */
+        @Override
+        public ApiMock map(ResultSet rs, StatementContext ctx) throws SQLException {
+            try {
+                ApiMock publication = new ApiMock();
                 publication.setBy(rs.getString("created_by"));
                 publication.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
                 publication.setOn(rs.getTimestamp("created_on"));

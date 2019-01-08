@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,6 +71,9 @@ import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.metrics.IApiMetrics;
+import io.apicurio.hub.api.microcks.IMicrocksConnector;
+import io.apicurio.hub.api.microcks.MicrocksConnector;
+import io.apicurio.hub.api.microcks.MicrocksConnectorException;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiContentType;
@@ -474,7 +478,7 @@ public class DesignsResource implements IDesignsResource {
     }
     
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String, java.lang.String)
      */
     @Override
     public Response getContent(String designId, String format) throws ServerError, NotFoundException {
@@ -765,6 +769,52 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#publishApiMock(java.lang.String)
+     */
+    @Override
+    public Response publishApiMock(String designId) throws ServerError, NotFoundException {
+        try {
+            // First step - publish the content to the Microcks server API
+            String content = getApiContent(designId, FormatType.YAML);
+            IMicrocksConnector mc = new MicrocksConnector(config.getMicrocksApiUrl(),
+                  config.getMicrocksClientId(), config.getMicrocksClientSecret());
+            String serviceRef = mc.uploadResourceContent(content);
+
+            // Build mockURL from microcksURL.
+            String mockURL = null;
+            String microcksURL = config.getMicrocksApiUrl();
+            try {
+                mockURL = microcksURL.substring(0, microcksURL.indexOf("/api")) + "/#/services/"
+                      + URLEncoder.encode(serviceRef, "UTF-8");
+            } catch (Exception e) {
+                logger.error("Failed to produce a valid mockURL", e);
+            }
+
+
+            // Followup step - store a row in the api_content table
+            try {
+                String user = this.security.getCurrentUser().getLogin();
+                String mockData = createMockData(serviceRef, mockURL);
+                storage.addContent(user, designId, ApiContentType.Mock, mockData);
+            } catch (Exception e) {
+                logger.error("Failed to record API mock publication in database.", e);
+            }
+
+            // Finally return response.
+            StringBuilder json = new StringBuilder("{");
+            json.append("\"serviceRef\": ").append("\"" + serviceRef + "\", ");
+            json.append("\"mockURL\": ").append("\"" + mockURL + "\"}");
+            ResponseBuilder builder = Response.ok().entity(json.toString())
+                  .header("Content-Type", "application/json")
+                  .header("Content-Length", json.toString().length());
+
+            return builder.build();
+        } catch (MicrocksConnectorException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    /**
      * Creates the JSON data to be stored in the data row representing a "publish API" event
      * (also known as an API publication).
      * @param info
@@ -783,6 +833,24 @@ public class DesignsResource implements IDesignsResource {
             data.set("resource", JsonNodeFactory.instance.textNode(info.getResource()));
             data.set("format", JsonNodeFactory.instance.textNode(info.getFormat().name()));
             data.set("commitMessage", JsonNodeFactory.instance.textNode(info.getCommitMessage()));
+            return mapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Create the JSON data to be stored in the data row representing a "mock API" event
+     * (also know as an API mock publication).
+     * @param serviceRef The service reference as returned by Microcks
+     * @param mockURL The URL for accessing description page on Microcks server
+     */
+    private String createMockData(String serviceRef, String mockURL) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode data = JsonNodeFactory.instance.objectNode();
+            data.set("serviceRef", JsonNodeFactory.instance.textNode(serviceRef));
+            data.set("mockURL", JsonNodeFactory.instance.textNode(mockURL));
             return mapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

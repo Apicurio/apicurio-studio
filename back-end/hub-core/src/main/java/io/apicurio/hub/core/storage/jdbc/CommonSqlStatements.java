@@ -422,7 +422,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.design_id = ? "
-        		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
         		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
@@ -433,7 +433,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.created_by = ? "
-        		+ "  AND (c.type = 1 OR c.type = 2) "
+        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
         		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }

@@ -38,6 +38,7 @@ import {UpdateCodegenProject} from "../models/update-codegen-project.model";
 import {Injectable} from "@angular/core";
 import {ApiPublication} from "../models/api-publication.model";
 import {UpdateCollaborator} from "../models/update-collaborator.model";
+import {MockReference} from "../models/mock-api.model";
 
 
 export interface IConnectionHandler {
@@ -406,6 +407,21 @@ export class ApisService extends AbstractHubService {
 
         console.info("[ApisService] Publishing an API Design: %s", publishApiUrl);
         return this.httpPost<PublishApi>(publishApiUrl, info, options);
+    }
+
+    /**
+     * @see ApisService.publishApiMock
+     */
+    public publishApiMock(apiId: string): Promise<MockReference> {
+        console.info("[ApisService] Publishing an API mock via the hub API");
+
+        let publishMockApiUrl: string = this.endpoint("/designs/:designId/publications/mock", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Content-Type": "application/json" });
+        
+        console.info("[ApisService] Publishing an API mock: %s", publishMockApiUrl);
+        return this.httpPostWithReturn<Object, MockReference>(publishMockApiUrl, {}, options);
     }
 
     /**

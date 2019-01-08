@@ -101,6 +101,11 @@ public interface IDesignsResource {
     @Path("{designId}/publications")
     public void publishApi(@PathParam("designId") String designId, NewApiPublication info) throws ServerError, NotFoundException;
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/publications/mock")
+    public Response publishApiMock(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml" })
     @Path("{designId}/content")

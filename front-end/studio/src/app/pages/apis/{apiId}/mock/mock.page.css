@@ -1,0 +1,26 @@
+.api-mock {
+}
+
+.api-mock .mockapi-form {
+  margin-top: 20px;
+}
+
+.api-mock .mockapi-form .mockapi-panel {
+}
+
+.api-mock .mockapi-form h2 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.api-mock .mockapi-form .control-label {
+  padding-right: 0px;
+}
+
+hr {
+  margin-top: 5px;
+}
+
+.api-mock .notice-of-required {
+  margin-top: 30px;
+}

@@ -137,6 +137,13 @@ public class HubConfiguration extends Configuration {
     }
 
     /**
+     * @return true if a microcks API has been configured (we assume that means microcks exists and we're integrated with it)
+     */
+    public boolean isMicrocksConfigured() {
+        return getMicrocksApiUrl() != null;
+    }
+
+    /**
      * @return the configured Microcks API URL
      */
     public String getMicrocksApiUrl() {

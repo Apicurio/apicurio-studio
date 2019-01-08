@@ -66,7 +66,7 @@ public class MicrocksConnector implements IMicrocksConnector {
     }
 
     @PostConstruct
-    public void postConstruct() throws Exception {
+    public void postConstruct() {
         String microcksURL = config.getMicrocksApiUrl();
         // Store and sanitize microcks API URL.
         this.apiURL = microcksURL;

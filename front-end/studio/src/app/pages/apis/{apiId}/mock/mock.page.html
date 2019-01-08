@@ -41,9 +41,12 @@
         <div class="col-md-7">
             <div class="mockapi-panel panel panel-default">
                 <div class="panel-body" *ngIf="!mocked">
-                    <h2>Publish mock for API "{{ api.name }}"?</h2>
+                    <h2>Create a Mock for API "{{ api.name }}"?</h2>
 
-                    <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                    <p>
+                        Doing this will create/update a Mock in the Microcks server, allowing you to test your API!
+                    </p>
+
                     <hr />
 
                     <form id="mock-form" class="form-horizontal" (submit)="mockApi()" #publishForm="ngForm">

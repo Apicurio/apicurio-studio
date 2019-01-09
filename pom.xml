@@ -108,7 +108,7 @@
         <version.io.gatling>3.0.0</version.io.gatling>
         <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
-        <version.junit>4.11</version.junit>
+        <version.junit>4.12</version.junit>
         <version.org.apache.httpcomponents>4.5.3</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.4.3</version.org.apache.commons.commons-pool2>

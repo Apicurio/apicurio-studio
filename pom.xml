@@ -123,7 +123,7 @@
         <version.mysql>5.1.45</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>
-        <version.scala>2.11.7</version.scala>
+        <version.scala>2.12.8</version.scala>
     </properties>
 
     <dependencyManagement>

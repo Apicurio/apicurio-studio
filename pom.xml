@@ -105,7 +105,7 @@
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.4</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
-        <version.io.gatling>3.0.0</version.io.gatling>
+        <version.io.gatling>3.0.2</version.io.gatling>
         <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
         <version.junit>4.12</version.junit>

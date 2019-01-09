@@ -81,7 +81,7 @@ public class ApiDesignResourceInfo {
                 description = document.getInfo().getDescription();
             }
         }
-        
+
         ApiDesignResourceInfo info = new ApiDesignResourceInfo();
         info.setFormat(format);
         info.setName(name);
@@ -91,6 +91,14 @@ public class ApiDesignResourceInfo {
                 info.getTags().add(tag.getName());
             }
         }
+
+        if (oaiVersion.startsWith("2")) {
+            info.setType(ApiDesignType.OpenAPI20);
+        }
+        if (oaiVersion.startsWith("3")) {
+            info.setType(ApiDesignType.OpenAPI30);
+        }
+        
         return info;
     }
     
@@ -99,6 +107,7 @@ public class ApiDesignResourceInfo {
     private String description;
     private Set<String> tags = new HashSet<>();
     private FormatType format;
+    private ApiDesignType type;
     
     /**
      * Constructor.
@@ -160,6 +169,20 @@ public class ApiDesignResourceInfo {
      */
     public void setFormat(FormatType format) {
         this.format = format;
+    }
+
+    /**
+     * @return the type
+     */
+    public ApiDesignType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(ApiDesignType type) {
+        this.type = type;
     }
 
 }

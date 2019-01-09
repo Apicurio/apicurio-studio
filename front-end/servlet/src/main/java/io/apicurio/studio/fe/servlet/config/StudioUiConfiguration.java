@@ -39,6 +39,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String EDITING_URL_ENV = "APICURIO_UI_EDITING_URL";
     private static final String EDITING_URL_SYSPROP = "apicurio-ui.editing.url";
 
+    private static final String FEATURE_MICROCKS_ENV = "APICURIO_UI_FEATURE_MICROCKS";
+    private static final String FEATURE_MICROCKS_SYSPROP = "apicurio-ui.feature.microcks";
+
     /**
      * Returns the URL of the Apicurio Hub API.
      */
@@ -66,5 +69,12 @@ public class StudioUiConfiguration extends Configuration {
      */
     public boolean isDisableHubApiTrustManager() {
         return "true".equals(getConfigurationProperty(HUB_API_DISABLE_API_TRUST_ENV, HUB_API_DISABLE_API_TRUST_SYSPROP, "true"));
+    }
+    
+    /**
+     * Returns true if the integration with Microcks should be enabled in the UI.
+     */
+    public boolean isMicrocksEnabled() {
+        return "true".equals(getConfigurationProperty(FEATURE_MICROCKS_ENV, FEATURE_MICROCKS_SYSPROP, "true"));
     }
 }

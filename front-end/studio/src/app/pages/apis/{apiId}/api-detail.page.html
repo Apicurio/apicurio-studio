@@ -24,9 +24,8 @@
                         <!-- Overview Information Card -->
                         <div class="card-pf card-pf-accented" *ngIf="isLoaded('api')">
                             <div class="card-pf-heading">
-                                <h1 class="card-pf-title">
-                                    <span class="fa fa-fw fa-bolt api-deployed api-card-icon"></span>
-                                    <span>{{ displayName() }}</span>
+                                <h1 class="card-pf-title" [class.oai2]="isOpenApi20()" [class.oai3]="isOpenApi30()">
+                                    <span class="name-and-icon">{{ displayName() }}</span>
                                     <div class="pull-right">
                                         <div class="dropdown dropdown-kebab-pf" style="display:inline;">
                                             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight" data-toggle="dropdown"
@@ -58,7 +57,7 @@
                                                         <span>Publish...</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="isMicrocksEnabled() && isOpenApi30()">
                                                     <a [routerLink]="[ 'mock' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
                                                         <span>Mock with Microcks...</span>

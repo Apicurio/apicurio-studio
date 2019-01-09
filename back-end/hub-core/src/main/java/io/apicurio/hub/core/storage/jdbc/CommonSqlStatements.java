@@ -136,7 +136,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertApiDesign() {
-        return "INSERT INTO api_designs (name, description, created_by, created_on, tags) VALUES (?, ?, ?, ?, ?)";
+        return "INSERT INTO api_designs (name, description, created_by, created_on, tags, api_type) VALUES (?, ?, ?, ?, ?, ?)";
     }
     
     /**

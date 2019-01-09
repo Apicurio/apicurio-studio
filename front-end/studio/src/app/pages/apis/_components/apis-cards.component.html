@@ -3,8 +3,7 @@
 
         <div class="col-xs-12 col-sm-4 col-md-4" *ngFor="let api of apis">
             <div class="card-pf card-pf-accented card-pf-aggregate-status api-card" [class.active]="isSelected(api)" (click)="toggleApiSelected(api)">
-                <h2 class="api-card-title">
-                    <span class="fa fa-fw fa-bolt api-card-icon"></span>
+                <h2 class="api-card-title" [class.oai2]="isOpenApi20(api)" [class.oai3]="isOpenApi30(api)">
                     <span><a [routerLink]="[api.id]">{{ api.name }}</a></span>
                 </h2>
                 <div class="card-pf-body">

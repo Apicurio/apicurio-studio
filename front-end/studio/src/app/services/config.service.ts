@@ -27,6 +27,9 @@ let DEFAULT_CONFIG: any = {
         type: "hub",
         hubUrl: "http://localhost:8080/api-hub",
         editingUrl: "http://localhost:8080/api-editing",
+    },
+    features: {
+        "microcks": true
     }
 };
 
@@ -109,5 +112,12 @@ export class ConfigService {
             return null;
         }
         return this.config.apis.editingUrl;
+    }
+
+    public isMicrocksEnabled(): boolean {
+        if (!this.config.features) {
+            return false;
+        }
+        return this.config.features.microcks;
     }
 }

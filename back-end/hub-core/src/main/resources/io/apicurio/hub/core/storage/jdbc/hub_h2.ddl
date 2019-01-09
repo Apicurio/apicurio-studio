@@ -4,13 +4,13 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 7);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 8);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP, used_on TIMESTAMP, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
 CREATE INDEX IDX_accounts_1 ON accounts(user_id);
 
-CREATE TABLE api_designs (id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, tags VARCHAR(2048));
+CREATE TABLE api_designs (id BIGINT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, tags VARCHAR(2048), api_type VARCHAR(255) NOT NULL);
 ALTER TABLE api_designs ADD PRIMARY KEY (id);
 
 CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT AUTO_INCREMENT NOT NULL, type TINYINT NOT NULL, data CLOB NOT NULL, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, reverted TINYINT DEFAULT 0 NOT NULL, modified_on TIMESTAMP);

@@ -31,6 +31,7 @@ public class ApiDesign {
     private String createdBy;
     private Date createdOn;
     private Set<String> tags = new HashSet<>();
+    private ApiDesignType type;
 
     /**
      * Constructor.
@@ -120,6 +121,20 @@ public class ApiDesign {
      */
     public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * @return the type
+     */
+    public ApiDesignType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(ApiDesignType type) {
+        this.type = type;
     }
     
 }

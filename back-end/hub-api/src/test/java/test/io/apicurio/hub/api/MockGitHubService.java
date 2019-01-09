@@ -36,6 +36,7 @@ import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.github.GitHubException;
 import io.apicurio.hub.api.github.IGitHubSourceConnector;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
@@ -94,6 +95,7 @@ public class MockGitHubService implements IGitHubSourceConnector {
             info.setName(name);
             info.setDescription(repositoryUrl);
             info.setTags(new HashSet<String>(Arrays.asList("tag1", "tag2")));
+            info.setType(ApiDesignType.OpenAPI20);
             return info;
         } catch (URISyntaxException e) {
             throw new NotFoundException();

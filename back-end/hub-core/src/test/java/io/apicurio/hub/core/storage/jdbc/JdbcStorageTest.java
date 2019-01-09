@@ -40,6 +40,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
@@ -100,6 +101,7 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
+        design.setType(ApiDesignType.OpenAPI20);
         
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
@@ -138,7 +140,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -167,7 +170,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -195,6 +199,7 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
+        design.setType(ApiDesignType.OpenAPI20);
         
         // Add five designs as user1
         design.setName("API 1");
@@ -233,7 +238,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -247,7 +253,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String designId = storage.createApiDesign("user", design, "{}");
         
         // Fetch it by its ID
@@ -284,7 +291,8 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.getTags().add("tag1");
         design.getTags().add("tag2");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String designId = storage.createApiDesign("user", design, "{}");
         
         // Fetch it by its ID
@@ -321,7 +329,8 @@ public class JdbcStorageTest {
         design.setName("API Name");
         design.getTags().add("tag1");
         design.getTags().add("tag2");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String designId = storage.createApiDesign("user", design, "{}");
         design.setId(designId);
         
@@ -524,7 +533,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -567,6 +577,7 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Another design.");
         design.setName("Another API");
+        design.setType(ApiDesignType.OpenAPI20);
         storage.createApiDesign("user", design, "{}");
 
         // The same contributors data should get returned.
@@ -584,6 +595,7 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
+        design.setType(ApiDesignType.OpenAPI20);
         
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
@@ -609,7 +621,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -638,7 +651,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -714,6 +728,7 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
+        design.setType(ApiDesignType.OpenAPI20);
         String designId = storage.createApiDesign(user, design, "{}");
         ApiDesignContent content = storage.getLatestContentDocument(user, designId);
         long contentVersion = content.getContentVersion();
@@ -760,7 +775,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
 
         // Now create a collaboration invite
@@ -781,7 +797,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
 
         String designId = id;
@@ -830,7 +847,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
 
         String designId = id;
@@ -883,7 +901,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
 
         String inviteId = UUID.randomUUID().toString();
@@ -926,7 +945,8 @@ public class JdbcStorageTest {
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -985,7 +1005,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -1024,7 +1045,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
@@ -1070,7 +1092,8 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setDescription("Just added the design!");
-        
+        design.setType(ApiDesignType.OpenAPI20);
+
         // Add 8 designs as user1
         design.setName("API 1");
         String did1 = storage.createApiDesign("user", design, "{}");
@@ -1143,6 +1166,7 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name (1)");
+        design.setType(ApiDesignType.OpenAPI20);
         
         String designId1 = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(designId1);
@@ -1152,7 +1176,8 @@ public class JdbcStorageTest {
         design2.setCreatedBy("user");
         design2.setCreatedOn(now);
         design2.setName("API Name (2)");
-        
+        design2.setType(ApiDesignType.OpenAPI20);
+
         String designId2 = storage.createApiDesign("user", design2, "{}");
         Assert.assertNotNull(designId2);
         Assert.assertEquals("2", designId2);
@@ -1255,6 +1280,7 @@ public class JdbcStorageTest {
         design.setCreatedBy("user");
         design.setCreatedOn(now);
         design.setName("API Name");
+        design.setType(ApiDesignType.OpenAPI20);
 
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
@@ -1319,7 +1345,6 @@ public class JdbcStorageTest {
         Assert.assertEquals("{4}", iter.next().getCommand());
     }
 
-    
     /**
      * Creates an in-memory datasource.
      * @throws SQLException
@@ -1328,7 +1353,7 @@ public class JdbcStorageTest {
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
-        ds.setPassword("");
+        ds.setPassword("sa");
         ds.setUrl("jdbc:h2:mem:test" + (counter++) + ";DB_CLOSE_DELAY=-1");
         return ds;
     }

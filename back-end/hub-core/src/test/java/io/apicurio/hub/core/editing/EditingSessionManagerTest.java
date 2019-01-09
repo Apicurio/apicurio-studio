@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
@@ -91,6 +92,7 @@ public class EditingSessionManagerTest {
         design.setDescription("A test API.");
         design.setCreatedBy("user");
         design.setCreatedOn(new Date());
+        design.setType(ApiDesignType.OpenAPI20);
         String designId = storage.createApiDesign("user", design, "{}");
         String uuid = this.manager.createSessionUuid(designId, "user", "12345-6", 17);
         Assert.assertNotNull(uuid);
@@ -110,6 +112,7 @@ public class EditingSessionManagerTest {
         design.setDescription("A test API.");
         design.setCreatedBy(user);
         design.setCreatedOn(new Date());
+        design.setType(ApiDesignType.OpenAPI20);
         String designId = storage.createApiDesign(user, design, "{}");
         String uuid = this.manager.createSessionUuid(designId, "user", secret, contentVersion);
         Assert.assertNotNull(uuid);

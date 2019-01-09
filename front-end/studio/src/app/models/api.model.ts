@@ -24,6 +24,7 @@ export class Api {
     createdOn: Date;
     createdBy: string;
     tags: string[];
+    type: string;
 
     constructor() {
         this.id = "";
@@ -32,6 +33,7 @@ export class Api {
         this.createdOn = new Date();
         this.createdBy = "";
         this.tags = null;
+        this.type = "";
     }
 
 }
@@ -78,6 +80,7 @@ export class EditableApiDefinition extends ApiDefinition {
         apiDef.description = api.description;
         apiDef.createdOn = api.createdOn;
         apiDef.createdBy = api.createdBy;
+        apiDef.type = api.type;
 
         return apiDef;
     }

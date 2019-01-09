@@ -40,6 +40,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
 import org.jdbi.v3.core.mapper.ColumnMapper;
@@ -57,6 +58,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
@@ -80,7 +82,7 @@ import io.apicurio.hub.core.storage.StorageException;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 7;
+    private static int DB_VERSION = 8;
     private static Object dbMutex = new Object();
 
     @Inject
@@ -187,13 +189,37 @@ public class JdbcStorage implements IStorage {
         this.jdbi.withHandle( handle -> {
             statements.forEach( statement -> {
                 logger.debug(statement);
-                handle.createUpdate(statement).execute();
+                
+                if (statement.startsWith("UPGRADER:")) {
+                    String cname = statement.substring(9).trim();
+                    applyUpgrader(handle, cname);
+                } else {
+                    handle.createUpdate(statement).execute();
+                }
             });
             return null;
         });
         logger.debug("---");
     }
     
+    /**
+     * Instantiates an instance of the given upgrader class and then invokes it.  Used to perform
+     * advanced upgrade logic when upgrading the DB (logic that cannot be handled in simple SQL 
+     * statements).
+     * @param handle
+     * @param cname
+     */
+    private void applyUpgrader(Handle handle, String cname) {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<IDbUpgrader> upgraderClass = (Class<IDbUpgrader>) Class.forName(cname);
+            IDbUpgrader upgrader = upgraderClass.newInstance();
+            upgrader.upgrade(handle);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Reuturns the current DB version by selecting the value in the 'apicurio' table.
      */
@@ -683,6 +709,7 @@ public class JdbcStorage implements IStorage {
                       .bind(2, design.getCreatedBy())
                       .bind(3, design.getCreatedOn())
                       .bind(4, asCsv(design.getTags()))
+                      .bind(5, design.getType().name())
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
                       .findOnly();
@@ -1310,6 +1337,7 @@ public class JdbcStorage implements IStorage {
             design.setCreatedOn(rs.getTimestamp("created_on"));
             String tags = rs.getString("tags");
             design.getTags().addAll(toSet(tags));
+            design.setType(ApiDesignType.valueOf(rs.getString("api_type")));
             return design;
         }
 

@@ -27,6 +27,7 @@ import {Title} from "@angular/platform-browser";
 import {IAuthenticationService} from "../../../services/auth.service";
 import {User} from "../../../models/user.model";
 import {ApiCollaborator} from "../../../models/api-collaborator.model";
+import {ConfigService} from "../../../services/config.service";
 
 @Component({
     moduleId: module.id,
@@ -53,12 +54,26 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
      * @param apis
      * @param titleService
      * @param authService
+     * @param config
      */
     constructor(private router: Router, route: ActivatedRoute,
                 private apis: ApisService, titleService: Title,
-                private authService: IAuthenticationService) {
+                private authService: IAuthenticationService,
+                private config: ConfigService) {
         super(route, titleService);
         this.api = new Api();
+    }
+
+    public isOpenApi20(): boolean {
+        return this.api.type === "OpenAPI20";
+    }
+
+    public isOpenApi30(): boolean {
+        return this.api.type === "OpenAPI30";
+    }
+
+    public isMicrocksEnabled(): boolean {
+        return this.config.isMicrocksEnabled();
     }
 
     /**

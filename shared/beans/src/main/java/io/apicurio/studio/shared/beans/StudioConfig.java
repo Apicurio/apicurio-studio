@@ -31,6 +31,7 @@ public class StudioConfig {
     private StudioConfigAuth auth;
     private StudioConfigApis apis;
     private User user;
+    private StudioConfigFeatures features;
     
     /**
      * Constructor.
@@ -92,6 +93,20 @@ public class StudioConfig {
      */
     public void setMode(StudioConfigMode mode) {
         this.mode = mode;
+    }
+
+    /**
+     * @return the features
+     */
+    public StudioConfigFeatures getFeatures() {
+        return features;
+    }
+
+    /**
+     * @param features the features to set
+     */
+    public void setFeatures(StudioConfigFeatures features) {
+        this.features = features;
     }
 
 }

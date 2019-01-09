@@ -82,6 +82,7 @@ import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
@@ -216,6 +217,7 @@ public class DesignsResource implements IDesignsResource {
             design.setCreatedBy(user);
             design.setCreatedOn(now);
             design.setTags(resourceInfo.getTags());
+            design.setType(resourceInfo.getType());
             
             try {
                 String content = initialApiContent.getContent();
@@ -265,6 +267,7 @@ public class DesignsResource implements IDesignsResource {
                 design.setCreatedBy(user);
                 design.setCreatedOn(now);
                 design.setTags(resourceInfo.getTags());
+                design.setType(resourceInfo.getType());
     
                 try {
                     if (resourceInfo.getFormat() == FormatType.YAML) {
@@ -325,6 +328,7 @@ public class DesignsResource implements IDesignsResource {
                 design.setCreatedBy(user);
                 design.setCreatedOn(now);
                 design.setTags(resourceInfo.getTags());
+                design.setType(resourceInfo.getType());
     
                 try {
                     if (resourceInfo.getFormat() == FormatType.YAML) {
@@ -372,8 +376,10 @@ public class DesignsResource implements IDesignsResource {
             OpenApiDocument doc;
             if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
                 doc = new OpenApi2Document();
+                design.setType(ApiDesignType.OpenAPI20);
             } else {
                 doc = new OpenApi3Document();
+                design.setType(ApiDesignType.OpenAPI30);
             }
             doc.setInfo(new OpenApiInfo());
             doc.getInfo().setTitle(info.getName());

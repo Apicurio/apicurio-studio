@@ -1353,7 +1353,7 @@ public class JdbcStorageTest {
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(Driver.class.getName());
         ds.setUsername("sa");
-        ds.setPassword("sa");
+        ds.setPassword("");
         ds.setUrl("jdbc:h2:mem:test" + (counter++) + ";DB_CLOSE_DELAY=-1");
         return ds;
     }

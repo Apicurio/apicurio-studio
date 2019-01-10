@@ -662,6 +662,7 @@
         <module>back-end</module>
         <module>front-end</module>
         <module>platforms</module>
+        <module>test</module>
         <module>distro</module>
         <module>tools</module>
     </modules>

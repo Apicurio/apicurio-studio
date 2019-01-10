@@ -39,7 +39,7 @@ public class SecurityContext implements ISecurityContext {
     /**
      * @param user
      */
-    protected void setUser(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
     

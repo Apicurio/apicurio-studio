@@ -78,7 +78,7 @@
         <version.gatling.plugin>2.2.0</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>2.5</version.jar.plugin>
-        <version.javadoc.plugin>2.10.4</version.javadoc.plugin>
+        <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.5</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.3</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>2.7</version.resources.plugin>

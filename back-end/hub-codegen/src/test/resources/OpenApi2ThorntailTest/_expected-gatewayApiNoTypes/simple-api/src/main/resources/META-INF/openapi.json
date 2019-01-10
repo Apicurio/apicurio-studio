@@ -118,7 +118,7 @@
         }
       }
     },
-    "API": {
+    "Api": {
       "title": "API",
       "properties": {
         "publicApi": {

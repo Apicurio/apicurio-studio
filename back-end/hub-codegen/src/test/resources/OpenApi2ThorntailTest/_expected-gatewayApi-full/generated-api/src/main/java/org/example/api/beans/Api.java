@@ -1,5 +1,5 @@
 
-package io.openapi.simple.beans;
+package org.example.api.beans;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     "parsePayload",
     "apiPolicies"
 })
-public class API {
+public class Api {
 
     /**
      * Public API
@@ -81,7 +81,7 @@ public class API {
      * 
      */
     @JsonProperty("endpointType")
-    private API.EndpointType endpointType;
+    private Api.EndpointType endpointType;
     /**
      * Endpoint Content Type
      * <p>
@@ -90,7 +90,7 @@ public class API {
      */
     @JsonProperty("endpointContentType")
     @JsonPropertyDescription("Gateway's content type when responding with errors/failures.")
-    private API.EndpointContentType endpointContentType;
+    private Api.EndpointContentType endpointContentType;
     /**
      * Endpoint properties
      * <p>
@@ -228,7 +228,7 @@ public class API {
      * 
      */
     @JsonProperty("endpointType")
-    public API.EndpointType getEndpointType() {
+    public Api.EndpointType getEndpointType() {
         return endpointType;
     }
 
@@ -239,7 +239,7 @@ public class API {
      * 
      */
     @JsonProperty("endpointType")
-    public void setEndpointType(API.EndpointType endpointType) {
+    public void setEndpointType(Api.EndpointType endpointType) {
         this.endpointType = endpointType;
     }
 
@@ -250,7 +250,7 @@ public class API {
      * 
      */
     @JsonProperty("endpointContentType")
-    public API.EndpointContentType getEndpointContentType() {
+    public Api.EndpointContentType getEndpointContentType() {
         return endpointContentType;
     }
 
@@ -261,7 +261,7 @@ public class API {
      * 
      */
     @JsonProperty("endpointContentType")
-    public void setEndpointContentType(API.EndpointContentType endpointContentType) {
+    public void setEndpointContentType(Api.EndpointContentType endpointContentType) {
         this.endpointContentType = endpointContentType;
     }
 
@@ -324,10 +324,10 @@ public class API {
         JSON("json"),
         XML("xml");
         private final String value;
-        private final static Map<String, API.EndpointContentType> CONSTANTS = new HashMap<String, API.EndpointContentType>();
+        private final static Map<String, Api.EndpointContentType> CONSTANTS = new HashMap<String, Api.EndpointContentType>();
 
         static {
-            for (API.EndpointContentType c: values()) {
+            for (Api.EndpointContentType c: values()) {
                 CONSTANTS.put(c.value, c);
             }
         }
@@ -347,8 +347,8 @@ public class API {
         }
 
         @JsonCreator
-        public static API.EndpointContentType fromValue(String value) {
-            API.EndpointContentType constant = CONSTANTS.get(value);
+        public static Api.EndpointContentType fromValue(String value) {
+            Api.EndpointContentType constant = CONSTANTS.get(value);
             if (constant == null) {
                 throw new IllegalArgumentException(value);
             } else {
@@ -363,10 +363,10 @@ public class API {
         REST("rest"),
         SOAP("soap");
         private final String value;
-        private final static Map<String, API.EndpointType> CONSTANTS = new HashMap<String, API.EndpointType>();
+        private final static Map<String, Api.EndpointType> CONSTANTS = new HashMap<String, Api.EndpointType>();
 
         static {
-            for (API.EndpointType c: values()) {
+            for (Api.EndpointType c: values()) {
                 CONSTANTS.put(c.value, c);
             }
         }
@@ -386,8 +386,8 @@ public class API {
         }
 
         @JsonCreator
-        public static API.EndpointType fromValue(String value) {
-            API.EndpointType constant = CONSTANTS.get(value);
+        public static Api.EndpointType fromValue(String value) {
+            Api.EndpointType constant = CONSTANTS.get(value);
             if (constant == null) {
                 throw new IllegalArgumentException(value);
             } else {

@@ -121,7 +121,7 @@
       }
     },
     {
-      "name": "API",
+      "name": "Api",
       "package": "io.openapi.simple.beans",
       "$schema": {
         "title": "API",

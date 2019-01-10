@@ -105,6 +105,7 @@
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.4</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
+        <version.commons-lang3>3.8.1</version.commons-lang3>
         <version.io.gatling>3.0.2</version.io.gatling>
         <version.io.prometheus>0.1.0</version.io.prometheus>
         <version.javax.enterprise>1.2</version.javax.enterprise>
@@ -118,7 +119,7 @@
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.1.Beta1</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
         <version.org.jdbi>3.1.0</version.org.jdbi>
         <version.org.json>20160212</version.org.json>
-        <version.org.jsonschema2pojo>0.5.1</version.org.jsonschema2pojo>
+        <version.org.jsonschema2pojo>1.0.0</version.org.jsonschema2pojo>
         <version.org.keycloak>4.1.0.Final</version.org.keycloak>
         <version.mysql>5.1.45</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
@@ -128,7 +129,7 @@
 
     <dependencyManagement>
         <dependencies>
-            
+
             <!-- Thorntail -->
             <dependency>
                 <groupId>io.thorntail</groupId>
@@ -203,6 +204,11 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${version.commons-lang}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.commons-lang3}</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -373,7 +379,8 @@
                             <configuration>
                                 <fail>true</fail>
                                 <rules>
-                                    <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                                    <illegalTransitiveDependencyCheck
+                                        implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
                                         <reportOnly>false</reportOnly>
                                         <regexIgnoredClasses>
                                             <regexIgnoredClass>javax\..+</regexIgnoredClass>

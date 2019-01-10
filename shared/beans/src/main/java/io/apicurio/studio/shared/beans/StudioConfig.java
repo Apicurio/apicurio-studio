@@ -75,7 +75,7 @@ public class StudioConfig {
 	}
 
 	/**
-	 * @param api the api config
+	 * @param apis the api config
 	 */
 	public void setApis(StudioConfigApis apis) {
 		this.apis = apis;

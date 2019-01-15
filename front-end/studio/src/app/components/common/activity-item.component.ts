@@ -533,7 +533,7 @@ export class ActivityItemComponent {
     }
 
     protected mockDescription(): string {
-        return "mock the API to " + this.mock().serviceRef 
+        return "mocked the API to " + this.mock().serviceRef
             + " at " + this.mock().mockURL + ".";
     }
 

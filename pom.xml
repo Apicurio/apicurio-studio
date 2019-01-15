@@ -74,7 +74,7 @@
         <version.compiler.plugin>3.8.0</version.compiler.plugin>
         <version.dependency.plugin>3.1.1</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
-        <version.enforcer.plugin>1.4</version.enforcer.plugin>
+        <version.enforcer.plugin>1.4.1</version.enforcer.plugin>
         <version.gatling.plugin>2.2.0</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>2.5</version.jar.plugin>
@@ -367,7 +367,18 @@
                             <groupId>de.is24.maven.enforcer.rules</groupId>
                             <artifactId>illegal-transitive-dependency-check</artifactId>
                             <version>1.7.4</version>
+			    <exclusions>
+			        <exclusion>
+				    <groupId>org.ow2.asm</groupId>
+				    <artifactId>asm-analysis</artifactId>
+				</exclusion>
+			    </exclusions>
                         </dependency>
+			<dependency>
+			    <groupId>org.ow2.asm</groupId>
+			    <artifactId>asm-analysis</artifactId>
+			    <version>6.1.1</version>
+			</dependency>
                     </dependencies>
                     <executions>
                         <execution>

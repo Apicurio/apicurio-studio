@@ -113,7 +113,7 @@
         <version.org.apache.httpcomponents>4.5.3</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.8</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.4.3</version.org.apache.commons.commons-pool2>
-        <version.org.jboss.resteasy>3.0.19.Final</version.org.jboss.resteasy>
+        <version.org.jboss.resteasy>3.6.2.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
         <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>1.1.1.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.0_spec>
@@ -344,6 +344,11 @@
                 <artifactId>junit</artifactId>
                 <version>${version.junit}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>${version.org.jboss.resteasy}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -367,18 +372,18 @@
                             <groupId>de.is24.maven.enforcer.rules</groupId>
                             <artifactId>illegal-transitive-dependency-check</artifactId>
                             <version>1.7.4</version>
-			    <exclusions>
-			        <exclusion>
-				    <groupId>org.ow2.asm</groupId>
-				    <artifactId>asm-analysis</artifactId>
-				</exclusion>
-			    </exclusions>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.ow2.asm</groupId>
+                                    <artifactId>asm-analysis</artifactId>
+                                </exclusion>
+                            </exclusions>
                         </dependency>
-			<dependency>
-			    <groupId>org.ow2.asm</groupId>
-			    <artifactId>asm-analysis</artifactId>
-			    <version>6.1.1</version>
-			</dependency>
+                        <dependency>
+                            <groupId>org.ow2.asm</groupId>
+                            <artifactId>asm-analysis</artifactId>
+                            <version>6.1.1</version>
+                        </dependency>
                     </dependencies>
                     <executions>
                         <execution>

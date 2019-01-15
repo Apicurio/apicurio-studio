@@ -28,6 +28,7 @@ import {IAuthenticationService} from "../../../services/auth.service";
 import {User} from "../../../models/user.model";
 import {ApiCollaborator} from "../../../models/api-collaborator.model";
 import {ConfigService} from "../../../services/config.service";
+import {ApiMock, MockReference} from "../../../models/mock-api.model";
 
 @Component({
     moduleId: module.id,
@@ -40,12 +41,16 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
     public api: Api;
     public contributors: ApiContributors;
     public collaborators: ApiCollaborator[];
+    public mocks: ApiMock[];
     public activity: ApiDesignChange[] = [];
     public activityStart: number = 0;
     public activityEnd: number = 10;
     public hasMoreActivity: boolean = false;
     public gettingMoreActivity: boolean = false;
     public canDelete: boolean = false;
+
+    public mock: ApiMock;
+    public mockRef: MockReference;
 
     /**
      * Constructor.
@@ -148,6 +153,14 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
                 }
             });
         });
+        this.apis.getMocks(apiId).then( mocks => {
+            this.mocks = mocks;
+            if (mocks && mocks.length > 0) {
+                this.mock = mocks[0];
+                this.mockRef = JSON.parse(this.mock.info);
+            }
+            this.dataLoaded["mocks"] = true;
+        });
     }
 
     /**
@@ -195,6 +208,28 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         } else {
             return "" + (this.collaborators.length - 1);
         }
+    }
+
+    /**
+     * Returns true if at least one mock exists for the API.
+     */
+    public hasMocks(): boolean {
+        return this.mocks && this.mocks.length > 0;
+    }
+
+    /**
+     * Returns true only if the API has been mocked in microcks.
+     */
+    public hasMicrocksMock(): boolean {
+        return this.mockRef && this.mockRef.mockType === "microcks";
+    }
+
+    /**
+     * Returns true only if the microcks mock is older than the most recent activity.
+     */
+    public isMockStale(): boolean {
+        let latestActivity = this.activity[0];
+        return this.mock.on < latestActivity.on;
     }
 
 }

@@ -38,7 +38,7 @@ import {UpdateCodegenProject} from "../models/update-codegen-project.model";
 import {Injectable} from "@angular/core";
 import {ApiPublication} from "../models/api-publication.model";
 import {UpdateCollaborator} from "../models/update-collaborator.model";
-import {MockReference} from "../models/mock-api.model";
+import {ApiMock, MockReference} from "../models/mock-api.model";
 
 
 export interface IConnectionHandler {
@@ -407,6 +407,28 @@ export class ApisService extends AbstractHubService {
 
         console.info("[ApisService] Publishing an API Design: %s", publishApiUrl);
         return this.httpPost<PublishApi>(publishApiUrl, info, options);
+    }
+
+    /**
+     * Gets the list of mocks for a given API id.
+     * @param apiId
+     * @param from
+     * @param to
+     */
+    public getMocks(apiId: string, from?: number, to?: number): Promise<ApiMock[]> {
+        console.info("[ApisService] Getting all mocks for API %s", apiId);
+
+        let getMocksUrl: string = this.endpoint("/designs/:designId/mocks", {
+            designId: apiId
+        }, {
+            start: from,
+            end: to
+        });
+
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ApisService] Fetching API mocks: %s", getMocksUrl);
+        return this.httpGet<ApiMock[]>(getMocksUrl, options);
     }
 
     /**

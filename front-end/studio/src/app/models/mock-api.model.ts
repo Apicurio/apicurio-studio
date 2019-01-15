@@ -16,7 +16,17 @@
  */
 
 export class MockReference {
-    
+
+    mockType: string;
     serviceRef: string;
     mockURL: string;
+
+}
+
+export class ApiMock {
+
+    by: string;
+    on: Date;
+    info: string;
+
 }

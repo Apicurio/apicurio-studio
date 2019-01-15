@@ -148,6 +148,57 @@
                         </div>
                     </div>
                 </div>
+                <!-- Microcks specific panel -->
+                <div class="row row-cards-pf" *ngIf="isMicrocksEnabled() && isOpenApi30()">
+                    <div class="card-pf">
+                        <div class="card-pf-heading">
+                            <h2 style="height: 18px;" class="card-pf-title">API Mocking</h2>
+                        </div>
+                        <div class="card-pf-body">
+                            <div class="api-data-loading" *ngIf="!isLoaded('mocks')">
+                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading mock information...</p>
+                            </div>
+                            <div class="api-mocks" *ngIf="isLoaded('mocks')">
+                                <div class="" *ngIf="!hasMicrocksMock()">
+                                    <p>
+                                        This API has <strong>not yet been mocked in Microcks</strong>.
+                                    </p>
+                                    <div>
+                                        <a [routerLink]="[ 'mock' ]" class="btn btn-primary">
+                                            <span class="fa fa-fw fa-cloud-upload"></span>
+                                            <span>Mock with Microcks</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="" *ngIf="hasMicrocksMock()">
+                                    <p>
+                                        This API is being mocked in <strong>Microcks</strong>!
+                                    </p>
+                                    <div class="api-mocked-info">
+                                        <div class="info-full">
+                                            <span class="fa fa-fw fa-clock-o"></span>
+                                            <span>Mock created on <em>{{ mock.on | date }}</em></span>
+                                        </div>
+                                        <div class="info-full">
+                                            <span class="fa fa-fw fa-user"></span>
+                                            <span>Mock created by <em>{{ api.createdBy }}</em></span>
+                                        </div>
+                                    </div>
+                                    <div class="api-mocked-actions">
+                                        <a href="{{ mockRef.mockURL }}" target="_blank" class="btn btn-default">
+                                            <span class="fa fa-external-link"></span>
+                                            <span>View in Microcks</span>
+                                        </a>
+                                        <a [routerLink]="[ 'mock' ]" class="btn btn-primary" *ngIf="isMockStale()">
+                                            <span class="fa fa-fw fa-cloud-upload"></span>
+                                            <span>Update Mock in Microcks</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -44,6 +44,7 @@ import io.apicurio.hub.core.beans.ApiPublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.beans.MockReference;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -111,7 +112,7 @@ public interface IDesignsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{designId}/mocks")
-    public Response mockApi(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+    public MockReference mockApi(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml" })

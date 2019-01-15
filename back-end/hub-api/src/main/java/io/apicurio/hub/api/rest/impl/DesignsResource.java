@@ -91,6 +91,7 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.MockReference;
 import io.apicurio.hub.core.beans.OpenApi2Document;
 import io.apicurio.hub.core.beans.OpenApi3Document;
 import io.apicurio.hub.core.beans.OpenApiDocument;
@@ -780,7 +781,7 @@ public class DesignsResource implements IDesignsResource {
      * @see io.apicurio.hub.api.rest.IDesignsResource#mockApi(java.lang.String)
      */
     @Override
-    public Response mockApi(String designId) throws ServerError, NotFoundException {
+    public MockReference mockApi(String designId) throws ServerError, NotFoundException {
         try {
             // First step - publish the content to the Microcks server API
             String content = getApiContent(designId, FormatType.YAML);
@@ -796,7 +797,6 @@ public class DesignsResource implements IDesignsResource {
                 logger.error("Failed to produce a valid mockURL", e);
             }
 
-
             // Followup step - store a row in the api_content table
             try {
                 String user = this.security.getCurrentUser().getLogin();
@@ -807,14 +807,11 @@ public class DesignsResource implements IDesignsResource {
             }
 
             // Finally return response.
-            StringBuilder json = new StringBuilder("{");
-            json.append("\"serviceRef\": ").append("\"" + serviceRef + "\", ");
-            json.append("\"mockURL\": ").append("\"" + mockURL + "\"}");
-            ResponseBuilder builder = Response.ok().entity(json.toString())
-                  .header("Content-Type", "application/json")
-                  .header("Content-Length", json.toString().length());
-
-            return builder.build();
+            MockReference mockRef = new MockReference();
+            mockRef.setMockType("microcks");
+            mockRef.setServiceRef(serviceRef);
+            mockRef.setMockURL(mockURL);
+            return mockRef;
         } catch (MicrocksConnectorException e) {
             throw new ServerError(e);
         }

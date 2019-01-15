@@ -44,7 +44,7 @@ public class JdbcStorageUpgradeTest {
 
     @Test
     public void testUpgradeFromVersion7toVersion8() throws Exception {
-        BasicDataSource ds = createDatasource("upgrade-test.v7to8.h2.db");
+        BasicDataSource ds = createDatasource("upgrade-test.v7to8.mv.db");
         try {
             HubConfiguration config = new HubConfiguration();
             H2SqlStatements sqlStatements = new H2SqlStatements(config);
@@ -78,11 +78,11 @@ public class JdbcStorageUpgradeTest {
         // Step 1 - copy the db file from the classpath to a temp location
         URL dbUrl = JdbcStorageUpgradeTest.class.getResource(dbFileName);
         Assert.assertNotNull(dbUrl);
-        File tempDbFile = File.createTempFile("_apicurio_junit", ".h2.db");
+        File tempDbFile = File.createTempFile("_apicurio_junit", ".mv.db");
         FileUtils.copyURLToFile(dbUrl, tempDbFile);
         tempDbFile.deleteOnExit();
         
-        String jdbcUrl = "jdbc:h2:file:" + tempDbFile.getAbsolutePath().replaceAll(".h2.db", "");
+        String jdbcUrl = "jdbc:h2:file:" + tempDbFile.getAbsolutePath().replaceAll(".mv.db", "");
         
         // Step 2 - create a datasource from the file path
         BasicDataSource ds = new BasicDataSource();

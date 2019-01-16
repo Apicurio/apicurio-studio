@@ -67,3 +67,7 @@
 .security-scheme-list .scopes .scope .scope-name a.disabled {
   color: rgb(187, 187, 187);
 }
+
+.security-scheme-list .scopes-row .scopes-section {
+  padding-left: 50px;
+}

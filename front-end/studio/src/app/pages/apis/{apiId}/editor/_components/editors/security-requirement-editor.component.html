@@ -82,7 +82,8 @@
                         </div>
                         <div class="row">
                             <td class="col-md-12">
-                                <div class="instructions" *ngIf="scopes(scheme).length > 0">Select the required scopes below:</div>
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && isGlobalContext()">Specify scopes to define the permissions necessary for users to access operations in this API.</div>
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && !isGlobalContext()">Specify scopes to define the permissions necessary for a user to access the operation.</div>
                                 <div class="no-scopes" *ngIf="scopes(scheme).length === 0">
                                     <div class="alert alert-warning">
                                         <span class="pficon pficon-warning-triangle-o"></span>

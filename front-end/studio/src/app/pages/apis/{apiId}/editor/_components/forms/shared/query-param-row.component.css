@@ -25,7 +25,7 @@
 }
 
 .query-param .header .name {
-  flex-basis: 16%;
+  flex-basis: 18%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -43,7 +43,7 @@
 }
 
 .query-param .header .description {
-  flex-basis: 41%;
+  flex-basis: 39%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

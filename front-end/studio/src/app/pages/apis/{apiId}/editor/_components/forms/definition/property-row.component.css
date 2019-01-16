@@ -25,7 +25,7 @@
 }
 
 .property .header .name {
-  flex-basis: 13%;
+  flex-basis: 18%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -35,7 +35,7 @@
   font-weight: 600;
 }
 .property .header .description {
-  flex-basis: 44%;
+  flex-basis: 39%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

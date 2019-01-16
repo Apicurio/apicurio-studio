@@ -2,7 +2,7 @@
     <div class="header">
         <div class="name">
             <validation-problem [model]="property"></validation-problem>
-            <span>{{ property.propertyName() }}</span>
+            <span title="{{ property.propertyName() }}">{{ property.propertyName() }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>

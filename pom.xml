@@ -68,7 +68,7 @@
         <version.antrun.plugin>1.8</version.antrun.plugin>
         <version.assembly.plugin>2.5</version.assembly.plugin>
         <version.buildnumber.plugin>1.3</version.buildnumber.plugin>
-        <version.clean.plugin>2.6</version.clean.plugin>
+        <version.clean.plugin>3.1.0</version.clean.plugin>
         <version.compiler.plugin>3.8.0</version.compiler.plugin>
         <version.dependency.plugin>3.1.1</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>

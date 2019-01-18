@@ -3,7 +3,8 @@
     <title-bar [document]="document()" [validationErrors]="validationErrors"
                [undoableCommandCount]="_undoableCommandCount"
                [redoableCommandCount]="_redoableCommandCount"
-               (onUndoClick)="undoLastCommand()" (onRedoClick)="redoLastCommand()"></title-bar>
+               (onUndoClick)="undoLastCommand()" (onRedoClick)="redoLastCommand()"
+               (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
     <master [document]="document()" #master></master>
     <div class="editor-detail" [ngSwitch]="formType">
         <main-form [document]="document()" class="editor-detail-form"

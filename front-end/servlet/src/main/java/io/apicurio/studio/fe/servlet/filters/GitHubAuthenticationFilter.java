@@ -18,6 +18,7 @@ package io.apicurio.studio.fe.servlet.filters;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 
 import javax.servlet.Filter;
@@ -171,7 +172,7 @@ public class GitHubAuthenticationFilter implements Filter {
      */
     private String createLoginPage(String authUrl) throws ServletException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("login.html")) {
-            String content = IOUtils.toString(in);
+            String content = IOUtils.toString(in, Charset.forName("UTF-8"));
             return content.replaceAll("XXX", authUrl);
         } catch (IOException e) {
             throw new ServletException(e);
@@ -185,7 +186,7 @@ public class GitHubAuthenticationFilter implements Filter {
      */
     private String createLogoutPage() throws ServletException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("logout.html")) {
-            String content = IOUtils.toString(in);
+            String content = IOUtils.toString(in, Charset.forName("UTF-8"));
             return content;
         } catch (IOException e) {
             throw new ServletException(e);

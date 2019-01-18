@@ -17,6 +17,7 @@
 package io.apicurio.hub.core.beans;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -41,7 +42,7 @@ public class TestOpenApiDocumentIO {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         URL contentUrl = getClass().getResource("simple-api-3.0.json");
-        String content = IOUtils.toString(contentUrl);
+        String content = IOUtils.toString(contentUrl, Charset.forName("UTF-8"));
         OpenApi3Document document = mapper.readerFor(OpenApi3Document.class).readValue(content);
         Assert.assertNotNull(document);
         Assert.assertEquals(2, document.getTags().length);

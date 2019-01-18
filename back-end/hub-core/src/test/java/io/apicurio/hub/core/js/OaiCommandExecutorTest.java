@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.js;
 
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,10 +43,10 @@ public class OaiCommandExecutorTest {
         String document = OAI_DOC;
         // Load the commands
         List<String> commands = new LinkedList<String>();
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-title.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-version.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-license.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("add-schema-definition.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-title.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-version.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("change-license.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("add-schema-definition.command.json"), Charset.forName("UTF-8")));
         
         // Invoke the executeCommands function
         String actual = executor.executeCommands(document, commands);
@@ -53,7 +54,7 @@ public class OaiCommandExecutorTest {
 //        System.out.println(actual);
 //        System.out.println("---");
         
-        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("__expected.json"));
+        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("__expected.json"), Charset.forName("UTF-8"));
         
         String actualNormalized = OaiCommandExecutorTest.normalizeString((String) actual);
         String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
@@ -65,14 +66,14 @@ public class OaiCommandExecutorTest {
         OaiScriptEngineFactory.debug("::testExecuteCommands2::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
-        String document = IOUtils.toString(getClass().getResource("testExecuteCommands2/__begin.json"));
+        String document = IOUtils.toString(getClass().getResource("testExecuteCommands2/__begin.json"), Charset.forName("UTF-8"));
         // Load the commands
         List<String> commands = new LinkedList<String>();
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-version.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-description.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json")));
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-contact.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-version.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-description.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/delete-contact.command.json"), Charset.forName("UTF-8")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/change-contact.command.json"), Charset.forName("UTF-8")));
         
         // Invoke the executeCommands function
         String actual = executor.executeCommands(document, commands);
@@ -80,7 +81,7 @@ public class OaiCommandExecutorTest {
 //        System.out.println(actual);
 //        System.out.println("---");
         
-        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/__expected.json"));
+        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands2/__expected.json"), Charset.forName("UTF-8"));
         
         String actualNormalized = OaiCommandExecutorTest.normalizeString((String) actual);
         String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);
@@ -92,10 +93,10 @@ public class OaiCommandExecutorTest {
         OaiScriptEngineFactory.debug("::testExecuteCommands2::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
-        String document = IOUtils.toString(getClass().getResource("testExecuteCommands_Rename/__begin.json"));
+        String document = IOUtils.toString(getClass().getResource("testExecuteCommands_Rename/__begin.json"), Charset.forName("UTF-8"));
         // Load the commands
         List<String> commands = new LinkedList<String>();
-        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/rename-definition.command.json")));
+        commands.add(IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/rename-definition.command.json"), Charset.forName("UTF-8")));
         
         // Invoke the executeCommands function
         String actual = executor.executeCommands(document, commands);
@@ -103,7 +104,7 @@ public class OaiCommandExecutorTest {
 //        System.out.println(actual);
 //        System.out.println("---");
         
-        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/__expected.json"));
+        String expected = IOUtils.toString(OaiCommandExecutorTest.class.getResource("testExecuteCommands_Rename/__expected.json"), Charset.forName("UTF-8"));
         
         String actualNormalized = OaiCommandExecutorTest.normalizeString((String) actual);
         String expectedNormalized = OaiCommandExecutorTest.normalizeString(expected);

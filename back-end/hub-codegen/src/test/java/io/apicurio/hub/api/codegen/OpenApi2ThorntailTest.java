@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -101,7 +102,7 @@ public class OpenApi2ThorntailTest {
             @Override
             protected String processApiDoc() {
                 try {
-                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec));
+                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec), Charset.forName("UTF-8"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -133,9 +134,9 @@ public class OpenApi2ThorntailTest {
                     URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + 
                             "/" + expectedFilesPath + "/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
+                    String expected = IOUtils.toString(expectedFile, Charset.forName("UTF-8"));
 
-                    String actual = IOUtils.toString(zipInputStream);
+                    String actual = IOUtils.toString(zipInputStream, Charset.forName("UTF-8"));
                     if (debug) {
                         System.out.println("-----");
                         System.out.println(actual);
@@ -181,9 +182,9 @@ public class OpenApi2ThorntailTest {
                     
                     URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/" + expectedFilesPath + "/" + name);
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile);
+                    String expected = IOUtils.toString(expectedFile, Charset.forName("UTF-8"));
 
-                    String actual = IOUtils.toString(zipInputStream);
+                    String actual = IOUtils.toString(zipInputStream, Charset.forName("UTF-8"));
                     if (debug) {
                         System.out.println("-----");
                         System.out.println(actual);

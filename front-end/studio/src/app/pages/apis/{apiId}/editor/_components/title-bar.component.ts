@@ -61,6 +61,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
     @Input() redoableCommandCount: number;
     @Output() onUndoClick: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onRedoClick: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
     filterCriteria: string = null;
 
@@ -202,9 +203,6 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
      * Called when the user clicks the Bell icon to show the list of problems.
      */
     public toggleProblemDrawer(): void {
-        if (!this.showProblems && !this.hasProblems()) {
-            return;
-        }
         this.showProblems = !this.showProblems;
     }
 

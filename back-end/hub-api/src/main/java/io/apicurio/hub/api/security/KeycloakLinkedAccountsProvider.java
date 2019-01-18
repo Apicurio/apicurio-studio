@@ -18,6 +18,7 @@ package io.apicurio.hub.api.security;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -187,7 +188,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
                 }
                 
                 try (InputStream contentStream = response.getEntity().getContent()) {
-                    String content = IOUtils.toString(contentStream);
+                    String content = IOUtils.toString(contentStream, Charset.forName("UTF-8"));
                     return content;
                 }
             }            

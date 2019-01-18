@@ -18,6 +18,7 @@ package io.apicurio.studio.fe.servlet.servlets;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,7 @@ public class ReadyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setHeader("Content-Type", "application/json");
-        IOUtils.copy(new StringReader("{ \"up\": true }"), resp.getOutputStream());
+        IOUtils.copy(new StringReader("{ \"up\": true }"), resp.getOutputStream(), Charset.forName("UTF-8"));
         resp.getOutputStream().flush();
     }
 

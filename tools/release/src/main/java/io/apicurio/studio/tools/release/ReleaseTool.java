@@ -332,15 +332,11 @@ public class ReleaseTool {
     private static byte[] loadArtifactData(File releaseArtifactFile) throws Exception {
         System.out.println("Loading artifact content: " + releaseArtifactFile.getName());
         byte [] buffer = new byte[(int) releaseArtifactFile.length()];
-        InputStream is = null;
-        try {
-            is = new FileInputStream(releaseArtifactFile);
+        try (InputStream is = new FileInputStream(releaseArtifactFile)) {
             IOUtils.readFully(is, buffer);
             return buffer;
         } catch (IOException e) {
             throw new Exception(e);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
     }
 }

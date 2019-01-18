@@ -107,6 +107,7 @@ import {ScopesInputComponent} from "./pages/apis/{apiId}/editor/_components/comm
 import {ResponseTabComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-tab.component";
 import {ResponseTab30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-tab-30.component";
 import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/media-type-row.component";
+import {FeaturesService} from "./pages/apis/{apiId}/editor/_services/features.service";
 
 @NgModule({
     imports: [
@@ -135,7 +136,7 @@ import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/for
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
-        RestResourceService
+        RestResourceService, FeaturesService
     ],
     exports: [
         ApiEditorComponent

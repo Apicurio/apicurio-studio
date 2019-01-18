@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.beans;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
@@ -47,7 +48,7 @@ public class ApiDesignResourceInfoTest {
      */
     @Test
     public void testFromContent_30_Json() throws Exception {
-        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_3.0.json"));
+        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_3.0.json"), Charset.forName("UTF-8"));
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
         Assert.assertNotNull(info);
         Assert.assertEquals(FormatType.JSON, info.getFormat());
@@ -61,7 +62,7 @@ public class ApiDesignResourceInfoTest {
      */
     @Test
     public void testFromContent_30_Yaml() throws Exception {
-        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_3.0.yaml"));
+        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_3.0.yaml"), Charset.forName("UTF-8"));
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
         Assert.assertNotNull(info);
         Assert.assertEquals(FormatType.YAML, info.getFormat());
@@ -75,7 +76,7 @@ public class ApiDesignResourceInfoTest {
      */
     @Test
     public void testFromContent_20_Json() throws Exception {
-        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_2.0.json"));
+        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_2.0.json"), Charset.forName("UTF-8"));
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
         Assert.assertNotNull(info);
         Assert.assertEquals(FormatType.JSON, info.getFormat());
@@ -89,7 +90,7 @@ public class ApiDesignResourceInfoTest {
      */
     @Test
     public void testFromContent_20_Yaml() throws Exception {
-        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_2.0.yaml"));
+        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_2.0.yaml"), Charset.forName("UTF-8"));
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
         Assert.assertNotNull(info);
         Assert.assertEquals(FormatType.YAML, info.getFormat());
@@ -104,7 +105,7 @@ public class ApiDesignResourceInfoTest {
     @Test
     public void testFromContent_InvalidContent() throws Exception {
         try {
-            String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_Invalid.txt"));
+            String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_Invalid.txt"), Charset.forName("UTF-8"));
             ApiDesignResourceInfo.fromContent(content);
             Assert.fail("Expected a parser error here!");
         } catch (Exception e) {

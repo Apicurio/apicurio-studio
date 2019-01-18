@@ -38,7 +38,8 @@ import {
     OasNodePath,
     OasPathItem,
     OasValidationProblem,
-    OasVisitorUtil
+    OasVisitorUtil,
+    IOasValidationSeverityRegistry
 } from "oai-ts-core";
 import {EditorMasterComponent} from "./_components/master.component";
 import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
@@ -56,6 +57,9 @@ import {SecurityRequirementEditorComponent} from "./_components/editors/security
 import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
 import {ParameterEditorComponent} from "./_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
+import {ApiEditorComponentFeatures} from "./_models/features.model";
+import {FeaturesService} from "./_services/features.service";
+
 
 
 @Component({
@@ -69,11 +73,15 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
+    @Input() features: ApiEditorComponentFeatures;
+    @Input() validationRegistry: IOasValidationSeverityRegistry;
+
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
     @Output() onValidationChanged: EventEmitter<OasValidationProblem[]> = new EventEmitter<OasValidationProblem[]>();
     @Output() onUndo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onRedo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
+    @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
@@ -106,10 +114,16 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param selectionService
      * @param commandService
      * @param documentService
+     * @param editorsService
+     * @param featuresService
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
-                private documentService: DocumentService, private editorsService: EditorsService) {}
+                private documentService: DocumentService, private editorsService: EditorsService,
+                private featuresService: FeaturesService) {}
 
+    /**
+     * Called when the editor is initialized by angular.
+     */
     public ngOnInit(): void {
         this.selectionService.reset();
         this.commandService.reset();
@@ -136,6 +150,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         }
     }
 
+    /**
+     * Called when angular destroys the editor component.
+     */
     public ngOnDestroy(): void {
         this._selectionSubscription.unsubscribe();
         this._commandSubscription.unsubscribe();
@@ -146,18 +163,33 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param changes
      */
     ngOnChanges(changes: SimpleChanges): void {
-        this._document = null;
-        this._otEngine = null;
-        this._undoableCommandCount = 0;
-        this._redoableCommandCount = 0;
-        if (this.document().getSpecVersion() === "2.0") {
-            this.formType = "main_20";
-        } else {
-            this.formType = "main_30";
+        if (changes["api"]) {
+            this._document = null;
+            this._otEngine = null;
+            this._undoableCommandCount = 0;
+            this._redoableCommandCount = 0;
+            if (this.document().getSpecVersion() === "2.0") {
+                this.formType = "main_20";
+            } else {
+                this.formType = "main_30";
+            }
+
+            // Fire an event in the doc service indicating that there is a new document.
+            this.documentService.emitDocument(this.document());
         }
 
-        // Fire an event in the doc service indicating that there is a new document.
-        this.documentService.emitDocument(this.document());
+        if (changes["features"]) {
+            if (this.features) {
+                this.featuresService.setFeatures(this.features);
+            } else {
+                this.featuresService.setFeatures(new ApiEditorComponentFeatures());
+            }
+        }
+
+        if (changes["validationRegistry"]) {
+            this.validateModel();
+            this.documentService.emitChange();
+        }
     }
 
     /**
@@ -376,7 +408,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public validateModel(): void {
         let doc: OasDocument = this.document();
         let oldValidationErrors: OasValidationProblem[] = this.validationErrors;
-        this.validationErrors = this._library.validate(doc, true);
+        this.validationErrors = this._library.validate(doc, true, this.validationRegistry);
         if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
             this.onValidationChanged.emit(this.validationErrors);
         }

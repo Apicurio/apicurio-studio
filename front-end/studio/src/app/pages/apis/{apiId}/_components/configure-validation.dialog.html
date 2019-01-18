@@ -1,0 +1,33 @@
+<div bsModal #configureValidationModal="bs-modal" class="modal fade" id="configureValidationModal" tabindex="-1" role="dialog"
+     aria-labelledby="configureValidationModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="configureValidationModalLabel">Configure API Validation</h4>
+            </div>
+            <div class="modal-body">
+                <p>Choose a validation profile from the list below.</p>
+                <div class="profiles">
+                    <div class="profile" *ngFor="let profile of allValidationProfiles()" (click)="selectProfile(profile)">
+                        <div class="rad">
+                            <span class="fa fa-fw fa-circle-o" [class.fa-dot-circle-o]="isProfileSelected(profile)"></span>
+                        </div>
+                        <div class="name">
+                            <span title="{{ profile.name }}">{{ profile.name }}</span>
+                        </div>
+                        <div class="description">
+                            <span title="{{ profile.description }}">{{ profile.description }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!isDirty()">OK</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

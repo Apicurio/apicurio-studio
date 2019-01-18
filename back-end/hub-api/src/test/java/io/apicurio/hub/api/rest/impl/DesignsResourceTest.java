@@ -18,6 +18,7 @@ package io.apicurio.hub.api.rest.impl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Comparator;
@@ -193,7 +194,7 @@ public class DesignsResourceTest {
     @Test
     public void testImportDesign_Data() throws ServerError, AlreadyExistsException, NotFoundException, IOException, ApiValidationException {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
-        String rawData = IOUtils.toString(resourceUrl);
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         String b64Data = Base64.encodeBase64String(rawData.getBytes());
         
         ImportApiDesign info = new ImportApiDesign();

@@ -29,6 +29,8 @@ import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs/Subscription";
+import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
+import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
 
 @Component({
     moduleId: module.id,
@@ -60,6 +62,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private currentEditorSelection: string;
 
+    protected validationRegistry: IOasValidationSeverityRegistry = new DefaultValidationSeverityRegistry();
+
     /**
      * Constructor.
      * @param router
@@ -67,9 +71,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param zone
      * @param apis
      * @param titleService
+     * @param validationService
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
-                private apis: ApisService, titleService: Title) {
+                private apis: ApisService, titleService: Title, private validationService: ValidationService) {
         super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
     }
@@ -104,6 +109,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             this.apiDefinition = def;
             this.loaded("def");
             this.updatePageTitle();
+            this.updateValidationProfile();
             this.editingSession = this.apis.openEditingSession(def);
             this.editingSession.commandHandler({
                 onCommand: (command) => {
@@ -185,6 +191,19 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             console.error("[ApiEditorPageComponent] Error editing API design.");
             this.error(error);
         });
+    }
+
+    /**
+     * When the API is loaded, we need to load the validation profile for this API from the
+     * validation service.
+     */
+    protected updateValidationProfile(): void {
+        let profile: ValidationProfile = this.validationService.getProfileForApi(this.apiDefinition.id);
+        if (profile) {
+            this.validationRegistry = profile.registry;
+        } else {
+            this.validationRegistry = null;
+        }
     }
 
     public ngAfterViewInit(): void {
@@ -303,6 +322,15 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             this._apiEditor.first.updateCollaboratorSelection(user, selection);
         }
     }
+
+    /**
+     * Called when the user changes validation profiles for the API.
+     * @param profile
+     */
+    public changeValidationProfile(profile: ValidationProfile): void {
+        this.validationService.setProfileForApi(this.apiDefinition.id, profile);
+        this.validationRegistry = profile.registry;
+    }
 }
 
 
@@ -313,7 +341,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 export class ApiEditorPageGuard implements CanDeactivate<ApiEditorPageComponent> {
 
     /**
-     * Called by angular 2 to determine whether the user is allowed to navigate away from the
+     * Called by angular to determine whether the user is allowed to navigate away from the
      * editor.
      * @param component
      */

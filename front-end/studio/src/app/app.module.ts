@@ -17,6 +17,7 @@
 
 import 'rxjs/Rx';
 
+import {ClipboardModule} from "ngx-clipboard";
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
@@ -67,8 +68,9 @@ import {TemplateService} from './services/template.service';
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 import {MockPageComponent} from './pages/apis/{apiId}/mock/mock.page';
 import {DefaultPageComponent} from "./pages/default.page";
-import {ClipboardModule} from "ngx-clipboard";
 import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_components/invitation.component";
+import {ConfigureValidationComponent} from './pages/apis/{apiId}/_components/configure-validation.dialog';
+import {ValidationService} from "./services/validation.service";
 
 @NgModule({
     imports: [
@@ -84,11 +86,11 @@ import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_com
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
-        DefaultPageComponent
+        DefaultPageComponent, ConfigureValidationComponent
 
     ],
     providers: [
-        ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService,
+        ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
         AuthenticationCanActivateGuard, CurrentUserService, TemplateService
     ],
     bootstrap: [AppComponent]

@@ -116,7 +116,7 @@
         <version.org.json>20180813</version.org.json>
         <version.org.jsonschema2pojo>1.0.0</version.org.jsonschema2pojo>
         <version.org.keycloak>4.8.3.Final</version.org.keycloak>
-        <version.mysql>5.1.45</version.mysql>
+        <version.mysql>6.0.6</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.7</version.org.slf4j>
         <version.scala>2.12.8</version.scala>

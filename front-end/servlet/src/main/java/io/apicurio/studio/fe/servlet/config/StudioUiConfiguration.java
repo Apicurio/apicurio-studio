@@ -75,6 +75,6 @@ public class StudioUiConfiguration extends Configuration {
      * Returns true if the integration with Microcks should be enabled in the UI.
      */
     public boolean isMicrocksEnabled() {
-        return "true".equals(getConfigurationProperty(FEATURE_MICROCKS_ENV, FEATURE_MICROCKS_SYSPROP, "true"));
+        return "true".equals(getConfigurationProperty(FEATURE_MICROCKS_ENV, FEATURE_MICROCKS_SYSPROP, "false"));
     }
 }

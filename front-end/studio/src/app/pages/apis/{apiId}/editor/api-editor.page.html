@@ -14,7 +14,7 @@
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
 <div id="api-editor" *ngIf="!pageError" [ngSwitch]="loadingState()">
 
-    <!-- "Data Loading" spinner -->
+    <!-- "Definition Loading" spinner -->
     <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="'loading-def'">
         <div class="row row-cards-pf">
             <div class="">
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <!-- "Data Loading" spinner -->
+    <!-- "Editor Loading" spinner -->
     <div class="container-fluid container-cards-pf api-editor-overview" *ngSwitchCase="'loading-session'">
         <div class="row row-cards-pf">
             <div class="">
@@ -45,10 +45,15 @@
     </div>
 
     <!-- The API Editor -->
-    <api-editor #apiEditor [api]="apiDefinition" *ngSwitchCase="'loaded'"
+    <api-editor #apiEditor *ngSwitchCase="'loaded'"
+                [api]="apiDefinition"
+                [validationRegistry]="validationRegistry"
                 (onSelectionChanged)="onSelectionChanged($event)"
                 (onCommandExecuted)="onCommandExecuted($event)"
+                (onConfigureValidation)="configureValidationDialog.open()"
                 (onUndo)="onEditorUndo($event)"
                 (onRedo)="onEditorRedo($event)"></api-editor>
 </div>
 <editor-disconnected-dialog #editorDisconnectedModal></editor-disconnected-dialog>
+<configure-validation-dialog #configureValidationDialog [apiId]="apiDefinition.id"
+                             (onChange)="changeValidationProfile($event)"></configure-validation-dialog>

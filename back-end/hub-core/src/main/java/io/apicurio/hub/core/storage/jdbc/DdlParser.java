@@ -26,8 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * Can parse a DDL into a list of individual statements.
  * @author eric.wittmann@gmail.com
@@ -44,14 +42,10 @@ public class DdlParser {
      * @param ddlFile
      */
     public List<String> parse(File ddlFile) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(ddlFile);
+        try (InputStream is = new FileInputStream(ddlFile)) {
             return parse(is);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
     }
 

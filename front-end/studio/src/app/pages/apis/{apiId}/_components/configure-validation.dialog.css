@@ -1,0 +1,37 @@
+.profiles {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.profiles .profile {
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  margin-bottom: 1px;
+  padding: 3px;
+  display: flex;
+}
+
+.profiles .profile:hover {
+  background-color: #edf8ff;
+}
+
+.profiles .profile .rad {
+  flex-basis: 2%;
+  border-right: 1px solid #ccc;
+  padding-right: 5px;
+  color: #666;
+}
+.profiles .profile .name {
+  flex-basis: 30%;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profiles .profile .description {
+  flex-basis: 68%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

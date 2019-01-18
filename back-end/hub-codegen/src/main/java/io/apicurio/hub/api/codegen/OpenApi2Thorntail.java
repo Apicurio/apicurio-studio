@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -121,7 +122,7 @@ public class OpenApi2Thorntail {
      * @throws IOException
      */
     public void setOpenApiDocument(InputStream stream) throws IOException {
-        this.openApiDoc = IOUtils.toString(stream);
+        this.openApiDoc = IOUtils.toString(stream, Charset.forName("UTF-8"));
     }
     
     /**
@@ -251,7 +252,7 @@ public class OpenApi2Thorntail {
      * @param info 
      */
     private String generatePomXml(CodegenInfo info) throws IOException {
-        String template = IOUtils.toString(getClass().getResource("pom.xml"));
+        String template = IOUtils.toString(getClass().getResource("pom.xml"), Charset.forName("UTF-8"));
         return template.replace("$GROUP_ID$", this.settings.groupId)
                 .replace("$ARTIFACT_ID$", this.settings.artifactId)
                 .replace("$VERSION$", info.getVersion())
@@ -263,7 +264,7 @@ public class OpenApi2Thorntail {
      * Generates the Dockerfile.
      */
     private String generateDockerfile() throws IOException {
-        String template = IOUtils.toString(getClass().getResource("Dockerfile"));
+        String template = IOUtils.toString(getClass().getResource("Dockerfile"), Charset.forName("UTF-8"));
         return template.replace("$ARTIFACT_ID$", this.settings.artifactId);
     }
 
@@ -271,7 +272,7 @@ public class OpenApi2Thorntail {
      * Generates the openshift-template.yml file.
      */
     private String generateOpenshiftTemplate() throws IOException {
-        String template = IOUtils.toString(getClass().getResource("openshift-template.yml"));
+        String template = IOUtils.toString(getClass().getResource("openshift-template.yml"), Charset.forName("UTF-8"));
         return template.replace("$ARTIFACT_ID$", this.settings.artifactId);
     }
 
@@ -279,7 +280,7 @@ public class OpenApi2Thorntail {
      * Generates the microprofile-config.properties file to include in the generated project.
      */
     private String generateMicroprofileConfigProperties() throws IOException {
-        String template = IOUtils.toString(getClass().getResource("microprofile-config.properties"));
+        String template = IOUtils.toString(getClass().getResource("microprofile-config.properties"), Charset.forName("UTF-8"));
         return template;
     }
 

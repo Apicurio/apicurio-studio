@@ -23,4 +23,6 @@
         </div>
     </form>
 </div>
-<problem-drawer *ngIf="showProblems" [validationErrors]="validationErrors" (close)="closeProblemDrawer()"></problem-drawer>
+<problem-drawer *ngIf="showProblems" [validationErrors]="validationErrors"
+                (onConfigureValidation)="onConfigureValidation.emit()"
+                (close)="closeProblemDrawer()"></problem-drawer>

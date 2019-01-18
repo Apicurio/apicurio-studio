@@ -39,6 +39,7 @@ import {DocumentService} from "../_services/document.service";
     moduleId: module.id,
     selector: "problem-drawer",
     templateUrl: "problem-drawer.component.html",
+    styleUrls: [ "problem-drawer.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -46,6 +47,7 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     @Input() validationErrors: OasValidationProblem[];
     @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private problemsService: ProblemsService) {

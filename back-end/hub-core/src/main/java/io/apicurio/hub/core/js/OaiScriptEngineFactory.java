@@ -17,6 +17,7 @@
 package io.apicurio.hub.core.js;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -59,11 +60,11 @@ public class OaiScriptEngineFactory {
         if (oaiCommandsJsUrl == null) { throw new Exception("Failed to load script: OAI-commands.umd.js"); }
 
         // Load the JS libraries into the engine
-        engine.eval(IOUtils.toString(consoleJsUrl));
-        engine.eval(IOUtils.toString(oaiJsUrl));
-        engine.eval(IOUtils.toString(oaiCommandsJsUrl));
+        engine.eval(IOUtils.toString(consoleJsUrl, Charset.forName("UTF-8")));
+        engine.eval(IOUtils.toString(oaiJsUrl, Charset.forName("UTF-8")));
+        engine.eval(IOUtils.toString(oaiCommandsJsUrl, Charset.forName("UTF-8")));
         for (URL jsUrl : jsUrls) {
-            engine.eval(IOUtils.toString(jsUrl));
+            engine.eval(IOUtils.toString(jsUrl, Charset.forName("UTF-8")));
         }
 
         long end = System.currentTimeMillis();

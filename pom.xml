@@ -81,7 +81,7 @@
         <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>3.1.0</version.resources.plugin>
         <version.source.plugin>2.4</version.source.plugin>
-        <version.surefire.plugin>2.20</version.surefire.plugin>
+        <version.surefire.plugin>2.22.1</version.surefire.plugin>
         <version.surefire-report.plugin>2.22.1</version.surefire-report.plugin>
         <version.war.plugin>2.6</version.war.plugin>
         <version.frontend-maven.plugin>1.6</version.frontend-maven.plugin>

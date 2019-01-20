@@ -69,7 +69,7 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
     @Resource(lookup = "java:/ConnectionFactory") 
     private ConnectionFactory connectionFactory;
 
-    private JMSContext context;
+    //private JMSContext context;
     private BrokerManagementEventListener managementEventListener;
 
     @Inject
@@ -77,7 +77,6 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
 
     @PostConstruct
     public void setup() {
-        context = connectionFactory.createContext();
         managementEventListener = new BrokerManagementEventListener();
         managementEventListener.listen();
     }
@@ -86,6 +85,7 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
     @Override
     public MessagingSessionContainer joinSession(String id, OperationHandler handler) {
         logger.debug("Joining session {}", id);
+        JMSContext context = connectionFactory.createContext();
         Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
         // Subscribe to the topic
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);

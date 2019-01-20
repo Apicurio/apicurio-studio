@@ -17,32 +17,52 @@ package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
+import io.apicurio.hub.core.storage.IStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @Singleton
-public class PingProcessor implements IOperationProcessor {
+public class JoinProcessor implements IOperationProcessor {
 
-    private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
+    private static Logger logger = LoggerFactory.getLogger(JoinProcessor.class);
 
-    @Override
+    @Inject
+    private IStorage storage;
+
+    @Inject
+    private IEditingMetrics metrics;
+
     public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        logger.debug("PING message received."); // TODO expand logging -- careful with session id
+        JoinLeaveOperation jOp = (JoinLeaveOperation) bo;
+        logger.debug("Received join operation ", jOp);
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            throw new UnsupportedOperationException("Did not expect a local command: " + jOp);
+        } else {
+            processRemote(editingSession, session, jOp);
+        }
+    }
+
+    private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, JoinLeaveOperation undo) {
+        editingSession.sendToAllSessions(session, undo);
+        logger.debug("Remote join sent to local clients.");
     }
 
     @Override
     public String getOperationName() {
-        return "ping";
+        return "join";
     }
 
     @Override
     public Class<? extends BaseOperation> unmarshallKlazz() {
-        return BaseOperation.class;
+        return JoinLeaveOperation.class;
     }
 }

@@ -50,6 +50,12 @@ public class EditingSessionManager implements IEditingSessionManager {
     
     private Map<String, ApiDesignEditingSession> editingSessions = new HashMap<>();
 
+    @Inject
+    private JMSSessionFactory distSessFactory;
+
+    @Inject
+    private ApicurioOperationProcessor operationProcessor;
+
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#createSessionUuid(java.lang.String, java.lang.String, java.lang.String, long)
      */
@@ -83,12 +89,6 @@ public class EditingSessionManager implements IEditingSessionManager {
             throw new ServerError(e);
         }
     }
-
-    @Inject
-    private JMSSessionFactory distSessFactory;
-
-    @Inject
-    private ApicurioOperationProcessor operationProcessor;
     
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getOrCreateEditingSession(java.lang.String)
@@ -117,6 +117,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     @Override
     public synchronized void closeEditingSession(ApiDesignEditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
+        editingSession.close();
     }
 
 }

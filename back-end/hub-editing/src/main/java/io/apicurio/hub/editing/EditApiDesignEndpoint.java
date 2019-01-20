@@ -17,21 +17,14 @@
 package io.apicurio.hub.editing;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.beans.ApiContentType;
-import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.ApicurioSessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
-import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.js.OaiCommandException;
-import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.hub.core.util.JsonUtil;
@@ -51,7 +44,6 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +66,6 @@ public class EditApiDesignEndpoint {
     private IEditingSessionManager editingSessionManager;
     @Inject
     private IStorage storage;
-    @Inject
-    private OaiCommandExecutor oaiCommandExecutor;
     @Inject
     private IEditingMetrics metrics;
     @Inject
@@ -113,6 +103,16 @@ public class EditApiDesignEndpoint {
         ApiDesignEditingSession editingSession = null;
 
         try {
+            /*
+                Content version will be the latest FULL document (i.e. rolled up).
+
+                This is determined by the REST API side of the application before WS is invoked.
+
+                See DesignsResource#editDesign in hub-api.
+
+                We must ensure that any subsequent commands that have not been rolled up are applied by the
+                joining client, otherwise we may be unwittingly behind other live participants.
+            */
             long contentVersion = editingSessionManager.validateSessionUuid(uuid, designId, userId, secret);
 
             // Join the editing session (or create a new one) for the API Design
@@ -124,8 +124,7 @@ public class EditApiDesignEndpoint {
                 this.metrics.editingSessionCreated(designId);
             }
 
-
-            // Add session to local session list, and remote session if applicable
+            // Add session to local session list, and join remote session if applicable
             editingSession.join(session, userId);
             
             // Send "join" messages for each user already in the session
@@ -205,72 +204,18 @@ public class EditApiDesignEndpoint {
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String userId = editingSession.getUser(session);
         editingSession.leave(session);
+
+        // If there are no more LOCAL editing sessions
         if (editingSession.isEmpty()) {
             // TODO race condition - the session may no longer be empty here!
             editingSessionManager.closeEditingSession(editingSession);
-            
-            try {
-                rollupCommands(userId, designId);
-            } catch (NotFoundException | StorageException | OaiCommandException e) {
-                logger.error("Failed to rollup commands for API with id: " + designId, "Rollup error: ", e);
-            }
-        } else {
-            editingSession.sendLeaveToOthers(session, userId);
+            // TODO ensure noop implementation immediately calls rollup!
         }
-    }
 
-    /**
-     * Finds all commands executed since the last full content rollup and applies
-     * them to the API design.  This produces a "latest" version of the API
-     * and stores that as a new content entry in the storage.
-     * @throws StorageException 
-     * @throws NotFoundException 
-     * @throws OaiCommandException 
-     */
-    private void rollupCommands(String userId, String designId) throws NotFoundException, StorageException, OaiCommandException {
-        logger.debug("Rolling up commands for API with ID: {}", designId);
-        ApiDesignContent designContent = this.storage.getLatestContentDocument(userId, designId);
-        logger.debug("Using latest contentVersion {} for possible command rollup.", designContent.getContentVersion());
-        List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(userId, designId, designContent.getContentVersion());
-        if (apiCommands.isEmpty()) {
-            logger.debug("No hanging commands found, rollup of API {} canceled.", designId);
-            return;
-        }
-        List<String> commands = new ArrayList<>(apiCommands.size());
-        for (ApiDesignCommand apiCommand : apiCommands) {
-            commands.add(apiCommand.getCommand());
-        }
-        String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
-        long contentVersion = this.storage.addContent(userId, designId, ApiContentType.Document, content);
-        logger.debug("Rollup of {} commands complete with new content version: {}", commands.size(), contentVersion);
-        
-        try {
-            logger.debug("Updating meta-data for API design {} if necessary.", designId);
-            ApiDesign design = this.storage.getApiDesign(userId, designId);
-            ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
-            boolean dirty = false;
-            if (design.getName() == null || !design.getName().equals(info.getName())) {
-                design.setName(info.getName());
-                dirty = true;
-            }
-            if (design.getDescription() == null || !design.getDescription().equals(info.getDescription())) {
-                design.setDescription(info.getDescription());
-                dirty = true;
-            }
-            if (design.getTags() == null || !design.getTags().equals(info.getTags())) {
-                design.setTags(info.getTags());
-                dirty = true;
-            }
-            if (dirty) {
-                logger.debug("API design {} meta-data changed, updating in storage.", designId);
-                this.storage.updateApiDesign(userId, design);
-            }
-        } catch (Exception e) {
-            // Not the end of the world if we fail to update the API's meta-data
-            logger.error(e.getMessage(), e);
-        }
+        // Others may still remain on the REMOTE editing session, so even if we're the last to leave
+        // we should still invoke this.
+        editingSession.sendLeaveToOthers(session, userId);
     }
-
     /**
      * Parses the query string into a map.
      * @param queryString

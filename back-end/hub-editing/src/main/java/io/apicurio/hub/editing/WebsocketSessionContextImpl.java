@@ -1,7 +1,6 @@
 package io.apicurio.hub.editing;
 
 import io.apicurio.hub.core.editing.ApicurioSessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -51,14 +50,14 @@ public class WebsocketSessionContextImpl implements ApicurioSessionContext {
     }
 
     @Override
+    public <T> void sendAsText(String serialized) throws IOException {
+        session.getBasicRemote().sendText(serialized);
+    }
+
+    @Override
     public <T> void sendAsText(T obj) throws IOException {
         session.getBasicRemote().sendText(JsonUtil.toJson(obj));
     }
-
-//    @Override
-//    public void sendText(String data) throws IOException {
-//        session.getBasicRemote().sendText(JsonUtil.toJson(operation));
-//    }
 
     @Override
     public void close(CloseReason closeReason) throws IOException {

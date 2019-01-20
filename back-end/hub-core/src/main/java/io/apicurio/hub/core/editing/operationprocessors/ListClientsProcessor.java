@@ -18,6 +18,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.ApicurioSessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,22 +28,32 @@ import javax.inject.Singleton;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @Singleton
-public class PingProcessor implements IOperationProcessor {
+public class ListClientsProcessor implements IOperationProcessor {
 
-    private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
+    private static Logger logger = LoggerFactory.getLogger(ListClientsProcessor.class);
 
-    @Override
     public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
-        logger.debug("PING message received."); // TODO expand logging -- careful with session id
+        ListClientsOperation lOp = (ListClientsOperation) bo;
+        logger.debug("Received 'list clients' operation ", lOp);
+        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
+            throw new UnsupportedOperationException("Did not expect a local command: " + lOp);
+        } else {
+            processRemote(editingSession);
+        }
+    }
+
+    private void processRemote(ApiDesignEditingSession editingSession) {
+        logger.debug("Listing all local clients (over remote session only).");
+        editingSession.sendJoinToRemote();
     }
 
     @Override
     public String getOperationName() {
-        return "ping";
+        return "list-clients";
     }
 
     @Override
     public Class<? extends BaseOperation> unmarshallKlazz() {
-        return BaseOperation.class;
+        return ListClientsOperation.class;
     }
 }

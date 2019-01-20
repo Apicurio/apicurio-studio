@@ -15,27 +15,13 @@
  */
 package io.apicurio.hub.core.editing.sessionbeans;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 
 /**
- *                 builder.append("{");
- *                 builder.append("\"contentVersion\": ");
- *                 builder.append(command.getContentVersion());
- *                 builder.append(", ");
- *                 builder.append("\"type\": \"command\", ");
- *                 builder.append("\"author\": \"");
- *                 builder.append(command.getAuthor());
- *                 builder.append("\", ");
- *                 builder.append("\"reverted\": ");
- *                 builder.append(command.isReverted());
- *                 builder.append(", ");
- *                 builder.append("\"command\": ");
- *                 builder.append(cmdData);
- *                 builder.append("}");
- *
- *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FullCommandOperation extends VersionedCommandOperation {
     private String author;
     private boolean reverted;

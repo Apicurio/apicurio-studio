@@ -16,25 +16,31 @@
 package io.apicurio.hub.core.editing.sessionbeans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VersionedCommandOperation extends VersionedOperation {
+    @JsonRawValue
     private JsonNode command;
-    private long commandId = -1;
+    private Long commandId = null;
 
     @JsonIgnore
     public String getCommandStr() {
         return command.toString();
     }
 
-    public Object getCommand() {
+    @JsonRawValue
+    public JsonNode getCommand() {
         return command;
     }
 
+    @JsonRawValue
     public VersionedCommandOperation setCommand(JsonNode command) {
         this.command = command;
         return this;
@@ -46,11 +52,11 @@ public class VersionedCommandOperation extends VersionedOperation {
         return this;
     }
 
-    public long getCommandId() {
+    public Long getCommandId() {
         return commandId;
     }
 
-    public VersionedCommandOperation setCommandId(long commandId) {
+    public VersionedCommandOperation setCommandId(Long commandId) {
         this.commandId = commandId;
         return this;
     }
@@ -62,7 +68,7 @@ public class VersionedCommandOperation extends VersionedOperation {
                 .setType("command");
     }
 
-    public static VersionedCommandOperation command(long contentVersion, String command, long commandId) {
+    public static VersionedCommandOperation command(long contentVersion, String command, Long commandId) {
         return (VersionedCommandOperation) new VersionedCommandOperation()
                 .setCommand(command)
                 .setCommandId(commandId)
@@ -71,17 +77,22 @@ public class VersionedCommandOperation extends VersionedOperation {
     }
 
     public static void main(String... args) {
-        String str = "{\"type\":\"command\",\"commandId\":1543502845539," +
-                "\"command\":{\"__type\":\"NewOperationCommand_30\"," +
-                "\"_path\":\"/pets/{id}\",\"_method\":\"post\",\"_created\":true}}";
+//        String str = "{\"type\":\"command\",\"commandId\":1543502845539," +
+//                "\"command\":{\"__type\":\"NewOperationCommand_30\"," +
+//                "\"_path\":\"/pets/{id}\",\"_method\":\"post\",\"_created\":true}}";
 
-        VersionedCommandOperation vco = JsonUtil.fromJson(str, VersionedCommandOperation.class);
+        String str = "{\"type\":\"command\",\"commandId\":123445,\"command\":{\"__type\":\"ChangeDescriptionCommand_30\",\"_newDescription\":\"T\",\"_oldDescription\":\"The Data Set API (DSAPICSV based data files searchable through API. Wiarchable. With the help of POST call, data can be fetched based on the filters on the field names. Please note that POST call is used to search the actual data. The reason for the POST call is that it allows users to specify any complex search criteria without worry about the GET size limitations as well as encoding of the input parameters.\"}}";
 
-        JsonNode tree = JsonUtil.toJsonTree(str);
+//        VersionedCommandOperation vco = JsonUtil.fromJson(str, VersionedCommandOperation.class);
 
-        System.out.println(tree);
+        VersionedCommandOperation vco2 = VersionedCommandOperation.command(12345, "{\"foo\":\"bar\"}");
 
-        System.out.println(vco);
+
+        String strout = JsonUtil.toJson(vco2);
+
+        System.out.println(strout);
+
+//        System.out.println(vco.getCommandStr());
 
     }
 }

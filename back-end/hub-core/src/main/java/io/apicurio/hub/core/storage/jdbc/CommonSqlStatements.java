@@ -16,12 +16,12 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
+import io.apicurio.hub.core.config.HubConfiguration;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
  * Shared base class for all sql statements.
@@ -318,7 +318,18 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "WHERE c.design_id = ? AND c.type = 0 AND a.user_id = ? "
                 + "ORDER BY c.version DESC LIMIT 1";
     }
-    
+
+    /**
+     * @see ISqlStatements#selectLatestContentCommand()
+     */
+    @Override
+    public String selectLatestContentCommand() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "WHERE c.design_id = ? AND c.type = 1 "
+                + "ORDER BY c.version DESC LIMIT 1";
+    }
+
     /**
      * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectContentCommands()
      */
@@ -501,5 +512,4 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String deleteCodegenProjects() {
         return "DELETE FROM codegen WHERE design_id = ?";
     }
-    
 }

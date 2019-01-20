@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing;
-
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+package io.apicurio.hub.core.editing.sessionbeans;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface SharedApicurioSession {
+public class ListClientsOperation extends BaseOperation {
+    private static final ListClientsOperation INSTANCE;
 
-    void sendOperation(BaseOperation command);
+    static {
+        INSTANCE = (ListClientsOperation) new ListClientsOperation().setType("list-clients");
+    }
 
-    void setOperationHandler(OperationHandler commandHandler);
-
-    void close();
-
-    String getSessionId(); // not sure we need this one in the interface
+    public static ListClientsOperation listClients() {
+        return INSTANCE;
+    }
 }

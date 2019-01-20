@@ -20,7 +20,6 @@ package io.apicurio.hub.core.editing.sessionbeans;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-
 public class VersionedAck extends VersionedOperation {
     private long commandId;
 

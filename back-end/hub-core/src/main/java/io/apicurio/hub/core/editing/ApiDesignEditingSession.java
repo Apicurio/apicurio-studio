@@ -24,6 +24,7 @@ import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
@@ -61,6 +62,8 @@ public class ApiDesignEditingSession implements Closeable {
         this.distributedSession = factory.joinSession(designId, payload -> {
             operationProcessor.process(this, null, JsonUtil.toJsonTree(payload));
         });
+        // Discover any WS clients connected to other nodes so we can draw their icons, etc.
+        sendListClientsToOthers();
     }
 
     /**
@@ -109,6 +112,10 @@ public class ApiDesignEditingSession implements Closeable {
     public void close() {
         // TODO anything to do here?
         distributedSession.close();
+    }
+
+    private void sendListClientsToOthers() {
+        distributedSession.sendOperation(ListClientsOperation.listClients());
     }
     
     /**
@@ -240,5 +247,12 @@ public class ApiDesignEditingSession implements Closeable {
         }
         // Finally, send on the shared channel.
         distributedSession.sendOperation(operation);
+    }
+
+    public void sendJoinToRemote() {
+        for (ApicurioSessionContext otherSession : this.sessions.values()) {
+            JoinLeaveOperation joinOperation = JoinLeaveOperation.join(getUser(otherSession), otherSession.getId());
+            distributedSession.sendOperation(joinOperation);
+        }
     }
 }

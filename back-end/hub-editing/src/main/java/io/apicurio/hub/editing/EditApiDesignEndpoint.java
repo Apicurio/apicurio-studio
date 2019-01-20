@@ -209,7 +209,6 @@ public class EditApiDesignEndpoint {
         if (editingSession.isEmpty()) {
             // TODO race condition - the session may no longer be empty here!
             editingSessionManager.closeEditingSession(editingSession);
-            // TODO ensure noop implementation immediately calls rollup!
         }
 
         // Others may still remain on the REMOTE editing session, so even if we're the last to leave

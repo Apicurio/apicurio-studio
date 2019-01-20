@@ -130,7 +130,7 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
             });
         }
 
-        public void sendOperation(BaseOperation command) {
+        public synchronized void sendOperation(BaseOperation command) {
             if (command.getSource() == BaseOperation.SourceEnum.LOCAL) {
                 // Set as a REMOTE command for serialization.
                 command.setSource(BaseOperation.SourceEnum.REMOTE);
@@ -152,7 +152,7 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
             this.commandHandler = commandHandler; 
         }
 
-        public void close() {
+        public synchronized void close() {
             logger.debug("Closing consumer: {} ", consumer);
             consumer.close();
         }

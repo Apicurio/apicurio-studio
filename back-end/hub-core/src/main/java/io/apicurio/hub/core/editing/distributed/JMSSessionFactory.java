@@ -41,7 +41,7 @@ import javax.jms.Topic;
 import java.io.Closeable;
 
 /**
- * Implements a distributed session using JMS.
+ * Implements a distributed session using JMS. Tested with Artemis.
  *
  * Avoids circular dependencies by labelling objects sent over the bus,
  * and never retransmitting.
@@ -144,17 +144,17 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
                 // Ensure retry is set on the client config
                 producer.send(topic, serialized);
             } else {
-                logger.debug("Will not retransmit remote operation over bus (prevents cycles): {}", command);
+                logger.trace("Will not retransmit remote operation over bus (prevents cycles): {}", command);
             }
-        }
-
-        public void setOperationHandler(OperationHandler commandHandler) {
-            this.commandHandler = commandHandler; 
         }
 
         public synchronized void close() {
             logger.debug("Closing consumer: {} ", consumer);
             consumer.close();
+        }
+
+        public void setOperationHandler(OperationHandler commandHandler) {
+            this.commandHandler = commandHandler;
         }
 
         public String getSessionId() {

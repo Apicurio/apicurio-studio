@@ -353,7 +353,10 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             RepositoryService repoService = new RepositoryService(client);
             List<Repository> repositories = null;
             if (org.equals(userLogin)) {
-                repositories = repoService.getRepositories(org);
+                Map<String, String> filters = new HashMap<String, String>();
+                filters.put("affiliation", "owner");
+                filters.put("visibility", "all");
+                repositories = repoService.getRepositories(filters);
             } else {
                 repositories = repoService.getOrgRepositories(org);
             }

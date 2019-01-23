@@ -29,6 +29,7 @@ import {SelectionService} from "../_services/selection.service";
 import {ProblemsService} from "../_services/problems.service";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
+import {FeaturesService} from "../_services/features.service";
 
 
 /**
@@ -50,7 +51,8 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
     @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private selectionService: SelectionService, private problemsService: ProblemsService) {
+                private selectionService: SelectionService, private problemsService: ProblemsService,
+                private features: FeaturesService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
@@ -82,6 +84,10 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     public explanationFor(problem: OasValidationProblem): string {
         return this.problemsService.explanation(problem);
+    }
+
+    public showValidationSettings(): boolean {
+        return this.features.getFeatures().validationSettings;
     }
 
 }

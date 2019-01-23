@@ -3,6 +3,7 @@
         <div class="drawer-pf-title">
             <a class="drawer-pf-close pficon pficon-close" (click)="close.emit(true)"></a>
             <a title="Customize validation settings for this API..." class="drawer-pf-settings pficon pficon-settings"
+               *ngIf="showValidationSettings()"
                (click)="onConfigureValidation.emit()"></a>
             <h3 class="text-center">Validation Problems</h3>
         </div>

@@ -31,6 +31,7 @@ import {Title} from "@angular/platform-browser";
 import {Subscription} from "rxjs/Subscription";
 import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
 import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
+import {ConfigService} from "../../../../services/config.service";
 
 @Component({
     moduleId: module.id,
@@ -64,6 +65,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     protected validationRegistry: IOasValidationSeverityRegistry = new DefaultValidationSeverityRegistry();
 
+    private previewWindow: Window = null;
+
     /**
      * Constructor.
      * @param router
@@ -72,9 +75,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param apis
      * @param titleService
      * @param validationService
+     * @param config
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
-                private apis: ApisService, titleService: Title, private validationService: ValidationService) {
+                private apis: ApisService, titleService: Title, private validationService: ValidationService,
+                private config: ConfigService) {
         super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
     }
@@ -237,6 +242,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         if (this.editingSession) {
             this.editingSession.close();
         }
+        if (this.previewWindow && !this.previewWindow.closed) {
+            this.previewWindow.close();
+        }
     }
 
     /**
@@ -245,6 +253,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      */
     public onCommandExecuted(command: OtCommand): void {
         this.editingSession.sendCommand(command);
+        this.reloadLivePreview();
     }
 
     /**
@@ -330,6 +339,26 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     public changeValidationProfile(profile: ValidationProfile): void {
         this.validationService.setProfileForApi(this.apiDefinition.id, profile);
         this.validationRegistry = profile.registry;
+    }
+
+    /**
+     * Opens the "live preview" window to display the ReDoc documentation to the user.  The documentation
+     * will be reloaded whenever a change is made.
+     */
+    public openLivePreview(): void {
+        let previewUrl = this.config.uiUrl() + "preview?aid=" + this.apiDefinition.id;
+        this.previewWindow = window.open(previewUrl, "_apicurio_preview_" + this.apiDefinition.id);
+    }
+
+    /**
+     * Reloads the live preview window (typically called when the user makes a change/edit).
+     */
+    private reloadLivePreview(): void {
+        console.info("++++++++++reloadLivePreview()");
+        if (this.previewWindow && !this.previewWindow.closed) {
+            console.info("[ApiEditorPageComponent] Reloading live preview.");
+            this.previewWindow.location.reload();
+        }
     }
 }
 

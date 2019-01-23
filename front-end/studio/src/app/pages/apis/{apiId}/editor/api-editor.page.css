@@ -5,32 +5,45 @@
   right: 0;
   bottom: 0;
 }
-.activeCollaboratorIcons {
-  margin-right: 50px;
+
+.right-of-breadcrumbs {
+  height: 37px;
+  float: right;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon {
+
+.right-of-breadcrumbs .activeCollaboratorIcons {
+  margin-right: 20px;
+  float: left;
+}
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon {
   font-size: 26px;
   color: #00659c;
   padding-top: 6px;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.tree {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.tree {
   color: #50A162;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.bus {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.bus {
   color: #B65B80;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.bomb {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.bomb {
   color: #D94C4C;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.university {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.university {
   color: #477187;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.rocket {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.rocket {
   color: #D4786A;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon.taxi {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.taxi {
   color: #B10DC9;
 }
-.activeCollaboratorIcons .activeCollaboratorIcon:hover {
+.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon:hover {
   opacity: .8;
+}
+
+.right-of-breadcrumbs .api-actions {
+  float: right;
+  line-height: 34px;
+  margin-right: 5px;
 }

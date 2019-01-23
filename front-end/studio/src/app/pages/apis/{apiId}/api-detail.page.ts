@@ -52,6 +52,8 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
     public mock: ApiMock;
     public mockRef: MockReference;
 
+    public uiUrl: string = "";
+
     /**
      * Constructor.
      * @param router
@@ -67,6 +69,9 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
                 private config: ConfigService) {
         super(route, titleService);
         this.api = new Api();
+        if (this.config.uiUrl()) {
+            this.uiUrl = this.config.uiUrl();
+        }
     }
 
     public isOpenApi20(): boolean {

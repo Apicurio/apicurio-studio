@@ -4,11 +4,16 @@
         <li breadcrumb [label]="apiDefinition.name" [route]="[ '/apis', apiDefinition.id ]"></li>
         <li breadcrumb label="Editor" class="active"></li>
     </breadcrumbs>
-    <div class="pull-right activeCollaboratorIcons">
-        <!-- Information about current remote editor users (active collaborators) goes in here -->
-        <span *ngFor="let collaborator of activeCollaborators"
-              class="fa fa-fw fa-{{ collaborator.attributes['id'] }} activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
-              title="{{ collaborator.userName }}"></span>
+    <div class="right-of-breadcrumbs">
+        <div class="activeCollaboratorIcons">
+            <!-- Information about current remote editor users (active collaborators) goes in here -->
+            <span *ngFor="let collaborator of activeCollaborators"
+                  class="fa fa-fw fa-{{ collaborator.attributes['id'] }} activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
+                  title="{{ collaborator.userName }}"></span>
+        </div>
+        <div class="api-actions">
+            <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>
+        </div>
     </div>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>

@@ -51,8 +51,13 @@
   margin-top: 20px
 }
 
+.api-action-buttons > a {
+  margin-right: 5px;
+}
+
 .api-action-buttons a.pull-right {
   margin-left: 10px;
+  margin-right: 0px;
 }
 
 .dropdown-menu a.disabled {

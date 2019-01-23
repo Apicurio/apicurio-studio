@@ -31,6 +31,7 @@ public class StudioConfig {
     private StudioConfigAuth auth;
     private StudioConfigApis apis;
     private User user;
+    private StudioConfigUi ui;
     private StudioConfigFeatures features;
     
     /**
@@ -107,6 +108,20 @@ public class StudioConfig {
      */
     public void setFeatures(StudioConfigFeatures features) {
         this.features = features;
+    }
+
+    /**
+     * @return the ui
+     */
+    public StudioConfigUi getUi() {
+        return ui;
+    }
+
+    /**
+     * @param ui the ui to set
+     */
+    public void setUi(StudioConfigUi ui) {
+        this.ui = ui;
     }
 
 }

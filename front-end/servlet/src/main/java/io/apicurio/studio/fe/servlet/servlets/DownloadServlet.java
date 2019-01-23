@@ -20,13 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -38,10 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -94,23 +88,24 @@ public class DownloadServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, String> params = parseQueryString(req.getQueryString());
-        String type = params.get("type");
+        String type = req.getParameter("type");
         if ("api".equals(type)) {
-            String format = params.get("format");
-            String designId = params.get("id");
+            String format = req.getParameter("format");
+            String designId = req.getParameter("id");
             
             String url = generateHubApiUrl(req);
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length() - 1);
             }
-            url += "/designs/{designId}/content?format={format}".replace("{designId}", designId).replace("{format}", format);
+            url += "/designs/{designId}/content?format={format}"
+                    .replace("{designId}", designId)
+                    .replace("{format}", format);
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);
         } else if ("codegen".equals(type)) {
-            String designId = params.get("designId");
-            String projectId = params.get("projectId");
+            String designId = req.getParameter("designId");
+            String projectId = req.getParameter("projectId");
             
             String url = generateHubApiUrl(req);
             if (url.endsWith("/")) {
@@ -158,21 +153,6 @@ public class DownloadServlet extends HttpServlet {
             logger.error("Error proxying URL: " + url, e);
             try { response.sendError(500); } catch (IOException e1) {}
         }
-    }
-
-    /**
-     * Parses the query string into a map.
-     * @param queryString
-     */
-    protected static Map<String, String> parseQueryString(String queryString) {
-        Map<String, String> rval = new HashMap<>();
-        if (queryString != null) {
-            List<NameValuePair> list = URLEncodedUtils.parse(queryString, StandardCharsets.UTF_8);
-            for (NameValuePair nameValuePair : list) {
-                rval.put(nameValuePair.getName(), nameValuePair.getValue());
-            }
-        }
-        return rval;
     }
 
     /**

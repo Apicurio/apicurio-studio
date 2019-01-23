@@ -45,6 +45,7 @@ import io.apicurio.studio.shared.beans.StudioConfigApisType;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
 import io.apicurio.studio.shared.beans.StudioConfigFeatures;
 import io.apicurio.studio.shared.beans.StudioConfigMode;
+import io.apicurio.studio.shared.beans.StudioConfigUi;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -105,6 +106,9 @@ public class StudioConfigServlet extends HttpServlet {
             config.getApis().setEditingUrl(generateEditingUrl(request));
             
             config.setUser(user);
+            
+            config.setUi(new StudioConfigUi());
+            config.getUi().setUrl(this.uiConfig.getUiUrl());
             
             config.setFeatures(new StudioConfigFeatures());
             config.getFeatures().setMicrocks(uiConfig.isMicrocksEnabled());

@@ -38,6 +38,9 @@ public class StudioUiConfiguration extends Configuration {
 
     private static final String EDITING_URL_ENV = "APICURIO_UI_EDITING_URL";
     private static final String EDITING_URL_SYSPROP = "apicurio-ui.editing.url";
+    
+    private static final String HUB_UI_URL_ENV = "APICURIO_UI_HUB_UI_URL";
+    private static final String HUB_UI_URL_SYSPROP = "apicurio-ui.url";
 
     private static final String FEATURE_MICROCKS_ENV = "APICURIO_UI_FEATURE_MICROCKS";
     private static final String FEATURE_MICROCKS_SYSPROP = "apicurio-ui.feature.microcks";
@@ -77,4 +80,13 @@ public class StudioUiConfiguration extends Configuration {
     public boolean isMicrocksEnabled() {
         return "true".equals(getConfigurationProperty(FEATURE_MICROCKS_ENV, FEATURE_MICROCKS_SYSPROP, "false"));
     }
+
+    /**
+     * Returns the URL of the Apicurio UI.  This is typically blank, but in some strange cases it can 
+     * be useful when creating certain links in the UI.
+     */
+    public String getUiUrl() {
+        return getConfigurationProperty(HUB_UI_URL_ENV, HUB_UI_URL_SYSPROP, null);
+    }
+
 }

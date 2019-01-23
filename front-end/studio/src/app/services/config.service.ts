@@ -28,6 +28,9 @@ let DEFAULT_CONFIG: any = {
         hubUrl: "http://localhost:8080/api-hub",
         editingUrl: "http://localhost:8080/api-editing",
     },
+    ui: {
+        uiUrl: "http://localhost:8080/studio/"
+    },
     features: {
         "microcks": true
     }
@@ -119,5 +122,12 @@ export class ConfigService {
             return false;
         }
         return this.config.features.microcks;
+    }
+
+    public uiUrl(): string {
+        if (!this.config.ui || !this.config.ui.url) {
+            return "";
+        }
+        return this.config.ui.url;
     }
 }

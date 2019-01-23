@@ -40,6 +40,12 @@
                                                     </a>
                                                 </li>
                                                 <li>
+                                                    <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank">
+                                                        <span class="fa fa-fw fa-eye"></span>
+                                                        <span>Preview Docs...</span>
+                                                    </a>
+                                                </li>
+                                                <li>
                                                     <a [routerLink]="[ 'collaboration' ]">
                                                         <span class="fa fa-fw fa-users"></span>
                                                         <span>Collaborate...</span>
@@ -65,13 +71,13 @@
                                                 </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li>
-                                                    <a href="download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">
+                                                    <a href="{{ uiUrl }}download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (YAML)</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="download?type=api&format=json&id={{ api.id }}" download="{{ api.name }}.json">
+                                                    <a href="{{ uiUrl }}download?type=api&format=json&id={{ api.id }}" download="{{ api.name }}.json">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (JSON)</span>
                                                     </a>
@@ -121,6 +127,7 @@
                                 </div>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
                                 </div>
                             </div>
                         </div>

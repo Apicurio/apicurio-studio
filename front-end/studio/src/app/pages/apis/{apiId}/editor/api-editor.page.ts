@@ -32,6 +32,7 @@ import {Subscription} from "rxjs/Subscription";
 import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
 import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
 import {ConfigService} from "../../../../services/config.service";
+import {ApiEditorComponentFeatures} from "./_models/features.model";
 
 @Component({
     moduleId: module.id,
@@ -42,6 +43,7 @@ import {ConfigService} from "../../../../services/config.service";
 export class ApiEditorPageComponent extends AbstractPageComponent implements AfterViewInit {
 
     public apiDefinition: EditableApiDefinition;
+    public editorFeatures: ApiEditorComponentFeatures;
 
     protected isDirty: boolean = false;
     protected isSaving: boolean = false;
@@ -82,6 +84,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 private config: ConfigService) {
         super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
+        this.editorFeatures = new ApiEditorComponentFeatures();
+        this.editorFeatures.validationSettings = true;
     }
 
     /**

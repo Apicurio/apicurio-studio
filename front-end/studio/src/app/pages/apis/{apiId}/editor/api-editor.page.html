@@ -52,6 +52,7 @@
     <!-- The API Editor -->
     <api-editor #apiEditor *ngSwitchCase="'loaded'"
                 [api]="apiDefinition"
+                [features]="editorFeatures"
                 [validationRegistry]="validationRegistry"
                 (onSelectionChanged)="onSelectionChanged($event)"
                 (onCommandExecuted)="onCommandExecuted($event)"

@@ -91,6 +91,9 @@ export class GitHubResourceComponent implements OnInit {
                 this.model.repo = this.value.repo;
                 this.model.branch = this.value.branch;
                 this.updateRepos();
+            } else if (orgs.length === 1) {
+                this.model.org = orgs[0].id;
+                this.updateRepos();
             }
         }).catch( error => {
             // TODO handle an error in some way!

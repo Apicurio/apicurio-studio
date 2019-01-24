@@ -20,11 +20,13 @@ export class BitbucketTeam {
     displayName: string;
     username: string;
     uuid: boolean;
+    userTeam: boolean;
 
     constructor() {
         this.displayName = null;
         this.username = null;
         this.uuid = false;
+        this.userTeam = false;
     }
 
 }

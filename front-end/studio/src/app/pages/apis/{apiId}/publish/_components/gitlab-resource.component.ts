@@ -78,9 +78,11 @@ export class GitLabResourceComponent implements OnInit {
                         name: group.name,
                         value: group
                     });
-                    this._groupOptions.push({
-                        divider: true
-                    });
+                    if (groups.length > 1) {
+                        this._groupOptions.push({
+                            divider: true
+                        });
+                    }
                 }
             });
             groups.forEach( group => {
@@ -97,6 +99,9 @@ export class GitLabResourceComponent implements OnInit {
                 this.model.group = this.value.group;
                 this.model.project = this.value.project;
                 this.model.branch = this.value.branch;
+                this.updateProjects();
+            } else if (groups.length === 1) {
+                this.model.group = groups[0]
                 this.updateProjects();
             }
         }).catch( error => {

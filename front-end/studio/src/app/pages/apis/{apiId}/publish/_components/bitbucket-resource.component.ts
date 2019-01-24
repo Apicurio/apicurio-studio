@@ -66,17 +66,35 @@ export class BitbucketResourceComponent implements OnInit {
             });
             this._teamOptions = [];
             teams.forEach( team => {
-                this._teamOptions.push({
-                    name: team.displayName,
-                    value: team.username
-                });
+                if (team.userTeam) {
+                    this._teamOptions.push({
+                        name: team.displayName,
+                        value: team.username
+                    });
+                    if (teams.length > 1) {
+                        this._teamOptions.push({
+                            divider: true
+                        });
+                    }
+                }
+            });
+            teams.forEach( team => {
+                if (!team.userTeam) {
+                    this._teamOptions.push({
+                        name: team.displayName,
+                        value: team.username
+                    });
+                }
             });
             this.gettingTeams = false;
 
-            if (this.value && this.value.org) {
-                this.model.org = this.value.org;
+            if (this.value && this.value.team) {
+                this.model.team = this.value.team;
                 this.model.repo = this.value.repo;
                 this.model.branch = this.value.branch;
+                this.updateRepos();
+            } else if (teams.length === 1) {
+                this.model.team = teams[0].username;
                 this.updateRepos();
             }
         }).catch( error => {

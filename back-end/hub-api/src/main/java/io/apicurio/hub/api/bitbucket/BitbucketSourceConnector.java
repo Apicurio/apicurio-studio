@@ -198,14 +198,39 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public Collection<BitbucketTeam> getTeams() throws BitbucketException, SourceConnectorException {
         logger.debug("Getting the Bitbucket teams for current user");
+        Collection<BitbucketTeam> rVal =  new HashSet<>();
+        
+        // First figure out the user's "user team" (the team with the user's name)
+        try {
+            String teamsUrl = endpoint("/user")
+                    .toString();
+            HttpRequest request = Unirest.get(teamsUrl);
+            addSecurityTo(request);
+            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+            
+            JSONObject responseObj = response.getBody().getObject();
 
+            if (response.getStatus() != 200) {
+                throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
+            }
+            
+            BitbucketTeam team = new BitbucketTeam();
+            team.setDisplayName(responseObj.getString("display_name"));
+            team.setUsername(responseObj.getString("username"));
+            team.setUserTeam(true);
+            team.setUuid(responseObj.getString("uuid"));
+            rVal.add(team);
+        } catch (UnirestException e) {
+            throw new BitbucketException("Error getting Bitbucket teams.", e);
+        }
+
+        // Now query for all Teams the user is a member of
         try {
             String teamsUrl = endpoint("/teams")
                     .queryParam("role", "member")
                     .queryParam("pagelen", "25")
                     .toString();
 
-            Collection<BitbucketTeam> rVal =  new HashSet<>();
             boolean done = false;
 
             while (!done) {
@@ -218,7 +243,6 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
                 }
-    
     
                 responseObj.getJSONArray("values").forEach(obj -> {
                     BitbucketTeam bbt = new BitbucketTeam();
@@ -238,12 +262,11 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                     }
                 }
             }
-
-            return rVal;
-
         } catch (UnirestException e) {
             throw new BitbucketException("Error getting Bitbucket teams.", e);
         }
+
+        return rVal;
     }
 
     @Override

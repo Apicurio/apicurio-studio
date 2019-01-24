@@ -5,6 +5,7 @@ public class BitbucketTeam {
     private String displayName;
     private String username;
     private String uuid;
+    private boolean userTeam;
 
     /**
      * @return the displayName
@@ -46,5 +47,19 @@ public class BitbucketTeam {
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    /**
+     * @return the userTeam
+     */
+    public boolean isUserTeam() {
+        return userTeam;
+    }
+
+    /**
+     * @param userTeam the userTeam to set
+     */
+    public void setUserTeam(boolean userTeam) {
+        this.userTeam = userTeam;
     }
 }

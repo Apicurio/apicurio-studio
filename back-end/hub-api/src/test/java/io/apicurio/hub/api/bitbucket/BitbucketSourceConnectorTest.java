@@ -110,7 +110,6 @@ public class BitbucketSourceConnectorTest {
     }
 
     @Test
-    @Ignore
     public void testGetTeams() throws SourceConnectorException, BitbucketException {
         Collection<BitbucketTeam> teams = service.getTeams();
         Assert.assertNotNull(teams);
@@ -121,7 +120,6 @@ public class BitbucketSourceConnectorTest {
     }
 
     @Test
-    @Ignore
     public void testGetRepositories() throws SourceConnectorException, BitbucketException {
         String team = "apicurio";
         

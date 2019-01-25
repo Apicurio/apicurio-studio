@@ -292,6 +292,17 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             
             // Now get all the groups the user has access to
             Endpoint endpoint = pagedEndpoint("/api/v4/groups", 1, DEFAULT_PAGE_SIZE);
+            
+            // Set the "all_available" and "min_access_level" params, if configured.
+            String allAvailable = this.config.getGitLabGroupAllAvailable();
+            if (allAvailable != null && !allAvailable.isEmpty()) {
+                endpoint.queryParam("all_available", allAvailable);
+            }
+            String minAccessLevel = this.config.getGitLabGroupMinAccessLevel();
+            if (minAccessLevel != null && !minAccessLevel.isEmpty()) {
+                endpoint.queryParam("min_access_level", minAccessLevel);
+            }
+
             Collection<GitLabGroup> groups = getAllGroups(httpClient, endpoint);
             rval.addAll(groups);
         } catch (IOException e) {
@@ -329,14 +340,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     private String addGroups(CloseableHttpClient httpClient, Endpoint endpoint,
             Collection<GitLabGroup> groups) throws IOException, SourceConnectorException {
-        String allAvailable = this.config.getGitLabGroupAllAvailable();
-        if (allAvailable != null && !allAvailable.isEmpty()) {
-            endpoint.queryParam("all_available", allAvailable);
-        }
-        String minAccessLevel = this.config.getGitLabGroupMinAccessLevel();
-        if (minAccessLevel != null && !minAccessLevel.isEmpty()) {
-            endpoint.queryParam("min_access_level", minAccessLevel);
-        }
         HttpGet get = new HttpGet(endpoint.toString());
         get.addHeader("Accept", "application/json");
         addSecurity(get);

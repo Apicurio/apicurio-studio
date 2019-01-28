@@ -8,8 +8,9 @@
         <div class="activeCollaboratorIcons">
             <!-- Information about current remote editor users (active collaborators) goes in here -->
             <span *ngFor="let collaborator of activeCollaborators"
-                  class="fa fa-fw fa-{{ collaborator.attributes['id'] }} activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
-                  title="{{ collaborator.userName }}"></span>
+                  class="activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
+                  [style.background-color]="'#' + collaborator.attributes['color']"
+                  title="{{ collaborator.userName }}">{{ collaboratorInitial(collaborator) }}</span>
         </div>
         <div class="api-actions">
             <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>

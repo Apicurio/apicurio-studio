@@ -147,21 +147,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
         if (this.showProblems) {
             classes.push("expanded");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(this.document);
-    }
-
-    /**
-     * Returns the selection style to use for the given (potentially selected) node.
-     * @param item
-     */
-    public collaboratorSelectionClasses(item: OasNode): string {
-        if (item) {
-            let user: ApiEditorUser = ModelUtils.isSelectedByCollaborator(item);
-            if (user != null && user.attributes["id"]) {
-                return user.attributes["id"];
-            }
-        }
-        return "";
+        return classes.join(' ');
     }
 
     /**

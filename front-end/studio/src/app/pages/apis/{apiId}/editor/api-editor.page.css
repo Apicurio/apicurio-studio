@@ -16,27 +16,21 @@
   float: left;
 }
 .right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon {
-  font-size: 26px;
-  color: #00659c;
-  padding-top: 6px;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.tree {
-  color: #50A162;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.bus {
-  color: #B65B80;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.bomb {
-  color: #D94C4C;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.university {
-  color: #477187;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.rocket {
-  color: #D4786A;
-}
-.right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon.taxi {
-  color: #B10DC9;
+  text-transform: capitalize;
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  line-height: 18px;
+  margin-top: 5px;
+  text-align: center;
+  border-radius: 13px;
+  padding: 2px;
+  font-size: 15px;
+  border: 2px solid white;
+  color: white;
+  background-color: #004368;
+  cursor: pointer;
+  margin-right: -5px;
 }
 .right-of-breadcrumbs .activeCollaboratorIcons .activeCollaboratorIcon:hover {
   opacity: .8;

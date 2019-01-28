@@ -54,9 +54,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private editingSession: IApiEditingSession;
     public activeCollaborators: ApiEditorUser[] = [];
-    private _activeCollaboratorIds: string[] = [
-        "tree", "bus", "bomb", "university", "rocket", "taxi"
+    private _activeCollaboratorColors: string[] = [
+        "DC3E3E", "DC823E", "DC3EBD", "3EDC6D", "3E4EDC", "3ECCDC", "DCD23E"
     ];
+    private _activeCollaboratorColorsIdx: number = 0;
 
     private pendingCommands: OtCommand[] = [];
     private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
@@ -145,11 +146,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             this.editingSession.activityHandler( {
                 onJoin: (user) => {
                     this.zone.run(() => {
-                        if (this._activeCollaboratorIds.length === 0) {
-                            user.attributes["id"] = "user-secret";
-                        } else {
-                            user.attributes["id"] = this._activeCollaboratorIds.splice(0, 1)[0];
-                        }
+                        user.attributes["color"] = __component.nextCollaboratorColor();
                         this.activeCollaborators.push(user);
                         this.activeCollaborators.sort((c1, c2) => {
                             return c1.userName.localeCompare(c2.userName);
@@ -159,9 +156,6 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 },
                 onLeave: (user) => {
                     this.zone.run(() => {
-                        if (user.attributes["id"]) {
-                            this._activeCollaboratorIds.push(user.attributes["id"]);
-                        }
                         console.info("[ApiEditorPageComponent] User left the session, clearing their selection.");
                         __component.updateSelection(user, null);
                         for (let idx = this.activeCollaborators.length - 1; idx >= 0; idx--) {
@@ -363,6 +357,21 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             console.info("[ApiEditorPageComponent] Reloading live preview.");
             this.previewWindow.location.reload();
         }
+    }
+
+    /**
+     * Gets the next collaborator color from the list.
+     */
+    public nextCollaboratorColor(): string {
+        this._activeCollaboratorColorsIdx = (this._activeCollaboratorColorsIdx + 1) % this._activeCollaboratorColors.length;
+        return this._activeCollaboratorColors[this._activeCollaboratorColorsIdx];
+    }
+
+    /**
+     * Returns the first initial of the name of the given collaborator.
+     */
+    public collaboratorInitial(user: ApiEditorUser): string {
+        return user.userName[0];
     }
 }
 

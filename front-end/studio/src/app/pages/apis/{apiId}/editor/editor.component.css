@@ -85,24 +85,6 @@
   box-shadow: 0 0 3px #646464;
   border: 1px solid #666;
 }
-.api-editor .editor-master .editor-outline .api-path.selected .label.tree {
-  border: 2px dashed #50A162;
-}
-.api-editor .editor-master .editor-outline .api-path.selected .label.bus {
-  border: 2px dashed #B65B80;
-}
-.api-editor .editor-master .editor-outline .api-path.selected .label.bomb {
-  border: 2px dashed #D94C4C;
-}
-.api-editor .editor-master .editor-outline .api-path.selected .label.university {
-  border: 2px dashed #477187;
-}
-.api-editor .editor-master .editor-outline .api-path.selected .label.rocket {
-  border: 2px dashed #D4786A;
-}
-.api-editor .editor-master .editor-outline .api-path.selected .label.taxi {
-  border: 2px dashed #B10DC9;
-}
 .api-editor .editor-master .editor-outline .api-path.selected .label.selected {
   border: 1px solid black;
   box-shadow: 0 0 3px #141414;
@@ -337,35 +319,6 @@
   margin: 0;
 }
 
-.api-editor .editor-master .editor-main.tree {
-  border-left: 2px dotted #50A162;
-  background-color: #daedde;
-}
-.api-editor .editor-master .editor-main.tree {
-  border-left: 2px dotted #50A162;
-  background-color: #daedde;
-}
-.api-editor .editor-master .editor-main.bus {
-  border-left: 2px dotted #B65B80;
-  background-color: #f8eff3;
-}
-.api-editor .editor-master .editor-main.bomb {
-  border-left: 2px dotted #D94C4C;
-  background-color: #f9e6e6;
-}
-.api-editor .editor-master .editor-main.university {
-  border-left: 2px dotted #477187;
-  background-color: #c4d6e0;
-}
-.api-editor .editor-master .editor-main.rocket {
-  border-left: 2px dotted #D4786A;
-  background-color: #f5e2df;
-}
-.api-editor .editor-master .editor-main.taxi {
-  border-left: 2px dotted #B10DC9;
-  background-color: #f1b2fa;
-}
-
 .api-editor .editor-master .editor-search {
   padding: 10px;
   display: table;
@@ -465,30 +418,6 @@
   font-size: 14px;
   border-left: 2px solid transparent;
 }
-.api-editor .editor-master .editor-outline .api-path.tree {
-  border-left: 2px dotted #50A162;
-  background-color: #daedde;
-}
-.api-editor .editor-master .editor-outline .api-path.bus {
-  border-left: 2px dotted #B65B80;
-  background-color: #f8eff3;
-}
-.api-editor .editor-master .editor-outline .api-path.bomb {
-  border-left: 2px dotted #D94C4C;
-  background-color: #f9e6e6;
-}
-.api-editor .editor-master .editor-outline .api-path.university {
-  border-left: 2px dotted #477187;
-  background-color: #c4d6e0;
-}
-.api-editor .editor-master .editor-outline .api-path.rocket {
-  border-left: 2px dotted #D4786A;
-  background-color: #f5e2df;
-}
-.api-editor .editor-master .editor-outline .api-path.taxi {
-  border-left: 2px dotted #B10DC9;
-  background-color: #f1b2fa;
-}
 .api-editor .editor-master .editor-outline .api-path:hover {
   cursor: pointer;
 }
@@ -526,30 +455,6 @@
 }
 .api-editor .editor-master .editor-outline .api-definition:hover {
   cursor: pointer;
-}
-.api-editor .editor-master .editor-outline .api-definition.tree {
-  border-left: 2px dotted #50A162;
-  background-color: #daedde;
-}
-.api-editor .editor-master .editor-outline .api-definition.bus {
-  border-left: 2px dotted #B65B80;
-  background-color: #f8eff3;
-}
-.api-editor .editor-master .editor-outline .api-definition.bomb {
-  border-left: 2px dotted #D94C4C;
-  background-color: #f9e6e6;
-}
-.api-editor .editor-master .editor-outline .api-definition.university {
-  border-left: 2px dotted #477187;
-  background-color: #c4d6e0;
-}
-.api-editor .editor-master .editor-outline .api-definition.rocket {
-  border-left: 2px dotted #D4786A;
-  background-color: #f5e2df;
-}
-.api-editor .editor-master .editor-outline .api-definition.taxi {
-  border-left: 2px dotted #B10DC9;
-  background-color: #f1b2fa;
 }
 .api-editor .editor-master .editor-outline .api-definition.selected {
   cursor: default;

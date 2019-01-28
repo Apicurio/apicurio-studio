@@ -358,21 +358,6 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
-     * Returns the selection style to use for the given (potentially selected) node.
-     * @param item
-     * @return
-     */
-    public collaboratorSelectionClasses(item: OasNode): string {
-        if (item) {
-            let user: ApiEditorUser = ModelUtils.isSelectedByCollaborator(item);
-            if (user != null && user.attributes["id"]) {
-                return user.attributes["id"];
-            }
-        }
-        return "";
-    }
-
-    /**
      * Called when the user fills out the Add Path modal dialog and clicks Add.
      * @param path
      */
@@ -647,7 +632,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (this.isSelected(node)) {
             classes.push("selected");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
+        return classes.join(' ');
     }
 
     /**
@@ -666,7 +651,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (this.isSelected(node)) {
             classes.push("selected");
         }
-        return classes.join(' ') + " " + this.collaboratorSelectionClasses(node);
+        return classes.join(' ');
     }
 
     /**

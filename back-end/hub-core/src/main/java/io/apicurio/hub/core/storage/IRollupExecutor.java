@@ -19,6 +19,11 @@ import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
 
 /**
+ * Perform database rollup on a design.
+ *
+ * A rollup is a procedure by which all commands subsequent to a content entry are executed
+ * and stored as a new content entry (snapshot).
+ *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface IRollupExecutor {

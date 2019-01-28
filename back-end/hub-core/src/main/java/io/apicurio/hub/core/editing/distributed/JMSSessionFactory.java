@@ -66,10 +66,9 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
 
     // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
     // because of some EE spec limitations that block listener callback handlers being registered.
-    @Resource(lookup = "java:/ConnectionFactory") 
+    @Resource(lookup = "java:/ApicurioConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    //private JMSContext context;
     private BrokerManagementEventListener managementEventListener;
 
     @Inject

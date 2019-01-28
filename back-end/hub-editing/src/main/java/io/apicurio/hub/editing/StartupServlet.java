@@ -61,9 +61,6 @@ public class StartupServlet extends HttpServlet {
         builder.append("\n\tNashorn Class:  " + hasClass);
         builder.append("\n------------------------------------------------");
         logger.info(builder.toString());
-
-
-        System.out.println("Hello!");
     }
 
 }

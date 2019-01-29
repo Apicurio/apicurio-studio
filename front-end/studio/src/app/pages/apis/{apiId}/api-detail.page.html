@@ -166,7 +166,7 @@
                                 <p><span class="spinner spinner-xs spinner-inline"></span> Loading mock information...</p>
                             </div>
                             <div class="api-mocks" *ngIf="isLoaded('mocks')">
-                                <div class="" *ngIf="!hasMicrocksMock()">
+                                <div *ngIf="!hasMicrocksMock()">
                                     <p>
                                         This API has <strong>not yet been mocked in Microcks</strong>.
                                     </p>
@@ -177,7 +177,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="" *ngIf="hasMicrocksMock()">
+                                <div *ngIf="hasMicrocksMock()">
                                     <p>
                                         This API is being mocked in <strong>Microcks</strong>!
                                     </p>

@@ -22,6 +22,7 @@
 export class ApiEditorUser {
     public userId: string;
     public userName: string;
+    public fullName: string;
     public attributes: any = {};
 }
 

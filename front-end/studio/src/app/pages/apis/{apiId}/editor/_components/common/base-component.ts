@@ -22,7 +22,6 @@ import {SelectionService} from "../../_services/selection.service";
 export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     private _docSub: Subscription;
-    private _collabSub: Subscription;
 
     protected constructor(private __changeDetectorRef: ChangeDetectorRef, protected __documentService: DocumentService,
                           private __selectionService: SelectionService, private __skipDocumentChanges: boolean = false) {}
@@ -40,17 +39,11 @@ export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDest
                 this.onDocumentChange();
             });
         }
-        this._collabSub = this.__selectionService.collaboratorSelection().subscribe( () => {
-            this.__changeDetectorRef.markForCheck();
-        });
     }
 
     ngOnDestroy(): void {
         if (this._docSub) {
             this._docSub.unsubscribe();
-        }
-        if (this._collabSub) {
-            this._collabSub.unsubscribe();
         }
     }
 

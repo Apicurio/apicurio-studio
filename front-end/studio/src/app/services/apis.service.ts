@@ -165,6 +165,7 @@ export class ApiEditingSession implements IApiEditingSession {
                 let user: ApiEditorUser = new ApiEditorUser();
                 user.userId = msg.id;
                 user.userName = msg.user;
+                user.fullName = msg.user;
                 this._users[msg.id] = user;
                 if (this._activityHandler) {
                     this._activityHandler.onJoin(user);

@@ -73,6 +73,9 @@ import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
 
 
+const oasLibrary: OasLibraryUtils = new OasLibraryUtils();
+
+
 /**
  * The component that models the master view of the API editor.  This is the
  * left-hand side of the editor, which lists things like Paths and Definitions.
@@ -666,6 +669,14 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             onCancel: () => { /* Do nothing on cancel... */ }
         };
         dtEditor.open(handler, this.document);
+    }
+
+    /**
+     * Gets the node path for the given data model node.
+     * @param node
+     */
+    public asNodePath(node: OasNode): string {
+        return oasLibrary.createNodePath(node).toString();
     }
 }
 

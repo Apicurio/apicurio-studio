@@ -59,6 +59,7 @@ import {ParameterEditorComponent} from "./_components/editors/parameter-editor.c
 import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
+import {CollaboratorService} from "./_services/collaborator.service";
 
 
 
@@ -116,16 +117,18 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param documentService
      * @param editorsService
      * @param featuresService
+     * @param collaboratorService
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
-                private featuresService: FeaturesService) {}
+                private featuresService: FeaturesService, private collaboratorService: CollaboratorService) {}
 
     /**
      * Called when the editor is initialized by angular.
      */
     public ngOnInit(): void {
         this.selectionService.reset();
+        this.collaboratorService.reset();
         this.commandService.reset();
         this.documentService.reset();
         this.editorsService.setProvider(this);
@@ -377,7 +380,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param selection
      */
     public updateCollaboratorSelection(user: ApiEditorUser, selection: string): void {
-        this.selectionService.setCollaboratorSelection(user, selection, this.document());
+        this.collaboratorService.setCollaboratorSelection(user, selection);
     }
 
     /**

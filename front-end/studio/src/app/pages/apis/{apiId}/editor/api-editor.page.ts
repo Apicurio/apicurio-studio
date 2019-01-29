@@ -148,9 +148,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                     this.zone.run(() => {
                         user.attributes["color"] = __component.nextCollaboratorColor();
                         this.activeCollaborators.push(user);
-                        this.activeCollaborators.sort((c1, c2) => {
-                            return c1.userName.localeCompare(c2.userName);
-                        });
+                        // this.activeCollaborators.sort((c1, c2) => {
+                        //     return c1.userName.localeCompare(c2.userName);
+                        // });
                         __component.editingSession.sendSelection(__component.currentEditorSelection);
                     });
                 },
@@ -352,7 +352,6 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Reloads the live preview window (typically called when the user makes a change/edit).
      */
     private reloadLivePreview(): void {
-        console.info("++++++++++reloadLivePreview()");
         if (this.previewWindow && !this.previewWindow.closed) {
             console.info("[ApiEditorPageComponent] Reloading live preview.");
             this.previewWindow.location.reload();

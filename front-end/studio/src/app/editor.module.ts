@@ -108,6 +108,8 @@ import {ResponseTabComponent} from "./pages/apis/{apiId}/editor/_components/form
 import {ResponseTab30Component} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/response-tab-30.component";
 import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/media-type-row.component";
 import {FeaturesService} from "./pages/apis/{apiId}/editor/_services/features.service";
+import {CollaboratorAggregateComponent} from "./pages/apis/{apiId}/editor/_components/common/collaborator-aggregate.component";
+import {CollaboratorService} from "./pages/apis/{apiId}/editor/_services/collaborator.service";
 
 @NgModule({
     imports: [
@@ -132,11 +134,11 @@ import {FeaturesService} from "./pages/apis/{apiId}/editor/_services/features.se
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
-        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent
+        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
-        RestResourceService, FeaturesService
+        RestResourceService, FeaturesService, CollaboratorService
     ],
     exports: [
         ApiEditorComponent

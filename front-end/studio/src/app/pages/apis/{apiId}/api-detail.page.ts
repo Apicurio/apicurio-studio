@@ -233,6 +233,9 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
      * Returns true only if the microcks mock is older than the most recent activity.
      */
     public isMockStale(): boolean {
+        if (!this.activity) {
+            return false;
+        }
         let latestActivity = this.activity[0];
         return this.mock.on < latestActivity.on;
     }

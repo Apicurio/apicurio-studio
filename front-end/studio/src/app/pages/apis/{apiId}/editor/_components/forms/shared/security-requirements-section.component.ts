@@ -34,6 +34,7 @@ import {
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -153,6 +154,10 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      */
     public securityRequirements(): OasSecurityRequirement[] {
         return this.parent.security ? this.parent.security : [];
+    }
+
+    public securityRequirementsPath(): string {
+        return ModelUtils.nodeToPath(this.parent) + "/security";
     }
 
     /**

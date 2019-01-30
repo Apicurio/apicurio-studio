@@ -1,4 +1,7 @@
-<section type="servers" label="SERVERS" [counterItems]="servers()" [contextHelp]="description"
+<section type="servers" label="SERVERS"
+         [counterItems]="servers()"
+         [contextHelp]="description"
+         [collaborationNodePath]="serversPath()"
          [validationModels]="servers()" [expanded]="showSectionBody">
     <span actions>
         <icon-button (onClick)="onAddServer()" [pullRight]="true" type="add"

@@ -61,6 +61,7 @@ import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
+import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
@@ -101,6 +102,22 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     public is30Document(): boolean {
         return this.operation.ownerDocument().is3xDocument();
+    }
+
+    public requestBodyPaths(): string | string[] {
+        if (this.is30Document()) {
+            return ModelUtils.nodeToPath(this.operation) + "/requestBody";
+        } else {
+            if (this.hasBodyParam()) {
+                return ModelUtils.nodeToPath(this.bodyParam());
+            }
+            if (this.hasFormDataParams()) {
+                return this.formDataParameters().map( param => {
+                    return ModelUtils.nodeToPath(param);
+                });
+            }
+        }
+        return null;
     }
 
     public openAddFormDataParamEditor(): void {

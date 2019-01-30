@@ -17,12 +17,13 @@
 
 import {OasNode} from "oai-ts-core";
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
-    Component, ElementRef, HostListener,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    HostListener,
     Input,
-    OnChanges,
-    OnDestroy,
-    OnInit, ViewChild,
+    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {AbstractBaseComponent} from "../../common/base-component";
@@ -53,6 +54,8 @@ export class SectionComponent extends AbstractBaseComponent {
     @Input() validationModels: OasNode[];
     @Input() validationShallow: boolean;
     @Input() validationProperties: string[];
+
+    @Input() collaborationNodePath: string;
 
     @Input() inForm: boolean = true;
 

@@ -1,5 +1,7 @@
 <!-- Path Parameters Section -->
-<section type="path-parameters" label="PATH PARAMETERS" [counterItems]="pathParameters()" *ngIf="canHavePathParams()"
+<section type="path-parameters" label="PATH PARAMETERS"
+         [counterItems]="pathParameters()" *ngIf="canHavePathParams()"
+         [collaborationNodePath]="pathParameterPaths()"
          [contextHelp]="contextHelp()" [validationModels]="pathParameters()">
     <span actions></span>
     <div body>

@@ -1,5 +1,6 @@
 <section type="requestBody" label="REQUEST BODY" [expanded]="showRequestBody"
          contextHelp="Use this section to configure the operation's Request Body.  Typically a request body is used for PUT and POST only."
+         [collaborationNodePath]="requestBodyPaths()"
          [validationModels]="validationModels()">
     <span actions>
         <icon-button *ngIf="is20Document()"

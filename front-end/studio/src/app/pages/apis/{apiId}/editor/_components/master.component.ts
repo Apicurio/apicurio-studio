@@ -59,7 +59,6 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
-import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.component";
 import {SelectionService} from "../_services/selection.service";
 import {Subscription} from "rxjs/Subscription";
@@ -71,9 +70,6 @@ import {RestResourceService} from "../_services/rest-resource.service";
 import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
-
-
-const oasLibrary: OasLibraryUtils = new OasLibraryUtils();
 
 
 /**
@@ -218,6 +214,14 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             }
         }
         return viz.getSortedSchemaDefinitions();
+    }
+
+    public definitionsPath(): string {
+        if (this.document && this.document.is2xDocument()) {
+            return "/definitions";
+        } else {
+            return "/components/schemas";
+        }
     }
 
     /**
@@ -676,7 +680,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param node
      */
     public asNodePath(node: OasNode): string {
-        return oasLibrary.createNodePath(node).toString();
+        return ModelUtils.nodeToPath(node);
     }
 }
 

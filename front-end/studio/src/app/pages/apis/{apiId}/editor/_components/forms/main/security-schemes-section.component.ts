@@ -117,6 +117,17 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Node path that is the base for all security schemes.
+     */
+    public securitySchemesPath(): string {
+        if (this.document.is2xDocument()) {
+            return "/securityDefinitions";
+        } else {
+            return "/components/securitySchemes"
+        }
+    }
+
+    /**
      * Called when the user adds a new security scheme.
      * @param event
      */

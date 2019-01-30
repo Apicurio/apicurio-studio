@@ -53,6 +53,8 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     public tab: string;
 
     private _operations: OasOperation[] = [];
+    private _allOperations: OasOperation[] = [];
+    private _collaborationPaths: string[] = [];
     private _selectionSubscription: Subscription;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
@@ -71,10 +73,13 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     }
 
     protected onDocumentChange(): void {
-        // TODO handle change to the document
+        this.refresh();
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
+        if (changes["path"]) {
+            this.refresh();
+        }
         // TODO the input has changed!
         //this.setOperationTabFromSelection(this.selectionService.currentSelection());
     }
@@ -84,17 +89,31 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         this._selectionSubscription.unsubscribe();
     }
 
+    public operations(): OasOperation[] {
+        return this._operations;
+    }
+
+    public collaborationPaths(): string[] {
+        return this._collaborationPaths;
+    }
+
+    private refresh(): void {
+        this._operations = this.pathOperations();
+        this._allOperations = this.allPathOperations();
+        this._collaborationPaths = this.allCollaborationPaths();
+    }
+
     private setOperationTabFromSelection(selection: OasNodePath): void {
         console.info("[OperationsSectionComponent] Selection operation tab from selection: ", selection);
         this.tab = null;
-        for (let operation of this.operations()) {
+        for (let operation of this._operations) {
             if (this.isSelected(operation)) {
                 this.tab = operation.method();
                 return;
             }
         }
 
-        for (let operation of this.operations()) {
+        for (let operation of this._operations) {
             console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.method());
             this.tab = operation.method();
             return;
@@ -103,18 +122,11 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         this.tab = "get";
     }
 
-    public operations(): OasOperation[] {
-        return this.allOperations().filter( operation => operation !== null && operation !== undefined);
+    private pathOperations(): OasOperation[] {
+        return this.allPathOperations().filter( operation => operation !== null && operation !== undefined);
     }
 
-    public operation(): OasOperation {
-        if (this.tab) {
-            return this.path[this.tab];
-        }
-        return null;
-    }
-
-    public allOperations(): OasOperation[] {
+    private allPathOperations(): OasOperation[] {
         let ops: OasOperation[] = [
             this.path.get,
             this.path.put,
@@ -126,6 +138,21 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
             this.path["trace"]
         ];
         return ops;
+    }
+
+    private allCollaborationPaths(): string[] {
+        let basePath: string = ModelUtils.nodeToPath(this.path) + "/";
+        let paths: string[] = [ "get", "put", "post", "delete", "options", "head", "patch", "trace" ].map( method => {
+            return basePath + method;
+        });
+        return paths;
+    }
+
+    public operation(): OasOperation {
+        if (this.tab) {
+            return this.path[this.tab];
+        }
+        return null;
     }
 
     public isDefined(method: string): boolean {

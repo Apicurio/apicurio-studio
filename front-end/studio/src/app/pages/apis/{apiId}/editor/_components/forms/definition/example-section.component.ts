@@ -22,6 +22,7 @@ import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -56,6 +57,10 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
         let command: ICommand = createChangePropertyCommand(this.definition.ownerDocument(), this.definition,
             "example", newExample);
         this.commandService.emit(command);
+    }
+    
+    public exampleNodePath(): string {
+        return ModelUtils.nodeToPath(this.definition) + "/example";
     }
 
 }

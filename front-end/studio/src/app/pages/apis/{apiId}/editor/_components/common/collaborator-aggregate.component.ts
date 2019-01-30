@@ -41,7 +41,7 @@ import {Subscription} from "rxjs";
 })
 export class CollaboratorAggregateComponent extends AbstractBaseComponent {
 
-    @Input() nodePath: string;
+    @Input() nodePath: string | string[];
 
     private _open: boolean = false;
     public left: string;
@@ -85,7 +85,14 @@ export class CollaboratorAggregateComponent extends AbstractBaseComponent {
      */
     protected updateCollaborators(): void {
         console.info("[CollaboratorAggregateComponent] Determine collaborators for node path: ", this.nodePath);
-        this._collaborators = this.collaboratorService.getCollaboratorsForPath(this.nodePath);
+        if (Array.isArray(this.nodePath)) {
+            this._collaborators = [];
+            (<string[]>this.nodePath).forEach( nodePath => {
+                this._collaborators = this._collaborators.concat(this.collaboratorService.getCollaboratorsForPath(nodePath));
+            });
+        } else {
+            this._collaborators = this.collaboratorService.getCollaboratorsForPath(<string>this.nodePath);
+        }
         console.info("[CollaboratorAggregateComponent] # Collaborators found: ", this._collaborators.length);
     }
 

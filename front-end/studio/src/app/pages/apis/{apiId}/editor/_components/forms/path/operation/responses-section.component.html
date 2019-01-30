@@ -1,5 +1,6 @@
 <section type="responses" label="RESPONSES" [counterItems]="responses()"
          contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
+         [collaborationNodePath]="responsesPath()"
          [validationModels]="responses()">
     <span actions>
         <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" type="add"

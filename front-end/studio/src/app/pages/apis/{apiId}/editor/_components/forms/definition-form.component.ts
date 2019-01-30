@@ -45,6 +45,7 @@ import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../editors/property-editor.component";
 import {EditorsService} from "../../_services/editors.service";
+import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
@@ -121,6 +122,10 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         }).forEach(name => rval.push(this.definition.property(name)));
 
         return rval;
+    }
+
+    public propertiesNodePath(): string {
+        return ModelUtils.nodeToPath(this.definition) + "/properties";
     }
 
     public changePropertyDescription(property: OasSchema, newDescription: string): void {

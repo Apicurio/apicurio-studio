@@ -20,7 +20,7 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    QueryList,
+    QueryList, SimpleChanges,
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
@@ -31,6 +31,7 @@ import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
+import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
@@ -47,9 +48,29 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     @ViewChildren("consumesEditor") consumesEditor: QueryList<InlineArrayEditorComponent>;
     @ViewChildren("producesEditor") producesEditor: QueryList<InlineArrayEditorComponent>;
 
+    private _operationInfoPaths: string[];
+
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+        this._operationInfoPaths = null;
+    }
+
+    /**
+     * Returns the node paths of all the properties editable in this section.
+     */
+    public operationInfoPaths(): string[] {
+        if (!this._operationInfoPaths) {
+            let basePath: string = ModelUtils.nodeToPath(this.operation);
+            this._operationInfoPaths = [ "summary", "description", "operationId", "tags" ].map( prop => {
+                return basePath + "/" + prop;
+            });
+        }
+        return this._operationInfoPaths;
     }
 
     /**

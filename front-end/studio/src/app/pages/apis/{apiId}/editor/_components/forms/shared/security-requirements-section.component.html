@@ -1,4 +1,6 @@
-<section type="security-requirements" label="SECURITY REQUIREMENTS" [counterItems]="securityRequirements()"
+<section type="security-requirements" label="SECURITY REQUIREMENTS"
+         [counterItems]="securityRequirements()"
+         [collaborationNodePath]="securityRequirementsPath()"
          [contextHelp]="contextHelp()" [validationModels]="securityRequirements()">
     <span actions>
         <icon-button (onClick)="openSecurityRequirementEditor()" [pullRight]="true" type="add"

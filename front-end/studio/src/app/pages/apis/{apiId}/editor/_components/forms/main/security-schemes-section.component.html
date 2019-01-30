@@ -1,5 +1,6 @@
 <section type="security" label="SECURITY SCHEMES" [counterItems]="securitySchemes()"
          contextHelp="Use this section to configure your API's security options.  There are several schemes you can choose from, for example OAuth2."
+         [collaborationNodePath]="securitySchemesPath()"
          [validationModels]="securitySchemes()">
     <span actions>
         <icon-button (onClick)="openSecuritySchemeModal()" [pullRight]="true" type="add"

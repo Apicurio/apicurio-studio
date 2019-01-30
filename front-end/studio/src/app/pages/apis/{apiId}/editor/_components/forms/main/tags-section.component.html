@@ -1,5 +1,6 @@
 <section type="tags" label="TAG DEFINITIONS" [counterItems]="tags()"
          contextHelp="Configure tags for your API in this section.  Once defined, tags can be used to organize your API's operations by arbitrary criteria."
+         collaborationNodePath="/tags"
          [validationModels]="tags()">
     <span actions>
         <icon-button (onClick)="addTagDialog.open()" [pullRight]="true" type="add"

@@ -1,6 +1,8 @@
 <!-- Query Parameters Section -->
-<section type="query-parameters" label="QUERY PARAMETERS" [counterItems]="queryParameters()"
+<section type="query-parameters" label="QUERY PARAMETERS"
+         [counterItems]="queryParameters()"
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
+         [collaborationNodePath]="queryParameterPaths()"
          [validationModels]="queryParameters()">
     <span actions>
         <icon-button (onClick)="openAddQueryParamEditor()" [pullRight]="true" type="add"

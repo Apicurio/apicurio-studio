@@ -49,6 +49,7 @@ import {
 } from "../../editors/parameter-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -158,6 +159,12 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
             return param1.name.localeCompare(param2.name);
         });
         return this._queryParameters;
+    }
+
+    public queryParameterPaths(): string[] {
+        return this.queryParameters().map( param => {
+            return ModelUtils.nodeToPath(param);
+        });
     }
 
     public openAddQueryParamEditor(): void {

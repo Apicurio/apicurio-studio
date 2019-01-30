@@ -22,6 +22,7 @@ import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -38,6 +39,14 @@ export class PathInfoSectionComponent extends AbstractBaseComponent {
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    public pathInfoPaths(): string[] {
+        let basePath: string = ModelUtils.nodeToPath(this.path);
+        return [
+            basePath + "/summary",
+            basePath + "/description"
+        ];
     }
 
     /**

@@ -16,12 +16,11 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasLibraryUtils, OasNode} from "oai-ts-core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
-
-const oasLibrary: OasLibraryUtils = new OasLibraryUtils();
+import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
@@ -53,6 +52,6 @@ export class DefinitionItemComponent extends AbstractBaseComponent {
      * Gets the node path for the definition item.
      */
     public asNodePath(): string {
-        return oasLibrary.createNodePath(this.schema).toString();
+        return ModelUtils.nodeToPath(this.schema);
     }
 }

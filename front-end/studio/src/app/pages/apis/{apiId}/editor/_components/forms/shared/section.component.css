@@ -10,3 +10,12 @@
   display: block;
   position: fixed;
 }
+
+.section .section-header .collaborator-aggregate {
+  margin-left: 5px;
+  margin-left: 18px;
+}
+
+.section .section-header .collaborator-aggregate > a.collaborator-icon {
+  color: white;
+}

@@ -42,6 +42,7 @@ import {createDeleteParameterCommand, createNewParamCommand, ICommand} from "oai
 import {DocumentService} from "../../../_services/document.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -112,6 +113,12 @@ export class PathParamsSectionComponent extends AbstractBaseComponent {
             }
         }
         return this._pathParameters;
+    }
+
+    public pathParameterPaths(): string[] {
+        return this.pathParameters().map( param => {
+            return ModelUtils.nodeToPath(param);
+        });
     }
 
     public pathParam(paramName: string): Oas30Parameter | Oas20Parameter {

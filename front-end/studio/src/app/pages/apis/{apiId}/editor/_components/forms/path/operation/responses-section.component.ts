@@ -37,6 +37,7 @@ import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {HttpCode, HttpCodeService} from "../../../../_services/httpcode.service";
+import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
@@ -57,6 +58,14 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
 
     private _responseTab: string;
 
+    /**
+     * Constructor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param editors
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private editors: EditorsService,
                 private selectionService: SelectionService) {
@@ -68,6 +77,10 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         if (this.operation && this.operation.responses) {
             this.selectDefaultTab();
         }
+    }
+
+    public responsesPath(): string {
+        return ModelUtils.nodeToPath(this.operation) + "/responses";
     }
 
     public selectDefaultTab(): void {

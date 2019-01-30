@@ -15,10 +15,24 @@
  * limitations under the License.
  */
 
-import {Oas20Schema, Oas30Schema, OasNode, ReferenceUtil} from "oai-ts-core";
+import {Oas20Schema, Oas30Schema, OasLibraryUtils, OasNode, ReferenceUtil} from "oai-ts-core";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
+const oasLibrary: OasLibraryUtils = new OasLibraryUtils();
+
 export class ModelUtils {
+
+    /**
+     * Converts a node into a nodepath.
+     * @param node
+     */
+    public static nodeToPath(node: OasNode): string {
+        if (node) {
+            return oasLibrary.createNodePath(node).toString();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Clears any possible selection that may exist on the given node for the local user.

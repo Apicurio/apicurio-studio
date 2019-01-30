@@ -1,6 +1,8 @@
 <!-- Header Parameters Section -->
-<section type="header-parameters" label="HEADER PARAMETERS" [counterItems]="headerParameters()"
+<section type="header-parameters" label="HEADER PARAMETERS"
+         [counterItems]="headerParameters()"
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
+         [collaborationNodePath]="headerParameterPaths()"
          [validationModels]="headerParameters()">
     <span actions>
         <icon-button (onClick)="openAddHeaderParamEditor()" [pullRight]="true" type="add"

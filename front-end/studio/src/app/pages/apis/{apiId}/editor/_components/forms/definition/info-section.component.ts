@@ -22,6 +22,7 @@ import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -39,6 +40,13 @@ export class DefinitionInfoSectionComponent extends AbstractBaseComponent {
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
+
+    public definitionInfoPaths(): string[] {
+        return [
+            ModelUtils.nodeToPath(this.definition) + "/description"
+        ];
+    }
+
 
     /**
      * returns the description.

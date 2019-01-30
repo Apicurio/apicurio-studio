@@ -49,6 +49,7 @@ import {
 } from "../../editors/parameter-editor.component";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -158,6 +159,12 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
             return param1.name.localeCompare(param2.name);
         });
         return this._headerParameters;
+    }
+
+    public headerParameterPaths(): string[] {
+        return this.headerParameters().map( param => {
+            return ModelUtils.nodeToPath(param);
+        });
     }
 
     public openAddHeaderParamEditor(): void {

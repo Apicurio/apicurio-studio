@@ -31,6 +31,7 @@ import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editor
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
@@ -75,6 +76,10 @@ export class ServersSectionComponent extends AbstractBaseComponent {
             return obj1.url.toLowerCase().localeCompare(obj2.url.toLowerCase());
         });
         return servers;
+    }
+
+    public serversPath(): string {
+        return ModelUtils.nodeToPath(this.parent) + "/servers";
     }
 
     /**

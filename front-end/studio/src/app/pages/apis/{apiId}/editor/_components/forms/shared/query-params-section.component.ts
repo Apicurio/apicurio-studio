@@ -162,7 +162,7 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public queryParameterPaths(): string[] {
-        return this.queryParameters().map( param => {
+        return this.parent.getParameters("query").map( param => {
             return ModelUtils.nodeToPath(param);
         });
     }

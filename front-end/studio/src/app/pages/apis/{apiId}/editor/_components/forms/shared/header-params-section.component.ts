@@ -162,7 +162,7 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public headerParameterPaths(): string[] {
-        return this.headerParameters().map( param => {
+        return this.parent.getParameters("header").map( param => {
             return ModelUtils.nodeToPath(param);
         });
     }

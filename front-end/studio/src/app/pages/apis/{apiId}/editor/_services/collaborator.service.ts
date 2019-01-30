@@ -153,7 +153,7 @@ export class CollaboratorService {
     }
 
     public getCollaboratorsForPath(nodePath: string): ApiEditorUser[] {
-        console.info("[CollaboratorService] Getting collaborators for path: ", nodePath);
+        //console.info("[CollaboratorService] Getting collaborators for path: ", nodePath);
         let collaborators: ApiEditorUser[] = [];
         this._collaboratorSelections.forEachSelection( (userId, path) => {
             if (path && path.indexOf(nodePath) === 0) {

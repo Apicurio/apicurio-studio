@@ -18,7 +18,7 @@
 
         <!-- The list of servers -->
         <div class="tags" *ngIf="servers().length > 0">
-            <server-row *ngFor="let server of servers()" [server]="server"
+            <server-row *ngFor="let server of servers()" [item]="server"
                         (onEdit)="changeServer($event)"
                         (onDelete)="deleteServer(server)"></server-row>
         </div>

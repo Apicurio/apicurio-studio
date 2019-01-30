@@ -1,14 +1,14 @@
 <div class="header-param" [class.expanded]="isEditing()" [class.required]="isRequired()" [class.overridable]="isOverridable()">
     <div class="header">
         <div class="name">
-            <validation-problem [model]="parameter"></validation-problem>
+            <validation-problem [model]="item"></validation-problem>
             <span class="apicurio-icon-override icon-override" *ngIf="isParentOperation() && isOverride()"
                   title="Overrides a parameter defined at the Path level."></span>
             <span class="apicurio-icon-inherit-d icon-override" *ngIf="isParentOperation() && isOverridable()"
                   title="Header parameter inherited from the Path level."></span>
             <span class="apicurio-icon-local-d icon-override" *ngIf="isParentOperation() && isLocalOnly()"
                   title="Header parameter defined for this operation only."></span>
-            <span title="{{ parameter.name }}">{{ parameter.name }}</span>
+            <span title="{{ item.name }}">{{ item.name }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
@@ -41,7 +41,8 @@
                 <div class="col-md-11">
                     <div class="param-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-markdown-editor [value]="parameter.description" [noValueMessage]="'No description.'"
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                     <div class="param-content" *ngIf="isEditingSummary()">

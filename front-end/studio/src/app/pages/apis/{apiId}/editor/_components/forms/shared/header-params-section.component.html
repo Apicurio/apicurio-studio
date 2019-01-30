@@ -19,7 +19,7 @@
 
         <!-- The list of header parameters -->
         <div class="container-fluid header-parameters typed-item-list" *ngIf="hasHeaderParameters()">
-            <header-param-row *ngFor="let param of headerParameters()" [parameter]="param"
+            <header-param-row *ngFor="let param of headerParameters()" [item]="param"
                              (onDelete)="deleteParam(param)"></header-param-row>
         </div>
     </div>

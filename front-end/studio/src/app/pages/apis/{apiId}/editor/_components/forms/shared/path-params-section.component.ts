@@ -116,7 +116,7 @@ export class PathParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public pathParameterPaths(): string[] {
-        return this.pathParameters().map( param => {
+        return this.parent.getParameters("path").map( param => {
             return ModelUtils.nodeToPath(param);
         });
     }

@@ -1,8 +1,8 @@
 <div class="property" [class.expanded]="isEditing()" [class.required]="isRequired()">
     <div class="header">
         <div class="name">
-            <validation-problem [model]="property"></validation-problem>
-            <span title="{{ property.propertyName() }}">{{ property.propertyName() }}</span>
+            <validation-problem [model]="item"></validation-problem>
+            <span title="{{ item.propertyName() }}">{{ item.propertyName() }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
@@ -33,7 +33,8 @@
                 <div class="col-md-11">
                     <div class="property-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-markdown-editor [value]="property.description" [noValueMessage]="'No description.'"
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                     <div class="property-content" *ngIf="isEditingSummary()">

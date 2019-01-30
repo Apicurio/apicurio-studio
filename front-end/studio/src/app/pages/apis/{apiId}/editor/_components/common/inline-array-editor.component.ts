@@ -32,6 +32,8 @@ import {DocumentService} from "../../_services/document.service";
 import {KeypressUtils} from "../../_util/object.util";
 import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
+import {OasNode} from "oai-ts-core";
+import {ModelUtils} from "../../_util/model.util";
 
 @Component({
     moduleId: module.id,
@@ -46,8 +48,12 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     @Input() value: string[];
     @Input() noValueMessage: string;
     @Input() items: string[] | (()=>string[]);
+    @Input() baseNode: OasNode;
+    @Input() nodePath: string;
+
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
+
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
     public editing: boolean = false;
@@ -56,8 +62,8 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
 
     public firstEnter: boolean;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private selectionService: SelectionService) {
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
@@ -105,6 +111,22 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
         } else {
             this.evalue = this.adHocValues().join(", ");
             this.evalues = this.aprioriValues();
+        }
+
+        // If the baseNode and/or nodePath are set, then we want to fire a selection event
+        // whenever the user starts editing.
+        if (this.nodePath || this.baseNode) {
+            let path: string = "";
+            if (this.baseNode) {
+                path = ModelUtils.nodeToPath(this.baseNode);
+            }
+            if (this.nodePath) {
+                if (!this.nodePath.startsWith("/")) {
+                    path += "/";
+                }
+                path += this.nodePath;
+            }
+            this.__selectionService.simpleSelect(path);
         }
     }
 

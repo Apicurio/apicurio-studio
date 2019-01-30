@@ -14,6 +14,7 @@
                 <pf-inline-text-editor [value]="operation.summary" [noValueMessage]="'No Summary'"
                                        [labelClass]="'api-item-title'"
                                        [inputClass]="'api-item-editor api-summary-editor api-item-title'"
+                                       [baseNode]="operation" nodePath="summary"
                                        (onChange)="changeSummary($event)"></pf-inline-text-editor>
             </div>
         </div>
@@ -28,6 +29,7 @@
                 <pf-inline-text-editor [value]="operation.operationId" [noValueMessage]="'No Operation ID'"
                                        [labelClass]="'api-item-operation-id'"
                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                       [baseNode]="operation" nodePath="operationId"
                                        (onChange)="changeOperationId($event)"></pf-inline-text-editor>
             </div>
         </div>
@@ -42,6 +44,7 @@
                                     [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
                                     [inputClass]="'api-item-description'"
                                     [formClass]="'api-description-editor-form'"
+                                    [baseNode]="operation" nodePath="description"
                                     (onChange)="changeDescription($event)"></inline-markdown-editor>
         </div>
 
@@ -52,6 +55,7 @@
         </div>
         <div class="section-field tags">
             <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
+                                 [baseNode]="operation" nodepath="tags"
                                  (onChange)="changeTags($event)"></inline-array-editor>
         </div>
 
@@ -74,9 +78,9 @@
                     <span *ngIf="hasGlobalConsumes()" class="apicurio-icon-override icon-override" title="Overrides the global 'consumes' setting."></span>
                     <span *ngIf="!hasGlobalConsumes() && hasLocalConsumes()" class="apicurio-icon-local-d icon-local" title="Content types defined in this operation only (no global setting)."></span>
                     <span *ngIf="!hasGlobalConsumes() && !hasLocalConsumes()" class="apicurio-icon-undefined-d icon-local" title="No content types defined at any level."></span>
-                    <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'"
+                    <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'" #consumesEditor
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
-                                         #consumesEditor
+                                         [baseNode]="operation" nodepath="consumes"
                                          (onClose)="onConsumesClose()"
                                          (onChange)="onConsumesChange($event)"></inline-array-editor>
                 </div>
@@ -98,9 +102,9 @@
                     <span *ngIf="hasGlobalProduces()" class="apicurio-icon-override icon-override" title="Overrides the global 'produces' setting."></span>
                     <span *ngIf="!hasGlobalProduces() && hasLocalProduces()" class="apicurio-icon-local-d icon-local" title="Content types defined in this operation only (no global setting)."></span>
                     <span *ngIf="!hasGlobalProduces() && !hasLocalProduces()" class="apicurio-icon-undefined-d icon-local" title="No content types defined at any level."></span>
-                    <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'"
+                    <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'" #producesEditor
                                          [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
-                                         #producesEditor
+                                         [baseNode]="operation" nodepath="produces"
                                          (onClose)="onProducesClose()"
                                          (onChange)="onProducesChange($event)"></inline-array-editor>
                 </div>

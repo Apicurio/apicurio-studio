@@ -18,6 +18,9 @@
 import {AfterViewInit, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {KeypressUtils} from "../../_util/object.util";
+import {SelectionService} from "../../_services/selection.service";
+import {OasNode} from "oai-ts-core";
+import {ModelUtils} from "../../_util/model.util";
 
 
 /**
@@ -32,6 +35,9 @@ export abstract class AbstractInlineEditor<T> {
     @Input() inputClass = "";
     @Input() formClass = "";
 
+    @Input() baseNode: OasNode;
+    @Input() nodePath: string;
+
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
     public editing: boolean = false;
@@ -41,10 +47,29 @@ export abstract class AbstractInlineEditor<T> {
 
     public evalue: T;
 
+    protected constructor(protected selectionService: SelectionService) {}
+
     public onStartEditing(): void {
         if (!this.enabled) {
             return;
         }
+
+        // If the baseNode and/or nodePath are set, then we want to fire a selection event
+        // whenever the user starts editing.
+        if (this.nodePath || this.baseNode) {
+            let path: string = "";
+            if (this.baseNode) {
+                path = ModelUtils.nodeToPath(this.baseNode);
+            }
+            if (this.nodePath) {
+                if (!this.nodePath.startsWith("/")) {
+                    path += "/";
+                }
+                path += this.nodePath;
+            }
+            this.selectionService.simpleSelect(path);
+        }
+
         this.canClose = false;
         this.evalue = this.initialValueForEditing();
         this.inputFocus = true;
@@ -112,6 +137,10 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
     @Input() value: T;
     @Input() noValueMessage: string;
 
+    protected constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
+
     protected displayValue(): string {
         if (this.isEmpty()) {
             return this.noValueMessage;
@@ -138,6 +167,10 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
 export abstract class TextInputEditorComponent extends AbstractInlineValueEditor<string> implements AfterViewInit {
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
+
+    protected constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
 
     ngAfterViewInit(): void {
         this.input.changes.subscribe(changes => {
@@ -175,6 +208,10 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
  * must include a 'textarea' element named #newvalue.
  */
 export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
+
+    constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
 
     public onInputKeypress(event: KeyboardEvent): void {
         super.onInputKeypress(event);

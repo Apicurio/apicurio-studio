@@ -23,8 +23,8 @@ export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDest
 
     private _docSub: Subscription;
 
-    protected constructor(private __changeDetectorRef: ChangeDetectorRef, protected __documentService: DocumentService,
-                          private __selectionService: SelectionService, private __skipDocumentChanges: boolean = false) {}
+    protected constructor(protected __changeDetectorRef: ChangeDetectorRef, protected __documentService: DocumentService,
+                          protected __selectionService: SelectionService, protected __skipDocumentChanges: boolean = false) {}
 
     ngOnChanges(changes: SimpleChanges): void {
         // Nothing to do at the base component level (yet?)

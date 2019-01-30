@@ -1,9 +1,9 @@
 <div class="media-type" [class.expanded]="isEditing()">
     <div class="header">
         <div class="name">
-            <validation-problem [model]="mediaType"></validation-problem>
+            <validation-problem [model]="item"></validation-problem>
             <span class="fa fa-fw fa-file-o"></span>
-            <span title="{{ mediaType.name() }}">{{ mediaType.name() }}</span>
+            <span title="{{ item.name() }}">{{ item.name() }}</span>
         </div>
         <div class="type" (click)="toggleType()" [class.selected]="isEditingType()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingType()"></span>

@@ -18,6 +18,7 @@
 import {AfterViewInit, Component, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {TextAreaEditorComponent} from "./inline-editor.base";
 import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/common/code-editor.component";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -29,6 +30,10 @@ import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/
 export class InlineMarkdownEditorComponent extends TextAreaEditorComponent implements AfterViewInit {
 
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
+
+    constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
 
     ngAfterViewInit(): void {
         this.codeEditor.changes.subscribe(changes => {

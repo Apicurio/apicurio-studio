@@ -102,7 +102,7 @@
 
                         <!-- The list of schema properties -->
                         <div class="container-fluid path-parameters typed-item-list">
-                            <property-row *ngFor="let property of properties()" [property]="property"
+                            <property-row *ngFor="let property of properties()" [item]="property"
                                           (onDelete)="deleteProperty(property)"
                                           (onDescriptionChange)="changePropertyDescription(property, $event)"
                                           (onTypeChange)="changePropertyType(property, $event)"></property-row>

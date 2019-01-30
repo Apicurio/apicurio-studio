@@ -21,6 +21,7 @@ import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/
 import {Oas20Schema, Oas30Schema} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
 import {StringUtils} from "../../_util/object.util";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -36,6 +37,10 @@ export class InlineExampleEditorComponent extends TextAreaEditorComponent implem
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
     _mode: CodeEditorMode = CodeEditorMode.JSON;
+
+    constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
 
     ngAfterViewInit(): void {
         this.codeEditor.changes.subscribe(changes => {

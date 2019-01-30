@@ -4,7 +4,7 @@
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
         </div>
         <div class="name" (click)="toggle()" [class.empty]="!hasName()">
-            <validation-problem [model]="tag"></validation-problem>
+            <validation-problem [model]="item"></validation-problem>
             <span class="fa fa-tag entity-icon"></span>
             <span>{{ name() }}</span>
         </div>
@@ -31,7 +31,8 @@
                 <div class="col-md-11">
                     <div class="tag-description">
                         <div class="form-label">Description</div>
-                        <inline-markdown-editor [value]="tag.description" [noValueMessage]="'Enter description here.'"
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'Enter description here.'"
+                                                [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                 </div>

@@ -84,7 +84,7 @@ export class CollaboratorAggregateComponent extends AbstractBaseComponent {
      * Update the list of collaborators for the currently configured node path.
      */
     protected updateCollaborators(): void {
-        console.info("[CollaboratorAggregateComponent] Determine collaborators for node path: ", this.nodePath);
+        // console.info("[CollaboratorAggregateComponent] Determine collaborators for node path: ", this.nodePath);
         if (Array.isArray(this.nodePath)) {
             this._collaborators = [];
             (<string[]>this.nodePath).forEach( nodePath => {
@@ -93,7 +93,7 @@ export class CollaboratorAggregateComponent extends AbstractBaseComponent {
         } else {
             this._collaborators = this.collaboratorService.getCollaboratorsForPath(<string>this.nodePath);
         }
-        console.info("[CollaboratorAggregateComponent] # Collaborators found: ", this._collaborators.length);
+        // console.info("[CollaboratorAggregateComponent] # Collaborators found: ", this._collaborators.length);
     }
 
     public open(event: MouseEvent): void {

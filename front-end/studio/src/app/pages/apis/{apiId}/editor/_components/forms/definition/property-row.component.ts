@@ -16,15 +16,11 @@
  */
 
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     Output,
-    SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
 import {
@@ -35,13 +31,12 @@ import {
     SimplifiedPropertyType,
     SimplifiedType
 } from "oai-ts-commands";
-import {Oas20PropertySchema, Oas30PropertySchema, OasDocument} from "oai-ts-core";
+import {Oas20PropertySchema, Oas30PropertySchema} from "oai-ts-core";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
-import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
-import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
+import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
@@ -52,37 +47,24 @@ import {SelectionService} from "../../../_services/selection.service";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PropertyRowComponent extends AbstractBaseComponent {
-
-    @Input() property: Oas20PropertySchema | Oas30PropertySchema;
+export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySchema | Oas30PropertySchema, SimplifiedPropertyType> {
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
 
-    protected _editing: boolean = false;
-    protected _tab: string = "description";
-    protected _model: SimplifiedParameterType = null;
-
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                private commandService: CommandService, selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
-    protected onDocumentChange(): void {
-        this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes["property"]) {
-            this._model = SimplifiedPropertyType.fromPropertySchema(this.property);
-        }
-    }
-
-    public model(): SimplifiedParameterType {
-        return this._model;
-    }
-
-    public document(): OasDocument {
-        return this.property.ownerDocument();
+    protected updateModel(): void {
+        this._model = SimplifiedPropertyType.fromPropertySchema(this.item);
     }
 
     public isParameter(): boolean {
@@ -90,7 +72,7 @@ export class PropertyRowComponent extends AbstractBaseComponent {
     }
 
     public hasDescription(): boolean {
-        if (this.property.description) {
+        if (this.item.description) {
             return true;
         } else {
             return false;
@@ -98,13 +80,13 @@ export class PropertyRowComponent extends AbstractBaseComponent {
     }
 
     public description(): string {
-        return this.property.description
+        return this.item.description
     }
 
     public isRequired(): boolean {
-        let required: string[] = this.property.parent()["required"];
+        let required: string[] = this.item.parent()["required"];
         if (required && required.length > 0) {
-            return required.indexOf(this.property.propertyName()) != -1;
+            return required.indexOf(this.item.propertyName()) != -1;
         }
         return false;
     }
@@ -120,52 +102,28 @@ export class PropertyRowComponent extends AbstractBaseComponent {
         ];
     }
 
-    public isEditing(): boolean {
-        return this._editing;
-    }
-
     public isEditingDescription(): boolean {
-        return this._editing && this._tab === "description";
+        return this.isEditingTab("description");
     }
 
     public isEditingSummary(): boolean {
-        return this._editing && this._tab === "summary";
-    }
-
-    public toggle(event: MouseEvent): void {
-        if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
-            this._editing = !this._editing;
-        }
+        return this.isEditingTab("summary");
     }
 
     public toggleDescription(): void {
-        if (this.isEditing() && this._tab === "description") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "description";
-        }
+        this.toggleTab("description");
     }
 
     public toggleSummary(): void {
-        if (this.isEditing() && this._tab === "summary") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "summary";
-        }
+        this.toggleTab("summary");
     }
 
     public delete(): void {
         this.onDelete.emit();
     }
 
-    public isValid(): boolean {
-        return true;
-    }
-
     public displayType(): SimplifiedParameterType {
-        return SimplifiedPropertyType.fromPropertySchema(this.property);
+        return SimplifiedPropertyType.fromPropertySchema(this.item);
     }
 
     public rename(): void {
@@ -174,15 +132,15 @@ export class PropertyRowComponent extends AbstractBaseComponent {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.property.ownerDocument(), this.property, "description", description);
+        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
         this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.property);
+        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
         nt.required = this.model().required;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangePropertyTypeCommand(this.item.ownerDocument(), this.item, nt);
         this.commandService.emit(command);
     }
 
@@ -193,7 +151,7 @@ export class PropertyRowComponent extends AbstractBaseComponent {
         nt.enum = newType.enum;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangePropertyTypeCommand(this.property.ownerDocument(), this.property, nt);
+        let command: ICommand = createChangePropertyTypeCommand(this.item.ownerDocument(), this.item, nt);
         this.commandService.emit(command);
         this._model = nt;
     }

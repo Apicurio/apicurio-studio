@@ -19,7 +19,7 @@
 
         <!-- The list of query parameters -->
         <div class="container-fluid query-parameters typed-item-list" *ngIf="hasQueryParameters()">
-            <query-param-row *ngFor="let param of queryParameters()" [parameter]="param"
+            <query-param-row *ngFor="let param of queryParameters()" [item]="param"
                              (onDelete)="deleteParam(param)"></query-param-row>
         </div>
     </div>

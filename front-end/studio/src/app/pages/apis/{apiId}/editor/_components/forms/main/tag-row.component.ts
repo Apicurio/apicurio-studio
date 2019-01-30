@@ -20,17 +20,15 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input,
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasDocument, OasTag} from "oai-ts-core";
+import {OasTag} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
-import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
-import {KeypressUtils} from "../../../_util/object.util";
 import {SelectionService} from "../../../_services/selection.service";
+import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
@@ -41,58 +39,48 @@ import {SelectionService} from "../../../_services/selection.service";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagRowComponent extends AbstractBaseComponent {
-
-    @Input() document: OasDocument;
-    @Input() tag: OasTag;
+export class TagRowComponent extends AbstractRowComponent<OasTag, string> {
 
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    protected _editing: boolean = false;
-
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                private commandService: CommandService, selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
+    protected updateModel(): void {
+        // No internal model for this row impl
+    }
+
     public name(): string {
-        if (this.tag.name) {
-            return this.tag.name;
+        if (this.item.name) {
+            return this.item.name;
         } else {
             return "No name.";
         }
     }
 
     public hasName(): boolean {
-        return this.tag.name ? true : false;
+        return this.item.name ? true : false;
     }
 
     public description(): string {
-        return this.tag.description
+        return this.item.description
     }
 
     public hasDescription(): boolean {
-        return this.tag.description ? true : false;
-    }
-
-    public isEditing(): boolean {
-        return this._editing;
+        return this.item.description ? true : false;
     }
 
     public toggle(): void {
-        this._editing = !this._editing;
-    }
-
-    public edit(): void {
-        this._editing = true;
-    }
-
-    public ok(): void {
-        this._editing = false;
-    }
-
-    public cancel(): void {
-        this._editing = false;
+        this.toggleTab("tag");
     }
 
     public delete(): void {
@@ -103,19 +91,9 @@ export class TagRowComponent extends AbstractBaseComponent {
         alert("Not yet implemented.");
     }
 
-    public isValid(): boolean {
-        return true;
-    }
-
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.document, this.tag, "description", description);
+        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
         this.commandService.emit(command);
-    }
-
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (KeypressUtils.isEscapeKey(event)) {
-            this.cancel();
-        }
     }
 
 }

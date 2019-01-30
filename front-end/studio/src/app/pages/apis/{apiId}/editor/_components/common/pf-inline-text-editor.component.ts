@@ -18,6 +18,7 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {TextInputEditorComponent} from "./inline-editor.base";
 import {KeypressUtils} from "../../_util/object.util";
+import {SelectionService} from "../../_services/selection.service";
 
 @Component({
     moduleId: module.id,
@@ -27,6 +28,10 @@ import {KeypressUtils} from "../../_util/object.util";
     encapsulation: ViewEncapsulation.None
 })
 export class PfInlineTextEditorComponent extends TextInputEditorComponent {
+
+    constructor(selectionService: SelectionService) {
+        super(selectionService);
+    }
 
     public onInputKeypress(event: KeyboardEvent): void {
         if (KeypressUtils.isEscapeKey(event)) {

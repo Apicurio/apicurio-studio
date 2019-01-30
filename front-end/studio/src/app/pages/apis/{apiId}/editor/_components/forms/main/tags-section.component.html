@@ -17,9 +17,8 @@
 
         <!-- The list of tags -->
         <div class="tags" *ngIf="tags().length > 0">
-            <tag-row *ngFor="let tag of tags()" [tag]="tag"
-                     (onDelete)="deleteTag(tag)"
-                     [document]="document"></tag-row>
+            <tag-row *ngFor="let tag of tags()" [item]="tag"
+                     (onDelete)="deleteTag(tag)"></tag-row>
         </div>
     </div>
 </section>

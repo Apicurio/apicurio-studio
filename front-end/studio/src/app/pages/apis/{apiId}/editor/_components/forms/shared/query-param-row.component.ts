@@ -16,15 +16,11 @@
  */
 
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
     Output,
-    SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
 import {
@@ -35,13 +31,12 @@ import {
     SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
-import {OasCombinedVisitorAdapter, OasDocument, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
+import {OasCombinedVisitorAdapter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
 import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
-import {Subscription} from "rxjs";
-import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
+import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
@@ -52,41 +47,33 @@ import {SelectionService} from "../../../_services/selection.service";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class QueryParamRowComponent extends AbstractBaseComponent {
+export class QueryParamRowComponent extends AbstractRowComponent<OasParameterBase, SimplifiedParameterType> {
 
-    @Input() parameter: OasParameterBase;
     private _overriddenParam: OasParameterBase;
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
 
-    protected _editing: boolean = false;
-    protected _tab: string = "description";
-    protected _model: SimplifiedParameterType = null;
     private _parentType: string;
 
     private overrideFlag: boolean;
     private missingFlag: boolean;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                private commandService: CommandService, selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
-    protected onDocumentChange(): void {
-        this.updateModel();
-    }
-
-    public ngOnChanges(changes: SimpleChanges): void {
-        super.ngOnChanges(changes);
-        if (changes["parameter"]) {
-            this.updateModel();
-        }
-    }
-
-    private updateModel(): void {
-        this._model = SimplifiedParameterType.fromParameter(this.parameter as any);
-        this.missingFlag = this.parameter.n_attribute("missing") === true;
-        this._overriddenParam = this.getOverriddenParam(this.parameter);
+    protected updateModel(): void {
+        this._model = SimplifiedParameterType.fromParameter(this.item as any);
+        this.missingFlag = this.item.n_attribute("missing") === true;
+        this._overriddenParam = this.getOverriddenParam(this.item);
         this.overrideFlag = this._overriddenParam !== null;
         this._parentType = this.detectParentType();
     }
@@ -99,20 +86,12 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
         return this._parentType === "pathItem";
     }
 
-    public model(): SimplifiedParameterType {
-        return this._model;
-    }
-
-    public document(): OasDocument {
-        return this.parameter.ownerDocument();
-    }
-
     public isParameter(): boolean {
         return true;
     }
 
     public hasDescription(): boolean {
-        if (this.parameter.description) {
+        if (this.item.description) {
             return true;
         } else {
             return false;
@@ -120,11 +99,11 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
     }
 
     public description(): string {
-        return this.parameter.description
+        return this.item.description
     }
 
     public isRequired(): boolean {
-        return this.parameter.required;
+        return this.item.required;
     }
 
     public required(): string {
@@ -138,22 +117,12 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
         ];
     }
 
-    public isEditing(): boolean {
-        return this._editing;
-    }
-
     public isEditingDescription(): boolean {
-        return this._editing && this._tab === "description";
+        return this.isEditingTab("description");
     }
 
     public isEditingSummary(): boolean {
-        return this._editing && this._tab === "summary";
-    }
-
-    public toggle(event: MouseEvent): void {
-        if (event.target['localName'] !== "button" && event.target['localName'] !== "a") {
-            this._editing = !this._editing;
-        }
+        return this.isEditingTab("summary");
     }
 
     public toggleDescription(): void {
@@ -161,12 +130,7 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
             this._editing = false;
             return;
         }
-        if (this.isEditing() && this._tab === "description") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "description";
-        }
+        this.toggleTab("description");
     }
 
     public toggleSummary(): void {
@@ -174,24 +138,15 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
             this._editing = false;
             return;
         }
-        if (this.isEditing() && this._tab === "summary") {
-            this._editing = false;
-        } else {
-            this._editing = true;
-            this._tab = "summary";
-        }
+        this.toggleTab("summary");
     }
 
     public delete(): void {
         this.onDelete.emit();
     }
 
-    public isValid(): boolean {
-        return true;
-    }
-
     public displayType(): SimplifiedParameterType {
-        return SimplifiedParameterType.fromParameter(this.parameter as any);
+        return SimplifiedParameterType.fromParameter(this.item as any);
     }
 
     public rename(): void {
@@ -200,13 +155,13 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.parameter.ownerDocument(), this.parameter, "description", description);
+        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
         this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
-        let command: ICommand = createChangePropertyCommand<boolean>(this.parameter.ownerDocument(), this.parameter, "required", this.model().required);
+        let command: ICommand = createChangePropertyCommand<boolean>(this.item.ownerDocument(), this.item, "required", this.model().required);
         this.commandService.emit(command);
     }
 
@@ -217,14 +172,14 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
         nt.enum = newType.enum;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangeParameterTypeCommand(this.parameter.ownerDocument(), this.parameter as any, nt);
+        let command: ICommand = createChangeParameterTypeCommand(this.item.ownerDocument(), this.item as any, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
 
     public override(): void {
-        let command: ICommand = createNewParamCommand(this.parameter.ownerDocument(), this.parameter.parent() as any,
-            this.parameter.name, "query", null, null, true);
+        let command: ICommand = createNewParamCommand(this.item.ownerDocument(), this.item.parent() as any,
+            this.item.name, "query", null, null, true);
         this.commandService.emit(command);
     }
 
@@ -256,7 +211,7 @@ export class QueryParamRowComponent extends AbstractBaseComponent {
 
     private detectParentType(): string {
         let viz: DetectParentTypeVisitor = new DetectParentTypeVisitor();
-        this.parameter.parent().accept(viz);
+        this.item.parent().accept(viz);
         return viz.parentType;
     }
 

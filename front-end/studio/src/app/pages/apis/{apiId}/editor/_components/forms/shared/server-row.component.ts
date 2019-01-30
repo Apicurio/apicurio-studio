@@ -20,7 +20,6 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input,
     Output,
     ViewEncapsulation
 } from "@angular/core";
@@ -29,10 +28,9 @@ import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
-import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
-import {KeypressUtils} from "../../../_util/object.util";
 import {SelectionService} from "../../../_services/selection.service";
+import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
@@ -43,52 +41,44 @@ import {SelectionService} from "../../../_services/selection.service";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ServerRowComponent extends AbstractBaseComponent {
-
-    @Input() server: Oas30Server;
+export class ServerRowComponent extends AbstractRowComponent<Oas30Server, string> {
 
     @Output() onEdit: EventEmitter<ServerEditorEvent> = new EventEmitter<ServerEditorEvent>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    protected _editing: boolean = false;
-
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
                 private commandService: CommandService, private editorsService: EditorsService,
-                private selectionService: SelectionService) {
+                selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
+    protected updateModel(): void {
+        // Nothing to do for this row impl
+    }
+
     public hasUrl(): boolean {
-        return this.server.url ? true : false;
+        return this.item.url ? true : false;
     }
 
     public description(): string {
-        return this.server.description
+        return this.item.description
     }
 
     public hasDescription(): boolean {
-        return this.server.description ? true : false;
-    }
-
-    public isEditing(): boolean {
-        return this._editing;
+        return this.item.description ? true : false;
     }
 
     public toggle(): void {
-        this._editing = !this._editing;
+        this.toggleTab("server");
     }
 
     public edit(): void {
         let serverEditor: ServerEditorComponent = this.editorsService.getServerEditor();
-        let parent: Oas30Document | Oas30PathItem | Oas30Operation = this.server.parent() as any;
+        let parent: Oas30Document | Oas30PathItem | Oas30Operation = this.item.parent() as any;
         serverEditor.open({
             onSave: (data) => this.onEdit.emit(data),
             onCancel: () => {}
-        }, parent, this.server);
-    }
-
-    public cancel(): void {
-        this._editing = false;
+        }, parent, this.item);
     }
 
     public delete(): void {
@@ -97,14 +87,8 @@ export class ServerRowComponent extends AbstractBaseComponent {
 
     public setDescription(description: string): void {
         // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
-        let command: ICommand = createChangePropertyCommand<string>(this.server.ownerDocument(), this.server, "description", description);
+        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
         this.commandService.emit(command);
-    }
-
-    public onGlobalKeyDown(event: KeyboardEvent): void {
-        if (KeypressUtils.isEscapeKey(event)) {
-            this.cancel();
-        }
     }
 
 }

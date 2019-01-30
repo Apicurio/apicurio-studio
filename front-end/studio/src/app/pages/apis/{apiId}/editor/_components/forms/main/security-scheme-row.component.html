@@ -34,6 +34,7 @@
                     <div class="scheme-description">
                         <div class="form-label">Description</div>
                         <inline-markdown-editor [value]="scheme.description" [noValueMessage]="'Enter description here.'"
+                                                [baseNode]="scheme" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                 </div>

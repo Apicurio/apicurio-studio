@@ -31,6 +31,8 @@ import {
     OasVisitorUtil
 } from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
+import {SelectionService} from "../../_services/selection.service";
+import {ModelUtils} from "../../_util/model.util";
 
 
 export interface SecurityRequirementData {
@@ -69,6 +71,14 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
     protected scopeCache: any;
 
     /**
+     * C'tor.
+     * @param selectionService
+     */
+    constructor(protected selectionService: SelectionService) {
+        super();
+    }
+
+    /**
      * Called to open the editor.
      * @param handler
      * @param context
@@ -80,6 +90,12 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
         this.scopeCache = {};
         this.schemes = this.findSchemes(context.ownerDocument());
         super.open(handler, context, requirement);
+
+        if (requirement) {
+            this.selectionService.simpleSelect(ModelUtils.nodeToPath(requirement));
+        } else {
+            this.selectionService.simpleSelect(ModelUtils.nodeToPath(context) + "/security");
+        }
     }
 
     /**

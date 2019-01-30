@@ -1,8 +1,8 @@
 <div class="formData-param" [class.expanded]="isEditing()" [class.required]="isRequired()">
     <div class="header">
         <div class="name">
-            <validation-problem [model]="parameter"></validation-problem>
-            <span title="{{ parameter.name }}">{{ parameter.name }}</span>
+            <validation-problem [model]="item"></validation-problem>
+            <span title="{{ item.name }}">{{ item.name }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
@@ -33,7 +33,8 @@
                 <div class="col-md-11">
                     <div class="param-description" *ngIf="isEditingDescription()">
                         <div class="form-label">Description</div>
-                        <inline-markdown-editor [value]="parameter.description" [noValueMessage]="'No description.'"
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
                     </div>
                     <div class="param-content" *ngIf="isEditingSummary()">

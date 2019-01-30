@@ -32,6 +32,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {ModelUtils} from "../_util/model.util";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
+import {DocumentService} from "./document.service";
 
 
 class MainSelectionVisitor extends OasAllNodeVisitor {
@@ -84,7 +85,7 @@ export class SelectionService {
     private _selectionSubject: BehaviorSubject<OasNodePath> = new BehaviorSubject(new OasNodePath("/"));
     private _selection: Observable<OasNodePath> = this._selectionSubject.asObservable();
 
-    constructor() {
+    constructor(private documentService: DocumentService) {
         this.reset();
     }
 
@@ -94,6 +95,13 @@ export class SelectionService {
 
     public selection(): Observable<OasNodePath> {
         return this._selection;
+    }
+
+    public simpleSelect(path: string): void {
+        // Fire an event with the new selection path (only if the selection changed)
+        if (path !== this.currentSelection().toString()) {
+            this._selectionSubject.next(new OasNodePath(path));
+        }
     }
 
     public select(path: OasNodePath, document: OasDocument): void {

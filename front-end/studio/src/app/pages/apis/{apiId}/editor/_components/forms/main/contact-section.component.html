@@ -20,6 +20,8 @@
             <div class="section-field name">
                 <pf-inline-text-editor [value]="contactName()"
                                        [labelClass]="'contact-name'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="name"
                                        [noValueMessage]="'No name provided.'" (onChange)="changeContactName($event)"></pf-inline-text-editor>
             </div>
 
@@ -31,6 +33,8 @@
             <div class="section-field email">
                 <pf-inline-text-editor [value]="contactEmail()"
                                        [labelClass]="'contact-email'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="email"
                                        [noValueMessage]="'No email provided.'" (onChange)="changeContactEmail($event)"></pf-inline-text-editor>
             </div>
 
@@ -42,6 +46,8 @@
             <div class="section-field url">
                 <pf-inline-text-editor [value]="contactUrl()"
                                        [labelClass]="'contact-url'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="url"
                                        [noValueMessage]="'No URL provided.'" (onChange)="changeContactURL($event)"></pf-inline-text-editor>
             </div>
         </div>

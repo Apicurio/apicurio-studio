@@ -5,6 +5,7 @@
             <validation-problem [model]="response" property="description"></validation-problem>
             <div class="grow">
                 <inline-markdown-editor [value]="response.description" noValueMessage="No description."
+                                        [baseNode]="response" nodePath="description"
                                         (onChange)="setDescription($event)"></inline-markdown-editor>
             </div>
         </div>

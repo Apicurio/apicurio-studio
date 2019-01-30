@@ -35,6 +35,7 @@
                                     labelClass="request-body-description api-item-description description"
                                     inputClass="api-description-editor api-item-description request-body-description api-item-description description"
                                     formClass="api-description-editor-form"
+                                    [baseNode]="bodyParam()" nodePath="description"
                                     (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
             <div class="request-body-type">
                 <schema-type-editor [document]="operation.ownerDocument()" [isParameter]="false" [value]="requestBodyType()"
@@ -46,7 +47,7 @@
         <!-- If we're using 'formData' params -->
         <div *ngIf="hasFormDataParams()">
             <div class="container-fluid formData-parameters typed-item-list">
-                <formData-param-row *ngFor="let param of formDataParameters()" [parameter]="param"
+                <formData-param-row *ngFor="let param of formDataParameters()" [item]="param"
                                     (onDelete)="deleteParam(param)"></formData-param-row>
             </div>
         </div>
@@ -62,6 +63,7 @@
                                     labelClass="request-body-description api-item-description description"
                                     inputClass="api-description-editor api-item-description request-body-description api-item-description description"
                                     formClass="api-description-editor-form"
+                                    [baseNode]="requestBody()" nodePath="description"
                                     (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
             <div class="request-body-required">
                 <span>It is</span>

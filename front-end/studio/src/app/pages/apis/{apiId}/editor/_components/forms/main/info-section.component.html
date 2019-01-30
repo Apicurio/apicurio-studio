@@ -14,6 +14,7 @@
                                    [labelClass]="'api-version'"
                                    [formClass]="'api-title-editor-form'"
                                    [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
+                                   [baseNode]="info()" nodePath="version"
                                    [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></pf-inline-text-editor>
         </div>
         <!-- Description -->
@@ -26,6 +27,7 @@
                                     [labelClass]="'api-description api-item-description'"
                                     [formClass]="'api-description-editor-form'"
                                     [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
+                                    [baseNode]="info()" nodePath="description"
                                     [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-markdown-editor>
         </div>
         <!-- Consumes and Produces (2.0 only) -->
@@ -38,6 +40,7 @@
             <div class="section-field consumes">
                 <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
                                      [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                     [baseNode]="document" nodePath="consumes"
                                      (onChange)="onConsumesChange($event)"></inline-array-editor>
             </div>
             <!-- Produces -->
@@ -48,6 +51,7 @@
             <div class="section-field produces">
                 <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'"
                                      [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                     [baseNode]="document" nodePath="produces"
                                      (onChange)="onProducesChange($event)"></inline-array-editor>
             </div>
         </div>

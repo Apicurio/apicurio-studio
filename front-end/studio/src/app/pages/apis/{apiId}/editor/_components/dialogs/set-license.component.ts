@@ -18,6 +18,7 @@
 import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {LicenseService, ILicense} from "../../_services/license.service";
+import {SelectionService} from "../../_services/selection.service";
 
 
 @Component({
@@ -33,7 +34,7 @@ export class SetLicenseDialogComponent {
 
     protected _isOpen: boolean = false;
 
-    constructor(public licenseService: LicenseService) {}
+    constructor(public licenseService: LicenseService, protected selectionService: SelectionService) {}
 
     /**
      * Called to open the dialog.
@@ -45,6 +46,7 @@ export class SetLicenseDialogComponent {
                 this.setLicenseModal.first.show();
             }
         });
+        this.selectionService.simpleSelect("/info/license");
     }
 
     /**

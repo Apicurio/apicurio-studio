@@ -582,15 +582,4 @@
             <remote-destination host="${apicurio.broker.host}" port="${apicurio.broker.port}"/>
         </outbound-socket-binding>
     </socket-binding-group>
-    <deployments>
-        <deployment name="apicurio-studio-api.war" runtime-name="apicurio-studio-api.war">
-            <fs-archive path="/Users/msavy/apicurio/apicurio-studio/platforms/wildfly/api/target/apicurio-studio-api.war"/>
-        </deployment>
-        <deployment name="apicurio-studio-ws.war" runtime-name="apicurio-studio-ws.war">
-            <fs-archive path="/Users/msavy/apicurio/apicurio-studio/platforms/wildfly/ws/target/apicurio-studio-ws.war"/>
-        </deployment>
-        <deployment name="apicurio-studio.war" runtime-name="apicurio-studio.war">
-            <fs-archive path="/Users/msavy/apicurio/apicurio-studio/platforms/wildfly/ui/target/apicurio-studio.war"/>
-        </deployment>
-    </deployments>
 </server>

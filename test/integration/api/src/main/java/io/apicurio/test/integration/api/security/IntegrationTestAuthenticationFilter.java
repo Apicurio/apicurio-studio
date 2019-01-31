@@ -62,8 +62,6 @@ public class IntegrationTestAuthenticationFilter implements Filter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpResp = (HttpServletResponse) response;
 
-        System.err.println("Is manual override?" + override.isManualOverride());
-
         if (override.isManualOverride()) {
             override.applyUser();
             chain.doFilter(request, response);

@@ -26,8 +26,8 @@ import io.apicurio.test.integration.arquillian.helpers.ApicurioWebsocketsClient;
 import io.apicurio.test.integration.arquillian.helpers.RestHelper;
 import io.apicurio.test.integration.arquillian.helpers.SessionInfo;
 import io.apicurio.test.integration.arquillian.helpers.TestOperationHelper;
+import io.apicurio.test.integration.arquillian.helpers.WsHelper;
 import io.restassured.RestAssured;
-import io.restassured.http.Headers;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -42,14 +42,15 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.File;
-import java.net.URI;
-import java.util.Base64;
 import java.util.Deque;
 
 /**
  * Verify distributed Apicurio setup.
+ *
+ * Ignore or disable any IDE errors about <tt>@Deployment</tt> only being allowed once per class.
+ *
+ *
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
@@ -75,42 +76,27 @@ public class VerifyDistributedSetupTest {
         RestAssured.defaultParser = Parser.JSON;
     }
 
-    private static File[] resolveRestAssured() {
-        return Maven.resolver().resolve("io.rest-assured:rest-assured:3.3.0").withTransitivity().asFile();
-    }
-
-    private static WebArchive getApiWar() {
-        File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:0.2.20-SNAPSHOT")
-                .withTransitivity()
-                .asSingleFile();
-        return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
-                .addClass(SessionInfo.class)
-                .addAsLibraries(resolveRestAssured());
-    }
-
-    private static WebArchive getWsWar() {
-        File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:0.2.20-SNAPSHOT")
-                .withTransitivity()
-                .asSingleFile();
-        return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
-                .addAsLibraries(resolveRestAssured());
-    }
-
-    // Ignore or disable any IDE errors about @Deployment only being allowed once per class.
+    /**
+     * Apicurio node 1 Hub API
+     */
     @Deployment(name = "apicurio1-api", order = 1, testable = false)
     @TargetsContainer("apicurio1") //@OverProtocol("jmx-as7")
     public static WebArchive createApicurio1Api() {
         return getApiWar();
     }
 
+    /**
+     * Apicurio node 1 websockets editing node
+     */
     @Deployment(name = "apicurio1-ws", order = 2, testable = false)
     @TargetsContainer("apicurio1") //@OverProtocol("jmx-as7")
     public static WebArchive createApicurio1Ws() {
         return getWsWar();
     }
 
+    /**
+     * Apicurio node 2 websockets editing node
+     */
     @Deployment(name = "apicurio2-ws", order = 3, testable = false)
     @TargetsContainer("apicurio2") //@OverProtocol("jmx-as7")
     public static WebArchive createApicurio2Ws() {
@@ -134,34 +120,16 @@ public class VerifyDistributedSetupTest {
         newApiDesign.setDescription("a description");
 
         // This must simply succeed without failure
-        apiDesign = given(USER_1)
-            .contentType("application/json")
-            .body(newApiDesign)
-        .when()
-            .post("/api-hub/designs")
-        .thenReturn().as(ApiDesign.class);
-
-        //Thread.sleep(250000000);
+        apiDesign = RestHelper.createApiDesign(USER_1, NODE_1_PORT, newApiDesign);
 
         // Create editing session for user 1 (WS not yet initialised)
-        node1SessionInfo = createEditingSession(given(USER_1), apiDesign);
+        node1SessionInfo = RestHelper.createEditingSession(givenNode1(USER_1), apiDesign);
 
         // Share the document created by user 1 with user 2
         RestHelper.shareDocument(NODE_1_PORT, USER_1, USER_2, apiDesign);
 
         // Create editing session for user 2 WS not yet initialised)
-        node2SessionInfo = createEditingSession(given(USER_2), apiDesign);
-    }
-
-    // Use HTTP API to create 2 editing sessions -- one for each WS client
-    private SessionInfo createEditingSession(RequestSpecification given, ApiDesign apiDesign) {
-        // Create editing session
-        Headers editingSession = given.expect().statusCode(200)
-                .when()
-                    .get("/api-hub/designs/" + apiDesign.getId() + "/session")
-                .getHeaders();
-        // Editing session information
-        return new SessionInfo(editingSession);
+        node2SessionInfo = RestHelper.createEditingSession(givenNode1(USER_2), apiDesign);
     }
 
     /**
@@ -170,11 +138,12 @@ public class VerifyDistributedSetupTest {
     public void node_1_websockets_join_and_edit() throws InterruptedException {
         // Create websockets connection to WS node 1.
         websocketClientNode1 = new ApicurioWebsocketsClient("WS Client 1",
-                wsUri(USER_1, NODE_1_PORT, apiDesign.getId(), node1SessionInfo));
+                WsHelper.wsUri(USER_1, NODE_1_PORT, apiDesign.getId(), node1SessionInfo));
 
         System.err.println("Node 1 session info: " + node1SessionInfo);
         System.err.println("Node 1 WS URI: " + websocketClientNode1.getURI());
 
+        // TODO use objects on send side.
         // Join a session (session ID in URL)
         websocketClientNode1.connectBlocking();
         // Send an editing event
@@ -188,7 +157,8 @@ public class VerifyDistributedSetupTest {
 
         // Check our inbound messages; do they contain what we expect so far?
         Deque<String> inboundMessages = websocketClientNode1.getInboundMessages();
-        
+
+        // Wait for our messages. TODO refactor to be more elegant
         while (inboundMessages.size() < 5) {
             System.err.println("Node 1 size " + inboundMessages.size());
             Thread.sleep(1000);
@@ -237,7 +207,7 @@ public class VerifyDistributedSetupTest {
     private void node_2_join_and_read()  throws InterruptedException {
         // Create websockets connection to WS node 2.
         websocketClientNode2 = new ApicurioWebsocketsClient("WS Client 2",
-                wsUri(USER_2, NODE_2_PORT, apiDesign.getId(), node2SessionInfo));
+                WsHelper.wsUri(USER_2, NODE_2_PORT, apiDesign.getId(), node2SessionInfo));
 
         websocketClientNode2.connectBlocking();
 
@@ -251,8 +221,7 @@ public class VerifyDistributedSetupTest {
             //Thread.onSpinWait();
         }
 
-
-        // /testpath
+        // Add path /testpath
         FullCommandOperation expectedCommand1 = FullCommandOperation.fullCommand(84L,
                 "{\"__type\":\"NewPathCommand_30\",\"_newPath\":\"/testpath\",\"_pathExisted\":false}",
                 USER_1,
@@ -273,14 +242,12 @@ public class VerifyDistributedSetupTest {
                 false);
         testOperationProcessor.assertEquals(expectedCommand3, inboundMessages.pop());
 
-        // Join message from editor1
+        // Join message from editor1. Hello editor1!
         JoinLeaveOperation expectedJoin = JoinLeaveOperation.join(USER_1, "ASMLHuxCV1-LKVodpnSLuoBjXUu1X8_EDOC443sv");
         testOperationProcessor.assertEquals(expectedJoin, inboundMessages.pop());
     }
 
-
-
-    public void close_websockets_connections() throws InterruptedException {
+    public void close_websockets_connections() throws Exception {
         websocketClientNode2.closeBlocking();
         websocketClientNode1.closeBlocking();
     }
@@ -290,25 +257,32 @@ public class VerifyDistributedSetupTest {
     public static void shut_down_websockets() {
         System.err.println("Teardown run on tests");
     }
-
-    private static URI wsUri(String user, int port, String designId, SessionInfo sessionInfo) {
-        // Figure out token based upon our test scheme (i.e. dumb BASIC)
-        String basicValueUnencoded = user + ":" + user;
-        String token = "Basic " + Base64.getEncoder().encodeToString(basicValueUnencoded.getBytes());
-
-        // Figure out secret using same method as codebase under test
-        URI result = UriBuilder.fromUri("ws://localhost:" + port + "/api-editing/designs/" + designId)
-                .queryParam("uuid", sessionInfo.getEditingSessionUuid())
-                .queryParam("user", user)
-                .queryParam("secret", token.substring(0, token.length()-1))
-                .build();
-        System.err.println("Generated WS URI: " + result.toString());
-        return result;
+    // Need to use preemptive otherwise expects challenge/response
+    private static RequestSpecification givenNode1(String user) {
+        return RestHelper.given(user, NODE_1_PORT);
     }
 
-    // Need to use preemptive otherwise expects challenge/response
-    private static RequestSpecification given(String user) {
-        return RestHelper.given(user, NODE_1_PORT);
+    private static File[] resolveRestAssured() {
+        return Maven.resolver().resolve("io.rest-assured:rest-assured:3.3.0").withTransitivity().asFile();
+    }
+
+    private static WebArchive getApiWar() {
+        File resolvedApiWar = Maven.resolver()
+                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:0.2.20-SNAPSHOT")
+                .withTransitivity()
+                .asSingleFile();
+        return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
+                .addClass(SessionInfo.class)
+                .addAsLibraries(resolveRestAssured());
+    }
+
+    private static WebArchive getWsWar() {
+        File resolvedApiWar = Maven.resolver()
+                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:0.2.20-SNAPSHOT")
+                .withTransitivity()
+                .asSingleFile();
+        return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
+                .addAsLibraries(resolveRestAssured());
     }
 
 }

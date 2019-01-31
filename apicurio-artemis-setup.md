@@ -66,6 +66,7 @@ Start up an external database, and set it up as per normal. You can see examples
 
 Edit the configuration `standalone-apicurio-artemis.xml` (or using System properties), set:
 
+* `apicurio.hub.distributed.session.type` to `jms`
 * `apicurio.db.host` to your H2 database host
 * `apicurio.broker.host` to your Artemis host
 * `apicurio.broker.port` to your Artemis port (default is the standard 61616)
@@ -131,3 +132,4 @@ A convenient development and debug set-up for manual testing:
 ```
 
 When you rebuild your code, you will simply need to restart/redeploy each Wildfly server and they will all be synchronised with the same underlying code.
+

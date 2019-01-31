@@ -10,24 +10,6 @@
     <artifactId>apicurio-studio-test-integration-arquillian</artifactId>
     <name>apicurio-studio-test-integration-arquillian</name>
 
-    <build>
-        <!-- Substitute in our values -->
-        <resources>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/test/resources</directory>
-            </resource>
-        </resources>
-
-        <testResources>
-            <testResource>
-                <filtering>true</filtering>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-
-    </build>
-
     <properties>
         <wildfly.name>wildfly-${wildfly.version}</wildfly.name>
         <wildfly.version>${version.wildfly}</wildfly.version>
@@ -38,7 +20,7 @@
 
     <dependencyManagement>
         <dependencies>
-
+            <!-- Shrinkwrap BOM; documentation say to put this before Arq BOM -->
             <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
                 <artifactId>shrinkwrap-resolver-bom</artifactId>
@@ -46,7 +28,7 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-
+            <!-- Arquillian BOM -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -54,13 +36,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.arquillian.cube</groupId>-->
-                <!--<artifactId>arquillian-cube-bom</artifactId>-->
-                <!--<version>1.18.2</version>-->
-                <!--<scope>import</scope>-->
-                <!--<type>pom</type>-->
-            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -83,36 +58,11 @@
             <version>1.4.1.Final</version>
             <scope>test</scope>
         </dependency>
-
-
-
-        <!--<dependency>-->
-            <!--<groupId>org.arquillian.cube</groupId>-->
-            <!--<artifactId>arquillian-cube-docker</artifactId>-->
-            <!--<version>1.18.2</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-
-        <!--<dependency>-->
-            <!--<groupId>com.github.docker-java</groupId>-->
-            <!--<artifactId>docker-java</artifactId>-->
-            <!--<version>3.1.0</version>-->
-        <!--</dependency>-->
-
-
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.arquillian.test</groupId>-->
-            <!--<artifactId>arquillian</artifactId>-->
-            <!--<version>1.4.1.Final</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-core</artifactId>
@@ -131,21 +81,11 @@
             <version>2.1.1.Final</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.arquillian.protocol</groupId>-->
-            <!--<artifactId>arquillian-protocol-servlet</artifactId>-->
-            <!--<version>1.4.1.Final</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.jboss.arquillian.protocol/arquillian-protocol-jmx -->
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-jmx</artifactId>
             <version>1.4.1.Final</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-depchain</artifactId>
@@ -204,6 +144,22 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <!-- Substitute in our values -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+    </build>
 
     <profiles>
         <!-- Default profile skips tests -->
@@ -266,7 +222,6 @@
                                 <id>prepare-wildfly</id>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <!--<exportAntProperties>true</exportAntProperties>-->
                                     <tasks>
                                         <antversion property="antversion" />
                                         <echo>Ant Version: ${antversion}</echo>
@@ -283,8 +238,9 @@
                                         <echo>Install dir2: ${wildfly.appserver.dir.2}</echo>
                                         <echo>Config: ${wildfly.config}</echo>
 
-                                        <!-- Unpack WildFly -->
-                                        <delete dir="${wildfly.appserver.dir}" />
+                                        <!-- Delete WildFly dir -->
+                                        <delete dir="${wildfly.appserver.dir.1}" />
+                                        <delete dir="${wildfly.appserver.dir.2}" />
 
                                         <!-- 2 Wildfly Nodes -->
                                         <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip"
@@ -294,19 +250,11 @@
 
                                         <delete file="${project.build.directory}/wildfly-${wildfly.version}.zip" />
 
-                                        <!-- Copy artemis config into place -->
+                                        <!-- Copy apicurio-artemis config into the right place -->
                                         <copy file="${wildfly.config}"
                                               todir="${wildfly.appserver.dir.1}/wildfly-${wildfly.version}/standalone/configuration" overwrite="false"/>
                                         <copy file="${wildfly.config}"
                                               todir="${wildfly.appserver.dir.2}/wildfly-${wildfly.version}/standalone/configuration" overwrite="false"/>
-
-                                        <!-- Make sure to chmod 755 the shell scripts -->
-                                        <!--<chmod perm="a+x" dir="${wildfly.appserver.dir.1}/bin">-->
-                                            <!--<include name="*.sh" />-->
-                                        <!--</chmod>-->
-                                        <!--<chmod perm="a+x" dir="${wildfly.appserver.dir.2}/bin">-->
-                                            <!--<include name="*.sh" />-->
-                                        <!--</chmod>-->
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -344,36 +292,12 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                                    <!--<redirectTestOutputToFile>true</redirectTestOutputToFile>-->
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
 
-                    <!--Add our quickstart overlay so we can use our artemis profile-->
-                    <!--<plugin>-->
-                        <!--<groupId>org.apache.maven.plugins</groupId>-->
-                        <!--<artifactId>maven-assembly-plugin</artifactId>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<id>overlay</id>-->
-                                <!--<phase>package</phase>-->
-                                <!--<goals>-->
-                                    <!--<goal>single</goal>-->
-                                <!--</goals>-->
-                                <!--<configuration>-->
-                                    <!--<finalName>apicurio-overlay-${project.version}</finalName>-->
-                                    <!--<attach>true</attach>-->
-                                    <!--<descriptors> &lt;!&ndash; FIXME for testing only &ndash;&gt;-->
-                                        <!--<descriptor>src/test/assembly/assembly.xml</descriptor>-->
-                                    <!--</descriptors>-->
-                                    <!--<archiverConfig>-->
-                                        <!--<defaultDirectoryMode>0755</defaultDirectoryMode>-->
-                                    <!--</archiverConfig>-->
-                                <!--</configuration>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                    <!--</plugin>-->
                 </plugins>
             </build>
         </profile>

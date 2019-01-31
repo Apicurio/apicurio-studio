@@ -92,8 +92,6 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
-    selectionSubscription: Subscription;
-
     contextMenuSelection: OasNodePath = null;
     contextMenuType: string = null;
     contextMenuPos: any = {
@@ -111,26 +109,28 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     _paths: OasPathItem[];
     _defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[];
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private selectionService: SelectionService, private commandService: CommandService,
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param selectionService
+     * @param commandService
+     * @param editors
+     * @param restResourceService
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                selectionService: SelectionService, private commandService: CommandService,
                 private editors: EditorsService, private restResourceService: RestResourceService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {
         super.ngOnInit();
-        this.selectionSubscription = this.selectionService.selection().subscribe( () => {});
-        this.selectionService.selectRoot(this.document);
     }
 
     protected onDocumentChange(): void {
         this._paths = null;
         this._defs = null;
-    }
-
-    public ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.selectionSubscription.unsubscribe();
     }
 
     public onPathsKeypress(event: KeyboardEvent): void {
@@ -178,7 +178,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         console.info("[EditorMasterComponent] New Selection Index: ", selectedIdx);
 
         let newSelection: OasNode = items[selectedIdx];
-        this.selectionService.selectNode(newSelection, this.document);
+        this.__selectionService.selectNode(newSelection);
     }
 
     /**
@@ -289,7 +289,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * Called when the user selects the main/default element from the master area.
      */
     public selectMain(): void {
-        this.selectionService.selectRoot(this.document);
+        this.__selectionService.selectRoot();
     }
 
     /**
@@ -297,7 +297,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param path
      */
     public selectPath(path: OasPathItem): void {
-        this.selectionService.selectNode(path, this.document);
+        this.__selectionService.selectNode(path);
     }
 
     /**
@@ -312,7 +312,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param def
      */
     public selectDefinition(def: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
-        this.selectionService.selectNode(def, this.document);
+        this.__selectionService.selectNode(def);
     }
 
     /**
@@ -327,7 +327,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param response
      */
     public selectResponse(response: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
-        this.selectionService.selectNode(response, this.document);
+        this.__selectionService.selectNode(response);
     }
 
     /**
@@ -351,7 +351,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
     public getCurrentPathSelection(): string {
-        let node: OasNode = this.selectionService.currentSelection().resolve(this.document);
+        let currentSelection: string = this.__selectionService.currentSelection();
+        let npath: OasNodePath = new OasNodePath(currentSelection);
+        let node: OasNode = npath.resolve(this.document);
         let rval: string = "/";
         if (node && node["_path"]) {
             rval = node["_path"] + "/";

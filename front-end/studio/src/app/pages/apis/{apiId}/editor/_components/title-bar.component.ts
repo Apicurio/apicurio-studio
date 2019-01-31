@@ -127,7 +127,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
      * Called when the user selects the main/default element from the master area.
      */
     public selectMain(): void {
-        this.selectionService.selectRoot(this.document);
+        this.selectionService.selectRoot();
     }
 
     /**

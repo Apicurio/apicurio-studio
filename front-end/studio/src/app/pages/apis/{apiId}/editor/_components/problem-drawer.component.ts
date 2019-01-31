@@ -62,7 +62,7 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     public goTo(problem: OasValidationProblem): void {
         this.close.emit(true);
-        this.selectionService.select(problem.nodePath, problem.ownerDocument());
+        this.selectionService.select(problem.nodePath.toString());
     }
 
     public iconFor(problem: OasValidationProblem): string {

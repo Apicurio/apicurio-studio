@@ -127,14 +127,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Called when the editor is initialized by angular.
      */
     public ngOnInit(): void {
-        this.selectionService.reset();
-        this.collaboratorService.reset();
-        this.commandService.reset();
-        this.documentService.reset();
-        this.editorsService.setProvider(this);
-
         let me: ApiEditorComponent = this;
-        this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
+        this._selectionSubscription = this.selectionService.selection().distinctUntilChanged().subscribe( selectedPath => {
             if (selectedPath) {
                 console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
                 me.onNodeSelected(selectedPath);
@@ -147,10 +141,11 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             }
         });
 
-        // If we're in embedded mode, select the root now.
-        if (this.embedded && this.api) {
-            this.selectionService.selectRoot(this.document());
-        }
+        // TODO why was this here??
+        // // If we're in embedded mode, select the root now.
+        // if (this.embedded && this.api) {
+        //     this.documentService.emitDocument(this.document());
+        // }
     }
 
     /**
@@ -167,6 +162,12 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["api"]) {
+            this.selectionService.reset();
+            this.collaboratorService.reset();
+            this.commandService.reset();
+            this.documentService.reset();
+            this.editorsService.setProvider(this);
+
             this._document = null;
             this._otEngine = null;
             this._undoableCommandCount = 0;
@@ -179,6 +180,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.emitDocument(this.document());
+            this.selectionService.selectRoot();
         }
 
         if (changes["features"]) {
@@ -387,19 +389,20 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Called when the user selects a node in some way.
      * @param path
      */
-    public onNodeSelected(path: OasNodePath): void {
-        console.info("[ApiEditorComponent] Selection changed to path: %s", path.toString());
+    public onNodeSelected(path: string): void {
+        console.info("[ApiEditorComponent] Selection changed to path: %s", path);
 
         this.updateFormDisplay(path);
 
-        this.onSelectionChanged.emit(path.toString());
+        this.onSelectionChanged.emit(path);
     }
 
-    public updateFormDisplay(path: OasNodePath): void {
+    public updateFormDisplay(path: string): void {
+        let npath: OasNodePath = new OasNodePath(path);
         let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
-        OasVisitorUtil.visitPath(path, visitor, this.document());
+        OasVisitorUtil.visitPath(npath, visitor, this.document());
 
-        this.currentSelection = path;
+        this.currentSelection = npath;
         this.formType = visitor.formType();
         this.currentSelectionNode = visitor.selection();
         this.currentSelectionType = visitor.selectionType();
@@ -451,12 +454,12 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     public preDocumentChange(): void {
         // Before changing the document, let's clear/reset the current selection
-        this.selectionService.clearAllSelections(this.document());
+        this.selectionService.clearAllSelections();
     }
 
     public postDocumentChange(): void {
         // After changing the model, we need to ensure all selections are still valid
-        this.selectionService.reselectAll(this.document());
+        this.selectionService.reselectAll();
 
         // After changing the model, we should re-validate it
         this.validateModel();

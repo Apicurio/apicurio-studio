@@ -237,6 +237,9 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return false;
         }
         let latestActivity = this.activity[0];
+        if (!latestActivity) {
+            return false;
+        }
         return this.mock.on < latestActivity.on;
     }
 

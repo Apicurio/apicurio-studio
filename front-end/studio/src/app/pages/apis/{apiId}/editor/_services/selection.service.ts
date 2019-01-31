@@ -82,68 +82,70 @@ export class SelectionService {
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
-    private _selectionSubject: BehaviorSubject<OasNodePath> = new BehaviorSubject(new OasNodePath("/"));
-    private _selection: Observable<OasNodePath> = this._selectionSubject.asObservable();
+    private _selectionSubject: BehaviorSubject<string> = new BehaviorSubject("/");
+    private _selection: Observable<string> = this._selectionSubject.asObservable();
 
     constructor(private documentService: DocumentService) {
         this.reset();
     }
 
-    public currentSelection(): OasNodePath {
+    public currentSelection(): string {
         return this._selectionSubject.getValue();
     }
 
-    public selection(): Observable<OasNodePath> {
+    public selection(): Observable<string> {
         return this._selection;
     }
 
     public simpleSelect(path: string): void {
         // Fire an event with the new selection path (only if the selection changed)
-        if (path !== this.currentSelection().toString()) {
-            this._selectionSubject.next(new OasNodePath(path));
-        }
+        this._selectionSubject.next(path);
     }
 
-    public select(path: OasNodePath, document: OasDocument): void {
+    public select(path: string): void {
         // Clear previous selection
-        this.clearCurrentSelection(document);
+        this.clearCurrentSelection();
 
         // Select the new thing
+        let doc: OasDocument = this.documentService.currentDocument();
         let visitor: MainSelectionVisitor = new MainSelectionVisitor();
-        OasVisitorUtil.visitPath(path, visitor, document);
+        let npath: OasNodePath = new OasNodePath(path);
+        OasVisitorUtil.visitPath(npath, visitor, doc);
 
-        // Fire an event with the new selection path (only if the selection changed)
-        if (path.toString() !== this.currentSelection().toString()) {
-            this._selectionSubject.next(path);
-        }
+        // Fire an event with the new selection path
+        this._selectionSubject.next(path);
     }
 
-    public selectNode(node: OasNode, document: OasDocument): void {
-        this.select(this._library.createNodePath(node), document);
+    public selectNode(node: OasNode): void {
+        this.select(this._library.createNodePath(node).toString());
     }
 
-    public selectRoot(document: OasDocument): void {
-        this.select(new OasNodePath("/"), document);
+    public selectRoot(): void {
+        this.select("/");
     }
 
     public reset(): void {
-        this._selectionSubject = new BehaviorSubject(new OasNodePath("/"));
+        this._selectionSubject = new BehaviorSubject("/");
         this._selection = this._selectionSubject.asObservable();
     }
 
-    public clearAllSelections(document: OasDocument): void {
-        this.clearCurrentSelection(document);
+    public clearAllSelections(): void {
+        this.clearCurrentSelection();
     }
 
-    public reselectAll(document: OasDocument): void {
-        this.select(this.currentSelection(), document);
+    public reselectAll(): void {
+        this.select(this.currentSelection());
     }
 
-    private clearCurrentSelection(document: OasDocument): void {
-        let previousSelection: OasNodePath = this.currentSelection();
+    private clearCurrentSelection(): void {
+        let previousSelection: string = this.currentSelection();
         if (previousSelection) {
-            let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
-            OasVisitorUtil.visitPath(previousSelection, visitor, document);
+            let doc: OasDocument = this.documentService.currentDocument();
+            if (doc) {
+                let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
+                let npath: OasNodePath = new OasNodePath(previousSelection);
+                OasVisitorUtil.visitPath(npath, visitor, doc);
+            }
         }
     }
 }

@@ -58,17 +58,16 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     private _selectionSubscription: Subscription;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+                private commandService: CommandService, selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {
         super.ngOnInit();
-        this.setOperationTabFromSelection(this.selectionService.currentSelection());
+        //this.setOperationTabFromSelection(this.__selectionService.currentSelection());
 
-        this._selectionSubscription = this.selectionService.selection().subscribe( selection => {
-            let path: OasNodePath = selection;
-            this.setOperationTabFromSelection(path);
+        this._selectionSubscription = this.__selectionService.selection().subscribe( selection => {
+            this.setOperationTabFromSelection(selection);
         });
     }
 
@@ -79,9 +78,8 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     public ngOnChanges(changes: SimpleChanges): void {
         if (changes["path"]) {
             this.refresh();
+            this.setOperationTabFromSelection(this.__selectionService.currentSelection());
         }
-        // TODO the input has changed!
-        //this.setOperationTabFromSelection(this.selectionService.currentSelection());
     }
 
     public ngOnDestroy(): void {
@@ -103,7 +101,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         this._collaborationPaths = this.allCollaborationPaths();
     }
 
-    private setOperationTabFromSelection(selection: OasNodePath): void {
+    private setOperationTabFromSelection(selection: string): void {
         console.info("[OperationsSectionComponent] Selection operation tab from selection: ", selection);
         this.tab = null;
         for (let operation of this._operations) {
@@ -171,7 +169,9 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         this.tab = method;
         if (this.isDefined(method)) {
             let operation: OasOperation = this.path[method] as OasOperation;
-            this.selectionService.selectNode(operation, operation.ownerDocument());
+            this.__selectionService.selectNode(operation);
+        } else {
+            this.__selectionService.simpleSelect(ModelUtils.nodeToPath(this.path) + "/" + method);
         }
     }
 

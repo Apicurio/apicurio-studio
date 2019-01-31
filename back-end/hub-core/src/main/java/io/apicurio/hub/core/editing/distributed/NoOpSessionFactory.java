@@ -33,8 +33,6 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class NoOpSessionFactory implements ApicurioDistributedSessionFactory {
-    //private final SharedApicurioSession NOOP_SESSION = new NoOpSharedSession();
-
     @Inject
     private IRollupExecutor rollupExecutor;
 
@@ -46,6 +44,11 @@ public class NoOpSessionFactory implements ApicurioDistributedSessionFactory {
     @Override
     public String getSessionType() {
         return "noop"; // Currently the default implementation
+    }
+
+    @Override
+    public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+        this.rollupExecutor = rollupExecutor;
     }
 
     private final class NoOpSharedSession implements SharedApicurioSession {

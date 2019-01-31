@@ -16,7 +16,7 @@
 
 package io.apicurio.hub.core.editing;
 
-import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
+import io.apicurio.hub.core.editing.distributed.ApicurioDistributedSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
@@ -51,7 +51,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     private Map<String, ApiDesignEditingSession> editingSessions = new HashMap<>();
 
     @Inject
-    private JMSSessionFactory distSessFactory;
+    private ApicurioDistributedSessionFactory distSessionFactory;
 
     @Inject
     private ApicurioOperationProcessor operationProcessor;
@@ -97,7 +97,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     public synchronized ApiDesignEditingSession getOrCreateEditingSession(String designId) {
         ApiDesignEditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new ApiDesignEditingSession(designId, distSessFactory, operationProcessor);
+            session = new ApiDesignEditingSession(designId, distSessionFactory, operationProcessor);
             editingSessions.put(designId, session);
         }
         return session;

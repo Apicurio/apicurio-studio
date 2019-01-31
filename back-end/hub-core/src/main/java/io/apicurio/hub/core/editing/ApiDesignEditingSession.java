@@ -20,7 +20,7 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
+import io.apicurio.hub.core.editing.distributed.ApicurioDistributedSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
@@ -56,7 +56,7 @@ public class ApiDesignEditingSession implements Closeable {
      * Constructor.
      */
     public ApiDesignEditingSession(String designId,
-                                   JMSSessionFactory factory,
+                                   ApicurioDistributedSessionFactory factory,
                                    ApicurioOperationProcessor operationProcessor) {
         this.designId = designId;
         this.distributedSession = factory.joinSession(designId, payload -> {

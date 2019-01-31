@@ -105,4 +105,14 @@ public class RollupExecutor implements IRollupExecutor {
             logger.debug("No commands exist for design: {}. No rollup needed.", designId);
         }
     }
+
+    public RollupExecutor setStorage(IStorage storage) {
+        this.storage = storage;
+        return this;
+    }
+
+    public RollupExecutor setOaiCommandExecutor(OaiCommandExecutor oaiCommandExecutor) {
+        this.oaiCommandExecutor = oaiCommandExecutor;
+        return this;
+    }
 }

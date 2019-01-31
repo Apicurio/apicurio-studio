@@ -17,6 +17,7 @@ package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.editing.OperationHandler;
 import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.storage.IRollupExecutor;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -31,5 +32,10 @@ public interface ApicurioDistributedSessionFactory {
      * @see DistributedImplementationFactory
      */
     String getSessionType();
+
+    /**
+     * For testing, allows setting of a Rollup Executor
+     */
+    void setRollupExecutor(IRollupExecutor rollupExecutor);
 }
 

@@ -98,6 +98,11 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
         return "jms";
     }
 
+    @Override
+    public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+        this.rollupExecutor = rollupExecutor;
+    }
+
     public final class MessagingSessionContainer implements Closeable, SharedApicurioSession {
         private final String sessionId;
         private final Topic topic;

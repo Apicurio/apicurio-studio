@@ -10,6 +10,53 @@
     <artifactId>apicurio-studio-test-integration-arquillian</artifactId>
     <name>apicurio-studio-test-integration-arquillian</name>
 
+    <build>
+        <!-- Substitute in our values -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- Don't use surefire -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <!-- Force JUnit (weird conflicts with NG) -->
+                    <testNGArtifactName>none:none</testNGArtifactName>
+                    <disableXmlReport>false</disableXmlReport>
+                    <properties>
+                        <usedefaultlisteners>false</usedefaultlisteners>
+                        <!--<listener>${junitListener}</listener>-->
+                    </properties>
+                    <!--<argLine>${forkJvmArgs} ${testjvm.jigsawArgs}</argLine>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
     <dependencyManagement>
         <dependencies>
@@ -174,16 +221,145 @@
             <version>1.3.9</version>
         </dependency>
         <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!-- Default profile skips tests -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+        <!-- Integration profile -->
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>download-wildfly</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>wildfly-dist</artifactId>
+                                            <version>${version.wildfly}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                                            <destFileName>wildfly-${version.wildfly}.zip</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant</artifactId>
+                                <version>1.10.5</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>prepare-wildfly</id>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <antversion property="antversion" />
+                                        <echo>Ant Version: ${antversion}</echo>
+
+                                        <property name="wildfly.version" value="${version.wildfly}" />
+                                        <property name="wildfly.install.dir" value="${project.build.directory}" />
+                                        <property name="wildfly.name" value="wildfly-${wildfly.version}" />
+                                        <property name="wildfly.appserver.dir.1" value="${wildfly.install.dir}/${wildfly.name}-1" />
+                                        <property name="wildfly.appserver.dir.2" value="${wildfly.install.dir}/${wildfly.name}-2" />
+
+                                        <echo>Install dir1: ${wildfly.appserver.dir.1}</echo>
+                                        <echo>Install dir2: ${wildfly.appserver.dir.2}</echo>
+
+                                        <!-- Unpack WildFly -->
+                                        <delete dir="${wildfly.appserver.dir}" />
+
+                                        <!-- 2 Wildfly Nodes -->
+                                        <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip" dest="${wildfly.appserver.dir.1}" overwrite="true" />
+                                        <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip" dest="${wildfly.appserver.dir.2}" overwrite="true" />
+
+                                        <delete file="${project.build.directory}/wildfly-${wildfly.version}.zip" />
+
+                                        <!-- Make sure to chmod 755 the shell scripts -->
+                                        <!--<chmod perm="a+x" dir="${wildfly.appserver.dir}/bin">-->
+                                            <!--<include name="*.sh" />-->
+                                        <!--</chmod>-->
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>filter-resources</id>
+                                <phase>package</phase>
+                                <goals><goal>resources</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Add our quickstart overlay so we can use our artemis profile -->
+                    <!--<plugin>-->
+                        <!--<groupId>org.apache.maven.plugins</groupId>-->
+                        <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                        <!--<executions>-->
+                            <!--<execution>-->
+                                <!--<id>quickstart</id>-->
+                                <!--<phase>package</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>single</goal>-->
+                                <!--</goals>-->
+                                <!--<configuration>-->
+                                    <!--<finalName>apicurio-studio-${project.version}</finalName>-->
+                                    <!--<attach>true</attach>-->
+                                    <!--<descriptors>-->
+                                        <!--<descriptor>src/main/assembly/quickstart.xml</descriptor>-->
+                                    <!--</descriptors>-->
+                                    <!--<archiverConfig>-->
+                                        <!--<defaultDirectoryMode>0755</defaultDirectoryMode>-->
+                                    <!--</archiverConfig>-->
+                                <!--</configuration>-->
+                            <!--</execution>-->
+                        <!--</executions>-->
+                    <!--</plugin>-->
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -9,8 +9,8 @@
     <group qualifier="wildfly-group" default="true">
         <container qualifier="apicurio1" default="true">
             <configuration>
-              <property name="jbossHome">/Users/msavy/tmp/wildfly-14.0.1.Final-1/</property>
-              <property name="serverConfig">standalone-apicurio.xml</property>
+              <property name="jbossHome">${wildfly.appserver.dir.1}/wildfly-${wildfly.version}/</property>
+              <property name="serverConfig">standalone-apicurio-artemis.xml</property>
                 <property name="javaVmArguments">
                     <!-- Uncomment this to enable debug -->
                      <!-- -Xmx512m -Djava.net.preferIPv4Stack=true -Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005-->
@@ -22,8 +22,8 @@
         </container>
         <container qualifier="apicurio2">
             <configuration>
-                <property name="jbossHome">/Users/msavy/tmp/wildfly-14.0.1.Final-2/</property>
-                <property name="serverConfig">standalone-apicurio.xml</property>
+                <property name="jbossHome">${wildfly.appserver.dir.2}/wildfly-${wildfly.version}/</property>
+                <property name="serverConfig">standalone-apicurio-artemis.xml</property>
                 <property name="javaVmArguments">
                     -Djboss.socket.binding.port-offset=100 -Xmx1024m -Djava.net.preferIPv4Stack=true
                 </property>

@@ -60,7 +60,7 @@ import java.util.Deque;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class VerifyDistributedSetupTest {
+public class VerifyDistributedSetupTestIT {
     private static final String USER_1 = "editor1";
     private static final String USER_2 = "editor2";
     private static final int NODE_1_PORT = 8080;

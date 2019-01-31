@@ -19,3 +19,12 @@
 .section .section-header .collaborator-aggregate > a.collaborator-icon {
   color: white;
 }
+
+.section .section-body {
+  border: 1px solid transparent;
+}
+
+.section.highlight .section-body {
+  border: 1px solid #0088ce;
+  box-shadow: 0 0 3px 1px #0088ce;
+}

@@ -1,4 +1,4 @@
-<div class="section {{ type }}-section panel-group">
+<div class="section {{ type }}-section panel-group" [class.highlight]="showHighlight">
     <div class="section-header panel-title" #sectionHeader>
         <a [class.collapsed]="!expanded" (click)="toggleExpansion()" (contextmenu)="openContextMenu($event)">
             <span class="section-label">{{ label }} <counter [items]="counterItems" *ngIf="hasCounter()"></counter></span>
@@ -13,7 +13,7 @@
             <ng-content select="[actions]"></ng-content>
         </div>
     </div>
-    <div class="section-body" [class.collapsed]="!expanded">
+    <div class="section-body" [class.collapsed]="!expanded" #sectionBody>
         <ng-content select="[body]"></ng-content>
     </div>
 

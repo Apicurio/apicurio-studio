@@ -397,7 +397,11 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         this.onSelectionChanged.emit(path);
     }
 
-    public updateFormDisplay(path: string): void {
+    /**
+     * Called to update which form is displayed (the details view).
+     * @param path
+     */
+    private updateFormDisplay(path: string): void {
         let npath: OasNodePath = new OasNodePath(path);
         let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
         OasVisitorUtil.visitPath(npath, visitor, this.document());
@@ -486,6 +490,19 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         let doc: OasDocument = this.document();
         apiDef.spec = this._library.writeNode(doc);
         return apiDef;
+    }
+
+    /**
+     * Call this to select some content in the open document by the content's node path.  If highlight
+     * is true then the appropriate content section is also highlighted and scrolled into view.
+     * @param path
+     * @param highlight
+     */
+    public select(path: string, highlight: boolean = false): void {
+        this.selectionService.select(path);
+        if (highlight) {
+            this.selectionService.highlightPath(path);
+        }
     }
 
     public getServerEditor(): ServerEditorComponent {

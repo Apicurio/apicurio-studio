@@ -50,8 +50,16 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
     @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private selectionService: SelectionService, private problemsService: ProblemsService,
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param selectionService
+     * @param problemsService
+     * @param features
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                selectionService: SelectionService, private problemsService: ProblemsService,
                 private features: FeaturesService) {
         super(changeDetectorRef, documentService, selectionService);
     }
@@ -62,7 +70,12 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
     public goTo(problem: OasValidationProblem): void {
         this.close.emit(true);
-        this.selectionService.select(problem.nodePath.toString());
+        let goToPath: string = problem.nodePath.toString();
+        if (problem.property) {
+            goToPath += "/" + problem.property;
+        }
+        this.__selectionService.select(goToPath);
+        this.__selectionService.highlightPath(goToPath);
     }
 
     public iconFor(problem: OasValidationProblem): string {

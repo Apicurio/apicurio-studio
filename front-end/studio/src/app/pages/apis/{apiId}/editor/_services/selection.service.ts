@@ -85,6 +85,9 @@ export class SelectionService {
     private _selectionSubject: BehaviorSubject<string> = new BehaviorSubject("/");
     private _selection: Observable<string> = this._selectionSubject.asObservable();
 
+    private _highlightSubject: BehaviorSubject<string> = new BehaviorSubject(null);
+    private _highlight: Observable<string> = this._highlightSubject.asObservable();
+
     constructor(private documentService: DocumentService) {
         this.reset();
     }
@@ -147,5 +150,14 @@ export class SelectionService {
                 OasVisitorUtil.visitPath(npath, visitor, doc);
             }
         }
+    }
+
+    public highlightPath(path: string): void {
+        console.info("[SelectionService] Highlighting selection/path: ", path);
+        this._highlightSubject.next(path);
+    }
+
+    public highlight(): Observable<string> {
+        return this._highlight;
     }
 }

@@ -31,6 +31,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {CommandService} from "../../../_services/command.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {KeypressUtils} from "../../../_util/object.util";
+import {Subscription} from "rxjs";
 
 
 @Component({
@@ -55,19 +56,31 @@ export class SectionComponent extends AbstractBaseComponent {
     @Input() validationShallow: boolean;
     @Input() validationProperties: string[];
 
-    @Input() collaborationNodePath: string;
+    @Input() collaborationNodePath: string | string[];
 
     @Input() inForm: boolean = true;
 
     @ViewChild("sectionHeader") sectionHeader: ElementRef;
+    @ViewChild("sectionBody") sectionBody: ElementRef;
+
     showContextMenu: boolean = false;
     contextMenuPos: any = {
         top: "0px",
         left: "0px"
     }
 
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+    private _highlightSubscription: Subscription;
+    public showHighlight: boolean = false;
+
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                private commandService: CommandService, selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
@@ -75,6 +88,17 @@ export class SectionComponent extends AbstractBaseComponent {
         super.ngOnInit();
         if (this.inForm) {
             SectionComponent.allVisibleSections.push(this);
+        }
+
+        if (this.inForm) {
+            let component: SectionComponent = this;
+            this._highlightSubscription = this.__selectionService.highlight().subscribe(path => {
+                setTimeout(() => {
+                    if (component.acceptsPath(path)) {
+                        component.highlight();
+                    }
+                }, 50);
+            });
         }
     }
 
@@ -84,6 +108,53 @@ export class SectionComponent extends AbstractBaseComponent {
         if (idx !== -1) {
             SectionComponent.allVisibleSections.splice(idx, 1);
         }
+        if (this._highlightSubscription) {
+            this._highlightSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Returns true if the given path is "contained within" this section.
+     * @param path
+     */
+    protected acceptsPath(path: string): boolean {
+        if (!this.collaborationNodePath || !path) {
+            return false;
+        }
+
+        let sectionPaths: string[] = [];
+        if (Array.isArray(this.collaborationNodePath)) {
+            sectionPaths = <string[]>this.collaborationNodePath;
+        } else {
+            sectionPaths.push(this.collaborationNodePath);
+        }
+
+        for (let sectionPath of sectionPaths) {
+            if (path.indexOf(sectionPath) === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Briefly? highlight this section (visually).
+     */
+    public highlight(): void {
+        console.info("[SectionComponent] Highlighting section: ", this.type);
+        this.expand();
+        this.showHighlight = true;
+        let me: SectionComponent = this;
+        setTimeout( () => {
+            me.sectionBody.nativeElement.scrollIntoView({
+                block: "center", inline: "nearest", behavior: "smooth"
+            });
+        }, 50);
+        setTimeout(() => {
+            me.showHighlight = false;
+            this.__changeDetectorRef.markForCheck();
+        }, 5000);
+        this.__changeDetectorRef.markForCheck();
     }
 
     public hasCounter(): boolean {
@@ -105,19 +176,19 @@ export class SectionComponent extends AbstractBaseComponent {
         event.preventDefault();
         event.stopPropagation();
 
-        var box = this.sectionHeader.nativeElement.getBoundingClientRect();
+        let box = this.sectionHeader.nativeElement.getBoundingClientRect();
 
-        var body = document.body;
-        var docEl = document.documentElement;
+        let body = document.body;
+        let docEl = document.documentElement;
 
-        var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
-        var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+        let scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+        let scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
 
-        var clientTop = docEl.clientTop || body.clientTop || 0;
-        var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+        let clientTop = docEl.clientTop || body.clientTop || 0;
+        let clientLeft = docEl.clientLeft || body.clientLeft || 0;
 
-        var top  = box.top +  scrollTop - clientTop;
-        var left = box.left + scrollLeft - clientLeft;
+        let top  = box.top +  scrollTop - clientTop;
+        let left = box.left + scrollLeft - clientLeft;
 
         this.contextMenuPos.left = Math.round(left) + "px";
         this.contextMenuPos.top = (Math.round(top) + box.height - 5) + "px";
@@ -143,7 +214,7 @@ export class SectionComponent extends AbstractBaseComponent {
         // The collapse() method is called from outside the normal chain of command, so we need
         // to mark it as needing change detection (since we just changed its state).  This is because
         // we're using OnPush as the change detection strategy across all editor components.
-        this.changeDetectorRef.markForCheck();
+        this.__changeDetectorRef.markForCheck();
     }
 
     public expand(): void {
@@ -151,7 +222,7 @@ export class SectionComponent extends AbstractBaseComponent {
         // The expand() method is called from outside the normal chain of command, so we need
         // to mark it as needing change detection (since we just changed its state).  This is because
         // we're using OnPush as the change detection strategy across all editor components.
-        this.changeDetectorRef.markForCheck();
+        this.__changeDetectorRef.markForCheck();
     }
 
     public collapseAllSections(): void {

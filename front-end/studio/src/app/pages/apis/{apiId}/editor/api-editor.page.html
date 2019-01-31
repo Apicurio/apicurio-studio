@@ -8,6 +8,7 @@
         <div class="activeCollaboratorIcons">
             <!-- Information about current remote editor users (active collaborators) goes in here -->
             <span *ngFor="let collaborator of activeCollaborators"
+                  (click)="goToCollaboratorSelection(collaborator)"
                   class="activeCollaboratorIcon {{ collaborator.attributes['id'] }}"
                   [style.background-color]="'#' + collaborator.attributes['color']"
                   title="{{ collaborator.userName }}">{{ collaboratorInitial(collaborator) }}</span>

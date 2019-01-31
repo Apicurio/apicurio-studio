@@ -168,6 +168,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 },
                 onSelection: (user, selection) => {
                     this.zone.run(() => {
+                        user.attributes["selection"] = selection;
                         __component.updateSelection(user, selection);
                     });
                 }
@@ -372,6 +373,21 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     public collaboratorInitial(user: ApiEditorUser): string {
         return user.userName[0];
     }
+
+    /**
+     * The user clicked on the collaborator's icon, which means we should navigate the user to the
+     * content currently selected by that collaborator.
+     * @param user
+     */
+    public goToCollaboratorSelection(user: ApiEditorUser): void {
+        if (this.editorAvailable) {
+            let collaboratorPath: string = user.attributes["selection"];
+            if (collaboratorPath) {
+                this._apiEditor.first.select(collaboratorPath, true);
+            }
+        }
+    }
+
 }
 
 

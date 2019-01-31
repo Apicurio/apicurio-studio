@@ -22,6 +22,7 @@ import io.apicurio.hub.core.storage.IRollupExecutor;
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+
 public interface ApicurioDistributedSessionFactory {
     // Suggest API ID
     SharedApicurioSession joinSession(String id, OperationHandler handler);
@@ -29,7 +30,7 @@ public interface ApicurioDistributedSessionFactory {
     /**
      * Factory/session type(e.g. JMS, NOOP, etc).
      *
-     * @see DistributedImplementationFactory
+     * @see DistributedImplementationProducer
      */
     String getSessionType();
 

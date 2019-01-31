@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
@@ -55,6 +56,7 @@ import java.io.Closeable;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 
+@Alternative
 @ApplicationScoped
 public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
     private static final Logger logger = LoggerFactory.getLogger(JMSSessionFactory.class);

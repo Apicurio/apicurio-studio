@@ -40,8 +40,8 @@ import java.util.TreeMap;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @ApplicationScoped
-public class DistributedImplementationFactory {
-    private static Logger logger = LoggerFactory.getLogger(DistributedImplementationFactory.class);
+public class DistributedImplementationProducer {
+    private static Logger logger = LoggerFactory.getLogger(DistributedImplementationProducer.class);
 
     @Inject
     private HubConfiguration config;
@@ -59,7 +59,7 @@ public class DistributedImplementationFactory {
         }
     }
 
-    @Produces
+    @Produces @ApplicationScoped
     public ApicurioDistributedSessionFactory getImplementation() {
         return Optional
                 .ofNullable(implMap.get(config.getDistributedSessionType()))

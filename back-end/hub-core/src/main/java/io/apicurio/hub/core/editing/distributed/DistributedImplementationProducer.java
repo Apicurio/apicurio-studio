@@ -16,17 +16,15 @@
 package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.editing.OperationHandler;
+import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.storage.IRollupExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 
 /**
  * Returns user-configured (or default) distributed session factory according to user configuration.
@@ -47,28 +45,48 @@ public class DistributedImplementationProducer {
     private HubConfiguration config;
 
     @Inject
-    private Instance<ApicurioDistributedSessionFactory> implInstances;
+    private JMSSessionFactory jms;
 
-    private Map<String, ApicurioDistributedSessionFactory> implMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    @Inject
+    private NoOpSessionFactory noop;
 
-    @PostConstruct
-    public void setup() {
-        for (ApicurioDistributedSessionFactory factory : implInstances) {
-            implMap.put(factory.getSessionType(), factory);
-            logger.debug("Registering distributed session factory: {}.", factory.getSessionType());
+    @Produces
+    public ApicurioDistributedSessionFactory create() {
+        if ("jms".equalsIgnoreCase(config.getDistributedSessionType())) {
+            logger.debug("Selecting JMS distributed session");
+            return new ApicurioDistributedSessionFactory() {
+                @Override
+                public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+                    return jms.joinSession(designId, handler);
+                }
+
+                @Override
+                public String getSessionType() {
+                    return jms.getSessionType();
+                }
+
+                @Override
+                public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+                    jms.setRollupExecutor(rollupExecutor);
+                }
+            };
+        } else {
+            logger.debug("Selecting NoOp distributed session");
+            return new ApicurioDistributedSessionFactory() {
+                public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+                    return noop.joinSession(designId, handler);
+                }
+
+                @Override
+                public String getSessionType() {
+                    return noop.getSessionType();
+                }
+
+                @Override
+                public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+                    noop.setRollupExecutor(rollupExecutor);
+                }
+            };
         }
-    }
-
-    @Produces @ApplicationScoped
-    public ApicurioDistributedSessionFactory getImplementation() {
-        return Optional
-                .ofNullable(implMap.get(config.getDistributedSessionType()))
-                .orElseThrow(() -> new IllegalArgumentException(buildExceptionMessage()));
-    }
-
-    private String buildExceptionMessage() {
-        String availableTypes = String.join(", ", implMap.keySet());
-        return "Configured session type " + config.getDistributedSessionType() +  " does not exist.\n" +
-                "Available types: " + availableTypes;
     }
 }

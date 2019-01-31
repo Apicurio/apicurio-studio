@@ -24,6 +24,7 @@ import io.apicurio.hub.core.editing.distributed.NoOpSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.IRollupExecutor;
 import io.apicurio.hub.core.storage.RollupExecutor;
 import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
 import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
@@ -68,7 +69,23 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
-        distSessionFactory = new NoOpSessionFactory();
+        distSessionFactory = new ApicurioDistributedSessionFactory() {
+            NoOpSessionFactory noop = new NoOpSessionFactory();
+            @Override
+            public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+                return noop.joinSession(designId, handler);
+            }
+
+            @Override
+            public String getSessionType() {
+                return noop.getSessionType();
+            }
+
+            @Override
+            public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+                noop.setRollupExecutor(rollupExecutor);
+            }
+        };
 
         RollupExecutor rollupExecutor = new RollupExecutor();
         rollupExecutor.setStorage(storage);

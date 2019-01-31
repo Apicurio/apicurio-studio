@@ -20,12 +20,19 @@ import io.apicurio.hub.core.editing.SharedApicurioSession;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 
 /**
+ * Produce distributed session implementations
+ *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-
 public interface ApicurioDistributedSessionFactory {
-    // Suggest API ID
-    SharedApicurioSession joinSession(String id, OperationHandler handler);
+    /**
+     * Join a shared editing session.
+     *
+     * @param designId design ID
+     * @param handler the operation handler
+     * @return the new shared session
+     */
+    SharedApicurioSession joinSession(String designId, OperationHandler handler);
 
     /**
      * Factory/session type(e.g. JMS, NOOP, etc).
@@ -39,4 +46,3 @@ public interface ApicurioDistributedSessionFactory {
      */
     void setRollupExecutor(IRollupExecutor rollupExecutor);
 }
-

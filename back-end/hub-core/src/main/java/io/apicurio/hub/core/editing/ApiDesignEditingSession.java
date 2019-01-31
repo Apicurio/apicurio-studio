@@ -59,6 +59,7 @@ public class ApiDesignEditingSession implements Closeable {
                                    ApicurioDistributedSessionFactory factory,
                                    ApicurioOperationProcessor operationProcessor) {
         this.designId = designId;
+        // Join a remote session (if there is one configured).
         this.distributedSession = factory.joinSession(designId, payload -> {
             operationProcessor.process(this, null, JsonUtil.toJsonTree(payload));
         });

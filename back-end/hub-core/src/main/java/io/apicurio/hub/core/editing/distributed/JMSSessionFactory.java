@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
@@ -56,9 +55,8 @@ import java.io.Closeable;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 
-@Alternative
 @ApplicationScoped
-public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
+public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory {
     private static final Logger logger = LoggerFactory.getLogger(JMSSessionFactory.class);
     /**
      * The last element of the path MUST be the API ID.
@@ -83,7 +81,6 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
     }
 
     // Suggest API ID
-    @Override
     public MessagingSessionContainer joinSession(String id, OperationHandler handler) {
         logger.debug("Joining session {}", id);
         JMSContext context = connectionFactory.createContext();
@@ -95,12 +92,10 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
         return new MessagingSessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
     }
 
-    @Override
     public String getSessionType() {
         return "jms";
     }
 
-    @Override
     public void setRollupExecutor(IRollupExecutor rollupExecutor) {
         this.rollupExecutor = rollupExecutor;
     }
@@ -157,10 +152,6 @@ public class JMSSessionFactory implements ApicurioDistributedSessionFactory {
         public synchronized void close() {
             logger.debug("Closing consumer: {} ", consumer);
             consumer.close();
-        }
-
-        public void setOperationHandler(OperationHandler commandHandler) {
-            this.commandHandler = commandHandler;
         }
 
         public String getSessionId() {

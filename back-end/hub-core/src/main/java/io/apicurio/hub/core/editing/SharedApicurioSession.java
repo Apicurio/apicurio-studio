@@ -18,15 +18,24 @@ package io.apicurio.hub.core.editing;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 
 /**
+ * A shared (distributed) Apicurio session.
+ *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface SharedApicurioSession {
 
+    /**
+     * Send an operation over the shared session
+     */
     void sendOperation(BaseOperation command);
 
-    void setOperationHandler(OperationHandler commandHandler);
-
+    /**
+     * Close the shared session
+     */
     void close();
 
-    String getSessionId(); // not sure we need this one in the interface
+    /**
+     * Get the shared session ID
+     */
+    String getSessionId();
 }

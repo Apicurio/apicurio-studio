@@ -20,6 +20,8 @@ import io.restassured.http.Headers;
 import javax.ws.rs.core.Response;
 
 /**
+ * Parse session information returned by {@link io.apicurio.hub.api.rest.IDesignsResource#editDesign(String)}
+ *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public class SessionInfo {

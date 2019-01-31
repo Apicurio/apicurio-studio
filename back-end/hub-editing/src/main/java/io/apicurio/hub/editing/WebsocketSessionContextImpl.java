@@ -66,7 +66,7 @@ public class WebsocketSessionContextImpl implements ApicurioSessionContext {
     }
 
     @Override
-    public <T> void sendAsText(String serialized) throws IOException {
+    public void sendAsText(String serialized) throws IOException {
         session.getBasicRemote().sendText(serialized);
     }
 

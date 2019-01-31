@@ -48,9 +48,13 @@ import java.util.Deque;
 /**
  * Verify distributed Apicurio setup.
  *
+ * Editor1 joins and makes a number of edits.
+ *
+ * Editor2 joins, and receives updates Editor1 made, plus join information, selection, etc.
+ *
  * Ignore or disable any IDE errors about <tt>@Deployment</tt> only being allowed once per class.
  *
- *
+ * Uses the Maven resolver to get the latest asset. A gotcha is that your IDE might not rebuild the dependency.
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
@@ -62,9 +66,10 @@ public class VerifyDistributedSetupTest {
     private static final int NODE_1_PORT = 8080;
     private static final int NODE_2_PORT = 8180;
 
+    private ApiDesign apiDesign;
+
     private SessionInfo node1SessionInfo;
     private SessionInfo node2SessionInfo;
-    private ApiDesign apiDesign;
 
     private ApicurioWebsocketsClient websocketClientNode1;
     private ApicurioWebsocketsClient websocketClientNode2;

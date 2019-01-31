@@ -4,65 +4,6 @@
             xsi:schemaLocation="http://jboss.org/schema/arquillian
   http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-    <!--<defaultProtocol type="Servlet 3.0" />-->
-
-    <!--<defaultProtocol type="jmx-as7" />-->
-
-    <!--<extension qualifier="docker">-->
-        <!--&lt;!&ndash;<property name="serverUri">http://localhost:2375</property>&ndash;&gt;-->
-        <!--<property name="definitionFormat">CUBE</property>-->
-        <!--<property name="dockerContainers">-->
-            <!--wildfly:-->
-                <!--image: jboss/wildfly:14.0.0.Final-->
-                <!--exposedPorts: [8089/tcp, 8080/tcp]-->
-                <!--await:-->
-                    <!--strategy: polling-->
-                <!--env: []-->
-                <!--portBindings: [9990/tcp, 8080/tcp]-->
-        <!--</property>-->
-        <!--<property name="tlsVerify">false</property>-->
-    <!--</extension>-->
-
-    <!--<container qualifier="tomcat" default="true">-->
-        <!--<configuration>-->
-            <!--<property name="httpPort">8080</property>-->
-            <!--<property name="user">admin</property>-->
-            <!--<property name="pass">mypass</property>-->
-        <!--</configuration>-->
-    <!--</container>-->
-
-
-
-<!--<arquillian xmlns="http://jboss.org/schema/arquillian"-->
-            <!--xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
-            <!--xsi:schemaLocation="http://jboss.org/schema/arquillian-->
-    <!--http://jboss.org/schema/arquillian/arquillian_1_0.xsd">-->
-
-    <!--<defaultProtocol type="Servlet 3.0" />-->
-
-        <!--<extension qualifier="docker">-->
-            <!--<property name="serverVersion">1.12</property>-->
-            <!--<property name="serverUri">http://localhost:2375</property>-->
-            <!--<property name="definitionFormat">CUBE</property>-->
-            <!--<property name="dockerContainers">-->
-                <!--tomcat:-->
-                  <!--image: tutum/tomcat:7.0-->
-                  <!--exposedPorts: [8089/tcp]-->
-                  <!--await:-->
-                    <!--strategy: polling-->
-                  <!--env: [TOMCAT_PASS=mypass, JAVA_OPTS=-Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false]-->
-                  <!--portBindings: [8089/tcp, 8080/tcp]-->
-            <!--</property>-->
-        <!--</extension>-->
-
-        <!--<container qualifier="tomcat" default="true">-->
-            <!--<configuration>-->
-                <!--<property name="host">localhost</property>-->
-                <!--<property name="httpPort">8080</property>-->
-                <!--<property name="user">admin</property>-->
-                <!--<property name="pass">mypass</property>-->
-            <!--</configuration>-->
-        <!--</container>-->
     <defaultProtocol type="Servlet 3.0"/>
 
     <group qualifier="wildfly-group" default="true">
@@ -71,7 +12,9 @@
               <property name="jbossHome">/Users/msavy/tmp/wildfly-14.0.1.Final-1/</property>
               <property name="serverConfig">standalone-apicurio.xml</property>
                 <property name="javaVmArguments">
-                  -Xmx512m -Djava.net.preferIPv4Stack=true -Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+                    <!-- Uncomment this to enable debug -->
+                     <!-- -Xmx512m -Djava.net.preferIPv4Stack=true -Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005-->
+                    -Xmx512m -Djava.net.preferIPv4Stack=true
                 </property>
                 <property name="allowConnectingToRunningServer">true</property>
                 <property name="managementPort">9990</property>
@@ -82,7 +25,7 @@
                 <property name="jbossHome">/Users/msavy/tmp/wildfly-14.0.1.Final-2/</property>
                 <property name="serverConfig">standalone-apicurio.xml</property>
                 <property name="javaVmArguments">
-                    -Djboss.socket.binding.port-offset=100 -Xmx512m -Djava.net.preferIPv4Stack=true
+                    -Djboss.socket.binding.port-offset=100 -Xmx1024m -Djava.net.preferIPv4Stack=true
                 </property>
                 <property name="managementPort">10090</property>
                 <property name="allowConnectingToRunningServer">true</property>
@@ -90,10 +33,4 @@
         </container>
     </group>
 
-    <!--<container qualifier="jboss" default="true">-->
-        <!--<configuration>-->
-            <!--<property name="jbossHome">/Users/msavy/tmp/wildfly-14.0.1.Final/</property>-->
-            <!--<property name="serverConfig">standalone-apicurio.xml</property>-->
-        <!--</configuration>-->
-    <!--</container>-->
 </arquillian>

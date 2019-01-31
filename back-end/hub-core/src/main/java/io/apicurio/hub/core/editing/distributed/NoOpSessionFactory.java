@@ -26,29 +26,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-@Alternative
+
 @ApplicationScoped
-public class NoOpSessionFactory implements ApicurioDistributedSessionFactory {
+public class NoOpSessionFactory {//implements ApicurioDistributedSessionFactory {
     @Inject
     private IRollupExecutor rollupExecutor;
 
-    @Override
     public SharedApicurioSession joinSession(String id, OperationHandler handler) {
         return new NoOpSharedSession(id);
     }
 
-    @Override
     public String getSessionType() {
         return "noop"; // Currently the default implementation
     }
 
-    @Override
     public void setRollupExecutor(IRollupExecutor rollupExecutor) {
         this.rollupExecutor = rollupExecutor;
     }
@@ -61,15 +57,9 @@ public class NoOpSessionFactory implements ApicurioDistributedSessionFactory {
             this.designId = designId;
         }
 
-        @Override
         public void sendOperation(BaseOperation command) {
         }
 
-        @Override
-        public void setOperationHandler(OperationHandler commandHandler) {
-        }
-
-        @Override
         public void close() {
             try {
                 rollupExecutor.rollupCommands(designId);
@@ -78,7 +68,6 @@ public class NoOpSessionFactory implements ApicurioDistributedSessionFactory {
             }
         }
 
-        @Override
         public String getSessionId() {
             return "noop";
         }

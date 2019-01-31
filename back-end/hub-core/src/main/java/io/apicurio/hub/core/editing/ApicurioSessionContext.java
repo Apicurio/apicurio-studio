@@ -16,24 +16,54 @@
 package io.apicurio.hub.core.editing;
 
 import javax.websocket.CloseReason;
+import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Wraps a websockets {@link Session}.
+ *
+ * @see Session
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface ApicurioSessionContext {
+
+    /**
+     * @see Session#getPathParameters()
+     */
     Map<String, String> getPathParameters();
 
+    /**
+     * @see Session#getQueryString() ()
+     */
     String getQueryString();
 
+    /**
+     * @see Session#getId()
+     */
     String getId();
 
+    /**
+     * Get WS query string as map
+     */
     Map<String, String> getQueryStringMap();
 
-    <T> void sendAsText(String serialized) throws IOException;
+    /**
+     * Send string payload as text
+     *
+     * @param serialized serialized payload
+     */
+    void sendAsText(String serialized) throws IOException;
 
+    /**
+     * Send object payload as JSON
+     *
+     * @param obj object to be serialized as JSON
+     */
     <T> void sendAsText(T obj) throws IOException;
 
+    /**
+     * @see Session#close(CloseReason)
+     */
     void close(CloseReason closeReason) throws IOException;
 }

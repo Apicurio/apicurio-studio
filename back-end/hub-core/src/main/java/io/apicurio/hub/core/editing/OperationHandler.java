@@ -16,8 +16,15 @@
 package io.apicurio.hub.core.editing;
 
 /**
+ * Handler to accept raw Operations as they arrive from the wire.
+ *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface OperationHandler {
+
+    /**
+     * Provide a handler implementation to consume the operation
+     * @param operation the raw data
+     */
     void consumeOperation(String operation);
 }

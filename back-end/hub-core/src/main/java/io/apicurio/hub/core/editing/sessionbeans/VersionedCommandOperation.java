@@ -16,6 +16,7 @@
 package io.apicurio.hub.core.editing.sessionbeans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +26,7 @@ import io.apicurio.hub.core.util.JsonUtil;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VersionedCommandOperation extends VersionedOperation {
     @JsonRawValue
     private JsonNode command;

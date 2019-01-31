@@ -15,9 +15,12 @@
  */
 package io.apicurio.hub.core.editing.sessionbeans;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SelectionOperation extends BaseOperation {
     private String user;
     private String id;
@@ -56,6 +59,12 @@ public class SelectionOperation extends BaseOperation {
         return (SelectionOperation) new SelectionOperation()
                 .setUser(user)
                 .setId(id)
+                .setSelection(selection)
+                .setType("selection");
+    }
+
+    public static SelectionOperation select(String selection) {
+        return (SelectionOperation) new SelectionOperation()
                 .setSelection(selection)
                 .setType("selection");
     }

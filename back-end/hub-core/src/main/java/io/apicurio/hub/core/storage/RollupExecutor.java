@@ -48,7 +48,7 @@ public class RollupExecutor implements IRollupExecutor {
 
     @Override
     public void rollupCommands(String userId, String designId) throws NotFoundException, StorageException, OaiCommandException {
-        logger.debug("Rolling up commands for API with ID: {}", designId);
+        logger.debug("Rolling up commands for API with ID: {} with User: {}", designId, userId);
         ApiDesignContent designContent = storage.getLatestContentDocument(userId, designId);
         logger.debug("Using latest contentVersion {} for possible command rollup.", designContent.getContentVersion());
         List<ApiDesignCommand> apiCommands = storage.listContentCommands(userId, designId, designContent.getContentVersion());

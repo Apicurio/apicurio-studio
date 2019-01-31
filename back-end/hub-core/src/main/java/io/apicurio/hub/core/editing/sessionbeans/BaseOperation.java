@@ -16,10 +16,12 @@
 package io.apicurio.hub.core.editing.sessionbeans;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseOperation {
     private SourceEnum source = SourceEnum.LOCAL;
 

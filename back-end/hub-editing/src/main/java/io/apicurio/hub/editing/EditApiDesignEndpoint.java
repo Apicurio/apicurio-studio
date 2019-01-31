@@ -79,11 +79,11 @@ public class EditApiDesignEndpoint {
      * The uuid, user, and secret query parameters must be present for a connection to be 
      * successfully made.
      * 
-     * @param sessionx
+     * @param nativeSession the native session
      */
     @OnOpen
-    public void onOpenSession(Session sessionx) {
-        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+    public void onOpenSession(Session nativeSession) {
+        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
         logger.debug("WebSocket opened: {}", session.getId());
@@ -97,8 +97,10 @@ public class EditApiDesignEndpoint {
         
         this.metrics.socketConnected(designId, userId);
 
+        logger.debug("\tdesignId: {}", designId);
         logger.debug("\tuuid: {}", uuid);
         logger.debug("\tuser: {}", userId);
+        logger.debug("\tsecret: {}", secret);
         
         ApiDesignEditingSession editingSession = null;
 
@@ -171,17 +173,18 @@ public class EditApiDesignEndpoint {
      * }
      * </pre>
      * 
-     * @param sessionx websocket session
+     * @param nativeSession websocket session
      * @param message payload as JSON
      */
     @OnMessage
-    public void onMessage(Session sessionx, JsonNode message) {
-        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+    public void onMessage(Session nativeSession, JsonNode message) {
+        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
 
+        logger.debug("onMessage: {}", message.toString());
         logger.debug("Received a \"{}\" message from a client.", msgType);
         logger.debug("\tdesignId: {}", designId);
 

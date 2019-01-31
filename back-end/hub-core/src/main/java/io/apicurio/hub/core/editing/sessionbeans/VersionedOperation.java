@@ -15,12 +15,14 @@
  */
 package io.apicurio.hub.core.editing.sessionbeans;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VersionedOperation extends BaseOperation {
     private long contentVersion;
 

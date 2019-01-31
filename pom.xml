@@ -59,7 +59,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
 
         <!-- Wildfly Version -->
-        <version.wildfly>10.1.0.Final</version.wildfly>
+        <version.wildfly>14.0.1.Final</version.wildfly>
 
         <!-- Thorntail Version -->
         <version.io.thorntail>2.3.0.Final</version.io.thorntail>

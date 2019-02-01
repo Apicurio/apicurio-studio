@@ -15,17 +15,15 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.ApicurioSessionContext;
-import io.apicurio.hub.core.editing.IEditingMetrics;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
-import io.apicurio.hub.core.storage.IStorage;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -35,12 +33,10 @@ public class JoinProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(JoinProcessor.class);
 
-    @Inject
-    private IStorage storage;
-
-    @Inject
-    private IEditingMetrics metrics;
-
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.ApiDesignEditingSession, io.apicurio.hub.core.editing.ApicurioSessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     */
+    @Override
     public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
         JoinLeaveOperation jOp = (JoinLeaveOperation) bo;
         logger.debug("Received join operation ", jOp);
@@ -51,16 +47,28 @@ public class JoinProcessor implements IOperationProcessor {
         }
     }
 
+    /**
+     * Process the operation (remote perspective).
+     * @param editingSession
+     * @param session
+     * @param undo
+     */
     private void processRemote(ApiDesignEditingSession editingSession, ApicurioSessionContext session, JoinLeaveOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote join sent to local clients.");
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     */
     @Override
     public String getOperationName() {
         return "join";
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallKlazz()
+     */
     @Override
     public Class<? extends BaseOperation> unmarshallKlazz() {
         return JoinLeaveOperation.class;

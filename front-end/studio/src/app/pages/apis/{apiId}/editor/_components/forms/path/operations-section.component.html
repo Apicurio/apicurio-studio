@@ -7,35 +7,59 @@
         <div class="operation-tabs">
             <div class="tabs">
                 <div class="operation-tab get-tab" [class.selected]="tab === 'get'" [class.enabled]="isDefined('get')" (click)="selectTab('get')">
-                    <div class="tab-label">Get</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('get')"></collaborator-overlay>
+                        <span>Get</span>
+                    </div>
                     <validation-aggregate [models]="[ path.get ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab put-tab" [class.selected]="tab === 'put'" [class.enabled]="isDefined('put')" (click)="selectTab('put')">
-                    <div class="tab-label">Put</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('put')"></collaborator-overlay>
+                        <span>Put</span>
+                    </div>
                     <validation-aggregate [models]="[ path.put ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab post-tab" [class.selected]="tab === 'post'" [class.enabled]="isDefined('post')" (click)="selectTab('post')">
-                    <div class="tab-label">Post</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('post')"></collaborator-overlay>
+                        <span>Post</span>
+                    </div>
                     <validation-aggregate [models]="[ path.post ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab delete-tab" [class.selected]="tab === 'delete'" [class.enabled]="isDefined('delete')" (click)="selectTab('delete')">
-                    <div class="tab-label">Delete</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('delete')"></collaborator-overlay>
+                        <span>Delete</span>
+                    </div>
                     <validation-aggregate [models]="[ path.delete ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab options-tab" [class.selected]="tab === 'options'" [class.enabled]="isDefined('options')" (click)="selectTab('options')">
-                    <div class="tab-label">Options</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('options')"></collaborator-overlay>
+                        <span>Options</span>
+                    </div>
                     <validation-aggregate [models]="[ path.options ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab head-tab" [class.selected]="tab === 'head'" [class.enabled]="isDefined('head')" (click)="selectTab('head')">
-                    <div class="tab-label">Head</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('head')"></collaborator-overlay>
+                        <span>Head</span>
+                    </div>
                     <validation-aggregate [models]="[ path.head ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab patch-tab" [class.selected]="tab === 'patch'" [class.enabled]="isDefined('patch')" (click)="selectTab('patch')">
-                    <div class="tab-label">Patch</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('patch')"></collaborator-overlay>
+                        <span>Patch</span>
+                    </div>
                     <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
                 </div>
                 <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
-                    <div class="tab-label">Trace</div>
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('trace')"></collaborator-overlay>
+                        <span>Trace</span>
+                    </div>
                     <validation-aggregate [models]="[ path.trace ]"></validation-aggregate>
                 </div>
             </div>

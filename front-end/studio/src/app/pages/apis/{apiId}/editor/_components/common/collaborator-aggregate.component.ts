@@ -15,21 +15,11 @@
  * limitations under the License.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    SimpleChanges,
-    ViewEncapsulation
-} from "@angular/core";
-import {ProblemsService} from "../../_services/problems.service";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation} from "@angular/core";
 import {DocumentService} from "../../_services/document.service";
-import {AbstractBaseComponent} from "./base-component";
 import {SelectionService} from "../../_services/selection.service";
-import {ApiEditorUser} from "../../../../../../models/editor-user.model";
 import {CollaboratorService} from "../../_services/collaborator.service";
-import {Subscription} from "rxjs";
+import {AbstractCollaboratorComponent} from "./collaborator-overlay.component";
 
 @Component({
     moduleId: module.id,
@@ -39,79 +29,18 @@ import {Subscription} from "rxjs";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollaboratorAggregateComponent extends AbstractBaseComponent {
-
-    @Input() nodePath: string | string[];
-
-    private _open: boolean = false;
-    public left: string;
-    public top: string;
-
-    private _collaborators: ApiEditorUser[];
-
-    private _collabSub: Subscription;
-
-    constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private problemsService: ProblemsService, private selectionService: SelectionService,
-                private collaboratorService: CollaboratorService) {
-        super(changeDetectorRef, documentService, selectionService);
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-        this._collabSub = this.collaboratorService.collaboratorSelection().subscribe(() => {
-            this.updateCollaborators();
-            this.changeDetectorRef.markForCheck();
-        });
-    }
-
-    ngOnDestroy(): void {
-        super.ngOnDestroy();
-        if (this._collabSub) {
-            this._collabSub.unsubscribe();
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.updateCollaborators();
-    }
-
-    protected onDocumentChange(): void {
-        this.updateCollaborators();
-    }
+export class CollaboratorAggregateComponent extends AbstractCollaboratorComponent {
 
     /**
-     * Update the list of collaborators for the currently configured node path.
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param selectionService
+     * @param collaboratorService
      */
-    protected updateCollaborators(): void {
-        // console.info("[CollaboratorAggregateComponent] Determine collaborators for node path: ", this.nodePath);
-        if (Array.isArray(this.nodePath)) {
-            this._collaborators = [];
-            (<string[]>this.nodePath).forEach( nodePath => {
-                this._collaborators = this._collaborators.concat(this.collaboratorService.getCollaboratorsForPath(nodePath));
-            });
-        } else {
-            this._collaborators = this.collaboratorService.getCollaboratorsForPath(<string>this.nodePath);
-        }
-        // console.info("[CollaboratorAggregateComponent] # Collaborators found: ", this._collaborators.length);
-    }
-
-    public open(event: MouseEvent): void {
-        this.left = (event.clientX + 5) + "px";
-        this.top = (event.clientY + 12) + "px";
-        this._open = true;
-    }
-
-    public close(): void {
-        this._open = false;
-    }
-
-    public isOpen(): boolean {
-        return this._open;
-    }
-
-    public hasCollaborators(): boolean {
-        return this._collaborators && this._collaborators.length > 0;
+    constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
+                selectionService: SelectionService, collaboratorService: CollaboratorService) {
+        super(changeDetectorRef, documentService, selectionService, collaboratorService);
     }
 
     public displayText(): string {
@@ -132,18 +61,6 @@ export class CollaboratorAggregateComponent extends AbstractBaseComponent {
             if (this.collaborators().length === 1) {
                 color = this.collaborators()[0].attributes["color"];
             }
-        }
-        return color;
-    }
-
-    public collaborators(): ApiEditorUser[] {
-        return this._collaborators;
-    }
-
-    public iconColorFor(collaborator: ApiEditorUser): string {
-        let color: string = collaborator.attributes["color"];
-        if (color === null) {
-            color = "CD3EBA";
         }
         return color;
     }

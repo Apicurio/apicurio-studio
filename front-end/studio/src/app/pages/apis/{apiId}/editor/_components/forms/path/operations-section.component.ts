@@ -49,6 +49,7 @@ import {AbstractBaseComponent} from "../../common/base-component";
 export class OperationsSectionComponent extends AbstractBaseComponent {
 
     @Input() path: Oas30PathItem;
+    protected _nodePath: string;
 
     public tab: string;
 
@@ -105,24 +106,34 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         this._operations = this.pathOperations();
         this._allOperations = this.allPathOperations();
         this._collaborationPaths = this.allCollaborationPaths();
+        this._nodePath = ModelUtils.nodeToPath(this.path);
     }
 
     private setOperationTabFromSelection(selection: string): void {
         console.info("[OperationsSectionComponent] Setting operation tab from selection: ", selection);
         this.tab = null;
-        for (let operation of this._operations) {
-            if (this.isSelected(operation)) {
-                this.tab = operation.method();
+        let tabs: string[] = [
+            "get", "put", "post", "delete", "options", "head", "patch", "trace"
+        ];
+
+        // Choose a tab based on the selection
+        for (let t of tabs) {
+            let tpath: string = this._nodePath + "/" + t;
+            if (selection.indexOf(tpath) === 0) {
+                this.tab = t;
                 return;
             }
         }
 
+        // Choose a tab based on the availability of actual operations.  I.e. if the path only has
+        // a "PUT" operation, then choose that one.
         for (let operation of this._operations) {
             console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.method());
             this.tab = operation.method();
             return;
         }
 
+        // If all else fails, just default to "GET"
         this.tab = "get";
     }
 
@@ -159,6 +170,10 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         return null;
     }
 
+    public operationPath(method: string): string {
+        return this._nodePath + "/" + method;
+    }
+
     public isDefined(method: string): boolean {
         let operation: OasOperation = this.path[method] as OasOperation;
         if (operation) {
@@ -172,13 +187,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     }
 
     public selectTab(method: string): void {
-        this.tab = method;
-        if (this.isDefined(method)) {
-            let operation: OasOperation = this.path[method] as OasOperation;
-            this.__selectionService.selectNode(operation);
-        } else {
-            //this.__selectionService.simpleSelect(ModelUtils.nodeToPath(this.path) + "/" + method);
-        }
+        this.__selectionService.select(this._nodePath + "/" + method);
     }
 
     public hasSelectedOperation(): boolean {

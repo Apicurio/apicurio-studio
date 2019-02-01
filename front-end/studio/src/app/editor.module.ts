@@ -110,6 +110,7 @@ import {MediaTypeRowComponent} from "./pages/apis/{apiId}/editor/_components/for
 import {FeaturesService} from "./pages/apis/{apiId}/editor/_services/features.service";
 import {CollaboratorAggregateComponent} from "./pages/apis/{apiId}/editor/_components/common/collaborator-aggregate.component";
 import {CollaboratorService} from "./pages/apis/{apiId}/editor/_services/collaborator.service";
+import {CollaboratorOverlayComponent} from "./pages/apis/{apiId}/editor/_components/common/collaborator-overlay.component";
 
 @NgModule({
     imports: [
@@ -134,7 +135,8 @@ import {CollaboratorService} from "./pages/apis/{apiId}/editor/_services/collabo
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
-        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent
+        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent,
+        CollaboratorOverlayComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

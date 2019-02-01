@@ -25,12 +25,16 @@
 }
 
 .operations-section .section-body .operation-tabs .operation-tab .tab-label {
+  position: relative;
   background-color: #dfdfdf;
   display: inline-block;
   width: 75px;
   border-radius: 2px;
   text-align: center;
   padding: 4px;
+}
+.operations-section .section-body .operation-tabs .operation-tab .tab-label .collaborator-overlay {
+  border-radius: 2px;
 }
 
 .operations-section .section-body .operation-tabs .operation-tab.enabled .tab-label {

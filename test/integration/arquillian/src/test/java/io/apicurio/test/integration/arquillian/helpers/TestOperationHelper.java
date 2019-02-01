@@ -15,6 +15,9 @@
  */
 package io.apicurio.test.integration.arquillian.helpers;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import io.apicurio.test.integration.arquillian.testprocessors.ITestOperationProcessor;
@@ -22,22 +25,17 @@ import io.apicurio.test.integration.arquillian.testprocessors.TestAckOperationPr
 import io.apicurio.test.integration.arquillian.testprocessors.TestCommandOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestJoinOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestSelectionOperationProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Look up a test processor in order to compare expected with actual payloads.
  *
- * Add your processor to addProcessors;
+ * Add your processor to addProcessors
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public class TestOperationHelper {
+    
     public static final TestOperationHelper INSTANCE = new TestOperationHelper();
-    private static final Logger logger = LoggerFactory.getLogger(TestOperationHelper.class);
     private static final Map<String, ITestOperationProcessor> processorMap = new LinkedHashMap<>();
 
     // As this is not necessarily in a CDI environment, we use the manual approach...

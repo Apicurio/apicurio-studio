@@ -78,23 +78,4 @@ public class VersionedCommandOperation extends VersionedOperation {
                 .setType("command");
     }
 
-    public static void main(String... args) {
-//        String str = "{\"type\":\"command\",\"commandId\":1543502845539," +
-//                "\"command\":{\"__type\":\"NewOperationCommand_30\"," +
-//                "\"_path\":\"/pets/{id}\",\"_method\":\"post\",\"_created\":true}}";
-
-        String str = "{\"type\":\"command\",\"commandId\":123445,\"command\":{\"__type\":\"ChangeDescriptionCommand_30\",\"_newDescription\":\"T\",\"_oldDescription\":\"The Data Set API (DSAPICSV based data files searchable through API. Wiarchable. With the help of POST call, data can be fetched based on the filters on the field names. Please note that POST call is used to search the actual data. The reason for the POST call is that it allows users to specify any complex search criteria without worry about the GET size limitations as well as encoding of the input parameters.\"}}";
-
-//        VersionedCommandOperation vco = JsonUtil.fromJson(str, VersionedCommandOperation.class);
-
-        VersionedCommandOperation vco2 = VersionedCommandOperation.command(12345, "{\"foo\":\"bar\"}");
-
-
-        String strout = JsonUtil.toJson(vco2);
-
-        System.out.println(strout);
-
-//        System.out.println(vco.getCommandStr());
-
-    }
 }

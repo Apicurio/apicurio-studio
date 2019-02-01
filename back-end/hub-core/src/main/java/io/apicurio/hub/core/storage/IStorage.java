@@ -16,9 +16,6 @@
 
 package io.apicurio.hub.core.storage;
 
-import java.util.Collection;
-import java.util.List;
-
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
@@ -35,11 +32,14 @@ import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author eric.wittmann@gmail.com
  */
 public interface IStorage {
-
     /**
      * Returns true if the given user has ownership permission over the API design.
      * @param userId
@@ -432,5 +432,8 @@ public interface IStorage {
      * @throws StorageException
      */
     public void deleteCodegenProjects(String userId, String designId) throws NotFoundException, StorageException;
+
+
+    public Optional<ApiDesignCommand> getLatestCommand(String designId) throws NotFoundException, StorageException;
 
 }

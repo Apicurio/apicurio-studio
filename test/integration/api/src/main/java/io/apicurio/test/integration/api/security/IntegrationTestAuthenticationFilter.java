@@ -16,8 +16,10 @@
 
 package io.apicurio.test.integration.api.security;
 
-import java.io.IOException;
-import java.util.Base64;
+import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.api.security.SecurityContext;
+import io.apicurio.studio.shared.beans.User;
+import io.apicurio.test.integration.common.IAuthOverride;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -28,10 +30,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import io.apicurio.hub.api.security.ISecurityContext;
-import io.apicurio.hub.api.security.SecurityContext;
-import io.apicurio.studio.shared.beans.User;
+import java.io.IOException;
+import java.util.Base64;
 
 /**
  * This is a simple filter that extracts authentication information from the 
@@ -42,6 +42,9 @@ public class IntegrationTestAuthenticationFilter implements Filter {
 
     @Inject
     private ISecurityContext security;
+
+    @Inject
+    private IAuthOverride override;
 
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -58,14 +61,20 @@ public class IntegrationTestAuthenticationFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpResp = (HttpServletResponse) response;
-        
+
+        if (override.isManualOverride()) {
+            override.applyUser();
+            chain.doFilter(request, response);
+            return;
+        }
+
         // Authorization header is required
         String authHeader = httpReq.getHeader("Authorization");
         if (authHeader == null) {
             httpResp.sendError(403);
             return;
         }
-        
+
         // Must be Basic auth
         if (!authHeader.toLowerCase().startsWith("basic ")) {
             httpResp.sendError(403);
@@ -92,7 +101,7 @@ public class IntegrationTestAuthenticationFilter implements Filter {
             httpResp.sendError(403);
             return;
         }
-        
+
         // Authentication successful, configure the security context for the request.
         User user = new User();
         user.setEmail(username + "@example.org");

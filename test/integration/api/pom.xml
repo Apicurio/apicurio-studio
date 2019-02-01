@@ -23,7 +23,12 @@
             <artifactId>apicurio-studio-be-hub-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>apicurio-studio-test-integration-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- Provided Dependencies -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>

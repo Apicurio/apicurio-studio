@@ -132,7 +132,7 @@ export class ApiEditingSession implements IApiEditingSession {
             me.ping();
         };
         this.socket.onmessage = (msgEvent) => {
-            console.info("[ApiEditingSession] Message received from server.");
+            console.info("[ApiEditingSession] Message received from server. %o", msgEvent.data);
             let msg: any = JSON.parse(msgEvent.data);
             console.info("                    Message type: %s", msg.type);
             if (msg.type === "command") {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.editing.metrics;
+package io.apicurio.hub.core.editing;
 
 import java.io.IOException;
 

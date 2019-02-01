@@ -16,17 +16,16 @@
 
 package io.apicurio.hub.editing;
 
+import io.apicurio.hub.core.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServlet;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.apicurio.hub.core.Version;
 
 /**
  * A simple startup servlet used to report the server version.

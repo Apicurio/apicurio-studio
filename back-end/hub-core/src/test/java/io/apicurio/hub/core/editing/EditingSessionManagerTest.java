@@ -16,23 +16,28 @@
 
 package io.apicurio.hub.core.editing;
 
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.Date;
-
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignType;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.editing.distributed.ApicurioDistributedSessionFactory;
+import io.apicurio.hub.core.editing.distributed.NoOpSessionFactory;
+import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.IRollupExecutor;
+import io.apicurio.hub.core.storage.RollupExecutor;
+import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
+import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
+import io.apicurio.test.core.TestUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.apicurio.hub.core.beans.ApiDesign;
-import io.apicurio.hub.core.beans.ApiDesignType;
-import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
-import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
-import io.apicurio.test.core.TestUtil;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -47,7 +52,9 @@ public class EditingSessionManagerTest {
     private EditingSessionManager manager;
     private JdbcStorage storage;
     private BasicDataSource ds;
-    
+    private ApicurioDistributedSessionFactory distSessionFactory;
+    private ApicurioOperationProcessor operationProcessor;
+
     @Before
     public void setUp() {
         storage = new JdbcStorage();
@@ -62,7 +69,33 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
+        distSessionFactory = new ApicurioDistributedSessionFactory() {
+            NoOpSessionFactory noop = new NoOpSessionFactory();
+            @Override
+            public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+                return noop.joinSession(designId, handler);
+            }
+
+            @Override
+            public String getSessionType() {
+                return noop.getSessionType();
+            }
+
+            @Override
+            public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+                noop.setRollupExecutor(rollupExecutor);
+            }
+        };
+
+        RollupExecutor rollupExecutor = new RollupExecutor();
+        rollupExecutor.setStorage(storage);
+        rollupExecutor.setOaiCommandExecutor(new OaiCommandExecutor());
+        distSessionFactory.setRollupExecutor(rollupExecutor);
+        operationProcessor = new ApicurioOperationProcessor();
+
         TestUtil.setPrivateField(manager, "storage", storage);
+        TestUtil.setPrivateField(manager, "distSessionFactory", distSessionFactory);
+        TestUtil.setPrivateField(manager, "operationProcessor", operationProcessor);
     }
     
     @After

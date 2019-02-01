@@ -16,42 +16,6 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
-import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.argument.CharacterStreamArgument;
-import org.jdbi.v3.core.mapper.ColumnMapper;
-import org.jdbi.v3.core.mapper.RowMapper;
-import org.jdbi.v3.core.mapper.SingleColumnMapper;
-import org.jdbi.v3.core.result.ResultIterable;
-import org.jdbi.v3.core.statement.Query;
-import org.jdbi.v3.core.statement.StatementContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
@@ -72,6 +36,41 @@ import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.argument.CharacterStreamArgument;
+import org.jdbi.v3.core.mapper.ColumnMapper;
+import org.jdbi.v3.core.mapper.RowMapper;
+import org.jdbi.v3.core.mapper.SingleColumnMapper;
+import org.jdbi.v3.core.result.ResultIterable;
+import org.jdbi.v3.core.statement.Query;
+import org.jdbi.v3.core.statement.StatementContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * A JDBC/SQL implementation of the storage layer.
@@ -83,7 +82,7 @@ public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
     private static int DB_VERSION = 8;
-    private static Object dbMutex = new Object();
+    private static final Object dbMutex = new Object();
 
     @Inject
     private HubConfiguration config;
@@ -420,7 +419,7 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException {
-        logger.debug("Getting a list of all Linked Accouts for {}.", userId);
+        logger.debug("Getting a list of all Linked Accounts for {}.", userId);
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectLinkedAccounts();
@@ -1314,7 +1313,23 @@ public class JdbcStorage implements IStorage {
         }
     }
 
-    
+    @Override
+    public Optional<ApiDesignCommand> getLatestCommand(String designId) throws NotFoundException, StorageException {
+        try {
+            return this.jdbi.withHandle(handle -> {
+                String statement = sqlStatements.selectLatestContentCommand();
+                Query query = handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId));
+                return query.map(ApiDesignCommandRowMapper.instance).findFirst();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting content document.", e);
+        }
+    }
+
+
     /**
      * A row mapper to read an api design from the DB (as a single row in a SELECT)
      * and return an ApiDesign instance.
@@ -1627,5 +1642,6 @@ public class JdbcStorage implements IStorage {
         }
 
     }
+
 
 }

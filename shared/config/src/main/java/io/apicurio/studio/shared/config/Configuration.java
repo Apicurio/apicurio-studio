@@ -68,6 +68,4 @@ public abstract class Configuration {
 
         return rval;
     }
-
-    
 }

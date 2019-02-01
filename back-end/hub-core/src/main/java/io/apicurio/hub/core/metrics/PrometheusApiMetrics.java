@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.editing.metrics;
+package io.apicurio.hub.core.metrics;
 
-import java.io.IOException;
-import java.io.StringWriter;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-
+import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
+import java.io.StringWriter;
 
 /**
  * An implementation of the metrics interface that exposes metrics to
@@ -48,7 +48,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#socketConnected(java.lang.String, java.lang.String)
+     * @see IEditingMetrics#socketConnected(java.lang.String, java.lang.String)
      */
     @Override
     public void socketConnected(String designId, String user) {
@@ -57,7 +57,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#editingSessionCreated(java.lang.String)
+     * @see IEditingMetrics#editingSessionCreated(java.lang.String)
      */
     @Override
     public void editingSessionCreated(String designId) {
@@ -65,7 +65,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#contentCommand(java.lang.String)
+     * @see IEditingMetrics#contentCommand(java.lang.String)
      */
     @Override
     public void contentCommand(String designId) {
@@ -73,7 +73,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
 
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#getCurrentMetricsInfo()
+     * @see IEditingMetrics#getCurrentMetricsInfo()
      */
     @Override
     public String getCurrentMetricsInfo() throws IOException {
@@ -85,7 +85,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#undoCommand(java.lang.String, long)
+     * @see IEditingMetrics#undoCommand(java.lang.String, long)
      */
     @Override
     public void undoCommand(String designId, long contentVersion) {
@@ -93,7 +93,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.editing.metrics.IEditingMetrics#redoCommand(java.lang.String, long)
+     * @see IEditingMetrics#redoCommand(java.lang.String, long)
      */
     @Override
     public void redoCommand(String designId, long contentVersion) {

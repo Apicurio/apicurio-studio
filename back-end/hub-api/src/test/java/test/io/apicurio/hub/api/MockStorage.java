@@ -16,15 +16,6 @@
 
 package test.io.apicurio.hub.api;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
@@ -43,6 +34,16 @@ import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -55,7 +56,6 @@ public class MockStorage implements IStorage {
     private Map<String, MockInviteRow> invites = new HashMap<>();
     private Map<String, String> permissions = new HashMap<>();
     private int counter = 1;
-    
     /**
      * @see io.apicurio.hub.core.storage.IStorage#hasOwnerPermission(java.lang.String, java.lang.String)
      */
@@ -313,6 +313,31 @@ public class MockStorage implements IStorage {
         }
         
         return rval;
+    }
+
+
+
+    @Override
+    public Optional<ApiDesignCommand> getLatestCommand(String designId) throws NotFoundException, StorageException {
+        List<MockContentRow> list = this.content.get(designId);
+        if (list == null || list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        // Most recent command should be last element in list of type ApiContentType.Command.
+        for (int i = list.size()-1; i >= 0; i--) {
+            MockContentRow row = list.get(i);
+            if (row.designId.equals(designId) && row.type == ApiContentType.Command) {
+                ApiDesignCommand cmd = new ApiDesignCommand();
+                cmd.setContentVersion(row.version);
+                cmd.setCommand(row.data);
+                cmd.setAuthor(row.createdBy);
+                cmd.setReverted(row.reverted);
+                return Optional.of(cmd);
+            }
+        }
+
+        return Optional.empty();
     }
     
     /**
@@ -664,7 +689,7 @@ public class MockStorage implements IStorage {
     public void deleteCodegenProjects(String userId, String designId)
             throws NotFoundException, StorageException {
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
      */

@@ -16,13 +16,13 @@
 
 package test.io.apicurio.hub.api;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.ServerError;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Mock version of the editing session manager.
@@ -64,7 +64,7 @@ public class MockEditingSessionManager implements IEditingSessionManager {
     public synchronized ApiDesignEditingSession getOrCreateEditingSession(String designId) {
         ApiDesignEditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new ApiDesignEditingSession(designId);
+            session = new ApiDesignEditingSession(designId, null, null); //TODO FIXME!!
             editingSessions.put(designId, session);
         }
         return session;

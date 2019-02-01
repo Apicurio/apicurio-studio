@@ -24,7 +24,7 @@ import java.util.List;
  * @author eric.wittmann@gmail.com
  */
 public interface ISqlStatements {
-    
+
     /**
      * A statement that returns 'true' if the database has already been initialized.
      */
@@ -37,6 +37,7 @@ public interface ISqlStatements {
 
     /**
      * A sequence of statements needed to upgrade the DB from one version to another.
+     *
      * @param fromVersion
      * @param toVersion
      */
@@ -52,7 +53,7 @@ public interface ISqlStatements {
      * A statement used to insert a row into the accounts table.
      */
     public String insertLinkedAccount();
-    
+
     /**
      * A statement used to select all API designs.
      */
@@ -127,7 +128,7 @@ public interface ISqlStatements {
      * A statement used to insert a content row.
      */
     public String insertContent();
-    
+
     /**
      * A statement used to undo some content.
      */
@@ -157,7 +158,7 @@ public interface ISqlStatements {
      * A statement used to determine if a user has ownership permission on an API design.
      */
     public String hasOwnerPermission();
-    
+
     /**
      * A statement used to return all rows in the ACL table for a given API design.
      */
@@ -195,7 +196,7 @@ public interface ISqlStatements {
      * A statement used to return all of the collaboration invitations for a given API design.
      */
     public String selectCollaborationInvitations();
-    
+
     /**
      * A statement used to return a single collaboration invitation by its ID for a given API design.
      */
@@ -230,10 +231,10 @@ public interface ISqlStatements {
     /**
      * A statement used to select rows from the api_content table (limited by a range) per user.
      */
-	public String selectUserActivity();
+    public String selectUserActivity();
 
     /**
-     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * A statement used to select rows from the api_content table (limited by a range).  Selects
      * only the publication rows.
      */
     public String selectApiPublicationActivity();
@@ -247,36 +248,40 @@ public interface ISqlStatements {
     /**
      * A statement used to select the most recent 5 APIs for a given user.
      */
-	public String selectRecentApiDesigns();
-	
-	/**
-	 * A statement used to select the codegen projects for an API design.
-	 */
+    public String selectRecentApiDesigns();
+
+    /**
+     * A statement used to select the codegen projects for an API design.
+     */
     public String selectCodegenProjects();
 
     /**
      * A statement used to select a single codegen project.
      */
     public String selectCodegenProject();
-	
-	/**
-	 * A statement used to insert a single row on the codegen table.
-	 */
-	public String insertCodegenProject();
-	
-	/**
-	 * A statement used to update a row in the codegen table.
-	 */
-	public String updateCodegenProject();
-	
-	/**
-	 * A statement used to delete a single row in the codegen table.
-	 */
-	public String deleteCodegenProject();
-	
-	/**
-	 * A statement used to delete all rows in the codegen table for a single design_id.
-	 */
-	public String deleteCodegenProjects();
 
+    /**
+     * A statement used to insert a single row on the codegen table.
+     */
+    public String insertCodegenProject();
+
+    /**
+     * A statement used to update a row in the codegen table.
+     */
+    public String updateCodegenProject();
+
+    /**
+     * A statement used to delete a single row in the codegen table.
+     */
+    public String deleteCodegenProject();
+
+    /**
+     * A statement used to delete all rows in the codegen table for a single design_id.
+     */
+    public String deleteCodegenProjects();
+
+    /**
+     * A statement used to select the latest command for a single design_id.
+     */
+    public String selectLatestContentCommand();
 }

@@ -273,7 +273,7 @@ public class VerifyDistributedSetupTestIT {
 
     private static WebArchive getApiWar() {
         File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:0.2.20-SNAPSHOT")
+                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:0.2.21-SNAPSHOT")
                 .withTransitivity()
                 .asSingleFile();
         return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
@@ -283,7 +283,7 @@ public class VerifyDistributedSetupTestIT {
 
     private static WebArchive getWsWar() {
         File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:0.2.20-SNAPSHOT")
+                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:0.2.21-SNAPSHOT")
                 .withTransitivity()
                 .asSingleFile();
         return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)

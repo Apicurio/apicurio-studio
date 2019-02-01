@@ -79,7 +79,11 @@ export class ServersSectionComponent extends AbstractBaseComponent {
     }
 
     public serversPath(): string {
-        return ModelUtils.nodeToPath(this.parent) + "/servers";
+        if (this.parent.ownerDocument() === this.parent) {
+            return "/servers";
+        } else {
+            return ModelUtils.nodeToPath(this.parent) + "/servers";
+        }
     }
 
     /**

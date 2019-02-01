@@ -157,7 +157,11 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
     }
 
     public securityRequirementsPath(): string {
-        return ModelUtils.nodeToPath(this.parent) + "/security";
+        if (this.parent.ownerDocument() === this.parent) {
+            return "/security";
+        } else {
+            return ModelUtils.nodeToPath(this.parent) + "/security";
+        }
     }
 
     /**

@@ -88,6 +88,14 @@
     <url-pattern>/download</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>PreviewServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.PreviewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewServlet</servlet-name>
+    <url-pattern>/preview</url-pattern>
+  </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>All</web-resource-name>
@@ -98,6 +106,7 @@
       <url-pattern>/settings/*</url-pattern>
       <url-pattern>/apis/*</url-pattern>
       <url-pattern>/download</url-pattern>
+      <url-pattern>/preview</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>*</role-name>

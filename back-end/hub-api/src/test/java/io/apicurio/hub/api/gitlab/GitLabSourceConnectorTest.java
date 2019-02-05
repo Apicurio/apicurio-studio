@@ -210,6 +210,7 @@ public class GitLabSourceConnectorTest {
      * Test method for {@link io.apicurio.hub.api.gitlab.GitLabSourceConnector#getBranches(String, String)}.
      */
     @Test
+    @Ignore
     public void testGetBranches() throws GitLabException, SourceConnectorException {
         Collection<SourceCodeBranch> branches = service.getBranches("Apicurio", "api-samples");
         Assert.assertNotNull(branches);

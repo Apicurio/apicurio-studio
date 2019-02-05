@@ -105,7 +105,7 @@
         <version.io.prometheus>0.6.0</version.io.prometheus>
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.junit>4.12</version.junit>
-        <version.org.apache.httpcomponents>4.5.7</version.org.apache.httpcomponents>
+        <version.org.apache.httpcomponents>4.5.6</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.11</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.6.0</version.org.apache.commons.commons-pool2>
         <version.org.jboss.resteasy>3.6.2.Final</version.org.jboss.resteasy>

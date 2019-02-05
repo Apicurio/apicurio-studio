@@ -26,6 +26,7 @@
             </activation>
             <modules>
                 <module>release</module>
+                <module>httpmon</module>
             </modules>
         </profile>
     </profiles>

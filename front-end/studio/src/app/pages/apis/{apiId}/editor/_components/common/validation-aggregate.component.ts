@@ -29,6 +29,7 @@ import {SelectionService} from "../../_services/selection.service";
     moduleId: module.id,
     selector: "validation-aggregate",
     templateUrl: "validation-aggregate.component.html",
+    styleUrls: [ "validation-aggregate.component.css" ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ValidationAggregateComponent extends AbstractBaseComponent {
@@ -156,6 +157,18 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
 
     public summaryFor(problem: OasValidationProblem): string {
         return this.problemsService.summary(problem);
+    }
+
+    public goTo(problem: OasValidationProblem, event: MouseEvent): void {
+        this.close();
+        let goToPath: string = problem.nodePath.toString();
+        if (problem.property) {
+            goToPath += "/" + problem.property;
+        }
+        this.__selectionService.select(goToPath);
+        this.__selectionService.highlightPath(goToPath);
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     protected log(message: string): void {

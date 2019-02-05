@@ -1,0 +1,7 @@
+.validation-aggregate .validation-aggregate-panel .problem a {
+  color: #666;
+  cursor: pointer;
+}
+.validation-aggregate .validation-aggregate-panel .problem a:hover {
+  color: #0088ce;
+}

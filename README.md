@@ -38,7 +38,13 @@ The following command compiles all the code, installs the JARs into your local M
 ```
 ## Quickstart (i.e. How To Run It)
 
-TBD
+The fastest way to get started using Apicurio Studio is to use the quickstart. To start up the quickstart on the included Wildfly distribution, use the following command from the top-level of the repository:
+
+```bash
+  $ ./distro/quickstart/target/apicurio-studio-*-SNAPSHOT/bin/standalone.sh
+```
+
+This will start Wildfly on your local machine and you can access the UI at http://localhost:8080.
 
 ## Contribute fixes and features
 

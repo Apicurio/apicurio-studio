@@ -17,7 +17,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.slf4j.Logger;
@@ -64,7 +64,7 @@ public class OperationProcessorDispatcher {
      * @param session
      * @param payload
      */
-    public void process(ApiDesignEditingSession editingSession, ISessionContext session, JsonNode payload) {
+    public void process(EditingSession editingSession, ISessionContext session, JsonNode payload) {
         String opType = payload.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 

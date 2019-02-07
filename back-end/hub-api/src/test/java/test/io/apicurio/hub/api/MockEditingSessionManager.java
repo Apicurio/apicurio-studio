@@ -16,7 +16,7 @@
 
 package test.io.apicurio.hub.api;
 
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.ServerError;
 
@@ -31,7 +31,7 @@ import java.util.UUID;
 public class MockEditingSessionManager implements IEditingSessionManager {
 
     private Map<String, Long> data = new HashMap<>();
-    private Map<String, ApiDesignEditingSession> editingSessions = new HashMap<>();
+    private Map<String, EditingSession> editingSessions = new HashMap<>();
 
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#createSessionUuid(java.lang.String, java.lang.String, java.lang.String, long)
@@ -61,10 +61,10 @@ public class MockEditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getOrCreateEditingSession(java.lang.String)
      */
     @Override
-    public synchronized ApiDesignEditingSession getOrCreateEditingSession(String designId) {
-        ApiDesignEditingSession session = editingSessions.get(designId);
+    public synchronized EditingSession getOrCreateEditingSession(String designId) {
+        EditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new ApiDesignEditingSession(designId, null, null); //TODO FIXME!!
+            session = new EditingSession(designId, null, null); //TODO FIXME!!
             editingSessions.put(designId, session);
         }
         return session;
@@ -74,15 +74,15 @@ public class MockEditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getEditingSession(java.lang.String)
      */
     @Override
-    public synchronized ApiDesignEditingSession getEditingSession(String designId) {
+    public synchronized EditingSession getEditingSession(String designId) {
         return editingSessions.get(designId);
     }
     
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.ApiDesignEditingSession)
+     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.EditingSession)
      */
     @Override
-    public synchronized void closeEditingSession(ApiDesignEditingSession editingSession) {
+    public synchronized void closeEditingSession(EditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
     }
 

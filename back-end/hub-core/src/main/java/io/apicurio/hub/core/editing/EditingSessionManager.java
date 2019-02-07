@@ -48,7 +48,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     @Inject
     private IStorage storage;
     
-    private Map<String, ApiDesignEditingSession> editingSessions = new HashMap<>();
+    private Map<String, EditingSession> editingSessions = new HashMap<>();
 
     @Inject
     private IDistributedSessionFactory distSessionFactory;
@@ -94,10 +94,10 @@ public class EditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getOrCreateEditingSession(java.lang.String)
      */
     @Override
-    public synchronized ApiDesignEditingSession getOrCreateEditingSession(String designId) {
-        ApiDesignEditingSession session = editingSessions.get(designId);
+    public synchronized EditingSession getOrCreateEditingSession(String designId) {
+        EditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new ApiDesignEditingSession(designId, distSessionFactory, operationProcessor);
+            session = new EditingSession(designId, distSessionFactory, operationProcessor);
             editingSessions.put(designId, session);
         }
         return session;
@@ -107,15 +107,15 @@ public class EditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getEditingSession(java.lang.String)
      */
     @Override
-    public synchronized ApiDesignEditingSession getEditingSession(String designId) {
+    public synchronized EditingSession getEditingSession(String designId) {
         return editingSessions.get(designId);
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.ApiDesignEditingSession)
+     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.EditingSession)
      */
     @Override
-    public synchronized void closeEditingSession(ApiDesignEditingSession editingSession) {
+    public synchronized void closeEditingSession(EditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
         editingSession.close();
     }

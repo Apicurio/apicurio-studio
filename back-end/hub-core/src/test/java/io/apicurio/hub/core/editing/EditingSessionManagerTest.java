@@ -167,14 +167,14 @@ public class EditingSessionManagerTest {
      */
     @Test
     public void testGetOrCreateEditingSession() throws Exception {
-        ApiDesignEditingSession session = this.manager.getOrCreateEditingSession("100");
+        EditingSession session = this.manager.getOrCreateEditingSession("100");
         Assert.assertNotNull(session);
         Assert.assertEquals("100", session.getDesignId());
-        ApiDesignEditingSession session2 = this.manager.getOrCreateEditingSession("100");
+        EditingSession session2 = this.manager.getOrCreateEditingSession("100");
         Assert.assertNotNull(session);
         Assert.assertEquals("100", session.getDesignId());
         Assert.assertEquals(session, session2);
-        ApiDesignEditingSession session3 = this.manager.getOrCreateEditingSession("101");
+        EditingSession session3 = this.manager.getOrCreateEditingSession("101");
         Assert.assertNotNull(session3);
         Assert.assertNotEquals(session, session3);
         Assert.assertEquals("101", session3.getDesignId());
@@ -185,26 +185,26 @@ public class EditingSessionManagerTest {
      */
     @Test
     public void testGetEditingSession() throws Exception {
-        ApiDesignEditingSession session = this.manager.getOrCreateEditingSession("200");
+        EditingSession session = this.manager.getOrCreateEditingSession("200");
         Assert.assertNotNull(session);
         Assert.assertEquals("200", session.getDesignId());
-        ApiDesignEditingSession session2 = this.manager.getEditingSession("200");
+        EditingSession session2 = this.manager.getEditingSession("200");
         Assert.assertNotNull(session);
         Assert.assertEquals("200", session.getDesignId());
         Assert.assertEquals(session, session2);
-        ApiDesignEditingSession session3 = this.manager.getEditingSession("201");
+        EditingSession session3 = this.manager.getEditingSession("201");
         Assert.assertNull(session3);
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.core.editing.EditingSessionManager#closeEditingSession(ApiDesignEditingSession)}
+     * Test method for {@link io.apicurio.hub.core.editing.EditingSessionManager#closeEditingSession(EditingSession)}
      */
     @Test
     public void testCloseEditingSession() throws Exception {
-        ApiDesignEditingSession session = this.manager.getOrCreateEditingSession("300");
+        EditingSession session = this.manager.getOrCreateEditingSession("300");
         Assert.assertNotNull(session);
         Assert.assertEquals("300", session.getDesignId());
-        ApiDesignEditingSession session2 = this.manager.getEditingSession("300");
+        EditingSession session2 = this.manager.getEditingSession("300");
         Assert.assertNotNull(session);
         Assert.assertEquals("300", session.getDesignId());
         Assert.assertEquals(session, session2);

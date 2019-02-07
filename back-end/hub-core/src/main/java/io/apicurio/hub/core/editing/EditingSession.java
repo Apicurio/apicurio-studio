@@ -16,6 +16,15 @@
 
 package io.apicurio.hub.core.editing;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
@@ -30,23 +39,15 @@ import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
 import io.apicurio.hub.core.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Models a single, shared editing session for an API Design.
  * @author eric.wittmann@gmail.com
  */
-public class ApiDesignEditingSession implements Closeable {
+public class EditingSession implements IEditingSession {
 
-    private static Logger logger = LoggerFactory.getLogger(ApiDesignEditingSession.class);
+    private static Logger logger = LoggerFactory.getLogger(EditingSession.class);
+    
     private final String designId;
     private final Map<String, ISessionContext> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
@@ -58,9 +59,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param factory
      * @param operationProcessor
      */
-    public ApiDesignEditingSession(String designId,
-                                   IDistributedSessionFactory factory,
-                                   OperationProcessorDispatcher operationProcessor) {
+    public EditingSession(String designId, IDistributedSessionFactory factory,
+            OperationProcessorDispatcher operationProcessor) {
         this.designId = designId;
         // Join a remote session (if there is one configured).
         this.distributedSession = factory.joinSession(designId, payload -> {
@@ -71,40 +71,43 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
-     * @return the designId
+     * @see io.apicurio.hub.core.editing.IEditingSession#getDesignId()
      */
+    @Override
     public String getDesignId() {
         return designId;
     }
     
     /**
-     * Resolves the given session to a user name.
-     * @param session
+     * @see io.apicurio.hub.core.editing.IEditingSession#getUser(io.apicurio.hub.core.editing.ISessionContext)
      */
+    @Override
     public String getUser(ISessionContext session) {
         return users.get(session.getId());
     }
 
     /**
-     * Join the websocket session to this design editing session.
+     * @see io.apicurio.hub.core.editing.IEditingSession#join(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
      */
+    @Override
     public void join(ISessionContext session, String user) {
         this.sessions.put(session.getId(), session);
         this.users.put(session.getId(), user);
     }
 
     /**
-     * Removes a websocket session from this design editing session.
-     * @param session
+     * @see io.apicurio.hub.core.editing.IEditingSession#leave(io.apicurio.hub.core.editing.ISessionContext)
      */
+    @Override
     public void leave(ISessionContext session) {
         this.sessions.remove(session.getId());
         this.users.remove(session.getId());
     }
 
     /**
-     * @return true if the editing session has no more websocket sessions
+     * @see io.apicurio.hub.core.editing.IEditingSession#isEmpty()
      */
+    @Override
     public boolean isEmpty() {
         return this.sessions.isEmpty();
     }
@@ -118,66 +121,54 @@ public class ApiDesignEditingSession implements Closeable {
         distributedSession.close();
     }
 
-    private void sendListClientsToOthers() {
-        distributedSession.sendOperation(ListClientsOperation.listClients());
+    /**
+     * @see io.apicurio.hub.core.editing.IEditingSession#getMembers()
+     */
+    @Override
+    public Set<ISessionContext> getMembers() {
+        return new HashSet<>(this.sessions.values());
     }
     
     /**
-     * Returns a set of all sessions currently connected.
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendCommandToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignCommand)
      */
-    public Set<ISessionContext> getSessions() {
-        return new HashSet<>(this.sessions.values());
-    }
-
-    /**
-     * Sends the given command to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param command
-     */
+    @Override
     public void sendCommandToOthers(ISessionContext excludeSession, String user, ApiDesignCommand command) {
         VersionedCommandOperation versionedCommand = VersionedCommandOperation.command(command.getContentVersion(), command.getCommand());
         sendToAllSessions(excludeSession, versionedCommand);
     }
 
     /**
-     * Sends the "undo" signal to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param undo
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendUndoToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignUndoRedo)
      */
+    @Override
     public void sendUndoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo undo) {
         VersionedOperation undoOperation = VersionedOperation.undo(undo.getContentVersion());
         sendToAllSessions(excludeSession, undoOperation);
     }
 
     /**
-     * Sends the "undo" signal to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param redo
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendRedoToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignUndoRedo)
      */
+    @Override
     public void sendRedoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo redo) {
         VersionedOperation redoOperation = VersionedOperation.redo(redo.getContentVersion());
         sendToAllSessions(excludeSession, redoOperation);
     }
 
     /**
-     * Sends the given selection change event to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param newSelection
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendUserSelectionToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, java.lang.String)
      */
+    @Override
     public void sendUserSelectionToOthers(ISessionContext excludeSession, String user, String newSelection) {
         SelectionOperation selectionOperation = SelectionOperation.select(user, excludeSession.getId(), newSelection);
         sendToAllSessions(excludeSession, selectionOperation);
     }
 
     /**
-     * Sends an acknowledgement message to the given client.
-     * @param toSession
-     * @param ack
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendAckTo(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.beans.ApiDesignCommandAck)
      */
+    @Override
     public void sendAckTo(ISessionContext toSession, ApiDesignCommandAck ack) {
         // TODO can we meld this with ApiDesignCommandAck ?
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion(), ack.getCommandId());
@@ -189,10 +180,9 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
-     * Sends an acknowledgement message to the given client.
-     * @param toSession
-     * @param ack
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendAckTo(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.beans.ApiDesignUndoRedoAck)
      */
+    @Override
     public void sendAckTo(ISessionContext toSession, ApiDesignUndoRedoAck ack) {
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion());
         try {
@@ -203,20 +193,18 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
-     * Sends a message to the other users that userId has joined the session.
-     * @param joinedSession
-     * @param joinedUser
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
      */
+    @Override
     public void sendJoinToOthers(ISessionContext joinedSession, String joinedUser) {
         JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedSession.getId());
         sendToAllSessions(joinedSession, joinOperation);
     }
 
     /**
-     * Sends a message to the other users that userId has joined the session.
-     * @param leftSession
-     * @param leftUser
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendLeaveToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
      */
+    @Override
     public void sendLeaveToOthers(ISessionContext leftSession, String leftUser) {
         JoinLeaveOperation leaveOperation = JoinLeaveOperation.leave(leftUser, leftSession.getId());
         // Don't send the message to the user who is leaving
@@ -224,12 +212,9 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     /**
-     * Sends a "join" message to the given session.  The join message will include the user Id and 
-     * session ID of the user joining the session.
-     * @param toSession
-     * @param joinedUser
-     * @param joinedId
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinTo(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, java.lang.String)
      */
+    @Override
     public void sendJoinTo(ISessionContext toSession, String joinedUser, String joinedId) {
         JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedId);
         try {
@@ -239,6 +224,10 @@ public class ApiDesignEditingSession implements Closeable {
         }
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     */
+    @Override
     public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation) {
         for (ISessionContext otherSession : this.sessions.values()) {
             if (otherSession != excludeSession) {
@@ -253,10 +242,19 @@ public class ApiDesignEditingSession implements Closeable {
         distributedSession.sendOperation(operation);
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinToRemote()
+     */
+    @Override
     public void sendJoinToRemote() {
         for (ISessionContext otherSession : this.sessions.values()) {
             JoinLeaveOperation joinOperation = JoinLeaveOperation.join(getUser(otherSession), otherSession.getId());
             distributedSession.sendOperation(joinOperation);
         }
     }
+
+    private void sendListClientsToOthers() {
+        distributedSession.sendOperation(ListClientsOperation.listClients());
+    }
+    
 }

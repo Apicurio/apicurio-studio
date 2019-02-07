@@ -15,7 +15,7 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
@@ -32,7 +32,7 @@ public class LeaveProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(LeaveProcessor.class);
 
-    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
         JoinLeaveOperation lOp = (JoinLeaveOperation) bo;
         logger.debug("Received leave operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -42,7 +42,7 @@ public class LeaveProcessor implements IOperationProcessor {
         }
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
+    private void processRemote(EditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote join sent to local clients.");
     }

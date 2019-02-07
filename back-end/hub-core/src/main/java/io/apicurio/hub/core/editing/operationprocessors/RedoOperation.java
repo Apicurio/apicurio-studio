@@ -17,7 +17,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
@@ -45,7 +45,7 @@ public class RedoOperation implements IOperationProcessor {
     private IEditingMetrics metrics;
 
 
-    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
         VersionedOperation redoOperation = (VersionedOperation) bo;
 
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -55,7 +55,7 @@ public class RedoOperation implements IOperationProcessor {
         }
     }
 
-    public void processLocal(ApiDesignEditingSession editingSession, ISessionContext session, VersionedOperation redo) {
+    public void processLocal(EditingSession editingSession, ISessionContext session, VersionedOperation redo) {
         String user = editingSession.getUser(session);
 
         long contentVersion = redo.getContentVersion();
@@ -92,7 +92,7 @@ public class RedoOperation implements IOperationProcessor {
         logger.debug("Redo sent to 'other' clients.");
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, VersionedOperation redo) {
+    private void processRemote(EditingSession editingSession, ISessionContext session, VersionedOperation redo) {
         editingSession.sendToAllSessions(session, redo);
         logger.debug("Remote redo sent to local clients.");
     }

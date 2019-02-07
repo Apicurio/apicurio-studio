@@ -17,7 +17,7 @@ package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.editing.ISharedApicurioSession;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +29,10 @@ import javax.inject.Inject;
 /**
  * Returns user-configured (or default) distributed session factory according to user configuration.
  *
- * Discovers all visible implementations of {@link ApicurioDistributedSessionFactory}, and registers
- * them by type/name {@link ApicurioDistributedSessionFactory#getSessionType()}.
+ * Discovers all visible implementations of {@link IApicurioDistributedSessionFactory}, and registers
+ * them by type/name {@link IApicurioDistributedSessionFactory#getSessionType()}.
  *
- * @see ApicurioDistributedSessionFactory
+ * @see IApicurioDistributedSessionFactory
  * @see HubConfiguration
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -51,12 +51,12 @@ public class DistributedImplementationProducer {
     private NoOpSessionFactory noop;
 
     @Produces
-    public ApicurioDistributedSessionFactory create() {
+    public IApicurioDistributedSessionFactory create() {
         if ("jms".equalsIgnoreCase(config.getDistributedSessionType())) {
             logger.debug("Selecting JMS distributed session");
-            return new ApicurioDistributedSessionFactory() {
+            return new IApicurioDistributedSessionFactory() {
                 @Override
-                public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+                public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
                     return jms.joinSession(designId, handler);
                 }
 
@@ -72,8 +72,8 @@ public class DistributedImplementationProducer {
             };
         } else {
             logger.debug("Selecting NoOp distributed session");
-            return new ApicurioDistributedSessionFactory() {
-                public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+            return new IApicurioDistributedSessionFactory() {
+                public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
                     return noop.joinSession(designId, handler);
                 }
 

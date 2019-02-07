@@ -16,7 +16,7 @@
 
 package io.apicurio.hub.core.editing;
 
-import io.apicurio.hub.core.editing.distributed.ApicurioDistributedSessionFactory;
+import io.apicurio.hub.core.editing.distributed.IApicurioDistributedSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
@@ -51,7 +51,7 @@ public class EditingSessionManager implements IEditingSessionManager {
     private Map<String, ApiDesignEditingSession> editingSessions = new HashMap<>();
 
     @Inject
-    private ApicurioDistributedSessionFactory distSessionFactory;
+    private IApicurioDistributedSessionFactory distSessionFactory;
 
     @Inject
     private ApicurioOperationProcessor operationProcessor;

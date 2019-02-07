@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.editing.ISharedApicurioSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
@@ -37,7 +37,7 @@ public class NoOpSessionFactory {//implements ApicurioDistributedSessionFactory 
     @Inject
     private IRollupExecutor rollupExecutor;
 
-    public SharedApicurioSession joinSession(String id, OperationHandler handler) {
+    public ISharedApicurioSession joinSession(String id, OperationHandler handler) {
         return new NoOpSharedSession(id);
     }
 
@@ -49,7 +49,7 @@ public class NoOpSessionFactory {//implements ApicurioDistributedSessionFactory 
         this.rollupExecutor = rollupExecutor;
     }
 
-    private final class NoOpSharedSession implements SharedApicurioSession {
+    private final class NoOpSharedSession implements ISharedApicurioSession {
         private final Logger logger = LoggerFactory.getLogger(NoOpSharedSession.class);
         private final String designId;
 

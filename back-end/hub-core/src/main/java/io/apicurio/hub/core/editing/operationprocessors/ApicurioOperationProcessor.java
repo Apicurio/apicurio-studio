@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.IApicurioSessionContext;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
@@ -53,7 +53,7 @@ public class ApicurioOperationProcessor {
         }
     }
 
-    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, JsonNode payload) {
+    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, JsonNode payload) {
         String opType = payload.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 

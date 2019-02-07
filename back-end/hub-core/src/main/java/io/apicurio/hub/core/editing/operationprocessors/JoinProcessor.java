@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 
@@ -34,10 +34,10 @@ public class JoinProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(JoinProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.ApiDesignEditingSession, io.apicurio.hub.core.editing.IApicurioSessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.ApiDesignEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
      */
     @Override
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         JoinLeaveOperation jOp = (JoinLeaveOperation) bo;
         logger.debug("Received join operation ", jOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -53,7 +53,7 @@ public class JoinProcessor implements IOperationProcessor {
      * @param session
      * @param undo
      */
-    private void processRemote(ApiDesignEditingSession editingSession, IApicurioSessionContext session, JoinLeaveOperation undo) {
+    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote join sent to local clients.");
     }
@@ -67,10 +67,10 @@ public class JoinProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallKlazz()
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
      */
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return JoinLeaveOperation.class;
     }
 }

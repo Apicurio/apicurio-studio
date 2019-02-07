@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class ListClientsProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(ListClientsProcessor.class);
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         ListClientsOperation lOp = (ListClientsOperation) bo;
         logger.debug("Received 'list clients' operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -53,7 +53,7 @@ public class ListClientsProcessor implements IOperationProcessor {
     }
 
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return ListClientsOperation.class;
     }
 }

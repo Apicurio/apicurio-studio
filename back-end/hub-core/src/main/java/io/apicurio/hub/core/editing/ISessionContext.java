@@ -26,7 +26,7 @@ import java.util.Map;
  * @see Session
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface IApicurioSessionContext {
+public interface ISessionContext {
 
     /**
      * @see Session#getPathParameters()
@@ -34,19 +34,15 @@ public interface IApicurioSessionContext {
     Map<String, String> getPathParameters();
 
     /**
-     * @see Session#getQueryString() ()
-     */
-    String getQueryString();
-
-    /**
      * @see Session#getId()
      */
     String getId();
 
     /**
-     * Get WS query string as map
+     * Gets a query parameter from the session URL.
+     * @param paramName
      */
-    Map<String, String> getQueryStringMap();
+    String getQueryParam(String paramName);
 
     /**
      * Send string payload as text

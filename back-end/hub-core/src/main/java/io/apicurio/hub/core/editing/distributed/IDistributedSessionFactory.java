@@ -24,7 +24,7 @@ import io.apicurio.hub.core.storage.IRollupExecutor;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface IApicurioDistributedSessionFactory {
+public interface IDistributedSessionFactory {
     /**
      * Join a shared editing session.
      *

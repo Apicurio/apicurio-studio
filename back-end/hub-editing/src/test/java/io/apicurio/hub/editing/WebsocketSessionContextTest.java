@@ -28,24 +28,24 @@ import org.junit.Test;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class EditApiDesignEndpointTest {
+public class WebsocketSessionContextTest {
 
     /**
      * Test method for {@link io.apicurio.hub.editing.EditApiDesignEndpoint#parseQueryString(java.lang.String)}.
      */
     @Test
     public void testParseQueryString() throws Exception {
-        Map<String, String> map = EditApiDesignEndpoint.parseQueryString("");
+        Map<String, String> map = WebsocketSessionContext.parseQueryString("");
         Assert.assertEquals(Collections.EMPTY_MAP, map);
         
-        map = EditApiDesignEndpoint.parseQueryString("foo=bar");
+        map = WebsocketSessionContext.parseQueryString("foo=bar");
         Assert.assertEquals(toMap("foo", "bar"), map);
         
-        map = EditApiDesignEndpoint.parseQueryString("foo=bar&hello=world&gosh=darn");
+        map = WebsocketSessionContext.parseQueryString("foo=bar&hello=world&gosh=darn");
         Assert.assertEquals(toMap("foo", "bar", "hello", "world", "gosh", "darn"), map);
         
         String url = "http://www.example.org?foo=bar";
-        map = EditApiDesignEndpoint.parseQueryString("foo=bar&url=" + URLEncoder.encode(url, StandardCharsets.UTF_8.name()));
+        map = WebsocketSessionContext.parseQueryString("foo=bar&url=" + URLEncoder.encode(url, StandardCharsets.UTF_8.name()));
         Assert.assertEquals(toMap("foo", "bar", "url", url), map);
     }
     

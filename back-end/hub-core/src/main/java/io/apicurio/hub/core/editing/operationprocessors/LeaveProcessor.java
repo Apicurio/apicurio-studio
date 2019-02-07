@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class LeaveProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(LeaveProcessor.class);
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         JoinLeaveOperation lOp = (JoinLeaveOperation) bo;
         logger.debug("Received leave operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -42,7 +42,7 @@ public class LeaveProcessor implements IOperationProcessor {
         }
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, IApicurioSessionContext session, JoinLeaveOperation undo) {
+    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote join sent to local clients.");
     }
@@ -53,7 +53,7 @@ public class LeaveProcessor implements IOperationProcessor {
     }
 
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return JoinLeaveOperation.class;
     }
 }

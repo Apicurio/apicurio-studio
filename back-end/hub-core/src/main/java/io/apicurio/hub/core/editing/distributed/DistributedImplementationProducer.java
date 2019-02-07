@@ -29,10 +29,10 @@ import javax.inject.Inject;
 /**
  * Returns user-configured (or default) distributed session factory according to user configuration.
  *
- * Discovers all visible implementations of {@link IApicurioDistributedSessionFactory}, and registers
- * them by type/name {@link IApicurioDistributedSessionFactory#getSessionType()}.
+ * Discovers all visible implementations of {@link IDistributedSessionFactory}, and registers
+ * them by type/name {@link IDistributedSessionFactory#getSessionType()}.
  *
- * @see IApicurioDistributedSessionFactory
+ * @see IDistributedSessionFactory
  * @see HubConfiguration
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -51,10 +51,10 @@ public class DistributedImplementationProducer {
     private NoOpSessionFactory noop;
 
     @Produces
-    public IApicurioDistributedSessionFactory create() {
+    public IDistributedSessionFactory create() {
         if ("jms".equalsIgnoreCase(config.getDistributedSessionType())) {
             logger.debug("Selecting JMS distributed session");
-            return new IApicurioDistributedSessionFactory() {
+            return new IDistributedSessionFactory() {
                 @Override
                 public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
                     return jms.joinSession(designId, handler);
@@ -72,7 +72,7 @@ public class DistributedImplementationProducer {
             };
         } else {
             logger.debug("Selecting NoOp distributed session");
-            return new IApicurioDistributedSessionFactory() {
+            return new IDistributedSessionFactory() {
                 public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
                     return noop.joinSession(designId, handler);
                 }

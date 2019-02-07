@@ -16,14 +16,31 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public interface IOperationProcessor {
-    void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation op);
+
+    /**
+     * Processes the given operation, performing some work specific to the type of operation.
+     * @param editingSession
+     * @param session
+     * @param operation
+     */
+    void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation operation);
+    
+    /**
+     * Returns the name of the operation that this processor is responsible for.  The name
+     * of the operation maps to the "type" of an inbound websocket message.
+     */
     String getOperationName();
-    Class<? extends BaseOperation> unmarshallKlazz();
+    
+    /**
+     * The class to use when unmarshalling the message payload into a {@link BaseOperation} instance.
+     * @return
+     */
+    Class<? extends BaseOperation> unmarshallClass();
 }

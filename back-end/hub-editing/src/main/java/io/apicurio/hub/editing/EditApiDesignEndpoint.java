@@ -16,22 +16,9 @@
 
 package io.apicurio.hub.editing;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
-import io.apicurio.hub.core.editing.IEditingMetrics;
-import io.apicurio.hub.core.editing.IEditingSessionManager;
-import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
-import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
-import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.storage.IStorage;
-import io.apicurio.hub.core.storage.StorageException;
-import io.apicurio.hub.core.util.JsonUtil;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -42,12 +29,23 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.IEditingMetrics;
+import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
+import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -69,7 +67,7 @@ public class EditApiDesignEndpoint {
     @Inject
     private IEditingMetrics metrics;
     @Inject
-    private ApicurioOperationProcessor operationProcessor;
+    private OperationProcessorDispatcher operationProcessor;
 
     /**
      * Called when a web socket connection is made.  The format for the web socket URL endpoint is:
@@ -83,17 +81,15 @@ public class EditApiDesignEndpoint {
      */
     @OnOpen
     public void onOpenSession(Session nativeSession) {
-        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(nativeSession);
+        WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
         logger.debug("WebSocket opened: {}", session.getId());
         logger.debug("\tdesignId: {}", designId);
 
-        String queryString = session.getQueryString();
-        Map<String, String> queryParams = parseQueryString(queryString);
-        String uuid = queryParams.get("uuid");
-        String userId = queryParams.get("user");
-        String secret = queryParams.get("secret");
+        String uuid = session.getQueryParam("uuid");
+        String userId = session.getQueryParam("user");
+        String secret = session.getQueryParam("secret");
         
         this.metrics.socketConnected(designId, userId);
 
@@ -121,7 +117,7 @@ public class EditApiDesignEndpoint {
             editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
 
             // If no existing sessions, emit metrics event for creating session
-            Set<IApicurioSessionContext> otherSessions = editingSession.getSessions();
+            Set<ISessionContext> otherSessions = editingSession.getSessions();
             if (editingSession.isEmpty()) {
                 this.metrics.editingSessionCreated(designId);
             }
@@ -130,7 +126,7 @@ public class EditApiDesignEndpoint {
             editingSession.join(session, userId);
             
             // Send "join" messages for each user already in the session
-            for (IApicurioSessionContext otherSession : otherSessions) {
+            for (ISessionContext otherSession : otherSessions) {
                 String otherUser = editingSession.getUser(otherSession);
                 editingSession.sendJoinTo(session, otherUser, otherSession.getId());
             }
@@ -178,7 +174,7 @@ public class EditApiDesignEndpoint {
      */
     @OnMessage
     public void onMessage(Session nativeSession, JsonNode message) {
-        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(nativeSession);
+        WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
         ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
@@ -195,9 +191,16 @@ public class EditApiDesignEndpoint {
         // TODO something went wrong if we got here - report an error of some kind
     }
 
+    /**
+     * Called when the websocket session closes.  Used to remove the user from the
+     * editing session and to send a "leave" message to any active collaborators
+     * still connected to the session.
+     * @param sessionx
+     * @param reason
+     */
     @OnClose
     public void onCloseSession(Session sessionx, CloseReason reason) {
-        WebsocketSessionContextImpl session = new WebsocketSessionContextImpl(sessionx);
+        WebsocketSessionContext session = new WebsocketSessionContext(sessionx);
 
         String designId = session.getPathParameters().get("designId");
         logger.debug("Closing a WebSocket due to: {}", reason.getReasonPhrase());
@@ -217,17 +220,5 @@ public class EditApiDesignEndpoint {
         // Others may still remain on the REMOTE editing session, so even if we're the last to leave
         // we should still invoke this.
         editingSession.sendLeaveToOthers(session, userId);
-    }
-    /**
-     * Parses the query string into a map.
-     * @param queryString
-     */
-    protected static Map<String, String> parseQueryString(String queryString) {
-        Map<String, String> rval = new HashMap<>();
-        List<NameValuePair> list = URLEncodedUtils.parse(queryString, StandardCharsets.UTF_8);
-        for (NameValuePair nameValuePair : list) {
-            rval.put(nameValuePair.getName(), nameValuePair.getValue());
-        }
-        return rval;
     }
 }

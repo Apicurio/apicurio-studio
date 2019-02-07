@@ -19,9 +19,9 @@ package io.apicurio.hub.core.editing;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.editing.distributed.IApicurioDistributedSessionFactory;
+import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
 import io.apicurio.hub.core.editing.distributed.NoOpSessionFactory;
-import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
+import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IRollupExecutor;
@@ -52,8 +52,8 @@ public class EditingSessionManagerTest {
     private EditingSessionManager manager;
     private JdbcStorage storage;
     private BasicDataSource ds;
-    private IApicurioDistributedSessionFactory distSessionFactory;
-    private ApicurioOperationProcessor operationProcessor;
+    private IDistributedSessionFactory distSessionFactory;
+    private OperationProcessorDispatcher operationProcessor;
 
     @Before
     public void setUp() {
@@ -69,7 +69,7 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
-        distSessionFactory = new IApicurioDistributedSessionFactory() {
+        distSessionFactory = new IDistributedSessionFactory() {
             NoOpSessionFactory noop = new NoOpSessionFactory();
             @Override
             public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
@@ -91,7 +91,7 @@ public class EditingSessionManagerTest {
         rollupExecutor.setStorage(storage);
         rollupExecutor.setOaiCommandExecutor(new OaiCommandExecutor());
         distSessionFactory.setRollupExecutor(rollupExecutor);
-        operationProcessor = new ApicurioOperationProcessor();
+        operationProcessor = new OperationProcessorDispatcher();
 
         TestUtil.setPrivateField(manager, "storage", storage);
         TestUtil.setPrivateField(manager, "distSessionFactory", distSessionFactory);

@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
@@ -31,11 +31,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * This class manages a set of {@link IOperationProcessor} instances.  Its role is to figure
+ * out which processor to use for a given inbound message (a message sent to the server via
+ * a websocket).  
+ * 
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @ApplicationScoped
-public class ApicurioOperationProcessor {
-    private static Logger logger = LoggerFactory.getLogger(ApicurioOperationProcessor.class);
+public class OperationProcessorDispatcher {
+    private static Logger logger = LoggerFactory.getLogger(OperationProcessorDispatcher.class);
 
     @Inject
     private Instance<IOperationProcessor> processorInstances;
@@ -53,12 +57,19 @@ public class ApicurioOperationProcessor {
         }
     }
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, JsonNode payload) {
+    /**
+     * Process a given JSON payload (obtained from the inbound websocket).  This is done by
+     * figuring out the type of the payload and then unmarshalling it into a {@link BaseOperation}.
+     * @param editingSession
+     * @param session
+     * @param payload
+     */
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, JsonNode payload) {
         String opType = payload.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 
         if (processor != null) {
-            Class<? extends BaseOperation> klazz = processor.unmarshallKlazz();
+            Class<? extends BaseOperation> klazz = processor.unmarshallClass();
             BaseOperation operation = JsonUtil.fromJsonToOperation(payload, klazz);
             processor.process(editingSession, session, operation);
         } else {

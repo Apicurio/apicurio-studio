@@ -20,8 +20,8 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.distributed.IApicurioDistributedSessionFactory;
-import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
+import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
+import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
 import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
@@ -48,7 +48,7 @@ public class ApiDesignEditingSession implements Closeable {
 
     private static Logger logger = LoggerFactory.getLogger(ApiDesignEditingSession.class);
     private final String designId;
-    private final Map<String, IApicurioSessionContext> sessions = new HashMap<>();
+    private final Map<String, ISessionContext> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
     private final ISharedApicurioSession distributedSession;
 
@@ -59,8 +59,8 @@ public class ApiDesignEditingSession implements Closeable {
      * @param operationProcessor
      */
     public ApiDesignEditingSession(String designId,
-                                   IApicurioDistributedSessionFactory factory,
-                                   ApicurioOperationProcessor operationProcessor) {
+                                   IDistributedSessionFactory factory,
+                                   OperationProcessorDispatcher operationProcessor) {
         this.designId = designId;
         // Join a remote session (if there is one configured).
         this.distributedSession = factory.joinSession(designId, payload -> {
@@ -81,14 +81,14 @@ public class ApiDesignEditingSession implements Closeable {
      * Resolves the given session to a user name.
      * @param session
      */
-    public String getUser(IApicurioSessionContext session) {
+    public String getUser(ISessionContext session) {
         return users.get(session.getId());
     }
 
     /**
      * Join the websocket session to this design editing session.
      */
-    public void join(IApicurioSessionContext session, String user) {
+    public void join(ISessionContext session, String user) {
         this.sessions.put(session.getId(), session);
         this.users.put(session.getId(), user);
     }
@@ -97,7 +97,7 @@ public class ApiDesignEditingSession implements Closeable {
      * Removes a websocket session from this design editing session.
      * @param session
      */
-    public void leave(IApicurioSessionContext session) {
+    public void leave(ISessionContext session) {
         this.sessions.remove(session.getId());
         this.users.remove(session.getId());
     }
@@ -125,7 +125,7 @@ public class ApiDesignEditingSession implements Closeable {
     /**
      * Returns a set of all sessions currently connected.
      */
-    public Set<IApicurioSessionContext> getSessions() {
+    public Set<ISessionContext> getSessions() {
         return new HashSet<>(this.sessions.values());
     }
 
@@ -135,7 +135,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param user
      * @param command
      */
-    public void sendCommandToOthers(IApicurioSessionContext excludeSession, String user, ApiDesignCommand command) {
+    public void sendCommandToOthers(ISessionContext excludeSession, String user, ApiDesignCommand command) {
         VersionedCommandOperation versionedCommand = VersionedCommandOperation.command(command.getContentVersion(), command.getCommand());
         sendToAllSessions(excludeSession, versionedCommand);
     }
@@ -146,7 +146,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param user
      * @param undo
      */
-    public void sendUndoToOthers(IApicurioSessionContext excludeSession, String user, ApiDesignUndoRedo undo) {
+    public void sendUndoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo undo) {
         VersionedOperation undoOperation = VersionedOperation.undo(undo.getContentVersion());
         sendToAllSessions(excludeSession, undoOperation);
     }
@@ -157,7 +157,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param user
      * @param redo
      */
-    public void sendRedoToOthers(IApicurioSessionContext excludeSession, String user, ApiDesignUndoRedo redo) {
+    public void sendRedoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo redo) {
         VersionedOperation redoOperation = VersionedOperation.redo(redo.getContentVersion());
         sendToAllSessions(excludeSession, redoOperation);
     }
@@ -168,7 +168,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param user
      * @param newSelection
      */
-    public void sendUserSelectionToOthers(IApicurioSessionContext excludeSession, String user, String newSelection) {
+    public void sendUserSelectionToOthers(ISessionContext excludeSession, String user, String newSelection) {
         SelectionOperation selectionOperation = SelectionOperation.select(user, excludeSession.getId(), newSelection);
         sendToAllSessions(excludeSession, selectionOperation);
     }
@@ -178,7 +178,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param toSession
      * @param ack
      */
-    public void sendAckTo(IApicurioSessionContext toSession, ApiDesignCommandAck ack) {
+    public void sendAckTo(ISessionContext toSession, ApiDesignCommandAck ack) {
         // TODO can we meld this with ApiDesignCommandAck ?
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion(), ack.getCommandId());
         try {
@@ -193,7 +193,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param toSession
      * @param ack
      */
-    public void sendAckTo(IApicurioSessionContext toSession, ApiDesignUndoRedoAck ack) {
+    public void sendAckTo(ISessionContext toSession, ApiDesignUndoRedoAck ack) {
         VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion());
         try {
             toSession.sendAsText(commandIdAction);
@@ -207,7 +207,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param joinedSession
      * @param joinedUser
      */
-    public void sendJoinToOthers(IApicurioSessionContext joinedSession, String joinedUser) {
+    public void sendJoinToOthers(ISessionContext joinedSession, String joinedUser) {
         JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedSession.getId());
         sendToAllSessions(joinedSession, joinOperation);
     }
@@ -217,7 +217,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param leftSession
      * @param leftUser
      */
-    public void sendLeaveToOthers(IApicurioSessionContext leftSession, String leftUser) {
+    public void sendLeaveToOthers(ISessionContext leftSession, String leftUser) {
         JoinLeaveOperation leaveOperation = JoinLeaveOperation.leave(leftUser, leftSession.getId());
         // Don't send the message to the user who is leaving
         sendToAllSessions(leftSession, leaveOperation);
@@ -230,7 +230,7 @@ public class ApiDesignEditingSession implements Closeable {
      * @param joinedUser
      * @param joinedId
      */
-    public void sendJoinTo(IApicurioSessionContext toSession, String joinedUser, String joinedId) {
+    public void sendJoinTo(ISessionContext toSession, String joinedUser, String joinedId) {
         JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedId);
         try {
             toSession.sendAsText(joinOperation);
@@ -239,8 +239,8 @@ public class ApiDesignEditingSession implements Closeable {
         }
     }
 
-    public void sendToAllSessions(IApicurioSessionContext excludeSession, BaseOperation operation) {
-        for (IApicurioSessionContext otherSession : this.sessions.values()) {
+    public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation) {
+        for (ISessionContext otherSession : this.sessions.values()) {
             if (otherSession != excludeSession) {
                 try {
                     otherSession.sendAsText(operation);
@@ -254,7 +254,7 @@ public class ApiDesignEditingSession implements Closeable {
     }
 
     public void sendJoinToRemote() {
-        for (IApicurioSessionContext otherSession : this.sessions.values()) {
+        for (ISessionContext otherSession : this.sessions.values()) {
             JoinLeaveOperation joinOperation = JoinLeaveOperation.join(getUser(otherSession), otherSession.getId());
             distributedSession.sendOperation(joinOperation);
         }

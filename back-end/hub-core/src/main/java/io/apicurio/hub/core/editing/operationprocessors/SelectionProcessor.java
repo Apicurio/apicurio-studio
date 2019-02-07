@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class SelectionProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(SelectionProcessor.class);
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         SelectionOperation selectionOp = (SelectionOperation) bo;
 
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -42,7 +42,7 @@ public class SelectionProcessor implements IOperationProcessor {
         }
     }
 
-    private void processLocal(ApiDesignEditingSession editingSession, IApicurioSessionContext session, SelectionOperation so) {
+    private void processLocal(ApiDesignEditingSession editingSession, ISessionContext session, SelectionOperation so) {
         String user = editingSession.getUser(session);
         String selection = so.getSelection();
         logger.debug("\tuser:" + user);
@@ -51,7 +51,7 @@ public class SelectionProcessor implements IOperationProcessor {
         logger.debug("User selection propagated to 'other' clients.");
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, IApicurioSessionContext session, SelectionOperation so) {
+    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, SelectionOperation so) {
         editingSession.sendToAllSessions(session, so);
         logger.debug("Remote selection sent to local clients.");
     }
@@ -62,7 +62,7 @@ public class SelectionProcessor implements IOperationProcessor {
     }
 
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return SelectionOperation.class;
     }
 }

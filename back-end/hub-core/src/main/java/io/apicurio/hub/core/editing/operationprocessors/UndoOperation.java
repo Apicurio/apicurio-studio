@@ -18,7 +18,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
@@ -44,7 +44,7 @@ public class UndoOperation implements IOperationProcessor {
     @Inject
     private IEditingMetrics metrics;
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         VersionedOperation vOp = (VersionedOperation) bo;
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
             processLocal(editingSession, session, vOp);
@@ -53,7 +53,7 @@ public class UndoOperation implements IOperationProcessor {
         }
     }
 
-    private void processLocal(ApiDesignEditingSession editingSession, IApicurioSessionContext session, VersionedOperation undo) {
+    private void processLocal(ApiDesignEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
         String user = editingSession.getUser(session);
         String designId = editingSession.getDesignId();
 
@@ -90,7 +90,7 @@ public class UndoOperation implements IOperationProcessor {
         logger.debug("Undo sent to 'other' clients.");
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, IApicurioSessionContext session, VersionedOperation undo) {
+    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote undo sent to local clients.");
     }
@@ -101,7 +101,7 @@ public class UndoOperation implements IOperationProcessor {
     }
 
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return VersionedOperation.class;
     }
 }

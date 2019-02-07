@@ -19,7 +19,7 @@ import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.IApicurioSessionContext;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
@@ -44,7 +44,7 @@ public class CommandProcessor implements IOperationProcessor {
     @Inject
     private IEditingMetrics metrics;
 
-    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         VersionedCommandOperation vco = (VersionedCommandOperation) bo;
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
             processLocal(editingSession, session, vco);
@@ -53,7 +53,7 @@ public class CommandProcessor implements IOperationProcessor {
         }
     }
 
-    private void processLocal(ApiDesignEditingSession editingSession, IApicurioSessionContext session, VersionedCommandOperation vco) {
+    private void processLocal(ApiDesignEditingSession editingSession, ISessionContext session, VersionedCommandOperation vco) {
         String user = editingSession.getUser(session);
 
         long localCommandId = vco.getCommandId();
@@ -91,7 +91,7 @@ public class CommandProcessor implements IOperationProcessor {
         logger.debug("Command propagated to 'other' clients.");
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession, IApicurioSessionContext session, VersionedCommandOperation vco) {
+    private void processRemote(ApiDesignEditingSession editingSession, ISessionContext session, VersionedCommandOperation vco) {
         // This command operation will be labelled as remote, so we know not to send it back over the messaging bus
         editingSession.sendToAllSessions(session, vco);
     }
@@ -102,7 +102,7 @@ public class CommandProcessor implements IOperationProcessor {
     }
 
     @Override
-    public Class<? extends BaseOperation> unmarshallKlazz() {
+    public Class<? extends BaseOperation> unmarshallClass() {
         return VersionedCommandOperation.class;
     }
 }

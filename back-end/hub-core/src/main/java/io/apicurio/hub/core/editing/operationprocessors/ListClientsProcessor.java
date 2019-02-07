@@ -15,7 +15,7 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
@@ -32,7 +32,7 @@ public class ListClientsProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(ListClientsProcessor.class);
 
-    public void process(ApiDesignEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
         ListClientsOperation lOp = (ListClientsOperation) bo;
         logger.debug("Received 'list clients' operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -42,7 +42,7 @@ public class ListClientsProcessor implements IOperationProcessor {
         }
     }
 
-    private void processRemote(ApiDesignEditingSession editingSession) {
+    private void processRemote(EditingSession editingSession) {
         logger.debug("Listing all local clients (over remote session only).");
         editingSession.sendJoinToRemote();
     }

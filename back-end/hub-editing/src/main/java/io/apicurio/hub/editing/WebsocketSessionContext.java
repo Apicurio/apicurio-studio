@@ -16,18 +16,20 @@
 
 package io.apicurio.hub.editing;
 
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.util.JsonUtil;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-
-import javax.websocket.CloseReason;
-import javax.websocket.Session;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.websocket.CloseReason;
+import javax.websocket.Session;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -74,11 +76,7 @@ public class WebsocketSessionContext implements ISessionContext {
      */
     private Map<String, String> getQueryParams() {
         if (this.queryParams == null) {
-            this.queryParams = new HashMap<>();
-            List<NameValuePair> list = URLEncodedUtils.parse(session.getQueryString(), StandardCharsets.UTF_8);
-            for (NameValuePair nameValuePair : list) {
-                this.queryParams.put(nameValuePair.getName(), nameValuePair.getValue());
-            }
+            this.queryParams = parseQueryString(session.getQueryString());
         }
         return this.queryParams;
     }

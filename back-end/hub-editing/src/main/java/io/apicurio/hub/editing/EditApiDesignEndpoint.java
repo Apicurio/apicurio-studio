@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.editing.ApiDesignEditingSession;
+import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
@@ -98,7 +98,7 @@ public class EditApiDesignEndpoint {
         logger.debug("\tuser: {}", userId);
         logger.debug("\tsecret: {}", secret);
         
-        ApiDesignEditingSession editingSession = null;
+        EditingSession editingSession = null;
 
         try {
             /*
@@ -117,7 +117,7 @@ public class EditApiDesignEndpoint {
             editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
 
             // If no existing sessions, emit metrics event for creating session
-            Set<ISessionContext> otherSessions = editingSession.getSessions();
+            Set<ISessionContext> otherSessions = editingSession.getMembers();
             if (editingSession.isEmpty()) {
                 this.metrics.editingSessionCreated(designId);
             }
@@ -177,7 +177,7 @@ public class EditApiDesignEndpoint {
         WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
-        ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
+        EditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
 
         logger.debug("onMessage: {}", message.toString());
@@ -207,7 +207,7 @@ public class EditApiDesignEndpoint {
         logger.debug("\tdesignId: {}", designId);
 
         // Call 'leave' on the concurrent editing session for this user
-        ApiDesignEditingSession editingSession = editingSessionManager.getEditingSession(designId);
+        EditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String userId = editingSession.getUser(session);
         editingSession.leave(session);
 

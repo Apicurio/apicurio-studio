@@ -15,6 +15,22 @@
  */
 package io.apicurio.test.integration.arquillian;
 
+import java.io.File;
+import java.util.Deque;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.container.test.api.TargetsContainer;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
@@ -30,20 +46,6 @@ import io.apicurio.test.integration.arquillian.helpers.WsHelper;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.container.test.api.TargetsContainer;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.util.Deque;
 
 /**
  * Verify distributed Apicurio setup.
@@ -61,6 +63,9 @@ import java.util.Deque;
 @RunWith(Arquillian.class)
 @RunAsClient
 public class VerifyDistributedSetupTestIT {
+    
+    private static final IntegrationTestVersion version = new IntegrationTestVersion();
+    
     private static final String USER_1 = "editor1";
     private static final String USER_2 = "editor2";
     private static final int NODE_1_PORT = 8080;
@@ -170,13 +175,19 @@ public class VerifyDistributedSetupTestIT {
         // Check our inbound messages; do they contain what we expect so far?
         Deque<String> inboundMessages = websocketClientNode1.getInboundMessages();
 
-        // Wait for our messages. TODO refactor to be more elegant
-        while (inboundMessages.size() < 5) {
+        int expectedInboundMessageCount = 7;
+        
+        // Wait for our messages.
+        int totalWaitTime = 0;
+        while (inboundMessages.size() < expectedInboundMessageCount && totalWaitTime < 5000) {
             System.err.println("Node 1 size " + inboundMessages.size());
-            Thread.sleep(1000);
+            Thread.sleep(250);
+            totalWaitTime += 250;
             // TODO when you move to Java 9, try this out:
             //Thread.onSpinWait();
         }
+        
+        Assert.assertEquals(expectedInboundMessageCount, inboundMessages.size());
 
         // First in is a select
         SelectionOperation expectSelect = SelectionOperation.select(USER_1,
@@ -269,18 +280,20 @@ public class VerifyDistributedSetupTestIT {
     public static void shut_down_websockets() {
         System.err.println("Teardown run on tests");
     }
+
     // Need to use preemptive otherwise expects challenge/response
     private static RequestSpecification givenNode1(String user) {
         return RestHelper.given(user, NODE_1_PORT);
     }
 
+    // TODO I don't think this is needed (to include RestAssured in the Web Archives)
     private static File[] resolveRestAssured() {
         return Maven.resolver().resolve("io.rest-assured:rest-assured:3.3.0").withTransitivity().asFile();
     }
 
     private static WebArchive getApiWar() {
         File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:0.2.21-SNAPSHOT")
+                .resolve("io.apicurio:apicurio-studio-test-integration-api:war:" + version.getVersion())
                 .withTransitivity()
                 .asSingleFile();
         return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)
@@ -290,7 +303,7 @@ public class VerifyDistributedSetupTestIT {
 
     private static WebArchive getWsWar() {
         File resolvedApiWar = Maven.resolver()
-                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:0.2.21-SNAPSHOT")
+                .resolve("io.apicurio:apicurio-studio-test-integration-ws:war:" + version.getVersion())
                 .withTransitivity()
                 .asSingleFile();
         return ShrinkWrap.createFromZipFile(WebArchive.class, resolvedApiWar)

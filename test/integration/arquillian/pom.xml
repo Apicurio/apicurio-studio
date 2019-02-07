@@ -16,6 +16,8 @@
         <wildfly.install.dir>${project.build.directory}</wildfly.install.dir>
         <wildfly.appserver.dir.1>${wildfly.install.dir}/${wildfly.name}-1</wildfly.appserver.dir.1>
         <wildfly.appserver.dir.2>${wildfly.install.dir}/${wildfly.name}-2</wildfly.appserver.dir.2>
+        <db.host>127.0.0.1</db.host>
+        <broker.host>127.0.0.1</broker.host>
     </properties>
 
     <dependencyManagement>
@@ -277,6 +279,10 @@
                                 <usedefaultlisteners>false</usedefaultlisteners>
                                 <!--<listener>${junitListener}</listener>-->
                             </properties>
+                            <environmentVariables>
+                                <APICURIO_DB_HOST>${db.host}</APICURIO_DB_HOST>
+                                <APICURIO_BROKER_HOST>${broker.host}</APICURIO_BROKER_HOST>
+                            </environmentVariables>
                             <!--<argLine>${forkJvmArgs} ${testjvm.jigsawArgs}</argLine>-->
                         </configuration>
                         <executions>

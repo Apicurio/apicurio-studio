@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.IApicurioSessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class PingProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
 
     @Override
-    public void process(ApiDesignEditingSession editingSession, ApicurioSessionContext session, BaseOperation bo) {
+    public void process(ApiDesignEditingSession editingSession, IApicurioSessionContext session, BaseOperation bo) {
         logger.debug("PING message received."); // TODO expand logging -- careful with session id
     }
 

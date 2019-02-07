@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.editing.ISharedApicurioSession;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 
 /**
@@ -24,7 +24,7 @@ import io.apicurio.hub.core.storage.IRollupExecutor;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface ApicurioDistributedSessionFactory {
+public interface IApicurioDistributedSessionFactory {
     /**
      * Join a shared editing session.
      *
@@ -32,7 +32,7 @@ public interface ApicurioDistributedSessionFactory {
      * @param handler the operation handler
      * @return the new shared session
      */
-    SharedApicurioSession joinSession(String designId, OperationHandler handler);
+    ISharedApicurioSession joinSession(String designId, OperationHandler handler);
 
     /**
      * Factory/session type(e.g. JMS, NOOP, etc).

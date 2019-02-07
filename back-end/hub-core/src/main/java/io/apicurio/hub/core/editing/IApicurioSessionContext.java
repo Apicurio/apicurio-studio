@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Wraps a websockets {@link Session}.
+ * Wraps a websocket {@link Session}.
  *
  * @see Session
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface ApicurioSessionContext {
+public interface IApicurioSessionContext {
 
     /**
      * @see Session#getPathParameters()

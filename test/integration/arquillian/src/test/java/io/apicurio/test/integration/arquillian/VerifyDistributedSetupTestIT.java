@@ -79,6 +79,13 @@ public class VerifyDistributedSetupTestIT {
     // Make RestAssured use Jackson
     static {
         RestAssured.defaultParser = Parser.JSON;
+        System.out.println("**** VARIABLES ****");
+        System.getenv().keySet().forEach( key -> {
+            if (key.startsWith("APICURIO")) {
+                String val = System.getenv(key);
+                System.out.println("    " + key + " = " + val);
+            }
+        });
     }
 
     /**

@@ -45,8 +45,8 @@
         <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
         <property name="apicurio.hub.storage.jdbc.init" value="true"/>
         <property name="apicurio.hub.distributed.session.type" value="jms"/>
-        <property name="apicurio.db.host" value="127.0.0.1"/>
-        <property name="apicurio.broker.host" value="127.0.0.1"/>
+        <property name="apicurio.db.host" value="${env.APICURIO_DB_HOST:127.0.0.1}"/>
+        <property name="apicurio.broker.host" value="${env.APICURIO_BROKER_HOST:127.0.0.1}"/>
         <property name="apicurio.broker.port" value="61616"/>
     </system-properties>
     <management>
@@ -170,7 +170,7 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ApicurioDS" pool-name="ApicurioDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:h2:tcp://${apicurio.db.host}:9092/~/apicurio;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1</connection-url>
+                    <connection-url>jdbc:h2:tcp://${apicurio.db.host:127.0.0.1}:9092/~/apicurio;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1</connection-url>
                     <driver>h2</driver>
                     <security>
                         <user-name>sa</user-name>
@@ -457,7 +457,7 @@
                 <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
                 <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
-                <connection-factory name="activemq-ra" entries="java:/ApicurioConnectionFactory" connectors="remote-artemis"/>
+                <connection-factory name="activemq-ra" entries="java:/ApicurioConnectionFactory" connectors="remote-artemis" />
                 <pooled-connection-factory name="activemq-ra-default" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
             </server>
         </subsystem>
@@ -577,7 +577,7 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
         <outbound-socket-binding name="remote-artemis">
-            <remote-destination host="${apicurio.broker.host}" port="${apicurio.broker.port}"/>
+            <remote-destination host="${apicurio.broker.host:127.0.0.1}" port="${apicurio.broker.port}"/>
         </outbound-socket-binding>
     </socket-binding-group>
 </server>

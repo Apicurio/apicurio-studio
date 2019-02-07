@@ -19,7 +19,7 @@ package io.apicurio.hub.core.editing;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.editing.distributed.ApicurioDistributedSessionFactory;
+import io.apicurio.hub.core.editing.distributed.IApicurioDistributedSessionFactory;
 import io.apicurio.hub.core.editing.distributed.NoOpSessionFactory;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -52,7 +52,7 @@ public class EditingSessionManagerTest {
     private EditingSessionManager manager;
     private JdbcStorage storage;
     private BasicDataSource ds;
-    private ApicurioDistributedSessionFactory distSessionFactory;
+    private IApicurioDistributedSessionFactory distSessionFactory;
     private ApicurioOperationProcessor operationProcessor;
 
     @Before
@@ -69,10 +69,10 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
-        distSessionFactory = new ApicurioDistributedSessionFactory() {
+        distSessionFactory = new IApicurioDistributedSessionFactory() {
             NoOpSessionFactory noop = new NoOpSessionFactory();
             @Override
-            public SharedApicurioSession joinSession(String designId, OperationHandler handler) {
+            public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
                 return noop.joinSession(designId, handler);
             }
 

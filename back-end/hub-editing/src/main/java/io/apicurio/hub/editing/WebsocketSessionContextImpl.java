@@ -16,7 +16,7 @@
 
 package io.apicurio.hub.editing;
 
-import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.IApicurioSessionContext;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class WebsocketSessionContextImpl implements ApicurioSessionContext {
+public class WebsocketSessionContextImpl implements IApicurioSessionContext {
 
     private final Session session;
 

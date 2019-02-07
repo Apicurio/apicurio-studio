@@ -19,7 +19,7 @@ package io.apicurio.hub.editing;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.editing.ApiDesignEditingSession;
-import io.apicurio.hub.core.editing.ApicurioSessionContext;
+import io.apicurio.hub.core.editing.IApicurioSessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.editing.operationprocessors.ApicurioOperationProcessor;
@@ -121,7 +121,7 @@ public class EditApiDesignEndpoint {
             editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
 
             // If no existing sessions, emit metrics event for creating session
-            Set<ApicurioSessionContext> otherSessions = editingSession.getSessions();
+            Set<IApicurioSessionContext> otherSessions = editingSession.getSessions();
             if (editingSession.isEmpty()) {
                 this.metrics.editingSessionCreated(designId);
             }
@@ -130,7 +130,7 @@ public class EditApiDesignEndpoint {
             editingSession.join(session, userId);
             
             // Send "join" messages for each user already in the session
-            for (ApicurioSessionContext otherSession : otherSessions) {
+            for (IApicurioSessionContext otherSession : otherSessions) {
                 String otherUser = editingSession.getUser(otherSession);
                 editingSession.sendJoinTo(session, otherUser, otherSession.getId());
             }

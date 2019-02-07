@@ -16,7 +16,7 @@
 package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.SharedApicurioSession;
+import io.apicurio.hub.core.editing.ISharedApicurioSession;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
@@ -100,13 +100,21 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
         this.rollupExecutor = rollupExecutor;
     }
 
-    public final class MessagingSessionContainer implements Closeable, SharedApicurioSession {
+    public final class MessagingSessionContainer implements Closeable, ISharedApicurioSession {
         private final String sessionId;
         private final Topic topic;
         private final JMSConsumer consumer;
         private final JMSProducer producer;
         private OperationHandler commandHandler;
 
+        /**
+         * Constructor.
+         * @param sessionId
+         * @param topic
+         * @param consumer
+         * @param producer
+         * @param commandHandler
+         */
         MessagingSessionContainer(String sessionId,
                                   Topic topic,
                                   JMSConsumer consumer,

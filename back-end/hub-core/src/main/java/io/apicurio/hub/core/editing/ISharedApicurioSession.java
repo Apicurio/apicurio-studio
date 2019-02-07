@@ -22,7 +22,7 @@ import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface SharedApicurioSession {
+public interface ISharedApicurioSession {
 
     /**
      * Send an operation over the shared session

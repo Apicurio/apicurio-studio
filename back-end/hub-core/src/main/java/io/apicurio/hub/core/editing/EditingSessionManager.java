@@ -16,18 +16,18 @@
 
 package io.apicurio.hub.core.editing;
 
-import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
-import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
-import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.storage.IStorage;
-import io.apicurio.hub.core.storage.StorageException;
-import org.apache.commons.codec.digest.DigestUtils;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * A class used to manage the concurrent editing sessions used by clients to make
@@ -47,14 +47,10 @@ public class EditingSessionManager implements IEditingSessionManager {
 
     @Inject
     private IStorage storage;
+    @Inject
+    private EditingSessionFactory editingSessionFactory;
     
-    private Map<String, EditingSession> editingSessions = new HashMap<>();
-
-    @Inject
-    private IDistributedSessionFactory distSessionFactory;
-
-    @Inject
-    private OperationProcessorDispatcher operationProcessor;
+    private Map<String, IEditingSession> editingSessions = new HashMap<>();
 
     /**
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#createSessionUuid(java.lang.String, java.lang.String, java.lang.String, long)
@@ -94,10 +90,10 @@ public class EditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getOrCreateEditingSession(java.lang.String)
      */
     @Override
-    public synchronized EditingSession getOrCreateEditingSession(String designId) {
-        EditingSession session = editingSessions.get(designId);
+    public synchronized IEditingSession getOrCreateEditingSession(String designId) {
+        IEditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new EditingSession(designId, distSessionFactory, operationProcessor);
+            session = editingSessionFactory.createEditingSession(designId);
             editingSessions.put(designId, session);
         }
         return session;
@@ -107,15 +103,15 @@ public class EditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#getEditingSession(java.lang.String)
      */
     @Override
-    public synchronized EditingSession getEditingSession(String designId) {
+    public synchronized IEditingSession getEditingSession(String designId) {
         return editingSessions.get(designId);
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.EditingSession)
+     * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.IEditingSession)
      */
     @Override
-    public synchronized void closeEditingSession(EditingSession editingSession) {
+    public synchronized void closeEditingSession(IEditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
         editingSession.close();
     }

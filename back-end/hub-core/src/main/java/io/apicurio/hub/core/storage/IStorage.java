@@ -100,7 +100,6 @@ public interface IStorage {
     /**
      * Returns a collection of linked accounts for the given user.
      * @param userId
-     * @return
      * @throws StorageException
      */
     public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException;

@@ -15,7 +15,7 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.EditingSession;
+import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
@@ -32,7 +32,11 @@ public class SelectionProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(SelectionProcessor.class);
 
-    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     */
+    @Override
+    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         SelectionOperation selectionOp = (SelectionOperation) bo;
 
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -42,7 +46,7 @@ public class SelectionProcessor implements IOperationProcessor {
         }
     }
 
-    private void processLocal(EditingSession editingSession, ISessionContext session, SelectionOperation so) {
+    private void processLocal(IEditingSession editingSession, ISessionContext session, SelectionOperation so) {
         String user = editingSession.getUser(session);
         String selection = so.getSelection();
         logger.debug("\tuser:" + user);
@@ -51,16 +55,22 @@ public class SelectionProcessor implements IOperationProcessor {
         logger.debug("User selection propagated to 'other' clients.");
     }
 
-    private void processRemote(EditingSession editingSession, ISessionContext session, SelectionOperation so) {
+    private void processRemote(IEditingSession editingSession, ISessionContext session, SelectionOperation so) {
         editingSession.sendToAllSessions(session, so);
         logger.debug("Remote selection sent to local clients.");
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     */
     @Override
     public String getOperationName() {
         return "selection";
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {
         return SelectionOperation.class;

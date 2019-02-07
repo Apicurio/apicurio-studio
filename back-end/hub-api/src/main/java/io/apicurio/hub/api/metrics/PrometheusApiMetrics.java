@@ -84,19 +84,19 @@ public class PrometheusApiMetrics implements IApiMetrics {
     }
 
     /**
-     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
-    public void apiImport(LinkedAccountType from) {
-        if (from == null) {
+    public void apiImport(LinkedAccountType type) {
+        if (type == null) {
             apisImported.labels("url");
         } else {
-            apisImported.labels(from.name()).inc();
+            apisImported.labels(type.name()).inc();
         }
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkInitiated(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkInitiated(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkInitiated(LinkedAccountType type) {
@@ -104,7 +104,7 @@ public class PrometheusApiMetrics implements IApiMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkCompleted(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#accountLinkCompleted(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void accountLinkCompleted(LinkedAccountType type) {

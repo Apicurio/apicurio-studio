@@ -15,13 +15,14 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.EditingSession;
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -31,16 +32,25 @@ public class PingProcessor implements IOperationProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     */
     @Override
-    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         logger.debug("PING message received."); // TODO expand logging -- careful with session id
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     */
     @Override
     public String getOperationName() {
         return "ping";
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {
         return BaseOperation.class;

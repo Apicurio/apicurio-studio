@@ -29,6 +29,13 @@ import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
  * @author eric.wittmann@gmail.com
  */
 public interface IEditingSession extends Closeable {
+    
+    /**
+     * @see java.io.Closeable#close()
+     */
+    @Override
+    default void close() {
+    }
 
     /**
      * Gets the design id associated with this editing session.
@@ -132,7 +139,9 @@ public interface IEditingSession extends Closeable {
      */
     public void sendJoinTo(ISessionContext toSession, String joinedUser, String joinedId);
 
+    // TODO remove this - it is specific to the JMS impl
     public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation);
     
+    // TODO remove this - it is specific to the JMS impl
     public void sendJoinToRemote();
 }

@@ -364,7 +364,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     * @see io.apicurio.hub.core.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
     @Override
     public void createLinkedAccount(String userId, LinkedAccount account)
@@ -392,7 +392,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.core.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public LinkedAccount getLinkedAccount(String userId, LinkedAccountType type)
@@ -415,6 +415,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
+     * 
      * @see io.apicurio.hub.core.storage.IStorage#listLinkedAccounts(java.lang.String)
      */
     @Override
@@ -434,7 +435,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void deleteLinkedAccount(String userId, LinkedAccountType type)
@@ -479,7 +480,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.api.beans.LinkedAccount)
+     * @see io.apicurio.hub.core.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
     @Override
     public void updateLinkedAccount(String userId, LinkedAccount account) throws NotFoundException, StorageException {
@@ -530,7 +531,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.ApiContentType, java.lang.String)
+     * @see io.apicurio.hub.core.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.ApiContentType, java.lang.String)
      */
     @Override
     public long addContent(String userId, String designId, ApiContentType type, String data) throws StorageException {
@@ -693,7 +694,7 @@ public class JdbcStorage implements IStorage {
     }
 
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
+     * @see io.apicurio.hub.core.storage.IStorage#createApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign, java.lang.String)
      */
     @Override
     public String createApiDesign(String userId, ApiDesign design, String initialContent) throws StorageException {
@@ -812,7 +813,7 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
-     * @see io.apicurio.hub.core.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.api.beans.ApiDesign)
+     * @see io.apicurio.hub.core.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign)
      */
     @Override
     public void updateApiDesign(String userId, ApiDesign design) throws NotFoundException, StorageException {

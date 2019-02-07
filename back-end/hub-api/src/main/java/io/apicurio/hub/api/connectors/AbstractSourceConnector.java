@@ -149,7 +149,6 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
          * Binds a parameter to the endpoint.  
          * @param paramName
          * @param value
-         * @return
          */
         public Endpoint bind(String paramName, Object value) {
             this.url = this.url.replace(":" + paramName, String.valueOf(value));

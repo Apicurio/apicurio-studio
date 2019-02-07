@@ -15,20 +15,23 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.EditingSession;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * This class manages a set of {@link IOperationProcessor} instances.  Its role is to figure
@@ -64,7 +67,7 @@ public class OperationProcessorDispatcher {
      * @param session
      * @param payload
      */
-    public void process(EditingSession editingSession, ISessionContext session, JsonNode payload) {
+    public void process(IEditingSession editingSession, ISessionContext session, JsonNode payload) {
         String opType = payload.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 

@@ -402,7 +402,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     }
     
     /**
-     * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.util.zip.ZipInputStream)
+     * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.lang.String, java.lang.String, java.util.zip.ZipInputStream)
      */
     @Override
     public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage, ZipInputStream generatedContent) throws SourceConnectorException {

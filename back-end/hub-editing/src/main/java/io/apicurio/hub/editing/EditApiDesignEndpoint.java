@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.editing.EditingSession;
-import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
+import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
 import io.apicurio.hub.core.exceptions.ServerError;
@@ -98,7 +98,7 @@ public class EditApiDesignEndpoint {
         logger.debug("\tuser: {}", userId);
         logger.debug("\tsecret: {}", secret);
         
-        EditingSession editingSession = null;
+        IEditingSession editingSession = null;
 
         try {
             /*
@@ -177,7 +177,7 @@ public class EditApiDesignEndpoint {
         WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
 
         String designId = session.getPathParameters().get("designId");
-        EditingSession editingSession = editingSessionManager.getEditingSession(designId);
+        IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String msgType = message.get("type").asText();
 
         logger.debug("onMessage: {}", message.toString());
@@ -207,7 +207,7 @@ public class EditApiDesignEndpoint {
         logger.debug("\tdesignId: {}", designId);
 
         // Call 'leave' on the concurrent editing session for this user
-        EditingSession editingSession = editingSessionManager.getEditingSession(designId);
+        IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
         String userId = editingSession.getUser(session);
         editingSession.leave(session);
 

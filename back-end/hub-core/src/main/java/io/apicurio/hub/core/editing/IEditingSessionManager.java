@@ -52,20 +52,20 @@ public interface IEditingSessionManager {
      * return an existing session or create a new one if one doesn't exist.
      * @param designId
      */
-    public EditingSession getOrCreateEditingSession(String designId);
+    public IEditingSession getOrCreateEditingSession(String designId);
 
     /**
      * Called to get an editing session for a given API Design.  If no editing session
      * exists for the given design, then null is returned.
      * @param designId
      */
-    public EditingSession getEditingSession(String designId);
+    public IEditingSession getEditingSession(String designId);
 
     /**
      * Called to close an editing session.  This should be called only when the editing
      * session is empty (has no more participants).
      * @param editingSession
      */
-    public void closeEditingSession(EditingSession editingSession);
+    public void closeEditingSession(IEditingSession editingSession);
 
 }

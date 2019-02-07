@@ -225,7 +225,7 @@ public class AccountsResource implements IAccountsResource {
     }
 
     /**
-     * @see io.apicurio.hub.api.rest.IAccountsResource#getOrganizations()
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getOrganizations(java.lang.String)
      */
     @Override
     public Collection<GitHubOrganization> getOrganizations(String accountType) throws ServerError {
@@ -243,7 +243,7 @@ public class AccountsResource implements IAccountsResource {
     }
 
     /**
-     * @see io.apicurio.hub.api.rest.IAccountsResource#getRepositories(java.lang.String)
+     * @see io.apicurio.hub.api.rest.IAccountsResource#getRepositories(java.lang.String, java.lang.String)
      */
     @Override
     public Collection<GitHubRepository> getRepositories(String accountType, String org) throws ServerError {

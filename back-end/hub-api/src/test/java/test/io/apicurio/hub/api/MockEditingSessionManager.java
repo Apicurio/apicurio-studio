@@ -16,13 +16,14 @@
 
 package test.io.apicurio.hub.api;
 
-import io.apicurio.hub.core.editing.EditingSession;
-import io.apicurio.hub.core.editing.IEditingSessionManager;
-import io.apicurio.hub.core.exceptions.ServerError;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import io.apicurio.hub.core.editing.EditingSession;
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.exceptions.ServerError;
 
 /**
  * Mock version of the editing session manager.
@@ -64,7 +65,7 @@ public class MockEditingSessionManager implements IEditingSessionManager {
     public synchronized EditingSession getOrCreateEditingSession(String designId) {
         EditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new EditingSession(designId, null, null); //TODO FIXME!!
+            session = new EditingSession(designId);
             editingSessions.put(designId, session);
         }
         return session;
@@ -82,7 +83,7 @@ public class MockEditingSessionManager implements IEditingSessionManager {
      * @see io.apicurio.hub.core.editing.IEditingSessionManager#closeEditingSession(io.apicurio.hub.core.editing.EditingSession)
      */
     @Override
-    public synchronized void closeEditingSession(EditingSession editingSession) {
+    public synchronized void closeEditingSession(IEditingSession editingSession) {
         editingSessions.remove(editingSession.getDesignId());
     }
 

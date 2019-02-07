@@ -56,11 +56,6 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Create a new connector for interacting with Microcks.
-     * 
-     * @param microcksURL Microcks API URL (should ends with /api)
-     * @param keycloakClientId ClientId known from keycloak Microcks realm
-     * @param keycloakClientSecret ClientSecret known from keycloak Microcks realm
-     * @throws MicrocksConnectorException if connection fails for many reasons
      */
     public MicrocksConnector() {
     }

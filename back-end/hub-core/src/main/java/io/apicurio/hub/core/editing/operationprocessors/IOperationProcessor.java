@@ -15,7 +15,7 @@
  */
 package io.apicurio.hub.core.editing.operationprocessors;
 
-import io.apicurio.hub.core.editing.EditingSession;
+import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 
@@ -30,7 +30,7 @@ public interface IOperationProcessor {
      * @param session
      * @param operation
      */
-    void process(EditingSession editingSession, ISessionContext session, BaseOperation operation);
+    void process(IEditingSession editingSession, ISessionContext session, BaseOperation operation);
     
     /**
      * Returns the name of the operation that this processor is responsible for.  The name
@@ -40,7 +40,6 @@ public interface IOperationProcessor {
     
     /**
      * The class to use when unmarshalling the message payload into a {@link BaseOperation} instance.
-     * @return
      */
     Class<? extends BaseOperation> unmarshallClass();
 }

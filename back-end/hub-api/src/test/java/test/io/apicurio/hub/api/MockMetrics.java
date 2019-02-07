@@ -66,7 +66,7 @@ public class MockMetrics implements IApiMetrics {
      * @see io.apicurio.hub.api.metrics.IApiMetrics#apiImport(io.apicurio.hub.api.beans.LinkedAccountType)
      */
     @Override
-    public void apiImport(LinkedAccountType from) {
+    public void apiImport(LinkedAccountType type) {
     }
 
 }

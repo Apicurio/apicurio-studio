@@ -16,28 +16,25 @@
 
 package io.apicurio.hub.core.editing;
 
-import io.apicurio.hub.core.beans.ApiDesign;
-import io.apicurio.hub.core.beans.ApiDesignType;
-import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
-import io.apicurio.hub.core.editing.distributed.NoOpSessionFactory;
-import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
-import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.js.OaiCommandExecutor;
-import io.apicurio.hub.core.storage.IRollupExecutor;
-import io.apicurio.hub.core.storage.RollupExecutor;
-import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
-import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
-import io.apicurio.test.core.TestUtil;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.Date;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.util.Date;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignType;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.storage.RollupExecutor;
+import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
+import io.apicurio.hub.core.storage.jdbc.JdbcStorage;
+import io.apicurio.test.core.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -52,8 +49,6 @@ public class EditingSessionManagerTest {
     private EditingSessionManager manager;
     private JdbcStorage storage;
     private BasicDataSource ds;
-    private IDistributedSessionFactory distSessionFactory;
-    private OperationProcessorDispatcher operationProcessor;
 
     @Before
     public void setUp() {
@@ -61,6 +56,15 @@ public class EditingSessionManagerTest {
         ds = createInMemoryDatasource();
         HubConfiguration config = new HubConfiguration();
         H2SqlStatements sqlStatements = new H2SqlStatements(config);
+        EditingSessionFactory editingSessionFactory = new EditingSessionFactory() {
+            /**
+             * @see io.apicurio.hub.core.editing.EditingSessionFactory#createEditingSession(java.lang.String)
+             */
+            @Override
+            public IEditingSession createEditingSession(String designId) {
+                return new EditingSession(designId);
+            }
+        };
 
         TestUtil.setPrivateField(storage, "config", config);
         TestUtil.setPrivateField(storage, "dataSource", ds);
@@ -69,33 +73,13 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
-        distSessionFactory = new IDistributedSessionFactory() {
-            NoOpSessionFactory noop = new NoOpSessionFactory();
-            @Override
-            public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
-                return noop.joinSession(designId, handler);
-            }
-
-            @Override
-            public String getSessionType() {
-                return noop.getSessionType();
-            }
-
-            @Override
-            public void setRollupExecutor(IRollupExecutor rollupExecutor) {
-                noop.setRollupExecutor(rollupExecutor);
-            }
-        };
 
         RollupExecutor rollupExecutor = new RollupExecutor();
         rollupExecutor.setStorage(storage);
         rollupExecutor.setOaiCommandExecutor(new OaiCommandExecutor());
-        distSessionFactory.setRollupExecutor(rollupExecutor);
-        operationProcessor = new OperationProcessorDispatcher();
 
         TestUtil.setPrivateField(manager, "storage", storage);
-        TestUtil.setPrivateField(manager, "distSessionFactory", distSessionFactory);
-        TestUtil.setPrivateField(manager, "operationProcessor", operationProcessor);
+        TestUtil.setPrivateField(manager, "editingSessionFactory", editingSessionFactory);
     }
     
     @After
@@ -167,14 +151,14 @@ public class EditingSessionManagerTest {
      */
     @Test
     public void testGetOrCreateEditingSession() throws Exception {
-        EditingSession session = this.manager.getOrCreateEditingSession("100");
+        IEditingSession session = this.manager.getOrCreateEditingSession("100");
         Assert.assertNotNull(session);
         Assert.assertEquals("100", session.getDesignId());
-        EditingSession session2 = this.manager.getOrCreateEditingSession("100");
+        IEditingSession session2 = this.manager.getOrCreateEditingSession("100");
         Assert.assertNotNull(session);
         Assert.assertEquals("100", session.getDesignId());
         Assert.assertEquals(session, session2);
-        EditingSession session3 = this.manager.getOrCreateEditingSession("101");
+        IEditingSession session3 = this.manager.getOrCreateEditingSession("101");
         Assert.assertNotNull(session3);
         Assert.assertNotEquals(session, session3);
         Assert.assertEquals("101", session3.getDesignId());
@@ -185,14 +169,14 @@ public class EditingSessionManagerTest {
      */
     @Test
     public void testGetEditingSession() throws Exception {
-        EditingSession session = this.manager.getOrCreateEditingSession("200");
+        IEditingSession session = this.manager.getOrCreateEditingSession("200");
         Assert.assertNotNull(session);
         Assert.assertEquals("200", session.getDesignId());
-        EditingSession session2 = this.manager.getEditingSession("200");
+        IEditingSession session2 = this.manager.getEditingSession("200");
         Assert.assertNotNull(session);
         Assert.assertEquals("200", session.getDesignId());
         Assert.assertEquals(session, session2);
-        EditingSession session3 = this.manager.getEditingSession("201");
+        IEditingSession session3 = this.manager.getEditingSession("201");
         Assert.assertNull(session3);
     }
 
@@ -201,10 +185,10 @@ public class EditingSessionManagerTest {
      */
     @Test
     public void testCloseEditingSession() throws Exception {
-        EditingSession session = this.manager.getOrCreateEditingSession("300");
+        IEditingSession session = this.manager.getOrCreateEditingSession("300");
         Assert.assertNotNull(session);
         Assert.assertEquals("300", session.getDesignId());
-        EditingSession session2 = this.manager.getEditingSession("300");
+        IEditingSession session2 = this.manager.getEditingSession("300");
         Assert.assertNotNull(session);
         Assert.assertEquals("300", session.getDesignId());
         Assert.assertEquals(session, session2);

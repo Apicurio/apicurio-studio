@@ -17,7 +17,7 @@ package io.apicurio.hub.core.editing.operationprocessors;
 
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.EditingSession;
+import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
@@ -40,11 +40,14 @@ public class UndoOperation implements IOperationProcessor {
 
     @Inject
     private IStorage storage;
-
     @Inject
     private IEditingMetrics metrics;
 
-    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     */
+    @Override
+    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         VersionedOperation vOp = (VersionedOperation) bo;
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
             processLocal(editingSession, session, vOp);
@@ -53,7 +56,7 @@ public class UndoOperation implements IOperationProcessor {
         }
     }
 
-    private void processLocal(EditingSession editingSession, ISessionContext session, VersionedOperation undo) {
+    private void processLocal(IEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
         String user = editingSession.getUser(session);
         String designId = editingSession.getDesignId();
 
@@ -90,16 +93,22 @@ public class UndoOperation implements IOperationProcessor {
         logger.debug("Undo sent to 'other' clients.");
     }
 
-    private void processRemote(EditingSession editingSession, ISessionContext session, VersionedOperation undo) {
+    private void processRemote(IEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote undo sent to local clients.");
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     */
     @Override
     public String getOperationName() {
         return "undo";
     }
 
+    /**
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {
         return VersionedOperation.class;

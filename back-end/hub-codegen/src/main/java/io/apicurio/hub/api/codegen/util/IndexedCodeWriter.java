@@ -61,7 +61,6 @@ public class IndexedCodeWriter extends CodeWriter {
     /**
      * Gets the content produced for a given filename.
      * @param className
-     * @return
      * @throws IOException
      */
     public String get(String className) throws IOException {

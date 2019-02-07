@@ -50,7 +50,7 @@ public interface IApiMetrics {
      * Indicates that an API was imported.
      * @param type
      */
-    public void apiImport(LinkedAccountType from);
+    public void apiImport(LinkedAccountType type);
 
     /**
      * Indicates a linked account creation was initiated.

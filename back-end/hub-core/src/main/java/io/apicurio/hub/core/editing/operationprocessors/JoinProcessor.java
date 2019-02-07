@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.hub.core.editing.EditingSession;
+import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
@@ -34,10 +34,10 @@ public class JoinProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(JoinProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.EditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
      */
     @Override
-    public void process(EditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
         JoinLeaveOperation jOp = (JoinLeaveOperation) bo;
         logger.debug("Received join operation ", jOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -53,7 +53,7 @@ public class JoinProcessor implements IOperationProcessor {
      * @param session
      * @param undo
      */
-    private void processRemote(EditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
+    private void processRemote(IEditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
         editingSession.sendToAllSessions(session, undo);
         logger.debug("Remote join sent to local clients.");
     }

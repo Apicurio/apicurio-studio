@@ -88,7 +88,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
     }
     
     /**
-     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#initiateLinkedAccount(io.apicurio.hub.api.beans.LinkedAccountType, java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#initiateLinkedAccount(io.apicurio.hub.core.beans.LinkedAccountType, java.lang.String, java.lang.String)
      */
     @Override
     public InitiatedLinkedAccount initiateLinkedAccount(LinkedAccountType accountType, String redirectUri,
@@ -125,7 +125,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
     }
     
     /**
-     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#deleteLinkedAccount(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#deleteLinkedAccount(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void deleteLinkedAccount(LinkedAccountType type) throws IOException {
@@ -160,7 +160,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
     }
 
     /**
-     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#getLinkedAccountToken(io.apicurio.hub.api.beans.LinkedAccountType)
+     * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#getLinkedAccountToken(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public String getLinkedAccountToken(LinkedAccountType type) throws IOException {

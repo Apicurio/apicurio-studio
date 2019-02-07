@@ -29,19 +29,18 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
-import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
 import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
-import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
 import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
 import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
-import io.apicurio.hub.core.util.JsonUtil;
 
 /**
- * Models a single, shared editing session for an API Design.
+ * Models a single, shared editing session for an API Design.  This implementation only supports
+ * collaborative editing on a single node.  If Apicurio is to be deployed in a scaled/scalable 
+ * environment, this implementation of the editing session will be insufficient.  One of the
+ * other implementations (e.g. JMSEditingSession) should be used instead.
  * @author eric.wittmann@gmail.com
  */
 public class EditingSession implements IEditingSession {
@@ -51,23 +50,27 @@ public class EditingSession implements IEditingSession {
     private final String designId;
     private final Map<String, ISessionContext> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
-    private final ISharedApicurioSession distributedSession;
 
     /**
      * Constructor.
      * @param designId
-     * @param factory
-     * @param operationProcessor
      */
-    public EditingSession(String designId, IDistributedSessionFactory factory,
-            OperationProcessorDispatcher operationProcessor) {
+    public EditingSession(String designId) {
         this.designId = designId;
-        // Join a remote session (if there is one configured).
-        this.distributedSession = factory.joinSession(designId, payload -> {
-            operationProcessor.process(this, null, JsonUtil.toJsonTree(payload));
-        });
-        // Discover any WS clients connected to other nodes so we can draw their icons, etc.
-        sendListClientsToOthers();
+    }
+    
+    /**
+     * Getter for the users.
+     */
+    protected Map<String, String> getUsers() {
+        return this.users;
+    }
+    
+    /**
+     * Getter for the sessions.
+     */
+    protected Map<String, ISessionContext> getSessions() {
+        return this.sessions;
     }
 
     /**
@@ -118,7 +121,6 @@ public class EditingSession implements IEditingSession {
     @Override
     public void close() {
         // TODO anything to do here?
-        distributedSession.close();
     }
 
     /**
@@ -238,8 +240,6 @@ public class EditingSession implements IEditingSession {
                 }
             }
         }
-        // Finally, send on the shared channel.
-        distributedSession.sendOperation(operation);
     }
 
     /**
@@ -247,14 +247,7 @@ public class EditingSession implements IEditingSession {
      */
     @Override
     public void sendJoinToRemote() {
-        for (ISessionContext otherSession : this.sessions.values()) {
-            JoinLeaveOperation joinOperation = JoinLeaveOperation.join(getUser(otherSession), otherSession.getId());
-            distributedSession.sendOperation(joinOperation);
-        }
-    }
-
-    private void sendListClientsToOthers() {
-        distributedSession.sendOperation(ListClientsOperation.listClients());
+        // TODO remove this from interface, nothing to do when not JMS
     }
     
 }

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import io.apicurio.hub.core.util.JsonUtil;
 
 /**
@@ -28,6 +29,7 @@ import io.apicurio.hub.core.util.JsonUtil;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VersionedCommandOperation extends VersionedOperation {
+    
     @JsonRawValue
     private JsonNode command;
     private Long commandId = null;
@@ -61,21 +63,6 @@ public class VersionedCommandOperation extends VersionedOperation {
     public VersionedCommandOperation setCommandId(Long commandId) {
         this.commandId = commandId;
         return this;
-    }
-
-    public static VersionedCommandOperation command(long contentVersion, String command) {
-        return (VersionedCommandOperation) new VersionedCommandOperation()
-                .setCommand(command)
-                .setContentVersion(contentVersion)
-                .setType("command");
-    }
-
-    public static VersionedCommandOperation command(long contentVersion, String command, Long commandId) {
-        return (VersionedCommandOperation) new VersionedCommandOperation()
-                .setCommand(command)
-                .setCommandId(commandId)
-                .setContentVersion(contentVersion)
-                .setType("command");
     }
 
 }

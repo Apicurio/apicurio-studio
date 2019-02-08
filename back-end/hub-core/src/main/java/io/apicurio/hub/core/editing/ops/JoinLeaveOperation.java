@@ -19,6 +19,7 @@ package io.apicurio.hub.core.editing.ops;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 public class JoinLeaveOperation extends BaseOperation {
+    
     private String user;
     private String id;
 
@@ -41,18 +42,5 @@ public class JoinLeaveOperation extends BaseOperation {
         this.id = id;
         return this;
     }
-
-    public static JoinLeaveOperation join(String user, String id) {
-        return (JoinLeaveOperation) new JoinLeaveOperation()
-                .setUser(user)
-                .setId(id)
-                .setType("join");
-    }
-
-    public static JoinLeaveOperation leave(String user, String id) {
-        return (JoinLeaveOperation) new JoinLeaveOperation()
-                .setUser(user)
-                .setId(id)
-                .setType("leave");
-    }
+    
 }

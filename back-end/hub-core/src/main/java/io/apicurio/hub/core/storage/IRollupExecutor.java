@@ -28,7 +28,6 @@ import io.apicurio.hub.core.js.OaiCommandException;
  */
 public interface IRollupExecutor {
 
-
     /**
      * Finds all commands executed since the last full content rollup and applies
      * them to the API design.  This produces a "latest" version of the API
@@ -44,6 +43,5 @@ public interface IRollupExecutor {
      * does not actually host the given user.
      */
     void rollupCommands(String designId) throws NotFoundException, StorageException, OaiCommandException;
-
 
 }

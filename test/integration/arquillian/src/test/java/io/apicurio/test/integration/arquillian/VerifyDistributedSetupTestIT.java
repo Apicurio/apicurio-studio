@@ -34,12 +34,11 @@ import org.junit.runner.RunWith;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.editing.ops.FullCommandOperation;
 import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
 import io.apicurio.hub.core.editing.ops.SelectionOperation;
 import io.apicurio.hub.core.editing.ops.VersionedAck;
 import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
-import io.apicurio.hub.core.editing.ops.VersionedOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import io.apicurio.test.integration.arquillian.helpers.ApicurioWebsocketsClient;
 import io.apicurio.test.integration.arquillian.helpers.RestHelper;
@@ -172,13 +171,13 @@ public class VerifyDistributedSetupTestIT {
         // Join a session (session ID in URL)
         websocketClientNode1.connectBlocking();
         // Send a selection event
-        websocketClientNode1.send(SelectionOperation.select(selection1));
+        websocketClientNode1.send(OperationFactory.select(selection1));
         // Send a new path event
-        websocketClientNode1.send(FullCommandOperation.fullCommand(101, command1));
+        websocketClientNode1.send(OperationFactory.fullCommand(101, command1));
         // Modify a field
-        websocketClientNode1.send(FullCommandOperation.fullCommand(102, command2));
+        websocketClientNode1.send(OperationFactory.fullCommand(102, command2));
         // Modify the field again
-        websocketClientNode1.send(FullCommandOperation.fullCommand(103, command3));
+        websocketClientNode1.send(OperationFactory.fullCommand(103, command3));
 
         // Check our inbound messages; do they contain what we expect so far?
         Deque<String> inboundMessages1 = websocketClientNode1.getInboundMessages();
@@ -187,13 +186,13 @@ public class VerifyDistributedSetupTestIT {
         waitOnInboundMessages("node_1_websockets_join_and_edit", inboundMessages1, 3);
 
         // Ack for new path
-        VersionedAck expectedAck = VersionedAck.ack(16, 101);
+        VersionedAck expectedAck = OperationFactory.ack(16, 101);
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
         // Ack for change version (1)
-        VersionedAck expectedAck2 = VersionedAck.ack(17, 102);
+        VersionedAck expectedAck2 = OperationFactory.ack(17, 102);
         testOperationProcessor.assertEquals(expectedAck2, inboundMessages1.pop());
         // Ack for change version (2)
-        VersionedAck expectedAck3 = VersionedAck.ack(18, 103);
+        VersionedAck expectedAck3 = OperationFactory.ack(18, 103);
         testOperationProcessor.assertEquals(expectedAck3, inboundMessages1.pop());
     }
 
@@ -211,28 +210,28 @@ public class VerifyDistributedSetupTestIT {
         waitOnInboundMessages("node_2_join_and_read (node2)", inboundMessages2, 4);
         
         // Add path /testpath
-        VersionedCommandOperation expectedCommand1 = FullCommandOperation.fullCommand(84L,
+        VersionedCommandOperation expectedCommand1 = OperationFactory.fullCommand(84L,
                 "{\"__type\":\"NewPathCommand_30\",\"_newPath\":\"/testpath\"}",
                 USER_1,
                 false);
         testOperationProcessor.assertEquals(expectedCommand1, inboundMessages2.pop());
 
         // Change versions
-        VersionedCommandOperation expectedCommand2 = FullCommandOperation.fullCommand(85L,
+        VersionedCommandOperation expectedCommand2 = OperationFactory.fullCommand(85L,
                 "{\"__type\":\"ChangeVersionCommand_30\",\"_newVersion\":\"1.0.0.1.1\"}",
                 USER_1,
                 false);
         testOperationProcessor.assertEquals(expectedCommand2, inboundMessages2.pop());
 
         // Change versions again
-        VersionedCommandOperation expectedCommand3 = FullCommandOperation.fullCommand(86L,
+        VersionedCommandOperation expectedCommand3 = OperationFactory.fullCommand(86L,
                 "{\"__type\":\"ChangeVersionCommand_30\",\"_newVersion\":\"2\"}",
                 USER_1,
                 false);
         testOperationProcessor.assertEquals(expectedCommand3, inboundMessages2.pop());
 
         // Join message from editor1. Hello editor1!
-        JoinLeaveOperation expectedJoin = JoinLeaveOperation.join(USER_1, "ASMLHuxCV1-LKVodpnSLuoBjXUu1X8_EDOC443sv");
+        JoinLeaveOperation expectedJoin = OperationFactory.join(USER_1, "ASMLHuxCV1-LKVodpnSLuoBjXUu1X8_EDOC443sv");
         testOperationProcessor.assertEquals(expectedJoin, inboundMessages2.pop());
         
         
@@ -240,7 +239,7 @@ public class VerifyDistributedSetupTestIT {
         Deque<String> inboundMessages1 = websocketClientNode1.getInboundMessages();
         waitOnInboundMessages("node_2_join_and_read (node1)", inboundMessages1, 1);
         
-        expectedJoin = JoinLeaveOperation.join(USER_2, "ASMLHuxCV1-LKVodpnSLuoBjXUu1X8_EDOC443sv");
+        expectedJoin = OperationFactory.join(USER_2, "ASMLHuxCV1-LKVodpnSLuoBjXUu1X8_EDOC443sv");
         testOperationProcessor.assertEquals(expectedJoin, inboundMessages1.pop());
     }
 
@@ -253,11 +252,11 @@ public class VerifyDistributedSetupTestIT {
         String command2 = "{\"__type\":\"ChangeLicenseCommand_30\",\"_newLicenseName\":\"Apache 2.0\",\"_newLicenseUrl\":\"http://www.apache.org/licenses/LICENSE-2.0.html\"}";
 
         // Send a new path command
-        websocketClientNode1.send(FullCommandOperation.fullCommand(104, command1));
+        websocketClientNode1.send(OperationFactory.fullCommand(104, command1));
         // Send a selection message
-        websocketClientNode1.send(SelectionOperation.select(selection1));
+        websocketClientNode1.send(OperationFactory.select(selection1));
         // Send a setLicense command
-        websocketClientNode1.send(FullCommandOperation.fullCommand(105, command2));
+        websocketClientNode1.send(OperationFactory.fullCommand(105, command2));
         
         // Check our inbound messages; do they contain what we expect so far?
         Deque<String> inboundMessages1 = websocketClientNode1.getInboundMessages();
@@ -269,20 +268,20 @@ public class VerifyDistributedSetupTestIT {
         
         // Assert the Ack messages for node1 (should get one ACK for each command)
         ////////////////////////
-        VersionedAck expectedAck = VersionedAck.ack(17, 104);
+        VersionedAck expectedAck = OperationFactory.ack(17, 104);
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
-        expectedAck = VersionedAck.ack(18, 105);
+        expectedAck = OperationFactory.ack(18, 105);
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
 
         
         // Assert the selection and command messages came through on node2
         ////////////////////////
-        VersionedCommandOperation expectedCommand = FullCommandOperation.fullCommand(-1L,
+        VersionedCommandOperation expectedCommand = OperationFactory.fullCommand(-1L,
                 command1, USER_1, false);
         testOperationProcessor.assertEquals(expectedCommand, inboundMessages2.pop());
-        SelectionOperation expectedSelection = SelectionOperation.select(USER_1, "HFOkNs7NJqOqerVUQYRal0HDG_QyyhxGgbdF_TqA", selection1);
+        SelectionOperation expectedSelection = OperationFactory.select(USER_1, "HFOkNs7NJqOqerVUQYRal0HDG_QyyhxGgbdF_TqA", selection1);
         testOperationProcessor.assertEquals(expectedSelection, inboundMessages2.pop());
-        expectedCommand = FullCommandOperation.fullCommand(-1L,
+        expectedCommand = OperationFactory.fullCommand(-1L,
                 command2, 
                 USER_1, false);
         testOperationProcessor.assertEquals(expectedCommand, inboundMessages2.pop());
@@ -297,11 +296,11 @@ public class VerifyDistributedSetupTestIT {
         String selection2 = "/info";
         
         // Send a selection message
-        websocketClientNode2.send(SelectionOperation.select(selection1));
+        websocketClientNode2.send(OperationFactory.select(selection1));
         // Send a change title command
-        websocketClientNode2.send(FullCommandOperation.fullCommand(201, command1));
+        websocketClientNode2.send(OperationFactory.fullCommand(201, command1));
         // Send a setLicense command
-        websocketClientNode2.send(FullCommandOperation.fullCommand(202, command2));
+        websocketClientNode2.send(OperationFactory.fullCommand(202, command2));
         
         // Wait for the ACKS
         Deque<String> inboundMessages2 = websocketClientNode2.getInboundMessages();
@@ -312,11 +311,11 @@ public class VerifyDistributedSetupTestIT {
         inboundMessages2.pop(); // Pop the change license ACK.
 
         // Send an undo command
-        websocketClientNode2.send(VersionedOperation.undo(contentVersionToUndo));
+        websocketClientNode2.send(OperationFactory.undo(contentVersionToUndo));
         // Send a change title command
-        websocketClientNode2.send(FullCommandOperation.fullCommand(201, command3));
+        websocketClientNode2.send(OperationFactory.fullCommand(201, command3));
         // Send a selection message
-        websocketClientNode2.send(SelectionOperation.select("/info"));
+        websocketClientNode2.send(OperationFactory.select("/info"));
         
         // Wait for the ACKS (again)
         waitOnInboundMessages("node_2_edits (node2) [ACKs 2]", inboundMessages2, 2);
@@ -329,22 +328,22 @@ public class VerifyDistributedSetupTestIT {
         Deque<String> inboundMessages1 = websocketClientNode1.getInboundMessages();
         waitOnInboundMessages("node_2_edits (node1)", inboundMessages1, 6);
         // Selection: /contact
-        BaseOperation expectedOp = SelectionOperation.select(USER_2, "XXX", selection1);
+        BaseOperation expectedOp = OperationFactory.select(USER_2, "XXX", selection1);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
         // Command: change title
-        expectedOp = FullCommandOperation.fullCommand(84L, command1, USER_2, false);
+        expectedOp = OperationFactory.fullCommand(84L, command1, USER_2, false);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
         // Command: change license
-        expectedOp = FullCommandOperation.fullCommand(84L, command2, USER_2, false);
+        expectedOp = OperationFactory.fullCommand(84L, command2, USER_2, false);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
         // Undo
-        expectedOp = VersionedOperation.undo(contentVersionToUndo);
+        expectedOp = OperationFactory.undo(contentVersionToUndo);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
         // Command: change title
-        expectedOp = FullCommandOperation.fullCommand(84L, command3, USER_2, false);
+        expectedOp = OperationFactory.fullCommand(84L, command3, USER_2, false);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
         // Selection: /info
-        expectedOp = SelectionOperation.select(USER_2, "XXX", selection2);
+        expectedOp = OperationFactory.select(USER_2, "XXX", selection2);
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
     }
     
@@ -355,7 +354,7 @@ public class VerifyDistributedSetupTestIT {
         Deque<String> inboundMessages1 = websocketClientNode1.getInboundMessages();
         waitOnInboundMessages("close_node2", inboundMessages1, 1);
         // Leave
-        BaseOperation expectedOp = JoinLeaveOperation.leave(USER_2, "XXX");
+        BaseOperation expectedOp = OperationFactory.leave(USER_2, "XXX");
         testOperationProcessor.assertEquals(expectedOp, inboundMessages1.pop());
     }
 

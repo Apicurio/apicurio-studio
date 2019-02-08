@@ -18,23 +18,12 @@ package io.apicurio.hub.core.editing;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignCommandAck;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
-import io.apicurio.hub.core.editing.ops.SelectionOperation;
-import io.apicurio.hub.core.editing.ops.VersionedAck;
-import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
-import io.apicurio.hub.core.editing.ops.VersionedOperation;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
@@ -134,132 +123,30 @@ public class EditingSession implements IEditingSession {
             logger.error("Error detected closing an Editing Session.", e);
         }
     }
-
+    
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#getMembers()
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendTo(io.apicurio.hub.core.editing.ops.BaseOperation, io.apicurio.hub.core.editing.ISessionContext)
      */
     @Override
-    public Set<ISessionContext> getMembers() {
-        return new HashSet<>(this.sessions.values());
+    public void sendTo(BaseOperation operation, ISessionContext to) {
+        try {
+            to.sendAsText(operation);
+        } catch (IOException e) {
+            logger.error("Error sending (" + operation.getType() + ") operation/message to websocket with sessionId: " + to.getId(), e);
+            // TODO what else can we do here??
+        }
     }
     
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendCommandToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignCommand)
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendToOthers(io.apicurio.hub.core.editing.ops.BaseOperation, io.apicurio.hub.core.editing.ISessionContext)
      */
     @Override
-    public void sendCommandToOthers(ISessionContext excludeSession, String user, ApiDesignCommand command) {
-        VersionedCommandOperation versionedCommand = VersionedCommandOperation.command(command.getContentVersion(), command.getCommand());
-        sendToAllSessions(excludeSession, versionedCommand);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendUndoToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignUndoRedo)
-     */
-    @Override
-    public void sendUndoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo undo) {
-        VersionedOperation undoOperation = VersionedOperation.undo(undo.getContentVersion());
-        sendToAllSessions(excludeSession, undoOperation);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendRedoToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, io.apicurio.hub.core.beans.ApiDesignUndoRedo)
-     */
-    @Override
-    public void sendRedoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo redo) {
-        VersionedOperation redoOperation = VersionedOperation.redo(redo.getContentVersion());
-        sendToAllSessions(excludeSession, redoOperation);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendUserSelectionToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void sendUserSelectionToOthers(ISessionContext excludeSession, String user, String newSelection) {
-        SelectionOperation selectionOperation = SelectionOperation.select(user, excludeSession.getId(), newSelection);
-        sendToAllSessions(excludeSession, selectionOperation);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendAckTo(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.beans.ApiDesignCommandAck)
-     */
-    @Override
-    public void sendAckTo(ISessionContext toSession, ApiDesignCommandAck ack) {
-        // TODO can we meld this with ApiDesignCommandAck ?
-        VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion(), ack.getCommandId());
-        try {
-            toSession.sendAsText(commandIdAction);
-        } catch (IOException e) {
-            logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
-        }
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendAckTo(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.beans.ApiDesignUndoRedoAck)
-     */
-    @Override
-    public void sendAckTo(ISessionContext toSession, ApiDesignUndoRedoAck ack) {
-        VersionedAck commandIdAction = VersionedAck.ack(ack.getContentVersion());
-        try {
-            toSession.sendAsText(commandIdAction);
-        } catch (IOException e) {
-            logger.error("Error sending ACK to websocket with sessionId: " + toSession.getId(), e);
-        }
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
-     */
-    @Override
-    public void sendJoinToOthers(ISessionContext joinedSession, String joinedUser) {
-        JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedSession.getId());
-        sendToAllSessions(joinedSession, joinOperation);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendLeaveToOthers(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
-     */
-    @Override
-    public void sendLeaveToOthers(ISessionContext leftSession, String leftUser) {
-        JoinLeaveOperation leaveOperation = JoinLeaveOperation.leave(leftUser, leftSession.getId());
-        // Don't send the message to the user who is leaving
-        sendToAllSessions(leftSession, leaveOperation);
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinTo(io.apicurio.hub.core.editing.ISessionContext, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void sendJoinTo(ISessionContext toSession, String joinedUser, String joinedId) {
-        JoinLeaveOperation joinOperation = JoinLeaveOperation.join(joinedUser, joinedId);
-        try {
-            toSession.sendAsText(joinOperation);
-        } catch (IOException e) {
-            logger.error("Error sending 'join' to websocket with sessionId: " + toSession.getId(), e);
-        }
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
-     */
-    @Override
-    public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation) {
+    public void sendToOthers(BaseOperation operation, ISessionContext exclude) {
         for (ISessionContext otherSession : this.sessions.values()) {
-            if (excludeSession == null || !otherSession.getId().equals(excludeSession.getId())) {
-                try {
-                    otherSession.sendAsText(operation);
-                } catch (IOException e) {
-                    logger.error("Error sending {} to websocket with sessionId: {}", operation.getType(), otherSession.getId(), e);
-                }
+            if (!otherSession.getId().equals(exclude.getId())) {
+                this.sendTo(operation, otherSession);
             }
         }
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendJoinToRemote()
-     */
-    @Override
-    public void sendJoinToRemote() {
-        // TODO remove this from interface, nothing to do when not JMS
     }
     
 }

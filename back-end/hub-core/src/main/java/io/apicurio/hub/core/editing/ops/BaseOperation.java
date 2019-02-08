@@ -15,7 +15,6 @@
  */
 package io.apicurio.hub.core.editing.ops;
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -23,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseOperation {
-    private SourceEnum source = SourceEnum.LOCAL;
-
     private String type;
 
     public BaseOperation() {}
@@ -40,20 +37,5 @@ public class BaseOperation {
     public BaseOperation setType(String type) {
         this.type = type;
         return this;
-    }
-
-    public SourceEnum getSource() {
-        return source;
-    }
-
-    public BaseOperation setSource(SourceEnum source) {
-        this.source = source;
-        return this;
-    }
-
-    public enum SourceEnum {
-        @JsonEnumDefaultValue
-        LOCAL,
-        REMOTE
     }
 }

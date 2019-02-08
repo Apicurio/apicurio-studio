@@ -48,11 +48,4 @@ public class PingProcessor implements IOperationProcessor {
         return "ping";
     }
 
-    /**
-     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
-     */
-    @Override
-    public Class<? extends BaseOperation> unmarshallClass() {
-        return BaseOperation.class;
-    }
 }

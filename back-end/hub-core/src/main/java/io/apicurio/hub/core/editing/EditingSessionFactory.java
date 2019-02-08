@@ -16,12 +16,13 @@
 
 package io.apicurio.hub.core.editing;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.editing.distributed.IDistributedSessionFactory;
 import io.apicurio.hub.core.editing.distributed.JMSEditingSession;
+import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 
@@ -36,11 +37,17 @@ public class EditingSessionFactory {
     @Inject
     private HubConfiguration config;
     @Inject
-    private IDistributedSessionFactory distSessionFactory;
-    @Inject
     private OperationProcessorDispatcher operationProcessor;
     @Inject
     private IRollupExecutor rollupExecutor;
+    @Inject
+    private JMSSessionFactory jms;
+    
+    @PostConstruct
+    public void setup() {
+        // TODO initialize the JMS session factory here
+        // jms.initialize();
+    }
 
     /**
      * Called to create an editing session.
@@ -49,7 +56,7 @@ public class EditingSessionFactory {
     public IEditingSession createEditingSession(String designId) {
         String type = config.getEditingSessionType();
         if ("jms".equals(type)) {
-            return new JMSEditingSession(designId, distSessionFactory, operationProcessor);
+            return new JMSEditingSession(designId, jms, operationProcessor);
         } else {
             return new EditingSession(designId, rollupExecutor);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2018 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.apicurio.hub.core.editing.distributed;
 
-package io.apicurio.hub.core.beans;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
- * @author eric.wittmann@gmail.com
+ * A shared (distributed) Apicurio session.
+ *
+ * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class ApiDesignUndoRedo {
-
-    private long contentVersion;
-    
-    /**
-     * Constructor.
-     */
-    public ApiDesignUndoRedo() {
-    }
+public interface IDistributedEditingSession {
 
     /**
-     * @return the contentVersion
+     * Send an operation over the shared session
      */
-    public long getContentVersion() {
-        return contentVersion;
-    }
+    void sendOperation(BaseOperation command);
 
     /**
-     * @param contentVersion the contentVersion to set
+     * Close the shared session
      */
-    public void setContentVersion(long contentVersion) {
-        this.contentVersion = contentVersion;
-    }
-    
+    void close();
+
 }

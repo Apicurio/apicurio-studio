@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SelectionOperation extends BaseOperation {
+    
     private String user;
     private String id;
     private String selection;
@@ -54,18 +55,5 @@ public class SelectionOperation extends BaseOperation {
         this.selection = selection;
         return this;
     }
-
-    public static SelectionOperation select(String user, String id, String selection) {
-        return (SelectionOperation) new SelectionOperation()
-                .setUser(user)
-                .setId(id)
-                .setSelection(selection)
-                .setType("selection");
-    }
-
-    public static SelectionOperation select(String selection) {
-        return (SelectionOperation) new SelectionOperation()
-                .setSelection(selection)
-                .setType("selection");
-    }
+    
 }

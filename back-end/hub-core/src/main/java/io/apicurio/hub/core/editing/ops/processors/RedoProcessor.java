@@ -15,20 +15,20 @@
  */
 package io.apicurio.hub.core.editing.ops.processors;
 
-import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.IEditingSession;
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.editing.ops.VersionedOperation;
-import io.apicurio.hub.core.editing.IEditingMetrics;
-import io.apicurio.hub.core.storage.IStorage;
-import io.apicurio.hub.core.storage.StorageException;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import io.apicurio.hub.core.editing.IEditingMetrics;
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.VersionedOperation;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -49,16 +49,7 @@ public class RedoProcessor implements IOperationProcessor {
      */
     @Override
     public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        VersionedOperation redoOperation = (VersionedOperation) bo;
-
-        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
-            processLocal(editingSession, context, redoOperation);
-        } else {
-            processRemote(editingSession, context, redoOperation);
-        }
-    }
-
-    public void processLocal(IEditingSession editingSession, ISessionContext context, VersionedOperation redo) {
+        VersionedOperation redo = (VersionedOperation) bo;
         String user = editingSession.getUser(context);
 
         long contentVersion = redo.getContentVersion();
@@ -83,21 +74,12 @@ public class RedoProcessor implements IOperationProcessor {
         }
 
         // Send an ack message back to the user
-        ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
-        ack.setContentVersion(contentVersion);
-        editingSession.sendAckTo(context, ack);
+        editingSession.sendTo(OperationFactory.ack(contentVersion), context);
         logger.debug("ACK sent back to client.");
 
         // Now propagate the redo to all other clients
-        ApiDesignUndoRedo command = new ApiDesignUndoRedo();
-        command.setContentVersion(contentVersion);
-        editingSession.sendRedoToOthers(context, user, command);
+        editingSession.sendToOthers(OperationFactory.redo(contentVersion), context);
         logger.debug("Redo sent to 'other' clients.");
-    }
-
-    private void processRemote(IEditingSession editingSession, ISessionContext context, VersionedOperation redo) {
-        editingSession.sendToAllSessions(context, redo);
-        logger.debug("Remote redo sent to local clients.");
     }
 
     /**
@@ -108,11 +90,4 @@ public class RedoProcessor implements IOperationProcessor {
         return "redo";
     }
 
-    /**
-     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
-     */
-    @Override
-    public Class<? extends BaseOperation> unmarshallClass() {
-        return VersionedOperation.class;
-    }
 }

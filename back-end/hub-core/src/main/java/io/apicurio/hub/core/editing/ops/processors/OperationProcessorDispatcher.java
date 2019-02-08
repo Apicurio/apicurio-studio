@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.util.JsonUtil;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
 
 /**
  * This class manages a set of {@link IOperationProcessor} instances.  Its role is to figure
@@ -68,19 +68,17 @@ public class OperationProcessorDispatcher {
      * @param message
      */
     public void process(IEditingSession editingSession, ISessionContext context, JsonNode message) {
-        String opType = message.get("type").asText();
+        BaseOperation operation = OperationFactory.operation(message);
+        String opType = operation.getType();
         IOperationProcessor processor = processorMap.get(opType);
 
         logger.debug("Received a \"{}\" message/operation from a client for API Design: {}", opType, editingSession.getDesignId());
 
         if (processor != null) {
-            Class<? extends BaseOperation> unmarshallClass = processor.unmarshallClass();
-            BaseOperation operation = JsonUtil.fromJsonToOperation(message, unmarshallClass);
             processor.process(editingSession, context, operation);
         } else {
             logger.error("Unknown message/operation type: {}. \nKnown types: {}", opType, processorMap);
             throw new IllegalArgumentException("Unknown message type " + opType);
-            // TODO something went wrong if we got here - report an error of some kind
         }
     }
 }

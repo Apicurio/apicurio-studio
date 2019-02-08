@@ -40,13 +40,17 @@ public class EditingSessionFactory {
     private OperationProcessorDispatcher operationProcessor;
     @Inject
     private IRollupExecutor rollupExecutor;
-    @Inject
-    private JMSSessionFactory jms;
+    
+    private Object jms;
     
     @PostConstruct
     public void setup() {
-        // TODO initialize the JMS session factory here
-        // jms.initialize();
+        // Only initialize JMS if we're going to use it!
+        if ("jms".equals(config.getEditingSessionType())) {
+            JMSSessionFactory jms = new JMSSessionFactory();
+            jms.initialize(rollupExecutor);
+            this.jms = jms;
+        }
     }
 
     /**
@@ -56,7 +60,7 @@ public class EditingSessionFactory {
     public IEditingSession createEditingSession(String designId) {
         String type = config.getEditingSessionType();
         if ("jms".equals(type)) {
-            return new JMSEditingSession(designId, jms, operationProcessor);
+            return new JMSEditingSession(designId, (JMSSessionFactory) jms, operationProcessor);
         } else {
             return new EditingSession(designId, rollupExecutor);
         }

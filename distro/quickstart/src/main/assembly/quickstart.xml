@@ -60,6 +60,11 @@
       <filtered>false</filtered>
     </fileSet>
     <fileSet>
+      <directory>src/main/resources/docs/apicurio</directory>
+      <outputDirectory>apicurio-studio-${project.version}/docs/apicurio</outputDirectory>
+      <filtered>false</filtered>
+    </fileSet>
+    <fileSet>
       <directory>${basedir}/../../back-end/hub-core/src/main/resources/io/apicurio/hub/core/storage/jdbc</directory>
       <outputDirectory>apicurio-studio-${project.version}/ddls</outputDirectory>
       <filtered>false</filtered>

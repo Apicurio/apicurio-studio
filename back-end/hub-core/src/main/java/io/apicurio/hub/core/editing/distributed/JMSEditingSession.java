@@ -82,14 +82,6 @@ public class JMSEditingSession extends EditingSession {
     }
     
     /**
-     * @see io.apicurio.hub.core.editing.EditingSession#sendTo(io.apicurio.hub.core.editing.ops.BaseOperation, io.apicurio.hub.core.editing.ISessionContext)
-     */
-    @Override
-    public void sendTo(BaseOperation operation, ISessionContext to) {
-        super.sendTo(operation, to);
-    }
-    
-    /**
      * @see io.apicurio.hub.core.editing.EditingSession#sendToOthers(io.apicurio.hub.core.editing.ops.BaseOperation, io.apicurio.hub.core.editing.ISessionContext)
      */
     @Override
@@ -102,7 +94,7 @@ public class JMSEditingSession extends EditingSession {
      * Called to send the given operation to ALL connected websocket clients.
      * @param operation
      */
-    public void sendToAll(BaseOperation operation) {
+    private void sendToAll(BaseOperation operation) {
         for (ISessionContext context : this.getSessions().values()) {
             this.sendTo(operation, context);
         }

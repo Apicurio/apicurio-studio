@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import javax.inject.Singleton;
 
@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.ListClientsOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -34,10 +34,10 @@ public class ListClientsProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(ListClientsProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
         ListClientsOperation lOp = (ListClientsOperation) bo;
         logger.debug("Received 'list clients' operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
@@ -53,7 +53,7 @@ public class ListClientsProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#getOperationName()
      */
     @Override
     public String getOperationName() {
@@ -61,7 +61,7 @@ public class ListClientsProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
      */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {

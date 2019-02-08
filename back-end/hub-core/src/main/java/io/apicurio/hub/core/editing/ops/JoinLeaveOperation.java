@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.sessionbeans;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+package io.apicurio.hub.core.editing.ops;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class SelectionOperation extends BaseOperation {
+public class JoinLeaveOperation extends BaseOperation {
     private String user;
     private String id;
-    private String selection;
 
-    public SelectionOperation() {}
+    public JoinLeaveOperation() {}
 
     public String getUser() {
         return user;
     }
 
-    public SelectionOperation setUser(String user) {
+    public JoinLeaveOperation setUser(String user) {
         this.user = user;
         return this;
     }
@@ -41,31 +37,22 @@ public class SelectionOperation extends BaseOperation {
         return id;
     }
 
-    public SelectionOperation setId(String id) {
+    public JoinLeaveOperation setId(String id) {
         this.id = id;
         return this;
     }
 
-    public String getSelection() {
-        return selection;
-    }
-
-    public SelectionOperation setSelection(String selection) {
-        this.selection = selection;
-        return this;
-    }
-
-    public static SelectionOperation select(String user, String id, String selection) {
-        return (SelectionOperation) new SelectionOperation()
+    public static JoinLeaveOperation join(String user, String id) {
+        return (JoinLeaveOperation) new JoinLeaveOperation()
                 .setUser(user)
                 .setId(id)
-                .setSelection(selection)
-                .setType("selection");
+                .setType("join");
     }
 
-    public static SelectionOperation select(String selection) {
-        return (SelectionOperation) new SelectionOperation()
-                .setSelection(selection)
-                .setType("selection");
+    public static JoinLeaveOperation leave(String user, String id) {
+        return (JoinLeaveOperation) new JoinLeaveOperation()
+                .setUser(user)
+                .setId(id)
+                .setType("leave");
     }
 }

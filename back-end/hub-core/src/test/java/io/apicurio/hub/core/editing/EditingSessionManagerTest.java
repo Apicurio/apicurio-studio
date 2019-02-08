@@ -56,13 +56,17 @@ public class EditingSessionManagerTest {
         ds = createInMemoryDatasource();
         HubConfiguration config = new HubConfiguration();
         H2SqlStatements sqlStatements = new H2SqlStatements(config);
+        RollupExecutor rollupExecutor = new RollupExecutor();
+        rollupExecutor.setStorage(storage);
+        rollupExecutor.setOaiCommandExecutor(new OaiCommandExecutor());
+
         EditingSessionFactory editingSessionFactory = new EditingSessionFactory() {
             /**
              * @see io.apicurio.hub.core.editing.EditingSessionFactory#createEditingSession(java.lang.String)
              */
             @Override
             public IEditingSession createEditingSession(String designId) {
-                return new EditingSession(designId);
+                return new EditingSession(designId, rollupExecutor);
             }
         };
 
@@ -73,10 +77,6 @@ public class EditingSessionManagerTest {
         storage.postConstruct();
 
         manager = new EditingSessionManager();
-
-        RollupExecutor rollupExecutor = new RollupExecutor();
-        rollupExecutor.setStorage(storage);
-        rollupExecutor.setOaiCommandExecutor(new OaiCommandExecutor());
 
         TestUtil.setPrivateField(manager, "storage", storage);
         TestUtil.setPrivateField(manager, "editingSessionFactory", editingSessionFactory);

@@ -21,11 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.editing.EditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.ISharedApicurioSession;
-import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
-import io.apicurio.hub.core.editing.sessionbeans.ListClientsOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.ops.ListClientsOperation;
+import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
+import io.apicurio.hub.core.editing.IDistributedEditingSession;
 import io.apicurio.hub.core.util.JsonUtil;
 
 /**
@@ -35,7 +35,7 @@ public class JMSEditingSession extends EditingSession {
 
     private static Logger logger = LoggerFactory.getLogger(JMSEditingSession.class);
     
-    private final ISharedApicurioSession distributedSession;
+    private final IDistributedEditingSession distributedSession;
 
     /**
      * Constructor.
@@ -45,7 +45,7 @@ public class JMSEditingSession extends EditingSession {
      */
     public JMSEditingSession(String designId, IDistributedSessionFactory factory,
             OperationProcessorDispatcher operationProcessor) {
-        super(designId);
+        super(designId, null); // OK to pass null for the rollup executor, because we override close()
         logger.debug("Creating a JMS editing session for id: {}", designId);
         this.distributedSession = factory.joinSession(designId, payload -> {
             operationProcessor.process(this, null, JsonUtil.toJsonTree(payload));
@@ -58,12 +58,11 @@ public class JMSEditingSession extends EditingSession {
      */
     @Override
     public void close() {
-        super.close();
         distributedSession.close();
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
     public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation) {

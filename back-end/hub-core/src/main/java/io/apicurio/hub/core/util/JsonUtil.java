@@ -19,7 +19,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -64,13 +65,13 @@ public class JsonUtil {
      * Unmarshall from JSON into a specific object tree, with clazz as the root.
      *
      * @param json the json string
-     * @param clazz the root class to unmarshall json into
+     * @param unmarshallClass the root class to unmarshall json into
      * @param <T> the class type
      * @return instance of clazz
      */
-    public static <T> T fromJson(String json, Class<T> clazz) {
+    public static <T> T fromJson(String json, Class<T> unmarshallClass) {
         try {
-            return OBJECT_MAPPER.readValue(json, clazz);
+            return OBJECT_MAPPER.readValue(json, unmarshallClass);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } catch (IOException ioe) {
@@ -82,12 +83,12 @@ public class JsonUtil {
      * Unmarshall {@link JsonNode} structure into an operation
      *
      * @param payload the root node of the JSON structure
-     * @param klazz the BaseOperation to unmarshall into
+     * @param unmarshallClass the BaseOperation to unmarshall into
      * @return a new base operation consisting of data in payload
      */
-    public static BaseOperation fromJsonToOperation(JsonNode payload, Class<? extends BaseOperation> klazz) {
+    public static BaseOperation fromJsonToOperation(JsonNode payload, Class<? extends BaseOperation> unmarshallClass) {
         try {
-            return OBJECT_MAPPER.treeToValue(payload, klazz);
+            return OBJECT_MAPPER.treeToValue(payload, unmarshallClass);
         } catch (JsonProcessingException e) {
             System.err.println(payload.toString());
             throw new RuntimeException(e);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.sessionbeans;
+package io.apicurio.hub.core.editing.ops;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
@@ -58,6 +58,13 @@ public class FullCommandOperation extends VersionedCommandOperation {
                 .setReverted(reverted)
                 .setCommand(commandContent)
                 .setContentVersion(contentVersion)
+                .setType("command");
+    }
+
+    public static FullCommandOperation fullCommand(long commandId, String commandContent) {
+        return (FullCommandOperation) new FullCommandOperation()
+                .setCommand(commandContent)
+                .setCommandId(commandId)
                 .setType("command");
     }
 

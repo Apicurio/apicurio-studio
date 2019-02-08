@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -27,10 +27,10 @@ public interface IOperationProcessor {
     /**
      * Processes the given operation, performing some work specific to the type of operation.
      * @param editingSession
-     * @param session
+     * @param context
      * @param operation
      */
-    void process(IEditingSession editingSession, ISessionContext session, BaseOperation operation);
+    void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation);
     
     /**
      * Returns the name of the operation that this processor is responsible for.  The name

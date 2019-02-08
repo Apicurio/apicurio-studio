@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing;
-
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+package io.apicurio.hub.core.editing.ops;
 
 /**
- * A shared (distributed) Apicurio session.
- *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface ISharedApicurioSession {
+public class ListClientsOperation extends BaseOperation {
+    private static final ListClientsOperation INSTANCE;
 
-    /**
-     * Send an operation over the shared session
-     */
-    void sendOperation(BaseOperation command);
+    static {
+        INSTANCE = (ListClientsOperation) new ListClientsOperation().setType("list-clients");
+    }
 
-    /**
-     * Close the shared session
-     */
-    void close();
-
-    /**
-     * Get the shared session ID
-     */
-    String getSessionId();
+    public static ListClientsOperation listClients() {
+        return INSTANCE;
+    }
 }

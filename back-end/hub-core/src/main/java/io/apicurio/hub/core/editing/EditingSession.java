@@ -29,12 +29,16 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
-import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.ops.SelectionOperation;
+import io.apicurio.hub.core.editing.ops.VersionedAck;
+import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
+import io.apicurio.hub.core.editing.ops.VersionedOperation;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.storage.IRollupExecutor;
+import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * Models a single, shared editing session for an API Design.  This implementation only supports
@@ -51,12 +55,16 @@ public class EditingSession implements IEditingSession {
     private final Map<String, ISessionContext> sessions = new HashMap<>();
     private final Map<String, String> users = new HashMap<>();
 
+    private final IRollupExecutor rollupExecutor;
+
     /**
      * Constructor.
      * @param designId
+     * @param rollupExecutor
      */
-    public EditingSession(String designId) {
+    public EditingSession(String designId, IRollupExecutor rollupExecutor) {
         this.designId = designId;
+        this.rollupExecutor = rollupExecutor;
     }
     
     /**
@@ -85,26 +93,26 @@ public class EditingSession implements IEditingSession {
      * @see io.apicurio.hub.core.editing.IEditingSession#getUser(io.apicurio.hub.core.editing.ISessionContext)
      */
     @Override
-    public String getUser(ISessionContext session) {
-        return users.get(session.getId());
+    public String getUser(ISessionContext context) {
+        return users.get(context.getId());
     }
 
     /**
      * @see io.apicurio.hub.core.editing.IEditingSession#join(io.apicurio.hub.core.editing.ISessionContext, java.lang.String)
      */
     @Override
-    public void join(ISessionContext session, String user) {
-        this.sessions.put(session.getId(), session);
-        this.users.put(session.getId(), user);
+    public void join(ISessionContext context, String user) {
+        this.sessions.put(context.getId(), context);
+        this.users.put(context.getId(), user);
     }
 
     /**
      * @see io.apicurio.hub.core.editing.IEditingSession#leave(io.apicurio.hub.core.editing.ISessionContext)
      */
     @Override
-    public void leave(ISessionContext session) {
-        this.sessions.remove(session.getId());
-        this.users.remove(session.getId());
+    public void leave(ISessionContext context) {
+        this.sessions.remove(context.getId());
+        this.users.remove(context.getId());
     }
 
     /**
@@ -120,7 +128,11 @@ public class EditingSession implements IEditingSession {
      */
     @Override
     public void close() {
-        // TODO anything to do here?
+        try {
+            this.rollupExecutor.rollupCommands(designId);
+        } catch (NotFoundException | StorageException | OaiCommandException e) {
+            logger.error("Error detected closing an Editing Session.", e);
+        }
     }
 
     /**
@@ -227,12 +239,12 @@ public class EditingSession implements IEditingSession {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.IEditingSession#sendToAllSessions(io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
     public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation) {
         for (ISessionContext otherSession : this.sessions.values()) {
-            if (otherSession != excludeSession) {
+            if (excludeSession == null || !otherSession.getId().equals(excludeSession.getId())) {
                 try {
                     otherSession.sendAsText(operation);
                 } catch (IOException e) {

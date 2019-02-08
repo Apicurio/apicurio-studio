@@ -16,9 +16,10 @@
 package io.apicurio.test.integration.arquillian.testprocessors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedCommandOperation;
+
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.junit.Assert;
 
@@ -34,8 +35,8 @@ import org.junit.Assert;
  */
 public class TestCommandOperationProcessor implements ITestOperationProcessor {
     @Override
-    public void assertEquals(BaseOperation base, String actualRaw) {
-        VersionedCommandOperation expected = (VersionedCommandOperation) base;
+    public void assertEquals(BaseOperation expectedOp, String actualRaw) {
+        VersionedCommandOperation expected = (VersionedCommandOperation) expectedOp;
         VersionedCommandOperation actual;
 
         JsonNode tree = JsonUtil.toJsonTree(actualRaw);
@@ -72,7 +73,7 @@ public class TestCommandOperationProcessor implements ITestOperationProcessor {
     }
 
     @Override
-    public Class<VersionedCommandOperation> unmarshallKlazz() {
+    public Class<VersionedCommandOperation> unmarshallClass() {
         return VersionedCommandOperation.class;
     }
 }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
-import io.apicurio.hub.core.editing.IEditingSession;
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.SelectionOperation;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.SelectionOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -33,35 +34,35 @@ public class SelectionProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(SelectionProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
         SelectionOperation selectionOp = (SelectionOperation) bo;
 
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
-            processLocal(editingSession, session, selectionOp);
+            processLocal(editingSession, context, selectionOp);
         } else {
-            processRemote(editingSession, session, selectionOp);
+            processRemote(editingSession, context, selectionOp);
         }
     }
 
-    private void processLocal(IEditingSession editingSession, ISessionContext session, SelectionOperation so) {
-        String user = editingSession.getUser(session);
+    private void processLocal(IEditingSession editingSession, ISessionContext context, SelectionOperation so) {
+        String user = editingSession.getUser(context);
         String selection = so.getSelection();
         logger.debug("\tuser:" + user);
         logger.debug("\tselection:" + selection);
-        editingSession.sendUserSelectionToOthers(session, user, selection);
+        editingSession.sendUserSelectionToOthers(context, user, selection);
         logger.debug("User selection propagated to 'other' clients.");
     }
 
-    private void processRemote(IEditingSession editingSession, ISessionContext session, SelectionOperation so) {
-        editingSession.sendToAllSessions(session, so);
+    private void processRemote(IEditingSession editingSession, ISessionContext context, SelectionOperation so) {
+        editingSession.sendToAllSessions(context, so);
         logger.debug("Remote selection sent to local clients.");
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#getOperationName()
      */
     @Override
     public String getOperationName() {
@@ -69,7 +70,7 @@ public class SelectionProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
      */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {

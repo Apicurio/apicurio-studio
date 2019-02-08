@@ -15,16 +15,17 @@
  */
 package io.apicurio.hub.core.editing.distributed;
 
-import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.ISharedApicurioSession;
-import io.apicurio.hub.core.storage.IRollupExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.editing.IDistributedEditingSession;
+import io.apicurio.hub.core.editing.OperationHandler;
+import io.apicurio.hub.core.storage.IRollupExecutor;
 
 /**
  * Returns user-configured (or default) distributed session factory according to user configuration.
@@ -38,55 +39,31 @@ import javax.inject.Inject;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @ApplicationScoped
+// TODO delete this
 public class DistributedImplementationProducer {
     private static Logger logger = LoggerFactory.getLogger(DistributedImplementationProducer.class);
 
     @Inject
-    private HubConfiguration config;
-
-    @Inject
     private JMSSessionFactory jms;
-
-    @Inject
-    private NoOpSessionFactory noop;
 
     @Produces
     public IDistributedSessionFactory create() {
-        if ("jms".equalsIgnoreCase(config.getDistributedSessionType())) {
-            logger.debug("Selecting JMS distributed session");
-            return new IDistributedSessionFactory() {
-                @Override
-                public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
-                    return jms.joinSession(designId, handler);
-                }
+        logger.debug("Selecting JMS distributed session");
+        return new IDistributedSessionFactory() {
+            @Override
+            public IDistributedEditingSession joinSession(String designId, OperationHandler handler) {
+                return jms.joinSession(designId, handler);
+            }
 
-                @Override
-                public String getSessionType() {
-                    return jms.getSessionType();
-                }
+            @Override
+            public String getSessionType() {
+                return jms.getSessionType();
+            }
 
-                @Override
-                public void setRollupExecutor(IRollupExecutor rollupExecutor) {
-                    jms.setRollupExecutor(rollupExecutor);
-                }
-            };
-        } else {
-            logger.debug("Selecting NoOp distributed session");
-            return new IDistributedSessionFactory() {
-                public ISharedApicurioSession joinSession(String designId, OperationHandler handler) {
-                    return noop.joinSession(designId, handler);
-                }
-
-                @Override
-                public String getSessionType() {
-                    return noop.getSessionType();
-                }
-
-                @Override
-                public void setRollupExecutor(IRollupExecutor rollupExecutor) {
-                    noop.setRollupExecutor(rollupExecutor);
-                }
-            };
-        }
+            @Override
+            public void setRollupExecutor(IRollupExecutor rollupExecutor) {
+                jms.setRollupExecutor(rollupExecutor);
+            }
+        };
     }
 }

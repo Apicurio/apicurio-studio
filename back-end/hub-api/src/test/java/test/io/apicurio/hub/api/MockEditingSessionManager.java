@@ -65,7 +65,7 @@ public class MockEditingSessionManager implements IEditingSessionManager {
     public synchronized EditingSession getOrCreateEditingSession(String designId) {
         EditingSession session = editingSessions.get(designId);
         if (session == null) {
-            session = new EditingSession(designId);
+            session = new EditingSession(designId, null);
             editingSessions.put(designId, session);
         }
         return session;

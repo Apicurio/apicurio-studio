@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 
 /**
@@ -64,19 +64,21 @@ public class OperationProcessorDispatcher {
      * Process a given JSON payload (obtained from the inbound websocket).  This is done by
      * figuring out the type of the payload and then unmarshalling it into a {@link BaseOperation}.
      * @param editingSession
-     * @param session
-     * @param payload
+     * @param context
+     * @param message
      */
-    public void process(IEditingSession editingSession, ISessionContext session, JsonNode payload) {
-        String opType = payload.get("type").asText();
+    public void process(IEditingSession editingSession, ISessionContext context, JsonNode message) {
+        String opType = message.get("type").asText();
         IOperationProcessor processor = processorMap.get(opType);
 
+        logger.debug("Received a \"{}\" message/operation from a client for API Design: {}", opType, editingSession.getDesignId());
+
         if (processor != null) {
-            Class<? extends BaseOperation> klazz = processor.unmarshallClass();
-            BaseOperation operation = JsonUtil.fromJsonToOperation(payload, klazz);
-            processor.process(editingSession, session, operation);
+            Class<? extends BaseOperation> unmarshallClass = processor.unmarshallClass();
+            BaseOperation operation = JsonUtil.fromJsonToOperation(message, unmarshallClass);
+            processor.process(editingSession, context, operation);
         } else {
-            logger.error("Unknown message type: {}. \nKnown types: {}", opType, processorMap);
+            logger.error("Unknown message/operation type: {}. \nKnown types: {}", opType, processorMap);
             throw new IllegalArgumentException("Unknown message type " + opType);
             // TODO something went wrong if we got here - report an error of some kind
         }

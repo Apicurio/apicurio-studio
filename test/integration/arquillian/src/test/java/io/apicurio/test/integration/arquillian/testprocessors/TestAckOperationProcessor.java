@@ -15,8 +15,8 @@
  */
 package io.apicurio.test.integration.arquillian.testprocessors;
 
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedAck;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.VersionedAck;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.junit.Assert;
 
@@ -28,9 +28,9 @@ import org.junit.Assert;
  */
 public class TestAckOperationProcessor implements ITestOperationProcessor {
     @Override
-    public void assertEquals(BaseOperation base, String actualRaw) {
-        VersionedAck expected = (VersionedAck) base;
-        VersionedAck actual = JsonUtil.fromJson(actualRaw, unmarshallKlazz());
+    public void assertEquals(BaseOperation expectedOp, String actualRaw) {
+        VersionedAck expected = (VersionedAck) expectedOp;
+        VersionedAck actual = JsonUtil.fromJson(actualRaw, unmarshallClass());
 
         Assert.assertEquals(expected.getCommandId(), actual.getCommandId());
         Assert.assertEquals(expected.getType(), actual.getType());
@@ -42,7 +42,7 @@ public class TestAckOperationProcessor implements ITestOperationProcessor {
     }
 
     @Override
-    public Class<VersionedAck> unmarshallKlazz() {
+    public Class<VersionedAck> unmarshallClass() {
         return VersionedAck.class;
     }
 }

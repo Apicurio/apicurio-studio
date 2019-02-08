@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import javax.inject.Singleton;
 
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -33,15 +33,15 @@ public class PingProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(PingProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
         logger.debug("PING message received."); // TODO expand logging -- careful with session id
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#getOperationName()
      */
     @Override
     public String getOperationName() {
@@ -49,7 +49,7 @@ public class PingProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
      */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {

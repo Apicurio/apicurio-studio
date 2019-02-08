@@ -16,26 +16,24 @@
 
 package io.apicurio.hub.core.editing;
 
-import java.io.Closeable;
 import java.util.Set;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public interface IEditingSession extends Closeable {
+public interface IEditingSession {
     
     /**
+     * Called to close the editing session.
      * @see java.io.Closeable#close()
      */
-    @Override
-    default void close() {
-    }
+    public void close();
 
     /**
      * Gets the design id associated with this editing session.
@@ -52,7 +50,7 @@ public interface IEditingSession extends Closeable {
     /**
      * Join the session context to this editing session.
      */
-    public void join(ISessionContext session, String user);
+    public void join(ISessionContext context, String user);
 
     /**
      * Removes a session context from this editing session.

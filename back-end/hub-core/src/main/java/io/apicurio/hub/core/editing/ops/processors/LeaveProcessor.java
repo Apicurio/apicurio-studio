@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import javax.inject.Singleton;
 
@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.JoinLeaveOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -34,26 +34,26 @@ public class LeaveProcessor implements IOperationProcessor {
     private static Logger logger = LoggerFactory.getLogger(LeaveProcessor.class);
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
         JoinLeaveOperation lOp = (JoinLeaveOperation) bo;
         logger.debug("Received leave operation ", lOp);
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
             throw new UnsupportedOperationException("Did not expect a local command: " + lOp);
         } else {
-            processRemote(editingSession, session, lOp);
+            processRemote(editingSession, context, lOp);
         }
     }
 
-    private void processRemote(IEditingSession editingSession, ISessionContext session, JoinLeaveOperation undo) {
-        editingSession.sendToAllSessions(session, undo);
+    private void processRemote(IEditingSession editingSession, ISessionContext context, JoinLeaveOperation undo) {
+        editingSession.sendToAllSessions(context, undo);
         logger.debug("Remote join sent to local clients.");
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#getOperationName()
      */
     @Override
     public String getOperationName() {
@@ -61,7 +61,7 @@ public class LeaveProcessor implements IOperationProcessor {
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
      */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {

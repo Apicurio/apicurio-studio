@@ -16,13 +16,15 @@
 
 package io.apicurio.test.integration.arquillian.helpers;
 
-import io.apicurio.hub.core.util.JsonUtil;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * A simple websockets client extending {@link WebSocketClient} to perform testing.
@@ -71,11 +73,12 @@ public class ApicurioWebsocketsClient extends WebSocketClient {
     }
 
     /**
-     * Send an object over the websockets connection marshalled as JSON.
-     * @param objToJson the object to send as JSON
+     * Sends an operation over the wire.
+     * @param operation
      */
-    public void sendAsJson(Object objToJson) {
-        JsonUtil.toJson(objToJson);
+    public void send(BaseOperation operation) {
+        String message = JsonUtil.toJson(operation);
+        this.send(message);
     }
 
     /**

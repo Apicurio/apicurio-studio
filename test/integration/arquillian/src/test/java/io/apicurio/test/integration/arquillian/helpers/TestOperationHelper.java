@@ -18,13 +18,16 @@ package io.apicurio.test.integration.arquillian.helpers;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import io.apicurio.test.integration.arquillian.testprocessors.ITestOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestAckOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestCommandOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestJoinOperationProcessor;
+import io.apicurio.test.integration.arquillian.testprocessors.TestLeaveOperationProcessor;
+import io.apicurio.test.integration.arquillian.testprocessors.TestRedoOperationProcessor;
 import io.apicurio.test.integration.arquillian.testprocessors.TestSelectionOperationProcessor;
+import io.apicurio.test.integration.arquillian.testprocessors.TestUndoOperationProcessor;
 
 /**
  * Look up a test processor in order to compare expected with actual payloads.
@@ -48,6 +51,9 @@ public class TestOperationHelper {
         add(TestCommandOperationProcessor.class);
         add(TestSelectionOperationProcessor.class);
         add(TestJoinOperationProcessor.class);
+        add(TestLeaveOperationProcessor.class);
+        add(TestUndoOperationProcessor.class);
+        add(TestRedoOperationProcessor.class);
     }
 
     private static void add(Class<? extends ITestOperationProcessor> clazz) {

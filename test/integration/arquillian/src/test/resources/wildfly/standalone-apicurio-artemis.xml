@@ -44,7 +44,7 @@
         <property name="apicurio.kc.auth.realm" value="apicurio-local"/>
         <property name="apicurio.hub.storage.jdbc.type" value="h2"/>
         <property name="apicurio.hub.storage.jdbc.init" value="true"/>
-        <property name="apicurio.hub.distributed.session.type" value="jms"/>
+        <property name="apicurio.hub.editing.session.type" value="jms"/>
         <property name="apicurio.db.host" value="${env.APICURIO_DB_HOST:127.0.0.1}"/>
         <property name="apicurio.broker.host" value="${env.APICURIO_BROKER_HOST:127.0.0.1}"/>
         <property name="apicurio.broker.port" value="61616"/>

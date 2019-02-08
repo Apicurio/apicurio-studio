@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package io.apicurio.test.integration.arquillian.testprocessors;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.test.integration.arquillian.helpers.TestOperationHelper;
 
 /**
@@ -47,7 +47,7 @@ public interface ITestOperationProcessor {
     /**
      * Class this process unmarshalls
      */
-    Class<? extends BaseOperation> unmarshallKlazz();
+    Class<? extends BaseOperation> unmarshallClass();
 
     // TODO: Could add method to ensure sequences via contentVersion? Could be interesting.
 }

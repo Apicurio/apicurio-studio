@@ -16,8 +16,8 @@
 package io.apicurio.hub.core.editing.distributed;
 
 import io.apicurio.hub.core.editing.OperationHandler;
-import io.apicurio.hub.core.editing.ISharedApicurioSession;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.IDistributedEditingSession;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
@@ -100,7 +100,7 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
         this.rollupExecutor = rollupExecutor;
     }
 
-    public final class MessagingSessionContainer implements Closeable, ISharedApicurioSession {
+    public final class MessagingSessionContainer implements Closeable, IDistributedEditingSession {
         private final String sessionId;
         private final Topic topic;
         private final JMSConsumer consumer;

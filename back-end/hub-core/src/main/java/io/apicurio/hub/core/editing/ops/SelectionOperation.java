@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.sessionbeans;
+package io.apicurio.hub.core.editing.ops;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class JoinLeaveOperation extends BaseOperation {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SelectionOperation extends BaseOperation {
     private String user;
     private String id;
+    private String selection;
 
-    public JoinLeaveOperation() {}
+    public SelectionOperation() {}
 
     public String getUser() {
         return user;
     }
 
-    public JoinLeaveOperation setUser(String user) {
+    public SelectionOperation setUser(String user) {
         this.user = user;
         return this;
     }
@@ -37,22 +41,31 @@ public class JoinLeaveOperation extends BaseOperation {
         return id;
     }
 
-    public JoinLeaveOperation setId(String id) {
+    public SelectionOperation setId(String id) {
         this.id = id;
         return this;
     }
 
-    public static JoinLeaveOperation join(String user, String id) {
-        return (JoinLeaveOperation) new JoinLeaveOperation()
-                .setUser(user)
-                .setId(id)
-                .setType("join");
+    public String getSelection() {
+        return selection;
     }
 
-    public static JoinLeaveOperation leave(String user, String id) {
-        return (JoinLeaveOperation) new JoinLeaveOperation()
+    public SelectionOperation setSelection(String selection) {
+        this.selection = selection;
+        return this;
+    }
+
+    public static SelectionOperation select(String user, String id, String selection) {
+        return (SelectionOperation) new SelectionOperation()
                 .setUser(user)
                 .setId(id)
-                .setType("leave");
+                .setSelection(selection)
+                .setType("selection");
+    }
+
+    public static SelectionOperation select(String selection) {
+        return (SelectionOperation) new SelectionOperation()
+                .setSelection(selection)
+                .setType("selection");
     }
 }

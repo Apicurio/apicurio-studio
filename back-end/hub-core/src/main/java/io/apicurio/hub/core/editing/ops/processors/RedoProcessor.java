@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing.operationprocessors;
+package io.apicurio.hub.core.editing.ops.processors;
 
 import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
 import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.VersionedOperation;
 import io.apicurio.hub.core.editing.IEditingMetrics;
-import io.apicurio.hub.core.editing.sessionbeans.BaseOperation;
-import io.apicurio.hub.core.editing.sessionbeans.VersionedOperation;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import org.slf4j.Logger;
@@ -34,80 +34,82 @@ import javax.inject.Singleton;
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @Singleton
-public class UndoOperation implements IOperationProcessor {
+public class RedoProcessor implements IOperationProcessor {
 
-    private static Logger logger = LoggerFactory.getLogger(UndoOperation.class);
+    private static Logger logger = LoggerFactory.getLogger(RedoProcessor.class);
 
     @Inject
     private IStorage storage;
+
     @Inject
     private IEditingMetrics metrics;
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.sessionbeans.BaseOperation)
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext session, BaseOperation bo) {
-        VersionedOperation vOp = (VersionedOperation) bo;
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
+        VersionedOperation redoOperation = (VersionedOperation) bo;
+
         if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
-            processLocal(editingSession, session, vOp);
+            processLocal(editingSession, context, redoOperation);
         } else {
-            processRemote(editingSession, session, vOp);
+            processRemote(editingSession, context, redoOperation);
         }
     }
 
-    private void processLocal(IEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
-        String user = editingSession.getUser(session);
+    public void processLocal(IEditingSession editingSession, ISessionContext context, VersionedOperation redo) {
+        String user = editingSession.getUser(context);
+
+        long contentVersion = redo.getContentVersion();
         String designId = editingSession.getDesignId();
 
-        long contentVersion = undo.getContentVersion();
-
-        this.metrics.undoCommand(designId, contentVersion);
+        this.metrics.redoCommand(designId, contentVersion);
 
         logger.debug("\tuser:" + user);
-        boolean reverted = false;
+        boolean restored = false;
         try {
-            reverted = storage.undoContent(user, designId, contentVersion);
+            restored = storage.redoContent(user, designId, contentVersion);
         } catch (StorageException e) {
             logger.error("Error undoing a command.", e);
             // TODO do something sensible here - send a msg to the client?
             return;
         }
 
-        // If the command wasn't successfully reverted (it was already reverted or didn't exist)
+        // If the command wasn't successfully restored (it was already restored or didn't exist)
         // then return without doing anything else.
-        if (!reverted) {
+        if (!restored) {
             return;
         }
 
         // Send an ack message back to the user
         ApiDesignUndoRedoAck ack = new ApiDesignUndoRedoAck();
         ack.setContentVersion(contentVersion);
-        editingSession.sendAckTo(session, ack);
+        editingSession.sendAckTo(context, ack);
         logger.debug("ACK sent back to client.");
 
-        // Now propagate the undo to all other clients
+        // Now propagate the redo to all other clients
         ApiDesignUndoRedo command = new ApiDesignUndoRedo();
         command.setContentVersion(contentVersion);
-        editingSession.sendUndoToOthers(session, user, command);
-        logger.debug("Undo sent to 'other' clients.");
+        editingSession.sendRedoToOthers(context, user, command);
+        logger.debug("Redo sent to 'other' clients.");
     }
 
-    private void processRemote(IEditingSession editingSession, ISessionContext session, VersionedOperation undo) {
-        editingSession.sendToAllSessions(session, undo);
-        logger.debug("Remote undo sent to local clients.");
+    private void processRemote(IEditingSession editingSession, ISessionContext context, VersionedOperation redo) {
+        editingSession.sendToAllSessions(context, redo);
+        logger.debug("Remote redo sent to local clients.");
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#getOperationName()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#getOperationName()
      */
     @Override
     public String getOperationName() {
-        return "undo";
+        return "redo";
     }
 
     /**
-     * @see io.apicurio.hub.core.editing.operationprocessors.IOperationProcessor#unmarshallClass()
+     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
      */
     @Override
     public Class<? extends BaseOperation> unmarshallClass() {

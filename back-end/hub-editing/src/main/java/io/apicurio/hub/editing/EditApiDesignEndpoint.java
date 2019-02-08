@@ -40,8 +40,8 @@ import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.operationprocessors.OperationProcessorDispatcher;
-import io.apicurio.hub.core.editing.sessionbeans.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
@@ -174,21 +174,13 @@ public class EditApiDesignEndpoint {
      */
     @OnMessage
     public void onMessage(Session nativeSession, JsonNode message) {
-        WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
+        WebsocketSessionContext context = new WebsocketSessionContext(nativeSession);
 
-        String designId = session.getPathParameters().get("designId");
+        String designId = context.getPathParameters().get("designId");
         IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
-        String msgType = message.get("type").asText();
-
-        logger.debug("onMessage: {}", message.toString());
-        logger.debug("Received a \"{}\" message from a client.", msgType);
-        logger.debug("\tdesignId: {}", designId);
 
         // Route the call to an appropriate operation handler
-        operationProcessor.process(editingSession, session, message);
-
-        // logger.error("Unknown message type: {}", msgType);
-        // TODO something went wrong if we got here - report an error of some kind
+        operationProcessor.process(editingSession, context, message);
     }
 
     /**

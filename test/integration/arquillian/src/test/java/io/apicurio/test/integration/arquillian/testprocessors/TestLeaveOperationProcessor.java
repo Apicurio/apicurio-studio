@@ -15,18 +15,18 @@
  */
 package io.apicurio.test.integration.arquillian.testprocessors;
 
+import org.junit.Assert;
+
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
 import io.apicurio.hub.core.util.JsonUtil;
-import org.junit.Assert;
 
 /**
- * Test a join operation
+ * Test a leave operation
  *
  * @see JoinLeaveOperation
- * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class TestJoinOperationProcessor implements ITestOperationProcessor {
+public class TestLeaveOperationProcessor implements ITestOperationProcessor {
     @Override
     public void assertEquals(BaseOperation expectedOp, String actualRaw) {
         JoinLeaveOperation expected = (JoinLeaveOperation) expectedOp;
@@ -38,7 +38,7 @@ public class TestJoinOperationProcessor implements ITestOperationProcessor {
 
     @Override
     public String getOperationName() {
-        return "join";
+        return "leave";
     }
 
     @Override

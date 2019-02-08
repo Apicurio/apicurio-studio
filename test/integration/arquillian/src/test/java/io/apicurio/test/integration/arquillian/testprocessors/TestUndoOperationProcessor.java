@@ -15,34 +15,32 @@
  */
 package io.apicurio.test.integration.arquillian.testprocessors;
 
-import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
-import io.apicurio.hub.core.util.JsonUtil;
 import org.junit.Assert;
 
-/**
- * Test a join operation
- *
- * @see JoinLeaveOperation
- * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
- */
-public class TestJoinOperationProcessor implements ITestOperationProcessor {
-    @Override
-    public void assertEquals(BaseOperation expectedOp, String actualRaw) {
-        JoinLeaveOperation expected = (JoinLeaveOperation) expectedOp;
-        JoinLeaveOperation actual = JsonUtil.fromJson(actualRaw, unmarshallClass());
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.VersionedOperation;
+import io.apicurio.hub.core.util.JsonUtil;
 
-        Assert.assertEquals(expected.getUser(), actual.getUser());
+/**
+ * Test an undo operation
+ */
+public class TestUndoOperationProcessor implements ITestOperationProcessor {
+    @Override
+    public void assertEquals(BaseOperation expected, String actualRaw) {
+        //VersionedOperation expected = (VersionedOperation) base;
+        VersionedOperation actual = JsonUtil.fromJson(actualRaw, unmarshallClass());
+
+        Assert.assertNotNull(actual.getContentVersion());
         //Assert.assertEquals(expected.getId(), actual.getId());
     }
 
     @Override
     public String getOperationName() {
-        return "join";
+        return "undo";
     }
 
     @Override
-    public Class<JoinLeaveOperation> unmarshallClass() {
-        return JoinLeaveOperation.class;
+    public Class<VersionedOperation> unmarshallClass() {
+        return VersionedOperation.class;
     }
 }

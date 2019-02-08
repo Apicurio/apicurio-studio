@@ -15,19 +15,8 @@
  */
 package io.apicurio.hub.core.editing.distributed;
 
-import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.exceptions.NotFoundException;
-import io.apicurio.hub.core.js.OaiCommandException;
-import io.apicurio.hub.core.storage.IRollupExecutor;
-import io.apicurio.hub.core.storage.StorageException;
-import io.apicurio.hub.core.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Closeable;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
@@ -36,7 +25,17 @@ import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
-import java.io.Closeable;
+import javax.naming.InitialContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.js.OaiCommandException;
+import io.apicurio.hub.core.storage.IRollupExecutor;
+import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * Implements a distributed session using JMS. Tested with Artemis.
@@ -52,52 +51,74 @@ import java.io.Closeable;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-
-@ApplicationScoped
-public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory {
+public class JMSSessionFactory {
     private static final Logger logger = LoggerFactory.getLogger(JMSSessionFactory.class);
     /**
      * The last element of the path MUST be the API ID.
      * @see BrokerManagementEventListener#getDesignId
      **/
     private static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/apicurio/session/";
+    
+    private static final String CONNECTION_FACTORY_JNDI_LOCATION = "java:/ApicurioConnectionFactory";
 
     // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
     // because of some EE spec limitations that block listener callback handlers being registered.
-    @Resource(lookup = "java:/ApicurioConnectionFactory")
+    //@Resource(lookup = "java:/ApicurioConnectionFactory")
     private ConnectionFactory connectionFactory;
 
     private BrokerManagementEventListener managementEventListener;
 
-    @Inject
     private IRollupExecutor rollupExecutor;
 
-    @PostConstruct
-    public void setup() {
+    /**
+     * Initializes the JMS session factory.
+     * @param rollupExecutor
+     */
+    public void initialize(IRollupExecutor rollupExecutor) {
+        this.rollupExecutor = rollupExecutor;
+        connectionFactory = lookupConnectionFactory();
         managementEventListener = new BrokerManagementEventListener();
         managementEventListener.listen();
     }
 
-    // Suggest API ID
-    public MessagingSessionContainer joinSession(String id, IOperationHandler handler) {
-        logger.debug("Joining session {}", id);
+    /**
+     * Looks up the connection factory in JNDI.  Fails if it could not be found.
+     */
+    private ConnectionFactory lookupConnectionFactory() {
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("++++ Looking up the JMS connection factory from: " +  CONNECTION_FACTORY_JNDI_LOCATION);
+        ConnectionFactory cf;
+        try {
+            InitialContext ctx = new InitialContext();
+            cf = (ConnectionFactory) ctx.lookup(CONNECTION_FACTORY_JNDI_LOCATION);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (cf == null) {
+            throw new RuntimeException("JMS Connection Factory not found: " + CONNECTION_FACTORY_JNDI_LOCATION); //$NON-NLS-1$
+        }
+        System.out.println("++++ Connection factory found! -- " + cf);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
+        return cf;
+    }
+
+    /**
+     * Called to add a consumer to the JMS topic specific to the given design id.
+     * @param designId
+     * @param handler
+     */
+    public MessagingSessionContainer joinSession(String designId, IOperationHandler handler) {
+        logger.debug("Joining session {}", designId);
         JMSContext context = connectionFactory.createContext();
-        Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
+        Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + designId);
         // Subscribe to the topic
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
         // When a new node joins the distributed session, it doesn't know about the session(s) attached to the
         // other nodes already in the session(s).
-        return new MessagingSessionContainer(id, sessionTopic, consumer, context.createProducer(), handler);
+        return new MessagingSessionContainer(designId, sessionTopic, consumer, context.createProducer(), handler);
     }
-
-    public String getSessionType() {
-        return "jms";
-    }
-
-    public void setRollupExecutor(IRollupExecutor rollupExecutor) {
-        this.rollupExecutor = rollupExecutor;
-    }
-
+    
     public final class MessagingSessionContainer implements Closeable, IDistributedEditingSession {
         private final String sessionId;
         private final Topic topic;

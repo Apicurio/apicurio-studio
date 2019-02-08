@@ -18,7 +18,6 @@ package io.apicurio.hub.editing;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,13 +38,12 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
-import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
-import io.apicurio.hub.core.util.JsonUtil;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -77,19 +75,19 @@ public class EditApiDesignEndpoint {
      * The uuid, user, and secret query parameters must be present for a connection to be 
      * successfully made.
      * 
-     * @param nativeSession the native session
+     * @param wsSession the native session
      */
     @OnOpen
-    public void onOpenSession(Session nativeSession) {
-        WebsocketSessionContext session = new WebsocketSessionContext(nativeSession);
+    public void onOpenSession(Session wsSession) {
+        WebsocketSessionContext context = new WebsocketSessionContext(wsSession);
 
-        String designId = session.getPathParameters().get("designId");
-        logger.debug("WebSocket opened: {}", session.getId());
+        String designId = context.getPathParameters().get("designId");
+        logger.debug("WebSocket opened: {}", context.getId());
         logger.debug("\tdesignId: {}", designId);
 
-        String uuid = session.getQueryParam("uuid");
-        String userId = session.getQueryParam("user");
-        String secret = session.getQueryParam("secret");
+        String uuid = context.getQueryParam("uuid");
+        String userId = context.getQueryParam("user");
+        String secret = context.getQueryParam("secret");
         
         this.metrics.socketConnected(designId, userId);
 
@@ -117,39 +115,35 @@ public class EditApiDesignEndpoint {
             editingSession = this.editingSessionManager.getOrCreateEditingSession(designId);
 
             // If no existing sessions, emit metrics event for creating session
-            Set<ISessionContext> otherSessions = editingSession.getMembers();
             if (editingSession.isEmpty()) {
                 this.metrics.editingSessionCreated(designId);
             }
 
-            // Add session to local session list, and join remote session if applicable
-            editingSession.join(session, userId);
+            // Add websocket context to the editing session
+            editingSession.join(context, userId);
             
-            // Send "join" messages for each user already in the session
-            for (ISessionContext otherSession : otherSessions) {
-                String otherUser = editingSession.getUser(otherSession);
-                editingSession.sendJoinTo(session, otherUser, otherSession.getId());
-            }
+            // Send "join" message to each user already in the session
+            editingSession.sendToOthers(OperationFactory.join(userId, context.getId()), context);
             
             // Send any commands that have been created since the user asked to join the editing session.
             List<ApiDesignCommand> commands = this.storage.listAllContentCommands(userId, designId, contentVersion);
             for (ApiDesignCommand command : commands) {
-                FullCommandOperation operation = FullCommandOperation.fullCommand(command);
-                String serialized = JsonUtil.toJson(operation);
+                FullCommandOperation operation = OperationFactory.fullCommand(command);
 
-                logger.debug("Sending command to client (onOpenSession): {}", serialized); // todo tostring instead?
+                logger.debug("Sending command to client (onOpenSession): {}", command.getCommand()); // todo tostring instead?
                 
-                session.sendAsText(serialized);
+                editingSession.sendTo(operation, context);
             }
             
-            editingSession.sendJoinToOthers(session, userId);
-        } catch (ServerError | StorageException | IOException e) {
+            // TODO I think this was a duplicate of line 127
+            //editingSession.sendJoinToOthers(context, userId);
+        } catch (ServerError | StorageException e) {
             if (editingSession != null) {
-                editingSession.leave(session);
+                editingSession.leave(context);
             }
             logger.error("Error validating editing session UUID for API Design ID: " + designId, e);
             try {
-                session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Error opening editing session: " + e.getMessage()));
+                context.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Error opening editing session: " + e.getMessage()));
             } catch (IOException e1) {
                 logger.error("Error closing web socket session (attempted to close due to error validating editing session UUID).", e1);
             }
@@ -169,12 +163,12 @@ public class EditApiDesignEndpoint {
      * }
      * </pre>
      * 
-     * @param nativeSession websocket session
+     * @param wsSession websocket session
      * @param message payload as JSON
      */
     @OnMessage
-    public void onMessage(Session nativeSession, JsonNode message) {
-        WebsocketSessionContext context = new WebsocketSessionContext(nativeSession);
+    public void onMessage(Session wsSession, JsonNode message) {
+        WebsocketSessionContext context = new WebsocketSessionContext(wsSession);
 
         String designId = context.getPathParameters().get("designId");
         IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
@@ -187,30 +181,30 @@ public class EditApiDesignEndpoint {
      * Called when the websocket session closes.  Used to remove the user from the
      * editing session and to send a "leave" message to any active collaborators
      * still connected to the session.
-     * @param sessionx
+     * @param wsSession
      * @param reason
      */
     @OnClose
-    public void onCloseSession(Session sessionx, CloseReason reason) {
-        WebsocketSessionContext session = new WebsocketSessionContext(sessionx);
+    public void onCloseSession(Session wsSession, CloseReason reason) {
+        WebsocketSessionContext context = new WebsocketSessionContext(wsSession);
 
-        String designId = session.getPathParameters().get("designId");
+        String designId = context.getPathParameters().get("designId");
         logger.debug("Closing a WebSocket due to: {}", reason.getReasonPhrase());
         logger.debug("\tdesignId: {}", designId);
 
         // Call 'leave' on the concurrent editing session for this user
         IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
-        String userId = editingSession.getUser(session);
-        editingSession.leave(session);
+        String userId = editingSession.getUser(context);
+        editingSession.leave(context);
 
-        // If there are no more LOCAL editing sessions
+        // Send the 'leave' message to everyone who might still be in the editing session
+        editingSession.sendToOthers(OperationFactory.leave(userId, context.getId()), context);
+
+        // If there are no more websockets connected to the editing session, close it.
         if (editingSession.isEmpty()) {
             // TODO race condition - the session may no longer be empty here!
             editingSessionManager.closeEditingSession(editingSession);
         }
 
-        // Others may still remain on the REMOTE editing session, so even if we're the last to leave
-        // we should still invoke this.
-        editingSession.sendLeaveToOthers(session, userId);
     }
 }

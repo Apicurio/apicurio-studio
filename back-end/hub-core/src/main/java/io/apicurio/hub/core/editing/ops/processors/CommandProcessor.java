@@ -22,12 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.apicurio.hub.core.beans.ApiContentType;
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignCommandAck;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.VersionedAck;
 import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
@@ -51,14 +52,6 @@ public class CommandProcessor implements IOperationProcessor {
     @Override
     public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
         VersionedCommandOperation vco = (VersionedCommandOperation) bo;
-        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
-            processLocal(editingSession, context, vco);
-        } else {
-            processRemote(editingSession, context, vco);
-        }
-    }
-
-    private void processLocal(IEditingSession editingSession, ISessionContext context, VersionedCommandOperation vco) {
         String user = editingSession.getUser(context);
 
         long localCommandId = vco.getCommandId();
@@ -79,26 +72,14 @@ public class CommandProcessor implements IOperationProcessor {
         }
 
         // Send an ack message back to the user
-        ApiDesignCommandAck ack = new ApiDesignCommandAck();
-        ack.setCommandId(localCommandId);
-        ack.setContentVersion(cmdContentVersion);
-        editingSession.sendAckTo(context, ack);
+        VersionedAck ack = OperationFactory.ack(cmdContentVersion, localCommandId);
+        editingSession.sendTo(ack, context);
         logger.debug("ACK sent back to client.");
 
         // Now propagate the command to all other clients
-        ApiDesignCommand command = new ApiDesignCommand();
-        command.setCommand(vco.getCommandStr());
-        command.setContentVersion(cmdContentVersion);
-        command.setAuthor(user);
-        command.setReverted(false);
-
-        editingSession.sendCommandToOthers(context, user, command);
+        FullCommandOperation cmd = OperationFactory.fullCommand(cmdContentVersion, vco.getCommandStr(), user, false);
+        editingSession.sendToOthers(cmd, context);
         logger.debug("Command propagated to 'other' clients.");
-    }
-
-    private void processRemote(IEditingSession editingSession, ISessionContext context, VersionedCommandOperation vco) {
-        // This command operation will be labelled as remote, so we know not to send it back over the messaging bus
-        editingSession.sendToAllSessions(context, vco);
     }
 
     /**
@@ -107,13 +88,5 @@ public class CommandProcessor implements IOperationProcessor {
     @Override
     public String getOperationName() {
         return "command";
-    }
-
-    /**
-     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
-     */
-    @Override
-    public Class<? extends BaseOperation> unmarshallClass() {
-        return VersionedCommandOperation.class;
     }
 }

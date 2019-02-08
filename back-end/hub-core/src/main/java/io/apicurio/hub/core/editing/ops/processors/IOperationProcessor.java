@@ -37,9 +37,5 @@ public interface IOperationProcessor {
      * of the operation maps to the "type" of an inbound websocket message.
      */
     String getOperationName();
-    
-    /**
-     * The class to use when unmarshalling the message payload into a {@link BaseOperation} instance.
-     */
-    Class<? extends BaseOperation> unmarshallClass();
+
 }

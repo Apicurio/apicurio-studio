@@ -15,9 +15,7 @@
  */
 package io.apicurio.hub.core.editing.distributed;
 
-import io.apicurio.hub.core.editing.OperationHandler;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
-import io.apicurio.hub.core.editing.IDistributedEditingSession;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
@@ -81,7 +79,7 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
     }
 
     // Suggest API ID
-    public MessagingSessionContainer joinSession(String id, OperationHandler handler) {
+    public MessagingSessionContainer joinSession(String id, IOperationHandler handler) {
         logger.debug("Joining session {}", id);
         JMSContext context = connectionFactory.createContext();
         Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + id);
@@ -105,7 +103,7 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
         private final Topic topic;
         private final JMSConsumer consumer;
         private final JMSProducer producer;
-        private OperationHandler commandHandler;
+        private IOperationHandler commandHandler;
 
         /**
          * Constructor.
@@ -119,7 +117,7 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
                                   Topic topic,
                                   JMSConsumer consumer,
                                   JMSProducer producer,
-                                  OperationHandler commandHandler) {
+                                  IOperationHandler commandHandler) {
             this.sessionId = sessionId;
             this.topic = topic;
             this.consumer = consumer;
@@ -139,22 +137,14 @@ public class JMSSessionFactory { // implements ApicurioDistributedSessionFactory
             });
         }
 
-        public synchronized void sendOperation(BaseOperation command) {
-            if (command.getSource() == BaseOperation.SourceEnum.LOCAL) {
-                // Set as a REMOTE command for serialization.
-                command.setSource(BaseOperation.SourceEnum.REMOTE);
-                String serialized = JsonUtil.toJson(command);
-                // Restore to LOCAL state before returning.
-                command.setSource(BaseOperation.SourceEnum.LOCAL);
-                logger.debug("Sending local command to remote subscribers (if there are any): {} as {}",
-                        command,
-                        serialized);
-                // TODO: Fall back to database if messaging solution throws exceptions here and/or retry.
-                // Ensure retry is set on the client config
-                producer.send(topic, serialized);
-            } else {
-                logger.trace("Will not retransmit remote operation over bus (prevents cycles): {}", command);
-            }
+        public synchronized void sendOperation(BaseOperation operation) {
+            String serialized = JsonUtil.toJson(operation);
+            logger.debug("Sending operation to remote subscribers (if there are any): {} as {}",
+                    operation,
+                    serialized);
+            // TODO: Fall back to database if messaging solution throws exceptions here and/or retry.
+            // Ensure retry is set on the client config
+            producer.send(topic, serialized);
         }
 
         public synchronized void close() {

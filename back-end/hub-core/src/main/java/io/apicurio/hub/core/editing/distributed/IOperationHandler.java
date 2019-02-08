@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.apicurio.hub.core.editing;
+package io.apicurio.hub.core.editing.distributed;
 
 /**
  * Handler to accept raw Operations as they arrive from the wire.
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public interface OperationHandler {
+public interface IOperationHandler {
 
     /**
      * Provide a handler implementation to consume the operation

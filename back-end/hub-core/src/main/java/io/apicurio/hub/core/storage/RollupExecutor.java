@@ -46,6 +46,9 @@ public class RollupExecutor implements IRollupExecutor {
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
 
+    /**
+     * @see io.apicurio.hub.core.storage.IRollupExecutor#rollupCommands(java.lang.String, java.lang.String)
+     */
     @Override
     public void rollupCommands(String userId, String designId) throws NotFoundException, StorageException, OaiCommandException {
         logger.debug("Rolling up commands for API with ID: {} with User: {}", designId, userId);
@@ -91,6 +94,9 @@ public class RollupExecutor implements IRollupExecutor {
         }
     }
 
+    /**
+     * @see io.apicurio.hub.core.storage.IRollupExecutor#rollupCommands(java.lang.String)
+     */
     @Override
     public void rollupCommands(String designId) throws NotFoundException, StorageException, OaiCommandException {
         Optional<ApiDesignCommand> lastCommandOptional = storage.getLatestCommand(designId);

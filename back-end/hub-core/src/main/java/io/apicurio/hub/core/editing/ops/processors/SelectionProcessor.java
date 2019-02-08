@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
 import io.apicurio.hub.core.editing.ops.SelectionOperation;
 
 /**
@@ -38,27 +39,14 @@ public class SelectionProcessor implements IOperationProcessor {
      */
     @Override
     public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        SelectionOperation selectionOp = (SelectionOperation) bo;
-
-        if (bo.getSource() == BaseOperation.SourceEnum.LOCAL) {
-            processLocal(editingSession, context, selectionOp);
-        } else {
-            processRemote(editingSession, context, selectionOp);
-        }
-    }
-
-    private void processLocal(IEditingSession editingSession, ISessionContext context, SelectionOperation so) {
+        SelectionOperation so = (SelectionOperation) bo;
         String user = editingSession.getUser(context);
         String selection = so.getSelection();
         logger.debug("\tuser:" + user);
         logger.debug("\tselection:" + selection);
-        editingSession.sendUserSelectionToOthers(context, user, selection);
+        
+        editingSession.sendToOthers(OperationFactory.select(user, context.getId(), selection), context);
         logger.debug("User selection propagated to 'other' clients.");
-    }
-
-    private void processRemote(IEditingSession editingSession, ISessionContext context, SelectionOperation so) {
-        editingSession.sendToAllSessions(context, so);
-        logger.debug("Remote selection sent to local clients.");
     }
 
     /**
@@ -69,11 +57,4 @@ public class SelectionProcessor implements IOperationProcessor {
         return "selection";
     }
 
-    /**
-     * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#unmarshallClass()
-     */
-    @Override
-    public Class<? extends BaseOperation> unmarshallClass() {
-        return SelectionOperation.class;
-    }
 }

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VersionedOperation extends BaseOperation {
+    
     private long contentVersion;
 
     public VersionedOperation() {}
@@ -36,16 +37,5 @@ public class VersionedOperation extends BaseOperation {
         this.contentVersion = contentVersion;
         return this;
     }
-
-    public static VersionedOperation redo(long contentVersion) {
-        return (VersionedOperation) new VersionedOperation()
-                .setContentVersion(contentVersion)
-                .setType("redo");
-    }
-
-    public static VersionedOperation undo(long contentVersion) {
-        return (VersionedOperation) new VersionedOperation()
-                .setContentVersion(contentVersion)
-                .setType("undo");
-    }
+    
 }

@@ -16,12 +16,6 @@
 
 package io.apicurio.hub.core.editing;
 
-import java.util.Set;
-
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignCommandAck;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedo;
-import io.apicurio.hub.core.beans.ApiDesignUndoRedoAck;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
@@ -62,84 +56,18 @@ public interface IEditingSession {
      * @return true if the editing session has no more users
      */
     public boolean isEmpty();
-
-    /**
-     * Returns a set of all members currently connected (in the form of a set of session contexts).
-     */
-    public Set<ISessionContext> getMembers();
-
-    /**
-     * Sends the given command to all other members of the editing session.
-     * @param exclude
-     * @param user
-     * @param command
-     */
-    public void sendCommandToOthers(ISessionContext exclude, String user, ApiDesignCommand command);
-
-    /**
-     * Sends the "undo" signal to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param undo
-     */
-    public void sendUndoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo undo);
-
-    /**
-     * Sends the "undo" signal to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param redo
-     */
-    public void sendRedoToOthers(ISessionContext excludeSession, String user, ApiDesignUndoRedo redo);
-
-    /**
-     * Sends the given selection change event to all other members of the editing session.
-     * @param excludeSession
-     * @param user
-     * @param newSelection
-     */
-    public void sendUserSelectionToOthers(ISessionContext excludeSession, String user, String newSelection);
-
-    /**
-     * Sends an acknowledgement message to the given client.
-     * @param toSession
-     * @param ack
-     */
-    public void sendAckTo(ISessionContext toSession, ApiDesignCommandAck ack);
-
-    /**
-     * Sends an acknowledgement message to the given client.
-     * @param toSession
-     * @param ack
-     */
-    public void sendAckTo(ISessionContext toSession, ApiDesignUndoRedoAck ack);
-
-    /**
-     * Sends a message to the other users that userId has joined the session.
-     * @param joinedSession
-     * @param joinedUser
-     */
-    public void sendJoinToOthers(ISessionContext joinedSession, String joinedUser);
-
-    /**
-     * Sends a message to the other users that userId has joined the session.
-     * @param leftSession
-     * @param leftUser
-     */
-    public void sendLeaveToOthers(ISessionContext leftSession, String leftUser);
-
-    /**
-     * Sends a "join" message to the given session.  The join message will include the user Id and 
-     * session ID of the user joining the session.
-     * @param toSession
-     * @param joinedUser
-     * @param joinedId
-     */
-    public void sendJoinTo(ISessionContext toSession, String joinedUser, String joinedId);
-
-    // TODO remove this - it is specific to the JMS impl
-    public void sendToAllSessions(ISessionContext excludeSession, BaseOperation operation);
     
-    // TODO remove this - it is specific to the JMS impl
-    public void sendJoinToRemote();
+    /**
+     * Sends an operation/message to all collaborators except the one represented by 'exclude'.
+     * @param operation
+     * @param exclude
+     */
+    public void sendToOthers(BaseOperation operation, ISessionContext exclude);
+    
+    /**
+     * Sends an operation/message to just the given collaborator.
+     * @param operation
+     * @param to
+     */
+    public void sendTo(BaseOperation operation, ISessionContext to);
 }

@@ -21,43 +21,43 @@ import java.util.Properties;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class IntegrationTestVersion {
+public class IntegrationTestProperties {
     
-    private String version;
+    private static Properties properties = new Properties();
+    static {
+        loadProperties();
+    }
 
     /**
      * Constructor.
      */
-    public IntegrationTestVersion() {
-        loadProperties();
+    public IntegrationTestProperties() {
     }
 
     /**
      * Loads properties from "integration-test.version.properties" on the classpath.
      */
-    private void loadProperties() {
+    private static void loadProperties() {
         try {
-            Properties props = new Properties();
-            props.load(IntegrationTestVersion.class.getClassLoader().getResourceAsStream("integration-test.version.properties"));
-            this.setVersion(props.getProperty("version"));
-            System.out.println("Apicurio Integration Test Version: " + this.getVersion());
+            properties.load(IntegrationTestProperties.class.getClassLoader().getResourceAsStream("integration-test.version.properties"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Gets a named property.
+     * @param key
+     */
+    public String get(String key) {
+        return properties.getProperty(key);
     }
 
     /**
      * @return the version
      */
     public String getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
+        return properties.getProperty("version");
     }
     
 }

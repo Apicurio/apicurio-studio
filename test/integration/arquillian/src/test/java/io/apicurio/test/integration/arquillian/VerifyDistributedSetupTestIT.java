@@ -28,6 +28,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,6 +42,8 @@ import io.apicurio.hub.core.editing.ops.VersionedAck;
 import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
 import io.apicurio.hub.core.util.JsonUtil;
 import io.apicurio.test.integration.arquillian.helpers.ApicurioWebsocketsClient;
+import io.apicurio.test.integration.arquillian.helpers.ArtemisBroker;
+import io.apicurio.test.integration.arquillian.helpers.HTwoDatabase;
 import io.apicurio.test.integration.arquillian.helpers.RestHelper;
 import io.apicurio.test.integration.arquillian.helpers.SessionInfo;
 import io.apicurio.test.integration.arquillian.helpers.TestOperationHelper;
@@ -66,12 +69,15 @@ import io.restassured.specification.RequestSpecification;
 @RunAsClient
 public class VerifyDistributedSetupTestIT {
     
-    private static final IntegrationTestVersion version = new IntegrationTestVersion();
+    private static final IntegrationTestProperties version = new IntegrationTestProperties();
     
     private static final String USER_1 = "editor1";
     private static final String USER_2 = "editor2";
     private static final int NODE_1_PORT = 8080;
     private static final int NODE_2_PORT = 8180;
+    
+    private static HTwoDatabase h2db;
+    private static ArtemisBroker artemisBroker;
 
     private ApiDesign apiDesign;
 
@@ -93,6 +99,14 @@ public class VerifyDistributedSetupTestIT {
                 System.out.println("    " + key + " = " + val);
             }
         });
+    }
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        artemisBroker = new ArtemisBroker();
+        artemisBroker.start();
+        h2db = new HTwoDatabase();
+        h2db.start();
     }
 
     /**
@@ -385,9 +399,13 @@ public class VerifyDistributedSetupTestIT {
     }
 
     @AfterClass
-    @RunAsClient
-    public static void shut_down_websockets() {
-        System.err.println("Teardown run on tests");
+    public static void afterClass() {
+        if (h2db != null) {
+            h2db.stop();
+        }
+        if (artemisBroker != null) {
+            artemisBroker.stop();
+        }
     }
 
     // Need to use preemptive otherwise expects challenge/response

@@ -11,13 +11,25 @@
     <name>apicurio-studio-test-integration-arquillian</name>
 
     <properties>
-        <wildfly.name>wildfly-${wildfly.version}</wildfly.name>
-        <wildfly.version>${version.wildfly}</wildfly.version>
-        <wildfly.install.dir>${project.build.directory}</wildfly.install.dir>
-        <wildfly.appserver.dir.1>${wildfly.install.dir}/${wildfly.name}-1</wildfly.appserver.dir.1>
-        <wildfly.appserver.dir.2>${wildfly.install.dir}/${wildfly.name}-2</wildfly.appserver.dir.2>
         <db.host>127.0.0.1</db.host>
         <broker.host>127.0.0.1</broker.host>
+
+        <wildfly.version>${version.wildfly}</wildfly.version>
+        <wildfly.install.dir>${project.build.directory}</wildfly.install.dir>
+        <wildfly.name>wildfly-${wildfly.version}</wildfly.name>
+        <wildfly.appserver.dir.1>${wildfly.install.dir}/${wildfly.name}-1</wildfly.appserver.dir.1>
+        <wildfly.appserver.dir.2>${wildfly.install.dir}/${wildfly.name}-2</wildfly.appserver.dir.2>
+        <wildfly.config>${basedir}/src/test/resources/wildfly/standalone-apicurio-artemis.xml</wildfly.config>
+
+        <artemis.version>${version.apache-artemis}</artemis.version>
+        <artemis.install.dir>${project.build.directory}</artemis.install.dir>
+        <artemis.zip>${artemis.install.dir}/apache-artemis-${version.apache-artemis}-bin.zip</artemis.zip>
+        <artemis.name>apache-artemis-${artemis.version}</artemis.name>
+        <artemis.appserver.dir>${artemis.install.dir}/${artemis.name}</artemis.appserver.dir>
+        <artemis.instance.dir>${artemis.install.dir}/${artemis.name}-instance</artemis.instance.dir>
+        
+        <h2.version>1.4.193</h2.version>
+        <h2.install.dir>${project.build.directory}</h2.install.dir>
     </properties>
 
     <dependencyManagement>
@@ -200,6 +212,29 @@
                                     <overWriteSnapshots>true</overWriteSnapshots>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>download-artemis</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.activemq</groupId>
+                                            <artifactId>apache-artemis</artifactId>
+                                            <version>${version.apache-artemis}</version>
+                                            <classifier>bin</classifier>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                                            <destFileName>apache-artemis-${version.apache-artemis}-bin.zip</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
 
@@ -222,21 +257,32 @@
                                         <antversion property="antversion" />
                                         <echo>Ant Version: ${antversion}</echo>
 
-                                        <property name="wildfly.version" value="${version.wildfly}" />
-                                        <property name="wildfly.install.dir" value="${project.build.directory}" />
-                                        <property name="wildfly.name" value="wildfly-${wildfly.version}" />
-                                        <property name="wildfly.appserver.dir.1" value="${wildfly.install.dir}/${wildfly.name}-1" />
-                                        <property name="wildfly.appserver.dir.2" value="${wildfly.install.dir}/${wildfly.name}-2" />
-                                        <property name="wildfly.config" value="${basedir}/src/test/resources/wildfly/standalone-apicurio-artemis.xml" />
+<!--                                         <property name="wildfly.version" value="${version.wildfly}" /> -->
+<!--                                         <property name="wildfly.install.dir" value="${project.build.directory}" /> -->
+<!--                                         <property name="wildfly.name" value="wildfly-${wildfly.version}" /> -->
+<!--                                         <property name="wildfly.appserver.dir.1" value="${wildfly.install.dir}/${wildfly.name}-1" /> -->
+<!--                                         <property name="wildfly.appserver.dir.2" value="${wildfly.install.dir}/${wildfly.name}-2" /> -->
+<!--                                         <property name="wildfly.config" value="${basedir}/src/test/resources/wildfly/standalone-apicurio-artemis.xml" /> -->
+                                        
+<!--                                         <property name="artemis.version" value="${version.apache-artemis}" /> -->
+<!--                                         <property name="artemis.install.dir" value="${project.build.directory}" /> -->
+<!--                                         <property name="artemis.zip" value="${artemis.install.dir}/apache-artemis-${version.apache-artemis}-bin.zip" /> -->
+<!--                                         <property name="artemis.name" value="apache-artemis-${artemis.version}" /> -->
+<!--                                         <property name="artemis.appserver.dir" value="${artemis.install.dir}/${artemis.name}" /> -->
+<!--                                         <property name="artemis.instance.dir" value="${artemis.install.dir}/${artemis.name}-instance" /> -->
 
                                         <echo>Install build directory: ${project.build.directory}</echo>
                                         <echo>Install dir1: ${wildfly.appserver.dir.1}</echo>
                                         <echo>Install dir2: ${wildfly.appserver.dir.2}</echo>
                                         <echo>Config: ${wildfly.config}</echo>
+                                        <echo>Artemis dir: ${artemis.appserver.dir}</echo>
 
                                         <!-- Delete WildFly dir -->
-                                        <delete dir="${wildfly.appserver.dir.1}" />
-                                        <delete dir="${wildfly.appserver.dir.2}" />
+<!--                                         <delete dir="${wildfly.appserver.dir.1}" /> -->
+<!--                                         <delete dir="${wildfly.appserver.dir.2}" /> -->
+                                        
+                                        <!-- Delete Artemis dir -->
+<!--                                         <delete dir="${artemis.appserver.dir}" /> -->
 
                                         <!-- 2 Wildfly Nodes -->
                                         <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip"
@@ -244,7 +290,39 @@
                                         <unzip src="${project.build.directory}/wildfly-${wildfly.version}.zip"
                                                dest="${wildfly.appserver.dir.2}" overwrite="false" />
 
-                                        <delete file="${project.build.directory}/wildfly-${wildfly.version}.zip" />
+                                        <!-- H2 Database JAR -->
+                                        <copy file="${wildfly.appserver.dir.1}/${wildfly.name}/modules/system/layers/base/com/h2database/h2/main/h2-${h2.version}.jar" 
+                                              todir="${h2.install.dir}" />
+                                        
+                                        <!-- Artemis installation -->
+                                        <unzip src="${artemis.zip}" dest="${project.build.directory}" overwrite="false" />
+                                        
+                                        <!-- Create Artemis broker instance -->
+                                        <java classname="org.apache.activemq.artemis.boot.Artemis"
+                                              classpath="${artemis.appserver.dir}/lib/artemis-boot.jar"
+                                              dir="${artemis.appserver.dir}"
+                                              fork="true">
+                                              <sysproperty key="artemis.home" value="${artemis.appserver.dir}" />
+                                              <sysproperty key="java.library.path" value="${artemis.appserver.dir}/bin/lib/linux-x86_64" />
+                                              <arg value="create" />
+                                              <arg value="--allow-anonymous" />
+                                              <arg value="--silent" />
+                                              <arg value="--force" />
+                                              <arg value="--no-web" />
+                                              <arg value="--user" />
+                                              <arg value="guest" />
+                                              <arg value="--password" />
+                                              <arg value="guest" />
+                                              <arg value="--role" />
+                                              <arg value="guest" />
+                                              <arg value="--port-offset" />
+                                              <arg value="0" />
+                                              <arg value="--data" />
+                                              <arg value="${artemis.instance.dir}/data" />
+                                              <arg value="--no-autotune" />
+                                              <arg value="--verbose" />
+                                              <arg value="${artemis.instance.dir}" />
+                                        </java>
 
                                         <!-- Copy apicurio-artemis config into the right place -->
                                         <copy file="${wildfly.config}"

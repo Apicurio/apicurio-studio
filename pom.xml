@@ -64,6 +64,9 @@
         <!-- Thorntail Version -->
         <version.io.thorntail>2.3.0.Final</version.io.thorntail>
 
+        <!-- Apache Artemis Version -->
+        <version.apache-artemis>2.6.4</version.apache-artemis>
+
         <!-- Plugin Versions -->
         <version.antrun.plugin>1.8</version.antrun.plugin>
         <version.assembly.plugin>3.1.1</version.assembly.plugin>

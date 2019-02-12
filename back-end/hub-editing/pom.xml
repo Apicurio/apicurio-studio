@@ -87,9 +87,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <groupId>javax.jms</groupId>
+            <artifactId>javax.jms-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -113,11 +112,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
         </dependency>
     </dependencies>
 

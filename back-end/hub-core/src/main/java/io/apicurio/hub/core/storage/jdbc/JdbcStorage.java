@@ -798,7 +798,6 @@ public class JdbcStorage implements IStorage {
                 statement = sqlStatements.deleteApiDesign();
                 int rowCount = handle.createUpdate(statement)
                       .bind(0, did)
-                      .bind(1, userId)
                       .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();

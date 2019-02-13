@@ -35,5 +35,6 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # run tests!
-      - run: mvn clean package -Pintegration
+      - run: mvn clean package
+      - run: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration
 

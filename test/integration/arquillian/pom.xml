@@ -290,11 +290,11 @@
                                               <arg value="--force" />
                                               <arg value="--no-web" />
                                               <arg value="--user" />
-                                              <arg value="guest" />
+                                              <arg value="apicurio" />
                                               <arg value="--password" />
-                                              <arg value="guest" />
+                                              <arg value="apicurio" />
                                               <arg value="--role" />
-                                              <arg value="guest" />
+                                              <arg value="amq" />
                                               <arg value="--port-offset" />
                                               <arg value="0" />
                                               <arg value="--data" />

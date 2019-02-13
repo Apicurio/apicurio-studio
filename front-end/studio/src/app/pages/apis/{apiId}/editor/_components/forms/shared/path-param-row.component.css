@@ -1,14 +1,14 @@
-.path-param {
+.path-parameter {
   border: 1px solid transparent;
   position: relative;
 }
-.path-param.expanded {
+.path-parameter.expanded {
   border: 1px solid #bbb;
   box-shadow: 0 2px 6px rgba(3,3,3,.2);
   margin-bottom: 3px;
 }
 
-.path-param .header {
+.path-parameter .header {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -16,127 +16,127 @@
   padding-bottom: 3px;
   border-bottom: 1px solid #f5f5f5;
 }
-.path-param .header:hover {
+.path-parameter .header:hover {
   background-color: #edf8ff;
 }
-.path-param.expanded .header {
+.path-parameter.expanded .header {
   border-bottom: solid 1px #bbb;
   background-color: #def3ff;
 }
 
-.path-param.missing .header {
+.path-parameter.missing .header {
   opacity: 0.4;
 }
-.path-param.missing .header:hover {
+.path-parameter.missing .header:hover {
   opacity: 0.8;
 }
 
-.path-param .header .name {
+.path-parameter .header .name {
   flex-basis: 18%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding-right: 5px;
 }
-.path-param .header .name > span {
+.path-parameter .header .name > span {
   font-weight: 600;
   color: #ff6a7c;
 }
-.path-param .header .name .icon-override {
+.path-parameter .header .name .icon-override {
   font-size: 16px;
   font-weight: normal;
   cursor: help;
   margin-right: 3px;
 }
 
-.path-param .header .description {
+.path-parameter .header .description {
   flex-basis: 39%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   padding-right: 15px;
 }
-.path-param .header .description:hover {
+.path-parameter .header .description:hover {
   color: #0088ce;
   cursor: pointer;
 }
-.path-param .header .summary {
+.path-parameter .header .summary {
   flex-basis: 41%;
 }
-.path-param .header .summary:hover {
+.path-parameter .header .summary:hover {
   color: #0088ce;
   cursor: pointer;
 }
 
-.path-param .header .summary .parameter-required {
+.path-parameter .header .summary .parameter-required {
   font-weight: 600;
 }
-.path-param .header .summary .parameter-required:hover {
+.path-parameter .header .summary .parameter-required:hover {
   filter: brightness(120%);
 }
 
-.path-param .header .actions {
+.path-parameter .header .actions {
   flex-basis: 2%;
   text-align: center;
 }
 
-.path-param .header .actions .btn-override, .path-param .header .actions .btn-create {
+.path-parameter .header .actions .btn-override, .path-parameter .header .actions .btn-create {
   position: absolute;
   right: 5px;
   top: 6px;
 }
 
-.path-param .header .actions > div .fa-ellipsis-v {
+.path-parameter .header .actions > div .fa-ellipsis-v {
   visibility: hidden;
 }
-.path-param:hover .header .actions > div .fa-ellipsis-v {
+.path-parameter:hover .header .actions > div .fa-ellipsis-v {
   visibility: visible;
 }
 
-.path-param .header > .selected {
+.path-parameter .header > .selected {
   margin-bottom: -4px;
   border-bottom: 2px solid #0088ce;
   color: #0088ce;
 }
 
-.path-param .body {
+.path-parameter .body {
   position: relative;
   padding: 15px;
 }
-.path-param .body .close {
+.path-parameter .body .close {
   position: absolute;
   right: 10px;
   top: 5px;
 }
 
-.path-param .body .param-description form {
+.path-parameter .body .param-description form {
   width: 100%;
 }
-.path-param .body .param-description .form-label {
+.path-parameter .body .param-description .form-label {
   font-weight: 600;
 }
 
-.path-param .body span.strong {
+.path-parameter .body span.strong {
   font-weight: 600;
 }
 
-.path-param .body .param-required {
+.path-parameter .body .param-required {
   margin-bottom: 20px;
 }
-.path-param .body .param-type {
+.path-parameter .body .param-type {
   margin-bottom: 10px;
 }
 
-.path-param .body .param-required .dropdown {
+.path-parameter .body .param-required .dropdown {
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;
 }
 
-.path-param.overridable > .header > div > .fa-angle-right {
+.path-parameter.overridable > .header > div > .fa-angle-right {
   display: none;
 }
-.path-param.overridable .header .description:hover, .path-param.overridable .header .summary:hover {
+.path-parameter.overridable .header .description:hover, .path-parameter.overridable .header .summary:hover {
   color: inherit;
   cursor: default;
 }

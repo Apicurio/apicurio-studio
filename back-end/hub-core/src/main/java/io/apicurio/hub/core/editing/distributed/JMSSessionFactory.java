@@ -58,17 +58,16 @@ public class JMSSessionFactory {
      * @see BrokerManagementEventListener#getDesignId
      **/
     private static final String JAVA_JMS_TOPIC_SESSION = "java:/jms/topic/apicurio/session/";
-    
     private static final String CONNECTION_FACTORY_JNDI_LOCATION = "java:/ApicurioConnectionFactory";
 
     // InVMConnectionFactory, if you use standard pooled-connection-factory it won't work
     // because of some EE spec limitations that block listener callback handlers being registered.
     //@Resource(lookup = "java:/ApicurioConnectionFactory")
     private ConnectionFactory connectionFactory;
-
     private BrokerManagementEventListener managementEventListener;
-
     private IRollupExecutor rollupExecutor;
+
+    private final Object jmsMutex = new Object();
 
     /**
      * Initializes the JMS session factory.
@@ -85,8 +84,7 @@ public class JMSSessionFactory {
      * Looks up the connection factory in JNDI.  Fails if it could not be found.
      */
     private ConnectionFactory lookupConnectionFactory() {
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("++++ Looking up the JMS connection factory from: " +  CONNECTION_FACTORY_JNDI_LOCATION);
+        logger.debug("Looking up the JMS connection factory from: " +  CONNECTION_FACTORY_JNDI_LOCATION);
         ConnectionFactory cf;
         try {
             InitialContext ctx = new InitialContext();
@@ -98,8 +96,6 @@ public class JMSSessionFactory {
         if (cf == null) {
             throw new RuntimeException("JMS Connection Factory not found: " + CONNECTION_FACTORY_JNDI_LOCATION); //$NON-NLS-1$
         }
-        System.out.println("++++ Connection factory found! -- " + cf);
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++");
         return cf;
     }
 
@@ -108,7 +104,7 @@ public class JMSSessionFactory {
      * @param designId
      * @param handler
      */
-    public MessagingSessionContainer joinSession(String designId, IOperationHandler handler) {
+    public synchronized MessagingSessionContainer joinSession(String designId, IOperationHandler handler) {
         logger.debug("Joining session {}", designId);
         JMSContext context = connectionFactory.createContext();
         Topic sessionTopic = context.createTopic(JAVA_JMS_TOPIC_SESSION + designId);
@@ -116,30 +112,26 @@ public class JMSSessionFactory {
         JMSConsumer consumer = context.createConsumer(sessionTopic, null, true);
         // When a new node joins the distributed session, it doesn't know about the session(s) attached to the
         // other nodes already in the session(s).
-        return new MessagingSessionContainer(designId, sessionTopic, consumer, context.createProducer(), handler);
+        return new MessagingSessionContainer(sessionTopic, consumer, context.createProducer(), handler);
     }
     
     public final class MessagingSessionContainer implements Closeable, IDistributedEditingSession {
-        private final String sessionId;
         private final Topic topic;
         private final JMSConsumer consumer;
         private final JMSProducer producer;
-        private IOperationHandler commandHandler;
+        private final IOperationHandler commandHandler;
 
         /**
          * Constructor.
-         * @param sessionId
          * @param topic
          * @param consumer
          * @param producer
          * @param commandHandler
          */
-        MessagingSessionContainer(String sessionId,
-                                  Topic topic,
+        MessagingSessionContainer(Topic topic,
                                   JMSConsumer consumer,
                                   JMSProducer producer,
                                   IOperationHandler commandHandler) {
-            this.sessionId = sessionId;
             this.topic = topic;
             this.consumer = consumer;
             this.producer = producer;
@@ -158,27 +150,31 @@ public class JMSSessionFactory {
             });
         }
 
-        public synchronized void sendOperation(BaseOperation operation) {
+        /**
+         * @see io.apicurio.hub.core.editing.distributed.IDistributedEditingSession#sendOperation(io.apicurio.hub.core.editing.ops.BaseOperation)
+         */
+        @Override
+        public void sendOperation(BaseOperation operation) {
             String serialized = JsonUtil.toJson(operation);
-            logger.debug("Sending operation to remote subscribers (if there are any): {} as {}",
+            logger.debug("[MessagingSessionContainer] Sending operation to remote subscribers (if there are any): {} as {}",
                     operation,
                     serialized);
             // TODO: Fall back to database if messaging solution throws exceptions here and/or retry.
             // Ensure retry is set on the client config
-            producer.send(topic, serialized);
+            synchronized (jmsMutex) {
+                producer.send(topic, serialized);
+            }
         }
 
-        public synchronized void close() {
-            logger.debug("Closing consumer: {} ", consumer);
-            consumer.close();
-        }
-
-        public String getSessionId() {
-            return sessionId;
-        }
-
-        public Topic getTopic() {
-            return topic;
+        /**
+         * @see java.io.Closeable#close()
+         */
+        @Override
+        public void close() {
+            logger.debug("[MessagingSessionContainer] Closing consumer: {} ", consumer);
+            synchronized (jmsMutex) {
+                consumer.close();
+            }
         }
     }
 
@@ -234,6 +230,7 @@ public class JMSSessionFactory {
         private final JMSContext mgmtContext;
 
         BrokerManagementEventListener() {
+            logger.debug("[BrokerManagementEventListener] Creating AMQ managaement notification listener");
             mgmtContext = connectionFactory.createContext();
             managementEventTopic = mgmtContext.createTopic("activemq.notifications");
 
@@ -260,6 +257,7 @@ public class JMSSessionFactory {
         private void onAmqManagementMessage(Message managementEvent) {
             String designId = null;
             try {
+                logger.debug("Received management event: " + managementEvent.getStringProperty(AMQ_NOTIFICATION_TYPE));
                 if (isRemoveEvent(managementEvent)) {
                     String address = managementEvent.getStringProperty(AMQ_ADDRESS_PROP);
 
@@ -280,8 +278,8 @@ public class JMSSessionFactory {
                     rollupExecutor.rollupCommands(designId);
                 }
             } catch (JMSException e) {
+                logger.error("JMS Error processing AMQ management message", e);
                 // TODO handle case where JMS goes away gracefully (e.g. fall back to DB)
-                e.printStackTrace();
             } catch (NotFoundException | StorageException | OaiCommandException e) {
                 logger.error("Failed to rollup commands for API with id: " + designId, "Rollup error: ", e);
             }

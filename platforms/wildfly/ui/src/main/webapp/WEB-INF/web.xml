@@ -36,6 +36,10 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
     <url-pattern>/apis/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
@@ -114,6 +118,7 @@
       <url-pattern>/logout</url-pattern>
       <url-pattern>/config.js</url-pattern>
       <url-pattern>/settings/*</url-pattern>
+      <url-pattern>/dashboard</url-pattern>
       <url-pattern>/apis/*</url-pattern>
       <url-pattern>/download</url-pattern>
       <url-pattern>/preview</url-pattern>

@@ -48,11 +48,11 @@ public class RedoProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        VersionedOperation redo = (VersionedOperation) bo;
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+        VersionedOperation vo = (VersionedOperation) operation;
         String user = editingSession.getUser(context);
 
-        long contentVersion = redo.getContentVersion();
+        long contentVersion = vo.getContentVersion();
         String designId = editingSession.getDesignId();
 
         this.metrics.redoCommand(designId, contentVersion);

@@ -50,8 +50,8 @@ public class CommandProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        VersionedCommandOperation vco = (VersionedCommandOperation) bo;
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+        VersionedCommandOperation vco = (VersionedCommandOperation) operation;
         String user = editingSession.getUser(context);
 
         long localCommandId = vco.getCommandId();

@@ -40,6 +40,7 @@ public final class OperationFactory {
         OP_CLASSES.put("undo", VersionedOperation.class);
         OP_CLASSES.put("redo", VersionedOperation.class);
         OP_CLASSES.put("ack", VersionedAck.class);
+        OP_CLASSES.put("ping", PingOperation.class);
         OP_CLASSES.put("list-clients", ListClientsOperation.class);
     }
     

@@ -38,8 +38,8 @@ public class SelectionProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        SelectionOperation so = (SelectionOperation) bo;
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+        SelectionOperation so = (SelectionOperation) operation;
         String user = editingSession.getUser(context);
         String selection = so.getSelection();
         logger.debug("\tuser:" + user);

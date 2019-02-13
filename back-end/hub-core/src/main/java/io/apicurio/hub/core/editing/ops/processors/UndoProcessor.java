@@ -47,12 +47,12 @@ public class UndoProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        VersionedOperation undo = (VersionedOperation) bo;
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+        VersionedOperation vo = (VersionedOperation) operation;
         String user = editingSession.getUser(context);
         String designId = editingSession.getDesignId();
 
-        long contentVersion = undo.getContentVersion();
+        long contentVersion = vo.getContentVersion();
 
         this.metrics.undoCommand(designId, contentVersion);
 

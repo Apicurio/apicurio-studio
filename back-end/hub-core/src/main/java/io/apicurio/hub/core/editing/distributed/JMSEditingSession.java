@@ -63,6 +63,8 @@ public class JMSEditingSession extends EditingSession {
      * @param message
      */
     private void handleRemoteOperation(String message) {
+        logger.debug("Message received from JMS channel for design id: {}", this.getDesignId());
+        logger.debug("    Message: {}", message);
         JsonNode jsonMsg = JsonUtil.toJsonTree(message);
         BaseOperation op = OperationFactory.operation(jsonMsg);
         if (op.getType().equals("list-clients")) {
@@ -95,6 +97,7 @@ public class JMSEditingSession extends EditingSession {
      * @param operation
      */
     private void sendToAll(BaseOperation operation) {
+        logger.debug("Sending operation to all connected websocket clients: {}", operation.getType());
         for (ISessionContext context : this.getSessions().values()) {
             this.sendTo(operation, context);
         }

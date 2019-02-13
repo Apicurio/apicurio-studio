@@ -36,8 +36,8 @@ public class PingProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation bo) {
-        logger.debug("PING message received."); // TODO expand logging -- careful with session id
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+        logger.trace("PING message received.");
     }
 
     /**

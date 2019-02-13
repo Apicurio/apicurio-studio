@@ -78,7 +78,7 @@ public class OperationProcessorDispatcher {
             processor.process(editingSession, context, operation);
         } else {
             logger.error("Unknown message/operation type: {}. \nKnown types: {}", opType, processorMap);
-            throw new IllegalArgumentException("Unknown message type " + opType);
+            throw new IllegalArgumentException("Unknown message type: '" + opType + "'");
         }
     }
 }

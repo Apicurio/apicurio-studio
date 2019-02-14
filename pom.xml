@@ -99,7 +99,7 @@
         <version.com.sun.codemodel>2.6</version.com.sun.codemodel>
         <version.commons-beanutils>1.9.3</version.commons-beanutils>
         <version.commons-cli>1.4</version.commons-cli>
-        <version.commons-codec>1.11</version.commons-codec>
+        <version.commons-codec>1.12</version.commons-codec>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.6</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>

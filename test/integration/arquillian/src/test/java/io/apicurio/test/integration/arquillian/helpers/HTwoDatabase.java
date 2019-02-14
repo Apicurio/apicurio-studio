@@ -62,9 +62,10 @@ public class HTwoDatabase {
                 try {
                     String line = null;
                     while (process.isAlive()) {
-                        try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
                         line = reader.readLine();
-                        System.out.println("H2DB>> " + line);
+                        if (line != null) {
+                            System.out.println("H2DB>> " + line);
+                        }
                         if (line != null && line.contains("TCP server running")) {
                             latch.countDown();
                         }

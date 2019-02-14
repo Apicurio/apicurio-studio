@@ -147,6 +147,8 @@ public class VerifyDistributedSetupTestIT {
         node_2_edits();
         close_node2();
         close_node1();
+        // Give the rollup executor a chance to work before we mercilessly shut everything down.
+        Thread.sleep(3000);
     }
 
     private void setup_document() throws Exception {

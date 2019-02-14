@@ -91,9 +91,10 @@ public class ArtemisBroker {
                 try {
                     String line = null;
                     while (process.isAlive()) {
-                        try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
                         line = reader.readLine();
-                        System.out.println("Artemis>> " + line);
+                        if (line != null) {
+                            System.out.println("Artemis>> " + line);
+                        }
                         if (line != null && line.contains("Server is now live")) {
                             latch.countDown();
                             return;
@@ -139,14 +140,9 @@ public class ArtemisBroker {
 
     public void stop() {
         if (this.process != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
-                    process.destroyForcibly();
-                    System.out.println("Artemis server stopped.");
-                }
-            }).start();
+            try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
+            process.destroyForcibly();
+            System.out.println("Artemis server stopped.");
         }
     }
 

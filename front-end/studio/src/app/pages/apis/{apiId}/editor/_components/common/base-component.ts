@@ -16,12 +16,12 @@
  */
 import {ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {DocumentService} from "../../_services/document.service";
-import {Subscription} from "rxjs";
 import {SelectionService} from "../../_services/selection.service";
+import {TopicSubscription} from "../../_util/messaging";
 
 export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDestroy {
 
-    private _docSub: Subscription;
+    private _docSub: TopicSubscription<void>;
 
     protected constructor(protected __changeDetectorRef: ChangeDetectorRef, protected __documentService: DocumentService,
                           protected __selectionService: SelectionService, protected __skipDocumentChanges: boolean = false) {}

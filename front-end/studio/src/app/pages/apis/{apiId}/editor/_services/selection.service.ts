@@ -33,6 +33,7 @@ import {Observable} from "rxjs/Observable";
 import {ModelUtils} from "../_util/model.util";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
 import {DocumentService} from "./document.service";
+import {Topic} from "../_util/messaging";
 
 
 class MainSelectionVisitor extends OasAllNodeVisitor {
@@ -82,27 +83,28 @@ export class SelectionService {
 
     private _library: OasLibraryUtils = new OasLibraryUtils();
 
-    private _selectionSubject: BehaviorSubject<string> = new BehaviorSubject("/");
-    private _selection: Observable<string> = this._selectionSubject.asObservable();
+    private _selectionTopic: Topic<string>;
+    private _highlightTopic: Topic<string>;
 
-    private _highlightSubject: BehaviorSubject<string> = new BehaviorSubject(null);
-    private _highlight: Observable<string> = this._highlightSubject.asObservable();
-
+    /**
+     * C'tor.
+     * @param documentService
+     */
     constructor(private documentService: DocumentService) {
         this.reset();
     }
 
     public currentSelection(): string {
-        return this._selectionSubject.getValue();
+        return this._selectionTopic.getValue();
     }
 
-    public selection(): Observable<string> {
-        return this._selection;
+    public selection(): Topic<string> {
+        return this._selectionTopic;
     }
 
     public simpleSelect(path: string): void {
         // Fire an event with the new selection path (only if the selection changed)
-        this._selectionSubject.next(path);
+        this._selectionTopic.send(path);
     }
 
     public select(path: string): void {
@@ -116,7 +118,7 @@ export class SelectionService {
         OasVisitorUtil.visitPath(npath, visitor, doc);
 
         // Fire an event with the new selection path
-        this._selectionSubject.next(path);
+        this._selectionTopic.send(path);
     }
 
     public selectNode(node: OasNode): void {
@@ -128,8 +130,10 @@ export class SelectionService {
     }
 
     public reset(): void {
-        this._selectionSubject = new BehaviorSubject("/");
-        this._selection = this._selectionSubject.asObservable();
+        this._selectionTopic = new Topic<string>({
+            distinctUntilChanged: true
+        });
+        this._highlightTopic = new Topic<string>();
     }
 
     public clearAllSelections(): void {
@@ -154,10 +158,10 @@ export class SelectionService {
 
     public highlightPath(path: string): void {
         console.info("[SelectionService] Highlighting selection/path: ", path);
-        this._highlightSubject.next(path);
+        this._highlightTopic.send(path);
     }
 
-    public highlight(): Observable<string> {
-        return this._highlight;
+    public highlight(): Topic<string> {
+        return this._highlightTopic;
     }
 }

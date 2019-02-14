@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {OasDocument} from "oai-ts-core";
+import {Topic} from "../_util/messaging";
 
 /**
  * A service providing document related functionality, including the ability to
@@ -27,45 +26,32 @@ import {OasDocument} from "oai-ts-core";
 @Injectable()
 export class DocumentService {
 
-    private _currentDocument: OasDocument;
-    private _documentSubject: BehaviorSubject<OasDocument>;
-    private _document: Observable<OasDocument>;
-
-    private _changeSubject: BehaviorSubject<void>;
-    private _change: Observable<void>;
+    private _document: OasDocument;
+    private _change: Topic<void>;
 
     constructor() {
         this.reset();
     }
 
-    public emitDocument(document: OasDocument): void {
-        this._currentDocument = document;
-        this._documentSubject.next(document);
-    }
-
-    public document(): Observable<OasDocument> {
-        return this._document;
+    public setDocument(document: OasDocument): void {
+        this._document = document;
     }
 
     public currentDocument(): OasDocument {
-        return this._currentDocument;
+        return this._document;
     }
 
     public emitChange(): void {
-        this._changeSubject.next(null);
+        this._change.send(null);
     }
 
-    public change(): Observable<void> {
+    public change(): Topic<void> {
         return this._change;
     }
 
     public reset(): void {
-        this._currentDocument = null;
-        this._documentSubject = new BehaviorSubject(null);
-        this._document = this._documentSubject.asObservable();
-
-        this._changeSubject = new BehaviorSubject(null);
-        this._change = this._changeSubject.asObservable();
+        this._document = null;
+        this._change = new Topic<void>();
     }
 
 }

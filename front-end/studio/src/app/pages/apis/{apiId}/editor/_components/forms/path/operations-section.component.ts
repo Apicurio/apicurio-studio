@@ -23,9 +23,8 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas30PathItem, OasNodePath, OasOperation, OasPathItem} from "oai-ts-core";
+import {Oas30PathItem, OasOperation, OasPathItem} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {Subscription} from "rxjs";
 import {DocumentService} from "../../../_services/document.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {SelectionService} from "../../../_services/selection.service";
@@ -36,6 +35,7 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
+import {TopicSubscription} from "../../../_util/messaging";
 
 
 @Component({
@@ -56,7 +56,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     private _operations: OasOperation[] = [];
     private _allOperations: OasOperation[] = [];
     private _collaborationPaths: string[] = [];
-    private _selectionSubscription: Subscription;
+    private _selectionSubscription: TopicSubscription<string>;
 
     /**
      * C'tor.
@@ -73,7 +73,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     public ngOnInit(): void {
         super.ngOnInit();
 
-        this._selectionSubscription = this.__selectionService.selection().distinctUntilChanged().subscribe( selection => {
+        this._selectionSubscription = this.__selectionService.selection().subscribe( selection => {
             this.setOperationTabFromSelection(selection);
         });
     }
@@ -121,6 +121,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
             let tpath: string = this._nodePath + "/" + t;
             if (selection.indexOf(tpath) === 0) {
                 this.tab = t;
+                this.__changeDetectorRef.markForCheck();
                 return;
             }
         }
@@ -130,11 +131,13 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         for (let operation of this._operations) {
             console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.method());
             this.tab = operation.method();
+            this.__changeDetectorRef.markForCheck();
             return;
         }
 
         // If all else fails, just default to "GET"
         this.tab = "get";
+        this.__changeDetectorRef.markForCheck();
     }
 
     private pathOperations(): OasOperation[] {

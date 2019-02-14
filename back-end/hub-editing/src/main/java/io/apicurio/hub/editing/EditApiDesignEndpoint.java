@@ -38,6 +38,7 @@ import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.FullCommandOperation;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
@@ -119,11 +120,14 @@ public class EditApiDesignEndpoint {
                 this.metrics.editingSessionCreated(designId);
             }
 
+            // Send "join" messages for each user already in the session
+            for (ISessionContext otherContext : editingSession.getUserContexts()) {
+                String otherUser = editingSession.getUser(otherContext);
+                editingSession.sendTo(OperationFactory.join(otherUser, otherContext.getId()), context);
+            }
+
             // Add websocket context to the editing session
             editingSession.join(context, userId);
-            
-            // Send "join" message to each user already in the session
-            editingSession.sendToOthers(OperationFactory.join(userId, context.getId()), context);
             
             // Send any commands that have been created since the user asked to join the editing session.
             List<ApiDesignCommand> commands = this.storage.listAllContentCommands(userId, designId, contentVersion);
@@ -135,8 +139,8 @@ public class EditApiDesignEndpoint {
                 editingSession.sendTo(operation, context);
             }
             
-            // TODO I think this was a duplicate of line 127
-            //editingSession.sendJoinToOthers(context, userId);
+            // Send "join" message to each user already in the session
+            editingSession.sendToOthers(OperationFactory.join(userId, context.getId()), context);
         } catch (ServerError | StorageException e) {
             if (editingSession != null) {
                 editingSession.leave(context);

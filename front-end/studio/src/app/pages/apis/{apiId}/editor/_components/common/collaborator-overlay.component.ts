@@ -28,7 +28,7 @@ import {AbstractBaseComponent} from "./base-component";
 import {SelectionService} from "../../_services/selection.service";
 import {ApiEditorUser} from "../../../../../../models/editor-user.model";
 import {CollaboratorService} from "../../_services/collaborator.service";
-import {Subscription} from "rxjs";
+import {TopicSubscription} from "../../_util/messaging";
 
 /**
  * Common base class for collaboration components (overlay and aggregate icon).
@@ -43,7 +43,7 @@ export abstract class AbstractCollaboratorComponent extends AbstractBaseComponen
 
     private _collaborators: ApiEditorUser[];
 
-    private _collabSub: Subscription;
+    private _collabSub: TopicSubscription<ApiEditorUser>;
 
     /**
      * C'tor.

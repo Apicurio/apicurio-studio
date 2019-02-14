@@ -18,7 +18,9 @@ package io.apicurio.hub.core.editing;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,14 @@ public class EditingSession implements IEditingSession {
     @Override
     public String getDesignId() {
         return designId;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.editing.IEditingSession#getUserContexts()
+     */
+    @Override
+    public Set<ISessionContext> getUserContexts() {
+        return new HashSet<>(this.sessions.values());
     }
     
     /**

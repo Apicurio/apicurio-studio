@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.core.editing;
 
+import java.util.Set;
+
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 /**
@@ -40,6 +42,11 @@ public interface IEditingSession {
      * @param context
      */
     public String getUser(ISessionContext context);
+    
+    /**
+     * Returns the current set of user session contexts.
+     */
+    public Set<ISessionContext> getUserContexts();
 
     /**
      * Join the session context to this editing session.

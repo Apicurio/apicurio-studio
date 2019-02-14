@@ -17,9 +17,8 @@
 
 
 import {Injectable} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ICommand} from "oai-ts-commands";
-import {Observable} from "rxjs/Observable";
+import {Topic} from "../_util/messaging";
 
 /**
  * A simple service that tracks the user's current command in the editor.  The command
@@ -28,24 +27,22 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class CommandService {
 
-    private _commandSubject: BehaviorSubject<ICommand>;
-    private _commands: Observable<ICommand>;
+    private _commands: Topic<ICommand>;
 
     constructor() {
         this.reset();
     }
 
     public emit(command: ICommand): void {
-        this._commandSubject.next(command);
+        this._commands.send(command);
     }
 
-    public commands(): Observable<ICommand> {
+    public commands(): Topic<ICommand> {
         return this._commands;
     }
 
     public reset(): void {
-        this._commandSubject = new BehaviorSubject(null);
-        this._commands = this._commandSubject.asObservable();
+        this._commands = new Topic();
     }
 
 }

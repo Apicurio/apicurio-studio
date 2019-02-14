@@ -29,6 +29,7 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
+    IOasValidationSeverityRegistry,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
     OasCombinedVisitorAdapter,
@@ -38,15 +39,13 @@ import {
     OasNodePath,
     OasPathItem,
     OasValidationProblem,
-    OasVisitorUtil,
-    IOasValidationSeverityRegistry
+    OasVisitorUtil
 } from "oai-ts-core";
 import {EditorMasterComponent} from "./_components/master.component";
 import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
-import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
@@ -60,7 +59,7 @@ import {PropertyEditorComponent} from "./_components/editors/property-editor.com
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
-
+import {TopicSubscription} from "./_util/messaging";
 
 
 @Component({
@@ -97,8 +96,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     private currentSelectionNode: OasNode;
     public validationErrors: OasValidationProblem[] = [];
 
-    private _selectionSubscription: Subscription;
-    private _commandSubscription: Subscription;
+    private _selectionSubscription: TopicSubscription<string>;
+    private _commandSubscription: TopicSubscription<ICommand>;
 
     @ViewChild("master") master: EditorMasterComponent;
     @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
@@ -128,7 +127,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public ngOnInit(): void {
         let me: ApiEditorComponent = this;
-        this._selectionSubscription = this.selectionService.selection().distinctUntilChanged().subscribe( selectedPath => {
+        this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
             if (selectedPath) {
                 console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
                 me.onNodeSelected(selectedPath);
@@ -179,7 +178,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             }
 
             // Fire an event in the doc service indicating that there is a new document.
-            this.documentService.emitDocument(this.document());
+            this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
         }
 

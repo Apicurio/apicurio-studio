@@ -31,7 +31,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {CommandService} from "../../../_services/command.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {KeypressUtils} from "../../../_util/object.util";
-import {Subscription} from "rxjs";
+import {TopicSubscription} from "../../../_util/messaging";
 
 
 @Component({
@@ -69,7 +69,7 @@ export class SectionComponent extends AbstractBaseComponent {
         left: "0px"
     }
 
-    private _highlightSubscription: Subscription;
+    private _highlightSubscription: TopicSubscription<string>;
     public showHighlight: boolean = false;
 
     /**

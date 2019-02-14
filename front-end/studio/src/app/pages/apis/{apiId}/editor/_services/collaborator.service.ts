@@ -17,48 +17,9 @@
 
 
 import {Injectable} from "@angular/core";
-import {OasNodePath} from "oai-ts-core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
-
-
-// class CollaboratorSelectionVisitor extends OasAllNodeVisitor {
-//
-//     private _modFunction: (user: ApiEditorUser, node: OasNode) => void;
-//     private _nodeStack: OasNode[] = [];
-//
-//     constructor(private user: ApiEditorUser, clear: boolean = false) {
-//         super();
-//         this._modFunction = clear ? ModelUtils.clearCollaboratorSelection : ModelUtils.setCollaboratorSelection;
-//     }
-//
-//     protected doVisitNode(node: OasNode): void {
-//         this._modFunction(this.user, node);
-//         this._nodeStack.push(node);
-//     }
-//
-//     protected clearNodeStack(): void {
-//         for (let node of this._nodeStack) {
-//             ModelUtils.clearCollaboratorSelection(this.user, node);
-//         }
-//     }
-//
-//     public visitPathItem(node: OasPathItem): void {
-//         this.clearNodeStack();
-//         super.visitPathItem(node);
-//     }
-//
-//     public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
-//         this.clearNodeStack();
-//         super.visitSchemaDefinition(node);
-//     }
-//
-//     public visitValidationProblem(node: OasValidationProblem): void {
-//         this.clearNodeStack();
-//         super.visitValidationProblem(node);
-//     }
-// }
+import {Topic} from "../_util/messaging";
 
 
 class CollaboratorSelections {
@@ -125,18 +86,14 @@ export class CollaboratorService {
 
     private _collaboratorSelections: CollaboratorSelections = new CollaboratorSelections();
 
-    private _collaboratorsSubject: BehaviorSubject<ApiEditorUser[]> = new BehaviorSubject([]);
-    private _collaboratorsObservable: Observable<ApiEditorUser[]> = this._collaboratorsSubject.asObservable();
-
-    private _collaboratorSelectionSubject: BehaviorSubject<ApiEditorUser> = new BehaviorSubject(null);
-    private _collaboratorSelectionObservable: Observable<ApiEditorUser> = this._collaboratorSelectionSubject.asObservable();
+    private _collaboratorSelectionTopic: Topic<ApiEditorUser> = new Topic<ApiEditorUser>();
 
     constructor() {
         this.reset();
     }
 
-    public collaboratorSelection(): Observable<ApiEditorUser> {
-        return this._collaboratorSelectionObservable;
+    public collaboratorSelection(): Topic<ApiEditorUser> {
+        return this._collaboratorSelectionTopic;
     }
 
     public currentCollaboratorSelection(user: ApiEditorUser): string {
@@ -145,7 +102,7 @@ export class CollaboratorService {
 
     public setCollaboratorSelection(user: ApiEditorUser, selection: string): void {
         this._collaboratorSelections.setSelection(user, selection);
-        this._collaboratorSelectionSubject.next(user);
+        this._collaboratorSelectionTopic.send(user);
     }
 
     public reset(): void {
@@ -153,7 +110,6 @@ export class CollaboratorService {
     }
 
     public getCollaboratorsForPath(nodePath: string): ApiEditorUser[] {
-        //console.info("[CollaboratorService] Getting collaborators for path: ", nodePath);
         let collaborators: ApiEditorUser[] = [];
         this._collaboratorSelections.forEachSelection( (userId, path) => {
             if (path && path.indexOf(nodePath) === 0) {

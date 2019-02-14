@@ -75,7 +75,11 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
             goToPath += "/" + problem.property;
         }
         this.__selectionService.select(goToPath);
-        this.__selectionService.highlightPath(goToPath);
+        // Delay the highlighting of the path so that the UI has a chance to display
+        // the correct components for the new selection (see above).
+        setTimeout(() => {
+            this.__selectionService.highlightPath(goToPath);
+        }, 50);
     }
 
     public iconFor(problem: OasValidationProblem): string {

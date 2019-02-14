@@ -135,7 +135,10 @@ export class BitbucketResourceComponent implements OnInit {
             })
             this.gettingRepos = false;
 
-            if (this.model.branch) {
+            if (this.model.repo) {
+                this.updateBranches();
+            } else if (repos.length === 1) {
+                this.model.repo = repos[0].name;
                 this.updateBranches();
             }
         }).catch(error => {

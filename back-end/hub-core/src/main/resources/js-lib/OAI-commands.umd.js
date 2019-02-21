@@ -5,9 +5,12 @@
 }(this, function (exports, oaiTsCore) { 'use strict';
 
     var __extends = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -194,9 +197,12 @@
      * limitations under the License.
      */
     var __extends$1 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -315,9 +321,12 @@
      * limitations under the License.
      */
     var __extends$2 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -485,9 +494,12 @@
      * limitations under the License.
      */
     var __extends$3 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -594,9 +606,12 @@
      * limitations under the License.
      */
     var __extends$4 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -716,9 +731,12 @@
      * limitations under the License.
      */
     var __extends$5 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -844,9 +862,12 @@
      * limitations under the License.
      */
     var __extends$6 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1133,9 +1154,12 @@
      * limitations under the License.
      */
     var __extends$7 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1264,9 +1288,12 @@
      * limitations under the License.
      */
     var __extends$8 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1389,9 +1416,12 @@
      * limitations under the License.
      */
     var __extends$9 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1574,9 +1604,12 @@
      * limitations under the License.
      */
     var __extends$a = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1724,9 +1757,12 @@
      * limitations under the License.
      */
     var __extends$b = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -1903,9 +1939,12 @@
      * limitations under the License.
      */
     var __extends$c = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2012,9 +2051,12 @@
      * limitations under the License.
      */
     var __extends$d = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2121,9 +2163,12 @@
      * limitations under the License.
      */
     var __extends$e = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2269,9 +2314,12 @@
      * limitations under the License.
      */
     var __extends$f = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2423,9 +2471,12 @@
      * limitations under the License.
      */
     var __extends$g = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2535,9 +2586,12 @@
      * limitations under the License.
      */
     var __extends$h = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2672,9 +2726,12 @@
      * limitations under the License.
      */
     var __extends$i = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2779,9 +2836,12 @@
      * limitations under the License.
      */
     var __extends$j = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -2923,9 +2983,12 @@
      * limitations under the License.
      */
     var __extends$k = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3068,9 +3131,12 @@
      * limitations under the License.
      */
     var __extends$l = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3218,9 +3284,12 @@
      * limitations under the License.
      */
     var __extends$m = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3366,9 +3435,12 @@
      * limitations under the License.
      */
     var __extends$n = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3485,9 +3557,12 @@
      * limitations under the License.
      */
     var __extends$o = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3599,9 +3674,12 @@
      * limitations under the License.
      */
     var __extends$p = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3717,9 +3795,12 @@
      * limitations under the License.
      */
     var __extends$q = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -3956,9 +4037,12 @@
      * limitations under the License.
      */
     var __extends$r = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4074,9 +4158,12 @@
      * limitations under the License.
      */
     var __extends$s = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4277,9 +4364,12 @@
      * limitations under the License.
      */
     var __extends$t = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4420,9 +4510,12 @@
      * limitations under the License.
      */
     var __extends$u = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4592,9 +4685,12 @@
      * limitations under the License.
      */
     var __extends$v = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4766,9 +4862,12 @@
      * limitations under the License.
      */
     var __extends$w = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -4927,9 +5026,12 @@
      * limitations under the License.
      */
     var __extends$x = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5056,9 +5158,12 @@
      * limitations under the License.
      */
     var __extends$y = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5156,9 +5261,12 @@
      * limitations under the License.
      */
     var __extends$z = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5277,9 +5385,12 @@
      * limitations under the License.
      */
     var __extends$A = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5394,9 +5505,12 @@
      * limitations under the License.
      */
     var __extends$B = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5538,9 +5652,12 @@
      * limitations under the License.
      */
     var __extends$C = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5691,9 +5808,12 @@
      * limitations under the License.
      */
     var __extends$D = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5790,9 +5910,12 @@
      * limitations under the License.
      */
     var __extends$E = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5876,9 +5999,12 @@
      * limitations under the License.
      */
     var __extends$F = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -5939,9 +6065,12 @@
      * limitations under the License.
      */
     var __extends$G = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6025,9 +6154,12 @@
      * limitations under the License.
      */
     var __extends$H = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6112,9 +6244,12 @@
      * limitations under the License.
      */
     var __extends$I = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6199,9 +6334,12 @@
      * limitations under the License.
      */
     var __extends$J = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6368,9 +6506,12 @@
      * limitations under the License.
      */
     var __extends$K = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6503,9 +6644,12 @@
      * limitations under the License.
      */
     var __extends$L = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6648,9 +6792,12 @@
      * limitations under the License.
      */
     var __extends$M = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -6852,9 +6999,12 @@
      * limitations under the License.
      */
     var __extends$N = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7081,9 +7231,12 @@
      * limitations under the License.
      */
     var __extends$O = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7205,9 +7358,12 @@
      * limitations under the License.
      */
     var __extends$P = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7399,9 +7555,12 @@
      * limitations under the License.
      */
     var __extends$Q = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7536,9 +7695,12 @@
      * limitations under the License.
      */
     var __extends$R = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7672,9 +7834,12 @@
      * limitations under the License.
      */
     var __extends$S = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7821,9 +7986,12 @@
      * limitations under the License.
      */
     var __extends$T = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -7905,9 +8073,12 @@
      * limitations under the License.
      */
     var __extends$U = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8018,9 +8189,12 @@
      * limitations under the License.
      */
     var __extends$V = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8131,9 +8305,12 @@
      * limitations under the License.
      */
     var __extends$W = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8252,9 +8429,12 @@
      * limitations under the License.
      */
     var __extends$X = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8339,9 +8519,12 @@
      * limitations under the License.
      */
     var __extends$Y = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8502,9 +8685,12 @@
      * limitations under the License.
      */
     var __extends$Z = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8611,9 +8797,12 @@
      * limitations under the License.
      */
     var __extends$_ = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8718,9 +8907,12 @@
      * limitations under the License.
      */
     var __extends$10 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8838,9 +9030,12 @@
      * limitations under the License.
      */
     var __extends$11 = (undefined && undefined.__extends) || (function () {
-        var extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
         return function (d, b) {
             extendStatics(d, b);
             function __() { this.constructor = d; }
@@ -8938,6 +9133,586 @@
         return DeleteAllOperationsCommand;
     }(AbstractCommand));
 
+    /**
+     * @license
+     * Copyright 2019 JBoss Inc
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __extends$12 = (undefined && undefined.__extends) || (function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    /**
+     * Factory function.
+     */
+    function createRenameTagDefinitionCommand(oldTag, newTag) {
+        return new RenameTagDefinitionCommand(oldTag, newTag);
+    }
+    /**
+     * A command used to rename a tag, along with all references to it.
+     */
+    var RenameTagDefinitionCommand = /** @class */ (function (_super) {
+        __extends$12(RenameTagDefinitionCommand, _super);
+        /**
+         * C'tor.
+         * @param oldTag
+         * @param newTag
+         */
+        function RenameTagDefinitionCommand(oldTag, newTag) {
+            var _this = _super.call(this) || this;
+            _this._oldTag = oldTag;
+            _this._newTag = newTag;
+            return _this;
+        }
+        RenameTagDefinitionCommand.prototype.type = function () {
+            return "RenameTagDefinitionCommand";
+        };
+        /**
+         * Renames a tag definition.
+         * @param document
+         */
+        RenameTagDefinitionCommand.prototype.execute = function (document) {
+            console.info("[RenameTagDefinitionCommand] Executing.");
+            this._doTagRename(document, this._oldTag, this._newTag);
+        };
+        /**
+         * Restores the previous tag name.
+         * @param document
+         */
+        RenameTagDefinitionCommand.prototype.undo = function (document) {
+            console.info("[RenameTagDefinitionCommand] Reverting.");
+            this._doTagRename(document, this._newTag, this._oldTag);
+        };
+        /**
+         * Does the work of renaming a tag from one name to another.
+         * @param document
+         * @param from
+         * @param to
+         * @private
+         */
+        RenameTagDefinitionCommand.prototype._doTagRename = function (document, from, to) {
+            // If the "to" tag already exists, bail out before doing anything
+            var existingTag = this._findTag(document, to);
+            if (!this.isNullOrUndefined(existingTag)) {
+                return;
+            }
+            // Find the tag by name and rename it.
+            var tagToRename = this._findTag(document, from);
+            if (tagToRename) {
+                // Now rename the tag
+                tagToRename.name = to;
+                // Rename every **usage** of the tag in the document (all operations)
+                var tagRenamer = new TagRenameVisitor(from, to);
+                oaiTsCore.OasVisitorUtil.visitTree(document, tagRenamer);
+            }
+        };
+        /**
+         * Finds a tag in the document by name.  Returns null if not found.
+         * @param document
+         * @param tag
+         * @private
+         */
+        RenameTagDefinitionCommand.prototype._findTag = function (document, tag) {
+            if (document.tags) {
+                for (var _i = 0, _a = document.tags; _i < _a.length; _i++) {
+                    var tagDef = _a[_i];
+                    if (tagDef.name === tag) {
+                        return tagDef;
+                    }
+                }
+            }
+            return null;
+        };
+        return RenameTagDefinitionCommand;
+    }(AbstractCommand));
+    /**
+     * Visitor used to rename tag usage in all operations in the document.
+     */
+    var TagRenameVisitor = /** @class */ (function (_super) {
+        __extends$12(TagRenameVisitor, _super);
+        /**
+         * C'tor.
+         * @param from
+         * @param to
+         */
+        function TagRenameVisitor(from, to) {
+            var _this = _super.call(this) || this;
+            _this.from = from;
+            _this.to = to;
+            return _this;
+        }
+        /**
+         * Visit an operation (works for both 2.0 and 3.x).
+         * @param node
+         */
+        TagRenameVisitor.prototype.visitOperation = function (node) {
+            var idx = node.tags ? node.tags.indexOf(this.from) : -1;
+            if (idx !== -1) {
+                node.tags.splice(idx, 1, this.to);
+            }
+        };
+        return TagRenameVisitor;
+    }(oaiTsCore.OasCombinedVisitorAdapter));
+
+    /**
+     * @license
+     * Copyright 2019 JBoss Inc
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __extends$13 = (undefined && undefined.__extends) || (function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    /**
+     * Factory function.
+     */
+    function createRenameParameterCommand(parent, oldParamName, newParamName, paramIn) {
+        return new RenameParameterCommand(parent, oldParamName, newParamName, paramIn);
+    }
+    /**
+     * A command used to rename a parameter.
+     */
+    var RenameParameterCommand = /** @class */ (function (_super) {
+        __extends$13(RenameParameterCommand, _super);
+        /**
+         * C'tor.
+         * @param oldParamName
+         * @param newParamName
+         */
+        function RenameParameterCommand(parent, oldParamName, newParamName, paramIn) {
+            var _this = _super.call(this) || this;
+            _this._oldParamName = oldParamName;
+            _this._newParamName = newParamName;
+            _this._paramIn = paramIn;
+            if (!_this.isNullOrUndefined(parent)) {
+                _this._parentPath = _this.oasLibrary().createNodePath(parent);
+            }
+            return _this;
+        }
+        RenameParameterCommand.prototype.type = function () {
+            return "RenameParameterCommand";
+        };
+        /**
+         * Marshall the command into a JS object.
+         * @return {any}
+         */
+        RenameParameterCommand.prototype.marshall = function () {
+            var obj = _super.prototype.marshall.call(this);
+            obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+            return obj;
+        };
+        /**
+         * Unmarshall the JS object.
+         * @param obj
+         */
+        RenameParameterCommand.prototype.unmarshall = function (obj) {
+            _super.prototype.unmarshall.call(this, obj);
+            this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+        };
+        /**
+         * Renames a property.
+         * @param document
+         */
+        RenameParameterCommand.prototype.execute = function (document) {
+            console.info("[RenameParameterCommand] Executing.");
+            this._doParameterRename(document, this._oldParamName, this._newParamName);
+        };
+        /**
+         * Restores the previous param name.
+         * @param document
+         */
+        RenameParameterCommand.prototype.undo = function (document) {
+            console.info("[RenameParameterCommand] Reverting.");
+            this._doParameterRename(document, this._newParamName, this._oldParamName);
+        };
+        /**
+         * Does the work of renaming a param from one name to another.
+         * @param document
+         * @param from
+         * @param to
+         * @private
+         */
+        RenameParameterCommand.prototype._doParameterRename = function (document, from, to) {
+            var parent = this._parentPath.resolve(document);
+            if (this.isNullOrUndefined(parent)) {
+                return;
+            }
+            // Find the param being changed, if not present bail.
+            var param = this._findParameter(parent, from);
+            if (this.isNullOrUndefined(param)) {
+                return;
+            }
+            // Start a list of all the params we're going to rename.
+            var allParams = [];
+            allParams.push(param);
+            // param.name = to;
+            // Detect what type of parent we're dealing with.
+            var isPathItem = false;
+            var isOperation = false;
+            parent.accept(new /** @class */ (function (_super) {
+                __extends$13(class_1, _super);
+                function class_1() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                class_1.prototype.visitPathItem = function (node) { isPathItem = true; };
+                class_1.prototype.visitOperation = function (node) { isOperation = true; };
+                return class_1;
+            }(oaiTsCore.OasCombinedVisitorAdapter)));
+            var methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
+            // If the parent is a path item, then we also need to rename any overriding operation params.
+            if (isPathItem) {
+                var pathItem = parent;
+                for (var _i = 0, methods_1 = methods; _i < methods_1.length; _i++) {
+                    var method = methods_1[_i];
+                    var op = (pathItem[method]);
+                    if (!this.isNullOrUndefined(op)) {
+                        var opParam = this._findParameter(op, from);
+                        if (!this.isNullOrUndefined(opParam)) {
+                            allParams.push(opParam);
+                        }
+                    }
+                }
+            }
+            // If the parent is an operation, then we also need to rename any param defined at the path level.  And if
+            // there IS a param defined at the path level, we'll also need to rename all params in our peer operations.
+            if (isOperation) {
+                var operation = parent;
+                var pathItem = operation.parent();
+                var pparam = this._findParameter(pathItem, from);
+                if (!this.isNullOrUndefined(pparam)) {
+                    allParams.push(pparam);
+                    for (var _a = 0, methods_2 = methods; _a < methods_2.length; _a++) {
+                        var method = methods_2[_a];
+                        var peerOperation = (pathItem[method]);
+                        if (!this.isNullOrUndefined(peerOperation) && peerOperation !== operation) {
+                            var opParam = this._findParameter(peerOperation, from);
+                            if (!this.isNullOrUndefined(opParam)) {
+                                allParams.push(opParam);
+                            }
+                        }
+                    }
+                }
+            }
+            // Now actually do the rename.
+            allParams.forEach(function (param) {
+                param.name = to;
+            });
+        };
+        /**
+         * Finds a parameter from a path or operation by name.  Returns null if not found.
+         * @param parent
+         * @param paramName
+         * @private
+         */
+        RenameParameterCommand.prototype._findParameter = function (parent, paramName) {
+            if (this.isNullOrUndefined(parent.parameters)) {
+                return null;
+            }
+            var params = parent.getParameters(this._paramIn);
+            for (var _i = 0, params_1 = params; _i < params_1.length; _i++) {
+                var param = params_1[_i];
+                if (param.name === paramName) {
+                    return param;
+                }
+            }
+            return null;
+        };
+        return RenameParameterCommand;
+    }(AbstractCommand));
+
+    /**
+     * @license
+     * Copyright 2019 JBoss Inc
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __extends$14 = (undefined && undefined.__extends) || (function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    /**
+     * Factory function.
+     */
+    function createRenamePropertyCommand(schema, oldPropertyName, newPropertyName) {
+        return new RenamePropertyCommand(schema, oldPropertyName, newPropertyName);
+    }
+    /**
+     * A command used to rename a schema property.
+     */
+    var RenamePropertyCommand = /** @class */ (function (_super) {
+        __extends$14(RenamePropertyCommand, _super);
+        /**
+         * C'tor.
+         * @param parent
+         * @param oldPropertyName
+         * @param newPropertyName
+         */
+        function RenamePropertyCommand(parent, oldPropertyName, newPropertyName) {
+            var _this = _super.call(this) || this;
+            _this._oldPropertyName = oldPropertyName;
+            _this._newPropertyName = newPropertyName;
+            if (!_this.isNullOrUndefined(parent)) {
+                _this._parentPath = _this.oasLibrary().createNodePath(parent);
+            }
+            return _this;
+        }
+        RenamePropertyCommand.prototype.type = function () {
+            return "RenamePropertyCommand";
+        };
+        /**
+         * Marshall the command into a JS object.
+         * @return {any}
+         */
+        RenamePropertyCommand.prototype.marshall = function () {
+            var obj = _super.prototype.marshall.call(this);
+            obj._parentPath = MarshallUtils.marshallNodePath(obj._parentPath);
+            return obj;
+        };
+        /**
+         * Unmarshall the JS object.
+         * @param obj
+         */
+        RenamePropertyCommand.prototype.unmarshall = function (obj) {
+            _super.prototype.unmarshall.call(this, obj);
+            this._parentPath = MarshallUtils.unmarshallNodePath(this._parentPath);
+        };
+        /**
+         * Renames a tag definition.
+         * @param document
+         */
+        RenamePropertyCommand.prototype.execute = function (document) {
+            console.info("[RenamePropertyCommand] Executing.");
+            this._doPropertyRename(document, this._oldPropertyName, this._newPropertyName);
+        };
+        /**
+         * Restores the previous tag name.
+         * @param document
+         */
+        RenamePropertyCommand.prototype.undo = function (document) {
+            console.info("[RenamePropertyCommand] Reverting.");
+            this._doPropertyRename(document, this._newPropertyName, this._oldPropertyName);
+        };
+        /**
+         * Does the work of renaming a path from one name to another.
+         * @param document
+         * @param from
+         * @param to
+         * @private
+         */
+        RenamePropertyCommand.prototype._doPropertyRename = function (document, from, to) {
+            var parent = this._parentPath.resolve(document);
+            if (this.isNullOrUndefined(parent)) {
+                return;
+            }
+            // Don't do anything if the "to" property already exists.
+            if (!this.isNullOrUndefined(parent.property(to))) {
+                return;
+            }
+            var property = parent.removeProperty(from);
+            if (this.isNullOrUndefined(property)) {
+                return;
+            }
+            property["_propertyName"] = to;
+            parent.addProperty(to, property);
+            var reqIdx = parent.required ? parent.required.indexOf(from) : -1;
+            if (reqIdx !== -1) {
+                parent.required.splice(reqIdx, 1, to);
+            }
+        };
+        return RenamePropertyCommand;
+    }(AbstractCommand));
+
+    /**
+     * @license
+     * Copyright 2019 JBoss Inc
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __extends$15 = (undefined && undefined.__extends) || (function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    /**
+     * Factory function.
+     */
+    function createRenameSecuritySchemeCommand(oldSchemeName, newSchemeName) {
+        return new RenameSecuritySchemeCommand(oldSchemeName, newSchemeName);
+    }
+    /**
+     * A command used to rename a security scheme, along with all references to it.
+     */
+    var RenameSecuritySchemeCommand = /** @class */ (function (_super) {
+        __extends$15(RenameSecuritySchemeCommand, _super);
+        /**
+         * C'tor.
+         * @param oldSchemeName
+         * @param newSchemeName
+         */
+        function RenameSecuritySchemeCommand(oldSchemeName, newSchemeName) {
+            var _this = _super.call(this) || this;
+            _this._oldSchemeName = oldSchemeName;
+            _this._newSchemeName = newSchemeName;
+            return _this;
+        }
+        RenameSecuritySchemeCommand.prototype.type = function () {
+            return "RenameSecuritySchemeCommand";
+        };
+        /**
+         * Renames a security scheme.
+         * @param document
+         */
+        RenameSecuritySchemeCommand.prototype.execute = function (document) {
+            console.info("[RenameSecuritySchemeCommand] Executing.");
+            this._doSecuritySchemeRename(document, this._oldSchemeName, this._newSchemeName);
+        };
+        /**
+         * Restores the previous security scheme name.
+         * @param document
+         */
+        RenameSecuritySchemeCommand.prototype.undo = function (document) {
+            console.info("[RenameSecuritySchemeCommand] Reverting.");
+            this._doSecuritySchemeRename(document, this._newSchemeName, this._oldSchemeName);
+        };
+        /**
+         * Does the work of renaming a path from one name to another.
+         * @param document
+         * @param from
+         * @param to
+         * @private
+         */
+        RenameSecuritySchemeCommand.prototype._doSecuritySchemeRename = function (document, from, to) {
+            var scheme = null;
+            // Different place to find the security scheme depending on the version.
+            if (document.is2xDocument()) {
+                var doc20 = document;
+                if (doc20.securityDefinitions) {
+                    // If the "to" scheme already exists, do nothing!
+                    if (!this.isNullOrUndefined(doc20.securityDefinitions.securityScheme(to))) {
+                        return;
+                    }
+                    scheme = doc20.securityDefinitions.removeSecurityScheme(from);
+                }
+            }
+            else {
+                var doc30 = document;
+                if (doc30.components) {
+                    // If the "to" scheme already exists, do nothing!
+                    if (!this.isNullOrUndefined(doc30.components.getSecurityScheme(to))) {
+                        return;
+                    }
+                    scheme = doc30.components.removeSecurityScheme(from);
+                }
+            }
+            // If we didn't find a scheme with the "from" name, then nothing to do.
+            if (this.isNullOrUndefined(scheme)) {
+                return;
+            }
+            // Now we have the scheme - rename it!
+            scheme["_schemeName"] = to;
+            if (document.is2xDocument()) {
+                var doc20 = document;
+                doc20.securityDefinitions.addSecurityScheme(to, scheme);
+            }
+            else {
+                var doc30 = document;
+                doc30.components.addSecurityScheme(to, scheme);
+            }
+            // Now find all security requirements that reference the scheme and change them too.
+            oaiTsCore.OasVisitorUtil.visitTree(document, new /** @class */ (function (_super) {
+                __extends$15(class_1, _super);
+                function class_1() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                class_1.prototype.visitSecurityRequirement = function (node) {
+                    var scopes = node.removeSecurityRequirementItem(from);
+                    if (scopes !== undefined) {
+                        node.addSecurityRequirementItem(to, scopes);
+                    }
+                };
+                return class_1;
+            }(oaiTsCore.OasCombinedVisitorAdapter)));
+        };
+        return RenameSecuritySchemeCommand;
+    }(AbstractCommand));
+
     ///<reference path="../commands/change-version.command.ts"/>
     var commandFactory = {
         "AggregateCommand": function () { return new AggregateCommand(null, null, null); },
@@ -9030,8 +9805,12 @@
         "NewTagCommand_20": function () { return new NewTagCommand_20(null); },
         "NewTagCommand_30": function () { return new NewTagCommand_30(null); },
         "RenamePathItemCommand": function () { return new RenamePathItemCommand(null, null); },
+        "RenameParameterCommand": function () { return new RenameParameterCommand(null, null, null, null); },
+        "RenamePropertyCommand": function () { return new RenamePropertyCommand(null, null, null); },
+        "RenameSecuritySchemeCommand": function () { return new RenameSecuritySchemeCommand(null, null); },
         "RenameSchemaDefinitionCommand_20": function () { return new RenameSchemaDefinitionCommand_20(null, null); },
         "RenameSchemaDefinitionCommand_30": function () { return new RenameSchemaDefinitionCommand_30(null, null); },
+        "RenameTagDefinitionCommand": function () { return new RenameTagDefinitionCommand(null, null); },
         "ReplaceDocumentCommand": function () { return new ReplaceDocumentCommand(null, null); },
         "ReplaceOperationCommand_20": function () { return new ReplaceOperationCommand_20(null, null); },
         "ReplaceOperationCommand_30": function () { return new ReplaceOperationCommand_30(null, null); },
@@ -9851,13 +10630,22 @@
     exports.NewTagCommand = NewTagCommand;
     exports.NewTagCommand_20 = NewTagCommand_20;
     exports.NewTagCommand_30 = NewTagCommand_30;
+    exports.createRenameParameterCommand = createRenameParameterCommand;
+    exports.RenameParameterCommand = RenameParameterCommand;
+    exports.createRenamePathItemCommand = createRenamePathItemCommand;
+    exports.RenamePathItemCommand = RenamePathItemCommand;
+    exports.createRenamePropertyCommand = createRenamePropertyCommand;
+    exports.RenamePropertyCommand = RenamePropertyCommand;
     exports.createRenameSchemaDefinitionCommand = createRenameSchemaDefinitionCommand;
     exports.RenameSchemaDefinitionCommand = RenameSchemaDefinitionCommand;
     exports.RenameSchemaDefinitionCommand_20 = RenameSchemaDefinitionCommand_20;
     exports.RenameSchemaDefinitionCommand_30 = RenameSchemaDefinitionCommand_30;
     exports.SchemaRefFinder = SchemaRefFinder;
-    exports.createRenamePathItemCommand = createRenamePathItemCommand;
-    exports.RenamePathItemCommand = RenamePathItemCommand;
+    exports.createRenameSecuritySchemeCommand = createRenameSecuritySchemeCommand;
+    exports.RenameSecuritySchemeCommand = RenameSecuritySchemeCommand;
+    exports.createRenameTagDefinitionCommand = createRenameTagDefinitionCommand;
+    exports.RenameTagDefinitionCommand = RenameTagDefinitionCommand;
+    exports.TagRenameVisitor = TagRenameVisitor;
     exports.ReplaceNodeCommand = ReplaceNodeCommand;
     exports.createReplaceDocumentCommand = createReplaceDocumentCommand;
     exports.ReplaceDocumentCommand = ReplaceDocumentCommand;

@@ -132,6 +132,12 @@
     <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
     <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
-    <rename-definition-dialog #renameDefinitionDialog (onRename)="renameDefinition($event)"></rename-definition-dialog>
+    <rename-entity-dialog #renameDefinitionDialog
+                          type="Data Type"
+                          title="Rename Data Type"
+                          message="Enter a new data type name below and then click Rename."
+                          warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          (onRename)="renameDefinition($event)"></rename-entity-dialog>
     <rename-path-dialog #renamePathDialog (onRename)="renamePath($event)"></rename-path-dialog>
 </div>

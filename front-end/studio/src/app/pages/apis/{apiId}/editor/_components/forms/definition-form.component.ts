@@ -22,7 +22,17 @@ import {
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Document, Oas20SchemaDefinition, Oas30Document, Oas30SchemaDefinition, OasSchema} from "oai-ts-core";
+import {
+    Oas20Document,
+    Oas20PropertySchema,
+    Oas20SchemaDefinition,
+    Oas30Document,
+    Oas30PropertySchema,
+    Oas30SchemaDefinition,
+    OasCombinedVisitorAdapter,
+    OasSchema,
+    OasVisitorUtil
+} from "oai-ts-core";
 import {
     createAddSchemaDefinitionCommand,
     createChangePropertyCommand,
@@ -31,6 +41,7 @@ import {
     createDeletePropertyCommand,
     createDeleteSchemaDefinitionCommand,
     createNewSchemaPropertyCommand,
+    createRenamePropertyCommand,
     createRenameSchemaDefinitionCommand,
     createReplaceSchemaDefinitionCommand,
     ICommand,
@@ -39,13 +50,13 @@ import {
 
 import {SourceFormComponent} from "./source-form.base";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";
-import {RenameDefinitionDialogComponent} from "../dialogs/rename-definition.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../editors/property-editor.component";
 import {EditorsService} from "../../_services/editors.service";
 import {ModelUtils} from "../../_util/model.util";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 
 
 @Component({
@@ -70,8 +81,17 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     }
 
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("renamePropertyDialog") renamePropertyDialog: RenameEntityDialogComponent;
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param selectionService
+     * @param commandService
+     * @param documentService
+     * @param editors
+     */
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,
                        protected commandService: CommandService,
@@ -81,15 +101,11 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     }
 
     public definitionName(): string {
-        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
-            return (this.definition as Oas20SchemaDefinition).definitionName();
-        } else {
-            return (this.definition as Oas30SchemaDefinition).name();
-        }
+        return this._definitionName(this.definition);
     }
 
     protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition {
-        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
+        if (this.definition.ownerDocument().is2xDocument()) {
             return (this.definition.ownerDocument() as Oas20Document).definitions.createSchemaDefinition(this.definitionName());
         } else {
             return (this.definition.ownerDocument() as Oas30Document).components.createSchemaDefinition(this.definitionName());
@@ -172,19 +188,26 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         }
     }
 
-    public rename(modalData?: any): void {
-        if (undefined === modalData || modalData === null) {
-            this.renameDefinitionDialog.open(this.definition.ownerDocument(), this.definition);
+    public rename(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = this.definition;
+            let name: string = this.definitionName();
+            let definitionNames: string[] = [];
+            let form: DefinitionFormComponent = this;
+            OasVisitorUtil.visitTree(this.definition.ownerDocument(), new class extends OasCombinedVisitorAdapter {
+                public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+                    definitionNames.push(form._definitionName(node));
+                }
+            });
+            this.renameDefinitionDialog.open(schemaDef, name, newName => {
+                return definitionNames.indexOf(newName) !== -1;
+            });
         } else {
-            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
-            let oldName: string = definition["_definitionName"];
-            if (!oldName) {
-                oldName = definition["_name"];
-            }
-            console.info("[DefinitionFormComponent] Rename definition to: %s", modalData.name);
-            let command: ICommand = createRenameSchemaDefinitionCommand(this.definition.ownerDocument(), oldName, modalData.name);
+            let oldName: string = this.definitionName();
+            console.info("[DefinitionFormComponent] Rename definition to: %s", event.newName);
+            let command: ICommand = createRenameSchemaDefinitionCommand(this.definition.ownerDocument(), oldName, event.newName);
             this.commandService.emit(command);
-
+            // TODO reselect the renamed definition - we can fabricate the path and then fire a selection event.
         }
     }
 
@@ -192,4 +215,41 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         this.sourceNode = this.definition;
         super.enableSourceMode();
     }
+
+    /**
+     * Figures out the definition name.
+     * @param schemaDef
+     */
+    protected _definitionName(schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
+        if (schemaDef.ownerDocument().is2xDocument()) {
+            return (<Oas20SchemaDefinition>schemaDef).definitionName();
+        } else {
+            return (<Oas30SchemaDefinition>schemaDef).name();
+        }
+    }
+
+    /**
+     * Opens the rename property dialog.
+     * @param property
+     */
+    public openRenamePropertyDialog(property: OasSchema): void {
+        let parent: OasSchema = <any>property.parent();
+        let propertyNames: string[] = parent.getProperties().map( prop => { return (<Oas20PropertySchema>prop).propertyName(); });
+        this.renamePropertyDialog.open(property, (<Oas20PropertySchema>property).propertyName(), newName => {
+            return propertyNames.indexOf(newName) !== -1;
+        });
+    }
+
+    /**
+     * Renames the property.
+     * @param event
+     */
+    public renameProperty(event: RenameEntityEvent): void {
+        let property: Oas20PropertySchema | Oas30PropertySchema = <any>event.entity;
+        let propertyName: string = property.propertyName();
+        let parent: OasSchema = <any>property.parent();
+        let command: ICommand = createRenamePropertyCommand(parent, propertyName, event.newName);
+        this.commandService.emit(command);
+    }
+
 }

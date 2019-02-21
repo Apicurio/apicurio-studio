@@ -39,7 +39,6 @@ import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/di
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
-import {RenameDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-definition.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
 import {AddExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example-20.component";
@@ -111,6 +110,7 @@ import {FeaturesService} from "./pages/apis/{apiId}/editor/_services/features.se
 import {CollaboratorAggregateComponent} from "./pages/apis/{apiId}/editor/_components/common/collaborator-aggregate.component";
 import {CollaboratorService} from "./pages/apis/{apiId}/editor/_services/collaborator.service";
 import {CollaboratorOverlayComponent} from "./pages/apis/{apiId}/editor/_components/common/collaborator-overlay.component";
+import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-entity.component";
 
 @NgModule({
     imports: [
@@ -125,7 +125,7 @@ import {CollaboratorOverlayComponent} from "./pages/apis/{apiId}/editor/_compone
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
         AddResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
-        AddMediaTypeDialogComponent, MainFormComponent, RenameDefinitionDialogComponent, AddExampleDialogComponent,
+        AddMediaTypeDialogComponent, MainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
         InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,

@@ -52,6 +52,7 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameterBas
     private _overriddenParam: OasParameterBase;
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
 
     private _parentType: string;
 
@@ -150,8 +151,7 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameterBas
     }
 
     public rename(): void {
-        // TODO implement this!
-        alert("Not yet implemented.");
+        this.onRename.emit();
     }
 
     public setDescription(description: string): void {

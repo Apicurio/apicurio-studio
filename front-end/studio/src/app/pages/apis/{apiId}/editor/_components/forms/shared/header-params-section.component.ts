@@ -20,24 +20,25 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    SimpleChanges,
+    SimpleChanges, ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
+    IOasParameterParent,
     Oas20Operation,
     Oas20Parameter,
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem,
-    OasLibraryUtils,
-    OasPathItem
+    Oas30PathItem, OasCombinedVisitorAdapter,
+    OasLibraryUtils, OasOperation,
+    OasPathItem, OasTag, OasVisitorUtil
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
     createDeleteAllParametersCommand,
     createDeleteParameterCommand,
-    createNewParamCommand,
+    createNewParamCommand, createRenameParameterCommand, createRenameTagDefinitionCommand,
     ICommand
 } from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
@@ -50,6 +51,7 @@ import {
 import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 
 
 @Component({
@@ -63,6 +65,8 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
+
+    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
 
     private _headerParameters: (Oas30Parameter | Oas20Parameter)[] = null;
     private _library: OasLibraryUtils = new OasLibraryUtils();
@@ -192,6 +196,29 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     public addHeaderParam(data: ParameterData): void {
         let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, data.name,
             "header", data.description, data.type);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Opens the rename parameter dialog.
+     * @param parameter
+     */
+    public openRenameDialog(parameter: Oas20Parameter | Oas30Parameter): void {
+        let parent: IOasParameterParent = <any>parameter.parent();
+        let paramNames: string[] = parent.getParameters("header").map( param => { return param.name; });
+        this.renameDialog.open(parameter, parameter.name, newName => {
+            return paramNames.indexOf(newName) !== -1;
+        });
+    }
+
+    /**
+     * Renames the parameter.
+     * @param event
+     */
+    public rename(event: RenameEntityEvent): void {
+        let parameter: Oas20Parameter | Oas30Parameter = <any>event.entity;
+        let parent: OasPathItem | OasOperation = <any>parameter.parent();
+        let command: ICommand = createRenameParameterCommand(parent, parameter.name, event.newName, "header");
         this.commandService.emit(command);
     }
 

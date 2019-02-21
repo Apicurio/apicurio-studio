@@ -48,6 +48,7 @@
         <div *ngIf="hasFormDataParams()">
             <div class="container-fluid formData-parameters typed-item-list">
                 <formData-param-row *ngFor="let param of formDataParameters()" [item]="param"
+                                    (onRename)="openRenameFormDataParameterDialog(param)"
                                     (onDelete)="deleteParam(param)"></formData-param-row>
             </div>
         </div>
@@ -82,3 +83,10 @@
 
     </div>
 </section>
+<rename-entity-dialog #renameFormDataDialog
+                      type="Form Data Parameter"
+                      title="Rename Form Data Parameter"
+                      message="Enter a new parameter name below and then click Rename."
+                      warning="Renaming a Form Data Parameter may also update any form data parameters with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="renameFormDataParameter($event)"></rename-entity-dialog>

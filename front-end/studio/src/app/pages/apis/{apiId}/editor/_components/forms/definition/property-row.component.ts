@@ -50,6 +50,7 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySchema | Oas30PropertySchema, SimplifiedPropertyType> {
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * C'tor.
@@ -127,8 +128,7 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     }
 
     public rename(): void {
-        // TODO implement this!
-        alert("Not yet implemented.");
+        this.onRename.emit();
     }
 
     public setDescription(description: string): void {

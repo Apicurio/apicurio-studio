@@ -1755,10 +1755,10 @@ core-js@2.6.2:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.2.tgz#267988d7268323b349e20b4588211655f0e83944"
   integrity sha512-NdBPF/RVwPW6jr0NCILuyN9RiqLo2b1mddWHkUL+VnvcB7dzlnBJ1bXYntjpTGOgkZiiLWj2JxmOr7eGE3qK6g==
 
-core-js@2.6.3:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.3.tgz#4b70938bdffdaf64931e66e2db158f0892289c49"
-  integrity sha512-l00tmFFZOBHtYhN4Cz7k32VM7vTn3rE2ANjQDxdEN6zmXZ/xq1jQuutnmHvMG1ZJ7xd72+TA5YpUK8wz3rWsfQ==
+core-js@2.6.5:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
+  integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
 
 core-js@^2.4.0:
   version "2.5.3"
@@ -5104,20 +5104,20 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-oai-ts-commands@0.2.60:
-  version "0.2.60"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.60.tgz#92293de87579b8386876ed4ccec422290ba7d770"
-  integrity sha512-Me8bDHgM+yhXz4rKv+/YCEtlCRsBMiPjtAlrCMqOl/JiiQbUvisHvQ4nEKrn6EA45VMJWtJBkiwppumAA46cUQ==
+oai-ts-commands@0.2.61:
+  version "0.2.61"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.61.tgz#d8c0a21d01eb3e2370c80e521a99748a1592a2f2"
+  integrity sha512-l+nlif3hv5lkuBVIodkCjwpqu1TGnPy9sgy6Naxykws9nBKunSzzvVXG8DaJ/pW+rwFG34aoEtidsFuhRSZMzw==
   dependencies:
-    core-js "2.6.3"
-    oai-ts-core "0.2.34"
+    core-js "2.6.5"
+    oai-ts-core "0.2.35"
 
-oai-ts-core@0.2.34:
-  version "0.2.34"
-  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.34.tgz#0c828b7f30dc28a8f10d1211a9ce31ff205f046e"
-  integrity sha512-39sbYQoL7EKhepSW8qb/2tqlpvQ4VpRtLQpatrKtQdutNAfcpVCpjn4LNiWqjNWy93M2o+Cgwd21EpMQlSivbw==
+oai-ts-core@0.2.35:
+  version "0.2.35"
+  resolved "https://registry.yarnpkg.com/oai-ts-core/-/oai-ts-core-0.2.35.tgz#d241e60061c4fe61104224ad9b11e5db28251f7e"
+  integrity sha512-4C3g0woJIZMve5lCaDllY04rJcfq7+dW4vwSMdU38feoOUD6MYdyUtxom5rDbOip6kiKNqUB+Ncf9Gt2Ft0chw==
   dependencies:
-    core-js "2.6.3"
+    core-js "2.6.5"
 
 oauth-sign@~0.8.1, oauth-sign@~0.8.2:
   version "0.8.2"

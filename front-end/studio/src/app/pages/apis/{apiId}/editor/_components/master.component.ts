@@ -33,7 +33,7 @@ import {
     Oas30PathItem,
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
-    OasAllNodeVisitor,
+    OasAllNodeVisitor, OasCombinedVisitorAdapter,
     OasDocument,
     OasLibraryUtils,
     OasNode,
@@ -59,9 +59,7 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
-import {RenameDefinitionDialogComponent} from "./dialogs/rename-definition.component";
 import {SelectionService} from "../_services/selection.service";
-import {Subscription} from "rxjs/Subscription";
 import {CommandService} from "../_services/command.service";
 import {EditorsService} from "../_services/editors.service";
 import {DataTypeData, DataTypeEditorComponent, IDataTypeEditorHandler} from "./editors/data-type-editor.component";
@@ -70,6 +68,7 @@ import {RestResourceService} from "../_services/rest-resource.service";
 import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "./dialogs/rename-entity.component";
 
 
 /**
@@ -102,7 +101,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
     @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
 
     filterCriteria: string = null;
@@ -581,19 +580,38 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     /**
      * Called when the user clicks "Rename Definition" in the context-menu for a schema definition.
      */
-    public renameDefinition(modalData?: any): void {
-        if (undefined === modalData || modalData === null) {
-            let schemaDef: any = this.contextMenuSelection.resolve(this.document);
-            this.renameDefinitionDialog.open(this.document, schemaDef);
+    public renameDefinition(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = this.definitionName(schemaDef);
+            let definitionNames: string[] = [];
+            let master: EditorMasterComponent = this;
+            OasVisitorUtil.visitTree(this.document, new class extends OasCombinedVisitorAdapter {
+                public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+                    definitionNames.push(master.definitionName(node));
+                }
+            });
+            this.renameDefinitionDialog.open(schemaDef, name, newName => {
+                return definitionNames.indexOf(newName) !== -1;
+            });
         } else {
-            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = modalData.definition;
-            let oldName: string = definition["_definitionName"];
-            if (!oldName) {
-                oldName = definition["_name"];
-            }
-            console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
-            let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, modalData.name);
+            let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = <any>event.entity;
+            let oldName: string = this.definitionName(definition);
+            console.info("[EditorMasterComponent] Rename definition to: %s", event.newName);
+            let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, event.newName);
             this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Figures out the definition name.
+     * @param schemaDef
+     */
+    protected definitionName(schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
+        if (schemaDef.ownerDocument().is2xDocument()) {
+            return (<Oas20SchemaDefinition>schemaDef).definitionName();
+        } else {
+            return (<Oas30SchemaDefinition>schemaDef).name();
         }
     }
 

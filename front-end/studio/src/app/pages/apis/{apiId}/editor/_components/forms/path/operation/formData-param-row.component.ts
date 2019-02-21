@@ -49,6 +49,7 @@ import {AbstractRowComponent} from "../../../common/item-row.abstract";
 export class FormDataParamRowComponent extends AbstractRowComponent<OasParameterBase, SimplifiedParameterType> {
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * C'tor.
@@ -126,8 +127,7 @@ export class FormDataParamRowComponent extends AbstractRowComponent<OasParameter
     }
 
     public rename(): void {
-        // TODO implement this!
-        alert("Not yet implemented.");
+        this.onRename.emit();
     }
 
     public setDescription(description: string): void {

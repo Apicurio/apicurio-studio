@@ -20,10 +20,19 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    SimpleChanges,
+    SimpleChanges, ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Operation, Oas20Parameter, Oas30MediaType, Oas30Operation, Oas30RequestBody, OasNode} from "oai-ts-core";
+import {
+    IOasParameterParent,
+    Oas20Operation,
+    Oas20Parameter,
+    Oas30MediaType,
+    Oas30Operation,
+    Oas30Parameter,
+    Oas30RequestBody,
+    OasNode, OasOperation, OasPathItem
+} from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {
     IParameterEditorHandler,
@@ -42,7 +51,7 @@ import {
     createDeleteRequestBodyCommand,
     createNewMediaTypeCommand,
     createNewParamCommand,
-    createNewRequestBodyCommand,
+    createNewRequestBodyCommand, createRenameParameterCommand,
     createSetExampleCommand,
     ICommand,
     SimplifiedParameterType,
@@ -62,6 +71,7 @@ import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {ModelUtils} from "../../../../_util/model.util";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "../../../dialogs/rename-entity.component";
 
 
 @Component({
@@ -75,6 +85,8 @@ import {ModelUtils} from "../../../../_util/model.util";
 export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
+
+    @ViewChild("renameFormDataDialog") renameFormDataDialog: RenameEntityDialogComponent;
 
     public showRequestBody: boolean;
 
@@ -298,6 +310,29 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     public changeRequestBodyRequired(value: string): void {
         let isRequired: boolean = value === "required";
         let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.requestBody(), "required", isRequired);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Opens the rename parameter dialog.
+     * @param parameter
+     */
+    public openRenameFormDataParameterDialog(parameter: Oas20Parameter): void {
+        let parent: IOasParameterParent = <any>parameter.parent();
+        let paramNames: string[] = parent.getParameters("formData").map( param => { return param.name; });
+        this.renameFormDataDialog.open(parameter, parameter.name, newName => {
+            return paramNames.indexOf(newName) !== -1;
+        });
+    }
+
+    /**
+     * Renames the parameter.
+     * @param event
+     */
+    public renameFormDataParameter(event: RenameEntityEvent): void {
+        let parameter: Oas20Parameter = <any>event.entity;
+        let parent: OasPathItem | OasOperation = <any>parameter.parent();
+        let command: ICommand = createRenameParameterCommand(parent, parameter.name, event.newName, "formData");
         this.commandService.emit(command);
     }
 

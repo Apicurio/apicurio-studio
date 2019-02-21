@@ -20,7 +20,15 @@
             <security-scheme-row *ngFor="let scheme of securitySchemes()" [scheme]="scheme"
                                  (onEdit)="openSecuritySchemeModal(scheme)"
                                  (onDelete)="deleteSecurityScheme(scheme)"
+                                 (onRename)="openRenameDialog(scheme)"
                                  [document]="document"></security-scheme-row>
         </div>
     </div>
 </section>
+<rename-entity-dialog #renameDialog
+                      type="Security Scheme"
+                      title="Rename Security Scheme"
+                      message="Enter a new security scheme name below and then click Rename."
+                      warning="Renaming a Security Scheme will also update any references to that scheme elsewhere in the API (e.g. security requirements in operations)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="rename($event)"></rename-entity-dialog>

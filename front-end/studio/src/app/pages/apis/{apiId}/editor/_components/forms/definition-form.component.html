@@ -104,6 +104,7 @@
                         <div class="container-fluid path-parameters typed-item-list">
                             <property-row *ngFor="let property of properties()" [item]="property"
                                           (onDelete)="deleteProperty(property)"
+                                          (onRename)="openRenamePropertyDialog(property)"
                                           (onDescriptionChange)="changePropertyDescription(property, $event)"
                                           (onTypeChange)="changePropertyType(property, $event)"></property-row>
                         </div>
@@ -119,4 +120,16 @@
 </div>
 
 <clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>
-<rename-definition-dialog #renameDefinitionDialog (onRename)="rename($event)"></rename-definition-dialog>
+<rename-entity-dialog #renameDefinitionDialog
+                      type="Data Type"
+                      title="Rename Data Type"
+                      message="Enter a new data type name below and then click Rename."
+                      warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="rename($event)"></rename-entity-dialog>
+<rename-entity-dialog #renamePropertyDialog
+                      type="Property"
+                      title="Rename Property"
+                      message="Enter a new property name below and then click Rename."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="renameProperty($event)"></rename-entity-dialog>

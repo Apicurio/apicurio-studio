@@ -15,8 +15,15 @@
  * limitations under the License.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasTag} from "oai-ts-core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
+import {OasCombinedVisitorAdapter, OasDocument, OasTag, OasVisitorUtil} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {ObjectUtils} from "../../../_util/object.util";
 import {
@@ -24,11 +31,13 @@ import {
     createDeleteAllTagsCommand,
     createDeleteTagCommand,
     createNewTagCommand,
+    createRenameTagDefinitionCommand,
     ICommand
 } from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 
 
 @Component({
@@ -42,6 +51,15 @@ export class TagsSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
+    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
@@ -107,4 +125,31 @@ export class TagsSectionComponent extends AbstractBaseComponent {
         let command: ICommand = createDeleteAllTagsCommand();
         this.commandService.emit(command);
     }
+
+    /**
+     * Opens the rename tag dialog.
+     * @param tag
+     */
+    public openRenameDialog(tag: OasTag): void {
+        let tagNames: string[] = [];
+        OasVisitorUtil.visitTree(tag.ownerDocument(), new class extends OasCombinedVisitorAdapter {
+            public visitTag(node: OasTag): void {
+                tagNames.push(node.name);
+            }
+        });
+        this.renameDialog.open(tag, tag.name, newName => {
+            return tagNames.indexOf(newName) !== -1;
+        });
+    }
+
+    /**
+     * Renames the tag.
+     * @param event
+     */
+    public rename(event: RenameEntityEvent): void {
+        let tag: OasTag = <any>event.entity;
+        let command: ICommand = createRenameTagDefinitionCommand(tag.name, event.newName);
+        this.commandService.emit(command);
+    }
+
 }

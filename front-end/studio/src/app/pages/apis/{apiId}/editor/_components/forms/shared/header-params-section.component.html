@@ -20,7 +20,15 @@
         <!-- The list of header parameters -->
         <div class="container-fluid header-parameters typed-item-list" *ngIf="hasHeaderParameters()">
             <header-param-row *ngFor="let param of headerParameters()" [item]="param"
-                             (onDelete)="deleteParam(param)"></header-param-row>
+                              (onRename)="openRenameDialog(param)"
+                              (onDelete)="deleteParam(param)"></header-param-row>
         </div>
     </div>
 </section>
+<rename-entity-dialog #renameDialog
+                      type="Header"
+                      title="Rename Header"
+                      message="Enter a new header name below and then click Rename."
+                      warning="Renaming a Header may also update any headers with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="rename($event)"></rename-entity-dialog>

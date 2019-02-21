@@ -41,7 +41,8 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 })
 export class TagRowComponent extends AbstractRowComponent<OasTag, string> {
 
-    @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * C'tor.
@@ -84,11 +85,11 @@ export class TagRowComponent extends AbstractRowComponent<OasTag, string> {
     }
 
     public delete(): void {
-        this.onDelete.emit(true);
+        this.onDelete.emit();
     }
 
     public renameTag(): void {
-        alert("Not yet implemented.");
+        this.onRename.emit();
     }
 
     public setDescription(description: string): void {

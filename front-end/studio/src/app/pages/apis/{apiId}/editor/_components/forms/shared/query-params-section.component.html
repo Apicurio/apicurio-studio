@@ -20,7 +20,15 @@
         <!-- The list of query parameters -->
         <div class="container-fluid query-parameters typed-item-list" *ngIf="hasQueryParameters()">
             <query-param-row *ngFor="let param of queryParameters()" [item]="param"
+                             (onRename)="openRenameDialog(param)"
                              (onDelete)="deleteParam(param)"></query-param-row>
         </div>
     </div>
 </section>
+<rename-entity-dialog #renameDialog
+                      type="Query Parameter"
+                      title="Rename Query Parameter"
+                      message="Enter a new query parameter name below and then click Rename."
+                      warning="Renaming a Query Parameter may also update any query parameters with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="rename($event)"></rename-entity-dialog>

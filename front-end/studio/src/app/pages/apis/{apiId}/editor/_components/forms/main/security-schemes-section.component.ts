@@ -15,22 +15,29 @@
  * limitations under the License.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild,
+    ViewEncapsulation
+} from "@angular/core";
 import {
     Oas20Document,
     Oas20SecurityDefinitions,
     Oas20SecurityScheme,
     Oas30Document,
-    Oas30SecurityScheme,
+    Oas30SecurityScheme, OasCombinedVisitorAdapter,
     OasDocument,
-    OasSecurityScheme
+    OasSecurityScheme, OasVisitorUtil
 } from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {
     createChangeSecuritySchemeCommand,
     createDeleteAllSecuritySchemesCommand,
     createDeleteSecuritySchemeCommand,
-    createNewSecuritySchemeCommand,
+    createNewSecuritySchemeCommand, createRenameSecuritySchemeCommand,
     ICommand
 } from "oai-ts-commands";
 import {EditorsService} from "../../../_services/editors.service";
@@ -45,6 +52,7 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {Scope} from "../../../_models/scope.model";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 
 
 @Component({
@@ -58,6 +66,16 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
+    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param editors
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private editors: EditorsService,
                 private selectionService: SelectionService) {
@@ -287,6 +305,32 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      */
     public deleteAllSecuritySchemes(): void {
         let command: ICommand = createDeleteAllSecuritySchemesCommand();
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Opens the rename security scheme dialog.
+     * @param scheme
+     */
+    public openRenameDialog(scheme: OasSecurityScheme): void {
+        let schemeNames: string[] = [];
+        OasVisitorUtil.visitTree(scheme.ownerDocument(), new class extends OasCombinedVisitorAdapter {
+            public visitSecurityScheme(node: OasSecurityScheme): void {
+                schemeNames.push(node.schemeName());
+            }
+        });
+        this.renameDialog.open(scheme, scheme.schemeName(), newName => {
+            return schemeNames.indexOf(newName) !== -1;
+        });
+    }
+
+    /**
+     * Renames the security scheme.
+     * @param event
+     */
+    public rename(event: RenameEntityEvent): void {
+        let scheme: OasSecurityScheme = <any>event.entity;
+        let command: ICommand = createRenameSecuritySchemeCommand(scheme.schemeName(), event.newName);
         this.commandService.emit(command);
     }
 

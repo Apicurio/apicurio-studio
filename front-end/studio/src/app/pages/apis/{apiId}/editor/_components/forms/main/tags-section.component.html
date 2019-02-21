@@ -18,8 +18,16 @@
         <!-- The list of tags -->
         <div class="tags" *ngIf="tags().length > 0">
             <tag-row *ngFor="let tag of tags()" [item]="tag"
+                     (onRename)="openRenameDialog(tag)"
                      (onDelete)="deleteTag(tag)"></tag-row>
         </div>
     </div>
 </section>
 <add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
+<rename-entity-dialog #renameDialog
+                      type="Tag"
+                      title="Rename Tag"
+                      message="Enter a new tag name below and then click Rename."
+                      warning="Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="rename($event)"></rename-entity-dialog>

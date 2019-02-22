@@ -21,7 +21,7 @@
                                        placeholder="Enter a Path Name" #pathName="ngModel" pattern="[\S]+"
                                        required [(ngModel)]="name" (ngModelChange)="pathExists = paths.indexOf($event) != -1">
                                 <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
-                                <form-error-message [inputModel]="pathName" [type]="'pattern'" [alwaysOn]="true">Enter a valid path (no whitespace).</form-error-message>
+                                <form-error-message [inputModel]="pathName" [type]="'pattern'" [alwaysOn]="true">Enter a valid path (whitespace not allowed).</form-error-message>
                                 <form-error-message [inputModel]="pathName" [type]="'required'">Name is required.</form-error-message>
                             </div>
                         </div>

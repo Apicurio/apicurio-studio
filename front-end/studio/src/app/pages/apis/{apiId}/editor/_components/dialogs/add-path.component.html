@@ -16,9 +16,10 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label required" for="path">Path</label>
                         <div class="col-sm-10">
-                            <input #addPathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
+                            <input #addPathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path" pattern="[\S]+"
                                    required [(ngModel)]="path" (ngModelChange)="pathExists = paths.indexOf($event) != -1" #thepath="ngModel">
                             <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
+                            <form-error-message [inputModel]="thepath" [type]="'pattern'" [alwaysOn]="true">Enter a valid path (whitespace not allowed).</form-error-message>
                             <form-error-message [inputModel]="thepath" [type]="'required'">Path is required.</form-error-message>
                         </div>
                     </div>

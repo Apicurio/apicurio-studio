@@ -20,9 +20,15 @@
                     </div>
                     <!-- Form to enter the new name -->
                     <p>{{ message }}</p>
-                    <form id="renamedef-form" class="form-horizontal" #renameEntityForm="ngForm" data-dismiss="modal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label required" for="entityName">Name</label>
+                    <form id="renameentity-form" class="form-horizontal" #renameEntityForm="ngForm" data-dismiss="modal">
+                        <div class="form-group currentNameGroup">
+                            <label class="col-sm-2 control-label required" for="currentName">Current name</label>
+                            <div class="col-sm-10">
+                                <span id="currentName">{{ originalName }}</span>
+                            </div>
+                        </div>
+                        <div class="form-group entityNameGroup">
+                            <label class="col-sm-2 control-label required" for="entityName">New name</label>
                             <div class="col-sm-10">
                                 <input name="entityName" type="text" id="entityName" class="form-control" #renameEntityInput
                                        placeholder="Enter a {{ type }} Name" pattern="{{ validationPattern }}" #defName="ngModel"

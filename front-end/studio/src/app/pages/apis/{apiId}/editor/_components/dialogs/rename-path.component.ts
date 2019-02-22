@@ -17,7 +17,6 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Subject} from "rxjs/Subject";
 import {Oas20PathItem, Oas30PathItem, OasDocument, OasVisitorUtil} from "oai-ts-core";
 import {FindPathItemsVisitor} from "../../_visitors/path-items.visitor";
 
@@ -40,7 +39,6 @@ export class RenamePathDialogComponent {
     protected path: Oas20PathItem | Oas30PathItem;
     protected alsoSubpaths: boolean;
 
-    protected pathChanged: Subject<string> = new Subject<string>();
     protected paths: string[] = [];
     protected pathExists: boolean = false;
     protected numSubpaths: number = 0;
@@ -67,13 +65,6 @@ export class RenamePathDialogComponent {
         paths.forEach( path => {
             this.paths.push(path.path());
         });
-        this.pathChanged
-            .debounceTime(200)
-            .distinctUntilChanged()
-            .subscribe( path => {
-                this.pathExists = this.paths.indexOf(path) != -1;
-            });
-
         this.numSubpaths = this.calculateNumberOfSubpaths(path.path());
     }
 

@@ -20,9 +20,9 @@ import {
     Oas20Scopes,
     Oas20SecurityScheme,
     Oas30OAuthFlow,
-    Oas30SecurityScheme,
+    Oas30SecurityScheme, OasCombinedVisitorAdapter,
     OasDocument,
-    OasSecurityScheme
+    OasSecurityScheme, OasVisitorUtil
 } from "oai-ts-core";
 import {ObjectUtils} from "../../_util/object.util";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
@@ -98,6 +98,9 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     public oauthTab: string = "implicit";
     public model: SecuritySchemeData;
 
+    protected schemeNames: string[];
+    protected schemeExists: boolean;
+
     /**
      * Called to open the editor.
      * @param handler
@@ -156,6 +159,15 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     }
 
     protected initModel(scheme?: OasSecurityScheme): void {
+        this.schemeExists = false;
+        let schemeNames: string[] = [];
+        OasVisitorUtil.visitTree(this.context.ownerDocument(), new class extends OasCombinedVisitorAdapter {
+            public visitSecurityScheme(node: OasSecurityScheme): void {
+                schemeNames.push(node.schemeName());
+            }
+        });
+        this.schemeNames = schemeNames;
+
         if (this.context.ownerDocument().is2xDocument()) {
             this.model = {
                 schemeName: null,

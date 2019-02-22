@@ -14,7 +14,9 @@
                 <label class="control-label required" for="securitySchemeName">Name</label>
                 <div *ngIf="_mode === 'create'">
                     <input name="schemeName" type="text" id="securitySchemeName" class="form-control short" #nameInput="ngModel"
-                           placeholder="Enter Security Scheme Name" required [(ngModel)]="model.schemeName" pattern="[a-zA-Z0-9\.\-_]+">
+                           placeholder="Enter Security Scheme Name" (ngModelChange)="schemeExists = schemeNames.indexOf($event) != -1"
+                           required [(ngModel)]="model.schemeName" pattern="[a-zA-Z0-9\.\-_]+">
+                    <div class="form-error-message error" *ngIf="schemeExists">Security Scheme already exists.</div>
                     <form-error-message [inputModel]="nameInput" [type]="'required'">Security Scheme name is required.</form-error-message>
                     <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
                 </div>

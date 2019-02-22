@@ -17,7 +17,8 @@
                         <label class="col-sm-2 control-label required" for="tag">Tag</label>
                         <div class="col-sm-10">
                             <input #addTagInput name="tag" type="text" id="tag" class="form-control" placeholder="Tag Name"
-                                   required [(ngModel)]="tag" #name="ngModel">
+                                   required [(ngModel)]="tag" (ngModelChange)="tagExists = tags.indexOf($event) != -1" #name="ngModel">
+                            <div class="form-error-message error" *ngIf="tagExists">Tag already exists.</div>
                             <form-error-message [inputModel]="name" [type]="'required'">Name is required.</form-error-message>
                         </div>
                     </div>
@@ -32,7 +33,7 @@
             </div>
             <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addTagForm.form.valid">Add</button>
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addTagForm.form.valid || tagExists">Add</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

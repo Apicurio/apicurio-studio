@@ -17,6 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
+import {OasDocument} from "oai-ts-core";
 
 
 @Component({
@@ -37,20 +38,31 @@ export class AddTagDialogComponent {
     protected tag: string = "";
     protected description: string = "";
 
+    protected tags: string[] = [];
+    protected tagExists: boolean = false;
+
     /**
      * Called to open the dialog.
      */
-    public open(tag?: string): void {
+    public open(document: OasDocument, tag?: string): void {
         this.tag = tag;
         if (!tag) {
             this.tag = "";
         }
         this._isOpen = true;
-        this.addTagModal.changes.subscribe( thing => {
+        this.addTagModal.changes.subscribe( () => {
             if (this.addTagModal.first) {
                 this.addTagModal.first.show();
             }
         });
+
+        this.tags = [];
+        this.tagExists = false;
+        if (document.tags) {
+            document.tags.forEach( tag => {
+                this.tags.push(tag.name);
+            });
+        }
     }
 
     /**

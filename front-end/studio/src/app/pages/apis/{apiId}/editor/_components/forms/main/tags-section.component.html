@@ -3,7 +3,7 @@
          collaborationNodePath="/tags"
          [validationModels]="tags()">
     <span actions>
-        <icon-button (onClick)="addTagDialog.open()" [pullRight]="true" type="add"
+        <icon-button (onClick)="addTagDialog.open(document)" [pullRight]="true" type="add"
                      title="Add a tag to the API."></icon-button>
         <icon-button (onClick)="deleteAllTags()" [disabled]="!hasTags()"
                      [pullRight]="true" type="delete"
@@ -12,7 +12,7 @@
     <div body>
         <signpost *ngIf="tags().length === 0">
             <span>No tags have been configured.</span>
-            <a (click)="addTagDialog.open()">Add a tag</a>
+            <a (click)="addTagDialog.open(document)">Add a tag</a>
         </signpost>
 
         <!-- The list of tags -->

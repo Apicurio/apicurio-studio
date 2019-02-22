@@ -37,7 +37,6 @@ export class AddPathDialogComponent {
 
     protected path: string = "";
 
-    protected pathChanged: Subject<string> = new Subject<string>();
     protected paths: string[] = [];
     protected pathExists: boolean = false;
 
@@ -67,12 +66,6 @@ export class AddPathDialogComponent {
             document.paths.pathItems().forEach( pathItem => {
                 this.paths.push(pathItem.path());
             });
-            this.pathChanged
-                .debounceTime(50)
-                .distinctUntilChanged()
-                .subscribe( path => {
-                    this.pathExists = this.paths.indexOf(path) != -1;
-                });
         }
     }
 

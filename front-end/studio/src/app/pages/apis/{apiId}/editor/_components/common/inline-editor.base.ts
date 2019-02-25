@@ -16,7 +16,6 @@
  */
 
 import {AfterViewInit, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {KeypressUtils} from "../../_util/object.util";
 import {SelectionService} from "../../_services/selection.service";
 import {OasNode} from "oai-ts-core";
@@ -41,7 +40,6 @@ export abstract class AbstractInlineEditor<T> {
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();
 
     public editing: boolean = false;
-    public canClose: boolean = false;
 
     public inputFocus: boolean = false;
 
@@ -70,7 +68,6 @@ export abstract class AbstractInlineEditor<T> {
             this.selectionService.simpleSelect(path);
         }
 
-        this.canClose = false;
         this.evalue = this.initialValueForEditing();
         this.inputFocus = true;
         this.editing = true;
@@ -79,11 +76,6 @@ export abstract class AbstractInlineEditor<T> {
             AbstractInlineEditor.s_activeEditor.onCancel();
         }
         AbstractInlineEditor.s_activeEditor = this;
-
-        // TODO watch for changes to children rather than simply wait 250ms??
-        TimerObservable.create(250).subscribe(() => {
-            this.canClose = true;
-        });
     }
 
     protected abstract initialValueForEditing(): T;

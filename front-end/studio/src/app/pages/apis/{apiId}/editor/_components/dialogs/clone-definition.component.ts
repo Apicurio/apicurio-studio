@@ -18,7 +18,6 @@
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasVisitorUtil} from "oai-ts-core";
-import {Subject} from "rxjs/Subject";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 
@@ -38,7 +37,6 @@ export class CloneDefinitionDialogComponent {
     protected name: string = "";
     protected definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    protected defChanged: Subject<string> = new Subject<string>();
     protected defs: string[] = [];
     protected defExists: boolean = false;
 
@@ -68,12 +66,6 @@ export class CloneDefinitionDialogComponent {
         definitions.forEach( definition => {
             this.defs.push(FindSchemaDefinitionsVisitor.definitionName(definition));
         });
-        this.defChanged
-            .debounceTime(300)
-            .distinctUntilChanged()
-            .subscribe( def => {
-                this.defExists = this.defs.indexOf(def) != -1;
-            });
     }
 
     private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {

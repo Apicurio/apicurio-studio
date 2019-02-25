@@ -15,23 +15,13 @@
  * limitations under the License.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    HostListener,
-    Input,
-    OnDestroy,
-    OnInit
-} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input} from "@angular/core";
 import {OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
-import {Subscription} from "rxjs/Subscription";
 import {AbstractBaseComponent} from "./base-component";
 import {KeypressUtils} from "../../_util/object.util";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({

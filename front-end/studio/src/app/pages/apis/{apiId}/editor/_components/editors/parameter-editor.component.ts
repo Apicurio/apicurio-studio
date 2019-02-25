@@ -18,7 +18,6 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 import {IOasParameterParent, Oas20Parameter, Oas30Parameter} from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
-import {Subject} from "rxjs";
 import {SimplifiedParameterType, SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../_util/object.util";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
@@ -48,7 +47,6 @@ export interface IParameterEditorHandler extends IEntityEditorHandler<Oas20Param
 })
 export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas30Parameter, ParameterEditorEvent> {
 
-    protected paramChanged: Subject<string> = new Subject<string>();
     protected params: string[] = [];
     protected paramExists: boolean = false;
 
@@ -64,12 +62,6 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
         this.paramExists = false;
         let parameters: (Oas20Parameter | Oas30Parameter)[] = this.getParams();
         this.params = parameters.map(p => p.name);
-        this.paramChanged
-            .debounceTime(150)
-            .distinctUntilChanged()
-            .subscribe( pname => {
-                this.paramExists = this.params.indexOf(pname) != -1;
-            });
     }
 
     /**

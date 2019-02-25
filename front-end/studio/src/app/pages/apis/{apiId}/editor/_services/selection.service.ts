@@ -28,8 +28,6 @@ import {
     OasValidationProblem,
     OasVisitorUtil
 } from "oai-ts-core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
 import {ModelUtils} from "../_util/model.util";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
 import {DocumentService} from "./document.service";

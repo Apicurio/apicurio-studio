@@ -29,7 +29,6 @@ import {LinkedAccount} from "../../models/linked-account.model";
 import {Title} from "@angular/platform-browser";
 import {ApiDesignChange} from "../../models/api-design-change.model";
 import {CurrentUserService} from "../../services/current-user.service";
-import {DropDownOption} from "../../components/common/drop-down.component";
 
 /**
  * The Dashboard Page component - models the logical root path of the application.

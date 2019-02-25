@@ -29,6 +29,7 @@
         <artemis.instance.dir>${artemis.install.dir}/${artemis.name}-instance</artemis.instance.dir>
         <artemis.config>${basedir}/src/test/resources/artemis/broker.xml</artemis.config>
         
+        <!-- Use a specific version of H2 for compatibility with Wildfly -->
         <h2.version>1.4.193</h2.version>
         <h2.install.dir>${project.build.directory}</h2.install.dir>
     </properties>

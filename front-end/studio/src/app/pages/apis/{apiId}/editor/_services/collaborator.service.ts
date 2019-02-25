@@ -17,7 +17,6 @@
 
 
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {Topic} from "../_util/messaging";
 

@@ -24,7 +24,6 @@ import {
     OasVisitorUtil
 } from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
-import {Subject} from "rxjs";
 import {SimplifiedPropertyType, SimplifiedType} from "oai-ts-commands";
 import {ObjectUtils} from "../../_util/object.util";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
@@ -55,7 +54,6 @@ export interface IPropertyEditorHandler extends IEntityEditorHandler<Oas20Proper
 })
 export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | Oas30PropertySchema, PropertyEditorEvent> {
 
-    protected propChanged: Subject<string> = new Subject<string>();
     protected props: string[] = [];
     protected propExists: boolean = false;
 
@@ -66,12 +64,6 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
         this.propExists = false;
         let properties: (Oas20PropertySchema | Oas30PropertySchema)[] = this.getProps();
         this.props = properties.map(p => p.propertyName());
-        this.propChanged
-            .debounceTime(150)
-            .distinctUntilChanged()
-            .subscribe( pname => {
-                this.propExists = this.props.indexOf(pname) != -1;
-            });
     }
 
     /**

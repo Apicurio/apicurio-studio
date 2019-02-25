@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({

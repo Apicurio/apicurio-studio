@@ -18,7 +18,6 @@
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {OasDocument, OasPathItem} from "oai-ts-core";
-import {Subject} from "rxjs/Subject";
 
 
 @Component({
@@ -38,7 +37,6 @@ export class ClonePathDialogComponent {
     protected path: string = "";
     protected object: OasPathItem;
 
-    protected pathChanged: Subject<string> = new Subject<string>();
     protected paths: string[] = [];
     protected pathExists: boolean = false;
 
@@ -66,12 +64,6 @@ export class ClonePathDialogComponent {
             document.paths.pathItems().forEach( pathItem => {
                 this.paths.push(pathItem.path());
             });
-            this.pathChanged
-                .debounceTime(300)
-                .distinctUntilChanged()
-                .subscribe( path => {
-                    this.pathExists = this.paths.indexOf(path) != -1;
-                });
         }
     }
 

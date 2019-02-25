@@ -51,7 +51,6 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
     protected exampleValid: boolean = true;
     protected exampleFormattable: boolean = false;
 
-    protected defChanged: Subject<string> = new Subject<string>();
     protected defs: string[] = [];
     protected defExists: boolean = false;
 
@@ -67,12 +66,6 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
         this.defExists = false;
         let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(this.context.ownerDocument());
         this.defs = definitions.map(definition => FindSchemaDefinitionsVisitor.definitionName(definition));
-        this.defChanged
-            .debounceTime(150)
-            .distinctUntilChanged()
-            .subscribe( def => {
-                this.defExists = this.defs.indexOf(def) != -1;
-            });
     }
 
     /**

@@ -123,4 +123,11 @@ export class RenameEntityDialogComponent {
         return this.warning !== null && this.warning !== undefined;
     }
 
+    /**
+     * Returns true if the message should be displayed.
+     */
+    public shouldShowMessage(): boolean {
+        return this.message !== null && this.message !== undefined;
+    }
+
 }

@@ -27,7 +27,6 @@
 <rename-entity-dialog #renameDialog
                       type="Tag"
                       title="Rename Tag"
-                      message="Enter a new tag name below and then click Rename."
                       warning="Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

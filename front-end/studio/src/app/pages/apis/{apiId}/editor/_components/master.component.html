@@ -135,7 +135,6 @@
     <rename-entity-dialog #renameDefinitionDialog
                           type="Data Type"
                           title="Rename Data Type"
-                          message="Enter a new data type name below and then click Rename."
                           warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
                           (onRename)="renameDefinition($event)"></rename-entity-dialog>

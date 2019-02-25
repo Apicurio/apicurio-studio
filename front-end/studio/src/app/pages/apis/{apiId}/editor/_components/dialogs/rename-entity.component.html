@@ -19,7 +19,7 @@
                         <span>{{ warning }}</span>
                     </div>
                     <!-- Form to enter the new name -->
-                    <p>{{ message }}</p>
+                    <p *ngIf="shouldShowMessage()">{{ message }}</p>
                     <form id="renameentity-form" class="form-horizontal" #renameEntityForm="ngForm" data-dismiss="modal">
                         <div class="form-group currentNameGroup">
                             <label class="col-sm-2 control-label" for="currentName">Current name</label>

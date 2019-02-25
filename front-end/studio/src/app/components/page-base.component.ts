@@ -17,7 +17,6 @@
 
 import {OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs/Observable";
 import {Title} from "@angular/platform-browser";
 import 'rxjs/add/observable/combineLatest';
 
@@ -30,13 +29,15 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
     public dataLoaded: DataMap = new DataMap();
     public pageError: any;
 
+    protected _params: any;
+    protected _queryParams: any;
+
     /**
      * C'tor.
      * @param route
      * @param titleService
      */
-    constructor(protected route: ActivatedRoute, protected titleService: Title) {
-    }
+    protected constructor(protected route: ActivatedRoute, protected titleService: Title) {}
 
     /**
      * Called when the page is initialized.  Triggers the loading of asynchronous
@@ -44,9 +45,20 @@ export abstract class AbstractPageComponent implements OnInit, OnDestroy {
      */
     public ngOnInit(): void {
         // Extract route params and query params and pass them to "loadAsyncPageData"
-        let combined = Observable.combineLatest(this.route.params, this.route.queryParams, (params, qparams) => ({params, qparams}));
-        combined.subscribe( ap => {
-            this.loadAsyncPageData(ap.params, ap.qparams);
+        this._params = null;
+        this._queryParams = null;
+
+        this.route.params.subscribe( params => {
+            this._params = params;
+            if (this._queryParams !== null) {
+                this.loadAsyncPageData(this._params, this._queryParams);
+            }
+        });
+        this.route.queryParams.subscribe( params => {
+            this._queryParams = params;
+            if (this._params !== null) {
+                this.loadAsyncPageData(this._params, this._queryParams);
+            }
         });
         this.updatePageTitle();
     }

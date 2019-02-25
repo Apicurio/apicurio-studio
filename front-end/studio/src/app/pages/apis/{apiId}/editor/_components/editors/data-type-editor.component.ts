@@ -20,7 +20,6 @@ import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasVisitorUti
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
-import {Subject} from "rxjs";
 
 
 export interface DataTypeData {

@@ -16,9 +16,8 @@
  */
 
 import {Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
-import {Subject} from "rxjs/Subject";
-import {Subscription} from "rxjs/Subscription";
 import {AceEditorComponent} from "./ace-editor.component";
+import {Debouncer} from "apicurio-ts-core";
 
 
 export enum CodeEditorTheme {
@@ -42,10 +41,9 @@ export class CodeEditorComponent {
 
     @ViewChild("editor") public editor: AceEditorComponent;
 
-    public _textValue: string;
-    public _textValueDebouncer: Subject<string> = new Subject<string>();
-    public _debounceTime: number;
-    public _debouncerSubscription: Subscription;
+    private _textValueDebouncer: Debouncer<string> = new Debouncer<string>({ period: 200 }, value => {
+        this.textChange.emit(value);
+    });
 
     @Input() theme: CodeEditorTheme = CodeEditorTheme.Light;
     @Input() mode: CodeEditorMode = CodeEditorMode.Text;
@@ -54,37 +52,24 @@ export class CodeEditorComponent {
 
     @Input()
     get text() {
-        return this._textValue;
+        return this._textValueDebouncer.getValue();
     }
 
     @Output() public textChange = new EventEmitter<string>();
     set text(value: string) {
-        this._textValue = value;
-        this._textValueDebouncer.next(this._textValue);
+        this._textValueDebouncer.emit(value);
     }
 
     @Input()
     get debounceTime() {
-        return this._debounceTime;
+        return this._textValueDebouncer["options"].period;
     }
     set debounceTime(time: number) {
-        this._debounceTime = time;
-        let bounce: number = this._debounceTime;
+        let bounce: number = time;
         if (!bounce) {
             bounce = CodeEditorComponent.DEFAULT_DEBOUNCE_TIME;
         }
-        if (this._debouncerSubscription) {
-            this._debouncerSubscription.unsubscribe();
-        }
-        this._debouncerSubscription = this._textValueDebouncer.debounceTime(bounce).subscribe( value => {
-            this.textChange.emit(value);
-        })
-    }
-
-    constructor() {
-        this._debouncerSubscription = this._textValueDebouncer.debounceTime(CodeEditorComponent.DEFAULT_DEBOUNCE_TIME).subscribe( value => {
-            this.textChange.emit(value);
-        });
+        this._textValueDebouncer["options"].period = bounce;
     }
 
     public aceMode(): string {

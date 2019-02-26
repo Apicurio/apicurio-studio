@@ -18,7 +18,6 @@
 import {OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
-import 'rxjs/add/observable/combineLatest';
 
 export class DataMap {
     [key: string]: boolean;

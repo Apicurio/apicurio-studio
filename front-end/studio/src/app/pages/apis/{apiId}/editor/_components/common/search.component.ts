@@ -16,10 +16,10 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
+import {Debouncer} from "apicurio-ts-core";
 
 @Component({
     moduleId: module.id,
@@ -36,19 +36,23 @@ export class SearchComponent extends AbstractBaseComponent {
     @Output() onSearch: EventEmitter<string> = new EventEmitter<string>();
 
     value: string;
-    private _valueObs: BehaviorSubject<string> = new BehaviorSubject(null);
+    valueDebouncer: Debouncer<string> = new Debouncer<string>({ period: 200 }, value => {
+        this.onSearch.emit(value);
+    });
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
-        this._valueObs.debounceTime(200).subscribe( value => {
-            this.onSearch.emit(value);
-        });
     }
 
     public changeValue(newValue: string): void {
-        this.value = newValue;
-        this._valueObs.next(newValue);
+        this.valueDebouncer.emit(newValue);
     }
 
     public clear(): void {

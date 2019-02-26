@@ -34,10 +34,10 @@ import {
 } from "oai-ts-commands";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
-import {ObjectUtils} from "../../../../_util/object.util";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {SelectionService} from "../../../../_services/selection.service";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({

@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, HostListener} from "@angular/core";
-import {KeypressUtils} from "../../_util/object.util";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
     moduleId: module.id,

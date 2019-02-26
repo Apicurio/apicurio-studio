@@ -25,9 +25,9 @@ import {
 } from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {SimplifiedPropertyType, SimplifiedType} from "oai-ts-commands";
-import {ObjectUtils} from "../../_util/object.util";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
+import {ObjectUtils} from "apicurio-ts-core";
 
 export interface PropertyData {
     name: string;

@@ -50,7 +50,6 @@ import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
 import {EditorsService, IEditorsProvider} from "./_services/editors.service";
-import {ArrayUtils} from "./_util/object.util";
 import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
 import {SecurityRequirementEditorComponent} from "./_components/editors/security-requirement-editor.component";
 import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
@@ -59,7 +58,7 @@ import {PropertyEditorComponent} from "./_components/editors/property-editor.com
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
-import {TopicSubscription} from "./_util/messaging";
+import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 
 
 @Component({

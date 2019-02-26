@@ -18,7 +18,7 @@
 
 import {Injectable} from "@angular/core";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
-import {Topic} from "../_util/messaging";
+import {Topic} from "apicurio-ts-core";
 
 
 class CollaboratorSelections {

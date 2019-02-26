@@ -31,7 +31,7 @@ import {
 import {ModelUtils} from "../_util/model.util";
 import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
 import {DocumentService} from "./document.service";
-import {Topic} from "../_util/messaging";
+import {Topic} from "apicurio-ts-core";
 
 
 class MainSelectionVisitor extends OasAllNodeVisitor {

@@ -25,7 +25,6 @@ import {
 } from "@angular/core";
 import {OasCombinedVisitorAdapter, OasDocument, OasTag, OasVisitorUtil} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
-import {ObjectUtils} from "../../../_util/object.util";
 import {
     createChangePropertyCommand,
     createDeleteAllTagsCommand,
@@ -38,6 +37,7 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({

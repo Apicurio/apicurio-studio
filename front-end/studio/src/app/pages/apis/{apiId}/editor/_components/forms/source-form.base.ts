@@ -17,7 +17,6 @@
 
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
-import {ObjectUtils} from "../../_util/object.util";
 import * as YAML from "yamljs";
 import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
@@ -27,6 +26,7 @@ import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "../common/base-component";
 import {ChangeDetectorRef} from "@angular/core";
 import {SectionComponent} from "./shared/section.component";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 /**

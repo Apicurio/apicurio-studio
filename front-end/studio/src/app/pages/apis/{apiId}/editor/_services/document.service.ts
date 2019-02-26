@@ -16,7 +16,7 @@
  */
 import {Injectable} from "@angular/core";
 import {OasDocument} from "oai-ts-core";
-import {Topic} from "../_util/messaging";
+import {Topic} from "apicurio-ts-core";
 
 /**
  * A service providing document related functionality, including the ability to

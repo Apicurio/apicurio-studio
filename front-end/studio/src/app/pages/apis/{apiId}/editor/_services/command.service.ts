@@ -18,7 +18,7 @@
 
 import {Injectable} from "@angular/core";
 import {ICommand} from "oai-ts-commands";
-import {Topic} from "../_util/messaging";
+import {Topic} from "apicurio-ts-core";
 
 /**
  * A simple service that tracks the user's current command in the editor.  The command

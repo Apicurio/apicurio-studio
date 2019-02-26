@@ -29,11 +29,10 @@ import {
 import {AbstractInlineEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
-import {KeypressUtils} from "../../_util/object.util";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 import {OasNode} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
     moduleId: module.id,

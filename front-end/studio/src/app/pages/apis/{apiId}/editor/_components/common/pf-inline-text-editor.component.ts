@@ -17,8 +17,8 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {TextInputEditorComponent} from "./inline-editor.base";
-import {KeypressUtils} from "../../_util/object.util";
 import {SelectionService} from "../../_services/selection.service";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
     moduleId: module.id,

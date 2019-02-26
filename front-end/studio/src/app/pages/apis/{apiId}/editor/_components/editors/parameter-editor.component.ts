@@ -19,8 +19,8 @@ import {Component, ViewEncapsulation} from "@angular/core";
 import {IOasParameterParent, Oas20Parameter, Oas30Parameter} from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {SimplifiedParameterType, SimplifiedType} from "oai-ts-commands";
-import {ObjectUtils} from "../../_util/object.util";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
+import {ObjectUtils} from "apicurio-ts-core";
 
 export interface ParameterData {
     name: string;

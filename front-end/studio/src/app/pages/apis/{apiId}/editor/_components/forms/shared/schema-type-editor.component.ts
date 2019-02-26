@@ -26,13 +26,13 @@ import {
 } from "@angular/core";
 import {SimplifiedType} from "oai-ts-commands";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasNode, OasVisitorUtil} from "oai-ts-core";
-import {ObjectUtils} from "../../../_util/object.util";
 import {DropDownOption} from "../../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {CommandService} from "../../../_services/command.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({

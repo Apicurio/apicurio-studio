@@ -20,10 +20,10 @@ import {OasAllNodeVisitor, OasNode, OasValidationProblemSeverity, OasVisitorUtil
 import {OasValidationProblem} from "oai-ts-core/src/models/node.model";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
-import {ArrayUtils, KeypressUtils} from "../../_util/object.util";
 import {AbstractBaseComponent} from "./base-component";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
+import {ArrayUtils} from "apicurio-ts-core";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
     moduleId: module.id,

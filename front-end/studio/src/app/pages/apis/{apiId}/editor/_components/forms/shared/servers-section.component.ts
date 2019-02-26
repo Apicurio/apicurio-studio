@@ -24,7 +24,6 @@ import {
     createNewServerCommand,
     ICommand
 } from "oai-ts-commands";
-import {ObjectUtils} from "../../../_util/object.util";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
@@ -32,6 +31,7 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({

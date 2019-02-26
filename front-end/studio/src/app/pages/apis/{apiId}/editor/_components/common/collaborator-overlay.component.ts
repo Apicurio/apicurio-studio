@@ -28,7 +28,7 @@ import {AbstractBaseComponent} from "./base-component";
 import {SelectionService} from "../../_services/selection.service";
 import {ApiEditorUser} from "../../../../../../models/editor-user.model";
 import {CollaboratorService} from "../../_services/collaborator.service";
-import {TopicSubscription} from "../../_util/messaging";
+import {TopicSubscription} from "apicurio-ts-core";
 
 /**
  * Common base class for collaboration components (overlay and aggregate icon).

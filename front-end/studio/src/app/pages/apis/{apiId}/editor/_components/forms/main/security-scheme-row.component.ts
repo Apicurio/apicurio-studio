@@ -24,13 +24,13 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasDocument, OasSecurityScheme, OasTag} from "oai-ts-core";
+import {OasDocument, OasSecurityScheme} from "oai-ts-core";
 import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
-import {KeypressUtils} from "../../../_util/object.util";
 import {SelectionService} from "../../../_services/selection.service";
+import {KeypressUtils} from "../../../_util/keypress.util";
 
 
 @Component({

@@ -16,12 +16,11 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
-import {ObjectUtils} from "../../_util/object.util";
 import {SimplifiedType} from "oai-ts-commands";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
+import {ObjectUtils} from "apicurio-ts-core";
 
 @Component({
     moduleId: module.id,

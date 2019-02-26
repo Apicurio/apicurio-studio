@@ -24,10 +24,10 @@ import {
     OasDocument,
     OasSecurityScheme, OasVisitorUtil
 } from "oai-ts-core";
-import {ObjectUtils} from "../../_util/object.util";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {Scope} from "../../_models/scope.model";
 import {NgModel} from "@angular/forms";
+import {ObjectUtils} from "apicurio-ts-core";
 
 export interface Flow {
     enabled: boolean;

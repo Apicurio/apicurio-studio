@@ -20,8 +20,8 @@ import {TextAreaEditorComponent} from "./inline-editor.base";
 import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/common/code-editor.component";
 import {Oas20Schema, Oas30Schema} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
-import {StringUtils} from "../../_util/object.util";
 import {SelectionService} from "../../_services/selection.service";
+import {StringUtils} from "apicurio-ts-core";
 
 @Component({
     moduleId: module.id,

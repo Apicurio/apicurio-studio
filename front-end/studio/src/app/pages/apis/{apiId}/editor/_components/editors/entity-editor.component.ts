@@ -25,7 +25,7 @@ import {
     OasPathItem
 } from "oai-ts-core";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
-import {KeypressUtils} from "../../_util/object.util";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 export interface EntityEditorEvent<T extends OasNode> {
     entity: T;

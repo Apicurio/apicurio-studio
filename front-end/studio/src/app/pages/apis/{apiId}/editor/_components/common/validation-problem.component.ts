@@ -21,8 +21,8 @@ import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "./base-component";
-import {KeypressUtils} from "../../_util/object.util";
 import {SelectionService} from "../../_services/selection.service";
+import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
     moduleId: module.id,

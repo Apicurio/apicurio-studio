@@ -29,15 +29,14 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {OasDocument, OasNode, OasValidationProblem} from "oai-ts-core";
+import {OasDocument, OasValidationProblem} from "oai-ts-core";
 import {createChangeTitleCommand, ICommand} from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
-import {ApiEditorUser} from "../../../../../models/editor-user.model";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
-import {KeypressUtils} from "../_util/object.util";
+import {KeypressUtils} from "../_util/keypress.util";
 
 
 /**

@@ -35,7 +35,7 @@ import {
     ICommand
 } from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
-import {TopicSubscription} from "../../../_util/messaging";
+import {TopicSubscription} from "apicurio-ts-core";
 
 
 @Component({

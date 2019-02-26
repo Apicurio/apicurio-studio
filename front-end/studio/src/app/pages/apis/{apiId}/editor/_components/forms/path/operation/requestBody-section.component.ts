@@ -20,18 +20,19 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    SimpleChanges, ViewChild,
+    SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
     IOasParameterParent,
     Oas20Operation,
     Oas20Parameter,
-    Oas30MediaType,
     Oas30Operation,
-    Oas30Parameter,
     Oas30RequestBody,
-    OasNode, OasOperation, OasPathItem
+    OasNode,
+    OasOperation,
+    OasPathItem
 } from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {
@@ -40,38 +41,26 @@ import {
     ParameterEditorComponent
 } from "../../../editors/parameter-editor.component";
 import {
-    createAddExampleCommand,
-    createChangeMediaTypeTypeCommand,
     createChangeParameterTypeCommand,
     createChangePropertyCommand,
     createDeleteAllParametersCommand,
-    createDeleteExampleCommand,
-    createDeleteMediaTypeCommand,
     createDeleteParameterCommand,
     createDeleteRequestBodyCommand,
-    createNewMediaTypeCommand,
     createNewParamCommand,
-    createNewRequestBodyCommand, createRenameParameterCommand,
-    createSetExampleCommand,
+    createNewRequestBodyCommand,
+    createRenameParameterCommand,
     ICommand,
     SimplifiedParameterType,
     SimplifiedType
 } from "oai-ts-commands";
 import {EditorsService} from "../../../../_services/editors.service";
-import {ObjectUtils} from "../../../../_util/object.util";
 import {DropDownOption} from "../../../../../../../../components/common/drop-down.component";
-import {
-    AddExampleEvent,
-    DeleteExampleEvent,
-    ExamplePropertyChangeEvent,
-    MediaTypeChangeEvent
-} from "./content.component";
-import {EditExampleEvent} from "../../../dialogs/edit-example.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {ModelUtils} from "../../../../_util/model.util";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../../dialogs/rename-entity.component";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({

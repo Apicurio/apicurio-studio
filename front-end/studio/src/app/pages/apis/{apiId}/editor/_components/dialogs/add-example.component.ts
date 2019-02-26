@@ -24,9 +24,9 @@ import {
 } from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
-import {StringUtils} from "../../_util/object.util";
 import {Oas30Schema} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
+import {StringUtils} from "apicurio-ts-core";
 
 
 @Component({

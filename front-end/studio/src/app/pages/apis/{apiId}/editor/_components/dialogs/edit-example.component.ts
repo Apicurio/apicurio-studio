@@ -25,8 +25,8 @@ import {
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from "yamljs";
 import {Oas30Example, Oas30Schema} from "oai-ts-core";
-import {StringUtils} from "../../_util/object.util";
 import {ModelUtils} from "../../_util/model.util";
+import {StringUtils} from "apicurio-ts-core";
 
 
 export interface EditExampleEvent {

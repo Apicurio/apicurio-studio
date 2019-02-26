@@ -46,7 +46,6 @@ import {ClonePathDialogComponent} from "./dialogs/clone-path.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
-import {KeypressUtils, ObjectUtils} from "../_util/object.util";
 import {
     createAddPathItemCommand,
     createAddSchemaDefinitionCommand,
@@ -69,6 +68,8 @@ import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "./dialogs/rename-entity.component";
+import {KeypressUtils} from "../_util/keypress.util";
+import {ObjectUtils} from "apicurio-ts-core";
 
 
 /**

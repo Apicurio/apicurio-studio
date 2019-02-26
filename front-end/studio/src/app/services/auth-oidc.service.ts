@@ -16,11 +16,10 @@
  */
 
 import {IAuthenticationService} from "./auth.service";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
+import {Topic} from "apicurio-ts-core";
 
 
 export class OIDCDirectGrantAccessToken {
@@ -38,11 +37,8 @@ export class OIDCDirectGrantAccessToken {
  */
 export class OIDCDirectGrantAuthenticationService extends IAuthenticationService {
 
-    private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public authenticated: Observable<boolean> = this._authenticated.asObservable();
-
-    private _authenticatedUser: BehaviorSubject<User> = new BehaviorSubject(null);
-    public authenticatedUser: Observable<User> = this._authenticatedUser.asObservable();
+    private _authenticated: Topic<boolean> = new Topic<boolean>();
+    private _user: User;
 
     private accessToken: OIDCDirectGrantAccessToken;
 
@@ -53,23 +49,23 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
      */
     constructor(private http: HttpClient, private config: ConfigService) {
         super();
-        console.info("[OIDCDirectGrantAuthenticationService] C'tor");
+        this._authenticated.send(false);
+        this._user = null;
+        console.info("[OIDCDirectGrantAuthenticationService] Constructed");
+    }
+
+    /**
+     * The topic to subscribe to for auth changes.
+     */
+    public authenticated(): Topic<boolean> {
+        return this._authenticated;
     }
 
     /**
      * Returns the observable for is/isnot authenticated.
-     * 
      */
-    public isAuthenticated(): Observable<boolean> {
-        return this.authenticated;
-    }
-
-    /**
-     * Returns an observable over the currently authenticated User (or null if not logged in).
-     * 
-     */
-    public getAuthenticatedUser(): Observable<User> {
-        return this.authenticatedUser;
+    public isAuthenticated(): boolean {
+        return this._authenticated.getValue();
     }
 
     /**
@@ -77,7 +73,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
      * 
      */
     public getAuthenticatedUserNow(): User {
-        return this._authenticatedUser.getValue();
+        return this._user;
     }
 
     /**
@@ -107,8 +103,8 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
             let user: User = this.toUser(token);
             return user;
         }).toPromise().then( user => {
-            this._authenticated.next(true);
-            this._authenticatedUser.next(user);
+            this._authenticated.send(true);
+            this._user = user;
             return Promise.resolve<User>(user);
         }).catch( reason => {
             console.error("[OIDCDirectGrantAuthenticationService] Failed to obtain access token: %o", reason);
@@ -124,6 +120,7 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
      * Logout.
      */
     public logout(): void {
+        this._authenticated.send(false);
         location.reload(true);
     }
 

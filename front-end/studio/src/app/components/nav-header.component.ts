@@ -18,7 +18,6 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../models/user.model";
 import {IAuthenticationService} from "../services/auth.service";
-import {Observable} from "rxjs/Observable";
 
 @Component({
     moduleId: module.id,
@@ -47,8 +46,8 @@ export class NavHeaderComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    public user(): Observable<User> {
-        return this.authService.getAuthenticatedUser();
+    public user(): User {
+        return this.authService.getAuthenticatedUserNow();
     }
 
     public logout(): void {

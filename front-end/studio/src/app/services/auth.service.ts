@@ -15,22 +15,21 @@
  * limitations under the License.
  */
 
-import {Observable} from "rxjs/Observable";
-
 import {User} from "../models/user.model";
+import {Topic} from "apicurio-ts-core";
 
 
 export abstract class IAuthenticationService {
 
     /**
-     * A way for consumers to subscribe to the current authentication status of the user/app.
+     * Topic to listen for changes to authentication status.
      */
-    abstract isAuthenticated(): Observable<boolean>;
+    abstract authenticated(): Topic<boolean>;
 
     /**
-     * Get the currently authenticated user.  May be null if the user is not currently authenticated.
+     * A way for consumers to subscribe to the current authentication status of the user/app.
      */
-    abstract getAuthenticatedUser(): Observable<User>;
+    abstract isAuthenticated(): boolean;
 
     /**
      * Immediately gets the current authenticated user (if any).  Returns null if no user is
@@ -63,5 +62,3 @@ export abstract class IAuthenticationService {
      */
     abstract getAuthenticationSecret(): string;
 }
-
-//export const IAuthenticationService = new InjectionToken("IAuthenticationService");

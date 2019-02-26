@@ -16,8 +16,6 @@
  */
 
 import {Component, Inject} from "@angular/core";
-
-import {Observable} from "rxjs/Observable";
 import {IAuthenticationService} from "../../../services/auth.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {User} from "../../../models/user.model";
@@ -57,8 +55,8 @@ export class ProfilePageComponent extends AbstractPageComponent {
         console.log("[ProfilePageComponent] loadAsyncPageData")
     }
 
-    public user(): Observable<User> {
-        return this.authService.getAuthenticatedUser();
+    public user(): User {
+        return this.authService.getAuthenticatedUserNow();
     }
 
 }

@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import 'rxjs/Rx';
-
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';

@@ -36,7 +36,7 @@ export class AppComponent {
         this.routerOutletWrapperId = "api-page-body";
         this.routerOutletWrapperClass = "";
 
-        authService.isAuthenticated().subscribe(authed => {
+        authService.authenticated().subscribe(authed => {
             if (authed) {
                 this.routerOutletWrapperId = "api-page-body";
                 this.routerOutletWrapperClass = "";

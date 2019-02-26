@@ -35,7 +35,6 @@
     "oai-ts-commands": "0.2.61",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0",
-    "rxjs": "5.5.12",
     "yamljs": "0.3.0",
     "zone.js": "0.8.28"
   },
@@ -66,7 +65,6 @@
     "oai-ts-commands": "0.2.61",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0",
-    "rxjs": "5.5.12",
     "ts-node": "~4.1.0",
     "typescript": "2.6.2",
     "yamljs": "0.3.0",

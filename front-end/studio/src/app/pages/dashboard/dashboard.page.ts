@@ -20,7 +20,6 @@ import {ActivatedRoute} from "@angular/router";
 
 import {Api} from "../../models/api.model";
 import {IAuthenticationService} from "../../services/auth.service";
-import {Observable} from "rxjs/Observable";
 import {User} from "../../models/user.model";
 import {ApisService} from "../../services/apis.service";
 import {AbstractPageComponent} from "../../components/page-base.component";
@@ -106,10 +105,9 @@ export class DashboardPageComponent extends AbstractPageComponent {
 
     /**
      * Gets the authenticated user.
-     * 
      */
-    public user(): Observable<User> {
-        return this.authService.getAuthenticatedUser();
+    public user(): User {
+        return this.authService.getAuthenticatedUserNow();
     }
 
     /**

@@ -19,6 +19,7 @@
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
+import {User} from "../models/user.model";
 
 /**
  * Base class for all Hub-API based services.
@@ -37,6 +38,14 @@ export abstract class AbstractHubService {
         this.apiBaseHref = this.config.hubUrl();
         this.editingBaseHref = this.config.editingUrl();
     }
+
+    /**
+     * Gets the current user.
+     */
+    protected user(): User {
+        return this.authService.getAuthenticatedUserNow();
+    }
+
 
     /**
      * Creates a hub API endpoint from the api path and params.

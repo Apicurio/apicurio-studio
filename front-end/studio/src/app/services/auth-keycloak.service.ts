@@ -16,11 +16,10 @@
  */
 
 import {IAuthenticationService} from "./auth.service";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient} from "@angular/common/http";
+import {Topic} from "apicurio-ts-core";
 
 /**
  * A version of the authentication service that uses keycloak.js to provide
@@ -28,11 +27,8 @@ import {HttpClient} from "@angular/common/http";
  */
 export class KeycloakAuthenticationService extends IAuthenticationService {
 
-    private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public authenticated: Observable<boolean> = this._authenticated.asObservable();
-
-    private _authenticatedUser: BehaviorSubject<User> = new BehaviorSubject(null);
-    public authenticatedUser: Observable<User> = this._authenticatedUser.asObservable();
+    private _authenticated: Topic<boolean> = new Topic<boolean>();
+    private _user: User;
 
     private keycloak: any;
 
@@ -55,10 +51,10 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
         user.login = this.keycloak.tokenParsed.preferred_username;
         user.email = this.keycloak.tokenParsed.email;
 
-        this._authenticated.next(true);
-        this._authenticatedUser.next(user);
+        this._authenticated.send(true);
+        this._user = user;
 
-        // Periodically refresh
+        // Periodically refresh the token
         // TODO run this outsize NgZone using zone.runOutsideAngular() : https://angular.io/api/core/NgZone
         setInterval(() => {
             this.keycloak.updateToken(30);
@@ -69,16 +65,8 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
      * Returns the observable for is/isnot authenticated.
      * 
      */
-    public isAuthenticated(): Observable<boolean> {
-        return this.authenticated;
-    }
-
-    /**
-     * Returns an observable over the currently authenticated User (or null if not logged in).
-     * 
-     */
-    public getAuthenticatedUser(): Observable<User> {
-        return this.authenticatedUser;
+    public isAuthenticated(): boolean {
+        return this._authenticated.getValue();
     }
 
     /**
@@ -86,7 +74,14 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
      * 
      */
     public getAuthenticatedUserNow(): User {
-        return this._authenticatedUser.getValue();
+        return this._user;
+    }
+
+    /**
+     * Returns the topic to listen for auth changes.
+     */
+    public authenticated(): Topic<boolean> {
+        return this._authenticated;
     }
 
     /**

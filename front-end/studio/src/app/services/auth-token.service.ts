@@ -16,11 +16,10 @@
  */
 
 import {IAuthenticationService} from "./auth.service";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
+import {Topic} from "apicurio-ts-core";
 
 /**
  * A version of the authentication service that uses token information passed to it
@@ -30,11 +29,8 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
  */
 export class TokenAuthenticationService extends IAuthenticationService {
 
-    private _authenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public authenticated: Observable<boolean> = this._authenticated.asObservable();
-
-    private _authenticatedUser: BehaviorSubject<User> = new BehaviorSubject(null);
-    public authenticatedUser: Observable<User> = this._authenticatedUser.asObservable();
+    private _authenticated: Topic<boolean> = new Topic<boolean>();
+    private _user: User;
 
     private accessToken: string;
 
@@ -47,8 +43,8 @@ export class TokenAuthenticationService extends IAuthenticationService {
         super();
         this.accessToken = config.authToken();
 
-        this._authenticated.next(true);
-        this._authenticatedUser.next(config.user());
+        this._authenticated.send(true);
+        this._user = config.user();
 
         let refreshPeriod: number = config.authRefreshPeriod();
         if (refreshPeriod) {
@@ -62,27 +58,24 @@ export class TokenAuthenticationService extends IAuthenticationService {
     }
 
     /**
-     * Returns the observable for is/isnot authenticated.
-     * 
+     * Returns the topic to subscribe to for auth changes.
      */
-    public isAuthenticated(): Observable<boolean> {
-        return this.authenticated;
+    public authenticated(): Topic<boolean> {
+        return this._authenticated;
     }
 
     /**
-     * Returns an observable over the currently authenticated User (or null if not logged in).
-     * 
+     * Returns the observable for is/isnot authenticated.
      */
-    public getAuthenticatedUser(): Observable<User> {
-        return this.authenticatedUser;
+    public isAuthenticated(): boolean {
+        return this._authenticated.getValue();
     }
 
     /**
      * Returns the currently authenticated user.
-     * 
      */
     public getAuthenticatedUserNow(): User {
-        return this._authenticatedUser.getValue();
+        return this._user;
     }
 
     /**

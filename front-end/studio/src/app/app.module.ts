@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import 'rxjs/Rx';
-
 import {ClipboardModule} from "ngx-clipboard";
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';

@@ -325,7 +325,6 @@ export class ApiEditingSession implements IApiEditingSession {
 export class ApisService extends AbstractHubService {
 
     private cachedApis: Api[] = null;
-    private _user: User;
 
     /**
      * Constructor.
@@ -335,9 +334,6 @@ export class ApisService extends AbstractHubService {
      */
     constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
         super(http, authService, config);
-        authService.getAuthenticatedUser().subscribe( user => {
-            this._user = user;
-        });
     }
 
     /**
@@ -518,7 +514,7 @@ export class ApisService extends AbstractHubService {
     public openEditingSession(api: EditableApiDefinition): IApiEditingSession {
         let designId: string = api.id;
         let uuid: string = api.editingSessionUuid;
-        let user: string = this._user.login;
+        let user: string = this.user().login;
         let secret: string = this.authService.getAuthenticationSecret().substr(0, 64);
         let url = this.editingEndpoint("/designs/:designId?uuid=:uuid&user=:user&secret=:secret", {
             designId: designId,

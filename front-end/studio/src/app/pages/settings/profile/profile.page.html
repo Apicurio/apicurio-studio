@@ -16,22 +16,22 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-user"></span>
-                        <span>{{(user() | async).name }}</span>
+                        <span>{{ user().name }}</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
                     <div class="user-info">
                         <div>
                             <span class="user-info-label">Name:</span>
-                            <span>{{ (user() | async).name }}</span>
+                            <span>{{ user().name }}</span>
                         </div>
                         <div>
                             <span class="user-info-label">Login:</span>
-                            <span>{{ (user() | async).login }}</span>
+                            <span>{{ user().login }}</span>
                         </div>
                         <div>
                             <span class="user-info-label">Email:</span>
-                            <span>{{ (user() | async).email }}</span>
+                            <span>{{ user().email }}</span>
                         </div>
                     </div>
                 </div>

@@ -16,9 +16,7 @@
  */
 
 import {Component, EventEmitter, Inject, Output} from "@angular/core";
-import {User} from "../../../../models/user.model";
 import {IAuthenticationService} from "../../../../services/auth.service";
-import {NewApi} from "../../../../models/new-api.model";
 import {DropDownOption} from '../../../../components/common/drop-down.component';
 import {ApisService} from "../../../../services/apis.service";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
@@ -51,11 +49,6 @@ export class CreateApiFormComponent {
     creatingApi: boolean = false;
     error: string;
 
-    private _user: User;
-
-    public ngOnInit(): void {
-    }
-
     /**
      * Constructor.
      * @param apisService
@@ -68,10 +61,9 @@ export class CreateApiFormComponent {
                 private accountsService: LinkedAccountsService, private templateService: TemplateService)
     {
         this.creatingApi = false;
+    }
 
-        authService.getAuthenticatedUser().subscribe( user => {
-            this._user = user;
-        });
+    public ngOnInit(): void {
     }
 
     public typeOptions(): DropDownOption[] {

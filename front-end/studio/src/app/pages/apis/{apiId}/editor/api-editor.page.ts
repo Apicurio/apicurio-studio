@@ -22,17 +22,15 @@ import {ApisService, IApiEditingSession} from "../../../../services/apis.service
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {OtCommand} from "oai-ts-commands";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {Title} from "@angular/platform-browser";
-import {Subscription} from "rxjs/Subscription";
 import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
 import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
 import {ConfigService} from "../../../../services/config.service";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
+import {DispatchQueue} from "apicurio-ts-core";
 
 @Component({
     moduleId: module.id,
@@ -59,10 +57,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     ];
     private _activeCollaboratorColorsIdx: number = 0;
 
-    private pendingCommands: OtCommand[] = [];
-    private _pendingCommandsSubject: BehaviorSubject<OtCommand[]> = new BehaviorSubject([]);
-    private _pendingCommandsSubscription: Subscription;
-    private _pendingCommands: Observable<OtCommand[]> = this._pendingCommandsSubject.asObservable();
+    private pendingCommandQueue: DispatchQueue<OtCommand> = new DispatchQueue<OtCommand>();
 
     private currentEditorSelection: string;
 
@@ -212,13 +207,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     public ngAfterViewInit(): void {
         this._apiEditor.changes.subscribe( () => {
-            if (this._apiEditor.first && !this._pendingCommandsSubscription) {
+            if (this._apiEditor.first && !this.editorAvailable) {
                 this.editorAvailable = true;
-                this._pendingCommandsSubscription = this._pendingCommands.subscribe( commands => {
-                    this.pendingCommands = [];
-                    commands.forEach( command => {
-                        this._apiEditor.first.executeCommand(command);
-                    });
+                this.pendingCommandQueue.subscribe( command => {
+                    this._apiEditor.first.executeCommand(command);
                 });
             }
         });
@@ -283,8 +275,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param command
      */
     protected executeCommand(command: OtCommand): void {
-        this.pendingCommands.push(command);
-        this._pendingCommandsSubject.next(this.pendingCommands);
+        this.pendingCommandQueue.enqueue(command);
     }
 
     /**

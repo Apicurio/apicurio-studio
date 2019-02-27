@@ -35,7 +35,7 @@
     "oai-ts-commands": "0.2.61",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0",
-    "yamljs": "0.3.0",
+    "js-yaml": "3.12.2",
     "zone.js": "0.8.28"
   },
   "devDependencies": {
@@ -67,7 +67,7 @@
     "pluralize": "7.0.0",
     "ts-node": "~4.1.0",
     "typescript": "2.6.2",
-    "yamljs": "0.3.0",
+    "js-yaml": "3.12.2",
     "zone.js": "0.8.28"
   },
   "ngPackage": {

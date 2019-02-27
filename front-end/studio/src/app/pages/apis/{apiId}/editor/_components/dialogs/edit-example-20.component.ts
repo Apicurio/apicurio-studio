@@ -23,7 +23,7 @@ import {
     CodeEditorTheme
 } from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
-import * as YAML from "yamljs";
+import * as YAML from 'js-yaml';
 import {Oas20Schema, Oas30Example} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
 import {StringUtils} from "apicurio-ts-core";
@@ -167,7 +167,7 @@ export class EditExample20DialogComponent {
         } else {
             this.model.format = CodeEditorMode.YAML;
             try {
-                YAML.parse(value);
+                YAML.safeLoad(value);
                 this.model.valid = true;
             } catch (e) {}
         }

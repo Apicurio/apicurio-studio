@@ -17,7 +17,7 @@
 
 import {OasLibraryUtils, OasNode} from "oai-ts-core";
 
-import * as YAML from "yamljs";
+import * as YAML from 'js-yaml';
 import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {SelectionService} from "../../_services/selection.service";
@@ -67,7 +67,11 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
     get source() {
         if (this._sourceText === null || this._sourceText === undefined) {
             if (this._sourceFormat === CodeEditorMode.YAML) {
-                this._sourceText = YAML.stringify(this.sourceJs(), 100, 4);
+                this._sourceText = YAML.safeDump(this.sourceJs(), {
+                    indent: 4,
+                    lineWidth: 110,
+                    noRefs: true
+                });
             } else {
                 this._sourceText = JSON.stringify(this.sourceJs(), null, 4);
             }
@@ -84,7 +88,7 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
         try {
             let newJsObject: any;
             if (this._sourceFormat === CodeEditorMode.YAML) {
-                newJsObject = YAML.parse(newSource);
+                newJsObject = YAML.safeLoad(newSource);
             } else {
                 newJsObject = JSON.parse(newSource);
             }
@@ -133,7 +137,11 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
     public revertSource(): void {
         let originalSource: string;
         if (this._sourceFormat === CodeEditorMode.YAML) {
-            originalSource = YAML.stringify(this.sourceJs(), 100, 4);
+            originalSource = YAML.safeDump(this.sourceJs(), {
+                indent: 4,
+                lineWidth: 110,
+                noRefs: true
+            });
         } else {
             originalSource = JSON.stringify(this.sourceJs(), null, 4);
         }
@@ -169,7 +177,7 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
             parsedSource = JSON.parse(this._sourceText);
             this.setSourceFormat(CodeEditorMode.YAML);
         } else {
-            parsedSource = YAML.parse(this._sourceText);
+            parsedSource = YAML.safeLoad(this._sourceText);
             this.setSourceFormat(CodeEditorMode.JSON);
         }
         if (parsedSource) {
@@ -177,7 +185,11 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
             if (this.isSourceFormatJson()) {
                 newSource = JSON.stringify(parsedSource, null, 4);
             } else {
-                newSource = YAML.stringify(parsedSource, 100, 4);
+                newSource = YAML.safeDump(this.sourceJs(), {
+                    indent: 4,
+                    lineWidth: 110,
+                    noRefs: true
+                });
             }
             this.source = newSource;
         }
@@ -195,14 +207,18 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
         if (this.isSourceFormatJson()) {
             parsedSource = JSON.parse(this._sourceText);
         } else {
-            parsedSource = YAML.parse(this._sourceText);
+            parsedSource = YAML.safeLoad(this._sourceText);
         }
         if (parsedSource) {
             let newSource: string;
             if (this.isSourceFormatJson()) {
                 newSource = JSON.stringify(parsedSource, null, 4);
             } else {
-                newSource = YAML.stringify(parsedSource, 100, 4);
+                newSource = YAML.safeDump(this.sourceJs(), {
+                    indent: 4,
+                    lineWidth: 110,
+                    noRefs: true
+                });
             }
             this.source = newSource;
         }

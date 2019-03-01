@@ -106,7 +106,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
     /**
      * Gets the authenticated user.
      */
-    public user(): User {
+    user(): User {
         return this.authService.getAuthenticatedUserNow();
     }
 

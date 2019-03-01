@@ -13,7 +13,7 @@
     "start": "ng serve --port 8888 --aot",
     "debug": "ng serve --port 8888 --sourcemap -dev -v",
     "build": "ng build --prod",
-    "build-editor": "ng build editor && cp-cli README-npm.md dist/README.md"
+    "build-editor": "ng build editor && cp-cli README-npm.md dist-editor/README.md"
   },
   "private": false,
   "peerDependencies": {

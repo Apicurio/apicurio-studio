@@ -33,13 +33,13 @@ export class AddTagDialogComponent {
     @ViewChildren("addTagModal") addTagModal: QueryList<ModalDirective>;
     @ViewChildren("addTagInput") addTagInput: QueryList<ElementRef>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected tag: string = "";
-    protected description: string = "";
+    tag: string = "";
+    description: string = "";
 
-    protected tags: string[] = [];
-    protected tagExists: boolean = false;
+    tags: string[] = [];
+    tagExists: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -68,7 +68,7 @@ export class AddTagDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
         this.tag = "";
         this.description = "";
@@ -77,7 +77,7 @@ export class AddTagDialogComponent {
     /**
      * Called when the user clicks "add".
      */
-    protected add(): void {
+    add(): void {
         let tagInfo: any = {
             name: this.tag,
             description: this.description
@@ -89,7 +89,7 @@ export class AddTagDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.addTagModal.first.hide();
     }
 
@@ -97,14 +97,14 @@ export class AddTagDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
      * Called to initialize the selection/focus to the addTagInput field.
      */
-    public doSelect(): void {
+    doSelect(): void {
         this.addTagInput.first.nativeElement.focus();
     }
 

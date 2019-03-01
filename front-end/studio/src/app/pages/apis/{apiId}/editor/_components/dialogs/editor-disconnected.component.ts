@@ -29,7 +29,7 @@ export class EditorDisconnectedDialogComponent {
 
     @ViewChildren("editorDisconnectedModal") editorDisconnectedModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -46,14 +46,14 @@ export class EditorDisconnectedDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "Reload Page".
      */
-    protected reload(): void {
+    reload(): void {
         window.location.reload();
     }
 
@@ -61,7 +61,7 @@ export class EditorDisconnectedDialogComponent {
      * Returns true if the dialog is open.
      * 
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 

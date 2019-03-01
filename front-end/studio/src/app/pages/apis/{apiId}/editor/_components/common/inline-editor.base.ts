@@ -133,7 +133,7 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
         super(selectionService);
     }
 
-    protected displayValue(): string {
+    displayValue(): string {
         if (this.isEmpty()) {
             return this.noValueMessage;
         }
@@ -142,7 +142,7 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
 
     protected abstract formatValue(value: T): string;
 
-    protected isEmpty(): boolean {
+    isEmpty(): boolean {
         return this.value === undefined || this.value === null;
     }
 
@@ -173,7 +173,7 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         });
     }
 
-    protected isEmpty(): boolean {
+    isEmpty(): boolean {
         return super.isEmpty() || this.value.length === 0;
     }
 

@@ -32,7 +32,7 @@ export class SetLicenseDialogComponent {
 
     @ViewChildren("setLicenseModal") setLicenseModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
     constructor(public licenseService: LicenseService, protected selectionService: SelectionService) {}
 
@@ -52,22 +52,14 @@ export class SetLicenseDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
-    }
-
-    /**
-     * Called when the user clicks "add".
-     */
-    protected setLicense(): void {
-        this.onLicenseChosen.emit({});
-        this.cancel();
     }
 
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.setLicenseModal.first.hide();
     }
 
@@ -75,14 +67,14 @@ export class SetLicenseDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
      * Returns a list of possible licenses.
      */
-    public licenses(): ILicense[] {
+    licenses(): ILicense[] {
         return this.licenseService.getLicenses();
     }
 
@@ -90,7 +82,7 @@ export class SetLicenseDialogComponent {
      * Called when the user picks a license.
      * @param license
      */
-    public chooseLicense(license: ILicense): void {
+    chooseLicense(license: ILicense): void {
         this.onLicenseChosen.emit({
             name: license.name,
             url: license.url

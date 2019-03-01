@@ -6,10 +6,12 @@ update-apicurito.sh
 
 # compiled output
 /dist
+/dist-app
 /dist-server
 /tmp
 /out-tsc
 /dist.tgz
+/dist-app.tgz
 
 # dependencies
 /node_modules

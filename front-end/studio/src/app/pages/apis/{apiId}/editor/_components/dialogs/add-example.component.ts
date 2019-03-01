@@ -43,9 +43,9 @@ export class AddExampleDialogComponent {
     @ViewChildren("addExampleModal") addExampleModal: QueryList<ModalDirective>;
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected model: any = {
+    model: any = {
         name: null,
         value: null,
         format: CodeEditorMode.JSON,
@@ -99,14 +99,14 @@ export class AddExampleDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "add".
      */
-    protected add(): void {
+    add(): void {
         let event: any = {
             name: this.model.name,
             value: this.model.value
@@ -126,7 +126,7 @@ export class AddExampleDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.addExampleModal.first.hide();
     }
 
@@ -134,27 +134,27 @@ export class AddExampleDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
-    public valueEditorTheme(): CodeEditorTheme {
+    valueEditorTheme(): CodeEditorTheme {
         return CodeEditorTheme.Light;
     }
 
-    public valueEditorMode(): CodeEditorMode {
+    valueEditorMode(): CodeEditorMode {
         return this.model.format;
     }
 
-    public hasValue(): boolean {
+    hasValue(): boolean {
         return !ObjectUtils.isNullOrUndefined(this.model.value);
     }
 
-    public canGenerateExample(): boolean {
+    canGenerateExample(): boolean {
         return this.schema !== null && this.schema !== undefined;
     }
 
-    public generate(): void {
+    generate(): void {
         let example: any = ModelUtils.generateExampleFromSchema(this.schema);
         let exampleStr: string = JSON.stringify(example, null, 4);
         this.codeEditor.first.setText(exampleStr);

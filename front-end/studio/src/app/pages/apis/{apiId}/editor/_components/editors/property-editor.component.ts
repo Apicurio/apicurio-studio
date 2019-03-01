@@ -54,8 +54,8 @@ export interface IPropertyEditorHandler extends IEntityEditorHandler<Oas20Proper
 })
 export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | Oas30PropertySchema, PropertyEditorEvent> {
 
-    protected props: string[] = [];
-    protected propExists: boolean = false;
+    props: string[] = [];
+    propExists: boolean = false;
 
     public model: PropertyData;
 

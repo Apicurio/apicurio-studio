@@ -45,13 +45,13 @@ export class RenameEntityDialogComponent {
 
     @ViewChildren("renameEntityModal") renameEntityModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected entity: OasNode;
-    protected originalName: string;
-    protected newName: string;
-    protected checkExistence: (name: string) => boolean;
-    protected _alreadyExists: boolean;
+    private entity: OasNode;
+    originalName: string;
+    newName: string;
+    private checkExistence: (name: string) => boolean;
+    _alreadyExists: boolean;
 
     /**
      * Called to open the dialog.
@@ -77,14 +77,14 @@ export class RenameEntityDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "rename".
      */
-    protected rename(): void {
+    rename(): void {
         let event: RenameEntityEvent = {
             entity: this.entity,
             newName: this.newName
@@ -96,7 +96,7 @@ export class RenameEntityDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.renameEntityModal.first.hide();
     }
 
@@ -104,7 +104,7 @@ export class RenameEntityDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
@@ -112,21 +112,21 @@ export class RenameEntityDialogComponent {
      * Called to validate the new (potential) name.
      * @param name
      */
-    public validateName(name: string): void {
+    validateName(name: string): void {
         this._alreadyExists = this.checkExistence(name);
     }
 
     /**
      * Returns true if the warning message should be displayed.
      */
-    public shouldShowWarning(): boolean {
+    shouldShowWarning(): boolean {
         return this.warning !== null && this.warning !== undefined;
     }
 
     /**
      * Returns true if the message should be displayed.
      */
-    public shouldShowMessage(): boolean {
+    shouldShowMessage(): boolean {
         return this.message !== null && this.message !== undefined;
     }
 

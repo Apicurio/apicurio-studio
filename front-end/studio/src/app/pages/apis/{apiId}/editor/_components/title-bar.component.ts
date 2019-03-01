@@ -160,7 +160,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
      * Called when the user clicks somewhere in the document.  Used to close the context
      * menu if it is open.
      */
-    @HostListener("document:click", ["$event"])
+    @HostListener("document:click", [])
     public onDocumentClick(): void {
     }
 

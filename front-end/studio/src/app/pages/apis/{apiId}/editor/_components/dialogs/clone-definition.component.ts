@@ -32,13 +32,13 @@ export class CloneDefinitionDialogComponent {
 
     @ViewChildren("cloneDefinitionModal") cloneDefinitionModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected name: string = "";
-    protected definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
+    name: string = "";
+    private definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    protected defs: string[] = [];
-    protected defExists: boolean = false;
+    defs: string[] = [];
+    defExists: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -77,14 +77,14 @@ export class CloneDefinitionDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "clone".
      */
-    protected clone(): void {
+    clone(): void {
         let data: any = {
             name: this.name,
             definition: this.definition
@@ -96,7 +96,7 @@ export class CloneDefinitionDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.cloneDefinitionModal.first.hide();
     }
 
@@ -104,7 +104,7 @@ export class CloneDefinitionDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 

@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist-app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -73,6 +73,21 @@
             "production": {
               "browserTarget": "studio:build:production"
             }
+          }
+        }
+      }
+    },
+    "editor": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "library",
+      "prefix": "editor",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "src/tsconfig.editor.json",
+            "project": "ng-package.json"
           }
         }
       }

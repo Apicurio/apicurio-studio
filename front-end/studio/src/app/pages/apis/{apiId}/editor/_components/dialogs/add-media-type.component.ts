@@ -36,11 +36,11 @@ export class AddMediaTypeDialogComponent {
 
     @ViewChildren("addMediaTypeModal") addMediaTypeModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
-    protected _typeOptions: DropDownOption[];
+    private _isOpen: boolean = false;
+    private _typeOptions: DropDownOption[];
 
-    protected mediaType: string = "";
-    protected customType: string = "";
+    mediaType: string = "";
+    customType: string = "";
 
     /**
      * Called to open the dialog.
@@ -90,14 +90,14 @@ export class AddMediaTypeDialogComponent {
         })
     }
 
-    public mediaTypeOptions(): DropDownOption[] {
+    mediaTypeOptions(): DropDownOption[] {
         return this._typeOptions;
     }
 
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
         this.mediaType = "";
     }
@@ -105,7 +105,7 @@ export class AddMediaTypeDialogComponent {
     /**
      * Called when the user clicks "add".
      */
-    protected add(): void {
+    add(): void {
         let mt: string = this.mediaType;
         if (mt === 'custom') {
             mt = this.customType;
@@ -118,7 +118,7 @@ export class AddMediaTypeDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.addMediaTypeModal.first.hide();
     }
 
@@ -126,7 +126,7 @@ export class AddMediaTypeDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 

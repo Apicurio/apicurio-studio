@@ -32,13 +32,13 @@ export class ClonePathDialogComponent {
     @ViewChildren("clonePathModal") clonePathModal: QueryList<ModalDirective>;
     @ViewChildren("clonePathInput") clonePathInput: QueryList<ElementRef>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected path: string = "";
-    protected object: OasPathItem;
+    path: string = "";
+    object: OasPathItem;
 
-    protected paths: string[] = [];
-    protected pathExists: boolean = false;
+    paths: string[] = [];
+    pathExists: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -70,7 +70,7 @@ export class ClonePathDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
         this.path = "";
     }
@@ -78,7 +78,7 @@ export class ClonePathDialogComponent {
     /**
      * Called when the user clicks "clone".
      */
-    protected clone(): void {
+    clone(): void {
         let modalData: any = {
             path: this.path,
             object: this.object
@@ -90,7 +90,7 @@ export class ClonePathDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.clonePathModal.first.hide();
     }
 
@@ -98,14 +98,14 @@ export class ClonePathDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
      * Called to initialize the selection/focus to the clonePathInput field.
      */
-    public doSelect(): void {
+    doSelect(): void {
         this.clonePathInput.first.nativeElement.focus();
         this.clonePathInput.first.nativeElement.selectionStart = this.clonePathInput.first.nativeElement.selectionEnd = this.path.length
     }

@@ -92,7 +92,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
         }
     }
 
-    protected isEmpty(): boolean {
+    isEmpty(): boolean {
         return this.value === undefined || this.value === null || this.value.length === 0;
     }
 

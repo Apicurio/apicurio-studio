@@ -47,11 +47,11 @@ export interface IParameterEditorHandler extends IEntityEditorHandler<Oas20Param
 })
 export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas30Parameter, ParameterEditorEvent> {
 
-    protected params: string[] = [];
-    protected paramExists: boolean = false;
+    params: string[] = [];
+    paramExists: boolean = false;
 
-    public model: ParameterData;
-    public _paramType: string = "query";
+    model: ParameterData;
+    _paramType: string = "query";
 
     public setParamType(paramType: string): void {
         this._paramType = paramType;

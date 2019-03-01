@@ -119,6 +119,7 @@ export class ObjectUtils {
 
 }
 
+// @dynamic
 export class HttpUtils {
 
     public static parseLinkHeader(header: string): any {

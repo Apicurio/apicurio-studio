@@ -31,12 +31,12 @@ export class AddPathDialogComponent {
     @ViewChildren("addPathModal") addPathModal: QueryList<ModalDirective>;
     @ViewChildren("addPathInput") addPathInput: QueryList<ElementRef>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected path: string = "";
+    path: string = "";
 
-    protected paths: string[] = [];
-    protected pathExists: boolean = false;
+    paths: string[] = [];
+    pathExists: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -70,7 +70,7 @@ export class AddPathDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
         this.path = "";
     }
@@ -78,7 +78,7 @@ export class AddPathDialogComponent {
     /**
      * Called when the user clicks "add".
      */
-    protected add(): void {
+    add(): void {
         this.onAdd.emit(this.path);
         this.cancel();
     }
@@ -86,7 +86,7 @@ export class AddPathDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.addPathModal.first.hide();
     }
 
@@ -94,14 +94,14 @@ export class AddPathDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
      * Called to initialize the selection/focus to the addPathInput field.
      */
-    public doSelect(): void {
+    doSelect(): void {
         this.addPathInput.first.nativeElement.focus();
         this.addPathInput.first.nativeElement.selectionStart = this.addPathInput.first.nativeElement.selectionEnd = this.path.length
     }

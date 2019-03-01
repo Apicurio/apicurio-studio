@@ -65,7 +65,7 @@
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/dist</directory>
+                                    <directory>${basedir}/dist-app</directory>
                                     <filtering>false</filtering>
                                     <excludes>
                                         <exclude>config.js</exclude>

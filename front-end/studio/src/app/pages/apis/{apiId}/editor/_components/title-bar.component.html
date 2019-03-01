@@ -9,7 +9,7 @@
     <validation-icon [validationErrors]="validationErrors" (onClick)="toggleProblemDrawer()"></validation-icon>
 </div>
 <!-- Edit Mode -->
-<div class="editor-title-bar editing {{ mainClasses() }} {{ collaboratorSelectionClasses }}" *ngIf="editMode" >
+<div class="editor-title-bar editing {{ mainClasses() }}" *ngIf="editMode" >
     <form #editform="ngForm" name="title-edit-form" class="title-editor-form" (submit)="save()">
         <input #newtitle required [(ngModel)]="newTitle" type="text" class="form-control title-editor-input"
                name="title-input" autocomplete="off" required (keypress)="onInputKeypress($event)">

@@ -33,15 +33,15 @@ export class RenamePathDialogComponent {
 
     @ViewChildren("renamePathModal") renamePathModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected name: string = "";
-    protected path: Oas20PathItem | Oas30PathItem;
-    protected alsoSubpaths: boolean;
+    name: string = "";
+    path: Oas20PathItem | Oas30PathItem;
+    alsoSubpaths: boolean;
 
-    protected paths: string[] = [];
-    protected pathExists: boolean = false;
-    protected numSubpaths: number = 0;
+    paths: string[] = [];
+    pathExists: boolean = false;
+    numSubpaths: number = 0;
 
     /**
      * Called to open the dialog.
@@ -87,14 +87,14 @@ export class RenamePathDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "rename".
      */
-    protected rename(): void {
+    rename(): void {
         let data: any = {
             name: this.name,
             path: this.path,
@@ -107,14 +107,14 @@ export class RenamePathDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.renamePathModal.first.hide();
     }
 
     /**
      * Returns true if the dialog is open.
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 

@@ -20,6 +20,7 @@ import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Topic} from "apicurio-ts-core";
+import {HttpUtils} from "../util/common";
 
 /**
  * A version of the authentication service that uses token information passed to it
@@ -128,11 +129,10 @@ export class TokenAuthenticationService extends IAuthenticationService {
 
         console.info("[TokenAuthenticationService] Refreshing auth token: %s", url);
 
-        this.http.get(url, options).map( event => {
-            let response: HttpResponse<any> = <any>event as HttpResponse<any>;
+        HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(url, options).toPromise(), response => {
             let auth: any = response.body;
             return auth;
-        }).toPromise().then( auth => {
+        }).then( auth => {
             this.accessToken = auth.token;
             let refreshPeriod: number = auth.tokenRefreshPeriod;
             if (refreshPeriod) {

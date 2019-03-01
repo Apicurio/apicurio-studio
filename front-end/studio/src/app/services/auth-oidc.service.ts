@@ -20,6 +20,7 @@ import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Topic} from "apicurio-ts-core";
+import {HttpUtils} from "../util/common";
 
 
 export class OIDCDirectGrantAccessToken {
@@ -95,14 +96,13 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
 
         console.info("[OIDCDirectGrantAuthenticationService] Getting an access token from: %s", authTokenUrl);
 
-        return this.http.post(authTokenUrl, body, options).map( event => {
-            let response: HttpResponse<OIDCDirectGrantAccessToken> = <any>event as HttpResponse<OIDCDirectGrantAccessToken>;
+        return HttpUtils.mappedPromise(this.http.post<HttpResponse<any>>(authTokenUrl, body, options).toPromise(), response => {
             console.info("[OIDCDirectGrantAuthenticationService] Received access token.");
             let token: OIDCDirectGrantAccessToken = response.body;
             this.accessToken = token;
             let user: User = this.toUser(token);
             return user;
-        }).toPromise().then( user => {
+        }).then( user => {
             this._authenticated.send(true);
             this._user = user;
             return Promise.resolve<User>(user);

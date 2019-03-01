@@ -27,7 +27,7 @@ import {ApiEditorUser} from "../models/editor-user.model";
 import {ApiDesignChange} from "../models/api-design-change.model";
 import {AbstractHubService} from "./hub";
 import {PublishApi} from "../models/publish-api.model";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {OasLibraryUtils} from "oai-ts-core";
@@ -39,6 +39,7 @@ import {Injectable} from "@angular/core";
 import {ApiPublication} from "../models/api-publication.model";
 import {UpdateCollaborator} from "../models/update-collaborator.model";
 import {ApiMock, MockReference} from "../models/mock-api.model";
+import {HttpUtils} from "../util/common";
 
 
 export interface IConnectionHandler {
@@ -486,8 +487,7 @@ export class ApisService extends AbstractHubService {
 
             console.info("[ApisService] Editing API Design: %s", editApiUrl);
             options["observe"] = "response";
-            return this.http.get(editApiUrl, options).map( event => {
-                let response: HttpResponse<any> = <any>event as HttpResponse<any>;
+            return HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(editApiUrl, options).toPromise(), response => {
                 let openApiSpec: any = response.body;
                 let rheaders: HttpHeaders = response.headers;
                 let editingSessionUuid: string = rheaders.get("X-Apicurio-EditingSessionUuid");
@@ -502,7 +502,7 @@ export class ApisService extends AbstractHubService {
                 def.contentVersion = parseInt(contentVersion);
 
                 return def;
-            }).toPromise();
+            });
         }, error => {
             return Promise.reject(error);
         });
@@ -542,13 +542,12 @@ export class ApisService extends AbstractHubService {
             let options: any = this.options({ "Accept": "application/json" });
             console.info("[ApisService] Getting API Design content: %s", getContentUrl);
             options["observe"] = "response";
-            return this.http.get<any>(getContentUrl, options).map( event => {
-                let response: HttpResponse<any> = <any>event as HttpResponse<any>;
+            return HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(getContentUrl, options).toPromise(), response => {
                 let openApiSpec: any = response.body;
                 let apiDef: ApiDefinition = ApiDefinition.fromApi(api);
                 apiDef.spec = openApiSpec;
                 return apiDef;
-            }).toPromise();
+            });
         });
     }
 
@@ -563,8 +562,7 @@ export class ApisService extends AbstractHubService {
 
         console.info("[ApisService] Getting contributors: %s", contributorsUrl);
         options["observe"] = "response";
-        return this.http.get<any[]>(contributorsUrl, options).map( event => {
-            let response: HttpResponse<any[]> = <any>event as HttpResponse<any[]>;
+        return HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(contributorsUrl, options).toPromise(), response => {
             let items: any[] = response.body;
             let rval: ApiContributors = new ApiContributors();
             rval.contributors = [];
@@ -579,7 +577,7 @@ export class ApisService extends AbstractHubService {
                 rval.totalEdits += edits;
             });
             return rval;
-        }).toPromise();
+        });
     }
 
     /**
@@ -798,5 +796,4 @@ export class ApisService extends AbstractHubService {
         console.info("[ApisService] Fetching API publications: %s", getPublicationsUrl);
         return this.httpGet<ApiPublication[]>(getPublicationsUrl, options);
     }
-
 }

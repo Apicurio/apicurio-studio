@@ -17,6 +17,7 @@
                         <div class="col-sm-9">
                             <drop-down id="mt" [id]="'api-mediaType'" [value]="mediaType" [options]="mediaTypeOptions()"
                                        (onValueChange)="mediaType = $event" noSelectionLabel="Choose Media Type"></drop-down>
+                            <div class="form-error-message error" *ngIf="isMediaTypeAlreadyAdded() && mediaType !== 'custom'">Selected media type already exists.</div>
                         </div>
                     </div>
                     <div class="form-group" *ngIf="mediaType === 'custom'">
@@ -26,13 +27,14 @@
                                    placeholder="Enter a custom Media Type"
                                    required [(ngModel)]="customType" #mtype="ngModel">
                             <form-error-message [inputModel]="mtype" [type]="'required'">Custom media type is required.</form-error-message>
+                            <div class="form-error-message error" *ngIf="isMediaTypeAlreadyAdded()">Selected media type already exists.</div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addMediaTypeForm.form.valid">Add</button>
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addMediaTypeForm.form.valid || !isValid()">Add</button>
                 <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
             </div>
         </div>

@@ -88,7 +88,7 @@
         <version.surefire-report.plugin>2.22.1</version.surefire-report.plugin>
         <version.war.plugin>3.2.2</version.war.plugin>
         <version.frontend-maven.plugin>1.7.5</version.frontend-maven.plugin>
-        <version.scala-maven.plugin>3.4.6</version.scala-maven.plugin>
+        <version.scala-maven.plugin>4.0.0</version.scala-maven.plugin>
 
         <!-- Dependency Versions -->
         <version.com.fasterxml.jackson>2.9.8</version.com.fasterxml.jackson>

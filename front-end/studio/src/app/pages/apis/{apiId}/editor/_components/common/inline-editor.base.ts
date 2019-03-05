@@ -25,9 +25,25 @@ import {KeypressUtils} from "../../_util/keypress.util";
 /**
  * Base class for all inline editors.
  */
-export abstract class AbstractInlineEditor<T> {
+export abstract class AbstractInlineEditor {
 
-    static s_activeEditor: any = null;
+
+    static s_activeEditor: any = null; // TODO move
+}
+
+/**
+ * Base class for any inline editor that edits a single value of an arbitrary type.
+ *
+ * @template T type of the internal value being edited
+ *             (derived from the "evalue")
+ * @template EV type of the value for visual representation in the active editor,
+ *              (user actally edits this)
+ */
+export abstract class AbstractInlineValueEditor<T, EV> extends AbstractInlineEditor {
+
+    @Input() value: T;
+    @Input() noValueMessage: string;
+
 
     @Input() enabled = true;
     @Input() labelClass = "";
@@ -43,17 +59,16 @@ export abstract class AbstractInlineEditor<T> {
 
     public inputFocus: boolean = false;
 
-    public evalue: T;
+    /**
+     * Current value in the edit area
+     */
+    public evalue: EV;
 
-    protected constructor(protected selectionService: SelectionService) {}
+    protected constructor(protected selectionService: SelectionService) {
+        super()
+    }
 
-    public onStartEditing(): void {
-        if (!this.enabled) {
-            return;
-        }
-
-        // If the baseNode and/or nodePath are set, then we want to fire a selection event
-        // whenever the user starts editing.
+    private fireSelectionEvent(): void {
         if (this.nodePath || this.baseNode) {
             let path: string = "";
             if (this.baseNode) {
@@ -67,34 +82,53 @@ export abstract class AbstractInlineEditor<T> {
             }
             this.selectionService.simpleSelect(path);
         }
+    }
 
-        this.evalue = this.initialValueForEditing();
-        this.inputFocus = true;
-        this.editing = true;
-
+    private ensureSingleActiveEditor(): void {
         if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
             AbstractInlineEditor.s_activeEditor.onCancel();
         }
         AbstractInlineEditor.s_activeEditor = this;
     }
 
-    protected abstract initialValueForEditing(): T;
+    public onStartEditing(): void {
+        if (!this.enabled) { // TODO support overriding
+            return;
+        }
+
+        // If the baseNode and/or nodePath are set, then we want to fire a selection event
+        // whenever the user starts editing.
+        this.fireSelectionEvent()
+
+        this.evalue = this.valueToEditorValue(this.value);
+        this.inputFocus = true;
+        this.editing = true;
+
+        this.ensureSingleActiveEditor()
+    }
+
 
     public onSave(): void {
-        let value: T = this.getValueForSave();
-        this.onChange.emit(value);
+        this.value = this.editorValueToValue(this.evalue)
+        this.onChange.emit(this.value);
         this.editing = false;
-        AbstractInlineEditor.s_activeEditor = this;
+        AbstractInlineEditor.s_activeEditor = null;
     }
 
-    protected getValueForSave(): T {
-        return this.evalue;
-    }
+    /**
+     * Transform the internal value to something user can edit,
+     * usually a string.
+     */
+    protected abstract valueToEditorValue(value: T): EV;
+
+    /**
+     * Transform edited value into the internal representation.
+     */
+    protected abstract editorValueToValue(editorValue: EV): T;
 
     public onCancel(): void {
         this.editing = false;
-        AbstractInlineEditor.s_activeEditor = this;
-        this.evalue = this.initialValueForEditing();
+        AbstractInlineEditor.s_activeEditor = null;
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
@@ -104,9 +138,7 @@ export abstract class AbstractInlineEditor<T> {
     }
 
     public onInputFocus(isFocus: boolean): void {
-        if (this.inputFocus !== isFocus) {
-            this.inputFocus = isFocus;
-        }
+        this.inputFocus = isFocus;
     }
 
     protected isEscapeKey(event: KeyboardEvent): boolean {
@@ -117,46 +149,16 @@ export abstract class AbstractInlineEditor<T> {
         return KeypressUtils.isEnterKey(event);
     }
 
-}
-
-
-
-/**
- * Base class for any inline editor that edits a single value of an arbitrary type.
- */
-export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<T> {
-
-    @Input() value: T;
-    @Input() noValueMessage: string;
-
-    protected constructor(selectionService: SelectionService) {
-        super(selectionService);
-    }
-
-    protected displayValue(): string {
-        if (this.isEmpty()) {
-            return this.noValueMessage;
-        }
-        return this.formatValue(this.value);
-    }
-
-    protected abstract formatValue(value: T): string;
-
     protected isEmpty(): boolean {
         return this.value === undefined || this.value === null;
     }
-
-    protected initialValueForEditing(): T {
-        return this.value;
-    }
-
 }
 
 /**
  * Base class for any inline editor that is built on a single text input element.  The template
  * must include an 'input' element named #newvalue.
  */
-export abstract class TextInputEditorComponent extends AbstractInlineValueEditor<string> implements AfterViewInit {
+export abstract class TextInputEditorComponent extends AbstractInlineValueEditor<string, string> implements AfterViewInit {
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
@@ -177,11 +179,19 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         return super.isEmpty() || this.value.length === 0;
     }
 
+    protected displayValue(): string {
+        if (this.isEmpty()) {
+            return this.noValueMessage;
+        }
+        return this.formatValue(this.value);
+    }
+
     protected formatValue(value: string): string {
         return value;
     }
 
-    protected getValueForSave(): string {
+    // override
+    protected editorValueToValue(editorValue: string): string {
         let val: string = this.evalue;
         if (val) {
             val = val.trim();
@@ -190,6 +200,11 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
             val = null;
         }
         return val;
+    }
+
+    // overide
+    protected valueToEditorValue(value: string): string {
+        return value;
     }
 
 }

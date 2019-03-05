@@ -26,7 +26,7 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {AbstractInlineEditor} from "./inline-editor.base";
+import {AbstractInlineEditor, AbstractInlineValueEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
@@ -42,28 +42,31 @@ import {KeypressUtils} from "../../_util/keypress.util";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InlineArrayEditorComponent extends AbstractBaseComponent implements AfterViewInit {
+export class InlineArrayEditorComponent extends AbstractInlineValueEditor<string[], string> implements AfterViewInit {
 
-    @Input() value: string[];
-    @Input() noValueMessage: string;
+    /**
+     * Source of predefined items
+     */
     @Input() items: string[] | (()=>string[]);
-    @Input() baseNode: OasNode;
-    @Input() nodePath: string;
 
-    @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() onClose: EventEmitter<void> = new EventEmitter<void>();
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
-    public editing: boolean = false;
-    public evalue: string;
-    public evalues: {};
+
+     /**
+      * A map from predefined items to booleans,
+      * the value is true if the predefined item has been selected,
+      * so it can be excluded from the evalue.
+      */
+    public evalues: object = {};
+
 
     public firstEnter: boolean;
 
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
                 selectionService: SelectionService) {
-        super(changeDetectorRef, documentService, selectionService);
+        super(/*changeDetectorRef, documentService, */selectionService);
     }
 
     ngAfterViewInit(): void {
@@ -84,81 +87,24 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (KeypressUtils.isEscapeKey(event)) {
-            this.onCancel();
-        }
+        super.onInputKeypress(event)
         if (KeypressUtils.isEnterKey(event)) {
             this.onSave();
         }
     }
 
     protected isEmpty(): boolean {
-        return this.value === undefined || this.value === null || this.value.length === 0;
+        return super.isEmpty() || this.value.length === 0;
     }
 
     public onStartEditing(): void {
+        super.onStartEditing()
         this.firstEnter = true;
-        if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
-            AbstractInlineEditor.s_activeEditor.onCancel();
-        }
-        AbstractInlineEditor.s_activeEditor = this;
-
-        this.editing = true;
-        if (this.isEmpty()) {
-            this.evalue = "";
-            this.evalues = [];
-        } else {
-            this.evalue = this.adHocValues().join(", ");
-            this.evalues = this.aprioriValues();
-        }
-
-        // If the baseNode and/or nodePath are set, then we want to fire a selection event
-        // whenever the user starts editing.
-        if (this.nodePath || this.baseNode) {
-            let path: string = "";
-            if (this.baseNode) {
-                path = ModelUtils.nodeToPath(this.baseNode);
-            }
-            if (this.nodePath) {
-                if (!this.nodePath.startsWith("/")) {
-                    path += "/";
-                }
-                path += this.nodePath;
-            }
-            this.__selectionService.simpleSelect(path);
-        }
     }
 
-    private adHocValues(): string[] {
-        if (this.value && this.value.length > 0) {
-            let rval: string[] = [];
-            this.value.forEach( value => {
-                if ( (this.items === null || this.items === undefined) ||
-                     (this.items && this.getItems().indexOf(value) === -1)) {
-                    rval.push(value);
-                }
-            });
-            return rval;
-        } else {
-            return [];
-        }
-    }
 
-    private aprioriValues(): any {
-        if (this.value && this.value.length > 0) {
-            let rval: any = {};
-            this.value.forEach( value => {
-                if (this.items && this.getItems().indexOf(value) !== -1) {
-                    rval[value] = true;
-                }
-            });
-            return rval;
-        } else {
-            return {};
-        }
-    }
-
-    public onSave(): void {
+    // override
+    protected editorValueToValue(editorValue: string): string[] {
         let result: any = {};
         if (this.evalue && this.evalue.length > 0) {
             this.evalue.split(/[ ,]+/).forEach( val => result[val] = true);
@@ -170,10 +116,33 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
                 }
             });
         }
+        return Object.keys(result);
+    }
 
-        let newValue: string[] = Object.keys(result);
-        this.onChange.emit(newValue);
-        this.editing = false;
+    // override
+    protected valueToEditorValue(value: string[]): string {
+        if (this.value && this.value.length > 0) {
+            let rval: any = {};
+            this.value.forEach( value => {
+                if (this.items && this.getItems().indexOf(value) !== -1) { // if the itemin values is also in apriori
+                    rval[value] = true;
+                }
+            });
+            this.evalues = rval;
+        } else {
+            this.evalues = {};
+        }
+        if (this.value && this.value.length > 0) {
+            let rval: string[] = [];
+            this.value.forEach( value => {
+                if ((this.items && this.getItems().indexOf(value) === -1)) {
+                    rval.push(value);
+                }
+            });
+            return rval.join(", ");
+        } else {
+            return "";
+        }
     }
 
     public removeItem(item: string): void {
@@ -184,7 +153,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     }
 
     public onCancel(): void {
-        this.editing = false;
+        super.onCancel()
         this.onClose.emit();
     }
 
@@ -199,6 +168,9 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
         return this.items && this.getItems().length > 0;
     }
 
+    /**
+     * Is the argument a selected predefined item?
+     */
     public hasItem(item: string): boolean {
         return this.evalues && this.evalues[item];
     }

@@ -34,9 +34,8 @@ export class PfInlineTextEditorComponent extends TextInputEditorComponent {
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
-        if (KeypressUtils.isEscapeKey(event)) {
-            this.onCancel();
-        }
+        super.onInputKeypress(event);
+
         if (KeypressUtils.isEnterKey(event)) {
             this.onSave();
         }

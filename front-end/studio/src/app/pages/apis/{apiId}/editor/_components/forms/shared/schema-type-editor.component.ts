@@ -43,14 +43,26 @@ import {ObjectUtils} from "apicurio-ts-core";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
+/**
+ * Component to select a "SimplifiedType" value
+ */
 export class SchemaTypeEditorComponent extends AbstractBaseComponent {
-    
+
     @Input() document: OasDocument;
     @Input() value: SimplifiedType;
     @Input() typeLabel: string = "Type";
     @Input() validationModel: OasNode;
     @Input() validationProperty: string;
+
+    /**
+     * Is the component being used in "data type" definition?
+     * i.e. should the dropdown contain references to data type schemas?
+     */
     @Input() isParameter: boolean = false;
+
+    /**
+     * Emit the value when it is updated
+     */
     @Output() onChange: EventEmitter<SimplifiedType> = new EventEmitter<SimplifiedType>();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
@@ -72,6 +84,9 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         return null;
     }
 
+    /**
+     * Main options
+     */
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
             { value: "array", name: "Array" },
@@ -83,25 +98,13 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
             { value: "number", name: "Number" }
         ];
 
+        /**
+         * Add schema definitions to the dropdown menu
+         */
         if (!this.isParameter) {
-            let refPrefix: string = "#/components/schemas/";
-            if (this.document.is2xDocument()) {
-                refPrefix = "#/definitions/";
-            }
-
-            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document, viz);
-            let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
-            if (defs.length > 0) {
-                options.push({divider: true});
-                defs.forEach(def => {
-                    let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
-                    options.push({
-                        value: refPrefix + defName,
-                        name: defName
-                    });
-                });
-            }
+            options = [...options, ...this.getSchemaDefinitionsOptions()]
+        } else if(this.document.is2xDocument()) {
+            options = [...options, { divider: true }, { value: "file", name: "File" }]
         }
 
         return options;
@@ -114,6 +117,10 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         return null;
     }
 
+    /**
+     * Additional options when e.g. an array is selected,
+     * to choose the type of the array elements
+     */
     public typeOfOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
             { value: "string", name: "String" },
@@ -123,26 +130,35 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         ];
 
         if (!this.isParameter) {
-            let refPrefix: string = "#/components/schemas/";
-            if (this.document.is2xDocument()) {
-                refPrefix = "#/definitions/";
-            }
+            options = [...options, ...this.getSchemaDefinitionsOptions()]
+        }
+        return options;
+    }
 
-            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document, viz);
-            let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
-            if (defs.length > 0) {
-                options.push({divider: true});
-                defs.forEach(def => {
-                    let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
-                    options.push({
-                        value: refPrefix + defName,
-                        name: defName
-                    });
-                });
-            }
+    /**
+     * Get additional options, when reference to "schema definition data type"
+     * can be used
+     */
+    private getSchemaDefinitionsOptions(): DropDownOption[] {
+        let options: DropDownOption[] = [];
+        let refPrefix: string = "#/components/schemas/";
+        if (this.document.is2xDocument()) {
+            refPrefix = "#/definitions/";
         }
 
+        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        OasVisitorUtil.visitTree(this.document, viz);
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        if (defs.length > 0) {
+            options.push({divider: true});
+            defs.forEach(def => {
+                let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                options.push({
+                    value: refPrefix + defName,
+                    name: defName
+                });
+            });
+        }
         return options;
     }
 
@@ -156,9 +172,16 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         if (this.value.isSimpleType()) {
             return ObjectUtils.undefinedAsNull(this.value.as);
         }
+        if (this.value.isFileType()) {
+            return ObjectUtils.undefinedAsNull(this.value);
+        }
         return null;
     }
 
+    /**
+     * Specify a "sub-type" for some of the selected types,
+     * e.g. int64 for an Integer
+     */
     public typeAsOptions(): DropDownOption[] {
         let options: DropDownOption[];
         let st: SimplifiedType = this.value;

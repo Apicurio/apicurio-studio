@@ -175,6 +175,9 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         this.input.changes.subscribe(changes => {
             if (changes.last) {
                 changes.last.nativeElement.focus();
+                if(!this.isEditedValueEmpty) {
+                    changes.last.nativeElement.select();
+                }
             }
         });
     }

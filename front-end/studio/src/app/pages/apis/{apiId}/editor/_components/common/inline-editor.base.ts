@@ -43,6 +43,9 @@ export abstract class AbstractInlineEditor<T> {
 
     public inputFocus: boolean = false;
 
+    /**
+     * Current value in the edit area
+     */
     public evalue: T;
 
     protected constructor(protected selectionService: SelectionService) {}
@@ -95,6 +98,10 @@ export abstract class AbstractInlineEditor<T> {
         this.editing = false;
         AbstractInlineEditor.s_activeEditor = this;
         this.evalue = this.initialValueForEditing();
+    }
+
+    protected isEditedValueEmpty(): boolean {
+        return this.evalue === undefined || this.evalue === null;
     }
 
     public onInputKeypress(event: KeyboardEvent): void {
@@ -168,13 +175,19 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         this.input.changes.subscribe(changes => {
             if (changes.last) {
                 changes.last.nativeElement.focus();
-                changes.last.nativeElement.select();
+                if(!this.isEditedValueEmpty) {
+                    changes.last.nativeElement.select();
+                }
             }
         });
     }
 
     isEmpty(): boolean {
         return super.isEmpty() || this.value.length === 0;
+    }
+
+    protected isEditedValueEmpty(): boolean {
+        return super.isEditedValueEmpty() || this.evalue.length === 0;
     }
 
     protected formatValue(value: string): string {

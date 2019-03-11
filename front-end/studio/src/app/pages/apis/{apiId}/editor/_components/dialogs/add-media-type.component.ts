@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, EventEmitter, Output, QueryList, ViewChildren, Input} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
+import {Oas20Operation, Oas30Operation, Oas30RequestBody} from "oai-ts-core";
 
 
 const STANDARD_TYPES = [ "application/json", "text/xml", "multipart/form-data" ];
@@ -36,17 +37,22 @@ export class AddMediaTypeDialogComponent {
 
     @ViewChildren("addMediaTypeModal") addMediaTypeModal: QueryList<ModalDirective>;
 
+    private addedMediaTypeNames: string[] = []
+
     private _isOpen: boolean = false;
     private _typeOptions: DropDownOption[];
 
     mediaType: string = "";
     customType: string = "";
 
+    protected mediaTypeExists: boolean = false;
+
     /**
      * Called to open the dialog.
-     * @param mediaType
+     * @param addedMediaTypeNames Array of the already added media types, to prevent adding them again
+     * @param mediaType Media type to select by default
      */
-    public open(mediaType?: string): void {
+    public open(addedMediaTypeNames: string[] = [], mediaType?: string): void {
         if (!mediaType) {
             this.mediaType = "application/json";
             this.customType = "";
@@ -88,6 +94,8 @@ export class AddMediaTypeDialogComponent {
             name: "Custom Type",
             value: "custom"
         })
+
+        this.addedMediaTypeNames = addedMediaTypeNames
     }
 
     mediaTypeOptions(): DropDownOption[] {
@@ -158,4 +166,15 @@ export class AddMediaTypeDialogComponent {
         return STANDARD_TYPES.indexOf(type) !== -1;
     }
 
+    public isMediaTypeAlreadyAdded(): boolean {
+        let mt: string = this.mediaType
+        if (mt === 'custom') {
+            mt = this.customType;
+        }
+        return this.addedMediaTypeNames.includes(mt)
+    }
+
+    public isValid(): boolean {
+        return !this.isMediaTypeAlreadyAdded();
+    }
 }

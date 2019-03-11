@@ -1,11 +1,12 @@
-.api-recent-apis .api-item {
+
+.container-dashboard .api-recent-apis .api-item {
   font-size: 15px;
 }
-.api-recent-apis .api-item p {
+.container-dashboard .api-recent-apis .api-item p {
   font-size: 13px;
   padding-left: 20px;
 }
-.api-recent-apis .api-item > a {
+.container-dashboard .api-recent-apis .api-item > a {
   text-overflow: ellipsis;
   width: 100%;
   overflow-x: hidden;
@@ -13,26 +14,30 @@
   white-space: nowrap;
 }
 
-.blank-slate-card-pf {
+.container-dashboard .blank-slate-card-pf {
   padding: 0;
   border-top: 0;
 }
-.blank-slate-card-pf .blank-slate-pf {
+.container-dashboard .blank-slate-card-pf .blank-slate-pf {
   border: 0;
   background-color: white;
 }
 
-.card-activity .actions {
+.container-dashboard .card-activity .actions {
   padding-top: 10px;
   padding-bottom: 15px;
 }
 
-.card-activity > .card-pf-body {
+.container-dashboard .card-activity > .card-pf-body {
   max-height: 600px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.blank-slate-pf .btn-group button {
+.container-dashboard .blank-slate-pf .btn-group button {
   margin-bottom: 0px;
+}
+
+.container-dashboard .card-pf-heading .card-pf-title > .fa {
+  margin-right: 5px;
 }

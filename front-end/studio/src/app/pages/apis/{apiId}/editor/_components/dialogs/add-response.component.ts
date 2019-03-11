@@ -31,9 +31,9 @@ export class AddResponseDialogComponent {
 
     @ViewChildren("addResponseModal") addResponseModal: QueryList<ModalDirective>;
 
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    public _statusCode: string = "";
+    private _statusCode: string = "";
     get statusCode() {
         return this._statusCode;
     }
@@ -46,8 +46,8 @@ export class AddResponseDialogComponent {
         }
     }
 
-    protected codes: string[] = [];
-    protected codeExists: boolean = false;
+    codes: string[] = [];
+    codeExists: boolean = false;
 
     /**
      * Called to open the dialog.
@@ -76,7 +76,7 @@ export class AddResponseDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
         this.statusCode = "";
     }
@@ -84,7 +84,7 @@ export class AddResponseDialogComponent {
     /**
      * Called when the user clicks "add".
      */
-    protected add(): void {
+    add(): void {
         if (this.isValid()) {
             this.onAdd.emit(this.statusCode);
             this.cancel();
@@ -94,21 +94,21 @@ export class AddResponseDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.addResponseModal.first.hide();
     }
 
     /**
      * Returns true if the dialog is open.
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
     /**
      * Returns true if today is the first of April.  (teapot related)
      */
-    public isAprilFirst(): boolean {
+    isAprilFirst(): boolean {
         let d: Date = new Date();
         return d.getMonth() === 3 && d.getDate() === 1;
     }
@@ -116,7 +116,7 @@ export class AddResponseDialogComponent {
     /**
      * Check to see if the form is valid.
      */
-    public isValid(): boolean {
+    isValid(): boolean {
         return this.statusCode && !this.codeExists;
     }
 

@@ -66,8 +66,8 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
     public _expanded: any;
 
     protected model: SecurityRequirementData;
-    protected anonEnabled: boolean = false;
-    protected schemes: OasSecurityScheme[];
+    anonEnabled: boolean = false;
+    schemes: OasSecurityScheme[];
     protected scopeCache: any;
 
     /**

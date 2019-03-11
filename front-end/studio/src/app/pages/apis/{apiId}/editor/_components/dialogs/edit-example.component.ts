@@ -49,9 +49,9 @@ export class EditExampleDialogComponent {
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
     private example: Oas30Example;
-    protected _isOpen: boolean = false;
+    private _isOpen: boolean = false;
 
-    protected model: any = {
+    model: any = {
         value: null,
         format: CodeEditorMode.JSON,
         valid: true
@@ -96,14 +96,14 @@ export class EditExampleDialogComponent {
     /**
      * Called to close the dialog.
      */
-    public close(): void {
+    close(): void {
         this._isOpen = false;
     }
 
     /**
      * Called when the user clicks "edit".
      */
-    protected edit(): void {
+    edit(): void {
         let event: EditExampleEvent = {
             example: this.example,
             value: this.model.value
@@ -123,7 +123,7 @@ export class EditExampleDialogComponent {
     /**
      * Called when the user clicks "cancel".
      */
-    protected cancel(): void {
+    cancel(): void {
         this.editExampleModal.first.hide();
     }
 
@@ -131,19 +131,19 @@ export class EditExampleDialogComponent {
      * Returns true if the dialog is open.
      * @return
      */
-    public isOpen(): boolean {
+    isOpen(): boolean {
         return this._isOpen;
     }
 
-    public valueEditorTheme(): CodeEditorTheme {
+    valueEditorTheme(): CodeEditorTheme {
         return CodeEditorTheme.Light;
     }
 
-    public valueEditorMode(): CodeEditorMode {
+    valueEditorMode(): CodeEditorMode {
         return this.model.format;
     }
 
-    public hasValue(): boolean {
+    hasValue(): boolean {
         return !ObjectUtils.isNullOrUndefined(this.model.value);
     }
 
@@ -168,11 +168,11 @@ export class EditExampleDialogComponent {
         }
     }
 
-    public canGenerateExample(): boolean {
+    canGenerateExample(): boolean {
         return this.schema !== null && this.schema !== undefined;
     }
 
-    public generate(): void {
+    generate(): void {
         let example: any = ModelUtils.generateExampleFromSchema(this.schema);
         let exampleStr: string = JSON.stringify(example, null, 4);
         this.codeEditor.first.setText(exampleStr);

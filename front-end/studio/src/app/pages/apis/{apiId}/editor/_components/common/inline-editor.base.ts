@@ -100,7 +100,7 @@ export abstract class AbstractInlineEditor<T> {
         this.evalue = this.initialValueForEditing();
     }
 
-    protected isEditedValueEmpty(): boolean {
+    isEditedValueEmpty(): boolean {
         return this.evalue === undefined || this.evalue === null;
     }
 
@@ -140,7 +140,7 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
         super(selectionService);
     }
 
-    protected displayValue(): string {
+    displayValue(): string {
         if (this.isEmpty()) {
             return this.noValueMessage;
         }
@@ -149,7 +149,7 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
 
     protected abstract formatValue(value: T): string;
 
-    protected isEmpty(): boolean {
+    isEmpty(): boolean {
         return this.value === undefined || this.value === null;
     }
 
@@ -175,18 +175,18 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
         this.input.changes.subscribe(changes => {
             if (changes.last) {
                 changes.last.nativeElement.focus();
-                if(!this.isEditedValueEmpty) {
+                if (!this.isEditedValueEmpty()) {
                     changes.last.nativeElement.select();
                 }
             }
         });
     }
 
-    protected isEmpty(): boolean {
+    isEmpty(): boolean {
         return super.isEmpty() || this.value.length === 0;
     }
 
-    protected isEditedValueEmpty(): boolean {
+    isEditedValueEmpty(): boolean {
         return super.isEditedValueEmpty() || this.evalue.length === 0;
     }
 

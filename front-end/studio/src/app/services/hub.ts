@@ -18,8 +18,9 @@
 
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpResponse} from "@angular/common/http";
 import {User} from "../models/user.model";
+import {HttpUtils} from "../util/common";
 
 /**
  * Base class for all Hub-API based services.
@@ -119,18 +120,16 @@ export abstract class AbstractHubService {
      * a Promise to the HTTP response data.
      * @param url
      * @param options
-     * 
      */
-    protected httpGet<T>(url: string, options: any, successCallback?: (apis: T) => T): Promise<T> {
+    protected httpGet<T>(url: string, options: any, successCallback?: (value: T) => T): Promise<T> {
         options["observe"] = "response";
-        return this.http.get<T>(url, options).map( event => {
-            let response: HttpResponse<T> = <any>event as HttpResponse<T>;
+        return HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(url, options).toPromise(), response => {
             if (successCallback) {
                 return successCallback(response.body);
             } else {
                 return response.body;
             }
-        }).toPromise();
+        });
     }
 
     /**
@@ -143,12 +142,12 @@ export abstract class AbstractHubService {
      */
     protected httpPost<I>(url: string, body: I, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
-        return this.http.post(url, body, options).map( () => {
+        return HttpUtils.mappedPromise(this.http.post<HttpResponse<any>>(url, body, options).toPromise(), () => {
             if (successCallback) {
                 successCallback();
             }
             return null;
-        }).toPromise();
+        });
     }
 
     /**
@@ -161,15 +160,14 @@ export abstract class AbstractHubService {
      */
     protected httpPostWithReturn<I, O>(url: string, body: I, options: any, successCallback?: (data: O) => O): Promise<O> {
         options["observe"] = "response";
-        return this.http.post<O>(url, body, options).map( event => {
-            let response: HttpResponse<O> = <any>event as HttpResponse<O>;
+        return HttpUtils.mappedPromise(this.http.post<HttpResponse<any>>(url, body, options).toPromise(), response => {
             let data: O = response.body;
             if (successCallback) {
                 return successCallback(data);
             } else {
                 return response.body;
             }
-        }).toPromise();
+        });
     }
 
     /**
@@ -182,12 +180,12 @@ export abstract class AbstractHubService {
      */
     protected httpPut<I>(url: string, body: I, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
-        return this.http.put(url, body, options).map( () => {
+        return HttpUtils.mappedPromise(this.http.put<HttpResponse<any>>(url, body, options).toPromise(), () => {
             if (successCallback) {
                 successCallback();
             }
             return null;
-        }).toPromise();
+        });
     }
 
     /**
@@ -200,15 +198,14 @@ export abstract class AbstractHubService {
      */
     protected httpPutWithReturn<I, O>(url: string, body: I, options: any, successCallback?: (data: O) => O): Promise<O> {
         options["observe"] = "response";
-        return this.http.put<O>(url, body, options).map( event => {
-            let response: HttpResponse<O> = <any>event as HttpResponse<O>;
+        return HttpUtils.mappedPromise(this.http.put<HttpResponse<any>>(url, body, options).toPromise(), response => {
             let data: O = response.body;
             if (successCallback) {
                 return successCallback(data);
             } else {
                 return response.body;
             }
-        }).toPromise();
+        });
     }
 
     /**
@@ -219,12 +216,12 @@ export abstract class AbstractHubService {
      */
     protected httpDelete(url: string, options: any, successCallback?: () => void): Promise<void> {
         options["observe"] = "response";
-        return this.http.delete(url, options).map( () => {
+        return HttpUtils.mappedPromise(this.http.delete<HttpResponse<any>>(url, options).toPromise(), () => {
             if (successCallback) {
                 successCallback();
             }
             return null;
-        }).toPromise();
+        });
     }
 
 }

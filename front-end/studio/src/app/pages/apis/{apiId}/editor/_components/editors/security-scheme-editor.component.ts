@@ -98,8 +98,8 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
     public oauthTab: string = "implicit";
     public model: SecuritySchemeData;
 
-    protected schemeNames: string[];
-    protected schemeExists: boolean;
+    schemeNames: string[];
+    schemeExists: boolean;
 
     /**
      * Called to open the editor.

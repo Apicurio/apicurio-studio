@@ -11,7 +11,7 @@
                   title="Path parameter inherited from the Path level."></span>
             <span class="apicurio-icon-local-d icon-override" *ngIf="isParentOperation() && isLocalOnly()"
                   title="Path parameter defined in the operation only."></span>
-            <span title="{{ item.name }}">{{ item.name }}</span>
+            <span class="name-label" title="{{ item.name }}">{{ item.name }}</span>
         </div>
         <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>

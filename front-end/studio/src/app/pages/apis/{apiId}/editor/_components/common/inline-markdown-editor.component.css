@@ -25,5 +25,6 @@
   margin-bottom: 0px;
 }
 
-.inline-markdown-editor {
+.inline-markdown-editor > button {
+  margin-right: 3px;
 }

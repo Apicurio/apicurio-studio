@@ -37,6 +37,7 @@
 }
 .media-type .header .name > span.fa {
   font-weight: normal;
+  margin-right: 3px;
 }
 .media-type .header .name .icon-override {
   font-size: 16px;
@@ -133,4 +134,9 @@
 
 .media-type .mt-examples a {
   cursor: pointer;
+}
+
+.media-type .type > .fa,
+.media-type .examples > .fa {
+  margin-right: 2px;
 }

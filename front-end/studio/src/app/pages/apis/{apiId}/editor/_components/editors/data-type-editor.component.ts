@@ -50,8 +50,8 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
     protected exampleValid: boolean = true;
     protected exampleFormattable: boolean = false;
 
-    protected defs: string[] = [];
-    protected defExists: boolean = false;
+    defs: string[] = [];
+    defExists: boolean = false;
 
     public model: DataTypeData = {
         name: "",

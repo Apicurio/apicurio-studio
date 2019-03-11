@@ -23,6 +23,7 @@
             <div class="tab statusCode {{ statusCodeType(response.statusCode()) }}" [class.active]="isTabActive(response)" *ngFor="let response of responses()">
                 <a (click)="setTab(response)">
                     <span>{{ response.statusCode() }}</span>
+                    <span>&nbsp;</span>
                     <span>{{ statusCodeLine(response.statusCode()) }}</span>
                 </a>
                 <validation-aggregate [models]="[ response ]"></validation-aggregate>

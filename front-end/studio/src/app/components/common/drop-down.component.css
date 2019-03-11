@@ -1,10 +1,10 @@
 
-li.filter {
+div.dropdown li.filter {
   padding-left: 3px;
   padding-right: 3px;
 }
 
-li > span {
+div.dropdown li > span {
   border-color: transparent;
   border-style: solid;
   border-width: 1px 0;

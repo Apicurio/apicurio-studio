@@ -17,6 +17,11 @@
 
 .validation-icon button .icon {
   color: #0088ce;
+  margin-right: 3px;
+}
+
+.validation-icon button .issues-label {
+  margin-right: 3px;
 }
 
 .validation-icon button:hover, .validation-icon button:focus {

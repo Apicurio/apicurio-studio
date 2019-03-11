@@ -38,7 +38,7 @@
   text-overflow: ellipsis;
   padding-right: 5px;
 }
-.path-parameter .header .name > span {
+.path-parameter .header .name .name-label {
   font-weight: 600;
   color: #ff6a7c;
 }
@@ -47,6 +47,7 @@
   font-weight: normal;
   cursor: help;
   margin-right: 3px;
+  color: #ff6a7c;
 }
 
 .path-parameter .header .description {
@@ -139,4 +140,9 @@
 .path-parameter.overridable .header .description:hover, .path-parameter.overridable .header .summary:hover {
   color: inherit;
   cursor: default;
+}
+
+.path-parameter .description > .fa,
+.path-parameter .summary > .fa {
+  margin-right: 2px;
 }

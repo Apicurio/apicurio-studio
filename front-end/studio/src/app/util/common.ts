@@ -1,3 +1,5 @@
+import {HttpEvent, HttpResponse} from "@angular/common/http";
+
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -117,6 +119,7 @@ export class ObjectUtils {
 
 }
 
+// @dynamic
 export class HttpUtils {
 
     public static parseLinkHeader(header: string): any {
@@ -142,6 +145,17 @@ export class HttpUtils {
         });
 
         return links;
+    }
+
+    /**
+     * Converts a standard HTTP request promise into a promise mapped to a specific type.
+     * @param requestPromise
+     * @param mapper
+     */
+    public static mappedPromise<T>(requestPromise: Promise<HttpEvent<any>>, mapper: (response: HttpResponse<any>) => T) {
+        return requestPromise.then( response => {
+            return mapper(response as any);
+        });
     }
 
 }

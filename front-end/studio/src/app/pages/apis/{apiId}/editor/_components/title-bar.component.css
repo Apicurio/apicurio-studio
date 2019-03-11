@@ -94,4 +94,5 @@
 
 .editor-title-bar .edit-buttons .btn-save, .edit-buttons .btn-cancel {
   margin-top: 7px;
+  margin-right: 4px;
 }

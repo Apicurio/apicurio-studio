@@ -12,7 +12,7 @@ CREATE INDEX IDX_accounts_1 ON accounts(user_id);
 
 CREATE TABLE api_designs (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, description VARCHAR(1024), created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, tags VARCHAR(2048), api_type VARCHAR(255) NOT NULL);
 
-CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, type TINYINT NOT NULL, data TEXT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, reverted TINYINT DEFAULT 0 NOT NULL, modifed_on DATETIME);
+CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, type TINYINT NOT NULL, data MEDIUMTEXT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, reverted TINYINT DEFAULT 0 NOT NULL, modifed_on DATETIME);
 CREATE INDEX IDX_content_0 ON api_content(design_id, version);
 CREATE INDEX IDX_content_1 ON api_content(version);
 CREATE INDEX IDX_content_2 ON api_content(type);
@@ -34,7 +34,7 @@ CREATE INDEX IDX_invites_1 ON acl_invites(status);
 CREATE TABLE session_uuids (uuid VARCHAR(255) NOT NULL PRIMARY KEY, design_id BIGINT NOT NULL, user_id VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, version BIGINT NOT NULL, expires_on BIGINT NOT NULL);
 CREATE INDEX IDX_uuids_1 ON session_uuids(uuid, design_id, secret);
 
-CREATE TABLE codegen (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP, design_id BIGINT NOT NULL, ptype VARCHAR(64) NOT NULL, attributes TEXT NOT NULL);
+CREATE TABLE codegen (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, created_by VARCHAR(255) NOT NULL, created_on TIMESTAMP NOT NULL, modified_by VARCHAR(255), modified_on TIMESTAMP, design_id BIGINT NOT NULL, ptype VARCHAR(64) NOT NULL, attributes MEDIUMTEXT NOT NULL);
 ALTER TABLE codegen ADD CONSTRAINT FK_codegen_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_codegen_1 ON codegen(ptype);
 CREATE INDEX IDX_codegen_2 ON codegen(design_id);

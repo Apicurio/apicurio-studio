@@ -147,12 +147,6 @@
 .api-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
   color: #333;
 }
-.api-editor td.path-parameter, .api-editor div.path-parameter, .api-editor span.path-parameter {
-  color: #ff6a7c;
-}
-.api-editor td.query-parameter, .api-editor div.query-parameter, .api-editor span.query-parameter {
-  color: #39a5dc;
-}
 .api-editor .api-operation-parameters td.icons, .api-details table td.icons {
   color: #666;
 }
@@ -388,7 +382,7 @@
   display: inline-block;
   font-size: 13px;
   margin-left: 5px;
-  margin-right: 0;
+  margin-right: 3px;
   text-align: center;
   vertical-align: 0;
   font-weight: 300;
@@ -529,6 +523,12 @@
   text-align: right;
   padding: 5px 25px 5px 5px;
   border-bottom: 1px solid #ddd;
+}
+.api-editor .editor-detail .detail-actionbar > button {
+  margin-left: 4px;
+}
+.api-editor .editor-detail .detail-actionbar > button > span.pficon {
+  margin-right: 3px;
 }
 .api-editor .editor-detail .detail-content {
   height: 100%;
@@ -979,6 +979,7 @@
 
 .api-editor .validation-problem-icon {
   cursor: pointer;
+  margin-right: 4px;
 }
 .api-editor .validation-problem-icon:hover {
   filter: brightness(125%);
@@ -1174,4 +1175,26 @@
   min-width: 400px;
   text-align: right;
   padding-bottom: 30px;
+}
+
+.api-editor .dropdown-label {
+  margin-right: 3px;
+}
+.api-editor .dropdowns-label {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.api-editor .detail-title .detail-actions .dropdown-menu li a span.pficon {
+  margin-right: 4px;
+}
+.api-editor .detail-title .detail-actions .dropdown-menu li a span.fa {
+  margin-right: 3px;
+}
+
+.api-editor .editor-master .context-menu li a span.pficon {
+  margin-right: 4px;
+}
+.api-editor .editor-master .context-menu li a span.fa {
+  margin-right: 3px;
 }

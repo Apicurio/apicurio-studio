@@ -55,6 +55,7 @@
 
 .property .header .summary .property-required {
   font-weight: 600;
+  margin-right: 3px;
 }
 .property .header .summary .property-required:hover {
   filter: brightness(120%);
@@ -103,4 +104,9 @@
   display: inline-block;
   margin-left: 3px;
   margin-right: 3px;
+}
+
+.property .header .description > .fa,
+.property .header .summary > .fa {
+  margin-right: 2px;
 }

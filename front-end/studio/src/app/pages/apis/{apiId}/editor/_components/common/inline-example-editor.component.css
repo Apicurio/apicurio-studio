@@ -41,3 +41,8 @@
   border-color: #bbb;
   cursor: pointer;
 }
+
+.inline-example-editor > .btn-save {
+  margin-right: 3px;
+}
+

@@ -1,4 +1,8 @@
 
+.api-collaboration .card-pf-heading .card-pf-title > .fa {
+  margin-right: 5px;
+}
+
 .collaborator-list-group, .invitation-list-group {
   border-top: none;
 }

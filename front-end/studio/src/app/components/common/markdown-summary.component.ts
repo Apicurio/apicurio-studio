@@ -33,7 +33,7 @@ export class MarkdownSummaryComponent implements OnChanges {
     @Input("emptyText")
     emptyText: string = "No value.";
 
-    public convertedData: any;
+    convertedData: string;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.isEmpty()) {
@@ -42,7 +42,7 @@ export class MarkdownSummaryComponent implements OnChanges {
             let ptRenderer: marked.Renderer = new PlainTextRenderer();
             this.convertedData = marked.parse(this.data, {
                 renderer: ptRenderer
-            });
+            }).trim();
         }
     }
 

@@ -11,6 +11,10 @@
   position: fixed;
 }
 
+.section .section-context-menu li a span.fa {
+  margin-right: 3px;
+}
+
 .section .section-header .collaborator-aggregate {
   margin-left: 5px;
   margin-left: 18px;

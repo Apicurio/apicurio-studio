@@ -45,3 +45,7 @@
 label.disabled, .moreInfo.disabled {
   color: #9c9c9c;
 }
+
+.wizard-pf-contents input[type="radio"] {
+  margin-right: 5px;
+}

@@ -140,3 +140,12 @@ div.modal-notice-of-required {
   content: "\e907";
   margin-left: -1em;
 }
+
+div.alert > strong {
+  margin-right: 5px;
+}
+
+div.btn-group > a.btn > .pficon,
+div.btn-group > ul.dropdown-menu > li > a > span.pficon {
+  margin-right: 3px;
+}

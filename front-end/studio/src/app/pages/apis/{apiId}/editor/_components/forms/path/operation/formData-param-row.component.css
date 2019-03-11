@@ -113,3 +113,8 @@
   margin-left: 3px;
   margin-right: 3px;
 }
+
+.formData-param .description > .fa,
+.formData-param .summary > .fa {
+  margin-right: 2px;
+}

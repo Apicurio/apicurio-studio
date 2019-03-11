@@ -134,3 +134,8 @@
   color: inherit;
   cursor: default;
 }
+
+.query-param .description > .fa,
+.query-param .summary > .fa {
+  margin-right: 2px;
+}

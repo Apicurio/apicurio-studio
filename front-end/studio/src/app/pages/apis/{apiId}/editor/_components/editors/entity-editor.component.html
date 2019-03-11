@@ -1,6 +1,6 @@
 <div class="entity-editor {{ entityType }}-entity-editor container-fluid" (window:keydown)="onGlobalKeyDown($event)">
     <a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>
-    <form id="server-entity-form" #entityEditorForm="ngForm">
+    <form id="entity-editor-form" class="entity-editor-form" #entityEditorForm="ngForm">
         <div class="row-fluid header">
             <div class="col-md-12">
                 <h1 class="title">{{ heading }}</h1>
@@ -36,7 +36,7 @@
                         <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
                     </div>
                     <div class="actions">
-                        <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
+                        <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
                         <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
         <div class="row-fluid actions-section">
             <div class="col-md-12">
                 <div class="actions">
-                    <a class="btn btn-default" (click)="onClose.emit()">Cancel</a>
+                    <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
                     <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
                 </div>
             </div>

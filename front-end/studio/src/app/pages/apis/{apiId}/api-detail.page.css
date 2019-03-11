@@ -1,3 +1,22 @@
+.api-details .dropdown .dropdown-menu span.fa {
+  margin-right: 3px;
+}
+.api-details .card-pf-heading .card-pf-title > .fa {
+  margin-right: 5px;
+}
+.api-details .api-created-info .info-full > span.fa {
+  margin-right: 3px;
+}
+
+.api-details .api-mocked-info .info-full > span.fa {
+  margin-right: 3px;
+}
+.api-details .api-mocked-actions > a.btn {
+  margin-right: 5px;
+}
+.api-details .api-mocked-actions > a.btn > .fa {
+  margin-right: 3px;
+}
 
 .api-tags {
   margin-top: 15px;

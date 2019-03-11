@@ -134,4 +134,8 @@
   color: inherit;
   cursor: default;
 }
-  
+
+.header-param .description > .fa,
+.header-param .summary > .fa {
+  margin-right: 2px;
+}

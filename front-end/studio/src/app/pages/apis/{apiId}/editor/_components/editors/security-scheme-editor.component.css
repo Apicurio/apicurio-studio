@@ -12,3 +12,7 @@
   min-width: 350px;
   width: 100%;
 }
+
+.security-scheme-entity-editor .oauth2-auth input[type="checkbox"] {
+  margin-right: 3px;
+}

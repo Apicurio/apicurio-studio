@@ -47,26 +47,26 @@
             <div class="form-group">
                 <div>
                     <div class="prop-type">
-                        <span class="propIs-label">Property is</span>
+                        <span class="propIs-label dropdown-label">Property is</span>
                         <drop-down [id]="'api-prop-required'"
                                    [value]="required()"
                                    [options]="requiredOptions()"
                                    (onValueChange)="changeRequired($event)"
                                    [noSelectionLabel]="'Not Required'"></drop-down>
-                        <span class="strong type-label">and has type</span>
+                        <span class="strong type-label dropdowns-label">and has type</span>
                         <drop-down [id]="'api-prop-type'"
                                    [value]="type()"
                                    [options]="typeOptions()"
                                    (onValueChange)="changeType($event)"
                                    [noSelectionLabel]="'Choose Type'"></drop-down>
-                        <span class="of-label" *ngIf="type() === 'array'">of</span>
+                        <span class="of-label dropdowns-label" *ngIf="type() === 'array'">of</span>
                         <drop-down *ngIf="type() === 'array'"
                                    [id]="'api-prop-type-of'"
                                    [value]="typeOf()"
                                    [options]="typeOfOptions()"
                                    (onValueChange)="changeTypeOf($event)"
                                    [noSelectionLabel]="'Choose Type'"></drop-down>
-                        <span class="as-label" *ngIf="shouldShowFormattedAs()">as</span>
+                        <span class="as-label dropdowns-label" *ngIf="shouldShowFormattedAs()">as</span>
                         <drop-down *ngIf="shouldShowFormattedAs()"
                                    [id]="'api-prop-type-as'"
                                    [value]="typeAs()"

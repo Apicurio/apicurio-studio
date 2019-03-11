@@ -12,6 +12,10 @@
     display: inline-block;
 }
 
+.security-requirement .name .fa {
+    margin-right: 3px;
+}
+
 .security-requirement .actions {
     display: inline-block;
     float: right;

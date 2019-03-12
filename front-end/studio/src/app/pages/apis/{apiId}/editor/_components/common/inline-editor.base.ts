@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-import {AfterViewInit, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
+import {
+    AfterViewInit,
+    ElementRef,
+    EventEmitter,
+    Input, OnChanges,
+    Output,
+    QueryList,
+    SimpleChanges,
+    ViewChildren
+} from "@angular/core";
 import {SelectionService} from "../../_services/selection.service";
 import {OasNode} from "oai-ts-core";
 import {ModelUtils} from "../../_util/model.util";
@@ -131,13 +140,20 @@ export abstract class AbstractInlineEditor<T> {
 /**
  * Base class for any inline editor that edits a single value of an arbitrary type.
  */
-export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<T> {
+export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<T> implements OnChanges {
 
     @Input() value: T;
     @Input() noValueMessage: string;
 
     protected constructor(selectionService: SelectionService) {
         super(selectionService);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        // If the @Input "value" changes, stop editing and throw away any changes!
+        if (changes["value"]) {
+            this.onCancel();
+        }
     }
 
     displayValue(): string {
@@ -167,6 +183,10 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
 
+    /**
+     * C'tor.
+     * @param selectionService
+     */
     protected constructor(selectionService: SelectionService) {
         super(selectionService);
     }
@@ -214,10 +234,18 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
  */
 export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
 
-    constructor(selectionService: SelectionService) {
+    /**
+     * C'tor.
+     * @param selectionService
+     */
+    protected constructor(selectionService: SelectionService) {
         super(selectionService);
     }
 
+    /**
+     * Called when a keypress happens.
+     * @param event
+     */
     public onInputKeypress(event: KeyboardEvent): void {
         super.onInputKeypress(event);
 
@@ -228,7 +256,6 @@ export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
 
     /**
      * Subclasses can override this to provide validation status of the current value.
-     * @return
      */
     protected isValid(): boolean {
         return true;

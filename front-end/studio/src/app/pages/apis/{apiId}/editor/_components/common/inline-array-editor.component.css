@@ -58,3 +58,7 @@
 .inline-array-editor .apriori-items .apriori-item:hover {
   filter: brightness(90%);
 }
+
+.inline-array-editor .apriori-items .apriori-item > .fa {
+  margin-right: 3px;
+}

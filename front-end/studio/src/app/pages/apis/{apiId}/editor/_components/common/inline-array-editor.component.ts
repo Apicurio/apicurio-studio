@@ -16,13 +16,15 @@
  */
 
 import {
-    AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef,
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
     Input,
     Output,
-    QueryList,
+    QueryList, SimpleChanges,
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
@@ -61,9 +63,22 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
 
     public firstEnter: boolean;
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param selectionService
+     */
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
                 selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+        if (changes["value"]) {
+            this.onCancel();
+        }
     }
 
     ngAfterViewInit(): void {

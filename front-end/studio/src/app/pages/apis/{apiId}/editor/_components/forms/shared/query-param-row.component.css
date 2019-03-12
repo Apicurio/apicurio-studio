@@ -139,3 +139,7 @@
 .query-param .summary > .fa {
   margin-right: 2px;
 }
+
+.query-param .summary .parameter-required {
+  margin-right: 3px;
+}

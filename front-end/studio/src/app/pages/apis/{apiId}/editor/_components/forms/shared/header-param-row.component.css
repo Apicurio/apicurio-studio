@@ -139,3 +139,7 @@
 .header-param .summary > .fa {
   margin-right: 2px;
 }
+
+.header-param .summary .parameter-required {
+  margin-right: 3px;
+}

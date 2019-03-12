@@ -14,7 +14,7 @@
                 <label class="control-label required" for="qp_name">Name</label>
                 <div>
                     <input name="name" type="text" id="qp_name" class="form-control" required #nameInput="ngModel"
-                           [(ngModel)]="model.name" placeholder="Enter a unique parameter name." pattern="[a-zA-Z0-9\.\-_]+"
+                           [(ngModel)]="model.name" placeholder="Enter a unique parameter name." pattern="[a-zA-Z0-9\.\-_\$]+"
                            (ngModelChange)="paramExists = params.indexOf($event) != -1" autocomplete="off">
                     <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
                     <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>

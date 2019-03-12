@@ -110,3 +110,7 @@
 .property .header .summary > .fa {
   margin-right: 2px;
 }
+
+.property .summary .parameter-required {
+  margin-right: 3px;
+}

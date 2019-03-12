@@ -118,3 +118,7 @@
 .formData-param .summary > .fa {
   margin-right: 2px;
 }
+
+.formData-param .summary .parameter-required {
+  margin-right: 3px;
+}

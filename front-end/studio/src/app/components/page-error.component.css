@@ -4,6 +4,7 @@
 
 .card-pf-error .card-pf-title .fa {
   color: red;
+  margin-right: 3px;
 }
 
 .card-pf-error .card-pf-body .details {
@@ -11,4 +12,8 @@
 .card-pf-error .card-pf-body .details pre {
   max-height: 350px;
   overflow-y: auto;
+}
+
+.card-pf-error .card-pf-body .actions > .btn {
+  margin-right: 5px;
 }

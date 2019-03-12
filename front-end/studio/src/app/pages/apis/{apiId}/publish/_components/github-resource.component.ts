@@ -31,6 +31,7 @@ export class GitHubResourceComponent implements OnInit {
     @Input() value: any;
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
+    @Output() onError = new EventEmitter<any>();
 
     public model: any = {
         org: null,
@@ -96,9 +97,8 @@ export class GitHubResourceComponent implements OnInit {
                 this.updateRepos();
             }
         }).catch( error => {
-            // TODO handle an error in some way!
             this.gettingOrgs = false;
-            console.error(error);
+            this.onError.emit(error);
         });
     }
 
@@ -140,9 +140,8 @@ export class GitHubResourceComponent implements OnInit {
                 this.updateBranches();
             }
         }).catch(error => {
-            // TODO handle an error!
             this.gettingRepos = false;
-            console.error(error);
+            this.onError.emit(error);
         });
     }
 
@@ -178,9 +177,8 @@ export class GitHubResourceComponent implements OnInit {
                 this.onValid.emit(true);
             }
         }).catch(error => {
-            // TODO handle an error!
             this.gettingBranches = false;
-            console.error(error);
+            this.onError.emit(error);
         });
 
     }

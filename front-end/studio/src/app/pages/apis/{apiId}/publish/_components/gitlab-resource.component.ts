@@ -38,6 +38,7 @@ export class GitLabResourceComponent implements OnInit {
     @Input() value: any;
     @Output() onChange = new EventEmitter<any>();
     @Output() onValid = new EventEmitter<boolean>();
+    @Output() onError = new EventEmitter<any>();
 
     public model: GitLabEventData = {
         group: null,
@@ -105,9 +106,8 @@ export class GitLabResourceComponent implements OnInit {
                 this.updateProjects();
             }
         }).catch( error => {
-            // TODO handle an error in some way!
             this.gettingGroups = false;
-            console.error(error);
+            this.onError.emit(error);
         });
     }
 
@@ -147,9 +147,8 @@ export class GitLabResourceComponent implements OnInit {
                 this.model.project = projects[0];
             }
         }).catch(error => {
-            // TODO handle an error!
             this.gettingProjects = false;
-            console.error(error);
+            this.onError.emit(error);
         });
     }
 
@@ -185,9 +184,8 @@ export class GitLabResourceComponent implements OnInit {
                 this.onValid.emit(true);
             }
         }).catch(error => {
-            // TODO handle an error!
             this.gettingBranches = false;
-            console.error(error);
+            this.onError.emit(error);
         });
 
     }

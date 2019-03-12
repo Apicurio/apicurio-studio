@@ -67,9 +67,15 @@
                             </div>
                         </div>
 
-                        <github-resource *ngIf="isSelected('GitHub')" [value]="model" (onChange)="setModel($event)" (onValid)="modelValid = $event"></github-resource>
-                        <gitlab-resource *ngIf="isSelected('GitLab')" [value]="model" (onChange)="setModel($event)" (onValid)="modelValid = $event"></gitlab-resource>
-                        <bitbucket-resource *ngIf="isSelected('Bitbucket')" [value]="model" (onChange)="setModel($event)" (onValid)="modelValid = $event"></bitbucket-resource>
+                        <github-resource *ngIf="isSelected('GitHub')" [value]="model" (onChange)="setModel($event)"
+                                         (onError)="error($event)"
+                                         (onValid)="modelValid = $event"></github-resource>
+                        <gitlab-resource *ngIf="isSelected('GitLab')" [value]="model" (onChange)="setModel($event)"
+                                         (onError)="error($event)"
+                                         (onValid)="modelValid = $event"></gitlab-resource>
+                        <bitbucket-resource *ngIf="isSelected('Bitbucket')" [value]="model" (onChange)="setModel($event)"
+                                            (onError)="error($event)"
+                                            (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
                             <label class="col-sm-2 control-label required" for="gh-resource">Resource</label>

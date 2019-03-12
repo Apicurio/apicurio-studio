@@ -89,11 +89,16 @@ export class ResponseTabComponent extends AbstractBaseComponent {
         return this.response.examples.exampleContentTypes();
     }
 
-    public exampleValue(contentType: string): string {
+    public exampleDisplayValue(contentType: string): string {
         let evalue: any = this.response.examples.example(contentType);
         if (typeof evalue === "object" || Array.isArray(evalue)) {
             evalue = JSON.stringify(evalue);
         }
+        return evalue;
+    }
+
+    public exampleValue(contentType: string): string {
+        let evalue: any = this.response.examples.example(contentType);
         return evalue;
     }
 

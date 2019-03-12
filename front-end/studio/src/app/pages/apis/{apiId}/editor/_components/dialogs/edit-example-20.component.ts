@@ -81,10 +81,7 @@ export class EditExample20DialogComponent {
         };
 
         let val: any = value;
-        if (StringUtils.isJSON(val)) {
-            try { val = JSON.stringify(JSON.parse(val), null, 4); } catch (e) {}
-        }
-        if (typeof val === "object") {
+        if (typeof val === "object" || Array.isArray(val)) {
             val = JSON.stringify(val, null, 4);
         }
 
@@ -113,14 +110,15 @@ export class EditExample20DialogComponent {
             contentType: this.model.contentType,
             value: this.model.value
         };
-        // TODO investigate whether to restore this functionality (treat JSON data differently)
-        // if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
-        //     try {
-        //         event.value = JSON.parse(this.model.value);
-        //     } catch (e) {
-        //         console.error("[EditExample20DialogComponent] Failed to parse example.");
-        //     }
-        // }
+
+        // Convert to jsobject if the data is JSON and is valid
+        if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
+            try {
+                event.value = JSON.parse(this.model.value);
+            } catch (e) {
+                console.error("[EditExample20DialogComponent] Failed to parse example.");
+            }
+        }
         this.onEdit.emit(event);
         this.cancel();
     }

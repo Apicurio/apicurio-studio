@@ -111,14 +111,16 @@ export class AddExampleDialogComponent {
             name: this.model.name,
             value: this.model.value
         };
-        // TODO investigate whether to restore this functionality (treat JSON data differently)
-        // if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
-        //     try {
-        //         event.value = JSON.parse(this.model.value)
-        //     } catch (e) {
-        //         console.error("[AddExampleDialogComponent] Failed to parse example.");
-        //     }
-        // }
+
+        // Convert to jsobject if the data is JSON and is valid
+        if (this.model.valid && this.model.format === CodeEditorMode.JSON) {
+            try {
+                event.value = JSON.parse(this.model.value)
+            } catch (e) { // should never happen!
+                console.error("[AddExampleDialogComponent] Failed to parse example.");
+            }
+        }
+
         this.onAdd.emit(event);
         this.cancel();
     }

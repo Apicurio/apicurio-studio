@@ -23,6 +23,7 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
+import {StringUtils} from "apicurio-ts-core";
 
 
 @Component({
@@ -36,16 +37,27 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
 
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
     /**
-     * returns the example.
+     * Returns the example.  Converts to a string if the example is an object.
      */
     public example(): string {
-        return this.definition.example;
+        let value: string = this.definition.example;
+        if (typeof value === "object" || Array.isArray(value)) {
+            value = JSON.stringify(value, null,  4);
+        }
+        return value;
     }
 
     /**
@@ -54,8 +66,16 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
      */
     public onExampleChange(newExample: string): void {
         console.info("[DefinitionExampleSectionComponent] User changed the data type example.");
+        let newValue: any = newExample;
+        if (StringUtils.isJSON(newValue)) {
+            try {
+                newValue = JSON.parse(newValue);
+            } catch (e) {
+                console.info("[DefinitionExampleSectionComponent] Failed to parse example: ", e);
+            }
+        }
         let command: ICommand = createChangePropertyCommand(this.definition.ownerDocument(), this.definition,
-            "example", newExample);
+            "example", newValue);
         this.commandService.emit(command);
     }
     

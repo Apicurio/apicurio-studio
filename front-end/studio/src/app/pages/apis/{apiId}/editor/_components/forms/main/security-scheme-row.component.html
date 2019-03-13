@@ -6,8 +6,8 @@
         <div class="name" (click)="toggle()" [class.empty]="!hasName()">
             <validation-problem [model]="scheme"></validation-problem>
             <!--<span class="fa fa-tag entity-icon"></span>-->
-            <span>{{ name() }}</span>
-            <span>(</span><span>{{ schemeType() }}</span><span>)</span>
+            <span class="scheme-name">{{ name() }}</span>
+            <span class="scheme-type">(</span><span>{{ schemeType() }}</span><span>)</span>
         </div>
         <div class="description" (click)="toggle()">
             <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>

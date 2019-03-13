@@ -34,6 +34,10 @@
   text-overflow: ellipsis;
   padding-right: 15px;
 }
+.security-scheme .header .name .scheme-type {
+  margin-left: 4px;
+}
+
 .security-scheme .header .validation-problem-icon {
   margin-right: 5px;
 }

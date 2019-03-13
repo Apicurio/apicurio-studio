@@ -414,11 +414,15 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Called to validate the model.
      */
     public validateModel(): void {
-        let doc: OasDocument = this.document();
-        let oldValidationErrors: OasValidationProblem[] = this.validationErrors;
-        this.validationErrors = this._library.validate(doc, true, this.validationRegistry);
-        if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
-            this.onValidationChanged.emit(this.validationErrors);
+        try {
+            let doc: OasDocument = this.document();
+            let oldValidationErrors: OasValidationProblem[] = this.validationErrors;
+            this.validationErrors = this._library.validate(doc, true, this.validationRegistry);
+            if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
+                this.onValidationChanged.emit(this.validationErrors);
+            }
+        } catch (e) {
+            console.info("[ApiEditorComponent] Error validating model: ", e);
         }
     }
 

@@ -16082,7 +16082,10 @@
          */
         Oas20InvalidPropertyValueValidationRule.prototype.isValidScopes = function (requiredScopes, definedScopes) {
             var rval = true;
-            var dscopes = definedScopes.scopes();
+            var dscopes = [];
+            if (definedScopes) {
+                dscopes = definedScopes.scopes();
+            }
             requiredScopes.forEach(function (requiredScope) {
                 if (dscopes.indexOf(requiredScope) === -1) {
                     rval = false;

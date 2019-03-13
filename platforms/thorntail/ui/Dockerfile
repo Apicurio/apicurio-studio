@@ -20,6 +20,7 @@ USER 1001
 EXPOSE 8080
 
 
+ENV JAVA_TOOL_OPTIONS=-Djava.net.preferIPv4Stack=true
 ENV APICURIO_KC_AUTH_URL=https://studio-auth.apicur.io/auth/
 ENV APICURIO_KC_REALM=apicurio
 ENV APICURIO_KC_CLIENT_ID=apicurio-studio

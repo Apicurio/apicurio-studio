@@ -87,6 +87,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
     public open(handler: ISecurityRequirementEditorHandler, context: OasDocument | OasOperation, requirement?: OasSecurityRequirement): void {
         this._expanded = {};
         this.model = {};
+        this.anonEnabled = false;
         this.scopeCache = {};
         this.schemes = this.findSchemes(context.ownerDocument());
         super.open(handler, context, requirement);

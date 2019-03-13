@@ -15,6 +15,7 @@
 }
 .security-scheme-list .list-group-item-heading .type {
   font-weight: normal;
+  margin-left: 5px;
 }
 .security-scheme-list .list-group-item-heading .type::after {
   content: ')';

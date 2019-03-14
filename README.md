@@ -38,7 +38,17 @@ The following command compiles all the code, installs the JARs into your local M
 ```
 ## Quickstart (i.e. How To Run It)
 
-TBD
+The fastest way to get started using Apicurio Studio is to use the quickstart.  The Apicurio quickstart is produced as part 
+of the full maven build - you can find it in `distro/quickstart/target` as a ZIP file.  To start up the quickstart, use the 
+following commands from the top-level of the repository:
+
+```bash
+  $ rm -rf ./distro/quickstart/target/apicurio-studio-*-SNAPSHOT
+  $ unzip distro/quickstart/target/apicurio-studio-*-quickstart.zip -d distro/quickstart/target
+  $ ./distro/quickstart/target/apicurio-studio-*-SNAPSHOT/bin/standalone.sh -c standalone-apicurio.xml
+```
+
+This will start Wildfly on your local machine and you can access the UI at [http://localhost:8080](http://localhost:8080).
 
 ## Contribute fixes and features
 

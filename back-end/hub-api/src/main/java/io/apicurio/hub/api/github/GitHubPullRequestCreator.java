@@ -485,7 +485,7 @@ public class GitHubPullRequestCreator {
     private String itemPath(String resource) {
         StringBuilder builder = new StringBuilder();
         builder.append(this.path);
-        if (!this.path.endsWith("/") && !resource.startsWith("/")) {
+        if (!this.path.endsWith("/") && !this.path.equals("") && !resource.startsWith("/")) {
             builder.append("/");
         }
         if (resource.startsWith("/")) {

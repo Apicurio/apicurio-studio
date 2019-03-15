@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation
 import {
     createAddExampleCommand,
     createChangeMediaTypeTypeCommand,
+    createDeleteAllExamplesCommand,
     createDeleteExampleCommand,
     createDeleteMediaTypeCommand,
     createSetExampleCommand,
@@ -149,4 +150,7 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
         return this.item.schema;
     }
 
+    public deleteAllExamples(mediaType: string): void {
+        let command: ICommand = createDeleteAllExamplesCommand(this.item.ownerDocument(), this.item);
+        this.commandService.emit(command);
 }

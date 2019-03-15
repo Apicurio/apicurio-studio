@@ -63,8 +63,9 @@ import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
+import io.apicurio.hub.api.codegen.OpenApi2JaxRs;
+import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
 import io.apicurio.hub.api.codegen.OpenApi2Thorntail;
-import io.apicurio.hub.api.codegen.OpenApi2Thorntail.ThorntailProjectSettings;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -1025,15 +1026,8 @@ public class DesignsResource implements IDesignsResource {
             
             // TODO support other types besides Thorntail
             if (project.getType() == CodegenProjectType.thorntail) {
-                String groupId = project.getAttributes().get("groupId");
-                String artifactId = project.getAttributes().get("artifactId");
-                String javaPackage = project.getAttributes().get("javaPackage");
-            
-                ThorntailProjectSettings settings = new ThorntailProjectSettings();
-                settings.groupId = groupId != null ? groupId : "org.example.api";
-                settings.artifactId = artifactId != null ? artifactId : "generated-api";
-                settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
-                
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
+
                 boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
                 final OpenApi2Thorntail generator = new OpenApi2Thorntail();
@@ -1041,25 +1035,45 @@ public class DesignsResource implements IDesignsResource {
                 generator.setOpenApiDocument(oaiContent);
                 generator.setUpdateOnly(updateOnly);
                 
-                StreamingOutput stream = new StreamingOutput() {
-                    @Override
-                    public void write(OutputStream output) throws IOException, WebApplicationException {
-                        generator.generate(output);
-                    }
-                };
+                return asResponse(settings, generator);
+            } else if (project.getType() == CodegenProjectType.jaxrs) {
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
                 
-                String fname = settings.artifactId + ".zip";
-                ResponseBuilder builder = Response.ok().entity(stream)
-                        .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
-                        .header("Content-Type", "application/zip");
+                boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
-                return builder.build();
+                final OpenApi2JaxRs generator = new OpenApi2JaxRs();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
+                
+                return asResponse(settings, generator);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
         } catch (StorageException e) {
             throw new ServerError(e);
         }
+    }
+
+    /**
+     * Generates the project and returns the result as a streaming response.
+     * @param settings
+     * @param generator
+     */
+    private Response asResponse(JaxRsProjectSettings settings, final OpenApi2JaxRs generator) {
+        StreamingOutput stream = new StreamingOutput() {
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                generator.generate(output);
+            }
+        };
+        
+        String fname = settings.artifactId + ".zip";
+        ResponseBuilder builder = Response.ok().entity(stream)
+                .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
+                .header("Content-Type", "application/zip");
+
+        return builder.build();
     }
     
     /**
@@ -1171,35 +1185,71 @@ public class DesignsResource implements IDesignsResource {
             
             // TODO support other types besides Thorntail
             if (project.getType() == CodegenProjectType.thorntail) {
-                String groupId = project.getAttributes().get("groupId");
-                String artifactId = project.getAttributes().get("artifactId");
-                String javaPackage = project.getAttributes().get("javaPackage");
-            
-                ThorntailProjectSettings settings = new ThorntailProjectSettings();
-                settings.groupId = groupId != null ? groupId : "org.example.api";
-                settings.artifactId = artifactId != null ? artifactId : "generated-api";
-                settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
 
                 OpenApi2Thorntail generator = new OpenApi2Thorntail();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(oaiContent);
                 generator.setUpdateOnly(updateOnly);
                 
-                ByteArrayOutputStream generatedContent = generator.generate();
-                LinkedAccountType scsType = LinkedAccountType.valueOf(project.getAttributes().get("publish-type"));
+                return generateAndPublish(project, generator);
+            } else if (project.getType() == CodegenProjectType.jaxrs) {
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
+
+                OpenApi2JaxRs generator = new OpenApi2JaxRs();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
                 
-                ISourceConnector connector = this.sourceConnectorFactory.createConnector(scsType);
-                String url = toSourceResourceUrl(project);
-                String commitMessage = project.getAttributes().get("publish-commitMessage");
-                String pullRequestUrl = connector.createPullRequestFromZipContent(url, commitMessage,
-                        new ZipInputStream(new ByteArrayInputStream(generatedContent.toByteArray())));
-                return pullRequestUrl;
+                return generateAndPublish(project, generator);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
         } catch (IOException | SourceConnectorException e) {
             throw new ServerError(e);
         }
+    }
+
+    /**
+     * Generates the project and publishes the result to e.g. GitHub.
+     * @param project
+     * @param generator
+     * @throws IOException
+     * @throws NotFoundException
+     * @throws SourceConnectorException
+     */
+    private String generateAndPublish(CodegenProject project, OpenApi2JaxRs generator)
+            throws IOException, NotFoundException, SourceConnectorException {
+        ByteArrayOutputStream generatedContent = generator.generate();
+        LinkedAccountType scsType = LinkedAccountType.valueOf(project.getAttributes().get("publish-type"));
+        
+        ISourceConnector connector = this.sourceConnectorFactory.createConnector(scsType);
+        String url = toSourceResourceUrl(project);
+        String commitMessage = project.getAttributes().get("publish-commitMessage");
+        String pullRequestUrl = connector.createPullRequestFromZipContent(url, commitMessage,
+                new ZipInputStream(new ByteArrayInputStream(generatedContent.toByteArray())));
+        return pullRequestUrl;
+    }
+
+    /**
+     * Reads JAX-RS project settings from the project.
+     * @param project
+     */
+    private JaxRsProjectSettings toJaxRsSettings(CodegenProject project) {
+        boolean codeOnly = "true".equals(project.getAttributes().get("codeOnly"));
+        boolean reactive = "true".equals(project.getAttributes().get("reactive"));
+        String groupId = project.getAttributes().get("groupId");
+        String artifactId = project.getAttributes().get("artifactId");
+        String javaPackage = project.getAttributes().get("javaPackage");
+
+        JaxRsProjectSettings settings = new JaxRsProjectSettings();
+        settings.codeOnly = codeOnly;
+        settings.reactive = reactive;
+        settings.groupId = groupId != null ? groupId : "org.example.api";
+        settings.artifactId = artifactId != null ? artifactId : "generated-api";
+        settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";
+
+        return settings;
     }
 
     /**

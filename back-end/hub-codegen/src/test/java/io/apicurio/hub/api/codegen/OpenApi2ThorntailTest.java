@@ -30,7 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.apicurio.hub.api.codegen.OpenApi2Thorntail.ThorntailProjectSettings;
+import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -44,7 +44,7 @@ public class OpenApi2ThorntailTest {
     public void testGenerateOnly() throws IOException {
         doGenerateOnlyTest("OpenApi2ThorntailTest/beer-api.codegen.json", 
                 "OpenApi2ThorntailTest/beer-api.json", "_expected/generated-api", 
-                "org.example.api", "generated-api", "org.example.api", false);
+                "org.example.api", "generated-api", "org.example.api", true);
     }
 
     /**
@@ -96,9 +96,6 @@ public class OpenApi2ThorntailTest {
     private void doGenerateOnlyTest(String codegenSpec, String apiDef, String expectedFilesPath, String groupId, 
             String artifactId, String _package, boolean debug) throws IOException {
         OpenApi2Thorntail generator = new OpenApi2Thorntail() {
-            /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2Thorntail#processApiDoc()
-             */
             @Override
             protected String processApiDoc() {
                 try {
@@ -107,9 +104,13 @@ public class OpenApi2ThorntailTest {
                     throw new RuntimeException(e);
                 }
             }
+            @Override
+            protected String getResourceName(String name) {
+                return "_OpenApi2Thorntail/" + name;
+            }
         };
         generator.setUpdateOnly(false);
-        generator.setSettings(new ThorntailProjectSettings(groupId, artifactId, _package));
+        generator.setSettings(new JaxRsProjectSettings(groupId, artifactId, _package));
         generator.setOpenApiDocument(getClass().getClassLoader().getResource(apiDef));
         ByteArrayOutputStream outputStream = generator.generate();
         

@@ -1,6 +1,7 @@
 package org.example.api;
 
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,13 +17,13 @@ import org.example.api.beans.Brewery;
  * A JAX-RS interface.  An implementation of this interface must be provided.
  */
 @Path("/breweries")
-public interface Breweries {
+public interface BreweriesResource {
   /**
    * Returns a list of all the breweries.
    */
   @GET
   @Produces("application/json")
-  List<Brewery> listAllBreweries();
+  CompletionStage<List<Brewery>> listAllBreweries();
 
   /**
    * Adds a single brewery to the data set.
@@ -37,7 +38,7 @@ public interface Breweries {
   @Path("/{breweryId}")
   @GET
   @Produces("application/json")
-  Brewery getBrewery(@PathParam("breweryId") int breweryId);
+  CompletionStage<Brewery> getBrewery(@PathParam("breweryId") int breweryId);
 
   /**
    * Updates information about a single brewery.
@@ -60,7 +61,7 @@ public interface Breweries {
   @Path("/{breweryId}/beers")
   @GET
   @Produces("application/json")
-  List<Beer> listBreweryBeers(@PathParam("breweryId") int breweryId);
+  CompletionStage<List<Beer>> listBreweryBeers(@PathParam("breweryId") int breweryId);
 
   /**
    * Adds a single beer to the data set for this brewery.

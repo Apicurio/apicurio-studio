@@ -3,6 +3,7 @@
     <div class="col-md-8 activity-item-description">
         <span *ngIf="mode === 'user'">In <strong><a [routerLink]="[ '/apis', item.apiId ]" class="api-name">{{ apiName() }}</a></strong>, you</span>
         <span *ngIf="mode !== 'user'"><strong class="by">{{ item.by }}</strong></span>
+        <span>&nbsp;</span>
         <span>{{ description() }}</span>
     </div>
     <div class="col-md-3 activity-item-date" title="{{ item.on | date:'medium' }}">{{ on() }}</div>

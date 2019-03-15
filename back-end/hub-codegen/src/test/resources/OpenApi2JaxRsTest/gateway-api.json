@@ -1,0 +1,270 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Apiman Gateway API",
+    "description": "The Apiman Gateway API",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "1.3.0"
+  },
+  "paths": {
+    "/apis": {
+      "put": {
+        "summary": "Publish an API",
+        "description": "Publish an API and make it immediately available on the gateway.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The API to be published.",
+            "schema": {
+              "$ref": "#/definitions/API"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API was accepted."
+          }
+        }
+      }
+    },
+    "/clients": {
+      "put": {
+        "summary": "Register a Client",
+        "description": "Register a Client and make it immediately available on the gateway.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The Client to be published.",
+            "schema": {
+              "$ref": "#/definitions/Client"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Client was accepted."
+          }
+        }
+      }
+    },
+    "/system/status": {
+      "get": {
+        "summary": "Get gateway status",
+        "description": "Get current gateway status. Useful for determining whether a given gateway is responding correctly (routing, finished booting, error, etc) and verifying that provided auth credentials are correct, and/or the auth server is reachable (if applicable).",
+        "responses": {
+          "200": {
+            "description": "The system status",
+            "schema": {
+              "$ref": "#/definitions/SystemStatus"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SystemStatus": {
+      "properties": {
+        "id": {
+          "description": "The system's ID",
+          "minLength": 1,
+          "type": "string"
+        },
+        "name": {
+          "description": "The system's human-readable name",
+          "minLength": 1,
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "description": "The version of the gateway (i.e. apiman release)",
+          "minLength": 1,
+          "type": "string"
+        },
+        "up": {
+          "description": "Whether the system is up and available for requests.",
+          "type": "boolean"
+        }
+      }
+    },
+    "Policy": {
+      "title": "Policy",
+      "required": [
+        "policyJsonConfig",
+        "policyImpl"
+      ],
+      "type": "object",
+      "properties": {
+        "policyJsonConfig": {
+          "title": "Policy JSON config",
+          "description": "The policy's escaped/serialised configuration.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "policyImpl": {
+          "title": "Policy implementation.",
+          "description": "Policy implementation coordinates, either: \n\n* class:[Fully qualified class reference]\n* plugin:[GroupId]:[ArtifactId]:[Version]:war/[Fully qualified class name]'\n\nFor example:\n\n* `class:io.apiman.gateway.engine.policies.BasicAuthenticationPolicy`\n* `plugin:io.apiman.plugins:apiman-plugins-simple-header-policy:1.3.1.Final:war/io.apiman.plugins.simpleheaderpolicy.SimpleHeaderPolicy`\n\nA plugin's class reference can usually be found in the documentation, \nor via the plugin's `apiman/policyDefs/[POLICY-NAME]-policyDef.json`\nmetadata in the `policyImpl` field. \n\n**It may be easier to use the apiman-cli tool to generate this \nconfiguration for you.**\n\nNote that the fully qualified class name must be a valid Java FQN, however\nthat is not explicitly checked here due to its complexity.\n",
+          "minLength": 1,
+          "pattern": "^(class:.+)|(plugin:(.+?):(.+?):(.+?):war\\/.+)$",
+          "type": "string"
+        }
+      }
+    },
+    "Api": {
+      "title": "API",
+      "properties": {
+        "publicApi": {
+          "title": "Public API",
+          "default": false,
+          "type": "boolean"
+        },
+        "organizationId": {
+          "title": "Organization identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "apiId": {
+          "title": "API identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "title": "Version identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "endpoint": {
+          "title": "Endpoint URI",
+          "minLength": 1,
+          "type": "string"
+        },
+        "endpointType": {
+          "title": "Endpoint type",
+          "minLength": 1,
+          "enum": [
+            "rest",
+            "soap"
+          ],
+          "type": "string"
+        },
+        "endpointContentType": {
+          "title": "Endpoint Content Type",
+          "description": "Gateway's content type when responding with errors/failures.",
+          "enum": [
+            "json",
+            "xml"
+          ]
+        },
+        "endpointProperties": {
+          "title": "Endpoint properties",
+          "type": "object"
+        },
+        "parsePayload": {
+          "title": "Parse payload",
+          "description": "Parse whole payload upfront (reduces performance).",
+          "default": false,
+          "type": "boolean"
+        },
+        "apiPolicies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Policy"
+          }
+        }
+      }
+    },
+    "Client": {
+      "title": "Client",
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "title": "Organization identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "clientId": {
+          "title": "Client identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "title": "Version identifier",
+          "minLength": 1,
+          "type": "string"
+        },
+        "apiKey": {
+          "title": "API Key",
+          "minLength": 1,
+          "type": "string"
+        },
+        "contracts": {
+          "title": "Contracts",
+          "required": [
+            "apiOrgId",
+            "apiId",
+            "apiVersion",
+            "plan"
+          ],
+          "type": "array",
+          "items": {
+            "title": "Contract",
+            "type": "object",
+            "properties": {
+              "apiOrgId": {
+                "title": "API Organization ID",
+                "description": "Organization of API chosen. Must map to a valid API Organization ID.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "apiId": {
+                "title": "API ID",
+                "description": "API chosen. Must map to a valid API ID.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "apiVersion": {
+                "title": "API Version",
+                "description": "Version of API chosen. Must map to a valid API Version.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "plan": {
+                "title": "Plan Name",
+                "description": "Name of plan.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "policies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Policy"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Standard BASIC": {
+      "type": "basic",
+      "description": "The standard auth configuration for apiman gateway is BASIC. This is usually in concert with Keycloak and must be a user with the `apipublisher` role. \n\nIn the quickstart this is `apimanager/apiman123!`.\n\nFor example: `curl -kv https://apimanager:apiman123!@localhost:8080/apiman-gateway-api/system/status`"
+    },
+    "Keycloak OAuth2": {
+      "type": "oauth2",
+      "description": "The Apiman Gateways can be configured to use various OAuth2 implementations instead BASIC. Refer to the Gateway API Auth documentation for more information.\n\nThe user must have the `apipublisher` role.",
+      "flow": "implicit",
+      "authorizationUrl": "https://keycloak-server.local/path/for/your/realm/and/auth/type",
+      "scopes": {}
+    }
+  }
+}

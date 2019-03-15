@@ -37,7 +37,7 @@ export interface GenerateProjectWizardModel {
 }
 
 var PROJECT_TYPES: DropDownOption[] = [
-    { name: "Simple JAX-RS", value: "jaxrs", disabled: true },
+    { name: "Simple JAX-RS", value: "jaxrs" },
     { name: "Thorntail JAX-RS", value: "thorntail" },
     { name: "Vert.x", value: "vertx", disabled: true },
     { name: "Spring Boot", value: "springboot", disabled: true },
@@ -98,7 +98,7 @@ export class GenerateProjectWizardComponent {
 
         this.model = {
             generationType: "bootstrap",
-            projectType: "thorntail",
+            projectType: "jaxrs",
             projectData: {},
             location: "download",
             sourceControlData: {}

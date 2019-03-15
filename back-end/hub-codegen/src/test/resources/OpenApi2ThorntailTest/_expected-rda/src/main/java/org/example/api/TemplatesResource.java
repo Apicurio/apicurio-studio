@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
  * A JAX-RS interface.  An implementation of this interface must be provided.
  */
 @Path("/templates")
-public interface Templates {
+public interface TemplatesResource {
   @Path("es/metadata")
   @GET
   @Produces("application/json")

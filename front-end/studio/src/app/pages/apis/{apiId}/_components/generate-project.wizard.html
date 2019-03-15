@@ -98,29 +98,76 @@
                                                        (onValueChange)="model.projectType = $event" [noSelectionLabel]="'Choose Project Type'"></drop-down>
                                         </div>
                                     </div>
+                                    <!-- Simple JAX-RS Config -->
+                                    <div class="form-items-jaxrs" *ngIf="model.projectType === 'jaxrs'">
+                                        <div class="form-group">
+                                            <div class="col-sm-2">&nbsp;</div>
+                                            <div class="col-sm-10">
+                                                <input name="codeOnly" type="checkbox" id="jaxrs_codeOnly" [(ngModel)]="model.projectData.codeOnly">
+                                                <span>&nbsp;</span>
+                                                <label for="jaxrs_codeOnly">Skip maven project generation (generate code only)</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">&nbsp;</div>
+                                            <div class="col-sm-10">
+                                                <input name="codeOnly" type="checkbox" id="jaxrs_reactive" [(ngModel)]="model.projectData.reactive">
+                                                <span>&nbsp;</span>
+                                                <label for="jaxrs_reactive">Make the JAX-RS project Reactive (i.e. use CompletionStage&lt;T&gt; responses) </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" *ngIf="!model.projectData.codeOnly">
+                                            <label class="col-sm-2 control-label required" for="jaxrs_groupId">Group ID</label>
+                                            <div class="col-sm-10">
+                                                <input #thorntailGroupIdInput="ngModel" name="groupId" type="text" id="jaxrs_groupId" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.groupId" #name="ngModel">
+                                                <form-error-message [inputModel]="thorntailGroupIdInput" [type]="'required'">Group ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="thorntailGroupIdInput" [type]="'pattern'">Please enter a valid Maven groupId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" *ngIf="!model.projectData.codeOnly">
+                                            <label class="col-sm-2 control-label required" for="jaxrs_artifactId">Artifact ID</label>
+                                            <div class="col-sm-10">
+                                                <input #thorntailArtifactIdInput="ngModel" name="artifactId" type="text" id="jaxrs_artifactId" class="form-control" placeholder="my-api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.artifactId" #name="ngModel">
+                                                <form-error-message [inputModel]="thorntailArtifactIdInput" [type]="'required'">Artifact ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="thorntailArtifactIdInput" [type]="'pattern'">Please enter a valid Maven artifactId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" *ngIf="!model.projectData.codeOnly">
+                                            <label class="col-sm-2 control-label required" for="jaxrs_javaPackage">Java Package</label>
+                                            <div class="col-sm-10">
+                                                <input #thorntailJavaPackageInput="ngModel" name="javaPackage" type="text" id="jaxrs_javaPackage" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\._]*" [(ngModel)]="model.projectData.javaPackage" #name="ngModel">
+                                                <form-error-message [inputModel]="thorntailJavaPackageInput" [type]="'required'">Java package is required.</form-error-message>
+                                                <form-error-message [inputModel]="thorntailJavaPackageInput" [type]="'pattern'">Please enter a valid Java package name.</form-error-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Thorntail JAX-RS Config -->
                                     <div class="form-items-thorntail" *ngIf="model.projectType === 'thorntail'">
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label required" for="groupId">Group ID</label>
+                                            <label class="col-sm-2 control-label required" for="thorntail_groupId">Group ID</label>
                                             <div class="col-sm-10">
-                                                <input #groupIdInput="ngModel" name="groupId" type="text" id="groupId" class="form-control" placeholder="org.example.api"
+                                                <input #groupIdInput="ngModel" name="groupId" type="text" id="thorntail_groupId" class="form-control" placeholder="org.example.api"
                                                        required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.groupId" #name="ngModel">
                                                 <form-error-message [inputModel]="groupIdInput" [type]="'required'">Group ID is required.</form-error-message>
                                                 <form-error-message [inputModel]="groupIdInput" [type]="'pattern'">Please enter a valid Maven groupId.</form-error-message>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label required" for="artifactId">Artifact ID</label>
+                                            <label class="col-sm-2 control-label required" for="thorntail_artifactId">Artifact ID</label>
                                             <div class="col-sm-10">
-                                                <input #artifactIdInput="ngModel" name="artifactId" type="text" id="artifactId" class="form-control" placeholder="my-api"
+                                                <input #artifactIdInput="ngModel" name="artifactId" type="text" id="thorntail_artifactId" class="form-control" placeholder="my-api"
                                                        required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.artifactId" #name="ngModel">
                                                 <form-error-message [inputModel]="artifactIdInput" [type]="'required'">Artifact ID is required.</form-error-message>
                                                 <form-error-message [inputModel]="artifactIdInput" [type]="'pattern'">Please enter a valid Maven artifactId.</form-error-message>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label required" for="javaPackage">Java Package</label>
+                                            <label class="col-sm-2 control-label required" for="thorntail_javaPackage">Java Package</label>
                                             <div class="col-sm-10">
-                                                <input #javaPackageInput="ngModel" name="javaPackage" type="text" id="javaPackage" class="form-control" placeholder="org.example.api"
+                                                <input #javaPackageInput="ngModel" name="javaPackage" type="text" id="thorntail_javaPackage" class="form-control" placeholder="org.example.api"
                                                        required pattern="[a-zA-Z][a-zA-Z0-9\._]*" [(ngModel)]="model.projectData.javaPackage" #name="ngModel">
                                                 <form-error-message [inputModel]="javaPackageInput" [type]="'required'">Java package is required.</form-error-message>
                                                 <form-error-message [inputModel]="javaPackageInput" [type]="'pattern'">Please enter a valid Java package name.</form-error-message>
@@ -248,6 +295,7 @@
                                     <a href="{{ viewProjectLink() }}" target="_blank"
                                        class="btn btn-lg btn-primary" *ngIf="model.location === 'sourceControl'">
                                         <span class="fa fa-fw fa-external-link"></span>
+                                        <span>&nbsp;</span>
                                         <span>View Pull Request</span>
                                     </a>
                                 </div>

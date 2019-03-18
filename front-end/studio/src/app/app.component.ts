@@ -17,6 +17,7 @@
 
 import {Component} from '@angular/core';
 import {IAuthenticationService} from './services/auth.service';
+import {User} from "./models/user.model";
 
 @Component({
     moduleId: module.id,
@@ -29,12 +30,28 @@ export class AppComponent {
     public routerOutletWrapperId: string;
     public routerOutletWrapperClass: string;
 
+    version: string = "N/A";
+    builtOn: Date = new Date();
+    projectUrl: string = "http://www.apicur.io/";
+
+    helpExpanded: boolean = false;
+
     /**
      * @param authService
      */
     constructor(public authService: IAuthenticationService) {
         this.routerOutletWrapperId = "api-page-body";
         this.routerOutletWrapperClass = "";
+
+        let w: any = window;
+        if (w["ApicurioStudioInfo"]) {
+            console.info("[NavHeaderComponent] Found app info: %o", w["ApicurioStudioInfo"]);
+            this.version = w["ApicurioStudioInfo"].version;
+            this.builtOn = new Date(w["ApicurioStudioInfo"].builtOn);
+            this.projectUrl = w["ApicurioStudioInfo"].url;
+        } else {
+            console.info("[NavHeaderComponent] App info not found.");
+        }
 
         authService.authenticated().subscribe(authed => {
             if (authed) {
@@ -45,6 +62,15 @@ export class AppComponent {
                 this.routerOutletWrapperClass = "login-pf";
             }
         });
+    }
+
+    public user(): User {
+        return this.authService.getAuthenticatedUserNow();
+    }
+
+    public logout(): void {
+        this.helpExpanded = false;
+        this.authService.logout();
     }
 
 }

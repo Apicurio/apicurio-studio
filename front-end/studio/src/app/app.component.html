@@ -1,7 +1,119 @@
-<div class="apicurio">
-  <nav-header *ngIf="authService.isAuthenticated()"></nav-header>
-  <vertical-nav *ngIf="authService.isAuthenticated()"></vertical-nav>
-  <div id="{{ routerOutletWrapperId }}" class="{{ routerOutletWrapperClass }}">
-    <router-outlet></router-outlet>
-  </div>
+<div>
+    <div class="pf-c-background-image">
+        <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
+            <filter id="image_overlay" width="">
+                <feColorMatrix type="matrix" values="1 0 0 0 0
+              1 0 0 0 0
+              1 0 0 0 0
+              0 0 0 1 0"></feColorMatrix>
+                <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
+                    <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
+                    <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
+                    <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
+                    <feFuncA type="table" tableValues="0 1"></feFuncA>
+                </feComponentTransfer>
+            </filter>
+        </svg>
+    </div>
+    <div class="pf-c-page" id="page-layout-default-nav">
+        <header role="banner" class="pf-c-page__header">
+            <div class="pf-c-page__header-brand">
+                <a class="pf-c-page__header-brand-link" routerLink="/dashboard">
+                    <img class="pf-c-brand" src="assets/apicurio_logo_darkbkg_200px.png" alt="Patternfly Logo">
+                </a>
+            </div>
+            <div class="pf-c-page__header-tools">
+                <div class="pf-c-page__header-tools-group pf-m-icons pf-screen-reader">
+                    <button class="pf-c-button pf-m-plain" aria-label="Settings" routerLink="/settings">
+                        <i class="fas fa-cog" aria-hidden="true"></i></button>
+                </div>
+                <div class="pf-c-page__header-tools-group">
+                    <div class="pf-c-dropdown">
+                        <button class="pf-c-dropdown__toggle pf-m-mobile  pf-m-plain" id="dropdown-kebab-right-aligned-1-button"
+                                aria-expanded="false" aria-label="Actions">
+                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i></button>
+                        <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-kebab-right-aligned-1-button" hidden="">
+                            <li><a class="pf-c-dropdown__menu-item" href="#">Link</a></li>
+                            <li>
+                                <button class="pf-c-dropdown__menu-item">Action</button>
+                            </li>
+                            <li><a class="pf-c-dropdown__menu-item pf-m-disabled" aria-disabled="true" tabindex="-1" href="#">Disabled
+                                Link</a></li>
+                            <li>
+                                <button class="pf-c-dropdown__menu-item" disabled="">Disabled Action</button>
+                            </li>
+                            <li class="pf-c-dropdown__separator" role="separator"></li>
+                            <li><a class="pf-c-dropdown__menu-item" href="#">Separated Link</a></li>
+                        </ul>
+                    </div>
+                    <div class="pf-m-user pf-screen-reader">
+                        <div class="pf-c-dropdown">
+                            <button class="pf-c-dropdown__toggle pf-m-plain" id="page-layout-default-nav-dropdown-button"
+                                    aria-expanded="false" (click)="helpExpanded = !helpExpanded">
+                                <span class="pf-c-dropdown__toggle-text">{{ user().name }}</span>
+                                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                            </button>
+                            <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="helpDropdownButton" *ngIf="helpExpanded">
+                                <li>
+                                    <a class="pf-c-dropdown__menu-item" data-toggle="modal" data-target="#about-modal" rel="nofollow"
+                                       role="link" target="_blank" (click)="helpExpanded = false">About
+                                    </a>
+                                </li>
+                                <li class="pf-c-dropdown__separator" role="separator"></li>
+                                <li class="">
+                                    <a (click)="logout()" class="pf-c-dropdown__menu-item" role="link">Logout </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <img class="pf-c-avatar" src="assets/pf/img_avatar.svg" alt="Avatar Image">
+            </div>
+        </header>
+    </div>
+    <vertical-nav *ngIf="authService.isAuthenticated()"></vertical-nav>
+    <div id="{{ routerOutletWrapperId }}" class="{{ routerOutletWrapperClass }}">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<!-- The About Dialog -->
+<div class="modal fade" id="about-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content about-modal-pf">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h1 class="about-title">Apicurio Studio</h1>
+                <div class="product-versions-pf">
+                    <table>
+                        <tr>
+                            <td><strong>Version</strong></td>
+                            <td>{{ version }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Built On</strong></td>
+                            <td>{{ builtOn | date }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Edition</strong></td>
+                            <td>CLIv7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Project URL</strong><span>&nbsp;</span></td>
+                            <td><a href="{{ projectUrl }}" target="_blank">{{ projectUrl }} <span class="fa fa-external-link"></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="trademark-pf">
+                    &copy; 2019 Red Hat, Inc (JBoss Middleware)
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>

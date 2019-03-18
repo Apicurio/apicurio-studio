@@ -26,6 +26,7 @@
               "src/config.js"
             ],
             "styles": [
+              "node_modules/@patternfly/patternfly/patternfly.min.css",
               "node_modules/patternfly/dist/css/patternfly.css",
               "node_modules/patternfly/dist/css/patternfly-additions.css",
               "src/styles.css"

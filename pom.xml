@@ -62,7 +62,7 @@
         <version.wildfly>14.0.1.Final</version.wildfly>
 
         <!-- Thorntail Version -->
-        <version.io.thorntail>2.3.0.Final</version.io.thorntail>
+        <version.io.thorntail>2.4.0.Final</version.io.thorntail>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>

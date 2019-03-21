@@ -4649,10 +4649,10 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-oai-ts-commands@0.2.62:
-  version "0.2.62"
-  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.62.tgz#c069aa39315e2e758d28a9d751f20e9320ad42aa"
-  integrity sha512-W8350ZnSfuxq26FdYV+BPg8XuZMvYcl26sXyu2FzsB2IPwQGKkfKJiMMJq5WogLGfXDcbWIXbkuDigbymt1nRg==
+oai-ts-commands@0.2.63:
+  version "0.2.63"
+  resolved "https://registry.yarnpkg.com/oai-ts-commands/-/oai-ts-commands-0.2.63.tgz#d850dc1e12aceddfbc9decd99450dbbe7d03cfcc"
+  integrity sha512-wu+hsAd4APXezUPmjNrGOQBzWILCoCVfGLB7GT0q/Ktjb5TasN32AiYPRg9gj5m4j9aXi7NipGbTw2L4DtVZqQ==
   dependencies:
     core-js "2.6.5"
     oai-ts-core "0.2.36"

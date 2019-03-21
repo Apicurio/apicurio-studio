@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, Input, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 import {NgForm} from "@angular/forms";
 import {LinkedAccount} from "../../../../models/linked-account.model";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
@@ -37,11 +37,11 @@ export interface GenerateProjectWizardModel {
 }
 
 var PROJECT_TYPES: DropDownOption[] = [
-    { name: "Simple JAX-RS", value: "jaxrs" },
-    { name: "Thorntail JAX-RS", value: "thorntail" },
-    { name: "Vert.x", value: "vertx", disabled: true },
-    { name: "Spring Boot", value: "springboot", disabled: true },
-    { name: "Node.js", value: "nodejs", disabled: true }
+    new Value("Simple JAX-RS", "jaxrs"),
+    new Value("Thorntail JAX-RS", "thorntail"),
+    new Value("Vert.x", "vertx", true),
+    new Value("Spring Boot", "springboot", true),
+    new Value("Node.js", "nodejs", true)
 ];
 
 
@@ -171,10 +171,7 @@ export class GenerateProjectWizardComponent {
         if (this._updateProjectOptions === null) {
             this._updateProjectOptions = [];
             for (let project of this.projects) {
-                this._updateProjectOptions.push({
-                    name: project.type + " (" + project.createdOn + ")",
-                    value: project
-                });
+                this._updateProjectOptions.push(new Value(project.type + " (" + project.createdOn + ")", project));
             }
         }
         return this._updateProjectOptions;

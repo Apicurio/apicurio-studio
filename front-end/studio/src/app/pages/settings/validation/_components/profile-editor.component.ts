@@ -19,7 +19,7 @@ import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angula
 import {KeypressUtils} from "../../../apis/{apiId}/editor/_util/keypress.util";
 import {ValidationProfile} from "../../../../models/validation.model";
 import {OasValidationProblemSeverity, OasValidationRuleset, ValidationRuleMetaData} from "oai-ts-core";
-import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 
 export interface ValidationRuleFilter {
     type: string;
@@ -166,20 +166,20 @@ export class ProfileEditorComponent {
 
     filterTypeOptions(): DropDownOption[] {
         return [
-            { name: "Name", value: "name" },
-            { name: "Severity", value: "severity" },
-            { name: "Rule Type", value: "ruleType" },
-            { name: "Entity Type", value: "entityType" },
-            { name: "Version", value: "version" }
+            new Value("Name", "name"),
+            new Value("Severity", "severity"),
+            new Value("Rule Type", "ruleType"),
+            new Value("Entity Type", "entityType"),
+            new Value("Version", "version")
         ];
     }
 
     severityOptions(): DropDownOption[] {
         return [
-            { name: "None", value: OasValidationProblemSeverity.ignore },
-            { name: "Low", value: OasValidationProblemSeverity.low },
-            { name: "Medium", value: OasValidationProblemSeverity.medium },
-            { name: "High", value: OasValidationProblemSeverity.high },
+            new Value("None", OasValidationProblemSeverity.ignore),
+            new Value("Low", OasValidationProblemSeverity.low),
+            new Value("Medium", OasValidationProblemSeverity.medium),
+            new Value("High", OasValidationProblemSeverity.high)
         ]
     }
 
@@ -192,9 +192,7 @@ export class ProfileEditorComponent {
 
         let options: DropDownOption[] = [];
         Object.getOwnPropertyNames(optionNames).sort().forEach( name => {
-            options.push({
-                name: name, value: name
-            });
+            options.push(new Value(name, name));
         });
         return options;
     }
@@ -208,9 +206,7 @@ export class ProfileEditorComponent {
 
         let options: DropDownOption[] = [];
         Object.getOwnPropertyNames(optionNames).sort().forEach( name => {
-            options.push({
-                name: name, value: name
-            });
+            options.push(new Value(name, name));
         });
         return options;
     }
@@ -226,9 +222,7 @@ export class ProfileEditorComponent {
 
         let options: DropDownOption[] = [];
         Object.getOwnPropertyNames(optionNames).forEach( name => {
-            options.push({
-                name: name, value: name
-            });
+            options.push(new Value(name, name));
         });
         return options;
     }

@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Inject, Output} from "@angular/core";
 import {IAuthenticationService} from "../../../../services/auth.service";
-import {DropDownOption} from '../../../../components/common/drop-down.component';
+import {DropDownOption, DropDownOptionValue as Value} from '../../../../components/common/drop-down.component';
 import {ApisService} from "../../../../services/apis.service";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
 import {TemplateService} from "../../../../services/template.service";
@@ -68,8 +68,8 @@ export class CreateApiFormComponent {
 
     public typeOptions(): DropDownOption[] {
         return [
-            { name: "Open API 2.0 (Swagger)", value: "2.0"},
-            { name: "Open API 3.0.2", value: "3.0.2"}
+            new Value("Open API 2.0 (Swagger)", "2.0"),
+            new Value("Open API 3.0.2", "3.0.2")
         ];
     }
 

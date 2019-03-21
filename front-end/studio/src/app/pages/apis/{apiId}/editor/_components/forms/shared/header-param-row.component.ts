@@ -32,7 +32,7 @@ import {
     SimplifiedType
 } from "oai-ts-commands";
 import {OasCombinedVisitorAdapter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
-import {DropDownOption} from '../../../../../../../components/common/drop-down.component';
+import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -116,8 +116,8 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
 
     public requiredOptions(): DropDownOption[] {
         return [
-            { name: "Required", value: "required" },
-            { name: "Not Required", value: "not-required" }
+            new Value("Required", "required"),
+            new Value("Not Required", "not-required")
         ];
     }
 

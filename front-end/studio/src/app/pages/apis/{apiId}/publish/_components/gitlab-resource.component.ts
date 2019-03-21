@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
-import {DropDownOption} from "../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 import {GitLabGroup} from "../../../../../models/gitlab-group.model";
 import {GitLabProject} from "../../../../../models/gitlab-project.model";
 
@@ -48,10 +48,7 @@ export class GitLabResourceComponent implements OnInit {
     public _groupOptions: DropDownOption[] = [];
     public _projectOptions: DropDownOption[] = [];
     public _branchOptions: DropDownOption[] = [
-        {
-            name: "master",
-            value: "master"
-        }
+        new Value("master", "master")
     ];
     public gettingGroups: boolean = false;
     public gettingProjects: boolean = false;
@@ -75,23 +72,15 @@ export class GitLabResourceComponent implements OnInit {
             this._groupOptions = [];
             groups.forEach( group => {
                 if (group.userGroup) {
-                    this._groupOptions.push({
-                        name: group.name,
-                        value: group
-                    });
+                    this._groupOptions.push(new Value(group.name, group));
                     if (groups.length > 1) {
-                        this._groupOptions.push({
-                            divider: true
-                        });
+                        this._groupOptions.push(DIVIDER);
                     }
                 }
             });
             groups.forEach( group => {
                 if (!group.userGroup) {
-                    this._groupOptions.push({
-                        name: group.name,
-                        value: group
-                    });
+                    this._groupOptions.push(new Value(group.name, group));
                 }
             });
             this.gettingGroups = false;
@@ -134,10 +123,7 @@ export class GitLabResourceComponent implements OnInit {
             });
             this._projectOptions = [];
             projects.forEach( project => {
-                this._projectOptions.push({
-                    name: project.name,
-                    value: project
-                });
+                this._projectOptions.push(new Value(project.name, project));
             });
             this.gettingProjects = false;
 
@@ -174,10 +160,7 @@ export class GitLabResourceComponent implements OnInit {
             });
             this._branchOptions = [];
             branches.forEach( branch => {
-                this._branchOptions.push({
-                    name: branch.name,
-                    value: branch.name
-                });
+                this._branchOptions.push(new Value(branch.name, branch.name));
             })
             this.gettingBranches = false;
             if (this.isValid()) {

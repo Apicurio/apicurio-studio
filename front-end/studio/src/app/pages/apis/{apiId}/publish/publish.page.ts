@@ -22,7 +22,7 @@ import {Api} from "../../../../models/api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {LinkedAccount} from "../../../../models/linked-account.model";
-import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 import {CodeEditorMode} from "../../../../components/common/code-editor.component";
 import {PublishApi} from "../../../../models/publish-api.model";
 import {Title} from "@angular/platform-browser";
@@ -230,14 +230,8 @@ export class PublishPageComponent extends AbstractPageComponent {
 
     public formatOptions(): DropDownOption[] {
         return [
-            {
-                name: "YAML",
-                value: "YAML"
-            },
-            {
-                name: "JSON",
-                value: "JSON"
-            }
+            new Value("YAML", "YAML"),
+            new Value("JSON", "JSON")
         ];
     }
 }

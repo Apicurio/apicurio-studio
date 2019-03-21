@@ -33,7 +33,7 @@ import {
 import {OasParameterBase} from "oai-ts-core";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
-import {DropDownOption} from "../../../../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
 import {SelectionService} from "../../../../_services/selection.service";
 import {AbstractRowComponent} from "../../../common/item-row.abstract";
 
@@ -97,8 +97,8 @@ export class FormDataParamRowComponent extends AbstractRowComponent<OasParameter
 
     public requiredOptions(): DropDownOption[] {
         return [
-            { name: "Required", value: "required" },
-            { name: "Not Required", value: "not-required" }
+            new Value("Required", "required"),
+            new Value("Not Required", "not-required")
         ];
     }
 

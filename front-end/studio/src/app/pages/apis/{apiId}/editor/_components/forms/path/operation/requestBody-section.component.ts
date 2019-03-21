@@ -54,7 +54,7 @@ import {
     SimplifiedType
 } from "oai-ts-commands";
 import {EditorsService} from "../../../../_services/editors.service";
-import {DropDownOption} from "../../../../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
@@ -287,8 +287,8 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     public requestBodyRequiredOptions(): DropDownOption[] {
         return [
-            { name: "Required", value: "required" },
-            { name: "Not Required", value: "not-required" }
+            new Value("Required", "required"),
+            new Value("Not Required", "not-required")
         ];
     }
 

@@ -58,6 +58,9 @@
                 node.type = type.type;
                 node.format = type.as;
             }
+            if (type.isFileType()) {
+                node.type = type.type;
+            }
             if (type.isEnum()) {
                 node.enum = JSON.parse(JSON.stringify(type.enum));
             }
@@ -5689,7 +5692,7 @@
                 // Need to clone the enum values
                 rval.enum = JSON.parse(JSON.stringify(items.enum));
             }
-            if (items && items.type && items.type !== "array" && items.type !== "object" && items.type !== "file") {
+            if (items && items.type && items.type !== "array" && items.type !== "object") {
                 rval.type = items.type;
                 if (items.format) {
                     rval.as = items.format;
@@ -5711,7 +5714,7 @@
                 rval.enum = JSON.parse(JSON.stringify(schema.enum));
             }
             if (schema && schema.type && schema.type !== "array" &&
-                schema.type !== "object" && schema.type !== "file") {
+                schema.type !== "object") {
                 rval.type = schema.type;
                 if (schema.format) {
                     rval.as = schema.format;
@@ -5725,6 +5728,9 @@
         };
         SimplifiedType.prototype.isSimpleType = function () {
             return ["string", "number", "integer", "boolean"].indexOf(this.type) !== -1;
+        };
+        SimplifiedType.prototype.isFileType = function () {
+            return this.type === "file";
         };
         SimplifiedType.prototype.isEnum = function () {
             return this.enum !== null && this.enum !== undefined && this.enum.length >= 0;

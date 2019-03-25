@@ -19,14 +19,13 @@ import {Injectable} from "@angular/core";
 import {
     DefaultValidationSeverityRegistry,
     IOasValidationSeverityRegistry,
-    OasValidationProblemSeverity,
-    ValidationRuleMetaData
+    OasValidationProblemSeverity
 } from "oai-ts-core";
 
 
 export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
 
-    public lookupSeverity(rule: ValidationRuleMetaData): OasValidationProblemSeverity {
+    public lookupSeverity(): OasValidationProblemSeverity {
         return OasValidationProblemSeverity.high;
     }
 
@@ -35,7 +34,7 @@ export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
 
 export class NoValidationRegistry implements IOasValidationSeverityRegistry {
 
-    public lookupSeverity(rule: ValidationRuleMetaData): OasValidationProblemSeverity {
+    public lookupSeverity(): OasValidationProblemSeverity {
         return OasValidationProblemSeverity.ignore;
     }
 

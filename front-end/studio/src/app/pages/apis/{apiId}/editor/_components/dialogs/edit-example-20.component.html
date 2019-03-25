@@ -1,6 +1,6 @@
 <!-- Edit Example Dialog -->
 <div>
-    <div bsModal #editExampleModal="bs-modal" class="modal fade" id="editExampleModal" tabindex="-1" role="dialog"
+    <div bsModal #editExampleModal="bs-modal" class="modal fade" id="editExampleModal" tabindex="-1" role="dialog" [config]="{ backdrop: false }"
          aria-labelledby="editExampleModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()">
         <div class="modal-dialog">
             <div class="modal-content">

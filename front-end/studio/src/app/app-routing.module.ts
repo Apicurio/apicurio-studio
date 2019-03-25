@@ -34,6 +34,7 @@ import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
 import {MockPageComponent} from './pages/apis/{apiId}/mock/mock.page';
 import {DefaultPageComponent} from "./pages/default.page";
+import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 
 const routes: Routes = [
     {
@@ -64,6 +65,11 @@ const routes: Routes = [
     {
         path: "settings/accounts/:accountType/created",
         component: CreatedLinkedAccountPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "settings/validation",
+        component: ValidationPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {

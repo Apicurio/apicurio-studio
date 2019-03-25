@@ -431,6 +431,7 @@ export class GenerateProjectWizardComponent {
         this.model.projectData.artifactId = project.attributes.artifactId;
         this.model.projectData.groupId = project.attributes.groupId;
         this.model.projectData.javaPackage = project.attributes.javaPackage;
+        this.model.projectData.reactive = project.attributes.reactive;
         this.model.sourceControlData.type = project.attributes['publish-type'];
         this.model.sourceControlData.model = {};
         this.model.sourceControlData.model.branch = project.attributes['publish-branch'];

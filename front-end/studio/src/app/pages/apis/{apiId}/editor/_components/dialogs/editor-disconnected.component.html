@@ -1,5 +1,5 @@
 <div bsModal #editorDisconnectedModal="bs-modal" class="modal fade" id="editorDisconnectedModal" tabindex="-1" role="dialog"
-     aria-labelledby="editorDisconnectedModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
+     aria-labelledby="editorDisconnectedModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: false }" >
     <div class="modal-dialog editor-disconnected-dialog">
         <div class="modal-content">
             <div class="modal-header">

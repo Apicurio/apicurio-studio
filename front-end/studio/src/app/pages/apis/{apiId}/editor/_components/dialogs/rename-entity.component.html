@@ -1,7 +1,7 @@
 <!-- Rename Entity Dialog -->
 <div>
     <div bsModal #renameEntityModal="bs-modal" class="modal fade" id="renameEntityModal" tabindex="-1" role="dialog"
-         aria-labelledby="renameEntityModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()"
+         aria-labelledby="renameEntityModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" [config]="{ backdrop: false }"
          (onShown)="renameEntityInput.focus()" (onHidden)="close()">
         <div class="modal-dialog">
             <div class="modal-content">

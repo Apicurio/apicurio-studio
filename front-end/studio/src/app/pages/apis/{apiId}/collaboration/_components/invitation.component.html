@@ -1,5 +1,5 @@
 <div bsModal #invitationModal="bs-modal" class="modal fade" id="invitationModal" tabindex="-1" role="dialog"
-     aria-labelledby="invitationModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
+     aria-labelledby="invitationModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: false }" >
     <div class="modal-dialog invitation-dialog">
         <div class="modal-content">
             <div class="modal-header">

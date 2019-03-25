@@ -1,6 +1,6 @@
 <!-- Add Tag Dialog -->
 <div bsModal #addTagModal="bs-modal" class="modal fade" id="addTagModal" tabindex="-1" role="dialog" aria-labelledby="addTagModalLabel"
-     role="dialog" aria-hidden="true" (onShown)="doSelect()"
+     role="dialog" aria-hidden="true" (onShown)="doSelect()" [config]="{ backdrop: false }"
      (onHidden)="close()" *ngIf="isOpen()">
     <div class="modal-dialog">
         <div class="modal-content">

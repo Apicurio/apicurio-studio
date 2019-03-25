@@ -1,5 +1,5 @@
 <div bsModal #generateProjectModal="bs-modal" class="modal fade" id="generateProjectModal" tabindex="-1" role="dialog"
-     aria-labelledby="generateProjectModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
+     aria-labelledby="generateProjectModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: false }" >
     <div class="modal-dialog modal-lg wizard-pf" style="width: 900px">
         <div class="experimental-pf">
             <div class="experimental-pf-bar">
@@ -100,7 +100,7 @@
                                     </div>
                                     <!-- Simple JAX-RS Config -->
                                     <div class="form-items-jaxrs" *ngIf="model.projectType === 'jaxrs'">
-                                        <div class="form-group">
+                                        <div class="form-group" *ngIf="model.generationType === 'bootstrap'">
                                             <div class="col-sm-2">&nbsp;</div>
                                             <div class="col-sm-10">
                                                 <input name="codeOnly" type="checkbox" id="jaxrs_codeOnly" [(ngModel)]="model.projectData.codeOnly">

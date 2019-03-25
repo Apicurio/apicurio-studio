@@ -1,4 +1,5 @@
 <div bsModal #confirmDeleteModal="bs-modal" class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+     [config]="{ backdrop: false }"
      aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" >
     <div class="modal-dialog">
         <div class="modal-content">

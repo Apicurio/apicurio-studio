@@ -1,0 +1,18 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="Settings" [route]="[ '/settings' ]"></li>
+        <li breadcrumb label="Validation" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid" *ngIf="!pageError">
+    <div class="row" style="min-height: 35px"></div>
+    <div class="row row-cards-pf">
+        <div class="col-xs-12 col-sm-2">
+            <settings-nav tab="validation"></settings-nav>
+        </div>
+        <div class="col-xs-12 col-sm-8">
+            <h1>Validation Settings</h1>
+        </div>
+    </div>
+</div>

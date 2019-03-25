@@ -1,5 +1,5 @@
 <!-- Add Response Dialog -->
-<div bsModal #addResponseModal="bs-modal" class="modal fade" id="addResponseModal" tabindex="-1" role="dialog"
+<div bsModal #addResponseModal="bs-modal" class="modal fade" id="addResponseModal" tabindex="-1" role="dialog" [config]="{ backdrop: false }"
      aria-labelledby="addResponseModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()">
     <div class="modal-dialog">
         <div class="modal-content">

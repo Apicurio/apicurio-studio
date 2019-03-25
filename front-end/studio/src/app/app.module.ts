@@ -68,6 +68,7 @@ import {DefaultPageComponent} from "./pages/default.page";
 import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_components/invitation.component";
 import {ConfigureValidationComponent} from './pages/apis/{apiId}/_components/configure-validation.dialog';
 import {ValidationService} from "./services/validation.service";
+import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 
 @NgModule({
     imports: [
@@ -76,7 +77,7 @@ import {ValidationService} from "./services/validation.service";
     ],
     declarations: [
         AppComponent, DashboardPageComponent, BreadcrumbsComponent, BreadcrumbComponent, PageErrorComponent,
-        VerticalNavComponent, ConfirmDeleteDialogComponent, InvitationDialogComponent,
+        VerticalNavComponent, ConfirmDeleteDialogComponent, InvitationDialogComponent, ValidationPageComponent,
         NotFoundPageComponent, SettingsNavComponent, CreatedLinkedAccountPageComponent, LinkedAccountsPageComponent,
         ProfilePageComponent, SettingsPageComponent, ApisPageComponent, CreateApiPageComponent, ImportApiPageComponent,
         ImportApiFormComponent, CreateApiFormComponent, ApisListComponent, ApisCardsComponent, CopyPageComponent,

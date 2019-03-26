@@ -1,6 +1,7 @@
 <!-- Add Response Dialog -->
 <div bsModal #cloneResponseModal="bs-modal" class="modal fade" id="cloneResponseModal" tabindex="-1" role="dialog"
-     aria-labelledby="cloneResponseModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()">
+     aria-labelledby="cloneResponseModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()"
+     [config]="{ backdrop: false }">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

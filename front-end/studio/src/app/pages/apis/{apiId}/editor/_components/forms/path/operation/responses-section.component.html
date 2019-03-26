@@ -36,6 +36,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a (click)="deleteResponse(currentResponse())"><span class="fa fa-fw fa-trash"></span><span>Delete Response</span></a></li>
+                        <li><a (click)="openCloneResponseModal(currentResponse())"><!--<span class="fa fa-fw fa-trash"></span>--><span>Clone Response</span></a></li>
                     </ul>
                 </div>
             </div>
@@ -47,3 +48,4 @@
     </div>
 </section>
 <add-response-dialog #addResponseDialog (onAdd)="addResponse($event)"></add-response-dialog>
+<clone-response-dialog #cloneResponseDialog (onClone)="cloneResponse($event)"></clone-response-dialog>

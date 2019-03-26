@@ -27,6 +27,7 @@ import {Oas20Operation, Oas20Response, Oas30Operation, Oas30Response, OasRespons
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
 import {AddResponseDialogComponent} from "../../../dialogs/add-response.component";
+import {CloneResponseDialogComponent} from "../../../dialogs/clone-response.component";
 import {
     createDeleteAllResponsesCommand,
     createDeleteResponseCommand,
@@ -55,6 +56,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     @Input() operation: Oas20Operation | Oas30Operation;
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
+    @ViewChild("cloneResponseDialog") public cloneResponseDialog: CloneResponseDialogComponent;
 
     private _responseTab: string;
 
@@ -102,11 +104,23 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         this.addResponseDialog.open(this.operation, this.nextAvailableResponseCode());
     }
 
+    public openCloneResponseModal(currentResponse: (Oas20Response | Oas30Response)): void {
+        this.cloneResponseDialog.open(this.operation, this.nextAvailableResponseCode());
+    }
+
     public addResponse(statusCode: string): void {
         let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
         this.commandService.emit(command);
         // FIXME fire a selection event here instead of simply setting the tab selection - doing this will let OTHER users know what we're looking at.
         this._responseTab = statusCode;
+    }
+
+    public cloneResponse(statusCode: string): void {
+        const selectedStatusCode = this._responseTab;
+        const originalResponse = this.operation.responses.response(selectedStatusCode);
+        let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(),
+            this.operation, statusCode, originalResponse);
+        this.commandService.emit(command);
     }
 
     public deleteAllResponses(): void {

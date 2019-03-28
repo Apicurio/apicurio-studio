@@ -41,13 +41,22 @@ public class PreviewServlet extends HttpServlet {
     private static final long serialVersionUID = 7680564778236525468L;
     private static Logger logger = LoggerFactory.getLogger(PreviewServlet.class);
     
-    private static String TEMPLATE = null;
+    private static String TEMPLATE_REDOC = null;
     {
         URL templateURL = PreviewServlet.class.getResource("preview_redoc.template");
         try {
-            TEMPLATE = IOUtils.toString(templateURL, Charset.forName("UTF-8"));
+            TEMPLATE_REDOC = IOUtils.toString(templateURL, Charset.forName("UTF-8"));
         } catch (Exception e) {
             logger.error("Failed to load previe template resource: preview_redoc.template", e);
+        }
+    }
+    private static String TEMPLATE_RAPIDOC = null;
+    {
+        URL templateURL = PreviewServlet.class.getResource("preview_rapidoc.template");
+        try {
+        	TEMPLATE_RAPIDOC = IOUtils.toString(templateURL, Charset.forName("UTF-8"));
+        } catch (Exception e) {
+            logger.error("Failed to load previe template resource: preview_rapidoc.template", e);
         }
     }
 
@@ -58,13 +67,19 @@ public class PreviewServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String apiId = req.getParameter("aid");
+        String rid = req.getParameter("rid");
         
         logger.debug("Rendering document preview for API: {}", apiId);
         
         String specURL = "download?type=api&format=json&id=" + apiId;
         logger.debug("Spec URL: {}", specURL);
         
-        String content = TEMPLATE.replace("SPEC_URL", specURL);
+        String content;
+        if (rid != null && rid.equals("rapidoc")) {
+        	content = TEMPLATE_RAPIDOC.replace("SPEC_URL", specURL);
+        } else {
+        	content = TEMPLATE_REDOC.replace("SPEC_URL", specURL);
+        }
         resp.setStatus(200);
         resp.setContentLength(content.length());
         resp.setContentType("text/html");

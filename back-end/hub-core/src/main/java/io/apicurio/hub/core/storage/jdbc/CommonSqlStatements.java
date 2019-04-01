@@ -512,4 +512,36 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     public String deleteCodegenProjects() {
         return "DELETE FROM codegen WHERE design_id = ?";
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectValidationProfiles()
+     */
+    @Override
+    public String selectValidationProfiles() {
+        return "SELECT * FROM validation_profiles WHERE owner = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertValidationProfile()
+     */
+    @Override
+    public String insertValidationProfile() {
+        return "INSERT INTO validation_profiles (owner, name, description, severities) VALUES (?, ?, ?, ?)";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#updateValidationProfile()
+     */
+    @Override
+    public String updateValidationProfile() {
+        return "UPDATE validation_profiles SET name = ?, description = ?, severities = ? WHERE id = ? AND owner = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteValidationProfile()
+     */
+    @Override
+    public String deleteValidationProfile() {
+        return "DELETE FROM validation_profiles WHERE id = ? AND owner = ?";
+    }
 }

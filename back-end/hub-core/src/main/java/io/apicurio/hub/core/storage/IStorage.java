@@ -16,6 +16,10 @@
 
 package io.apicurio.hub.core.storage;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
@@ -29,12 +33,9 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -432,7 +433,43 @@ public interface IStorage {
      */
     public void deleteCodegenProjects(String userId, String designId) throws NotFoundException, StorageException;
 
-
+    /**
+     * Gets the latest command for the given design id.
+     * @param designId
+     * @throws NotFoundException
+     * @throws StorageException
+     */
     public Optional<ApiDesignCommand> getLatestCommand(String designId) throws NotFoundException, StorageException;
+    
+    /**
+     * Returns a collection of validation profiles for the given user.
+     * @param userId
+     * @throws StorageException
+     */
+    public Collection<ValidationProfile> listValidationProfiles(String userId) throws StorageException;
+    
+    /**
+     * Creates a single new validation profile for the given user.
+     * @param userId
+     * @param profile
+     * @throws StorageException
+     */
+    public long createValidationProfile(String userId, ValidationProfile profile) throws StorageException;
+    
+    /**
+     * Updates a single new validation profile for the given user.
+     * @param userId
+     * @param profile
+     * @throws StorageException
+     */
+    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException;
+
+    /**
+     * Deletes a single validation profile.
+     * @param userId
+     * @param profileId
+     * @throws StorageException
+     */
+    public void deleteValidationProfile(String userId, long profileId) throws StorageException;
 
 }

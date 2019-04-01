@@ -284,4 +284,25 @@ public interface ISqlStatements {
      * A statement used to select the latest command for a single design_id.
      */
     public String selectLatestContentCommand();
+    
+    /**
+     * A statement used to select all validation profiles for a user.
+     */
+    public String selectValidationProfiles();
+    
+    /**
+     * A statement used to insert a single row on the validation profiles table.
+     */
+    public String insertValidationProfile();
+
+    /**
+     * A statement used to update a row in the validation profiles table.
+     */
+    public String updateValidationProfile();
+
+    /**
+     * A statement used to delete a single row in the validation profiles table.
+     */
+    public String deleteValidationProfile();
+
 }

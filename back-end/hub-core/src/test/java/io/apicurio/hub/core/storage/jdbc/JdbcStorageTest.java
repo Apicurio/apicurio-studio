@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -49,6 +50,8 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.ValidationProfile;
+import io.apicurio.hub.core.beans.ValidationSeverity;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -1343,6 +1346,81 @@ public class JdbcStorageTest {
         Assert.assertEquals("{2}", iter.next().getCommand());
         Assert.assertEquals("{3}", iter.next().getCommand());
         Assert.assertEquals("{4}", iter.next().getCommand());
+    }
+    
+    @Test
+    public void testValidationProfiles() throws Exception {
+        Collection<ValidationProfile> profiles = storage.listValidationProfiles("user1");
+        Assert.assertTrue(profiles.isEmpty());
+        
+        ValidationProfile profile = new ValidationProfile();
+        profile.setName("Profile 1");
+        profile.setDescription("This is the first profile.");
+        profile.getSeverities().put("k-high", ValidationSeverity.high);
+        profile.getSeverities().put("k-ignore", ValidationSeverity.ignore);
+        profile.getSeverities().put("k-low", ValidationSeverity.low);
+        profile.getSeverities().put("k-medium", ValidationSeverity.medium);
+        long pid1 = storage.createValidationProfile("user1", profile);
+        Assert.assertNotNull(pid1);
+        Assert.assertTrue(pid1 >= 0);
+        
+        profiles = storage.listValidationProfiles("user1");
+        Assert.assertFalse(profiles.isEmpty());
+        Assert.assertEquals(1, profiles.size());
+        ValidationProfile p = profiles.iterator().next();
+        Assert.assertEquals(pid1, p.getId());
+        Assert.assertEquals("Profile 1", p.getName());
+        Assert.assertEquals("This is the first profile.", p.getDescription());
+        Map<String, ValidationSeverity> severities = p.getSeverities();
+        Assert.assertNotNull(severities);
+        Assert.assertEquals(ValidationSeverity.high, severities.get("k-high"));
+        Assert.assertEquals(ValidationSeverity.low, severities.get("k-low"));
+        Assert.assertEquals(ValidationSeverity.medium, severities.get("k-medium"));
+        Assert.assertEquals(ValidationSeverity.ignore, severities.get("k-ignore"));
+        
+        profile = new ValidationProfile();
+        profile.setName("Profile 2");
+        profile.setDescription("This is the second profile.");
+        long pid2 = storage.createValidationProfile("user1", profile);
+        Assert.assertNotNull(pid2);
+        Assert.assertTrue(pid2 >= 0);
+        
+        profiles = storage.listValidationProfiles("user1");
+        Assert.assertFalse(profiles.isEmpty());
+        Assert.assertEquals(2, profiles.size());
+
+        profiles = storage.listValidationProfiles("user2");
+        Assert.assertTrue(profiles.isEmpty());
+        
+        storage.deleteValidationProfile("user1", pid2);
+        profiles = storage.listValidationProfiles("user1");
+        Assert.assertFalse(profiles.isEmpty());
+        Assert.assertEquals(1, profiles.size());
+        
+        profile = new ValidationProfile();
+        profile.setId(pid1);
+        profile.setName("Profile 1 (updated)");
+        profile.setDescription("This is the first profile (updated).");
+        profile.getSeverities().put("k-high", ValidationSeverity.low);
+        profile.getSeverities().put("k-ignore", ValidationSeverity.low);
+        profile.getSeverities().put("k-low", ValidationSeverity.low);
+        profile.getSeverities().put("k-medium", ValidationSeverity.high);
+        storage.updateValidationProfile("user1", profile);
+        
+        profiles = storage.listValidationProfiles("user1");
+        Assert.assertFalse(profiles.isEmpty());
+        Assert.assertEquals(1, profiles.size());
+        p = profiles.iterator().next();
+        Assert.assertEquals(pid1, p.getId());
+        Assert.assertEquals("Profile 1 (updated)", p.getName());
+        Assert.assertEquals("This is the first profile (updated).", p.getDescription());
+        severities = p.getSeverities();
+        Assert.assertNotNull(severities);
+        Assert.assertEquals(ValidationSeverity.low, severities.get("k-high"));
+        Assert.assertEquals(ValidationSeverity.low, severities.get("k-low"));
+        Assert.assertEquals(ValidationSeverity.high, severities.get("k-medium"));
+        Assert.assertEquals(ValidationSeverity.low, severities.get("k-ignore"));
+
     }
 
     /**

@@ -251,6 +251,14 @@
                     this._currentArgument.format = cgReturn.format;
                 }
             }
+            else if (node.type) {
+                if (node.type) {
+                    this._currentArgument.type = node.type;
+                }
+                if (node.format) {
+                    this._currentArgument.format = node.format;
+                }
+            }
         };
         OpenApi2CodegenVisitor.prototype.visit30Parameter = function (node) {
             if (node.getMediaTypes().length > 0) {

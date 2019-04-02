@@ -1385,7 +1385,7 @@ public class JdbcStorage implements IStorage {
      * @see io.apicurio.hub.core.storage.IStorage#updateValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
      */
     @Override
-    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException {
+    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException, NotFoundException {
         logger.debug("Updating a validation profile: {}", profile.getId());
         try {
             this.jdbi.withHandle( handle -> {
@@ -1404,6 +1404,8 @@ public class JdbcStorage implements IStorage {
                 }
                 return null;
             });
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             throw new StorageException("Error updating an API design.", e);
         }
@@ -1413,17 +1415,22 @@ public class JdbcStorage implements IStorage {
      * @see io.apicurio.hub.core.storage.IStorage#deleteValidationProfile(java.lang.String, long)
      */
     @Override
-    public void deleteValidationProfile(String userId, long profileId) throws StorageException {
+    public void deleteValidationProfile(String userId, long profileId) throws StorageException, NotFoundException {
         logger.debug("Deleting a validation profile for: {} with profileId: {}", userId, profileId);
         try {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteValidationProfile();
-                handle.createUpdate(statement)
+                int rowCount = handle.createUpdate(statement)
                       .bind(0, profileId)
                       .bind(1, userId)
                       .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
                 return null;
             });
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             throw new StorageException("Error deleting a codegen project.", e);
         }

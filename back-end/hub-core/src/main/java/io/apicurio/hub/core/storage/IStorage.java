@@ -462,7 +462,7 @@ public interface IStorage {
      * @param profile
      * @throws StorageException
      */
-    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException;
+    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException, NotFoundException;
 
     /**
      * Deletes a single validation profile.
@@ -470,6 +470,6 @@ public interface IStorage {
      * @param profileId
      * @throws StorageException
      */
-    public void deleteValidationProfile(String userId, long profileId) throws StorageException;
+    public void deleteValidationProfile(String userId, long profileId) throws StorageException, NotFoundException;
 
 }

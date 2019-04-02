@@ -63,7 +63,7 @@ import io.apicurio.test.core.TestUtil;
  */
 public class JdbcStorageTest {
     
-    private static int counter = 0;
+    public static int counter = 0;
     static {
         System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
     }
@@ -1420,6 +1420,11 @@ public class JdbcStorageTest {
         Assert.assertEquals(ValidationSeverity.low, severities.get("k-low"));
         Assert.assertEquals(ValidationSeverity.high, severities.get("k-medium"));
         Assert.assertEquals(ValidationSeverity.low, severities.get("k-ignore"));
+        
+        try {
+            storage.deleteValidationProfile("user1", pid2+1);
+            Assert.fail();
+        } catch (NotFoundException nfe) {}
 
     }
 

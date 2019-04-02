@@ -27,7 +27,7 @@ import {ApiDesignCommandAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {Title} from "@angular/platform-browser";
 import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
-import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
+import {ValidationProfileExt, ValidationService} from "../../../../services/validation.service";
 import {ConfigService} from "../../../../services/config.service";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {DispatchQueue} from "apicurio-ts-core";
@@ -197,7 +197,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * validation service.
      */
     protected updateValidationProfile(): void {
-        let profile: ValidationProfile = this.validationService.getProfileForApi(this.apiDefinition.id);
+        let profile: ValidationProfileExt = this.validationService.getProfileForApi(this.apiDefinition.id);
         if (profile) {
             this.validationRegistry = profile.registry;
         } else {
@@ -326,7 +326,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * Called when the user changes validation profiles for the API.
      * @param profile
      */
-    public changeValidationProfile(profile: ValidationProfile): void {
+    public changeValidationProfile(profile: ValidationProfileExt): void {
         this.validationService.setProfileForApi(this.apiDefinition.id, profile);
         this.validationRegistry = profile.registry;
     }

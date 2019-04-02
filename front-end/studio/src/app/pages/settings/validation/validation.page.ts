@@ -20,6 +20,7 @@ import {IAuthenticationService} from "../../../services/auth.service";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
+import {ValidationProfileExt, ValidationService} from "../../../services/validation.service";
 
 /**
  * The Settings/Profile Page component.
@@ -32,26 +33,56 @@ import {Title} from "@angular/platform-browser";
 })
 export class ValidationPageComponent extends AbstractPageComponent {
 
+    builtInProfiles: ValidationProfileExt[];
+    profiles: ValidationProfileExt[];
+
     /**
      * C'tor.
      * @param authService
      * @param route
      * @param titleService
+     * @param validationService
      */
-    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, route: ActivatedRoute, titleService: Title) {
+    constructor(@Inject(IAuthenticationService) private authService: IAuthenticationService, route: ActivatedRoute,
+                titleService: Title, private validationService: ValidationService) {
         super(route, titleService);
     }
 
     /**
      * The page title.
-     * 
      */
     protected pageTitle(): string {
         return "Apicurio Studio - Settings - Validation";
     }
 
     public loadAsyncPageData(): void {
-        console.log("[ValidationPageComponent] loadAsyncPageData")
+        console.log("[ValidationPageComponent] loadAsyncPageData!!");
+
+        this.validationService.getBuiltInValidationProfiles().then( biProfiles => {
+            console.log("[ValidationPageComponent] Default profiles loaded: ", biProfiles);
+            this.builtInProfiles = biProfiles;
+            this.loaded("builtInProfiles");
+        }).catch( error => {
+            console.error("[ValidationPageComponent] Error fetching built in validation profiles.");
+            this.error(error);
+        });
+        this.validationService.getValidationProfiles().then( profiles => {
+            console.log("[ValidationPageComponent] User profiles loaded.", profiles);
+            this.profiles = profiles;
+            this.loaded("profiles");
+        }).catch( error => {
+            console.error("[ValidationPageComponent] Error fetching built in validation profiles.");
+            this.error(error);
+        });
+    }
+
+    allProfiles(): ValidationProfileExt[] {
+        let rval: ValidationProfileExt[] = [];
+        this.builtInProfiles.forEach(profile => rval.push(profile));
+        this.profiles.sort((p1, p2) => {
+            return p1.name.toLocaleLowerCase().localeCompare(p2.name.toLocaleLowerCase());
+        }).forEach(profile => rval.push(profile));
+        return rval;
     }
 
 }

@@ -18,6 +18,7 @@ package io.apicurio.hub.api.rest.impl;
 
 import java.util.Collection;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import io.apicurio.hub.core.storage.StorageException;
 /**
  * @author eric.wittmann@gmail.com
  */
+@ApplicationScoped
 public class ValidationProfilesResource implements IValidationProfilesResource {
 
     private static Logger logger = LoggerFactory.getLogger(ValidationProfilesResource.class);

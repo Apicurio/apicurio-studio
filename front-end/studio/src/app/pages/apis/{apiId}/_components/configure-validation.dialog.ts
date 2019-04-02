@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {ValidationProfile, ValidationService} from "../../../../services/validation.service";
+import {ValidationProfileExt, ValidationService} from "../../../../services/validation.service";
 
 
 @Component({
@@ -31,11 +31,11 @@ export class ConfigureValidationComponent {
     @ViewChildren("configureValidationModal") configureValidationModal: QueryList<ModalDirective>;
 
     @Input() apiId: string;
-    @Output() onChange: EventEmitter<ValidationProfile> = new EventEmitter<ValidationProfile>();
+    @Output() onChange: EventEmitter<ValidationProfileExt> = new EventEmitter<ValidationProfileExt>();
 
     protected _isOpen: boolean = false;
-    protected _profileId: string;
-    protected selectedProfileId: string;
+    protected _profileId: number;
+    protected selectedProfileId: number;
 
     /**
      * Constructor.
@@ -88,7 +88,7 @@ export class ConfigureValidationComponent {
     /**
      * Returns all the validation profiles available.
      */
-    public allValidationProfiles(): ValidationProfile[] {
+    public allValidationProfiles(): ValidationProfileExt[] {
         return this.validationService.getProfiles();
     }
 
@@ -96,7 +96,7 @@ export class ConfigureValidationComponent {
      * Returns true if the given validation profile is active for this API.
      * @param profile
      */
-    public isProfileSelected(profile: ValidationProfile): boolean {
+    public isProfileSelected(profile: ValidationProfileExt): boolean {
         return this.selectedProfileId === profile.id;
     }
 
@@ -104,7 +104,7 @@ export class ConfigureValidationComponent {
      * Selects a profile.
      * @param profile
      */
-    public selectProfile(profile: ValidationProfile): void {
+    public selectProfile(profile: ValidationProfileExt): void {
         this.selectedProfileId = profile.id;
     }
 

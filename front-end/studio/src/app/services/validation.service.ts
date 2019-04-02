@@ -21,6 +21,12 @@ import {
     IOasValidationSeverityRegistry,
     OasValidationProblemSeverity
 } from "oai-ts-core";
+import {AbstractHubService} from "./hub";
+import {HttpClient} from "@angular/common/http";
+import {IAuthenticationService} from "./auth.service";
+import {ConfigService} from "./config.service";
+import {ValidationProfile} from "../models/validation.model";
+import {LinkedAccount} from "../models/linked-account.model";
 
 
 export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
@@ -40,12 +46,12 @@ export class NoValidationRegistry implements IOasValidationSeverityRegistry {
 
 }
 
-export class ValidationProfile {
-    id: string;
-    name: string;
-    description: string;
+
+export class ValidationProfileExt extends ValidationProfile {
     registry: IOasValidationSeverityRegistry;
+    builtIn: boolean;
 }
+
 
 /**
  * A service that manages the list of validation profiles the user can choose from.  Also allows the
@@ -53,38 +59,53 @@ export class ValidationProfile {
  * chosen for a particular API in the browser's local storage.
  */
 @Injectable()
-export class ValidationService {
+export class ValidationService extends AbstractHubService {
 
-    private profiles: ValidationProfile[];
+    private profiles: ValidationProfileExt[];
+    private builtInProfiles: ValidationProfileExt[];
 
-    constructor() {
-        this.profiles = [
+    /**
+     * Constructor.
+     * @param http
+     * @param authService
+     * @param config
+     */
+    constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
+        super(http, authService, config);
+        this.builtInProfiles = [
             {
-                id: "none",
+                id: -1,
                 name: "No Validation",
                 description: "Disable all validation.",
+                severities: {},
+                builtIn: true,
                 registry: new NoValidationRegistry()
             },
             {
-                id: "default",
-                name: "Default Validation",
+                id: -2,
+                name: "OpenAPI Spec Validation",
                 description: "Validate against the OpenAPI specification rules only (no additional rules)",
+                severities: {},
+                builtIn: true,
                 registry: new DefaultValidationSeverityRegistry()
             },
             {
-                id: "strict",
+                id: -3,
                 name: "Strict Validation",
                 description: "Apply all known validation rules at critical/high severity.",
+                severities: {},
+                builtIn: true,
                 registry: new StrictSeverityRegistry()
             }
         ];
+        this.getValidationProfiles().then();
     }
 
-    public getProfiles(): ValidationProfile[] {
+    public getProfiles(): ValidationProfileExt[] {
         return this.profiles;
     }
 
-    public getProfile(id: string): ValidationProfile {
+    public getProfile(id: number): ValidationProfileExt {
         for (let profile of this.profiles) {
             if (profile.id === id) {
                 return profile;
@@ -93,23 +114,59 @@ export class ValidationService {
         return null;
     }
 
-    public getProfileForApi(apiId: string): ValidationProfile {
-        let storage: Storage = window.localStorage;
-        let key: string = `apicurio.validation.profiles.${ apiId }`;
-        let validationId: string = storage.getItem(key);
-        if (validationId !== null) {
-            return this.getProfile(validationId);
-        }
-        return this.getProfile("default");
+    public getDefaultProfile(): ValidationProfileExt {
+        // TODO implement this!
+        return this.builtInProfiles[0];
     }
 
-    public setProfileForApi(apiId: string, profile: ValidationProfile): void {
+    public getProfileForApi(apiId: string): ValidationProfileExt {
+        let storage: Storage = window.localStorage;
+        let key: string = `apicurio.validation.profiles.${ apiId }`;
+        let val: string = storage.getItem(key);
+        if (val !== null) {
+            let validationId: number = parseInt(val);
+            return this.getProfile(validationId);
+        }
+        return this.getDefaultProfile();
+    }
+
+    public setProfileForApi(apiId: string, profile: ValidationProfileExt): void {
         let storage: Storage = window.localStorage;
         let key: string = `apicurio.validation.profiles.${ apiId }`;
         if (!profile) {
             storage.removeItem(key);
         } else {
-            storage.setItem(key, profile.id);
+            storage.setItem(key, "" + profile.id);
         }
     }
+
+    public getBuiltInValidationProfiles(): Promise<ValidationProfileExt[]> {
+        return Promise.resolve(this.builtInProfiles);
+    }
+
+    /**
+     * Gets all of the validation profiles for the current user.
+     */
+    public getValidationProfiles(): Promise<ValidationProfileExt[]> {
+        console.info("[ValidationService] Getting all validation profiles");
+
+        let url: string = this.endpoint("/validationProfiles");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ValidationService] Fetching validation profiles: %s", url);
+        return this.httpGet<ValidationProfile[]>(url, options).then( profiles => {
+            this.profiles = profiles.map(profile => {
+                return {
+                    id: profile.id,
+                    name: profile.name,
+                    description: profile.description,
+                    builtIn: false,
+                    severities: profile.severities,
+                    registry: null
+                }
+            });
+            return this.profiles;
+        });
+    }
+
 }

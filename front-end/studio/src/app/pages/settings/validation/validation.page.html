@@ -11,8 +11,44 @@
         <div class="col-xs-12 col-sm-2">
             <settings-nav tab="validation"></settings-nav>
         </div>
-        <div class="col-xs-12 col-sm-8">
-            <h1>Validation Settings</h1>
+        <div class="col-xs-12 col-sm-8 validation-profiles">
+            <h1>Validation Profiles</h1>
+            <p>
+                Validation profiles provide a way ot group validation rules, for issues, allowing different
+                severity assignments for rules in each validation profile.
+            </p>
+            <div class="subheader">
+                <span>Validation Profiles</span>
+                <button class="icon-button pull-right" title="Create a new validation profile"><span class="pficon pficon-add-circle-o"></span></button>
+            </div>
+            <div class="profiles" *ngIf="isLoaded('builtInProfiles') && isLoaded('profiles')">
+                <div class="validation-profile" *ngFor="let profile of allProfiles()">
+                    <div class="header" [class.builtin]="profile.builtIn">
+                        <div class="name"><span>{{ profile.name }}</span></div>
+                        <div class="description">{{ profile.description }}</div>
+                        <div class="default"></div>
+                        <div class="actions">
+                            <div class="dropdown dropdown-kebab-pf">
+                                <button aria-expanded="true" aria-haspopup="true" class="btn btn-link dropdown-toggle" data-toggle="dropdown" type="button">
+                                    <span class="fa fa-ellipsis-v"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li *ngIf="!profile.builtIn">
+                                        <a><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a>
+                                    </li>
+                                    <li>
+                                        <a><span class="fa fa-fw fa-copy"></span><span>Clone</span></a>
+                                    </li>
+                                    <li class="divider" role="separator" *ngIf="!profile.builtIn"></li>
+                                    <li *ngIf="!profile.builtIn">
+                                        <a><span class="fa fa-fw fa-trash"></span><span>Delete</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

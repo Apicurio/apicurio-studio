@@ -1,0 +1,76 @@
+.validation-profiles {
+  border: 1px solid #ddd;
+  background-color: white;
+  padding-bottom: 25px;
+}
+
+.validation-profiles > p {
+  margin-bottom: 50px;
+}
+
+.validation-profiles > .subheader {
+  margin-bottom: 5px;
+}
+
+.validation-profiles > .subheader > span {
+  font-weight: bold;
+  color: #666;
+  font-size: 14px;
+}
+.validation-profiles > .subheader > .icon-button {
+  border: 0px;
+  background-color: transparent;
+  color: #776;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.validation-profiles > .profiles {
+}
+
+.validation-profiles > .profiles > .validation-profile {
+  position: relative;
+  margin-bottom: 1px;
+}
+
+.validation-profiles > .profiles > .validation-profile .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px 8px 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.validation-profiles > .profiles > .validation-profile .header.builtin {
+  background-color: #f5f5f5;
+  color: #666;
+}
+.validation-profiles > .profiles > .validation-profile .header:hover {
+  background-color: #edf8ff;
+}
+
+.validation-profiles > .profiles > .validation-profile .header > .name {
+  flex-basis: 25%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.validation-profiles > .profiles > .validation-profile .header > .description {
+  flex-basis: 64%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.validation-profiles > .profiles > .validation-profile .header > .default {
+  flex-basis: 10%;
+  padding-right: 5px;
+}
+.validation-profiles > .profiles > .validation-profile .header > .actions {
+  flex-basis: 1%;
+  text-align: center;
+}
+
+.validation-profiles > .profiles > .validation-profile .header > .actions span.fa {
+  margin-right: 3px;
+}

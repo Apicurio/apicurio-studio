@@ -4382,12 +4382,12 @@
     /**
      * Factory function.
      */
-    function createNewResponseCommand(document, operation, statusCode) {
+    function createNewResponseCommand(document, operation, statusCode, sourceResponse) {
         if (document.getSpecVersion() === "2.0") {
-            return new NewResponseCommand_20(operation, statusCode);
+            return new NewResponseCommand_20(operation, statusCode, sourceResponse);
         }
         else {
-            return new NewResponseCommand_30(operation, statusCode);
+            return new NewResponseCommand_30(operation, statusCode, sourceResponse);
         }
     }
     /**
@@ -4400,12 +4400,15 @@
          * @param {Oas20Operation | Oas30Operation} operation
          * @param {string} statusCode
          */
-        function NewResponseCommand(operation, statusCode) {
+        function NewResponseCommand(operation, statusCode, sourceResponse) {
             var _this = _super.call(this) || this;
             if (operation) {
                 _this._operationPath = _this.oasLibrary().createNodePath(operation);
             }
             _this._statusCode = statusCode;
+            if (sourceResponse) {
+                _this.sourceResponse = _this.oasLibrary().writeNode(sourceResponse);
+            }
             return _this;
         }
         /**
@@ -4427,6 +4430,9 @@
             var response = operation.responses.response(this._statusCode);
             if (this.isNullOrUndefined(response)) {
                 response = operation.responses.createResponse(this._statusCode);
+                if (this.sourceResponse) {
+                    response = this.oasLibrary().readNode(this.sourceResponse, response);
+                }
                 operation.responses.addResponse(this._statusCode, response);
                 this._created = true;
             }

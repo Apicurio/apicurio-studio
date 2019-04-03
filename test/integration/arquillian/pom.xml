@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-managed</artifactId>
-            <version>2.1.1.Final</version>
+            <version>2.2.0.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -1,0 +1,346 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.apicurio</groupId>
+        <artifactId>apicurio-studio-test-integration</artifactId>
+        <version>0.2.26-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>apicurio-studio-test-integration-single-node-keycloak</artifactId>
+    <name>apicurio-studio-test-integration-single-node-keycloak</name>
+
+    <properties>
+
+        <it.version.keycloak>4.1.0.Final</it.version.keycloak><!-- Use ${version.org.keycloak} ? -->
+        <it.server.basePortOffset>100</it.server.basePortOffset>
+        <it.server.apicurio.dir>${project.build.directory}/apicurio-studio/apicurio-studio-${project.version}</it.server.apicurio.dir>
+        <it.server.apicurio.config>${basedir}/src/test/resources/wildfly/standalone-apicurio.xml</it.server.apicurio.config>
+        <it.server.keycloak.dir>${project.build.directory}/keycloak/keycloak-${it.version.keycloak}</it.server.keycloak.dir>
+
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Shrinkwrap BOM; documentation say to put this before Arq BOM -->
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>3.1.3</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!-- Arquillian BOM -->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.4.1.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--Arquillian -->
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>2.2.0.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+
+        <!-- Apicurio -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-studio-be-hub-core</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-studio-be-hub-api</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-studio-be-hub-editing</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-studio-test-integration-common</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-studio-distro-quickstart</artifactId>
+            <version>${project.version}</version>
+            <classifier>test</classifier>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Selenide -->
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>selenide</artifactId>
+            <version>5.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Other -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>3.6.3.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- Substitute in our values -->
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <!--<includes>-->
+                    <!--<include>**/*</include>-->
+                    <!--<include>**/*.xml</include>-->
+                <!--</includes>-->
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <!--<includes>-->
+                    <!--<include>**/*</include>-->
+                    <!--<include>**/*.xml</include>-->
+                <!--</includes>-->
+            </testResource>
+        </testResources>
+    </build>
+
+    <profiles>
+        <!-- Default profile skips tests -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+        <!-- Integration profile -->
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>download-apicurio</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>io.apicurio</groupId>
+                                            <artifactId>apicurio-studio-distro-quickstart</artifactId>
+                                            <version>${project.version}</version>
+                                            <classifier>test</classifier>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                            <destFileName>apicurio-studio.zip</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>download-keycloak</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.keycloak</groupId>
+                                            <artifactId>keycloak-server-dist</artifactId>
+                                            <version>${it.version.keycloak}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                            <destFileName>keycloak.zip</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant</artifactId>
+                                <version>1.10.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>ant-contrib</groupId>
+                                <artifactId>ant-contrib</artifactId>
+                                <version>1.0b3</version>
+                                <exclusions>
+                                    <exclusion>
+                                        <groupId>ant</groupId>
+                                        <artifactId>ant</artifactId>
+                                    </exclusion>
+                                </exclusions>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>compute-properties</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <tasks>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+                                        <math result="it.server.basePortOffset.8080" operand1="8080" operation="+" operand2="${it.server.basePortOffset}" datatype="int"/>
+                                        <math result="it.server.basePortOffset.9990" operand1="9990" operation="+" operand2="${it.server.basePortOffset}" datatype="int"/>
+                                        <math result="it.server.portOffset2" operand1="${it.server.basePortOffset}" operation="+" operand2="100" datatype="int"/>
+                                        <math result="it.server.portOffset2.8080" operand1="8080" operation="+" operand2="${it.server.portOffset2}" datatype="int"/>
+                                        <math result="it.server.portOffset3" operand1="${it.server.portOffset2}" operation="+" operand2="100" datatype="int"/>
+                                        <math result="it.server.portOffset3.8080" operand1="8080" operation="+" operand2="${it.server.portOffset3}" datatype="int"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>prepare-keycloak</id>
+                                <phase>process-resources</phase><!-- Can't do in generate-resources because we need filtered resources. -->
+                                <configuration>
+                                    <tasks>
+                                        <!-- Prepare wildfly (Apicurio Studio Quickstart - test version -->
+                                        <unzip src="${project.build.directory}/apicurio-studio.zip"
+                                               dest="${project.build.directory}/apicurio-studio"
+                                               overwrite="true" />
+
+                                        <!-- Prepare Keycloak -->
+                                        <unzip src="${project.build.directory}/keycloak.zip"
+                                               dest="${project.build.directory}/keycloak"
+                                               overwrite="true" />
+
+                                        <copy file="${project.build.directory}/classes/wildfly/standalone-apicurio.xml"
+                                              todir="${it.server.apicurio.dir}/standalone/configuration"
+                                              overwrite="true" />
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Don't use surefire -->
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.22.1</version>
+                        <configuration>
+                            <!-- Force JUnit (weird conflicts with NG) -->
+                            <testNGArtifactName>none:none</testNGArtifactName>
+                            <disableXmlReport>false</disableXmlReport>
+                            <properties>
+                                <usedefaultlisteners>false</usedefaultlisteners>
+                            </properties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

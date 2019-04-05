@@ -39,6 +39,7 @@ export class ConfigureValidationComponent {
 
     /**
      * Constructor.
+     * @param validationService
      */
     constructor(private validationService: ValidationService) {}
 

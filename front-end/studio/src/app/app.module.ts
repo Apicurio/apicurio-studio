@@ -69,6 +69,7 @@ import {InvitationDialogComponent} from "./pages/apis/{apiId}/collaboration/_com
 import {ConfigureValidationComponent} from './pages/apis/{apiId}/_components/configure-validation.dialog';
 import {ValidationService} from "./services/validation.service";
 import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
+import {ProfileEditorComponent} from "./pages/settings/validation/_components/profile-editor.component";
 
 @NgModule({
     imports: [
@@ -84,7 +85,7 @@ import {ValidationPageComponent} from "./pages/settings/validation/validation.pa
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
-        DefaultPageComponent, ConfigureValidationComponent
+        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent
 
     ],
     providers: [

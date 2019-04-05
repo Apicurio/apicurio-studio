@@ -19,14 +19,14 @@ import {Injectable} from "@angular/core";
 import {
     DefaultValidationSeverityRegistry,
     IOasValidationSeverityRegistry,
-    OasValidationProblemSeverity
+    OasValidationProblemSeverity,
+    ValidationRuleMetaData
 } from "oai-ts-core";
 import {AbstractHubService} from "./hub";
 import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
-import {ValidationProfile} from "../models/validation.model";
-import {LinkedAccount} from "../models/linked-account.model";
+import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../models/validation.model";
 
 
 export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
@@ -42,6 +42,20 @@ export class NoValidationRegistry implements IOasValidationSeverityRegistry {
 
     public lookupSeverity(): OasValidationProblemSeverity {
         return OasValidationProblemSeverity.ignore;
+    }
+
+}
+
+
+export class MappedValidationSeverityRegistry implements IOasValidationSeverityRegistry {
+
+    constructor(private severities: {[key: string]: OasValidationProblemSeverity}) {}
+
+    public lookupSeverity(rule: ValidationRuleMetaData): OasValidationProblemSeverity {
+        if (this.severities[rule.code] !== undefined) {
+            return this.severities[rule.code];
+        }
+        return OasValidationProblemSeverity.low;
     }
 
 }
@@ -102,11 +116,18 @@ export class ValidationService extends AbstractHubService {
     }
 
     public getProfiles(): ValidationProfileExt[] {
-        return this.profiles;
+        return [ ...this.builtInProfiles, ...this.profiles].sort( (p1, p2) => {
+            return p1.name.toLowerCase().localeCompare(p2.name.toLowerCase());
+        });
     }
 
     public getProfile(id: number): ValidationProfileExt {
         for (let profile of this.profiles) {
+            if (profile.id === id) {
+                return profile;
+            }
+        }
+        for (let profile of this.builtInProfiles) {
             if (profile.id === id) {
                 return profile;
             }
@@ -116,7 +137,7 @@ export class ValidationService extends AbstractHubService {
 
     public getDefaultProfile(): ValidationProfileExt {
         // TODO implement this!
-        return this.builtInProfiles[0];
+        return this.builtInProfiles[1];
     }
 
     public getProfileForApi(apiId: string): ValidationProfileExt {
@@ -156,17 +177,129 @@ export class ValidationService extends AbstractHubService {
         console.info("[ValidationService] Fetching validation profiles: %s", url);
         return this.httpGet<ValidationProfile[]>(url, options).then( profiles => {
             this.profiles = profiles.map(profile => {
+                let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(profile.severities);
                 return {
                     id: profile.id,
                     name: profile.name,
                     description: profile.description,
                     builtIn: false,
-                    severities: profile.severities,
-                    registry: null
+                    severities: severities,
+                    registry: new MappedValidationSeverityRegistry(severities)
                 }
             });
             return this.profiles;
         });
+    }
+
+    /**
+     * Called to create a custom validation profile.
+     * @param info
+     */
+    public createValidationProfile(info: CreateValidationProfile): Promise<ValidationProfileExt> {
+        console.info("[ValidationService] Creating a validation profile named %s", info.name);
+
+        let createUrl: string = this.endpoint("/validationProfiles");
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[ValidationService] Creating a validation profile: %s", createUrl);
+        return this.httpPostWithReturn<CreateValidationProfile, ValidationProfile>(createUrl, info, options).then( p => {
+            let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(p.severities);
+            let newProfile: ValidationProfileExt = {
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                builtIn: false,
+                severities: severities,
+                registry: new MappedValidationSeverityRegistry(severities)
+            };
+            this.profiles.push(newProfile);
+            return newProfile;
+        });
+    }
+
+    /**
+     * Called to update a validation profile on the server.
+     * @param profileId
+     * @param update
+     */
+    public updateValidationProfile(profileId: number, update: UpdateValidationProfile): Promise<ValidationProfileExt> {
+        console.info("[ValidationService] Updating a validation profile with id %o", update);
+
+        let updateUrl: string = this.endpoint("/validationProfiles/:profileId", {
+            profileId: profileId
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[ValidationService] Updating a validation profile: %s", updateUrl);
+        return this.httpPut<UpdateValidationProfile>(updateUrl, update, options).then( () => {
+            let updatedProfile: ValidationProfileExt = {
+                id: profileId,
+                name: update.name,
+                description: update.description,
+                builtIn: false,
+                severities: update.severities,
+                registry: new MappedValidationSeverityRegistry(update.severities)
+            };
+            let profileIndex: number = -1;
+            this.profiles.forEach( (p, idx) => {
+                if (p.id === profileId) {
+                    profileIndex = idx;
+                }
+            });
+            if (profileIndex === -1) {
+                this.profiles.push(updatedProfile);
+            } else {
+                this.profiles.splice(profileIndex, 1, updatedProfile);
+            }
+            return updatedProfile;
+        });
+    }
+
+    /**
+     * Called to delete a validation profile from the server.
+     * @param profileId
+     */
+    public deleteValidationProfile(profileId: number): Promise<void> {
+        console.info("[ValidationService] Deleting a validation profile with id %o", profileId);
+
+        let deleteUrl: string = this.endpoint("/validationProfiles/:profileId", {
+            profileId: profileId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ValidationService] Deleting a validation profile: %s", deleteUrl);
+        return this.httpDelete(deleteUrl, options).then( () => {
+            let profileIndex: number = -1;
+            this.profiles.forEach( (p, idx) => {
+                if (p.id === profileId) {
+                    profileIndex = idx;
+                }
+            });
+            if (profileIndex !== -1) {
+                this.profiles.splice(profileIndex, 1);
+            }
+        });
+
+    }
+
+    /**
+     * Convert from server format (strings) to local severity values (OasValidationProblemSeverity enum).
+     * @param severities
+     */
+    private convertServerServerities(severities: any): {[key: string]: OasValidationProblemSeverity} {
+        let rval: {[key: string]: OasValidationProblemSeverity} = {};
+        Object.getOwnPropertyNames(severities).forEach( key => {
+            let value: string = severities[key];
+            let severity: OasValidationProblemSeverity = OasValidationProblemSeverity.low;
+            switch (value) {
+                case "ignore": severity = OasValidationProblemSeverity.ignore; break;
+                case "low": severity = OasValidationProblemSeverity.low; break;
+                case "medium": severity = OasValidationProblemSeverity.medium; break;
+                case "high": severity = OasValidationProblemSeverity.high; break;
+            }
+            rval[key] = severity;
+        });
+        return rval;
     }
 
 }

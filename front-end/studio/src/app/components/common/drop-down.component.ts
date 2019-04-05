@@ -37,6 +37,7 @@ export class DropDownComponent {
     public _open: boolean = false;
 
     @Input() id: string;
+    @Input() classes: string;
     @Input() value: any;
     _options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";

@@ -1,3 +1,5 @@
+import {OasValidationProblemSeverity} from "oai-ts-core";
+
 /**
  * @license
  * Copyright 2019 Red Hat
@@ -19,13 +21,13 @@ export class ValidationProfile {
     public id: number;
     public name: string;
     public description: string;
-    public severities: any;
+    public severities: {[key: string]: OasValidationProblemSeverity};
 }
 
 export class CreateValidationProfile {
     public name: string;
     public description: string;
-    public severities: any;
+    public severities: {[key: string]: OasValidationProblemSeverity};
 }
 
 export class UpdateValidationProfile extends CreateValidationProfile {

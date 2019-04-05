@@ -1,4 +1,4 @@
-<div class="dropdown" dropdown [class.empty]="!hasValue()" [isOpen]="_open" (isOpenChange)="setOpen($event)">
+<div class="dropdown {{ classes }}" dropdown [class.empty]="!hasValue()" [isOpen]="_open" (isOpenChange)="setOpen($event)">
     <button class="btn btn-default dropdown-toggle" type="button" id="{{ id }}" dropdownToggle>
         <span *ngIf="hasValue() && !loading">{{ displayValue() }}</span>
         <span *ngIf="!hasValue() && !loading">{{ noSelectionLabel }}</span>

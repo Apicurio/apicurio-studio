@@ -75,8 +75,8 @@ export class ValidationProfileExt extends ValidationProfile {
 @Injectable()
 export class ValidationService extends AbstractHubService {
 
-    private profiles: ValidationProfileExt[];
-    private builtInProfiles: ValidationProfileExt[];
+    private profiles: ValidationProfileExt[] = [];
+    private builtInProfiles: ValidationProfileExt[] = [];
 
     /**
      * Constructor.
@@ -146,7 +146,8 @@ export class ValidationService extends AbstractHubService {
         let val: string = storage.getItem(key);
         if (val !== null) {
             let validationId: number = parseInt(val);
-            return this.getProfile(validationId);
+            let profile: ValidationProfileExt = this.getProfile(validationId);
+            if (profile) { return profile; }
         }
         return this.getDefaultProfile();
     }

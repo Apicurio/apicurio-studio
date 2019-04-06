@@ -21,7 +21,7 @@ services:
 
 
   apicurio-studio-ws:
-    image: 'apicurio/apicurio-studio-ws:0.2.25.Final'
+    image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-mysql]
     ports:
       - '8092:8080'
@@ -37,7 +37,7 @@ services:
 
 
   apicurio-studio-api:
-    image: 'apicurio/apicurio-studio-api:0.2.25.Final'
+    image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
     depends_on: [apicurio-studio-mysql, apicurio-studio-ws]
     ports:
       - '8091:8080'
@@ -63,7 +63,7 @@ services:
 
 
   apicurio-studio-ui:
-    image: 'apicurio/apicurio-studio-ui:0.2.25.Final'
+    image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
     depends_on: [apicurio-studio-mysql, apicurio-studio-api, apicurio-studio-ws]
     ports:
       - '8093:8080'
@@ -74,3 +74,4 @@ services:
       APICURIO_UI_HUB_API_URL: ${APICURIO_UI_HUB_API_URL}
       APICURIO_UI_EDITING_URL: ${APICURIO_UI_EDITING_URL}
       APICURIO_UI_FEATURE_MICROCKS: ${APICURIO_UI_FEATURE_MICROCKS}
+      APICURIO_UI_LOGOUT_REDIRECT_URI: /

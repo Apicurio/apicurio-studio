@@ -15,8 +15,9 @@ services:
       - 'mysql2:/var/lib/mysql'
 
   jboss-keycloak:
-    image: 'jboss/keycloak:4.8.3.Final'
-    depends_on: [jboss-keycloak-mysql]    
+    image: 'as-keycloak'
+    build: ./keycloak
+    depends_on: [jboss-keycloak-mysql]
     ports:
       - '8090:8080'
     volumes:

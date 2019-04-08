@@ -51,8 +51,6 @@ import {ModelUtils} from "../../../../_util/model.util";
 })
 export class ResponsesSectionComponent extends AbstractBaseComponent {
 
-    private static httpCodes: HttpCodeService = new HttpCodeService();
-
     @Input() operation: Oas20Operation | Oas30Operation;
 
     @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
@@ -162,9 +160,9 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public statusCodeLine(code: string): string {
-        let httpCode: HttpCode = ResponsesSectionComponent.httpCodes.getCode(code);
+        let httpCode: HttpCode = HttpCodeService.getCode(code);
         if (httpCode) {
-            return httpCode.line;
+            return httpCode.getName();
         }
         return "";
     }
@@ -211,8 +209,8 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
 
     public nextAvailableResponseCode(): string {
         if (this.operation.responses) {
-            for (let httpCode of ResponsesSectionComponent.httpCodes.getCodes()) {
-                let code: string = httpCode.code;
+            for (let httpCode of HttpCodeService.getCommonlyUsedHttpCodeList()) {
+                let code: string = httpCode.getCode().toString();
                 if (code.indexOf("1") === 0) {
                     continue;
                 }

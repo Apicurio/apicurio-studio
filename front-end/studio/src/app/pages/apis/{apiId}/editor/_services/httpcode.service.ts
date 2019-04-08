@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2019 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,87 +14,111 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 
-var HTTP_CODE_DATA = [
-    { code: "100", line: "Continue" },
-    { code: "101", line: "Switching Protocols" },
-    { code: "102", line: "Processing" },
-    { code: "200", line: "OK" },
-    { code: "201", line: "Created" },
-    { code: "202", line: "Accepted" },
-    { code: "203", line: "Non_Authoritative" },
-    { code: "204", line: "No Content" },
-    { code: "205", line: "Reset Content" },
-    { code: "206", line: "Partial Content" },
-    { code: "207", line: "Multi-Status" },
-    { code: "208", line: "Already Reported" },
-    { code: "226", line: "IM Used" },
-    { code: "300", line: "Multiple Choices" },
-    { code: "301", line: "Moved Permanently" },
-    { code: "302", line: "Found" },
-    { code: "303", line: "See Other" },
-    { code: "304", line: "Not Modified" },
-    { code: "305", line: "Use Proxy" },
-    { code: "306", line: "Switch Proxy" },
-    { code: "307", line: "Temporary Redirect" },
-    { code: "308", line: "Permanent Redirect" },
-    { code: "400", line: "Bad Request" },
-    { code: "401", line: "Unauthorized" },
-    { code: "402", line: "Payment Required" },
-    { code: "403", line: "Forbidden" },
-    { code: "404", line: "Not Found" },
-    { code: "405", line: "Method Not Allowed" },
-    { code: "406", line: "Not Acceptable" },
-    { code: "407", line: "Proxy Authentication Required" },
-    { code: "408", line: "Request Time-Out" },
-    { code: "409", line: "Conflict" },
-    { code: "410", line: "Gone" },
-    { code: "411", line: "Length Required" },
-    { code: "412", line: "Precondition Failed" },
-    { code: "413", line: "Payload Too Large" },
-    { code: "414", line: "URI Too Long" },
-    { code: "415", line: "Unsupported Media Type" },
-    { code: "416", line: "Range Not Satisfiable" },
-    { code: "417", line: "Expectation Failed" },
-    { code: "418", line: "I'm a teapot!" },
-    { code: "421", line: "Misdirected Request" },
-    { code: "422", line: "Unprocessable Entity" },
-    { code: "423", line: "Locked" },
-    { code: "424", line: "Failed Dependency" },
-    { code: "426", line: "Upgrade Required" },
-    { code: "428", line: "Precondition Required" },
-    { code: "429", line: "Too Many Requests" },
-    { code: "431", line: "Request Header Fields Too Large" },
-    { code: "451", line: "Unavailable For Legal Reasons" },
-    { code: "500", line: "Internal Server Error" },
-    { code: "501", line: "Not Implemented" },
-    { code: "502", line: "Bad Gateway" },
-    { code: "503", line: "Service Unavailable" },
-    { code: "504", line: "Gateway Time-Out" },
-    { code: "505", line: "HTTP Version Not Supported" },
-    { code: "506", line: "Variant Also Negotiates" },
-    { code: "507", line: "Insufficient Storage" },
-    { code: "508", line: "Loop Detected" },
-    { code: "510", line: "Not Extended" },
-    { code: "511", line: "Network Authentication Required" }
-];
+export class HttpCode {
 
-export interface HttpCode {
-    code: string;
-    line: string;
+    private code: number;
+    private name: string;
+
+    public constructor(code: number, name: string) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public getCode(): number {
+        return this.code;
+    }
+
+    public getName(): string {
+        return this.name;
+    }
 }
 
-/**
- * A simple service providing convenient access to information about HTTP
- * response codes.
- */
 export class HttpCodeService {
 
-    /**
-     * Returns a list of all codes.
-     */
-    public getCodes(): HttpCode[] {
-        return HTTP_CODE_DATA;
+    private static HTTP_CODE_LIST_COMMON: HttpCode[] = [
+        new HttpCode(200, "OK"),
+        new HttpCode(201, "Created"),
+        new HttpCode(204, "No Content"),
+        new HttpCode(400, "Bad Request"),
+        new HttpCode(401, "Unauthorized"),
+        new HttpCode(403, "Forbidden"),
+        new HttpCode(404, "Not Found")
+    ];
+
+    private static HTTP_CODE_LIST: HttpCode[] = [
+        new HttpCode(100, "Continue"),
+        new HttpCode(101, "Switching Protocols"),
+        new HttpCode(102, "Processing"),
+        new HttpCode(200, "OK"),
+        new HttpCode(201, "Created"),
+        new HttpCode(202, "Accepted"),
+        new HttpCode(203, "Non_Authoritative"),
+        new HttpCode(204, "No Content"),
+        new HttpCode(205, "Reset Content"),
+        new HttpCode(206, "Partial Content"),
+        new HttpCode(207, "Multi-Status"),
+        new HttpCode(208, "Already Reported"),
+        new HttpCode(226, "IM Used"),
+        new HttpCode(300, "Multiple Choices"),
+        new HttpCode(301, "Moved Permanently"),
+        new HttpCode(302, "Found"),
+        new HttpCode(303, "See Other"),
+        new HttpCode(304, "Not Modified"),
+        new HttpCode(305, "Use Proxy"),
+        new HttpCode(306, "Switch Proxy"),
+        new HttpCode(307, "Temporary Redirect"),
+        new HttpCode(308, "Permanent Redirect"),
+        new HttpCode(400, "Bad Request"),
+        new HttpCode(401, "Unauthorized"),
+        new HttpCode(402, "Payment Required"),
+        new HttpCode(403, "Forbidden"),
+        new HttpCode(404, "Not Found"),
+        new HttpCode(405, "Method Not Allowed"),
+        new HttpCode(406, "Not Acceptable"),
+        new HttpCode(407, "Proxy Authentication Required"),
+        new HttpCode(408, "Request Time-Out"),
+        new HttpCode(409, "Conflict"),
+        new HttpCode(410, "Gone"),
+        new HttpCode(411, "Length Required"),
+        new HttpCode(412, "Precondition Failed"),
+        new HttpCode(413, "Payload Too Large"),
+        new HttpCode(414, "URI Too Long"),
+        new HttpCode(415, "Unsupported Media Type"),
+        new HttpCode(416, "Range Not Satisfiable"),
+        new HttpCode(417, "Expectation Failed"),
+        new HttpCode(418, "I'm a teapot!"),
+        new HttpCode(421, "Misdirected Request"),
+        new HttpCode(422, "Unprocessable Entity"),
+        new HttpCode(423, "Locked"),
+        new HttpCode(424, "Failed Dependency"),
+        new HttpCode(426, "Upgrade Required"),
+        new HttpCode(428, "Precondition Required"),
+        new HttpCode(429, "Too Many Requests"),
+        new HttpCode(431, "Request Header Fields Too Large"),
+        new HttpCode(451, "Unavailable For Legal Reasons"),
+        new HttpCode(500, "Internal Server Error"),
+        new HttpCode(501, "Not Implemented"),
+        new HttpCode(502, "Bad Gateway"),
+        new HttpCode(503, "Service Unavailable"),
+        new HttpCode(504, "Gateway Time-Out"),
+        new HttpCode(505, "HTTP Version Not Supported"),
+        new HttpCode(506, "Variant Also Negotiates"),
+        new HttpCode(507, "Insufficient Storage"),
+        new HttpCode(508, "Loop Detected"),
+        new HttpCode(510, "Not Extended"),
+        new HttpCode(511, "Network Authentication Required")
+    ];
+
+    public static getCommonlyUsedHttpCodeList() : HttpCode[] {
+        // TODO defensive copy? Make non-static?
+        return this.HTTP_CODE_LIST_COMMON;
+    }
+
+    public static getHttpCodeList() : HttpCode[] {
+        // TODO defensive copy? Make non-static?
+        return this.HTTP_CODE_LIST;
     }
 
     /**
@@ -102,13 +126,41 @@ export class HttpCodeService {
      * @param code
      * @return
      */
-    public getCode(code: string): HttpCode {
-        for (let c of this.getCodes()) {
-            if (c.code === code) {
+    public static getCode(code: string): HttpCode {
+        for (let c of this.HTTP_CODE_LIST) {
+            if (c.getCode().toString() === code) {
                 return c;
             }
         }
         return null;
     }
 
+    private static isAprilFirst(): boolean {
+        let d: Date = new Date();
+        return d.getMonth() === 3 && d.getDate() === 1;
+    }
+
+    public static generateDropDownOptions(includeAprilJoke = false): DropDownOption[] {
+        // TODO cache this?
+        let res: DropDownOption[] = this.HTTP_CODE_LIST_COMMON.map(e => {
+            let strcode = String(e.getCode());
+            return new Value(strcode + " " + e.getName(), strcode);
+        });
+        res.push(DIVIDER);
+
+        let nextDividerAfter = 199;
+        this.HTTP_CODE_LIST.forEach(e => {
+            if(e.getCode() > nextDividerAfter) {
+                nextDividerAfter += 100;
+                res.push(DIVIDER);
+            }
+            let strcode = String(e.getCode());
+            res.push(new Value(strcode + " " + e.getName(), strcode));
+        });
+
+        return res.filter(e => e.isDivider()
+            || (this.isAprilFirst() && includeAprilJoke)
+            || (!this.isAprilFirst() && e.getValue() !== "418"));
+
+    }
 }

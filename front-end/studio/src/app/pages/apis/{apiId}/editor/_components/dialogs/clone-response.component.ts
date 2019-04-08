@@ -19,7 +19,8 @@ import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular
 import {ModalDirective} from "ngx-bootstrap";
 import {Oas20Operation, Oas30Operation} from "oai-ts-core";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
-import {HttpCodeUtil} from "./add-response.component";
+import {HttpCodeService} from "../../_services/httpcode.service";
+
 
 @Component({
     moduleId: module.id,
@@ -107,14 +108,6 @@ export class CloneResponseDialogComponent {
     }
 
     /**
-     * Returns true if today is the first of April.  (teapot related)
-     */
-    isAprilFirst(): boolean {
-        let d: Date = new Date();
-        return d.getMonth() === 3 && d.getDate() === 1;
-    }
-
-    /**
      * Check to see if the form is valid.
      */
     isValid(): boolean {
@@ -122,8 +115,7 @@ export class CloneResponseDialogComponent {
     }
 
     public getStatusCodeDropDownOptions(): DropDownOption[] {
-        return HttpCodeUtil.generateDropDownOptions()
-            .filter(e => e.isDivider() || this.isAprilFirst() || (!this.isAprilFirst() && e.getValue() !== "418"));
+        return HttpCodeService.generateDropDownOptions(true);
     }
 
     public getStatusCode(): string {

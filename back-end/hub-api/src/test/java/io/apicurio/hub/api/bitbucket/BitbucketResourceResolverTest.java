@@ -16,34 +16,55 @@
 
 package io.apicurio.hub.api.bitbucket;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.test.core.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class BitbucketResourceResolverTest {
 
+    private BitbucketResourceResolver resolver;
+    private HubConfiguration config;
+
+    @Before
+    public void setUp() {
+        resolver = new BitbucketResourceResolver();
+        config = new HubConfiguration();
+        
+        TestUtil.setPrivateField(resolver, "config", config);
+        resolver.postConstruct();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    }
+
     /**
      * Test method for {@link BitbucketResourceResolver#resolve(String)}.
      */
     @Test
     public void testResolve() {
-        BitbucketResource resource = BitbucketResourceResolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.json");
+        BitbucketResource resource = resolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("innodays", resource.getTeam());
         Assert.assertEquals("apicurio_test", resource.getRepository());
         Assert.assertEquals("notmaster", resource.getBranch());
         Assert.assertEquals("api/fourthAPI.json", resource.getResourcePath());
         
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json?fileviewer=file-view-default");
+        resource = resolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json?fileviewer=file-view-default");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apis/pet-store.json", resource.getResourcePath());
 
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/foo-branch/apis/pet-store.json");
+        resource = resolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/foo-branch/apis/pet-store.json");
         Assert.assertNull(resource);
     }
 
@@ -52,21 +73,21 @@ public class BitbucketResourceResolverTest {
      */
     @Test
     public void testResolve_yaml() {
-        BitbucketResource resource = BitbucketResourceResolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.yaml");
+        BitbucketResource resource = resolver.resolve("https://bitbucket.org/innodays/apicurio_test/src/notmaster/api/fourthAPI.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("innodays", resource.getTeam());
         Assert.assertEquals("apicurio_test", resource.getRepository());
         Assert.assertEquals("notmaster", resource.getBranch());
         Assert.assertEquals("api/fourthAPI.yaml", resource.getResourcePath());
         
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/abcdefg/apis/pet-store.yml?at=master&fileviewer=file-view-default");
+        resource = resolver.resolve("https://bitbucket.org/apicurio/apicurio-test/src/abcdefg/apis/pet-store.yml?at=master&fileviewer=file-view-default");
         Assert.assertNotNull(resource);
         Assert.assertEquals("apicurio", resource.getTeam());
         Assert.assertEquals("apicurio-test", resource.getRepository());
         Assert.assertEquals("abcdefg", resource.getBranch());
         Assert.assertEquals("apis/pet-store.yml", resource.getResourcePath());
 
-        resource = BitbucketResourceResolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/master2/apis/pet-store.yaml");
+        resource = resolver.resolve("https://bitbucket.org/apicurio/apicurio-test/raw/master2/apis/pet-store.yaml");
         Assert.assertNull(resource);
     }
 

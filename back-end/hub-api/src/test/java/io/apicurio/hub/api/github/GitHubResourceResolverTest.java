@@ -16,48 +16,69 @@
 
 package io.apicurio.hub.api.github;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.test.core.TestUtil;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class GitHubResourceResolverTest {
 
+    private GitHubResourceResolver resolver;
+    private HubConfiguration config;
+
+    @Before
+    public void setUp() {
+        resolver = new GitHubResourceResolver();
+        config = new HubConfiguration();
+        
+        TestUtil.setPrivateField(resolver, "config", config);
+        resolver.postConstruct();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    }
+
     /**
      * Test method for {@link io.apicurio.hub.api.github.GitHubResourceResolver#resolve(java.lang.String)}.
      */
     @Test
     public void testResolve() {
-        GitHubResource resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
+        GitHubResource resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store/pet-store.json", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.json");
+        resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.json", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
+        resource = resolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/apiman-rls.json", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.json");
+        resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store.json", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://github.com/EricWittmann/api-samples/blob/other-branch/3.0-other/simple-api-other.json");
+        resource = resolver.resolve("https://github.com/EricWittmann/api-samples/blob/other-branch/3.0-other/simple-api-other.json");
         Assert.assertNotNull(resource);
         Assert.assertEquals("EricWittmann", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
@@ -70,28 +91,28 @@ public class GitHubResourceResolverTest {
      */
     @Test
     public void testResolve_yaml() {
-        GitHubResource resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.yaml");
+        GitHubResource resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("pet-store/pet-store.yaml", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.yaml");
+        resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/sub1/sub2/apiman-rls.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/sub1/sub2/apiman-rls.yaml", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.yml");
+        resource = resolver.resolve("https://raw.githubusercontent.com/Apicurio/api-samples/master/apiman-rls/apiman-rls.yml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
         Assert.assertEquals("master", resource.getBranch());
         Assert.assertEquals("apiman-rls/apiman-rls.yml", resource.getResourcePath());
 
-        resource = GitHubResourceResolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.yaml");
+        resource = resolver.resolve("https://github.com/Apicurio/api-samples/blob/master/pet-store.yaml");
         Assert.assertNotNull(resource);
         Assert.assertEquals("Apicurio", resource.getOrganization());
         Assert.assertEquals("api-samples", resource.getRepository());
@@ -105,10 +126,10 @@ public class GitHubResourceResolverTest {
      */
     @Test
     public void testCreate() {
-        String actual = GitHubResourceResolver.create("ORG", "REPO", "BRANCH", "RESOURCE");
+        String actual = resolver.create("ORG", "REPO", "BRANCH", "RESOURCE");
         Assert.assertEquals("https://github.com/ORG/REPO/blob/BRANCH/RESOURCE", actual);
         
-        actual = GitHubResourceResolver.create("apicurio", "apicurio-studio", "master", "/platforms/swarm/pom.xml");
+        actual = resolver.create("apicurio", "apicurio-studio", "master", "/platforms/swarm/pom.xml");
         Assert.assertEquals("https://github.com/apicurio/apicurio-studio/blob/master/platforms/swarm/pom.xml", actual);
     }
 }

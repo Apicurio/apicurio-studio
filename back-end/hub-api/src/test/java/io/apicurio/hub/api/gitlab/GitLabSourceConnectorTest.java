@@ -58,7 +58,8 @@ public class GitLabSourceConnectorTest {
     
     private static String pat = null;
     
-    private IGitLabSourceConnector service;
+    private GitLabSourceConnector service;
+    private GitLabResourceResolver resolver;
     private HubConfiguration config;
     
     @BeforeClass
@@ -106,8 +107,13 @@ public class GitLabSourceConnectorTest {
             }
         };
         config = new HubConfiguration();
-        
+        resolver = new GitLabResourceResolver();
+
+        TestUtil.setPrivateField(resolver, "config", config);
+        resolver.postConstruct();
+
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
+        TestUtil.setPrivateField(service, "resolver", resolver);
         TestUtil.setPrivateField(service, "config", config);
     }
     
@@ -116,7 +122,6 @@ public class GitLabSourceConnectorTest {
     }
 
     @Test
-    @Ignore
     public void testParseExternalTokenResponse() {
         String tokenBody = "{\r\n" + 
                 "    \"access_token\": \"XYZ\",\r\n" + 
@@ -126,7 +131,7 @@ public class GitLabSourceConnectorTest {
                 "    \"created_at\": 1508504375,\r\n" + 
                 "    \"id_token\": \"123\"\r\n" + 
                 "}";
-        Map<String, String> response = ((GitLabSourceConnector) service).parseExternalTokenResponse(tokenBody);
+        Map<String, String> response = service.parseExternalTokenResponse(tokenBody);
         Assert.assertNotNull(response);
         Assert.assertEquals("XYZ", response.get("access_token"));
         Assert.assertEquals("openid read_user api", response.get("scope"));

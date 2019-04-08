@@ -41,8 +41,14 @@ public class HubConfiguration extends Configuration {
     private static final String SHARE_FOR_EVERYONE_ENV = "APICURIO_SHARE_FOR_EVERYONE";
     private static final String SHARE_FOR_EVERYONE_SYSPROP = "apicurio.share.for.everyone";
 
+    private static final String GITHUB_URL_ENV = "APICURIO_GITHUB_URL";
+    private static final String GITHUB_URL_SYSPROP = "apicurio.hub.github.url";
+
     private static final String GITHUB_API_URL_ENV = "APICURIO_GITHUB_API_URL";
     private static final String GITHUB_API_URL_SYSPROP = "apicurio.hub.github.api";
+
+    private static final String GITLAB_URL_ENV = "APICURIO_GITLAB_URL";
+    private static final String GITLAB_URL_SYSPROP = "apicurio.hub.gitlab.url";
 
     private static final String GITLAB_API_URL_ENV = "APICURIO_GITLAB_API_URL";
     private static final String GITLAB_API_URL_SYSPROP = "apicurio.hub.gitlab.api";
@@ -53,6 +59,9 @@ public class HubConfiguration extends Configuration {
     private static final String GITLAB_GROUP_MIN_ACCESS_LEVEL_ENV = "APICURIO_GITLAB_GROUP_MIN_ACCESS_LEVEL";
     private static final String GITLAB_GROUP_MIN_ACCESS_LEVEL_SYSPROP = "apicurio.hub.gitlab.group.min.access.level";
 
+    private static final String BITBUCKET_URL_ENV = "APICURIO_BITBUCKET_URL";
+    private static final String BITBUCKET_URL_SYSPROP = "apicurio.hub.bitbucket.url";
+    
     private static final String BITBUCKET_API_URL_ENV = "APICURIO_BITBUCKET_API_URL";
     private static final String BITBUCKET_API_URL_SYSPROP = "apicurio.hub.bitbucket.api";
 
@@ -104,6 +113,13 @@ public class HubConfiguration extends Configuration {
     }
 
     /**
+     * @return the configured GitHub URL
+     */
+    public String getGitHubUrl() {
+        return getConfigurationProperty(GITHUB_URL_ENV, GITHUB_URL_SYSPROP, "https://github.com");
+    }
+
+    /**
      * @return the configured GitHub API URL
      */
     public String getGitHubApiUrl() {
@@ -125,10 +141,24 @@ public class HubConfiguration extends Configuration {
     }
 
     /**
+     * @return the configured GitLab URL
+     */
+    public String getGitLabUrl() {
+        return getConfigurationProperty(GITLAB_URL_ENV, GITLAB_URL_SYSPROP, "https://gitlab.com");
+    }
+
+    /**
      * @return the configured GitLab API URL
      */
     public String getGitLabApiUrl() {
         return getConfigurationProperty(GITLAB_API_URL_ENV, GITLAB_API_URL_SYSPROP, "https://gitlab.com");
+    }
+
+    /**
+     * @return the configured Bitbucket URL
+     */
+    public String getBitbucketUrl() {
+        return getConfigurationProperty(BITBUCKET_URL_ENV, BITBUCKET_URL_SYSPROP, "https://bitbucket.org");
     }
 
     /**

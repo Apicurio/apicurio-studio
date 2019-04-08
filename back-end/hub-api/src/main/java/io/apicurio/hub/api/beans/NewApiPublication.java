@@ -16,9 +16,6 @@
 
 package io.apicurio.hub.api.beans;
 
-import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
-import io.apicurio.hub.api.github.GitHubResourceResolver;
-import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 
@@ -182,22 +179,6 @@ public class NewApiPublication {
      */
     public void setBranch(String branch) {
         this.branch = branch;
-    }
-
-    /**
-     * Uses the information in the bean to create a resource URL.
-     */
-    public String toResourceUrl() {
-        if (getType() == LinkedAccountType.GitHub) {
-            return GitHubResourceResolver.create(org, repo, branch, resource);
-        }
-        if (getType() == LinkedAccountType.GitLab) {
-            return GitLabResourceResolver.create(group, project, branch, resource);
-        }
-        if (getType() == LinkedAccountType.Bitbucket) {
-            return BitbucketResourceResolver.create(team, repo, branch, resource);
-        }
-        return null;
     }
 
 }

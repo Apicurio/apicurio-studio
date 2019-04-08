@@ -54,7 +54,8 @@ public class GitHubSourceConnectorTest {
     
     private static String githubToken = null;
 
-    private IGitHubSourceConnector service;
+    private GitHubSourceConnector service;
+    private GitHubResourceResolver resolver;
     private HubConfiguration config;
 
     @BeforeClass
@@ -94,9 +95,14 @@ public class GitHubSourceConnectorTest {
             }
         };
         config = new HubConfiguration();
-        
+        resolver = new GitHubResourceResolver();
+
+        TestUtil.setPrivateField(resolver, "config", config);
+        resolver.postConstruct();
+
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);
+        TestUtil.setPrivateField(service, "resolver", resolver);
     }
     
     @After
@@ -105,7 +111,7 @@ public class GitHubSourceConnectorTest {
 
     @Test
     public void testParseExternalTokenResponse() {
-        Map<String, String> response = ((GitHubSourceConnector) service).parseExternalTokenResponse("access_token=12345&scope=repo%2Cuser%3Aemail&token_type=bearer");
+        Map<String, String> response = service.parseExternalTokenResponse("access_token=12345&scope=repo%2Cuser%3Aemail&token_type=bearer");
         Assert.assertNotNull(response);
         Assert.assertEquals("12345", response.get("access_token"));
         Assert.assertEquals("repo,user:email", response.get("scope"));
@@ -210,7 +216,7 @@ public class GitHubSourceConnectorTest {
     public void testCreatePullRequestFromZipContent() throws GitHubException, SourceConnectorException {
         ZipInputStream zipInput = new ZipInputStream(getClass().getResourceAsStream("beer-api.zip"));
         Assert.assertNotNull(zipInput);
-        String repositoryUrl = GitHubResourceResolver.create("EricWittmann", "generated-apis", "master", "/tests/2018-06-06");
+        String repositoryUrl = resolver.create("EricWittmann", "generated-apis", "master", "/tests/2018-06-06");
         service.createPullRequestFromZipContent(repositoryUrl, "Testing from JUnit: " + new Date(), zipInput);
     }
     

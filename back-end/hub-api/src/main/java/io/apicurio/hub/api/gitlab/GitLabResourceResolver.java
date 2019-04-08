@@ -19,22 +19,64 @@ package io.apicurio.hub.api.gitlab;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import io.apicurio.hub.api.github.AbstractResourceResolver;
+import io.apicurio.hub.core.config.HubConfiguration;
 
+@ApplicationScoped
 public class GitLabResourceResolver {
+    
+    private static final String PATTERN1 = "/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.*)";
+    private static final String PATTERN2 = "/([^/]+)/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.*)";
+    private static final String PATTERN3 = "/([^/]+)/([^/]+)/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.*)";
+    private static final String TEMPLATE = "/:group/:project/blob/:branch/:resource";
 
-    private static Pattern pattern1 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)");
-    private static Pattern pattern2 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/([^/]+)/blob/([^/]+)/(.*)");
-    private static Pattern pattern3 = Pattern.compile("https://gitlab.com/([^/]+)/([^/]+)/([^/]+)/([^/]+)/blob/([^/]+)/(.*)");
-    // TODO support "raw" URLs.  Example:  https://gitlab.com/Apicurio/api-samples/raw/master/3.0/simple-api.json
+    private Pattern pattern1 = null;
+    private Pattern pattern2 = null;
+    private Pattern pattern3 = null;
+    private String template = null;
+    
+    @Inject
+    private HubConfiguration config;
+    
+    /**
+     * Constructor.
+     */
+    public GitLabResourceResolver() {
+    }
+    
+    @PostConstruct
+    public void postConstruct() {
+        pattern1 = Pattern.compile(createPatternOrTemplate(PATTERN1));
+        pattern2 = Pattern.compile(createPatternOrTemplate(PATTERN2));
+        pattern3 = Pattern.compile(createPatternOrTemplate(PATTERN3));
+        template = createPatternOrTemplate(TEMPLATE);
+    }
 
-    private static String template = "https://gitlab.com/:group/:project/blob/:branch/:resource";
-
+    /**
+     * Creates a pattern with the configured GitLab URL as the prefix and the given
+     * suffix at the end.
+     * @param suffix
+     */
+    private String createPatternOrTemplate(String suffix) {
+        String gitlab = config.getGitLabUrl();
+        if (gitlab == null || gitlab.trim().isEmpty()) {
+            gitlab = "https://gitlab.com";
+        }
+        if (gitlab.endsWith("/")) {
+            gitlab = gitlab.substring(0, gitlab.length() - 1);
+        }
+        return gitlab + suffix;
+    }
+    
     /**
      * Resolves a GitLab URL into a resource object.  The URL must be of the proper format.
      * @param glUrl
      */
-    public static GitLabResource resolve(String glUrl) {
+    public GitLabResource resolve(String glUrl) {
         Matcher matcher = pattern1.matcher(glUrl);
         if (matcher.matches()) {
             GitLabResource resource = new GitLabResource();
@@ -88,7 +130,7 @@ public class GitLabResourceResolver {
      * @param branch
      * @param resourcePath
      */
-    public static String create(String group, String project, String branch, String resourcePath) {
+    public String create(String group, String project, String branch, String resourcePath) {
         String resource = resourcePath;
         if (resource == null) {
             resource = "";

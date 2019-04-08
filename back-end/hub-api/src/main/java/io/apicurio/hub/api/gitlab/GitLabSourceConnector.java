@@ -83,6 +83,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
     @Inject
     private HubConfiguration config;
+    @Inject
+    private GitLabResourceResolver resolver;
 
     private String apiUrl;
 
@@ -131,7 +133,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException, ApiValidationException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
-            GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
+            GitLabResource resource = resolver.resolve(repositoryUrl);
 
             if (resource == null) {
                 throw new NotFoundException();
@@ -192,7 +194,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     @Override
     public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
+        GitLabResource resource = resolver.resolve(repositoryUrl);
         return getResourceContentFromGitLab(resource);
     }
 
@@ -221,7 +223,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private void addCommitComment(String repositoryUrl, String commitSha, String commitComment)
             throws SourceConnectorException {
 
-        GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
+        GitLabResource resource = resolver.resolve(repositoryUrl);
 
         String urlEncodedId = toEncodedId(resource);
         String addCommentUrl = this.endpoint("/api/v4/projects/:id/repository/commits/:sha/comments")
@@ -581,7 +583,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     private String commitToGitLab(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            GitLabResource resource = GitLabResourceResolver.resolve(repositoryUrl);
+            GitLabResource resource = resolver.resolve(repositoryUrl);
 
             String contentUrl = this.endpoint("/api/v4/projects/:id/repository/commits")
                     .bind("id", toEncodedId(resource))

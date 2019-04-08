@@ -42,13 +42,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
+import io.apicurio.hub.api.github.GitHubResourceResolver;
+import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
@@ -74,23 +78,41 @@ public class DesignsResourceTest {
     private MockSecurityContext security;
     private MockGitHubService github;
     private MockEditingSessionManager editingSessionManager;
+    private HubConfiguration config;
     private OaiCommandExecutor commandExecutor;
     private SourceConnectorFactory sourceConnectorFactory;
+    private GitHubResourceResolver gitHubResolver;
+    private GitLabResourceResolver gitLabResolver;
+    private BitbucketResourceResolver bitbucketResolver;
     private MockMetrics metrics;
 
     @Before
     public void setUp() {
         resource = new DesignsResource();
 
+        config = new HubConfiguration();
         storage = new MockStorage();
         security = new MockSecurityContext();
         metrics = new MockMetrics();
         commandExecutor = new OaiCommandExecutor();
         editingSessionManager = new MockEditingSessionManager();
+        gitHubResolver = new GitHubResourceResolver();
+        gitLabResolver = new GitLabResourceResolver();
+        bitbucketResolver = new BitbucketResourceResolver();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
         TestUtil.setPrivateField(sourceConnectorFactory, "gitHub", github);
+        TestUtil.setPrivateField(sourceConnectorFactory, "gitHubResolver", gitHubResolver);
+        TestUtil.setPrivateField(sourceConnectorFactory, "gitLabResolver", gitLabResolver);
+        TestUtil.setPrivateField(sourceConnectorFactory, "bitbucketResolver", bitbucketResolver);
+
+        TestUtil.setPrivateField(gitHubResolver, "config", config);
+        gitHubResolver.postConstruct();
+        TestUtil.setPrivateField(gitLabResolver, "config", config);
+        gitLabResolver.postConstruct();
+        TestUtil.setPrivateField(bitbucketResolver, "config", config);
+        bitbucketResolver.postConstruct();
 
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
@@ -98,6 +120,9 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "metrics", metrics);
         TestUtil.setPrivateField(resource, "oaiCommandExecutor", commandExecutor);
         TestUtil.setPrivateField(resource, "editingSessionManager", editingSessionManager);
+        TestUtil.setPrivateField(resource, "gitHubResolver", gitHubResolver);
+        TestUtil.setPrivateField(resource, "gitLabResolver", gitLabResolver);
+        TestUtil.setPrivateField(resource, "bitbucketResolver", bitbucketResolver);
     }
     
     @After

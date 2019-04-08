@@ -19,6 +19,12 @@ package io.apicurio.hub.api.github;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import io.apicurio.hub.core.config.HubConfiguration;
+
 /**
  * Resolves a github URL to a more granular set of properties including:
  * 
@@ -28,18 +34,54 @@ import java.util.regex.Pattern;
  *  
  * @author eric.wittmann@gmail.com
  */
+@ApplicationScoped
 public class GitHubResourceResolver {
-    
-    private static Pattern pattern1 = Pattern.compile("https://github.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)");
-    private static Pattern pattern2 = Pattern.compile("https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*)");
-    
-    private static String template = "https://github.com/:org/:repo/blob/:branch/:resource";
 
+    private static final String PATTERN1 = "/([^/]+)/([^/]+)/blob/([^/]+)/(.*)";
+    private static final String PATTERN2 = "https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*)";
+    private static final String TEMPLATE = "/:org/:repo/blob/:branch/:resource";
+
+    private Pattern pattern1 = null;
+    private Pattern pattern2 = null;
+    private String template = null;
+
+    @Inject
+    private HubConfiguration config;
+    
+    /**
+     * Constructor.
+     */
+    public GitHubResourceResolver() {
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        pattern1 = Pattern.compile(createPatternOrTemplate(PATTERN1));
+        pattern2 = Pattern.compile(PATTERN2);
+        template = createPatternOrTemplate(TEMPLATE);
+    }
+
+    /**
+     * Creates a pattern with the configured GitLab URL as the prefix and the given
+     * suffix at the end.
+     * @param suffix
+     */
+    private String createPatternOrTemplate(String suffix) {
+        String github = config.getGitHubUrl();
+        if (github == null || github.trim().isEmpty()) {
+            github = "https://github.com";
+        }
+        if (github.endsWith("/")) {
+            github = github.substring(0, github.length() - 1);
+        }
+        return github + suffix;
+    }
+    
     /**
      * Resolves a github URL into a resource object.  The URL must be of the proper format.
      * @param ghUrl
      */
-    public static GitHubResource resolve(String ghUrl) {
+    public GitHubResource resolve(String ghUrl) {
         Matcher matcher = pattern1.matcher(ghUrl);
         if (!matcher.matches()) {
             matcher = pattern2.matcher(ghUrl);
@@ -68,7 +110,7 @@ public class GitHubResourceResolver {
      * @param branch
      * @param resourcePath
      */
-    public static String create(String org, String repo, String branch, String resourcePath) {
+    public String create(String org, String repo, String branch, String resourcePath) {
         String resource = resourcePath;
         if (resource == null) {
             resource = "";

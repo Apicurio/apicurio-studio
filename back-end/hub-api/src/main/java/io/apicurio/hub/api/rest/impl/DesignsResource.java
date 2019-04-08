@@ -143,6 +143,13 @@ public class DesignsResource implements IDesignsResource {
     private HttpServletRequest request;
     @Context
     private HttpServletResponse response;
+    
+    @Inject
+    private GitLabResourceResolver gitLabResolver;
+    @Inject
+    private GitHubResourceResolver gitHubResolver;
+    @Inject
+    private BitbucketResourceResolver bitbucketResolver;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -755,7 +762,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             // First step - publish the content to the soruce control system
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(type);
-            String resourceUrl = info.toResourceUrl();
+            String resourceUrl = toResourceUrl(info);
             String formattedContent = getApiContent(designId, info.getFormat());
             try {
                 ResourceContent content = connector.getResourceContent(resourceUrl);
@@ -1265,7 +1272,7 @@ public class DesignsResource implements IDesignsResource {
                 String repo = project.getAttributes().get("publish-repo");
                 String branch = project.getAttributes().get("publish-branch");
                 String path = project.getAttributes().get("publish-location");
-                url = BitbucketResourceResolver.create(team, repo, branch, path);
+                url = bitbucketResolver.create(team, repo, branch, path);
             }
             break; 
             case GitHub: {
@@ -1273,7 +1280,7 @@ public class DesignsResource implements IDesignsResource {
                 String repo = project.getAttributes().get("publish-repo");
                 String branch = project.getAttributes().get("publish-branch");
                 String path = project.getAttributes().get("publish-location");
-                url = GitHubResourceResolver.create(org, repo, branch, path);
+                url = gitHubResolver.create(org, repo, branch, path);
             }
             break;
             case GitLab: {
@@ -1281,13 +1288,29 @@ public class DesignsResource implements IDesignsResource {
                 String proj = project.getAttributes().get("publish-project");
                 String branch = project.getAttributes().get("publish-branch");
                 String path = project.getAttributes().get("publish-location");
-                url = GitLabResourceResolver.create(group, proj, branch, path);
+                url = gitLabResolver.create(group, proj, branch, path);
             }
             break;
             default:
                 throw new RuntimeException("Unsupported type: " + scsType);
         }
         return url;
+    }
+
+    /**
+     * Uses the information in the bean to create a resource URL.
+     */
+    public String toResourceUrl(NewApiPublication info) {
+        if (info.getType() == LinkedAccountType.GitHub) {
+            return gitHubResolver.create(info.getOrg(), info.getRepo(), info.getBranch(), info.getResource());
+        }
+        if (info.getType() == LinkedAccountType.GitLab) {
+            return gitLabResolver.create(info.getGroup(), info.getProject(), info.getBranch(), info.getResource());
+        }
+        if (info.getType() == LinkedAccountType.Bitbucket) {
+            return bitbucketResolver.create(info.getTeam(), info.getRepo(), info.getBranch(), info.getResource());
+        }
+        return null;
     }
     
 }

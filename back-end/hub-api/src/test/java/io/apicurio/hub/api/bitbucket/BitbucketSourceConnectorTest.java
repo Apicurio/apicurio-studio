@@ -56,8 +56,9 @@ import test.io.apicurio.hub.api.MockSecurityContext;
  */
 public class BitbucketSourceConnectorTest {
 
-    private IBitbucketSourceConnector service;
+    private BitbucketSourceConnector service;
     private HubConfiguration config;
+    private BitbucketResourceResolver resolver;
     
     private static String basicAuth = null;
     
@@ -100,9 +101,14 @@ public class BitbucketSourceConnectorTest {
             }
         };
         config = new HubConfiguration();
+        resolver = new BitbucketResourceResolver();
+
+        TestUtil.setPrivateField(resolver, "config", config);
+        resolver.postConstruct();
 
         TestUtil.setPrivateField(service, "security", new MockSecurityContext());
         TestUtil.setPrivateField(service, "config", config);
+        TestUtil.setPrivateField(service, "resolver", resolver);
     }
 
     @After

@@ -111,11 +111,17 @@ export class HttpCodeService {
         new HttpCode(511, "Network Authentication Required")
     ];
 
+    /**
+     * Returns the list of commonly used HTTP codes.
+     */
     public static getCommonlyUsedHttpCodeList() : HttpCode[] {
         // TODO defensive copy? Make non-static?
         return HttpCodeService.HTTP_CODE_LIST_COMMON;
     }
 
+    /**
+     * Returns the full list of HTTP codes.
+     */
     public static getHttpCodeList() : HttpCode[] {
         // TODO defensive copy? Make non-static?
         return HttpCodeService.HTTP_CODE_LIST;
@@ -124,7 +130,6 @@ export class HttpCodeService {
     /**
      * Resolves a single code (returns the HttpCode object for a given response code).
      * @param code
-     * @return
      */
     public static getCode(code: string): HttpCode {
         for (let c of HttpCodeService.HTTP_CODE_LIST) {
@@ -135,12 +140,18 @@ export class HttpCodeService {
         return null;
     }
 
+    /**
+     * Returns true if the current date is April 1.
+     */
     private static isAprilFirst(): boolean {
         let d: Date = new Date();
         return d.getMonth() === 3 && d.getDate() === 1;
     }
 
-    public static generateDropDownOptions(includeAprilJoke = false): DropDownOption[] {
+    /**
+     * Called to generate an array of dropdown options for all of the HTTP codes.
+     */
+    public static generateDropDownOptions(): DropDownOption[] {
         // TODO cache this?
         let res: DropDownOption[] = HttpCodeService.HTTP_CODE_LIST_COMMON.map(e => {
             let strcode = String(e.getCode());
@@ -158,9 +169,6 @@ export class HttpCodeService {
             res.push(new Value(strcode + " " + e.getName(), strcode));
         });
 
-        return res.filter(e => e.isDivider()
-            || (HttpCodeService.isAprilFirst() && includeAprilJoke)
-            || (!HttpCodeService.isAprilFirst() && e.getValue() !== "418"));
-
+        return res.filter(e => e.isDivider() || HttpCodeService.isAprilFirst() || e.getValue() !== "418");
     }
 }

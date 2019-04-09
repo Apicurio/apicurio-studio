@@ -115,7 +115,7 @@ export class CloneResponseDialogComponent {
     }
 
     public getStatusCodeDropDownOptions(): DropDownOption[] {
-        return HttpCodeService.generateDropDownOptions(true);
+        return HttpCodeService.generateDropDownOptions();
     }
 
     public getStatusCode(): string {

@@ -123,8 +123,7 @@ export class AddResponseDialogComponent {
     }
 
     public getStatusCodeDropDownOptions(): DropDownOption[] {
-        return HttpCodeService.generateDropDownOptions()
-            .filter(e => e.isDivider() || this.isAprilFirst() || (!this.isAprilFirst() && e.getValue() !== "418"));
+        return HttpCodeService.generateDropDownOptions();
     }
 
     public getStatusCode(): string {

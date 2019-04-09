@@ -139,6 +139,11 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
         this.commandService.emit(command);
     }
 
+    public deleteAllExamples(): void {
+        let command: ICommand = createDeleteAllExamplesCommand(this.item.ownerDocument(), this.item);
+        this.commandService.emit(command);
+    }
+
     public editExample(event: EditExampleEvent): void {
         console.info("[MediaTypeRowComponent] Changing the value of a Media Type example.");
         let command: ICommand = createSetExampleCommand(this.item.ownerDocument(), this.item,
@@ -149,8 +154,4 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
     public schemaForExample(): Oas30Schema {
         return this.item.schema;
     }
-
-    public deleteAllExamples(mediaType: string): void {
-        let command: ICommand = createDeleteAllExamplesCommand(this.item.ownerDocument(), this.item);
-        this.commandService.emit(command);
 }

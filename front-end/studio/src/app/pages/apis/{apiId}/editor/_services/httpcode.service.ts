@@ -113,12 +113,12 @@ export class HttpCodeService {
 
     public static getCommonlyUsedHttpCodeList() : HttpCode[] {
         // TODO defensive copy? Make non-static?
-        return this.HTTP_CODE_LIST_COMMON;
+        return HttpCodeService.HTTP_CODE_LIST_COMMON;
     }
 
     public static getHttpCodeList() : HttpCode[] {
         // TODO defensive copy? Make non-static?
-        return this.HTTP_CODE_LIST;
+        return HttpCodeService.HTTP_CODE_LIST;
     }
 
     /**
@@ -127,7 +127,7 @@ export class HttpCodeService {
      * @return
      */
     public static getCode(code: string): HttpCode {
-        for (let c of this.HTTP_CODE_LIST) {
+        for (let c of HttpCodeService.HTTP_CODE_LIST) {
             if (c.getCode().toString() === code) {
                 return c;
             }
@@ -142,14 +142,14 @@ export class HttpCodeService {
 
     public static generateDropDownOptions(includeAprilJoke = false): DropDownOption[] {
         // TODO cache this?
-        let res: DropDownOption[] = this.HTTP_CODE_LIST_COMMON.map(e => {
+        let res: DropDownOption[] = HttpCodeService.HTTP_CODE_LIST_COMMON.map(e => {
             let strcode = String(e.getCode());
             return new Value(strcode + " " + e.getName(), strcode);
         });
         res.push(DIVIDER);
 
         let nextDividerAfter = 199;
-        this.HTTP_CODE_LIST.forEach(e => {
+        HttpCodeService.HTTP_CODE_LIST.forEach(e => {
             if(e.getCode() > nextDividerAfter) {
                 nextDividerAfter += 100;
                 res.push(DIVIDER);
@@ -159,8 +159,8 @@ export class HttpCodeService {
         });
 
         return res.filter(e => e.isDivider()
-            || (this.isAprilFirst() && includeAprilJoke)
-            || (!this.isAprilFirst() && e.getValue() !== "418"));
+            || (HttpCodeService.isAprilFirst() && includeAprilJoke)
+            || (!HttpCodeService.isAprilFirst() && e.getValue() !== "418"));
 
     }
 }

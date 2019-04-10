@@ -122,12 +122,12 @@
                                 <!-- Unpack Keycloak OIDC adapter -->
                                 <unzip src="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" dest="${wildfly.appserver.dir}" overwrite="false" />
                                 <delete file="${project.build.directory}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" />
-                                
+
                                 <!-- Make sure to chmod 755 the shell scripts -->
                                 <chmod perm="a+x" dir="${wildfly.appserver.dir}/bin">
                                     <include name="*.sh" />
                                 </chmod>
-                                
+
                                 <!-- Remove the welcome content (will be replaced) -->
                                 <delete dir="${wildfly.appserver.dir}/welcome-content" />
                                 
@@ -156,6 +156,24 @@
                             <attach>true</attach>
                             <descriptors>
                                 <descriptor>src/main/assembly/quickstart.xml</descriptor>
+                            </descriptors>
+                            <archiverConfig>
+                                <defaultDirectoryMode>0755</defaultDirectoryMode>
+                            </archiverConfig>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Integration test distro -->
+                        <id>test</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>apicurio-studio-${project.version}</finalName>
+                            <attach>true</attach>
+                            <descriptors>
+                                <descriptor>src/main/assembly/test.xml</descriptor>
                             </descriptors>
                             <archiverConfig>
                                 <defaultDirectoryMode>0755</defaultDirectoryMode>

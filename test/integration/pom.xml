@@ -15,6 +15,7 @@
         <module>api</module>
         <module>ws</module>
         <module>arquillian</module>
+        <module>single-node-keycloak</module>
         <module>common</module>
     </modules>
     <build>

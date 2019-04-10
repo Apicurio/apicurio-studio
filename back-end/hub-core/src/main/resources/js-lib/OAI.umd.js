@@ -19180,6 +19180,27 @@
         };
         return OasMissingServerVarDefaultValueRule;
     }(OasRequiredPropertyValidationRule));
+    /**
+     * Implements the Missing Property rule.
+     */
+    var OasMissingSchemaArrayInformationRule = /** @class */ (function (_super) {
+        __extends$1q(OasMissingSchemaArrayInformationRule, _super);
+        function OasMissingSchemaArrayInformationRule() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        OasMissingSchemaArrayInformationRule.prototype.visitSchema = function (node) {
+            this.requirePropertyWhen(node, "items", "type", "array");
+        };
+        OasMissingSchemaArrayInformationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitAnyOfSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitOneOfSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitNotSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitPropertySchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitItemsSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitAdditionalPropertiesSchema = function (node) { this.visitSchema(node); };
+        OasMissingSchemaArrayInformationRule.prototype.visitSchemaDefinition = function (node) { this.visitSchema(node); };
+        return OasMissingSchemaArrayInformationRule;
+    }(OasRequiredPropertyValidationRule));
 
     /**
      * @license
@@ -19297,19 +19318,6 @@
             }
             return true;
         };
-        /**
-         * Returns true if the type is array and items is defined
-         * @param type
-         * @return {boolean}
-         */
-        OasInvalidPropertyTypeValidationRule.prototype.isValidItems = function (node) {
-            var type = node.type, items = node.items;
-            if (type == 'array' && !this.hasValue(items))
-                return false;
-            if (type !== 'array' && this.hasValue(items))
-                return false;
-            return true;
-        };
         OasInvalidPropertyTypeValidationRule.prototype.visitAllOfSchema = function (node) { this.visitSchema(node); };
         OasInvalidPropertyTypeValidationRule.prototype.visitAnyOfSchema = function (node) { this.visitSchema(node); };
         OasInvalidPropertyTypeValidationRule.prototype.visitOneOfSchema = function (node) { this.visitSchema(node); };
@@ -19337,7 +19345,7 @@
         return OasInvalidSchemaTypeValueRule;
     }(OasInvalidPropertyTypeValidationRule));
     /**
-     * Implements the Invalid Shchema Array Items rule.
+     * Implements the Invalid Schema Array Items rule.
      */
     var OasInvalidSchemaArrayItemsRule = /** @class */ (function (_super) {
         __extends$1s(OasInvalidSchemaArrayItemsRule, _super);
@@ -19345,7 +19353,9 @@
             return _super !== null && _super.apply(this, arguments) || this;
         }
         OasInvalidSchemaArrayItemsRule.prototype.visitSchema = function (node) {
-            this.reportIfInvalid(this.isValidItems(node), node, "items");
+            if (this.isDefined(node.items) && node.type !== "array") {
+                this.report(node, "items");
+            }
         };
         return OasInvalidSchemaArrayItemsRule;
     }(OasInvalidPropertyTypeValidationRule));
@@ -19533,32 +19543,33 @@
                 { code: "IT-001", name: "Missing Items Type", type: "Required Property", entity: "Items", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_145 || (templateObject_145 = __makeTemplateObject(["Type information is missing for array items."], ["Type information is missing for array items."]))), class: OasMissingItemsTypeRule },
                 { code: "IT-002", name: "Missing Items Array Information", type: "Required Property", entity: "Items", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_146 || (templateObject_146 = __makeTemplateObject(["Type information missing for array items."], ["Type information missing for array items."]))), class: OasMissingItemsArrayInformationRule },
                 { code: "RES-001", name: "Missing Response Description", type: "Required Property", entity: "Response", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_147 || (templateObject_147 = __makeTemplateObject(["Response (code ", ") is missing a description."], ["Response (code ", ") is missing a description."])), 'statusCode'), class: OasMissingResponseDescriptionRule },
-                { code: "HEAD-001", name: "Missing Header Type", type: "Required Property", entity: "Header", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_148 || (templateObject_148 = __makeTemplateObject(["Header is missing array type information."], ["Header is missing array type information."]))), class: OasMissingHeaderTypeRule },
+                { code: "HEAD-001", name: "Missing Header Type", type: "Required Property", entity: "Header", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_148 || (templateObject_148 = __makeTemplateObject(["Header is missing type information."], ["Header is missing type information."]))), class: OasMissingHeaderTypeRule },
                 { code: "HEAD-002", name: "Missing Header Array Information", type: "Required Property", entity: "Header", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_149 || (templateObject_149 = __makeTemplateObject(["Header is missing array type information."], ["Header is missing array type information."]))), class: OasMissingHeaderArrayInformationRule },
-                { code: "TAG-001", name: "Missing Tag Name", type: "Required Property", entity: "Tag", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_150 || (templateObject_150 = __makeTemplateObject(["Tag is missing a name."], ["Tag is missing a name."]))), class: OasMissingTagNameRule },
-                { code: "SS-001", name: "Missing Security Scheme Type", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_151 || (templateObject_151 = __makeTemplateObject(["Security Scheme is missing a type."], ["Security Scheme is missing a type."]))), class: OasMissingSecuritySchemeTypeRule },
-                { code: "SS-002", name: "Missing API-Key Scheme Parameter Name", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_152 || (templateObject_152 = __makeTemplateObject(["API Key Security Scheme is missing a parameter name (e.g. name of a header or query param)."], ["API Key Security Scheme is missing a parameter name (e.g. name of a header or query param)."]))), class: OasMissingApiKeySchemeParamNameRule },
-                { code: "SS-003", name: "Missing API-Key Scheme Parameter Location", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_153 || (templateObject_153 = __makeTemplateObject(["API Key Security Scheme must describe where the Key can be found (e.g. header, query param, etc)."], ["API Key Security Scheme must describe where the Key can be found (e.g. header, query param, etc)."]))), class: OasMissingApiKeySchemeParamLocationRule },
-                { code: "SS-004", name: "Missing OAuth Scheme Flow Type", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_154 || (templateObject_154 = __makeTemplateObject(["OAuth Security Scheme is missing a flow type."], ["OAuth Security Scheme is missing a flow type."]))), class: OasMissingOAuthSchemeFlowTypeRule },
-                { code: "SS-005", name: "Missing OAuth Scheme Auth URL", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_155 || (templateObject_155 = __makeTemplateObject(["OAuth Security Scheme is missing an Authorization URL."], ["OAuth Security Scheme is missing an Authorization URL."]))), class: OasMissingOAuthSchemeAuthUrlRule },
-                { code: "SS-006", name: "Missing OAuth Scheme Token URL", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_156 || (templateObject_156 = __makeTemplateObject(["OAuth Security Scheme is missing a Token URL."], ["OAuth Security Scheme is missing a Token URL."]))), class: OasMissingOAuthSchemeTokenUrlRule },
-                { code: "SS-007", name: "Missing OAuth Scheme Scopes", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_157 || (templateObject_157 = __makeTemplateObject(["OAuth Security Scheme is missing defined scopes."], ["OAuth Security Scheme is missing defined scopes."]))), class: OasMissingOAuthSchemeScopesRule },
-                { code: "DISC-001", name: "Missing a Discriminator Property Name", type: "Required Property", entity: "Discriminator", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_158 || (templateObject_158 = __makeTemplateObject(["Discriminator must indicate a property (by name)."], ["Discriminator must indicate a property (by name)."]))), class: OasMissingDiscriminatorPropertyNameRule },
-                { code: "FLOW-006", name: "Missing OAuth Flow Scopes", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_159 || (templateObject_159 = __makeTemplateObject(["OAuth Flow is missing defined scopes."], ["OAuth Flow is missing defined scopes."]))), class: OasMissingOAuthFlowScopesRule },
-                { code: "FLOW-001", name: "Missing OAuth Flow Authorization URL", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_160 || (templateObject_160 = __makeTemplateObject(["", " OAuth Flow is missing an Authorization URL."], ["", " OAuth Flow is missing an Authorization URL."])), 'flowType'), class: OasMissingOAuthFlowAuthUrlRule },
-                { code: "FLOW-002", name: "Missing OAuth Flow Token URL", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_161 || (templateObject_161 = __makeTemplateObject(["", " OAuth Flow is missing a Token URL."], ["", " OAuth Flow is missing a Token URL."])), 'flowType'), class: OasMissingOAuthFlowRokenUrlRule },
-                { code: "RB-002", name: "Missing Request Body Content", type: "Required Property", entity: "Request Body", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_162 || (templateObject_162 = __makeTemplateObject(["Request Body content is missing."], ["Request Body content is missing."]))), class: OasMissingRequestBodyContentRule },
-                { code: "SRV-001", name: "Missing Server Template URL", type: "Required Property", entity: "Server", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_163 || (templateObject_163 = __makeTemplateObject(["Server is missing a template URL."], ["Server is missing a template URL."]))), class: OasMissingServerTemplateUrlRule },
-                { code: "SS-019", name: "Missing HTTP Security Scheme Style", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_164 || (templateObject_164 = __makeTemplateObject(["HTTP Security Scheme is missing a scheme (Basic, Digest, etc)."], ["HTTP Security Scheme is missing a scheme (Basic, Digest, etc)."]))), class: OasMissingHttpSecuritySchemeTypeRule },
-                { code: "SS-020", name: "Missing OAuth Security Scheme Flows", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_165 || (templateObject_165 = __makeTemplateObject(["OAuth Security Scheme does not define any OAuth flows."], ["OAuth Security Scheme does not define any OAuth flows."]))), class: OasMissingOAuthSecuritySchemeFlowsRule },
-                { code: "SS-021", name: "Missing OID Connect Security Scheme Connect URL", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_166 || (templateObject_166 = __makeTemplateObject(["OpenID Connect Security Scheme is missing a Connect URL."], ["OpenID Connect Security Scheme is missing a Connect URL."]))), class: OasMissingOpenIdConnectSecuritySchemeConnectUrlRule },
-                { code: "SVAR-001", name: "Missing Server Variable Default Value", type: "Required Property", entity: "Server Variable", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_167 || (templateObject_167 = __makeTemplateObject(["Server Variable \"", "\" is missing a default value."], ["Server Variable \"", "\" is missing a default value."])), 'name'), class: OasMissingServerVarDefaultValueRule },
+                { code: "SCH-005", name: "Missing Schema Array Information", type: "Required Property", entity: "Schema", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_150 || (templateObject_150 = __makeTemplateObject(["Schema is missing array type information."], ["Schema is missing array type information."]))), class: OasMissingSchemaArrayInformationRule },
+                { code: "TAG-001", name: "Missing Tag Name", type: "Required Property", entity: "Tag", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_151 || (templateObject_151 = __makeTemplateObject(["Tag is missing a name."], ["Tag is missing a name."]))), class: OasMissingTagNameRule },
+                { code: "SS-001", name: "Missing Security Scheme Type", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_152 || (templateObject_152 = __makeTemplateObject(["Security Scheme is missing a type."], ["Security Scheme is missing a type."]))), class: OasMissingSecuritySchemeTypeRule },
+                { code: "SS-002", name: "Missing API-Key Scheme Parameter Name", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_153 || (templateObject_153 = __makeTemplateObject(["API Key Security Scheme is missing a parameter name (e.g. name of a header or query param)."], ["API Key Security Scheme is missing a parameter name (e.g. name of a header or query param)."]))), class: OasMissingApiKeySchemeParamNameRule },
+                { code: "SS-003", name: "Missing API-Key Scheme Parameter Location", type: "Required Property", entity: "Security Scheme", versions: ["2.0", "3.0"], specMandated: true, messageTemplate: template(templateObject_154 || (templateObject_154 = __makeTemplateObject(["API Key Security Scheme must describe where the Key can be found (e.g. header, query param, etc)."], ["API Key Security Scheme must describe where the Key can be found (e.g. header, query param, etc)."]))), class: OasMissingApiKeySchemeParamLocationRule },
+                { code: "SS-004", name: "Missing OAuth Scheme Flow Type", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_155 || (templateObject_155 = __makeTemplateObject(["OAuth Security Scheme is missing a flow type."], ["OAuth Security Scheme is missing a flow type."]))), class: OasMissingOAuthSchemeFlowTypeRule },
+                { code: "SS-005", name: "Missing OAuth Scheme Auth URL", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_156 || (templateObject_156 = __makeTemplateObject(["OAuth Security Scheme is missing an Authorization URL."], ["OAuth Security Scheme is missing an Authorization URL."]))), class: OasMissingOAuthSchemeAuthUrlRule },
+                { code: "SS-006", name: "Missing OAuth Scheme Token URL", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_157 || (templateObject_157 = __makeTemplateObject(["OAuth Security Scheme is missing a Token URL."], ["OAuth Security Scheme is missing a Token URL."]))), class: OasMissingOAuthSchemeTokenUrlRule },
+                { code: "SS-007", name: "Missing OAuth Scheme Scopes", type: "Required Property", entity: "Security Scheme", versions: ["2.0"], specMandated: true, messageTemplate: template(templateObject_158 || (templateObject_158 = __makeTemplateObject(["OAuth Security Scheme is missing defined scopes."], ["OAuth Security Scheme is missing defined scopes."]))), class: OasMissingOAuthSchemeScopesRule },
+                { code: "DISC-001", name: "Missing a Discriminator Property Name", type: "Required Property", entity: "Discriminator", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_159 || (templateObject_159 = __makeTemplateObject(["Discriminator must indicate a property (by name)."], ["Discriminator must indicate a property (by name)."]))), class: OasMissingDiscriminatorPropertyNameRule },
+                { code: "FLOW-006", name: "Missing OAuth Flow Scopes", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_160 || (templateObject_160 = __makeTemplateObject(["OAuth Flow is missing defined scopes."], ["OAuth Flow is missing defined scopes."]))), class: OasMissingOAuthFlowScopesRule },
+                { code: "FLOW-001", name: "Missing OAuth Flow Authorization URL", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_161 || (templateObject_161 = __makeTemplateObject(["", " OAuth Flow is missing an Authorization URL."], ["", " OAuth Flow is missing an Authorization URL."])), 'flowType'), class: OasMissingOAuthFlowAuthUrlRule },
+                { code: "FLOW-002", name: "Missing OAuth Flow Token URL", type: "Required Property", entity: "OAuth Flow", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_162 || (templateObject_162 = __makeTemplateObject(["", " OAuth Flow is missing a Token URL."], ["", " OAuth Flow is missing a Token URL."])), 'flowType'), class: OasMissingOAuthFlowRokenUrlRule },
+                { code: "RB-002", name: "Missing Request Body Content", type: "Required Property", entity: "Request Body", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_163 || (templateObject_163 = __makeTemplateObject(["Request Body content is missing."], ["Request Body content is missing."]))), class: OasMissingRequestBodyContentRule },
+                { code: "SRV-001", name: "Missing Server Template URL", type: "Required Property", entity: "Server", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_164 || (templateObject_164 = __makeTemplateObject(["Server is missing a template URL."], ["Server is missing a template URL."]))), class: OasMissingServerTemplateUrlRule },
+                { code: "SS-019", name: "Missing HTTP Security Scheme Style", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_165 || (templateObject_165 = __makeTemplateObject(["HTTP Security Scheme is missing a scheme (Basic, Digest, etc)."], ["HTTP Security Scheme is missing a scheme (Basic, Digest, etc)."]))), class: OasMissingHttpSecuritySchemeTypeRule },
+                { code: "SS-020", name: "Missing OAuth Security Scheme Flows", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_166 || (templateObject_166 = __makeTemplateObject(["OAuth Security Scheme does not define any OAuth flows."], ["OAuth Security Scheme does not define any OAuth flows."]))), class: OasMissingOAuthSecuritySchemeFlowsRule },
+                { code: "SS-021", name: "Missing OID Connect Security Scheme Connect URL", type: "Required Property", entity: "Security Scheme", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_167 || (templateObject_167 = __makeTemplateObject(["OpenID Connect Security Scheme is missing a Connect URL."], ["OpenID Connect Security Scheme is missing a Connect URL."]))), class: OasMissingOpenIdConnectSecuritySchemeConnectUrlRule },
+                { code: "SVAR-001", name: "Missing Server Variable Default Value", type: "Required Property", entity: "Server Variable", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_168 || (templateObject_168 = __makeTemplateObject(["Server Variable \"", "\" is missing a default value."], ["Server Variable \"", "\" is missing a default value."])), 'name'), class: OasMissingServerVarDefaultValueRule },
                 /** Ignored Property **/
-                { code: "HEAD-008", name: "Ignored Content-Type Header", type: "Ignored Property", entity: "Header", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_168 || (templateObject_168 = __makeTemplateObject(["The \"Content-Type\" header will be ignored."], ["The \"Content-Type\" header will be ignored."]))), class: OasIgnoredContentTypeHeaderRule },
-                { code: "PAR-021", name: "Ignored Header Parameter", type: "Ignored Property", entity: "Parameter", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_169 || (templateObject_169 = __makeTemplateObject(["The \"", "\" header parameter will be ignored."], ["The \"", "\" header parameter will be ignored."])), 'name'), class: OasIgnoredHeaderParameterRule },
+                { code: "HEAD-008", name: "Ignored Content-Type Header", type: "Ignored Property", entity: "Header", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_169 || (templateObject_169 = __makeTemplateObject(["The \"Content-Type\" header will be ignored."], ["The \"Content-Type\" header will be ignored."]))), class: OasIgnoredContentTypeHeaderRule },
+                { code: "PAR-021", name: "Ignored Header Parameter", type: "Ignored Property", entity: "Parameter", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_170 || (templateObject_170 = __makeTemplateObject(["The \"", "\" header parameter will be ignored."], ["The \"", "\" header parameter will be ignored."])), 'name'), class: OasIgnoredHeaderParameterRule },
                 /** Invalid Property Type **/
-                { code: "SCH-003", name: "Invalid Schema Type Value", type: "Invalid Property Type", entity: "Schema", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_170 || (templateObject_170 = __makeTemplateObject(["Schema type value of \"", "\" is not allowed.  Must be one of: [", "]"], ["Schema type value of \"", "\" is not allowed.  Must be one of: [", "]"])), 'type', 'allowedTypes'), class: OasInvalidSchemaTypeValueRule },
-                { code: "SCH-004", name: "Invalid Schema Array Items", type: "Invalid Property Type", entity: "Schema", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_171 || (templateObject_171 = __makeTemplateObject(["Schema items must be present only for schemas of type 'array'."], ["Schema items must be present only for schemas of type 'array'."]))), class: OasInvalidSchemaArrayItemsRule },
+                { code: "SCH-003", name: "Invalid Schema Type Value", type: "Invalid Property Type", entity: "Schema", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_171 || (templateObject_171 = __makeTemplateObject(["Schema type value of \"", "\" is not allowed.  Must be one of: [", "]"], ["Schema type value of \"", "\" is not allowed.  Must be one of: [", "]"])), 'type', 'allowedTypes'), class: OasInvalidSchemaTypeValueRule },
+                { code: "SCH-004", name: "Invalid Schema Array Items", type: "Invalid Property Type", entity: "Schema", versions: ["3.0"], specMandated: true, messageTemplate: template(templateObject_172 || (templateObject_172 = __makeTemplateObject(["Schema items must be present only for schemas of type 'array'."], ["Schema items must be present only for schemas of type 'array'."]))), class: OasInvalidSchemaArrayItemsRule },
             ];
             this.validateRuleData();
         }
@@ -19607,7 +19618,7 @@
         OasValidationRuleset.instance = new OasValidationRuleset();
         return OasValidationRuleset;
     }());
-    var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34, templateObject_35, templateObject_36, templateObject_37, templateObject_38, templateObject_39, templateObject_40, templateObject_41, templateObject_42, templateObject_43, templateObject_44, templateObject_45, templateObject_46, templateObject_47, templateObject_48, templateObject_49, templateObject_50, templateObject_51, templateObject_52, templateObject_53, templateObject_54, templateObject_55, templateObject_56, templateObject_57, templateObject_58, templateObject_59, templateObject_60, templateObject_61, templateObject_62, templateObject_63, templateObject_64, templateObject_65, templateObject_66, templateObject_67, templateObject_68, templateObject_69, templateObject_70, templateObject_71, templateObject_72, templateObject_73, templateObject_74, templateObject_75, templateObject_76, templateObject_77, templateObject_78, templateObject_79, templateObject_80, templateObject_81, templateObject_82, templateObject_83, templateObject_84, templateObject_85, templateObject_86, templateObject_87, templateObject_88, templateObject_89, templateObject_90, templateObject_91, templateObject_92, templateObject_93, templateObject_94, templateObject_95, templateObject_96, templateObject_97, templateObject_98, templateObject_99, templateObject_100, templateObject_101, templateObject_102, templateObject_103, templateObject_104, templateObject_105, templateObject_106, templateObject_107, templateObject_108, templateObject_109, templateObject_110, templateObject_111, templateObject_112, templateObject_113, templateObject_114, templateObject_115, templateObject_116, templateObject_117, templateObject_118, templateObject_119, templateObject_120, templateObject_121, templateObject_122, templateObject_123, templateObject_124, templateObject_125, templateObject_126, templateObject_127, templateObject_128, templateObject_129, templateObject_130, templateObject_131, templateObject_132, templateObject_133, templateObject_134, templateObject_135, templateObject_136, templateObject_137, templateObject_138, templateObject_139, templateObject_140, templateObject_141, templateObject_142, templateObject_143, templateObject_144, templateObject_145, templateObject_146, templateObject_147, templateObject_148, templateObject_149, templateObject_150, templateObject_151, templateObject_152, templateObject_153, templateObject_154, templateObject_155, templateObject_156, templateObject_157, templateObject_158, templateObject_159, templateObject_160, templateObject_161, templateObject_162, templateObject_163, templateObject_164, templateObject_165, templateObject_166, templateObject_167, templateObject_168, templateObject_169, templateObject_170, templateObject_171;
+    var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18, templateObject_19, templateObject_20, templateObject_21, templateObject_22, templateObject_23, templateObject_24, templateObject_25, templateObject_26, templateObject_27, templateObject_28, templateObject_29, templateObject_30, templateObject_31, templateObject_32, templateObject_33, templateObject_34, templateObject_35, templateObject_36, templateObject_37, templateObject_38, templateObject_39, templateObject_40, templateObject_41, templateObject_42, templateObject_43, templateObject_44, templateObject_45, templateObject_46, templateObject_47, templateObject_48, templateObject_49, templateObject_50, templateObject_51, templateObject_52, templateObject_53, templateObject_54, templateObject_55, templateObject_56, templateObject_57, templateObject_58, templateObject_59, templateObject_60, templateObject_61, templateObject_62, templateObject_63, templateObject_64, templateObject_65, templateObject_66, templateObject_67, templateObject_68, templateObject_69, templateObject_70, templateObject_71, templateObject_72, templateObject_73, templateObject_74, templateObject_75, templateObject_76, templateObject_77, templateObject_78, templateObject_79, templateObject_80, templateObject_81, templateObject_82, templateObject_83, templateObject_84, templateObject_85, templateObject_86, templateObject_87, templateObject_88, templateObject_89, templateObject_90, templateObject_91, templateObject_92, templateObject_93, templateObject_94, templateObject_95, templateObject_96, templateObject_97, templateObject_98, templateObject_99, templateObject_100, templateObject_101, templateObject_102, templateObject_103, templateObject_104, templateObject_105, templateObject_106, templateObject_107, templateObject_108, templateObject_109, templateObject_110, templateObject_111, templateObject_112, templateObject_113, templateObject_114, templateObject_115, templateObject_116, templateObject_117, templateObject_118, templateObject_119, templateObject_120, templateObject_121, templateObject_122, templateObject_123, templateObject_124, templateObject_125, templateObject_126, templateObject_127, templateObject_128, templateObject_129, templateObject_130, templateObject_131, templateObject_132, templateObject_133, templateObject_134, templateObject_135, templateObject_136, templateObject_137, templateObject_138, templateObject_139, templateObject_140, templateObject_141, templateObject_142, templateObject_143, templateObject_144, templateObject_145, templateObject_146, templateObject_147, templateObject_148, templateObject_149, templateObject_150, templateObject_151, templateObject_152, templateObject_153, templateObject_154, templateObject_155, templateObject_156, templateObject_157, templateObject_158, templateObject_159, templateObject_160, templateObject_161, templateObject_162, templateObject_163, templateObject_164, templateObject_165, templateObject_166, templateObject_167, templateObject_168, templateObject_169, templateObject_170, templateObject_171, templateObject_172;
 
     /**
      * @license
@@ -19728,8 +19739,13 @@
         function Oas20to30TransformationVisitor() {
             this._library = new OasLibraryUtils();
             this._nodeMap = {};
+            this._postProcessResponses = [];
+            this._postProcessingComplete = false;
         }
         Oas20to30TransformationVisitor.prototype.getResult = function () {
+            if (!this._postProcessingComplete) {
+                this.postProcess();
+            }
             return this.doc30;
         };
         Oas20to30TransformationVisitor.prototype.visitDocument = function (node) {
@@ -19779,6 +19795,7 @@
         Oas20to30TransformationVisitor.prototype.visitLicense = function (node) {
             var info30 = this.lookup(node.parent());
             var license30 = info30.createLicense();
+            info30.license = license30;
             license30.name = node.name;
             license30.url = node.url;
             this.mapNode(node, license30);
@@ -20016,6 +20033,10 @@
                     }
                     _this.mapNode(schema_3, schema30);
                 });
+                // TODO update: mark the Response as needing Content post-processing
+                if (produces.length > 1) {
+                    this._postProcessResponses.push(response30);
+                }
             }
         };
         Oas20to30TransformationVisitor.prototype.visitSchema = function (node) {
@@ -20208,7 +20229,17 @@
         Oas20to30TransformationVisitor.prototype.toSchema = function (from, schema30, isSchema) {
             schema30.type = from.type;
             schema30.format = from.format;
+            if (from.type === "file") {
+                schema30.type = "string";
+                schema30.format = "binary";
+            }
             if (from.items && !Array.isArray(from.items)) {
+                // This is done so that we can lookup the appropriate parent for an "Items" object later
+                // on in the visit.  This is a special case because we're introducing a new Oas30Schema
+                // entity in between e.g. a Response and the ItemsSchema - whereas in 2.0 the ItemsSchema
+                // is a direct child of Response and Parameter.  So when visiting a Items, we cannot lookup
+                // the new 3.0 Schema using the Items' parent (because the parent maps to something else -
+                // the grandparent, in fact).  THIS IS ONLY A PROBLEM FOR "ITEMS" ON PARAM AND RESPONSE.
                 from.items.n_attribute("_transformation_items-parent", schema30);
             }
             else if (from.items && Array.isArray(from.items)) ;
@@ -20327,6 +20358,39 @@
                 }
             }
             return split.join("/");
+        };
+        /**
+         * Called when visiting is complete.  Any additional processing of the result can
+         * be done here.
+         */
+        Oas20to30TransformationVisitor.prototype.postProcess = function () {
+            var _this = this;
+            // Post process all of the responses that require it.  Responses may require post-processing
+            // when a response has multiple @Produces content types, which results in multiple MimeType
+            // entities in the 3.0 Response 'content'.  When this happens, only one of the mime types
+            // will contain the visited (and thus transformed) data model.  So we must post-process them
+            // to "clone" that info to the other mime types.  Otherwise we'll have a full mime type
+            // definition for only ONE of the mime types, and partial definitions for the rest.
+            this._postProcessResponses.forEach(function (response) {
+                // First, figure out which of the media types is the largest (has the most content)
+                var largest = 0;
+                var srcMt = null;
+                response.getMediaTypes().forEach(function (mt) {
+                    var size = JSON.stringify(_this._library.writeNode(mt.schema)).length;
+                    if (size > largest) {
+                        largest = size;
+                        srcMt = mt;
+                    }
+                });
+                // Now clone the contents of the largest media type into all the others.
+                response.getMediaTypes().forEach(function (mt) {
+                    if (srcMt !== mt) {
+                        console.info("Cloning Media Type " + srcMt.name() + " into " + mt.name());
+                        var src = _this._library.writeNode(srcMt.schema);
+                        _this._library.readNode(src, mt.schema);
+                    }
+                });
+            });
         };
         return Oas20to30TransformationVisitor;
     }());

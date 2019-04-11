@@ -1,0 +1,295 @@
+.profile-editor {
+  position: relative;
+}
+.profile-editor h1 {
+  font-size: 25px;
+  margin-bottom: 20px;
+}
+.profile-editor .close-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 50px;
+  font-size: 32px;
+  cursor: pointer;
+  color: #666;
+  z-index: 5;
+}
+.profile-editor .close-button:hover {
+  color: black;
+}
+.profile-editor .notice-of-required {
+  margin-bottom: -15px;
+  padding-left: 0;
+  margin-top: 10px;
+}
+.profile-editor hr {
+  border-color: #bbb;
+}
+
+.profile-editor .body-section {
+  width: 80%;
+  min-width: 400px;
+}
+.profile-editor .body-section h3 {
+  font-weight: 600;
+  font-size: 19px;
+}
+.profile-editor .body-section > div > .form-group {
+}
+.profile-editor .body-section > div > .form-group input {
+  min-width: 350px;
+  width: 90%;
+}
+.profile-editor .actions-section .actions {
+  min-width: 400px;
+  width: 80%;
+  text-align: right;
+  padding-bottom: 30px;
+}
+
+.profile-editor .action-header {
+  display: flex;
+  width: 80%;
+}
+
+.profile-editor .action-header .notice {
+  flex-basis: 50%;
+}
+
+.profile-editor .action-header .actions {
+  text-align: right;
+  flex-basis: 50%;
+}
+.profile-editor .action-header .actions > button {
+  text-align: right;
+  flex-basis: 50%;
+  margin-left: 4px;
+}
+
+.profile-editor .required-fields-notification hr {
+  margin-top: 8px;
+}
+
+.profile-editor .actions-section .actions > button {
+  margin-left: 4px;
+}
+
+.profile-editor .rule-list {
+  font-size: 14px;
+}
+.profile-editor .rule-list .rule-list-header {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+.profile-editor .rule-list .rules {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+.profile-editor .rule-list .rule {
+  border: 1px solid transparent;
+}
+.profile-editor .rule-list .rule .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px 8px 3px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+.profile-editor .rule-list .rule .header:hover {
+  background-color: #edf8ff;
+}
+.profile-editor .rule-list .rule .header > .column,
+.profile-editor .rule-list .rule-list-header .header > .column {
+  white-space: nowrap;
+}
+.profile-editor .rule-list .rule .header > .column.text,
+.profile-editor .rule-list .rule-list-header .header > .column.text {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.profile-editor .rule-list .rule .header > .expand,
+.profile-editor .rule-list .rule-list-header .header > .expand {
+  flex-basis: 20px;
+  text-align: center;
+  visibility: hidden;
+}
+.profile-editor .rule-list .rule .header > .check,
+.profile-editor .rule-list .rule-list-header .header > .check {
+  flex-basis: 20px;
+}
+.profile-editor .rule-list .rule .header > .icon,
+.profile-editor .rule-list .rule-list-header .header > .icon {
+  flex-basis: 32px;
+}
+.profile-editor .rule-list .rule .header > .name,
+.profile-editor .rule-list .rule-list-header .header > .name {
+  flex-grow: 1;
+}
+.profile-editor .rule-list .rule .header > .rule-type,
+.profile-editor .rule-list .rule-list-header .header > .rule-type {
+  flex-basis: 220px;
+}
+.profile-editor .rule-list .rule .header > .entity-type,
+.profile-editor .rule-list .rule-list-header .header > .entity-type {
+  flex-basis: 200px;
+}
+.profile-editor .rule-list .rule .header > .versions,
+.profile-editor .rule-list .rule-list-header .header > .versions {
+  flex-basis: 120px;
+}
+.profile-editor .rule-list .rule-list-header .header > .versions.trimmed {
+  flex-basis: 138px;
+}
+
+.profile-editor .rules-section .section-header {
+  font-weight: bold;
+}
+
+.profile-editor .rule-list .rule-list-header .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px 8px 3px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+.profile-editor .rule-list .rule-list-header .header > .column {
+  font-weight: bold;
+  color: #444;
+}
+.profile-editor .rule-list .rule-list-header .header > .icon > .dropdown > button {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.profile-editor .fa-ban, .profile-editor .fa-minus-circle {
+  color: #999;
+}
+.profile-editor .fa-info-circle {
+  color: #0088ce;
+}
+.profile-editor .fa-exclamation-triangle {
+  color: #ec7a08;
+}
+.profile-editor .fa-times-circle {
+  color: #C00;
+}
+
+.profile-editor .rule-list .rule .header > .check > button,
+.profile-editor .rule-list .rule-list-header .header > .check > button {
+  padding: 1px;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+
+
+.profile-editor .rule-severity-option > a {
+  display: flex;
+}
+.profile-editor .rule-severity-option > a > .icon {
+  flex-basis: 16px;
+  width: 16px;
+  text-align: center;
+  padding-top: 5px;
+}
+.profile-editor .rule-severity-option > a > .name {
+  flex-basis: 75px;
+  width: 75px;
+  padding-left: 5px;
+}
+.profile-editor .rule-severity-option > a > .description {
+  color: #999;
+  flex-grow: 1;
+}
+
+.profile-editor .filters {
+  padding-bottom: 5px;
+}
+.profile-editor .filters .dropdown {
+  display: inline-block;
+}
+.profile-editor .filters > input {
+  display: inline-block;
+  width: 250px;
+}
+.profile-editor .filters .dropdown.dd-filter > button,
+.profile-editor .filters > input {
+  border-left: 0px;
+}
+
+.profile-editor .filters .dropdown.dd-filter > button {
+  background: white;
+}
+
+.profile-editor .filter-results {
+}
+
+.profile-editor .filter-results .filter-results-bar {
+  display: flex;
+}
+
+.profile-editor .filter-results .filter-results-bar .num-selected {
+  font-weight: bold;
+  padding-right: 18px;
+  white-space: nowrap;
+}
+
+.profile-editor .filter-results .filter-results-bar .results {
+  font-weight: bold;
+  padding-right: 18px;
+  white-space: nowrap;
+}
+.profile-editor .filter-results .filter-results-bar .active-filter-label {
+  padding-right: 8px;
+  white-space: nowrap;
+}
+.profile-editor .filter-results .filter-results-bar .clear-all {
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+.profile-editor .filter-results .filter-results-bar .active-filters > span {
+  margin-right: 5px;
+  padding: 4px 8px;
+  line-height: 15px;
+  float: left;
+  margin-bottom: 2px;
+}
+.profile-editor .filter-results .filter-results-bar .active-filters > span.label > span {
+  margin-right: 5px;
+}
+.profile-editor .filter-results .filter-results-bar .active-filters > span.label a {
+  color: white;
+}
+.profile-editor .filter-results .filter-results-bar .active-filters > span.label .pficon {
+  margin-left: 5px;
+}
+
+
+.profile-editor .rule-list .rules .no-rules {
+  text-align: center;
+  padding: 30px;
+}
+.profile-editor .rule-list .rules .no-rules .title {
+  font-size: 22px;
+  color: #666;
+  margin-bottom: 15px;
+}
+.profile-editor .rule-list .rules .no-rules .explanation {
+  color: #999
+}
+.profile-editor .rule-list .rules .no-rules .actions {
+  margin-top: 10px;
+}
+.profile-editor .rule-list .rules .no-rules .actions a {
+  cursor: pointer;
+}

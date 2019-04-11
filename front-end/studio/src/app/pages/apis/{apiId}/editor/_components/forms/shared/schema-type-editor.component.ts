@@ -26,7 +26,7 @@ import {
 } from "@angular/core";
 import {SimplifiedType} from "oai-ts-commands";
 import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasNode, OasVisitorUtil} from "oai-ts-core";
-import {DropDownOption} from "../../../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -43,14 +43,26 @@ import {ObjectUtils} from "apicurio-ts-core";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
+/**
+ * Component to select a "SimplifiedType" value
+ */
 export class SchemaTypeEditorComponent extends AbstractBaseComponent {
-    
+
     @Input() document: OasDocument;
     @Input() value: SimplifiedType;
     @Input() typeLabel: string = "Type";
     @Input() validationModel: OasNode;
     @Input() validationProperty: string;
+
+    /**
+     * Is the component being used in "data type" definition?
+     * i.e. should the dropdown contain references to data type schemas?
+     */
     @Input() isParameter: boolean = false;
+
+    /**
+     * Emit the value when it is updated
+     */
     @Output() onChange: EventEmitter<SimplifiedType> = new EventEmitter<SimplifiedType>();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
@@ -72,36 +84,27 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         return null;
     }
 
+    /**
+     * Main options
+     */
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
-            { value: "array", name: "Array" },
-            { value: "enum", name: "Enum" },
-            { divider: true },
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
+            new Value("Array", "array"),
+            new Value("Enum", "enum"),
+            DIVIDER,
+            new Value("String", "string"),
+            new Value("Integer", "integer"),
+            new Value("Boolean", "boolean"),
+            new Value("Number", "number")
         ];
 
+        /**
+         * Add schema definitions to the dropdown menu
+         */
         if (!this.isParameter) {
-            let refPrefix: string = "#/components/schemas/";
-            if (this.document.is2xDocument()) {
-                refPrefix = "#/definitions/";
-            }
-
-            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document, viz);
-            let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
-            if (defs.length > 0) {
-                options.push({divider: true});
-                defs.forEach(def => {
-                    let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
-                    options.push({
-                        value: refPrefix + defName,
-                        name: defName
-                    });
-                });
-            }
+            options = [...options, ...this.getSchemaDefinitionsOptions()]
+        } else if(this.document.is2xDocument()) {
+            options = [...options, DIVIDER, new Value("File", "file")]
         }
 
         return options;
@@ -114,35 +117,45 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         return null;
     }
 
+    /**
+     * Additional options when e.g. an array is selected,
+     * to choose the type of the array elements
+     */
     public typeOfOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
+            new Value("String", "string"),
+            new Value("Integer", "integer"),
+            new Value("Boolean", "boolean"),
+            new Value("Number", "number")
         ];
 
         if (!this.isParameter) {
-            let refPrefix: string = "#/components/schemas/";
-            if (this.document.is2xDocument()) {
-                refPrefix = "#/definitions/";
-            }
+            options = [...options, ...this.getSchemaDefinitionsOptions()]
+        }
+        return options;
+    }
 
-            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-            OasVisitorUtil.visitTree(this.document, viz);
-            let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
-            if (defs.length > 0) {
-                options.push({divider: true});
-                defs.forEach(def => {
-                    let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
-                    options.push({
-                        value: refPrefix + defName,
-                        name: defName
-                    });
-                });
-            }
+    /**
+     * Get additional options, when reference to "schema definition data type"
+     * can be used
+     */
+    private getSchemaDefinitionsOptions(): DropDownOption[] {
+        let options: DropDownOption[] = [];
+        let refPrefix: string = "#/components/schemas/";
+        if (this.document.is2xDocument()) {
+            refPrefix = "#/definitions/";
         }
 
+        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        OasVisitorUtil.visitTree(this.document, viz);
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        if (defs.length > 0) {
+            options.push(DIVIDER);
+            defs.forEach(def => {
+                let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                options.push(new Value(defName, refPrefix + defName));
+            });
+        }
         return options;
     }
 
@@ -156,9 +169,16 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         if (this.value.isSimpleType()) {
             return ObjectUtils.undefinedAsNull(this.value.as);
         }
+        if (this.value.isFileType()) {
+            return ObjectUtils.undefinedAsNull(this.value);
+        }
         return null;
     }
 
+    /**
+     * Specify a "sub-type" for some of the selected types,
+     * e.g. int64 for an Integer
+     */
     public typeAsOptions(): DropDownOption[] {
         let options: DropDownOption[];
         let st: SimplifiedType = this.value;
@@ -167,24 +187,24 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         }
         if (st.type === "string") {
             options = [
-                { value: null, name: "String" },
-                { value: "byte", name: "Byte" },
-                { value: "binary", name: "Binary" },
-                { value: "date", name: "Date" },
-                { value: "date-time", name: "DateTime" },
-                { value: "password", name: "Password" }
+                new Value("String", null),
+                new Value("Byte", "byte"),
+                new Value("Binary", "binary"),
+                new Value("Date", "date"),
+                new Value("DateTime", "date-time"),
+                new Value("Password", "password")
             ];
         } else if (st.type === "integer") {
             options = [
-                { value: null, name: "Integer" },
-                { value: "int32", name: "32-Bit Integer" },
-                { value: "int64", name: "64-Bit Integer" }
+                new Value("Integer", null),
+                new Value("32-Bit Integer", "int32"),
+                new Value("64-Bit Integer", "int64")
             ];
         } else if (st.type === "number") {
             options = [
-                { value: null, name: "Number" },
-                { value: "float", name: "Float" },
-                { value: "double", name: "Double" }
+                new Value("Number", null),
+                new Value("Float", "float"),
+                new Value("Double", "double")
             ];
         }
         return options;

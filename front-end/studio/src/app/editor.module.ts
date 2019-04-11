@@ -37,6 +37,7 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
+import {CloneResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
@@ -124,7 +125,7 @@ import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
         EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
-        AddResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
+        AddResponseDialogComponent, CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
         AddMediaTypeDialogComponent, MainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,

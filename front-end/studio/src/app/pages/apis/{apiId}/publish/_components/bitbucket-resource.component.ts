@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
-import {DropDownOption} from "../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 import {BitbucketRepository} from "../../../../../models/bitbucket-repository.model";
 
 
@@ -41,10 +41,7 @@ export class BitbucketResourceComponent implements OnInit {
     public _teamOptions: DropDownOption[] = [];
     public _repoOptions: DropDownOption[] = [];
     public _branchOptions: DropDownOption[] = [
-        {
-            name: "master",
-            value: "master"
-        }
+        new Value("master", "master")
     ];
     public gettingTeams: boolean = false;
     public gettingRepos: boolean = false;
@@ -68,23 +65,15 @@ export class BitbucketResourceComponent implements OnInit {
             this._teamOptions = [];
             teams.forEach( team => {
                 if (team.userTeam) {
-                    this._teamOptions.push({
-                        name: team.displayName,
-                        value: team.username
-                    });
+                    this._teamOptions.push(new Value(team.displayName, team.username));
                     if (teams.length > 1) {
-                        this._teamOptions.push({
-                            divider: true
-                        });
+                        this._teamOptions.push(DIVIDER);
                     }
                 }
             });
             teams.forEach( team => {
                 if (!team.userTeam) {
-                    this._teamOptions.push({
-                        name: team.displayName,
-                        value: team.username
-                    });
+                    this._teamOptions.push(new Value(team.displayName, team.username));
                 }
             });
             this.gettingTeams = false;
@@ -128,10 +117,7 @@ export class BitbucketResourceComponent implements OnInit {
             });
             this._repoOptions = [];
             repos.forEach( repo => {
-                this._repoOptions.push({
-                    name: repo.name,
-                    value: repo.name
-                });
+                this._repoOptions.push(new Value(repo.name, repo.name));
             })
             this.gettingRepos = false;
 
@@ -169,10 +155,7 @@ export class BitbucketResourceComponent implements OnInit {
             });
             this._branchOptions = [];
             branches.forEach( branch => {
-                this._branchOptions.push({
-                    name: branch.name,
-                    value: branch.name
-                });
+                this._branchOptions.push(new Value(branch.name, branch.name));
             });
             this.gettingBranches = false;
             if (this.isValid()) {

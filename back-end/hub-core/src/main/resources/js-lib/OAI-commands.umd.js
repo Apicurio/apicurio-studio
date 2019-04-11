@@ -4382,12 +4382,12 @@
     /**
      * Factory function.
      */
-    function createNewResponseCommand(document, operation, statusCode) {
+    function createNewResponseCommand(document, operation, statusCode, sourceResponse) {
         if (document.getSpecVersion() === "2.0") {
-            return new NewResponseCommand_20(operation, statusCode);
+            return new NewResponseCommand_20(operation, statusCode, sourceResponse);
         }
         else {
-            return new NewResponseCommand_30(operation, statusCode);
+            return new NewResponseCommand_30(operation, statusCode, sourceResponse);
         }
     }
     /**
@@ -4400,12 +4400,15 @@
          * @param {Oas20Operation | Oas30Operation} operation
          * @param {string} statusCode
          */
-        function NewResponseCommand(operation, statusCode) {
+        function NewResponseCommand(operation, statusCode, sourceResponse) {
             var _this = _super.call(this) || this;
             if (operation) {
                 _this._operationPath = _this.oasLibrary().createNodePath(operation);
             }
             _this._statusCode = statusCode;
+            if (sourceResponse) {
+                _this.sourceResponse = _this.oasLibrary().writeNode(sourceResponse);
+            }
             return _this;
         }
         /**
@@ -4427,6 +4430,9 @@
             var response = operation.responses.response(this._statusCode);
             if (this.isNullOrUndefined(response)) {
                 response = operation.responses.createResponse(this._statusCode);
+                if (this.sourceResponse) {
+                    response = this.oasLibrary().readNode(this.sourceResponse, response);
+                }
                 operation.responses.addResponse(this._statusCode, response);
                 this._created = true;
             }
@@ -7546,7 +7552,7 @@
 
     /**
      * @license
-     * Copyright 2017 JBoss Inc
+     * Copyright 2018 JBoss Inc
      *
      * Licensed under the Apache License, Version 2.0 (the "License");
      * you may not use this file except in compliance with the License.
@@ -7576,6 +7582,141 @@
     /**
      * Factory function.
      */
+    function createDeleteAllExamplesCommand(document, mediaType) {
+        if (document.getSpecVersion() === "2.0") {
+            throw new Error("Not supported in OpenAPI 2.0.");
+        }
+        else {
+            return new DeleteAllExamplesCommand_30(mediaType);
+        }
+    }
+    /**
+     * A command used to delete a single mediaType from an operation.
+     */
+    var DeleteAllExamplesCommand_30 = /** @class */ (function (_super) {
+        __extends$Q(DeleteAllExamplesCommand_30, _super);
+        /**
+         * C'tor.
+         * @param
+         */
+        function DeleteAllExamplesCommand_30(mediaType) {
+            var _this = _super.call(this) || this;
+            _this._oldExamples = {};
+            // We must allow for null in the constructor when unmarshalling the command.
+            if (!_this.isNullOrUndefined(mediaType)) {
+                _this._mediaTypePath = _this.oasLibrary().createNodePath(mediaType);
+            }
+            return _this;
+        }
+        DeleteAllExamplesCommand_30.prototype.type = function () {
+            return "DeleteAllExamplesCommand_30";
+        };
+        /**
+         * Deletes all examples from the media type.
+         * @param document
+         */
+        DeleteAllExamplesCommand_30.prototype.execute = function (document) {
+            var _this = this;
+            console.info("[DeleteAllExamplesCommand] Executing.");
+            if (this.isNullOrUndefined(document)) {
+                console.debug("[DeleteAllExamplesCommand] Could not execute the command, invalid argument.");
+                return;
+            }
+            if (this.isNullOrUndefined(this._mediaTypePath)) {
+                console.debug("[DeleteAllExamplesCommand] Could not execute the command, problem when unmarshalling.");
+                return;
+            }
+            var mediaType = this._mediaTypePath.resolve(document);
+            if (this.isNullOrUndefined(mediaType)) {
+                console.debug("[DeleteAllExamplesCommand] Media type not found.");
+                return;
+            }
+            mediaType.getExamples().forEach(function (e) {
+                _this._oldExamples[e.name()] = _this.oasLibrary().writeNode(e);
+            });
+            mediaType.examples = null;
+        };
+        /**
+         * Restore the old (deleted) examples.
+         * @param document
+         */
+        DeleteAllExamplesCommand_30.prototype.undo = function (document) {
+            if (this.isNullOrUndefined(document)) {
+                console.debug("[DeleteAllExamplesCommand] Could not revert the command, invalid argument.");
+                return;
+            }
+            if (this.isNullOrUndefined(this._mediaTypePath)) {
+                console.debug("[DeleteAllExamplesCommand] Could not revert the command, problem when unmarshalling.");
+                return;
+            }
+            console.info("[DeleteAllExamplesCommand] Reverting.");
+            var mediaType = this._mediaTypePath.resolve(document);
+            if (this.isNullOrUndefined(mediaType)) {
+                console.info("[DeleteAllExamplesCommand] No media type found.");
+                return;
+            }
+            if (this.isNullOrUndefined(this._oldExamples)) {
+                console.log("[DeleteAllExamplesCommand] Could not revert. Previous data is not available.");
+                return;
+            }
+            for (var k in this._oldExamples) {
+                var example = mediaType.createExample(k);
+                this.oasLibrary().readNode(this._oldExamples[k], example);
+                mediaType.addExample(example);
+            }
+        };
+        /**
+         * Marshall the command into a JS object.
+         * @return {any}
+         */
+        DeleteAllExamplesCommand_30.prototype.marshall = function () {
+            var obj = _super.prototype.marshall.call(this);
+            obj._mediaTypePath = MarshallUtils.marshallNodePath(obj._mediaTypePath);
+            return obj;
+        };
+        /**
+         * Unmarshall the JS object.
+         * @param obj
+         */
+        DeleteAllExamplesCommand_30.prototype.unmarshall = function (obj) {
+            _super.prototype.unmarshall.call(this, obj);
+            this._mediaTypePath = MarshallUtils.unmarshallNodePath(this._mediaTypePath);
+        };
+        return DeleteAllExamplesCommand_30;
+    }(AbstractCommand));
+
+    /**
+     * @license
+     * Copyright 2017 JBoss Inc
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    var __extends$R = (undefined && undefined.__extends) || (function () {
+        var extendStatics = function (d, b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+                function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            return extendStatics(d, b);
+        };
+        return function (d, b) {
+            extendStatics(d, b);
+            function __() { this.constructor = d; }
+            d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+        };
+    })();
+    /**
+     * Factory function.
+     */
     function createAddSecurityRequirementCommand(document, parent, requirement) {
         return new AddSecurityRequirementCommand(parent, requirement);
     }
@@ -7583,7 +7724,7 @@
      * A command used to create a new definition in a document.
      */
     var AddSecurityRequirementCommand = /** @class */ (function (_super) {
-        __extends$Q(AddSecurityRequirementCommand, _super);
+        __extends$R(AddSecurityRequirementCommand, _super);
         /**
          * C'tor.
          * @param {OasOperation | OasDocument} parent
@@ -7700,7 +7841,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$R = (undefined && undefined.__extends) || (function () {
+    var __extends$S = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7723,7 +7864,7 @@
      * A command used to delete a single securityRequirement from an operation.
      */
     var DeleteSecurityRequirementCommand = /** @class */ (function (_super) {
-        __extends$R(DeleteSecurityRequirementCommand, _super);
+        __extends$S(DeleteSecurityRequirementCommand, _super);
         /**
          * C'tor.
          * @param {OasDocument | OasOperation} parent
@@ -7839,7 +7980,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$S = (undefined && undefined.__extends) || (function () {
+    var __extends$T = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7862,7 +8003,7 @@
      * A command used to replace a definition schema with a newer version.
      */
     var ReplaceSecurityRequirementCommand = /** @class */ (function (_super) {
-        __extends$S(ReplaceSecurityRequirementCommand, _super);
+        __extends$T(ReplaceSecurityRequirementCommand, _super);
         /**
          * C'tor.
          * @param {OasSecurityRequirement} old
@@ -7991,7 +8132,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$T = (undefined && undefined.__extends) || (function () {
+    var __extends$U = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8014,7 +8155,7 @@
      * A command used to delete all tags from a document.
      */
     var DeleteAllTagsCommand = /** @class */ (function (_super) {
-        __extends$T(DeleteAllTagsCommand, _super);
+        __extends$U(DeleteAllTagsCommand, _super);
         /**
          * C'tor.
          */
@@ -8078,7 +8219,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$U = (undefined && undefined.__extends) || (function () {
+    var __extends$V = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8101,7 +8242,7 @@
      * A command used to delete all servers from a document.
      */
     var DeleteAllServersCommand = /** @class */ (function (_super) {
-        __extends$U(DeleteAllServersCommand, _super);
+        __extends$V(DeleteAllServersCommand, _super);
         /**
          * C'tor.
          */
@@ -8194,7 +8335,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$V = (undefined && undefined.__extends) || (function () {
+    var __extends$W = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8217,7 +8358,7 @@
      * A command used to delete all security requirements from a document or operation.
      */
     var DeleteAllSecurityRequirementsCommand = /** @class */ (function (_super) {
-        __extends$V(DeleteAllSecurityRequirementsCommand, _super);
+        __extends$W(DeleteAllSecurityRequirementsCommand, _super);
         /**
          * C'tor.
          */
@@ -8310,7 +8451,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$W = (undefined && undefined.__extends) || (function () {
+    var __extends$X = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8333,7 +8474,7 @@
      * A command used to delete all security schemes from a document or operation.
      */
     var DeleteAllSecuritySchemesCommand = /** @class */ (function (_super) {
-        __extends$W(DeleteAllSecuritySchemesCommand, _super);
+        __extends$X(DeleteAllSecuritySchemesCommand, _super);
         /**
          * C'tor.
          */
@@ -8434,7 +8575,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$X = (undefined && undefined.__extends) || (function () {
+    var __extends$Y = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8452,7 +8593,7 @@
      * for example to make multiple changes as a single "undoable" change.
      */
     var AggregateCommand = /** @class */ (function (_super) {
-        __extends$X(AggregateCommand, _super);
+        __extends$Y(AggregateCommand, _super);
         /**
          * Constructor.
          * @param name
@@ -8524,7 +8665,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$Y = (undefined && undefined.__extends) || (function () {
+    var __extends$Z = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8548,7 +8689,7 @@
      * A command used to rename a path item, along with all references to it.
      */
     var RenamePathItemCommand = /** @class */ (function (_super) {
-        __extends$Y(RenamePathItemCommand, _super);
+        __extends$Z(RenamePathItemCommand, _super);
         /**
          * C'tor.
          * @param oldPath
@@ -8690,7 +8831,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$Z = (undefined && undefined.__extends) || (function () {
+    var __extends$_ = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8713,7 +8854,7 @@
      * A command used to set the Extension for a 3.0 MediaType or a 2.0 Response.
      */
     var SetExtensionCommand = /** @class */ (function (_super) {
-        __extends$Z(SetExtensionCommand, _super);
+        __extends$_(SetExtensionCommand, _super);
         /**
          * Constructor.
          */
@@ -8802,7 +8943,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$_ = (undefined && undefined.__extends) || (function () {
+    var __extends$10 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8825,7 +8966,7 @@
      * A command used to delete a single mediaType from an operation.
      */
     var DeleteExtensionCommand = /** @class */ (function (_super) {
-        __extends$_(DeleteExtensionCommand, _super);
+        __extends$10(DeleteExtensionCommand, _super);
         /**
          * C'tor.
          * @param extension
@@ -8912,7 +9053,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$10 = (undefined && undefined.__extends) || (function () {
+    var __extends$11 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -8935,7 +9076,7 @@
      * A command used to replace a path item with a newer version.
      */
     var ReplaceDocumentCommand = /** @class */ (function (_super) {
-        __extends$10(ReplaceDocumentCommand, _super);
+        __extends$11(ReplaceDocumentCommand, _super);
         function ReplaceDocumentCommand() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
@@ -9035,7 +9176,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$11 = (undefined && undefined.__extends) || (function () {
+    var __extends$12 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9058,7 +9199,7 @@
      * A command used to delete all servers from a document.
      */
     var DeleteAllOperationsCommand = /** @class */ (function (_super) {
-        __extends$11(DeleteAllOperationsCommand, _super);
+        __extends$12(DeleteAllOperationsCommand, _super);
         /**
          * C'tor.
          */
@@ -9155,7 +9296,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$12 = (undefined && undefined.__extends) || (function () {
+    var __extends$13 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9178,7 +9319,7 @@
      * A command used to rename a tag, along with all references to it.
      */
     var RenameTagDefinitionCommand = /** @class */ (function (_super) {
-        __extends$12(RenameTagDefinitionCommand, _super);
+        __extends$13(RenameTagDefinitionCommand, _super);
         /**
          * C'tor.
          * @param oldTag
@@ -9255,7 +9396,7 @@
      * Visitor used to rename tag usage in all operations in the document.
      */
     var TagRenameVisitor = /** @class */ (function (_super) {
-        __extends$12(TagRenameVisitor, _super);
+        __extends$13(TagRenameVisitor, _super);
         /**
          * C'tor.
          * @param from
@@ -9296,7 +9437,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$13 = (undefined && undefined.__extends) || (function () {
+    var __extends$14 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9319,7 +9460,7 @@
      * A command used to rename a parameter.
      */
     var RenameParameterCommand = /** @class */ (function (_super) {
-        __extends$13(RenameParameterCommand, _super);
+        __extends$14(RenameParameterCommand, _super);
         /**
          * C'tor.
          * @param oldParamName
@@ -9396,7 +9537,7 @@
             var isPathItem = false;
             var isOperation = false;
             parent.accept(new /** @class */ (function (_super) {
-                __extends$13(class_1, _super);
+                __extends$14(class_1, _super);
                 function class_1() {
                     return _super !== null && _super.apply(this, arguments) || this;
                 }
@@ -9482,7 +9623,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$14 = (undefined && undefined.__extends) || (function () {
+    var __extends$15 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9505,7 +9646,7 @@
      * A command used to rename a schema property.
      */
     var RenamePropertyCommand = /** @class */ (function (_super) {
-        __extends$14(RenamePropertyCommand, _super);
+        __extends$15(RenamePropertyCommand, _super);
         /**
          * C'tor.
          * @param parent
@@ -9603,7 +9744,7 @@
      * See the License for the specific language governing permissions and
      * limitations under the License.
      */
-    var __extends$15 = (undefined && undefined.__extends) || (function () {
+    var __extends$16 = (undefined && undefined.__extends) || (function () {
         var extendStatics = function (d, b) {
             extendStatics = Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9626,7 +9767,7 @@
      * A command used to rename a security scheme, along with all references to it.
      */
     var RenameSecuritySchemeCommand = /** @class */ (function (_super) {
-        __extends$15(RenameSecuritySchemeCommand, _super);
+        __extends$16(RenameSecuritySchemeCommand, _super);
         /**
          * C'tor.
          * @param oldSchemeName
@@ -9703,7 +9844,7 @@
             }
             // Now find all security requirements that reference the scheme and change them too.
             oaiTsCore.OasVisitorUtil.visitTree(document, new /** @class */ (function (_super) {
-                __extends$15(class_1, _super);
+                __extends$16(class_1, _super);
                 function class_1() {
                     return _super !== null && _super.apply(this, arguments) || this;
                 }
@@ -9752,6 +9893,7 @@
         "ChangeTitleCommand_30": function () { return new ChangeTitleCommand_30(null); },
         "ChangeVersionCommand_20": function () { return new ChangeVersionCommand_20(null); },
         "ChangeVersionCommand_30": function () { return new ChangeVersionCommand_30(null); },
+        "DeleteAllExamplesCommand_30": function () { return new DeleteAllExamplesCommand_30(null); },
         "DeleteAllOperationsCommand": function () { return new DeleteAllOperationsCommand(null); },
         "DeleteAllParametersCommand_20": function () { return new DeleteAllParametersCommand_20(null, null); },
         "DeleteAllParametersCommand_30": function () { return new DeleteAllParametersCommand_30(null, null); },
@@ -10519,6 +10661,8 @@
     exports.ChangeVersionCommand = ChangeVersionCommand;
     exports.ChangeVersionCommand_20 = ChangeVersionCommand_20;
     exports.ChangeVersionCommand_30 = ChangeVersionCommand_30;
+    exports.createDeleteAllExamplesCommand = createDeleteAllExamplesCommand;
+    exports.DeleteAllExamplesCommand_30 = DeleteAllExamplesCommand_30;
     exports.createDeleteAllOperationsCommand = createDeleteAllOperationsCommand;
     exports.DeleteAllOperationsCommand = DeleteAllOperationsCommand;
     exports.createDeleteAllParametersCommand = createDeleteAllParametersCommand;

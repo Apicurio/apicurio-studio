@@ -16,28 +16,23 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
-import io.apicurio.hub.core.beans.ApiContentType;
-import io.apicurio.hub.core.beans.ApiDesign;
-import io.apicurio.hub.core.beans.ApiDesignChange;
-import io.apicurio.hub.core.beans.ApiDesignCollaborator;
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.ApiDesignType;
-import io.apicurio.hub.core.beans.ApiMock;
-import io.apicurio.hub.core.beans.ApiPublication;
-import io.apicurio.hub.core.beans.CodegenProject;
-import io.apicurio.hub.core.beans.CodegenProjectType;
-import io.apicurio.hub.core.beans.Contributor;
-import io.apicurio.hub.core.beans.Invitation;
-import io.apicurio.hub.core.beans.LinkedAccount;
-import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubConfiguration;
-import io.apicurio.hub.core.exceptions.AlreadyExistsException;
-import io.apicurio.hub.core.exceptions.NotFoundException;
-import io.apicurio.hub.core.storage.IStorage;
-import io.apicurio.hub.core.storage.StorageException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
+import java.io.StringReader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
@@ -50,27 +45,36 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
+import io.apicurio.hub.core.beans.ApiContentType;
+import io.apicurio.hub.core.beans.ApiDesign;
+import io.apicurio.hub.core.beans.ApiDesignChange;
+import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiMock;
+import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.CodegenProject;
+import io.apicurio.hub.core.beans.Contributor;
+import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.beans.LinkedAccount;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.ValidationProfile;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.exceptions.AlreadyExistsException;
+import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignChangeRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCollaboratorRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCommandRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignContentRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiMockRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiPublicationRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.CodegenProjectRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ContributorRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.InvitationRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 
 /**
  * A JDBC/SQL implementation of the storage layer.
@@ -81,7 +85,7 @@ import java.util.Set;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 8;
+    private static int DB_VERSION = 9;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -520,7 +524,7 @@ public class JdbcStorage implements IStorage {
                 return handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId))
                         .bind(1, userId)
-                        .map(ConstributorRowMapper.instance)
+                        .map(ContributorRowMapper.instance)
                         .list();
             });
         } catch (IllegalStateException e) {
@@ -1313,6 +1317,9 @@ public class JdbcStorage implements IStorage {
         }
     }
 
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getLatestCommand(java.lang.String)
+     */
     @Override
     public Optional<ApiDesignCommand> getLatestCommand(String designId) throws NotFoundException, StorageException {
         try {
@@ -1329,318 +1336,104 @@ public class JdbcStorage implements IStorage {
         }
     }
 
-
     /**
-     * A row mapper to read an api design from the DB (as a single row in a SELECT)
-     * and return an ApiDesign instance.
-     * @author eric.wittmann@gmail.com
+     * @see io.apicurio.hub.core.storage.IStorage#listValidationProfiles(java.lang.String)
      */
-    private static class ApiDesignRowMapper implements RowMapper<ApiDesign> {
-        
-        public static final ApiDesignRowMapper instance = new ApiDesignRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiDesign map(ResultSet rs, StatementContext ctx) throws SQLException {
-            ApiDesign design = new ApiDesign();
-            design.setId(rs.getString("id"));
-            design.setName(rs.getString("name"));
-            design.setDescription(rs.getString("description"));
-            design.setCreatedBy(rs.getString("created_by"));
-            design.setCreatedOn(rs.getTimestamp("created_on"));
-            String tags = rs.getString("tags");
-            design.getTags().addAll(toSet(tags));
-            design.setType(ApiDesignType.valueOf(rs.getString("api_type")));
-            return design;
+    @Override
+    public Collection<ValidationProfile> listValidationProfiles(String userId) throws StorageException {
+        logger.debug("Getting a list of all validation profiles for {}.", userId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectValidationProfiles();
+                return handle.createQuery(statement)
+                        .bind(0, userId)
+                        .map(ValidationProfileRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error listing linked accounts.", e);
         }
-
-        /**
-         * Read CSV data and convert to a set of strings.
-         * @param tags
-         */
-        private Set<String> toSet(String tags) {
-            Set<String> rval = new HashSet<String>();
-            if (tags != null && tags.length() > 0) {
-                String[] split = tags.split(",");
-                for (String tag : split) {
-                    rval.add(tag.trim());
-                }
-            }
-            return rval;
-        }
-
-    }
-
-    /**
-     * A row mapper to read contributor information from a result set.  Each row in 
-     * the result set must have a 'created_by' column and an 'edits' column.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ConstributorRowMapper implements RowMapper<Contributor> {
-        
-        public static final ConstributorRowMapper instance = new ConstributorRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public Contributor map(ResultSet rs, StatementContext ctx) throws SQLException {
-            Contributor contributor = new Contributor();
-            contributor.setName(rs.getString("created_by"));
-            contributor.setEdits(rs.getInt("edits"));
-            return contributor;
-        }
-
-    }
-
-    /**
-     * A row mapper to read a 'document' style row from the api_content table.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiDesignContentRowMapper implements RowMapper<ApiDesignContent> {
-        
-        public static final ApiDesignContentRowMapper instance = new ApiDesignContentRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiDesignContent map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                ApiDesignContent content = new ApiDesignContent();
-                content.setContentVersion(rs.getLong("version"));
-                content.setOaiDocument(IOUtils.toString(rs.getCharacterStream("data")));
-                return content;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
-        }
-
-    }
-
-    /**
-     * A row mapper to read a 'document' style row from the api_content table.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiDesignCommandRowMapper implements RowMapper<ApiDesignCommand> {
-        
-        public static final ApiDesignCommandRowMapper instance = new ApiDesignCommandRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiDesignCommand map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                ApiDesignCommand cmd = new ApiDesignCommand();
-                cmd.setContentVersion(rs.getLong("version"));
-                cmd.setCommand(IOUtils.toString(rs.getCharacterStream("data")));
-                cmd.setAuthor(rs.getString("created_by"));
-                cmd.setReverted(rs.getInt("reverted") > 0);
-                return cmd;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
-        }
-
-    }
-
-    /**
-     * A row mapper to read an invitation from a db row.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class InvitationRowMapper implements RowMapper<Invitation> {
-        
-        public static final InvitationRowMapper instance = new InvitationRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public Invitation map(ResultSet rs, StatementContext ctx) throws SQLException {
-            Invitation invite = new Invitation();
-            invite.setCreatedBy(rs.getString("created_by"));
-            invite.setCreatedOn(rs.getTimestamp("created_on"));
-            invite.setDesignId(rs.getString("design_id"));
-            invite.setInviteId(rs.getString("invite_id"));
-            invite.setModifiedBy(rs.getString("modified_by"));
-            invite.setModifiedOn(rs.getTimestamp("modified_on"));
-            invite.setStatus(rs.getString("status"));
-            invite.setRole(rs.getString("role"));
-            invite.setSubject(rs.getString("subject"));
-            return invite;
-        }
-
-    }
-
-    /**
-     * A row mapper to read an collaborator from a db row.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiDesignCollaboratorRowMapper implements RowMapper<ApiDesignCollaborator> {
-        
-        public static final ApiDesignCollaboratorRowMapper instance = new ApiDesignCollaboratorRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiDesignCollaborator map(ResultSet rs, StatementContext ctx) throws SQLException {
-            ApiDesignCollaborator collaborator = new ApiDesignCollaborator();
-            collaborator.setUserName(rs.getString("user_id"));
-            collaborator.setUserId(rs.getString("user_id"));
-            collaborator.setRole(rs.getString("role"));
-            return collaborator;
-        }
-
-    }
-
-    /**
-     * A row mapper to read a single row from the content db as an {@link ApiDesignChange}.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiDesignChangeRowMapper implements RowMapper<ApiDesignChange> {
-        
-        public static final ApiDesignChangeRowMapper instance = new ApiDesignChangeRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiDesignChange map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                ApiDesignChange change = new ApiDesignChange();
-                change.setApiId(rs.getString("design_id"));
-                change.setApiName(rs.getString("name"));
-                change.setBy(rs.getString("created_by"));
-                change.setData(IOUtils.toString(rs.getCharacterStream("data")));
-                change.setOn(rs.getTimestamp("created_on"));
-                change.setType(ApiContentType.fromId(rs.getInt("type")));
-                change.setVersion(rs.getLong("version"));
-                return change;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
-        }
-
-    }
-
-    /**
-     * A row mapper to read a single row from the content db as an {@link ApiPublication}.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiPublicationRowMapper implements RowMapper<ApiPublication> {
-        
-        public static final ApiPublicationRowMapper instance = new ApiPublicationRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiPublication map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                ApiPublication publication = new ApiPublication();
-                publication.setBy(rs.getString("created_by"));
-                publication.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
-                publication.setOn(rs.getTimestamp("created_on"));
-                return publication;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
-        }
-
-    }
-
-    /**
-     * A row mapper to read a single row from the content db as an {@link ApiMock}.
-     * @author eric.wittmann@gmail.com
-     */
-    private static class ApiMockRowMapper implements RowMapper<ApiMock> {
-        
-        public static final ApiMockRowMapper instance = new ApiMockRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public ApiMock map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                ApiMock publication = new ApiMock();
-                publication.setBy(rs.getString("created_by"));
-                publication.setInfo(IOUtils.toString(rs.getCharacterStream("data")));
-                publication.setOn(rs.getTimestamp("created_on"));
-                return publication;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
-        }
-
     }
     
     /**
-     * A row mapper to read a single row from the codegen table.
-     * @author eric.wittmann@gmail.com
+     * @see io.apicurio.hub.core.storage.IStorage#createValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
      */
-    private static class CodegenProjectRowMapper implements RowMapper<CodegenProject> {
-        
-        public static final CodegenProjectRowMapper instance = new CodegenProjectRowMapper();
-
-        /**
-         * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
-         */
-        @Override
-        public CodegenProject map(ResultSet rs, StatementContext ctx) throws SQLException {
-            try {
-                CodegenProject project = new CodegenProject();
-                project.setId(String.valueOf(rs.getLong("id")));
-                project.setCreatedBy(rs.getString("created_by"));
-                project.setCreatedOn(rs.getTimestamp("created_on"));
-                project.setModifiedBy(rs.getString("modified_by"));
-                project.setModifiedOn(rs.getTimestamp("modified_on"));
-                project.setDesignId(String.valueOf(rs.getLong("design_id")));
-                project.setType(CodegenProjectType.valueOf(rs.getString("ptype")));
-                project.setAttributes(toMap(IOUtils.toString(rs.getCharacterStream("attributes"))));
-                return project;
-            } catch (IOException e) {
-                throw new SQLException(e);
-            }
+    @Override
+    public long createValidationProfile(String userId, ValidationProfile profile) throws StorageException {
+        logger.debug("Inserting a validation profile for: {}  name: ", userId, profile.getName());
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.insertValidationProfile();
+                String severities = ValidationProfileRowMapper.toString(profile.getSeverities());
+                CharacterStreamArgument severitiesClob = new CharacterStreamArgument(new StringReader(severities), severities.length());
+                Long profileId = handle.createUpdate(statement)
+                      .bind(0, userId)
+                      .bind(1, profile.getName())
+                      .bind(2, profile.getDescription())
+                      .bind(3, severitiesClob)
+                      .executeAndReturnGeneratedKeys("id")
+                      .mapTo(Long.class)
+                      .findOnly();
+                return profileId;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error inserting codegen project.", e);
         }
-
-        private static String toString(Map<String, String> attributes) {
-            StringBuilder builder = new StringBuilder();
-            for (Entry<String, String> entry : attributes.entrySet()) {
-                if (entry.getValue() != null) {
-                    builder.append(entry.getKey());
-                    builder.append("=");
-                    builder.append(Base64.encodeBase64String(entry.getValue().getBytes()));
-                    builder.append("\n");
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
+     */
+    @Override
+    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException, NotFoundException {
+        logger.debug("Updating a validation profile: {}", profile.getId());
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.updateValidationProfile();
+                String severities = ValidationProfileRowMapper.toString(profile.getSeverities());
+                CharacterStreamArgument severitiesClob = new CharacterStreamArgument(new StringReader(severities), severities.length());
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, profile.getName())
+                        .bind(1, profile.getDescription())
+                        .bind(2, severitiesClob)
+                        .bind(3, profile.getId())
+                        .bind(4, userId)
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
                 }
-            }
-            return builder.toString();
+                return null;
+            });
+        } catch (NotFoundException nfe) {
+            throw nfe;
+        } catch (Exception e) {
+            throw new StorageException("Error updating an API design.", e);
         }
-
-        private static Map<String, String> toMap(String attributes) {
-            Map<String, String> map = new HashMap<>();
-            if (attributes != null) {
-                try (BufferedReader reader = new BufferedReader(new StringReader(attributes))) {
-                    String line = reader.readLine();
-                    while (line != null) {
-                        int idx = line.indexOf('=');
-                        if (idx != -1) {
-                            String key = line.substring(0, idx);
-                            String val = line.substring(idx + 1);
-                            val = new String(Base64.decodeBase64(val));
-                            map.put(key, val);
-                        }
-                        line = reader.readLine();
-                    }
-                } catch (IOException e) {}
-            }
-            return map;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteValidationProfile(java.lang.String, long)
+     */
+    @Override
+    public void deleteValidationProfile(String userId, long profileId) throws StorageException, NotFoundException {
+        logger.debug("Deleting a validation profile for: {} with profileId: {}", userId, profileId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.deleteValidationProfile();
+                int rowCount = handle.createUpdate(statement)
+                      .bind(0, profileId)
+                      .bind(1, userId)
+                      .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException nfe) {
+            throw nfe;
+        } catch (Exception e) {
+            throw new StorageException("Error deleting a codegen project.", e);
         }
-
     }
 
 

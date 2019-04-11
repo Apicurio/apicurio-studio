@@ -17,14 +17,70 @@
 
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
 
+export abstract class DropDownOption {
 
-export class DropDownOption {
-    name?: string;
-    value?: any;
-    divider?: boolean;
-    disabled?: boolean;
+    public abstract isDivider(): boolean;
+    public abstract getName(): any;
+    public abstract getValue(): any;
+    public abstract isDisabled(): boolean;
+
 }
 
+export class DropDownOptionValue extends DropDownOption {
+
+    public name: string;
+    public value: any;
+    public disabled: boolean = false;
+
+    public constructor(name: string, value: any, disabled: boolean = false) {
+        super();
+        this.name = name;
+        this.value = value;
+        this.disabled = disabled;
+    }
+
+    public isDivider(): boolean {
+        return false;
+    }
+    public getName() {
+        return this.name;
+    }
+    public getValue() {
+        return this.value;
+    }
+    public isDisabled(): boolean {
+        throw this.disabled;
+    }
+}
+
+export class DropDownOptionDivider extends DropDownOption {
+
+    public divider: true; // For backwards-compatible instantiation via the object literal
+
+    public isDivider(): boolean {
+        return true;
+    }
+
+    public getName() {
+        throw new Error("DropDownOptionDivider does not contain a name. "
+            + "Use DropDownOption#isDivider() to prevent this error.");
+    }
+
+    public getValue() {
+        throw new Error("DropDownOptionDivider does not contain a value. "
+            + "Use DropDownOption#isDivider() to prevent this error.");
+    }
+
+    public isDisabled(): boolean {
+        throw new Error("DropDownOptionDivider cannot be disabled. "
+            + "Use DropDownOption#isDivider() to prevent this error.");
+    }
+}
+
+/**
+  * Static instance for reusability
+  */
+export let DIVIDER: DropDownOption = new DropDownOptionDivider();
 
 @Component({
     moduleId: module.id,
@@ -37,6 +93,7 @@ export class DropDownComponent {
     public _open: boolean = false;
 
     @Input() id: string;
+    @Input() classes: string;
     @Input() value: any;
     _options: DropDownOption[];
     @Input() noSelectionLabel: string = "No Selection";
@@ -98,7 +155,7 @@ export class DropDownComponent {
 
     public hasValue(): boolean {
         for (let option of this.options) {
-            if (!option.divider && option.value === this.value) {
+            if (!option.isDivider() && option.getValue() === this.value) {
                 return true;
             }
         }
@@ -107,8 +164,8 @@ export class DropDownComponent {
 
     public displayValue(): string {
         for (let option of this.options) {
-            if (!option.divider && option.value === this.value) {
-                return option.name;
+            if (!option.isDivider() && option.getValue() === this.value) {
+                return option.getName();
             }
         }
         return null;
@@ -125,7 +182,7 @@ export class DropDownComponent {
         } else {
             this.filteredOptions = [];
             this._options.forEach(option => {
-                if (!option.divider && option.name.toLocaleLowerCase().includes(this.criteria.toLocaleLowerCase())) {
+                if (!option.isDivider() && option.getName().toLocaleLowerCase().includes(this.criteria.toLocaleLowerCase())) {
                     this.filteredOptions.push(option);
                 }
             });

@@ -29,6 +29,7 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
@@ -56,6 +57,7 @@ public class MockStorage implements IStorage {
     private Map<String, MockInviteRow> invites = new HashMap<>();
     private Map<String, String> permissions = new HashMap<>();
     private int counter = 1;
+    
     /**
      * @see io.apicurio.hub.core.storage.IStorage#hasOwnerPermission(java.lang.String, java.lang.String)
      */
@@ -695,6 +697,36 @@ public class MockStorage implements IStorage {
      */
     @Override
     public void updateCodegenProject(String userId, CodegenProject project) throws StorageException {
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listValidationProfiles(java.lang.String)
+     */
+    @Override
+    public Collection<ValidationProfile> listValidationProfiles(String userId) throws StorageException {
+        return null;
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
+     */
+    @Override
+    public long createValidationProfile(String userId, ValidationProfile profile) throws StorageException {
+        return 0;
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
+     */
+    @Override
+    public void updateValidationProfile(String userId, ValidationProfile profile) throws StorageException {
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteValidationProfile(java.lang.String, long)
+     */
+    @Override
+    public void deleteValidationProfile(String userId, long profileId) throws StorageException {
     }
 
 }

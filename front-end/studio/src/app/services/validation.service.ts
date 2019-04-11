@@ -19,8 +19,14 @@ import {Injectable} from "@angular/core";
 import {
     DefaultValidationSeverityRegistry,
     IOasValidationSeverityRegistry,
-    OasValidationProblemSeverity
+    OasValidationProblemSeverity,
+    ValidationRuleMetaData
 } from "oai-ts-core";
+import {AbstractHubService} from "./hub";
+import {HttpClient} from "@angular/common/http";
+import {IAuthenticationService} from "./auth.service";
+import {ConfigService} from "./config.service";
+import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../models/validation.model";
 
 
 export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
@@ -40,12 +46,26 @@ export class NoValidationRegistry implements IOasValidationSeverityRegistry {
 
 }
 
-export class ValidationProfile {
-    id: string;
-    name: string;
-    description: string;
-    registry: IOasValidationSeverityRegistry;
+
+export class MappedValidationSeverityRegistry implements IOasValidationSeverityRegistry {
+
+    constructor(private severities: {[key: string]: OasValidationProblemSeverity}) {}
+
+    public lookupSeverity(rule: ValidationRuleMetaData): OasValidationProblemSeverity {
+        if (this.severities[rule.code] !== undefined) {
+            return this.severities[rule.code];
+        }
+        return OasValidationProblemSeverity.low;
+    }
+
 }
+
+
+export class ValidationProfileExt extends ValidationProfile {
+    registry: IOasValidationSeverityRegistry;
+    builtIn: boolean;
+}
+
 
 /**
  * A service that manages the list of validation profiles the user can choose from.  Also allows the
@@ -53,39 +73,61 @@ export class ValidationProfile {
  * chosen for a particular API in the browser's local storage.
  */
 @Injectable()
-export class ValidationService {
+export class ValidationService extends AbstractHubService {
 
-    private profiles: ValidationProfile[];
+    private profiles: ValidationProfileExt[] = [];
+    private builtInProfiles: ValidationProfileExt[] = [];
 
-    constructor() {
-        this.profiles = [
+    /**
+     * Constructor.
+     * @param http
+     * @param authService
+     * @param config
+     */
+    constructor(http: HttpClient, authService: IAuthenticationService, config: ConfigService) {
+        super(http, authService, config);
+        this.builtInProfiles = [
             {
-                id: "none",
+                id: -1,
                 name: "No Validation",
                 description: "Disable all validation.",
+                severities: {},
+                builtIn: true,
                 registry: new NoValidationRegistry()
             },
             {
-                id: "default",
-                name: "Default Validation",
+                id: -2,
+                name: "OpenAPI Spec Validation",
                 description: "Validate against the OpenAPI specification rules only (no additional rules)",
+                severities: {},
+                builtIn: true,
                 registry: new DefaultValidationSeverityRegistry()
             },
             {
-                id: "strict",
+                id: -3,
                 name: "Strict Validation",
                 description: "Apply all known validation rules at critical/high severity.",
+                severities: {},
+                builtIn: true,
                 registry: new StrictSeverityRegistry()
             }
         ];
+        this.getValidationProfiles().then();
     }
 
-    public getProfiles(): ValidationProfile[] {
-        return this.profiles;
+    public getProfiles(): ValidationProfileExt[] {
+        return [ ...this.builtInProfiles, ...this.profiles].sort( (p1, p2) => {
+            return p1.name.toLowerCase().localeCompare(p2.name.toLowerCase());
+        });
     }
 
-    public getProfile(id: string): ValidationProfile {
+    public getProfile(id: number): ValidationProfileExt {
         for (let profile of this.profiles) {
+            if (profile.id === id) {
+                return profile;
+            }
+        }
+        for (let profile of this.builtInProfiles) {
             if (profile.id === id) {
                 return profile;
             }
@@ -93,23 +135,172 @@ export class ValidationService {
         return null;
     }
 
-    public getProfileForApi(apiId: string): ValidationProfile {
-        let storage: Storage = window.localStorage;
-        let key: string = `apicurio.validation.profiles.${ apiId }`;
-        let validationId: string = storage.getItem(key);
-        if (validationId !== null) {
-            return this.getProfile(validationId);
-        }
-        return this.getProfile("default");
+    public getDefaultProfile(): ValidationProfileExt {
+        // TODO implement this!
+        return this.builtInProfiles[1];
     }
 
-    public setProfileForApi(apiId: string, profile: ValidationProfile): void {
+    public getProfileForApi(apiId: string): ValidationProfileExt {
+        let storage: Storage = window.localStorage;
+        let key: string = `apicurio.validation.profiles.${ apiId }`;
+        let val: string = storage.getItem(key);
+        if (val !== null) {
+            let validationId: number = parseInt(val);
+            let profile: ValidationProfileExt = this.getProfile(validationId);
+            if (profile) { return profile; }
+        }
+        return this.getDefaultProfile();
+    }
+
+    public setProfileForApi(apiId: string, profile: ValidationProfileExt): void {
         let storage: Storage = window.localStorage;
         let key: string = `apicurio.validation.profiles.${ apiId }`;
         if (!profile) {
             storage.removeItem(key);
         } else {
-            storage.setItem(key, profile.id);
+            storage.setItem(key, "" + profile.id);
         }
     }
+
+    public getBuiltInValidationProfiles(): Promise<ValidationProfileExt[]> {
+        return Promise.resolve(this.builtInProfiles);
+    }
+
+    /**
+     * Gets all of the validation profiles for the current user.
+     */
+    public getValidationProfiles(): Promise<ValidationProfileExt[]> {
+        console.info("[ValidationService] Getting all validation profiles");
+
+        let url: string = this.endpoint("/validationProfiles");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ValidationService] Fetching validation profiles: %s", url);
+        return this.httpGet<ValidationProfile[]>(url, options).then( profiles => {
+            this.profiles = profiles.map(profile => {
+                let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(profile.severities);
+                return {
+                    id: profile.id,
+                    name: profile.name,
+                    description: profile.description,
+                    builtIn: false,
+                    severities: severities,
+                    registry: new MappedValidationSeverityRegistry(severities)
+                }
+            });
+            return this.profiles;
+        });
+    }
+
+    /**
+     * Called to create a custom validation profile.
+     * @param info
+     */
+    public createValidationProfile(info: CreateValidationProfile): Promise<ValidationProfileExt> {
+        console.info("[ValidationService] Creating a validation profile named %s", info.name);
+
+        let createUrl: string = this.endpoint("/validationProfiles");
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[ValidationService] Creating a validation profile: %s", createUrl);
+        return this.httpPostWithReturn<CreateValidationProfile, ValidationProfile>(createUrl, info, options).then( p => {
+            let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(p.severities);
+            let newProfile: ValidationProfileExt = {
+                id: p.id,
+                name: p.name,
+                description: p.description,
+                builtIn: false,
+                severities: severities,
+                registry: new MappedValidationSeverityRegistry(severities)
+            };
+            this.profiles.push(newProfile);
+            return newProfile;
+        });
+    }
+
+    /**
+     * Called to update a validation profile on the server.
+     * @param profileId
+     * @param update
+     */
+    public updateValidationProfile(profileId: number, update: UpdateValidationProfile): Promise<ValidationProfileExt> {
+        console.info("[ValidationService] Updating a validation profile with id %o", update);
+
+        let updateUrl: string = this.endpoint("/validationProfiles/:profileId", {
+            profileId: profileId
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+
+        console.info("[ValidationService] Updating a validation profile: %s", updateUrl);
+        return this.httpPut<UpdateValidationProfile>(updateUrl, update, options).then( () => {
+            let updatedProfile: ValidationProfileExt = {
+                id: profileId,
+                name: update.name,
+                description: update.description,
+                builtIn: false,
+                severities: update.severities,
+                registry: new MappedValidationSeverityRegistry(update.severities)
+            };
+            let profileIndex: number = -1;
+            this.profiles.forEach( (p, idx) => {
+                if (p.id === profileId) {
+                    profileIndex = idx;
+                }
+            });
+            if (profileIndex === -1) {
+                this.profiles.push(updatedProfile);
+            } else {
+                this.profiles.splice(profileIndex, 1, updatedProfile);
+            }
+            return updatedProfile;
+        });
+    }
+
+    /**
+     * Called to delete a validation profile from the server.
+     * @param profileId
+     */
+    public deleteValidationProfile(profileId: number): Promise<void> {
+        console.info("[ValidationService] Deleting a validation profile with id %o", profileId);
+
+        let deleteUrl: string = this.endpoint("/validationProfiles/:profileId", {
+            profileId: profileId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ValidationService] Deleting a validation profile: %s", deleteUrl);
+        return this.httpDelete(deleteUrl, options).then( () => {
+            let profileIndex: number = -1;
+            this.profiles.forEach( (p, idx) => {
+                if (p.id === profileId) {
+                    profileIndex = idx;
+                }
+            });
+            if (profileIndex !== -1) {
+                this.profiles.splice(profileIndex, 1);
+            }
+        });
+
+    }
+
+    /**
+     * Convert from server format (strings) to local severity values (OasValidationProblemSeverity enum).
+     * @param severities
+     */
+    private convertServerServerities(severities: any): {[key: string]: OasValidationProblemSeverity} {
+        let rval: {[key: string]: OasValidationProblemSeverity} = {};
+        Object.getOwnPropertyNames(severities).forEach( key => {
+            let value: string = severities[key];
+            let severity: OasValidationProblemSeverity = OasValidationProblemSeverity.low;
+            switch (value) {
+                case "ignore": severity = OasValidationProblemSeverity.ignore; break;
+                case "low": severity = OasValidationProblemSeverity.low; break;
+                case "medium": severity = OasValidationProblemSeverity.medium; break;
+                case "high": severity = OasValidationProblemSeverity.high; break;
+            }
+            rval[key] = severity;
+        });
+        return rval;
+    }
+
 }

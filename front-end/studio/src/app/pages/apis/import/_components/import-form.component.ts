@@ -18,7 +18,7 @@
 import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
 import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
-import {DropDownOption} from '../../../../components/common/drop-down.component';
+import {DropDownOption, DropDownOptionValue as Value} from '../../../../components/common/drop-down.component';
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import {Base64Utils} from "../../../../util/common";
 
@@ -128,9 +128,9 @@ export class ImportApiFormComponent {
 
     public importTypeOptions(): DropDownOption[] {
         return [
-            { name: "Import From URL", value: "from-url"},
-            { name: "Import From Source Control", value: "from-scs"},
-            { name: "Import From File/Clipboard", value: "from-text"}
+            new Value("Import From URL", "from-url"),
+            new Value("Import From Source Control", "from-scs"),
+            new Value("Import From File/Clipboard", "from-text")
         ];
     }
 

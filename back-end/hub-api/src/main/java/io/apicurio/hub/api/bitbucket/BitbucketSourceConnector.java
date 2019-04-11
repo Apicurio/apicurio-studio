@@ -70,6 +70,8 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
 
     @Inject
     private HubConfiguration config;
+    @Inject
+    private BitbucketResourceResolver resolver;
 
     private String apiUrl;
     
@@ -124,7 +126,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException, ApiValidationException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
-            BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
+            BitbucketResource resource = resolver.resolve(repositoryUrl);
             if (resource == null) {
                 throw new NotFoundException();
             }
@@ -164,7 +166,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
      */
     @Override
     public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException {
-        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
+        BitbucketResource resource = resolver.resolve(repositoryUrl);
         return getResourceContentFromBitbucket(resource);
     }
 
@@ -403,7 +405,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
      */
     private String commitToBitbucket(String repositoryUrl, String content, String commitMessage, boolean create) throws SourceConnectorException {
 
-        BitbucketResource resource = BitbucketResourceResolver.resolve(repositoryUrl);
+        BitbucketResource resource = resolver.resolve(repositoryUrl);
 
         try {
             //@formatter:off

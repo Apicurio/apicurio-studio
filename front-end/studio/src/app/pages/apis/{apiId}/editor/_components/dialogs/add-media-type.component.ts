@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren, Input} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {DropDownOption} from "../../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
 import {Oas20Operation, Oas30Operation, Oas30RequestBody} from "oai-ts-core";
 
 
@@ -73,27 +73,19 @@ export class AddMediaTypeDialogComponent {
 
         // Add the standard types.
         this._typeOptions = STANDARD_TYPES.map( stype => {
-            return { name: stype, value: stype };
+            return new Value(stype, stype);
         });
         // Add "remembered" custom types (if any)
         let ctypes: string[] = this.getCustomTypes();
         if (ctypes && ctypes.length > 0) {
-            this._typeOptions.push({
-                divider: true
-            });
+            this._typeOptions.push(DIVIDER);
             ctypes.forEach( ctype => {
-                this._typeOptions.push({
-                    name: ctype,
-                    value: ctype
-                });
+                this._typeOptions.push(new Value(ctype, ctype));
             });
         }
         // Add the "Custom Type" option.
-        this._typeOptions.push({ divider: true });
-        this._typeOptions.push({
-            name: "Custom Type",
-            value: "custom"
-        })
+        this._typeOptions.push(DIVIDER);
+        this._typeOptions.push(new Value("Custom Type", "custom"))
 
         this.addedMediaTypeNames = addedMediaTypeNames
     }

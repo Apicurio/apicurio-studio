@@ -19,20 +19,59 @@ package io.apicurio.hub.api.bitbucket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.apicurio.hub.api.github.AbstractResourceResolver;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import io.apicurio.hub.api.github.AbstractResourceResolver;
+import io.apicurio.hub.core.config.HubConfiguration;
+
+@ApplicationScoped
 public class BitbucketResourceResolver {
 
     // https://bitbucket.org/apicurio/apicurio-test/src/master/apis/pet-store.json
-    private static Pattern pattern1 = Pattern.compile("https://bitbucket.org/([^/]+)/([^/]+)/src/([^/]+)/(.*)");
+    private static final String PATTERN1 = "/([^/]+)/([^/]+)/src/([^/]+)/(.*)";
+    private static final String TEMPLATE = "/:team/:repo/src/:branch/:resource";
 
-    private static String template = "https://bitbucket.org/:team/:repo/src/:branch/:resource";
+    private Pattern pattern1 = null;
+    private String template = null;
 
+    @Inject
+    private HubConfiguration config;
+    
+    /**
+     * Constructor.
+     */
+    public BitbucketResourceResolver() {
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        pattern1 = Pattern.compile(createPatternOrTemplate(PATTERN1));
+        template = createPatternOrTemplate(TEMPLATE);
+    }
+
+    /**
+     * Creates a pattern with the configured GitLab URL as the prefix and the given
+     * suffix at the end.
+     * @param suffix
+     */
+    private String createPatternOrTemplate(String suffix) {
+        String bitbucket = config.getBitbucketUrl();
+        if (bitbucket == null || bitbucket.trim().isEmpty()) {
+            bitbucket = "https://bitbucket.org";
+        }
+        if (bitbucket.endsWith("/")) {
+            bitbucket = bitbucket.substring(0, bitbucket.length() - 1);
+        }
+        return bitbucket + suffix;
+    }
+    
     /**
      * Resolves a bitbucket URL into a resource object.  The URL must be of the proper format.
      * @param url
      */
-    public static BitbucketResource resolve(String url) {
+    public BitbucketResource resolve(String url) {
         Matcher matcher = pattern1.matcher(url);
         if (matcher.matches()) {
             BitbucketResource resource = new BitbucketResource();
@@ -61,7 +100,7 @@ public class BitbucketResourceResolver {
      * @param branch
      * @param resourcePath
      */
-    public static String create(String team, String repo, String branch, String resourcePath) {
+    public String create(String team, String repo, String branch, String resourcePath) {
         String resource = resourcePath;
         if (resource == null) {
             resource = "";

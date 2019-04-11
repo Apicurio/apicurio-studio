@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
-import {DropDownOption} from "../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 import {GitHubRepository} from "../../../../../models/github-repository.model";
 
 
@@ -41,10 +41,7 @@ export class GitHubResourceComponent implements OnInit {
     public _orgOptions: DropDownOption[] = [];
     public _repoOptions: DropDownOption[] = [];
     public _branchOptions: DropDownOption[] = [
-        {
-            name: "master",
-            value: "master"
-        }
+        new Value("master", "master")
     ];
     public gettingOrgs: boolean = false;
     public gettingRepos: boolean = false;
@@ -68,21 +65,13 @@ export class GitHubResourceComponent implements OnInit {
             this._orgOptions = [];
             orgs.forEach( org => {
                 if (org.userOrg) {
-                    this._orgOptions.push({
-                        name: org.id,
-                        value: org.id
-                    });
-                    this._orgOptions.push({
-                        divider: true
-                    });
+                    this._orgOptions.push(new Value(org.id, org.id));
+                    this._orgOptions.push(DIVIDER);
                 }
             });
             orgs.forEach( org => {
                 if (!org.userOrg) {
-                    this._orgOptions.push({
-                        name: org.id,
-                        value: org.id
-                    });
+                    this._orgOptions.push(new Value(org.id, org.id));
                 }
             });
             this.gettingOrgs = false;
@@ -126,10 +115,7 @@ export class GitHubResourceComponent implements OnInit {
             });
             this._repoOptions = [];
             repos.forEach( repo => {
-                this._repoOptions.push({
-                    name: repo.name,
-                    value: repo.name
-                });
+                this._repoOptions.push(new Value(repo.name, repo.name));
             });
             this.gettingRepos = false;
 
@@ -167,10 +153,7 @@ export class GitHubResourceComponent implements OnInit {
             });
             this._branchOptions = [];
             branches.forEach( branch => {
-                this._branchOptions.push({
-                    name: branch.name,
-                    value: branch.name
-                });
+                this._branchOptions.push(new Value(branch.name, branch.name));
             });
             this.gettingBranches = false;
             if (this.isValid()) {

@@ -27,7 +27,7 @@ import {IAuthenticationService} from "../../../../services/auth.service";
 import {User} from "../../../../models/user.model";
 import {Title} from "@angular/platform-browser";
 import {ClipboardService} from "ngx-clipboard";
-import {DropDownOption} from "../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 import {UpdateCollaborator} from "../../../../models/update-collaborator.model";
 import {InvitationDialogComponent} from "./_components/invitation.component";
 
@@ -245,14 +245,8 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
     public roleOptions(): DropDownOption[] {
         if (!this._roleOptions) {
             this._roleOptions = [
-                {
-                    name: "Owner",
-                    value: "owner"
-                },
-                {
-                    name: "Collaborator",
-                    value: "collaborator"
-                }
+                new Value("Owner", "owner"),
+                new Value("Collaborator", "collaborator")
             ];
         }
         return this._roleOptions;

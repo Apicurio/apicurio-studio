@@ -75,6 +75,8 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
 
     @Inject
     private HubConfiguration config;
+    @Inject
+    private GitHubResourceResolver resolver;
 
     private String apiUrl;
 
@@ -132,7 +134,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public ApiDesignResourceInfo validateResourceExists(String repositoryUrl) throws NotFoundException, SourceConnectorException, ApiValidationException {
         logger.debug("Validating the existence of resource {}", repositoryUrl);
         try {
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = resolver.resolve(repositoryUrl);
             if (resource == null) {
                 throw new NotFoundException();
             }
@@ -159,7 +161,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     @Override
     public ResourceContent getResourceContent(String repositoryUrl) throws NotFoundException, SourceConnectorException {
         try {
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = resolver.resolve(repositoryUrl);
             String getContentUrl = this.endpoint("/repos/:org/:repo/contents/:path")
                     .bind("org", resource.getOrganization())
                     .bind("repo", resource.getRepository())
@@ -203,7 +205,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
         try {
             String b64Content = Base64.encodeBase64String(content.getContent().getBytes(StandardCharsets.UTF_8));
 
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = resolver.resolve(repositoryUrl);
 
             GitHubUpdateFileRequest requestBody = new GitHubUpdateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -251,7 +253,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
         GitHubCreateCommitCommentRequest body = new GitHubCreateCommitCommentRequest();
         body.setBody(commitComment);
 
-        GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+        GitHubResource resource = resolver.resolve(repositoryUrl);
         String addCommentUrl = this.endpoint("/repos/:org/:repo/commits/:sha/comments")
             .bind("org", resource.getOrganization())
             .bind("repo", resource.getRepository())
@@ -275,7 +277,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
         try {
             String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
 
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = resolver.resolve(repositoryUrl);
 
             GitHubCreateFileRequest requestBody = new GitHubCreateFileRequest();
             requestBody.setMessage(commitMessage);
@@ -408,7 +410,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     public String createPullRequestFromZipContent(String repositoryUrl, String commitMessage, ZipInputStream generatedContent) throws SourceConnectorException {
         logger.debug("Creating new pull request from Zip content.");
         try {
-            GitHubResource resource = GitHubResourceResolver.resolve(repositoryUrl);
+            GitHubResource resource = resolver.resolve(repositoryUrl);
 
             String org = resource.getOrganization();
             String repo = resource.getRepository();

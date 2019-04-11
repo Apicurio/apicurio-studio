@@ -37,13 +37,19 @@ public class SourceConnectorFactory {
 
     @Inject
     private IGitHubSourceConnector gitHub;
-
     @Inject
     private IGitLabSourceConnector gitLab;
-
     @Inject
     private IBitbucketSourceConnector bitbucket;
 
+    @Inject
+    private GitHubResourceResolver gitHubResolver;
+    @Inject
+    private GitLabResourceResolver gitLabResolver;
+    @Inject
+    private BitbucketResourceResolver bitbucketResolver;
+
+    
     /**
      * Creates a connector for a particular type of account (e.g. GitHub, GitLab, etc).
      * @param accountType
@@ -72,15 +78,15 @@ public class SourceConnectorFactory {
      * @throws NotFoundException
      */
     public ISourceConnector createConnector(String repositoryUrl) throws NotFoundException {
-        if (GitHubResourceResolver.resolve(repositoryUrl) != null) {
+        if (gitHubResolver.resolve(repositoryUrl) != null) {
             return gitHub;
         }
 
-        if (GitLabResourceResolver.resolve(repositoryUrl) != null) {
+        if (gitLabResolver.resolve(repositoryUrl) != null) {
             return gitLab;
         }
 
-        if (BitbucketResourceResolver.resolve(repositoryUrl) != null) {
+        if (bitbucketResolver.resolve(repositoryUrl) != null) {
             return bitbucket;
         }
 

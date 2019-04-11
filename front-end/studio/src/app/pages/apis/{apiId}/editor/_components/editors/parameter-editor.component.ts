@@ -19,7 +19,7 @@ import {Component, ViewEncapsulation} from "@angular/core";
 import {IOasParameterParent, Oas20Parameter, Oas30Parameter} from "oai-ts-core";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {SimplifiedParameterType, SimplifiedType} from "oai-ts-commands";
-import {DropDownOption} from "../../../../../../components/common/drop-down.component";
+import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
 import {ObjectUtils} from "apicurio-ts-core";
 
 export interface ParameterData {
@@ -118,8 +118,8 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
 
     public requiredOptions(): DropDownOption[] {
         return [
-            { name: "Required", value: "required" },
-            { name: "Not Required", value: "not-required" }
+            new Value("Required", "required"),
+            new Value("Not Required", "not-required")
         ];
     }
 
@@ -135,13 +135,13 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
 
     public typeOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
-            { value: "array", name: "Array" },
-            { value: "enum", name: "Enum" },
-            { divider: true },
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
+            new Value("Array", "array"),
+            new Value("Enum", "enum"),
+            DIVIDER,
+            new Value("String", "string"),
+            new Value("Integer", "integer"),
+            new Value("Boolean", "boolean"),
+            new Value("Number", "number")
         ];
 
         return options;
@@ -156,10 +156,10 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
 
     public typeOfOptions(): DropDownOption[] {
         let options: DropDownOption[] = [
-            { value: "string", name: "String" },
-            { value: "integer", name: "Integer" },
-            { value: "boolean", name: "Boolean" },
-            { value: "number", name: "Number" }
+            new Value("String", "string"),
+            new Value("Integer", "integer"),
+            new Value("Boolean", "boolean"),
+            new Value("Number", "number")
         ];
 
         return options;
@@ -186,24 +186,24 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
         }
         if (st.type === "string") {
             options = [
-                { value: null, name: "String" },
-                { value: "byte", name: "Byte" },
-                { value: "binary", name: "Binary" },
-                { value: "date", name: "Date" },
-                { value: "date-time", name: "DateTime" },
-                { value: "password", name: "Password" }
+                new Value("String", null),
+                new Value("Byte", "byte"),
+                new Value("Binary", "binary"),
+                new Value("Date", "date"),
+                new Value("DateTime", "date-time"),
+                new Value("Password", "password")
             ];
         } else if (st.type === "integer") {
             options = [
-                { value: null, name: "Integer" },
-                { value: "int32", name: "32-Bit Integer" },
-                { value: "int64", name: "64-Bit Integer" }
+                new Value("Integer", null),
+                new Value("32-Bit Integer", "int32"),
+                new Value("64-Bit Integer", "int64")
             ];
         } else if (st.type === "number") {
             options = [
-                { value: null, name: "Number" },
-                { value: "float", name: "Float" },
-                { value: "double", name: "Double" }
+                new Value("Number", null),
+                new Value("Float", "float"),
+                new Value("Double", "double")
             ];
         }
         return options;

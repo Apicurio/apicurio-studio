@@ -12,98 +12,14 @@
             <div class="modal-body">
                 <p>Enter information about the new response below and then click Add.</p>
                 <form id="addResponse-form" class="form-horizontal" (submit)="add()" #addResponseForm="ngForm">
-                    <input type="hidden" name="statusCode" required [(ngModel)]="statusCode">
                     <div class="form-group">
-                        <label class="col-sm-5 control-label required" for="statusCodeMenu">Response Status Code</label>
+                        <label class="col-sm-5 control-label required" for="statusCodeDropDown">Response Status Code</label>
                         <div class="col-sm-7">
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="statusCodeMenu" data-toggle="dropdown">
-                                    <span>{{ statusCode }}</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" style="max-height: 300px; overflow: auto">
-                                    <!-- Common Values -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '200'">200 OK</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '201'">201 Created</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '204'">204 No Content</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '400'">400 Bad Request</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '401'">401 Unauthorized</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '403'">403 Forbidden</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '404'">404 Not Found</a></li>
-                                    <li role="presentation" class="divider"></li>
-
-                                    <!-- 100s -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '100'">100 Continue</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '101'">101 Switching Protocols</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '102'">102 Processing</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <!-- 200s -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '200'">200 OK</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '201'">201 Created</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '202'">202 Accepted</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '203'">203 Non_Authoritative</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '204'">204 No Content</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '205'">205 Reset Content</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '206'">206 Partial Content</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '207'">207 Multi-Status</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '208'">208 Already Reported</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '226'">226 IM Used</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <!-- 300s -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '300'">300 Multiple Choices</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '301'">301 Moved Permanently</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '302'">302 Found</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '303'">303 See Other</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '304'">304 Not Modified</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '305'">305 Use Proxy</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '306'">306 Switch Proxy</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '307'">307 Temporary Redirect</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '308'">308 Permanent Redirect</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <!-- 400s -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '400'">400 Bad Request</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '401'">401 Unauthorized</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '402'">402 Payment Required</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '403'">403 Forbidden</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '404'">404 Not Found</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '405'">405 Method Not Allowed</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '406'">406 Not Acceptable</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '407'">407 Proxy Authentication Required</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '408'">408 Request Time-Out</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '409'">409 Conflict</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '410'">410 Gone</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '411'">411 Length Required</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '412'">412 Precondition Failed</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '413'">413 Payload Too Large</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '414'">414 URI Too Long</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '415'">415 Unsupported Media Type</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '416'">416 Range Not Satisfiable</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '417'">417 Expectation Failed</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '418'" *ngIf="isAprilFirst()">418 I'm a teapot!</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '421'">421 Misdirected Request</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '422'">422 Unprocessable Entity</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '423'">423 Locked</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '424'">424 Failed Dependency</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '426'">426 Upgrade Required</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '428'">428 Precondition Required</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '429'">429 Too Many Requests</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '431'">431 Request Header Fields Too Large</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '451'">451 Unavailable For Legal Reasons</a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <!-- 500s -->
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '500'">500 Internal Server Error</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '501'">501 Not Implemented</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '502'">502 Bad Gateway</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '503'">503 Service Unavailable</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '504'">504 Gateway Time-Out</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '505'">505 HTTP Version Not Supported</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '506'">506 Variant Also Negotiates</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '507'">507 Insufficient Storage</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '508'">508 Loop Detected</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '510'">510 Not Extended</a></li>
-                                    <li role="presentation"><a role="menuitem" (click)="statusCode = '511'">511 Network Authentication Required</a></li>
-                                </ul>
-                            </div>
+                            <drop-down id="statusCodeDropDown" [id]="'statusCodeDropDown'"
+                                [options]="getStatusCodeDropDownOptions()"
+                                [value]="getStatusCode()"
+                                (onValueChange)="setStatusCode($event)"
+                                [noSelectionLabel]="'Choose HTTP Status Code'"></drop-down>
                             <div class="form-error-message error" *ngIf="codeExists">Response with this code already exists.</div>
                         </div>
                     </div>

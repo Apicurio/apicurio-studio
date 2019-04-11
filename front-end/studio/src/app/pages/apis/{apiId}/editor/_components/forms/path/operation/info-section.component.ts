@@ -49,7 +49,16 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     @ViewChildren("producesEditor") producesEditor: QueryList<InlineArrayEditorComponent>;
 
     private _operationInfoPaths: string[];
+    private _showInheritedConsumes: boolean = false;
+    private _showInheritedProduces: boolean = false;
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
@@ -58,6 +67,25 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
         this._operationInfoPaths = null;
+        this._initConsumesProduces();
+    }
+
+    _initConsumesProduces(): void {
+        // Should we show the inherited consumes for this input?
+        let consumes: string[] = this.consumes();
+        if (consumes !== null && consumes !== undefined) {
+            this._showInheritedConsumes = false;
+        } else {
+            this._showInheritedConsumes = this.hasGlobalConsumes();
+        }
+
+        // Should we show the inherited produces for this input?
+        let produces: string[] = this.produces();
+        if (produces !== null && produces !== undefined) {
+            this._showInheritedProduces = false;
+        } else {
+            this._showInheritedProduces = this.hasGlobalProduces();
+        }
     }
 
     /**
@@ -124,16 +152,14 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
         }
         let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "consumes", newValue);
         this.commandService.emit(command);
+        this._initConsumesProduces();
     }
 
     /**
      * Called when the user closes the consumes editor without making changes.
      */
     public onConsumesClose(): void {
-        let consumes: string[] = (this.operation as Oas20Operation).consumes;
-        if (consumes && consumes.length === 0) {
-            (this.operation as Oas20Operation).consumes = null
-        }
+        this._initConsumesProduces();
     }
 
     /**
@@ -147,16 +173,14 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
         }
         let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "produces", newValue);
         this.commandService.emit(command);
+        this._initConsumesProduces();
     }
 
     /**
      * Called when the user closes the produces editor without making changes.
      */
     public onProducesClose(): void {
-        let produces: string[] = (this.operation as Oas20Operation).produces;
-        if (produces && produces.length === 0) {
-            (this.operation as Oas20Operation).produces = null
-        }
+        this._initConsumesProduces();
     }
 
     public consumes(): string[] {
@@ -186,12 +210,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     }
 
     public showInheritedConsumes(): boolean {
-        let consumes: string[] = (this.operation as Oas20Operation).consumes;
-        if (consumes !== null && consumes !== undefined) {
-            return false;
-        }
-
-        return this.hasGlobalConsumes();
+        return this._showInheritedConsumes;
     }
 
     public inheritedConsumes(): string[] {
@@ -208,12 +227,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     }
 
     public showInheritedProduces(): boolean {
-        let produces: string[] = (this.operation as Oas20Operation).produces;
-        if (produces !== null && produces !== undefined) {
-            return false;
-        }
-
-        return this.hasGlobalProduces();
+        return this._showInheritedProduces;
     }
 
     public inheritedProduces(): string[] {
@@ -222,14 +236,14 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     }
 
     public overrideConsumes(): void {
-        (this.operation as Oas20Operation).consumes = [];
+        this._showInheritedConsumes = false;
         setTimeout(() => {
             this.consumesEditor.last.onStartEditing();
         }, 50);
     }
 
     public overrideProduces(): void {
-        (this.operation as Oas20Operation).produces = [];
+        this._showInheritedProduces = false;
         setTimeout(() => {
             this.producesEditor.last.onStartEditing();
         }, 50);

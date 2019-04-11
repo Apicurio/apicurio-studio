@@ -96,7 +96,7 @@ export abstract class AbstractInlineEditor<T> {
         let value: T = this.getValueForSave();
         this.onChange.emit(value);
         this.editing = false;
-        AbstractInlineEditor.s_activeEditor = this;
+        AbstractInlineEditor.s_activeEditor = null;
     }
 
     protected getValueForSave(): T {
@@ -105,7 +105,7 @@ export abstract class AbstractInlineEditor<T> {
 
     public onCancel(): void {
         this.editing = false;
-        AbstractInlineEditor.s_activeEditor = this;
+        AbstractInlineEditor.s_activeEditor = null;
         this.evalue = this.initialValueForEditing();
     }
 

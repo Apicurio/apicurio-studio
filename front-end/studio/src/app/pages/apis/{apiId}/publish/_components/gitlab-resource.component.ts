@@ -131,6 +131,7 @@ export class GitLabResourceComponent implements OnInit {
                 this.updateBranches();
             } else if (projects.length === 1) {
                 this.model.project = projects[0];
+                this.updateBranches();
             }
         }).catch(error => {
             this.gettingProjects = false;

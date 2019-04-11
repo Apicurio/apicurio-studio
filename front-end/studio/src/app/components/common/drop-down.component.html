@@ -7,7 +7,7 @@
     </button>
     <ul class="dropdown-menu" [style.max-height]="'400px'" [style.overflow-y]="'auto'" role="menu" [attr.aria-labelledby]="id" *dropdownMenu>
         <li role="filter" class="filter" *ngIf="shouldShowFilter()">
-            <input type="text" class="form-control" id="dd-filter" placeholder="Filter..." #filter
+            <input type="text" class="form-control" id="dd-filter" placeholder="Filter..." #filter autocomplete="off"
                    [(ngModel)]="criteria" (ngModelChange)="filterOptions()" (keypress)="inputKeypress($event)">
         </li>
         <li class="divider" *ngIf="shouldShowFilter()"></li>

@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.apicurio</groupId>
@@ -9,18 +9,18 @@
     <packaging>pom</packaging>
     <name>apicurio-studio</name>
 
-    <url>http://www.apicur.io/</url>
+    <url>https://www.apicur.io/</url>
     <description>Open Source API Design Studio</description>
 
     <organization>
-        <name>JBoss, a division of Red Hat</name>
-        <url>http://www.jboss.org</url>
+        <name>Red Hat</name>
+        <url>https://www.redhat.com</url>
     </organization>
 
     <licenses>
         <license>
             <name>Apache License Version 2.0</name>
-            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

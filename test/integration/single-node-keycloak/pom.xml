@@ -12,7 +12,7 @@
 
     <properties>
 
-        <it.version.keycloak>4.1.0.Final</it.version.keycloak><!-- Use ${version.org.keycloak} ? -->
+        <it.version.keycloak>${version.org.keycloak}</it.version.keycloak>
         <it.server.basePortOffset>100</it.server.basePortOffset>
         <it.server.apicurio.dir>${project.build.directory}/apicurio-studio/apicurio-studio-${project.version}</it.server.apicurio.dir>
         <it.server.apicurio.config>${basedir}/src/test/resources/wildfly/standalone-apicurio.xml</it.server.apicurio.config>

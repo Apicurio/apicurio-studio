@@ -16,7 +16,7 @@
 package io.apicurio.test.integration.arquillian;
 
 import io.apicurio.test.integration.arquillian.helpers.Apicurio;
-import io.apicurio.test.integration.arquillian.helpers.IntegrationTestProperties;
+import io.apicurio.test.integration.common.IntegrationTestProperties;
 import io.apicurio.test.integration.arquillian.helpers.Keycloak;
 import io.apicurio.test.integration.arquillian.helpers.Selenide;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -38,7 +38,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 /**
- *
+ * @author Jakub Senko <jsenko@redhat.com>
  */
 @SuppressWarnings("ArquillianTooManyDeployment")
 @RunWith(Arquillian.class)
@@ -56,7 +56,7 @@ public class KeycloakSetupTestIT {
     @Test
     @RunAsClient
     @OperateOnDeployment("apicurio-api")
-    public void unauthenticatedShouldRedirect() throws Exception {
+    public void testLoginWithLocalKeycloak() throws Exception {
         Selenide.init();
 
         try (Keycloak kc = new Keycloak(properties.get("it.server.keycloak.url"))) {

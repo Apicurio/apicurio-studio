@@ -18,6 +18,7 @@ package io.apicurio.test.integration.arquillian;
 import java.io.File;
 import java.util.Deque;
 
+import io.apicurio.test.integration.common.IntegrationTestProperties;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;

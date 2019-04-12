@@ -152,20 +152,12 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/test/resources</directory>
-                <!--<includes>-->
-                    <!--<include>**/*</include>-->
-                    <!--<include>**/*.xml</include>-->
-                <!--</includes>-->
             </resource>
         </resources>
         <testResources>
             <testResource>
                 <filtering>true</filtering>
                 <directory>src/test/resources</directory>
-                <!--<includes>-->
-                    <!--<include>**/*</include>-->
-                    <!--<include>**/*.xml</include>-->
-                <!--</includes>-->
             </testResource>
         </testResources>
     </build>

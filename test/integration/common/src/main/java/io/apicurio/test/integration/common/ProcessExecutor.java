@@ -31,7 +31,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Intended for a long-running process, e.g. a server.
  *
  * @author eric.wittmann@gmail.com
- * @author jsenko@redhat.com
+ * @author Jakub Senko <jsenko@redhat.com>
  */
 public class ProcessExecutor {
 

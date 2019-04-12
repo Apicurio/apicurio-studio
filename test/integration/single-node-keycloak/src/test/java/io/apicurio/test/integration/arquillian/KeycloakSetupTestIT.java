@@ -38,7 +38,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 /**
- *
+ * @author Jakub Senko <jsenko@redhat.com>
  */
 @SuppressWarnings("ArquillianTooManyDeployment")
 @RunWith(Arquillian.class)
@@ -56,7 +56,7 @@ public class KeycloakSetupTestIT {
     @Test
     @RunAsClient
     @OperateOnDeployment("apicurio-api")
-    public void unauthenticatedShouldRedirect() throws Exception {
+    public void testLoginWithLocalKeycloak() throws Exception {
         Selenide.init();
 
         try (Keycloak kc = new Keycloak(properties.get("it.server.keycloak.url"))) {

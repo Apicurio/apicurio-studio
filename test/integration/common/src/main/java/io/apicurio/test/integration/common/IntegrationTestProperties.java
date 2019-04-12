@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.test.integration.arquillian;
+package io.apicurio.test.integration.common;
 
 import java.util.Properties;
 

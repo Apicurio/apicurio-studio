@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package io.apicurio.test.integration.arquillian.helpers;
+package io.apicurio.test.integration.common;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
- * Starts up/stops a process
+ * Starts up/stops a process.
+ * Intended for a long-running process, e.g. a server.
  *
  * @author eric.wittmann@gmail.com
  * @author jsenko@redhat.com
@@ -40,29 +44,47 @@ public class ProcessExecutor {
      * @throws Exception
      */
     public void start(String[] cmdArray, Function<String, Boolean> startWaitCondition) throws Exception {
+        if(process != null && process.isAlive()) {
+            throw new RuntimeException("This ProcessExecutor is already managing a live process.");
+        }
         process = Runtime.getRuntime().exec(cmdArray);
         InputStream is = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        BufferedReader isReader = new BufferedReader(new InputStreamReader(is));
+        InputStream es = process.getErrorStream();
+        BufferedReader esReader = new BufferedReader(new InputStreamReader(es));
         final CountDownLatch latch = new CountDownLatch(1);
         Thread t = new Thread(() -> {
             try {
                 String line = null;
                 while (process.isAlive()) {
-                    line = reader.readLine();
+                    line = isReader.readLine();
 
                     if (line != null && startWaitCondition.apply(line)) {
                         latch.countDown();
                         return;
                     }
                 }
-                // TODO error handling
+                line = esReader.readLine();
+                while (line != null) {
+                    System.err.println(line);
+                }
                 latch.countDown();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    isReader.close();
+                    esReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         t.start();
         latch.await();
+        if (!process.isAlive()) {
+            throw new RuntimeException("Process failed to start: " + cmdArray);
+        }
     }
 
     public void stop() {
@@ -73,6 +95,11 @@ public class ProcessExecutor {
                 e.printStackTrace();
             }
             process.destroyForcibly();
+            try {
+                process.waitFor(30, SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

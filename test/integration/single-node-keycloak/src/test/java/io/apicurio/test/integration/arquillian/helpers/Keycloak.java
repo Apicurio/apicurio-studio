@@ -1,5 +1,8 @@
 package io.apicurio.test.integration.arquillian.helpers;
 
+import io.apicurio.test.integration.common.IntegrationTestProperties;
+import io.apicurio.test.integration.common.ProcessExecutor;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;

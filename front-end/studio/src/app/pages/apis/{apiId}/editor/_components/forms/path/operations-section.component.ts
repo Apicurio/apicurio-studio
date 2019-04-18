@@ -211,6 +211,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         // Create the operation via a command.
         let command: ICommand = CommandFactory.createNewOperationCommand(this.path.getPath(), this.tab);
         this.commandService.emit(command);
+        // !!!
         // And then select the new operation we just created.
         this.__selectionService.select(ModelUtils.nodeToPath(this.path) + "/" + this.tab);
     }

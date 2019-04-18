@@ -123,6 +123,9 @@ export class SecuritySchemeRowComponent extends AbstractBaseComponent {
     public setDescription(description: string): void {
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.scheme, "description", description);
         this.commandService.emit(command);
+        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.scheme);
+        path.appendSegment("description");
+        this.selectionService.select(path.toString());
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

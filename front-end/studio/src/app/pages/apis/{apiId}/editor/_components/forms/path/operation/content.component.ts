@@ -86,6 +86,10 @@ export class ContentComponent extends AbstractBaseComponent {
     public addMediaType(mediaType: string): void {
         let command: ICommand = CommandFactory.createNewMediaTypeCommand(this.parent, mediaType);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.parent);
+        nodePath.appendSegment("content");
+        nodePath.appendSegment(mediaType, true);
+        this.selectionService.select(nodePath.toString());
     }
 
 }

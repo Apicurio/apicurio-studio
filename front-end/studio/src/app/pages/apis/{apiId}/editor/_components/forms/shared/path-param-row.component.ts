@@ -34,6 +34,7 @@ import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -163,12 +164,22 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "path", null, null, false);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
+        nodePath.appendSegment("parameters");
+        nodePath.appendSegment(index, true);
+        this.__selectionService.select(nodePath.toString());
     }
 
     public override(): void {
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "path", null, null, true);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
+        nodePath.appendSegment("parameters");
+        nodePath.appendSegment(index, true);
+        this.__selectionService.select(nodePath.toString());
     }
 
     public isMissing(): boolean {

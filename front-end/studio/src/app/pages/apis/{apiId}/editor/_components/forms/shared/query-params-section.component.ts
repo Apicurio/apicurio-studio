@@ -201,6 +201,11 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createNewParamCommand(this.parent, data.name,
             "query", data.description, data.type, false);
         this.commandService.emit(command);
+
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.parent);
+        let index: number = (this.parent as any).parameters.findIndex(p => p.name === data.name); // TODO hackish
+        nodePath.appendSegment("parameters");
+        nodePath.appendSegment(index, true);
     }
 
     /**

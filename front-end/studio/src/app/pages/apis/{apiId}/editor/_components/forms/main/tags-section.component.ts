@@ -109,6 +109,10 @@ export class TagsSectionComponent extends AbstractBaseComponent {
     public addTag(tag: any): void {
         let command: ICommand = CommandFactory.createNewTagCommand(tag.name, tag.description);
         this.commandService.emit(command);
+        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.document);
+        path.appendSegment("tags");
+        this.selectionService.select(path.toString());
+
     }
 
     /**

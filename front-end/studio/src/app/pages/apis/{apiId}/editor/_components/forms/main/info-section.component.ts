@@ -103,6 +103,9 @@ export class InfoSectionComponent extends AbstractBaseComponent {
         console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.document, "produces", newValue);
         this.commandService.emit(command);
+        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.document);
+        path.appendSegment("produces");
+        this.selectionService.select(path.toString());
     }
 
     public consumes(): string[] {

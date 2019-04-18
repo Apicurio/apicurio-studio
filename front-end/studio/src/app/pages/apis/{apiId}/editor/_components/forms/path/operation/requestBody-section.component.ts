@@ -133,6 +133,10 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createNewParamCommand(this.operation, data.name, "formData",
             data.description, data.type, false);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        nodePath.appendSegment("requestBody");
+        nodePath.appendSegment(data.name, true);
+        this.selectionService.select(nodePath.toString());
     }
 
     public parameters(paramType: string): Oas20Parameter[] {
@@ -221,6 +225,9 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     public addRequestBody(): void {
         let command: ICommand = CommandFactory.createNewRequestBodyCommand(this.operation.ownerDocument().getDocumentType(), this.operation);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        nodePath.appendSegment("requestBody");
+        this.selectionService.select(nodePath.toString());
     }
 
     public bodyDescription(): string {

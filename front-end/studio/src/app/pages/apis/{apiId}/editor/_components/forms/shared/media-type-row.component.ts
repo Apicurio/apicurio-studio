@@ -29,6 +29,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {EditExampleEvent} from "../../dialogs/edit-example.component";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -122,6 +123,9 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
         let command: ICommand = CommandFactory.createAddExampleCommand(this.item,
             exampleData.value, exampleData.name, null, null);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item);
+        nodePath.appendSegment("examples");
+        this.__selectionService.select(nodePath.toString());
     }
 
     public changeExampleSummary(example: Oas30Example, summary: string): void {

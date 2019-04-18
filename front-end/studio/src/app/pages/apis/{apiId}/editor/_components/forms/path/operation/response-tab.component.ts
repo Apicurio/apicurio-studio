@@ -124,12 +124,18 @@ export class ResponseTabComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
             exampleData.value, exampleData.contentType);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.response);
+        nodePath.appendSegment("examples");
+        this.selectionService.select(nodePath.toString());
     }
 
     public editExample(event: EditExample20Event): void {
         let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
             event.value, event.contentType);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.response);
+        nodePath.appendSegment("examples");
+        this.selectionService.select(nodePath.toString());
     }
 
 }

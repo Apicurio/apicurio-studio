@@ -35,6 +35,7 @@ import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -183,6 +184,9 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameter, 
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any, this.item.name,
             "header", null, null, true);
         this.commandService.emit(command);
+
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        this.__selectionService.select(nodePath.toString());
     }
 
     public isMissing(): boolean {

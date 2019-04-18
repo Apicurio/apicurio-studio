@@ -98,6 +98,10 @@ export class LicenseSectionComponent extends AbstractBaseComponent {
     public setLicense(licenseInfo: any): void {
         let command: ICommand = CommandFactory.createChangeLicenseCommand(licenseInfo.name, licenseInfo.url);
         this.commandService.emit(command);
+        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.document);
+        path.appendSegment("info");
+        path.appendSegment("license");
+        this.selectionService.select(path.toString());
     }
 
     /**

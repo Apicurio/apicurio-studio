@@ -112,7 +112,10 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     public addResponse(statusCode: string): void {
         let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, null);
         this.commandService.emit(command);
-        // FIXME fire a selection event here instead of simply setting the tab selection - doing this will let OTHER users know what we're looking at.
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        nodePath.appendSegment(statusCode, true);
+        this.selectionService.select(nodePath.toString());
+
         this._responseTab = statusCode;
     }
 
@@ -121,6 +124,9 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         const originalResponse = this.operation.responses.getResponse(selectedStatusCode);
         let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, originalResponse);
         this.commandService.emit(command);
+        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        nodePath.appendSegment(statusCode, true);
+        this.selectionService.select(nodePath.toString());
     }
 
     public deleteAllResponses(): void {

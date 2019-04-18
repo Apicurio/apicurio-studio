@@ -172,6 +172,8 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
             let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
+            let path = AbstractBaseComponent.oasLibrary.createNodePath(scheme);
+            this.selectionService.select(path.toString());
         } else {
             console.info("[SecuritySchemesSectionComponent] Adding a security scheme: %s", event.schemeName);
             let evt : SecurityScheme30Data = event as SecurityScheme30Data;
@@ -181,6 +183,8 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
             let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
+            let path = AbstractBaseComponent.oasLibrary.createNodePath(scheme);
+            this.selectionService.select(path.toString());
         }
     }
 

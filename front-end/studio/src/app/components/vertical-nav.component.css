@@ -1,12 +1,9 @@
 
 #api-vertical-nav {
-  position: fixed;
-  left: 0;
-  width: 120px;
-  top: 76px;
-  bottom: 0;
   background-color: #292e34;
   overflow: hidden;
+  grid-column-start: nav;
+  grid-column-end: nav;
   z-index: 100;
 }
 #api-vertical-nav .api-nav-item {
@@ -61,7 +58,7 @@
 
 #api-vertical-nav-details {
   position: absolute;
-  left: -160px;
+  left: 120px;
   width: 280px;
   top: 76px;
   bottom: 0;
@@ -69,11 +66,6 @@
   border-right: 1px solid #030303;
   z-index: 99;
   padding: 15px;
-  -webkit-transition: left 200ms;
-  -moz-transition: left 200ms;
-  -ms-transition: left 200ms;
-  -o-transition: left 200ms;
-  transition: left 200ms;
   color: white;
 }
 #api-vertical-nav-details.out {

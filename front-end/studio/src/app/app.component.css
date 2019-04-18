@@ -1,2 +1,19 @@
-.apicurio {
+#page-layout-default-nav {
+  font-size: 13px;
+}
+
+.vnav {
+  grid-column-start: m;
+  grid-column-end: m;
+  width: 120px;
+  overflow: hidden;
+}
+
+.app-body {
+  grid-column-start: k;
+  grid-column-end: k;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  position: relative;
 }

@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div id="api-vertical-nav-details" [class.out]="subMenuOut">
+    <div id="api-vertical-nav-details" *ngIf="subMenuOut">
         <!-- APIs -->
         <div id="api-nav-detail-apis" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.APIs">
             <h3>APIs</h3>

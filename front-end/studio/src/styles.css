@@ -7,16 +7,6 @@ body {
   height: 75px;
 }
 
-#api-page-body {
-  position: fixed;
-  left: 121px;
-  right: 0;
-  bottom: 0;
-  top: 76px;
-  overflow: auto;
-  background-color: #f5f5f5;
-}
-
 #api-page-body .modal-header {
   background-color: rgb(57, 165, 220);
   color: white;

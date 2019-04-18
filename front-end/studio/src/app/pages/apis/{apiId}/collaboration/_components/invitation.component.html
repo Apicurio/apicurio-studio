@@ -1,5 +1,5 @@
 <div bsModal #invitationModal="bs-modal" class="modal fade" id="invitationModal" tabindex="-1" role="dialog"
-     aria-labelledby="invitationModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: false }" >
+     aria-labelledby="invitationModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: true }" >
     <div class="modal-dialog invitation-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -26,11 +26,12 @@
                     <div class="form-label">Invitation Link</div>
                     <div class="form-control-apicurio-copybox">
                         <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="link">
-                        <button (click)="copyToClipboard()" class="btn btn-default" type="button"><span class="fa fa-clipboard"></span></button>
+                        <button (click)="copyToClipboard()" class="btn btn-default" title="Copy link to clipboard." type="button"><span class="fa fa-copy"></span></button>
                     </div>
                 </div>
                 <div class="copybox-success" *ngIf="copied">
                     <span class="fa fa-info-circle"></span>
+                    <span>&nbsp;</span>
                     <span>URL successfully copied to the clipboard!</span>
                 </div>
             </div>

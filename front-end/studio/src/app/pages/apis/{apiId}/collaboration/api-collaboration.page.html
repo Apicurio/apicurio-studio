@@ -54,7 +54,7 @@
                                 <h1 class="card-pf-title">
                                     <span class="fa fa-fw fa-users"></span>
                                     <span>Collaborators</span>
-                                    <button class="icon-button pull-right" (click)="createInvitation()"
+                                    <button class="icon-button pull-right" (click)="createInvitation()"  *ngIf="isOwner()"
                                             title="Invite a Collaborator"><span class="pficon pficon-add-circle-o"></span></button>
                                 </h1>
                             </div>
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="actions">
+                                <div class="actions" *ngIf="isOwner()">
                                     <button class="btn btn-lg btn-primary" (click)="createInvitation()">Invite a Collaborator</button>
                                 </div>
                             </div>

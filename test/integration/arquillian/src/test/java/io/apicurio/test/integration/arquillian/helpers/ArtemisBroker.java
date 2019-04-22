@@ -16,16 +16,10 @@
 
 package io.apicurio.test.integration.arquillian.helpers;
 
+import java.io.File;
+
 import io.apicurio.test.integration.common.IntegrationTestProperties;
 import io.apicurio.test.integration.common.ProcessExecutor;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Starts up the Artemis broker instance that will be used by the Apicurio JMS editing integration test.

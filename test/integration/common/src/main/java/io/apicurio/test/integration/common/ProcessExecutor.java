@@ -16,15 +16,14 @@
 
 package io.apicurio.test.integration.common;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Starts up/stops a process.

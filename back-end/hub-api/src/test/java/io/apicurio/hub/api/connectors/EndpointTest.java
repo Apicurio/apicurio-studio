@@ -16,6 +16,9 @@
 
 package io.apicurio.hub.api.connectors;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +42,7 @@ public class EndpointTest {
      * Test method for {@link io.apicurio.hub.api.connectors.AbstractSourceConnector.Endpoint#toString()}.
      */
     @Test
-    public void testPathParams() {
+    public void testPathParams() throws Exception {
         String url = new Endpoint("http://www.example.org/repos/:org")
                 .bind("org", "ORG")
                 .toString();
@@ -51,6 +54,13 @@ public class EndpointTest {
                 .bind("path", "PATH")
                 .toString();
         Assert.assertEquals("http://www.example.org/repos/ORG/REPO/contents/PATH", url);
+
+        url = new Endpoint("http://www.example.org/repos/:org/:repo/contents/:path")
+                .bind("org", "ORG")
+                .bind("repo", "REPO")
+                .bind("path", URLEncoder.encode("/path/to/file.doc", StandardCharsets.UTF_8.name()))
+                .toString();
+        Assert.assertEquals("http://www.example.org/repos/ORG/REPO/contents/%2Fpath%2Fto%2Ffile.doc", url);
     }
 
     /**

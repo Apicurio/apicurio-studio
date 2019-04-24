@@ -109,7 +109,7 @@
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>
         <version.junit>4.12</version.junit>
-        <version.org.apache.httpcomponents>4.5.6</version.org.apache.httpcomponents>
+        <version.org.apache.httpcomponents>4.5.8</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.11</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.6.2</version.org.apache.commons.commons-pool2>
         <version.org.jboss.resteasy>3.6.3.Final</version.org.jboss.resteasy>

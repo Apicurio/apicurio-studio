@@ -141,7 +141,7 @@ public class JdbcStorage implements IStorage {
         logger.debug("Checking to see if the DB is initialized.");
         return this.jdbi.withHandle(handle -> {
             ResultIterable<Integer> result = handle.createQuery(this.sqlStatements.isDatabaseInitialized()).mapTo(Integer.class);
-            return result.findOnly().intValue() > 0;
+            return result.one().intValue() > 0;
         });
     }
 
@@ -232,7 +232,7 @@ public class JdbcStorage implements IStorage {
                     .bind(0, "db_version")
                     .mapTo(String.class);
             try {
-                String versionStr = result.findOnly();
+                String versionStr = result.one();
                 int version = Integer.parseInt(versionStr);
                 return version;
             } catch (Exception e) {
@@ -254,7 +254,7 @@ public class JdbcStorage implements IStorage {
                 int count = handle.createQuery(statement)
                     .bind(0, did)
                     .bind(1, userId)
-                    .mapTo(Integer.class).findOnly();
+                    .mapTo(Integer.class).one();
                 return count == 1;
             });
         } catch (Exception e) {
@@ -275,7 +275,7 @@ public class JdbcStorage implements IStorage {
                 int count = handle.createQuery(statement)
                     .bind(0, did)
                     .bind(1, userId)
-                    .mapTo(Integer.class).findOnly();
+                    .mapTo(Integer.class).one();
                 return count == 1;
             });
         } catch (Exception e) {
@@ -409,7 +409,7 @@ public class JdbcStorage implements IStorage {
                         .bind(0, userId)
                         .bind(1, type.name())
                         .mapToBean(LinkedAccount.class)
-                        .findOnly();
+                        .one();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -553,7 +553,7 @@ public class JdbcStorage implements IStorage {
                       .bind(4, new Date())
                       .executeAndReturnGeneratedKeys("version")
                       .mapTo(Long.class)
-                      .findOnly();
+                      .one();
                 return contentVersion;
             });
         } catch (Exception e) {
@@ -619,7 +619,7 @@ public class JdbcStorage implements IStorage {
                 if (!shareForEveryone) {
                     query = query.bind(1, userId);
                 }
-                return query.map(ApiDesignRowMapper.instance).findOnly();
+                return query.map(ApiDesignRowMapper.instance).one();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -643,7 +643,7 @@ public class JdbcStorage implements IStorage {
                 if (!shareForEveryone) {
                     query = query.bind(1, userId);
                 }
-                return query.map(ApiDesignContentRowMapper.instance).findOnly();
+                return query.map(ApiDesignContentRowMapper.instance).one();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -716,7 +716,7 @@ public class JdbcStorage implements IStorage {
                       .bind(5, design.getType().name())
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
-                      .findOnly();
+                      .one();
                 
                 long did = Long.parseLong(designId);
                 
@@ -777,7 +777,7 @@ public class JdbcStorage implements IStorage {
                 int count = handle.createQuery(statement)
                     .bind(0, did)
                     .bind(1, userId)
-                    .mapTo(Integer.class).findOnly();
+                    .mapTo(Integer.class).one();
                 if (count == 0) {
                     throw new NotFoundException();
                 }
@@ -829,7 +829,7 @@ public class JdbcStorage implements IStorage {
                     int count = handle.createQuery(statementPerms)
                         .bind(0, Long.valueOf(design.getId()))
                         .bind(1, userId)
-                        .mapTo(Integer.class).findOnly();
+                        .mapTo(Integer.class).one();
                     if (count == 0) {
                         throw new NotFoundException();
                     }
@@ -962,7 +962,7 @@ public class JdbcStorage implements IStorage {
                                 return rs.getLong("version");
                             }
                         })
-                        .findOnly();
+                        .one();
                 return contentVersion;
             });
         } catch (Exception e) {
@@ -1085,7 +1085,7 @@ public class JdbcStorage implements IStorage {
                         .bind(0, Long.valueOf(designId))
                         .bind(1, inviteId)
                         .map(InvitationRowMapper.instance)
-                        .findOnly();
+                        .one();
             });
         } catch (Exception e) {
             throw new StorageException("Error getting invitations.", e);
@@ -1217,7 +1217,7 @@ public class JdbcStorage implements IStorage {
                       .bind(6, attributesClob)
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
-                      .findOnly();
+                      .one();
                 return projectId;
             });
         } catch (Exception e) {
@@ -1239,7 +1239,7 @@ public class JdbcStorage implements IStorage {
                         .bind(0, Long.valueOf(designId))
                         .bind(1, Long.valueOf(projectId))
                         .map(CodegenProjectRowMapper.instance)
-                        .findOnly();
+                        .one();
             });
         } catch (Exception e) {
             throw new StorageException("Error getting invitations.", e);
@@ -1373,7 +1373,7 @@ public class JdbcStorage implements IStorage {
                       .bind(3, severitiesClob)
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(Long.class)
-                      .findOnly();
+                      .one();
                 return profileId;
             });
         } catch (Exception e) {

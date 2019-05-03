@@ -85,7 +85,7 @@
         <version.resources.plugin>3.1.0</version.resources.plugin>
         <version.source.plugin>2.4</version.source.plugin>
         <version.surefire.plugin>2.22.2</version.surefire.plugin>
-        <version.surefire-report.plugin>2.22.1</version.surefire-report.plugin>
+        <version.surefire-report.plugin>2.22.2</version.surefire-report.plugin>
         <version.war.plugin>3.2.2</version.war.plugin>
         <version.frontend-maven.plugin>1.7.6</version.frontend-maven.plugin>
         <version.scala-maven.plugin>4.0.1</version.scala-maven.plugin>

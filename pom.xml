@@ -78,7 +78,7 @@
         <version.enforcer.plugin>1.4.1</version.enforcer.plugin>
         <version.gatling.plugin>3.0.2</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
-        <version.jar.plugin>3.1.1</version.jar.plugin>
+        <version.jar.plugin>3.1.2</version.jar.plugin>
         <version.javadoc.plugin>2.10.4</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>

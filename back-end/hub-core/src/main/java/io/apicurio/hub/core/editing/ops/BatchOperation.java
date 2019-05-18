@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 JBoss Inc
+ * Copyright 2019 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,40 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apicurio.hub.core.editing.ops;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Important, note this is command ID, not command.
- *
- * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ * An operation that supports a batch of operations.  So this is just a collection of 
+ * arbitrary other operations.
+ * @author eric.wittmann@gmail.com
  */
-public class VersionedAck extends VersionedOperation {
+public class BatchOperation extends BaseOperation {
     
-    private long commandId;
-    private String ackType;
+    private List<BaseOperation> operations = new ArrayList<>();
 
-    public long getCommandId() {
-        return commandId;
-    }
-
-    public VersionedAck setCommandId(long commandId) {
-        this.commandId = commandId;
-        return this;
+    /**
+     * @return the operations
+     */
+    public List<BaseOperation> getOperations() {
+        return operations;
     }
 
     /**
-     * @return the ackType
+     * @param operations the operations to set
      */
-    public String getAckType() {
-        return ackType;
-    }
-
-    /**
-     * @param ackType the ackType to set
-     */
-    public VersionedAck setAckType(String ackType) {
-        this.ackType = ackType;
-        return this;
+    public void setOperations(List<BaseOperation> operations) {
+        this.operations = operations;
     }
     
 }

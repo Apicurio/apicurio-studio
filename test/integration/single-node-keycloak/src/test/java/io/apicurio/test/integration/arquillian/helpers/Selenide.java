@@ -16,10 +16,8 @@
 package io.apicurio.test.integration.arquillian.helpers;
 
 import com.codeborne.selenide.Configuration;
-import io.apicurio.test.integration.common.IntegrationTestProperties;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import io.apicurio.test.integration.common.IntegrationTestProperties;
 
 
 public class Selenide {

@@ -134,7 +134,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.0.0.Final</version>
+            <version>3.6.3.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>

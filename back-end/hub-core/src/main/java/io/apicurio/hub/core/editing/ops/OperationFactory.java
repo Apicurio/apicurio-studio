@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.util.JsonUtil;
@@ -33,6 +34,7 @@ public final class OperationFactory {
     private static final Map<String, Class<? extends BaseOperation>> OP_CLASSES;
     static {
         OP_CLASSES = new HashMap<>();
+        OP_CLASSES.put("batch", BatchOperation.class);
         OP_CLASSES.put("command", FullCommandOperation.class);
         OP_CLASSES.put("join", JoinLeaveOperation.class);
         OP_CLASSES.put("leave", JoinLeaveOperation.class);
@@ -40,6 +42,8 @@ public final class OperationFactory {
         OP_CLASSES.put("undo", VersionedOperation.class);
         OP_CLASSES.put("redo", VersionedOperation.class);
         OP_CLASSES.put("ack", VersionedAck.class);
+        OP_CLASSES.put("deferred", DeferredAction.class);
+        OP_CLASSES.put("storageError", StorageError.class);
         OP_CLASSES.put("ping", PingOperation.class);
         OP_CLASSES.put("list-clients", ListClientsOperation.class);
     }
@@ -56,7 +60,28 @@ public final class OperationFactory {
         if (unmarshallClass == null) {
             throw new IllegalArgumentException("Couldn't create Operation, unknown type: " + type);
         }
-        return JsonUtil.fromJsonToOperation(message, unmarshallClass);
+        
+        // Handle batch a bit differently.
+        if ("batch".equals(type)) {
+            final BatchOperation batchOp = batch();
+            if (message.has("operations")) {
+                JsonNode operationsNode = message.get("operations");
+                if (operationsNode.isArray()) {
+                    ArrayNode array = (ArrayNode) operationsNode;
+                    array.forEach(subop -> {
+                        batchOp.getOperations().add(operation(subop));
+                    });
+                }
+            }
+            return batchOp;
+        } else {
+            return JsonUtil.fromJsonToOperation(message, unmarshallClass);
+        }
+    }
+    
+    public static BatchOperation batch() {
+        return (BatchOperation) new BatchOperation()
+                .setType("batch");
     }
 
     public static FullCommandOperation fullCommand(ApiDesignCommand command) {
@@ -110,17 +135,26 @@ public final class OperationFactory {
                 .setType("selection");
     }
 
-    public static VersionedAck ack(long contentVersion, long commandId) {
+    public static VersionedAck ack(long contentVersion, long commandId, String ackType) {
         return (VersionedAck) new VersionedAck()
+                .setAckType(ackType)
                 .setCommandId(commandId)
                 .setContentVersion(contentVersion)
                 .setType("ack");
     }
 
-    public static VersionedAck ack(long contentVersion) {
+    public static VersionedAck ack(long contentVersion, String ackType) {
         return (VersionedAck) new VersionedAck()
+                .setAckType(ackType)
                 .setContentVersion(contentVersion)
                 .setType("ack");
+    }
+    
+    public static DeferredAction deferred(long id, String actionType) {
+        return (DeferredAction) new DeferredAction()
+                .setActionType(actionType)
+                .setId(id)
+                .setType("deferred");
     }
 
     public static VersionedCommandOperation command(long contentVersion, String command) {
@@ -148,6 +182,13 @@ public final class OperationFactory {
         return (VersionedOperation) new VersionedOperation()
                 .setContentVersion(contentVersion)
                 .setType("undo");
+    }
+    
+    public static StorageError storageError(long id, String failedType) {
+        return (StorageError) new StorageError()
+                .setId(id)
+                .setFailedType(failedType)
+                .setType("storageError");
     }
 
 }

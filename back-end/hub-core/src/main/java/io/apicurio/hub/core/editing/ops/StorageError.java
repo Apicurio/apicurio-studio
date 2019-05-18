@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 JBoss Inc
+ * Copyright 2019 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.apicurio.hub.core.editing.ops;
 
 /**
- * Important, note this is command ID, not command.
- *
- * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
+ * Message/op used to communicate that an error occurred when storing a command in the DB.
+ * @author eric.wittmann@gmail.com
  */
-public class VersionedAck extends VersionedOperation {
-    
-    private long commandId;
-    private String ackType;
+public class StorageError extends BaseOperation {
 
-    public long getCommandId() {
-        return commandId;
+    private long id;
+    private String failedType;
+
+    public long getId() {
+        return id;
     }
 
-    public VersionedAck setCommandId(long commandId) {
-        this.commandId = commandId;
+    public StorageError setId(long commandId) {
+        this.id = commandId;
         return this;
     }
 
     /**
-     * @return the ackType
+     * @return the failedType
      */
-    public String getAckType() {
-        return ackType;
+    public String getFailedType() {
+        return failedType;
     }
 
     /**
-     * @param ackType the ackType to set
+     * @param failedType the failedType to set
      */
-    public VersionedAck setAckType(String ackType) {
-        this.ackType = ackType;
+    public StorageError setFailedType(String failedType) {
+        this.failedType = failedType;
         return this;
     }
     

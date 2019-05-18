@@ -43,7 +43,7 @@ import {
 } from "oai-ts-core";
 import {EditorMasterComponent} from "./_components/master.component";
 import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
-import {ApiDesignCommandAck} from "../../../../models/ack.model";
+import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {CommandService} from "./_services/command.service";
@@ -308,7 +308,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         if (this.embedded) {
             this.finalizeCommand({
                 commandId: otCmd.contentVersion,
-                contentVersion: otCmd.contentVersion
+                contentVersion: otCmd.contentVersion,
+                ackType: "command"
             });
         }
 
@@ -370,7 +371,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * Finalizes a command.
      * @param ack
      */
-    public finalizeCommand(ack: ApiDesignCommandAck): void {
+    public finalizeCommand(ack: VersionedAck): void {
         this.otEngine().finalizeCommand(ack.commandId, ack.contentVersion);
     }
 

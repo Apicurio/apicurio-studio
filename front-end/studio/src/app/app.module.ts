@@ -48,7 +48,7 @@ import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component'
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
 import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
-import {ApiEditorPageComponent} from './pages/apis/{apiId}/editor/api-editor.page';
+import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
 import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 import {GitHubResourceComponent} from "./pages/apis/{apiId}/publish/_components/github-resource.component";
 import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/gitlab-resource.component";
@@ -90,7 +90,7 @@ import {ProfileEditorComponent} from "./pages/settings/validation/_components/pr
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
-        AuthenticationCanActivateGuard, CurrentUserService, TemplateService
+        AuthenticationCanActivateGuard, ApiEditorPageGuard, CurrentUserService, TemplateService
     ],
     bootstrap: [AppComponent]
 })

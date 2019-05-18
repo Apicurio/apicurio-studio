@@ -64,4 +64,10 @@ public interface IEditingMetrics {
      */
     public void redoCommand(String designId, long contentVersion);
 
+    /**
+     * Indicates that a batch of commands was sent to the server for the given design ID.
+     * @param designId
+     */
+    public void batchCommand(String designId, int count);
+
 }

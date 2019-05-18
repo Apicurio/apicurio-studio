@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-export class VersionedAck {
+export class DeferredAction {
 
-    ackType: string;
-    commandId: number;
-    contentVersion: number;
+    actionType: string;
+    id: number;
 
 }

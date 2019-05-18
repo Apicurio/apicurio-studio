@@ -18,6 +18,7 @@ package io.apicurio.hub.core.editing.ops.processors;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -30,7 +31,7 @@ public interface IOperationProcessor {
      * @param context
      * @param operation
      */
-    void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation);
+    void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) throws OperationProcessorException;
     
     /**
      * Returns the name of the operation that this processor is responsible for.  The name

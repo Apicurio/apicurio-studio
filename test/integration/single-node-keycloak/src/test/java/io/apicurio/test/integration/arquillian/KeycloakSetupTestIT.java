@@ -48,7 +48,7 @@ public class KeycloakSetupTestIT {
     private static final IntegrationTestProperties properties = new IntegrationTestProperties();
 
     public JsonObject getRealmFile() {
-        Class clazz = this.getClass();
+        Class<? extends KeycloakSetupTestIT> clazz = this.getClass();
         InputStream inputStream = clazz.getResourceAsStream(properties.get("it.keycloak.realm.file"));
         return Json.createReader(inputStream).readObject();
     }

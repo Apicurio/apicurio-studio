@@ -20,33 +20,39 @@ package io.apicurio.hub.core.editing.ops;
  *
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
-public class VersionedAck extends VersionedOperation {
-    
-    private long commandId;
-    private String ackType;
+public class DeferredAction extends BaseOperation {
 
-    public long getCommandId() {
-        return commandId;
+    private long id;
+    private String actionType;
+
+    /**
+     * @return the id
+     */
+    public long getId() {
+        return id;
     }
 
-    public VersionedAck setCommandId(long commandId) {
-        this.commandId = commandId;
+    /**
+     * @param id the id to set
+     */
+    public DeferredAction setId(long id) {
+        this.id = id;
         return this;
     }
 
     /**
-     * @return the ackType
+     * @return the actionType
      */
-    public String getAckType() {
-        return ackType;
+    public String getActionType() {
+        return actionType;
     }
 
     /**
-     * @param ackType the ackType to set
+     * @param actionType the actionType to set
      */
-    public VersionedAck setAckType(String ackType) {
-        this.ackType = ackType;
+    public DeferredAction setActionType(String actionType) {
+        this.actionType = actionType;
         return this;
     }
-    
+
 }

@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-export class VersionedAck {
+export class StorageError {
 
-    ackType: string;
-    commandId: number;
-    contentVersion: number;
+    id: number;
+    failedType: string;
 
 }

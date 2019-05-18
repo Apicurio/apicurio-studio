@@ -26,8 +26,10 @@ import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.StorageError;
 import io.apicurio.hub.core.editing.ops.FullCommandOperation;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
 import io.apicurio.hub.core.editing.ops.VersionedAck;
 import io.apicurio.hub.core.editing.ops.VersionedCommandOperation;
 import io.apicurio.hub.core.storage.IStorage;
@@ -50,7 +52,7 @@ public class CommandProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) throws OperationProcessorException {
         VersionedCommandOperation vco = (VersionedCommandOperation) operation;
         String user = editingSession.getUser(context);
 
@@ -61,18 +63,20 @@ public class CommandProcessor implements IOperationProcessor {
 
         this.metrics.contentCommand(designId);
 
-        logger.debug("\tuser:" + user);
+        logger.debug("\tuser: {}", user);
 
         try {
             cmdContentVersion = storage.addContent(user, designId, ApiContentType.Command, vco.getCommandStr());
         } catch (StorageException e) {
-            logger.error("Error storing the command {}.", vco.getCommandId(), e);
-            // TODO do something sensible here - send a msg to the client?
-            return;
+            // Let the browser know that we failed to store the user's command - so the browser needs to let the
+            // user know and perhaps try again later...
+            StorageError error = OperationFactory.storageError(localCommandId, "command");
+            editingSession.sendTo(error, context);
+            throw new OperationProcessorException("Error storing command: " + vco.getCommandId(), e);
         }
 
         // Send an ack message back to the user
-        VersionedAck ack = OperationFactory.ack(cmdContentVersion, localCommandId);
+        VersionedAck ack = OperationFactory.ack(cmdContentVersion, localCommandId, "command");
         editingSession.sendTo(ack, context);
         logger.debug("ACK sent back to client.");
 

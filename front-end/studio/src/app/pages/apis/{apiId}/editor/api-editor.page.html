@@ -13,6 +13,42 @@
                   [style.background-color]="'#' + collaborator.attributes['color']"
                   title="{{ collaborator.userName }}">{{ collaboratorInitial(collaborator) }}</span>
         </div>
+        <div class="unsaved-changes" *ngIf="hasFailedActions">
+            <span class="fa fa-fw fa-warning pulse" (click)="showFailedActionMessage = !showFailedActionMessage"
+                  title="Offline/disconnected mode enabled - click for details."></span>
+            <div class="unsaved-message" *ngIf="showFailedActionMessage">
+                <button class="close" type="button" (click)="showFailedActionMessage = false"><span class="pficon pficon-close"></span></button>
+                <h2>
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-pencil fa-stack-1x"></i>
+                        <i class="fa fa-ban fa-stack-2x fa-flip-vertical text-danger"></i>
+                    </span>
+                    Disconnected/Offline Mode
+                </h2>
+                <p>
+                    You have changes that have not been saved (either because of a server error or disconnect).  You can
+                    continue to edit the document locally (offline mode).  Your changes will be sent to the server the
+                    next time it is available.  If you navigate away or close this browser tab, your changes will be lost!
+                </p>
+                <div class="reconnect-info">
+                    <hr />
+                    <div class="changes-count">
+                        You have <em>{{ pendingActions.size() }}</em> unsaved change(s).
+                    </div>
+                    <div class="reconnect-time">
+                        Will attempt to re-connect <em>{{ retryTimerOn() }}</em>.
+                    </div>
+                    <hr />
+                    <div class="reconnect-actions">
+                        <button type="button" class="btn btn-default" title="Try to reconnect to the server right now (no waiting)."
+                                (click)="reconnectNow()" [disabled]="reconnecting">
+                            <span class="fa fa-fw fa-plug"></span>
+                            <span>Reconnect Now</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="api-actions">
             <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>
         </div>

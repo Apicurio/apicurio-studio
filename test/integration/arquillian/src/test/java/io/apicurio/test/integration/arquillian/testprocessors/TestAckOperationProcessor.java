@@ -34,6 +34,7 @@ public class TestAckOperationProcessor implements ITestOperationProcessor {
 
         Assert.assertEquals(expected.getCommandId(), actual.getCommandId());
         Assert.assertEquals(expected.getType(), actual.getType());
+        Assert.assertEquals(expected.getAckType(), actual.getAckType());
     }
 
     @Override

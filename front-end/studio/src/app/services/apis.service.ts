@@ -20,7 +20,7 @@ import {ApiContributor, ApiContributors} from "../models/api-contributors.model"
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
 import {ICommand, MarshallUtils, OtCommand} from "oai-ts-commands";
-import {ApiDesignCommandAck} from "../models/ack.model";
+import {VersionedAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator.model";
 import {Invitation} from "../models/invitation.model";
 import {ApiEditorUser} from "../models/editor-user.model";
@@ -40,6 +40,8 @@ import {ApiPublication} from "../models/api-publication.model";
 import {UpdateCollaborator} from "../models/update-collaborator.model";
 import {ApiMock, MockReference} from "../models/mock-api.model";
 import {HttpUtils} from "../util/common";
+import {StorageError} from "../models/storageError.model";
+import {DeferredAction} from "../models/deferred.model";
 
 
 export interface IConnectionHandler {
@@ -53,7 +55,9 @@ export interface IConnectionHandler {
 
 export interface ICommandHandler {
     onCommand(command: OtCommand): void;
-    onAck(ack: ApiDesignCommandAck): void;
+    onAck(ack: VersionedAck): void;
+    onDeferredAction(deferred: DeferredAction): void;
+    onStorageError(storageError: StorageError): void;
     onUndo(contentVersion: number): void;
     onRedo(contentVersion: number): void;
 }
@@ -74,21 +78,17 @@ export interface IActivityHandler {
 export interface IApiEditingSession {
 
     connect(handler: IConnectionHandler): void;
-
     commandHandler(handler: ICommandHandler): void;
-
     activityHandler(handler: IActivityHandler): void;
-
     sendCommand(command: OtCommand): void;
-
+    sendBatch(items: any[]): void;
     sendSelection(selection: string): void;
-
     sendUndo(command: OtCommand): void;
-
     sendRedo(command: OtCommand): void;
-
     close(): void;
 
+    // Used to create an item that can be used when sending a batch of messages to the server.
+    createBatchItem(type: string, data: any): any;
 }
 
 
@@ -154,10 +154,31 @@ export class ApiEditingSession implements IApiEditingSession {
                 // Process an 'ack' style message
                 console.info("                    Command Id: %o", msg.commandId);
                 if (this._commandHandler) {
-                    let ack: ApiDesignCommandAck = new ApiDesignCommandAck();
+                    let ack: VersionedAck = new VersionedAck();
                     ack.commandId = msg.commandId;
                     ack.contentVersion = msg.contentVersion;
+                    ack.ackType = msg.ackType;
                     this._commandHandler.onAck(ack);
+                }
+            } else if (msg.type === "deferred") {
+                // Process an 'deferred' style message
+                console.info("                    Id: %o", msg.id);
+                console.info("                    Action Type: %s", msg.actionType);
+                if (this._commandHandler) {
+                    let da: DeferredAction = new DeferredAction();
+                    da.id = msg.id;
+                    da.actionType = msg.actionType;
+                    this._commandHandler.onDeferredAction(da);
+                }
+            } else if (msg.type === "storageError") {
+                // Process an 'storageError' style message
+                console.info("                    Id: %o", msg.id);
+                console.info("                    Error Type: %s", msg.failedType);
+                if (this._commandHandler) {
+                    let storageError: StorageError = new StorageError();
+                    storageError.id = msg.id;
+                    storageError.failedType = msg.failedType;
+                    this._commandHandler.onStorageError(storageError);
                 }
             } else if (msg.type === "join") {
                 // Process a 'join' style message (user joined the session)
@@ -240,11 +261,7 @@ export class ApiEditingSession implements IApiEditingSession {
      * @param command
      */
     sendCommand(command: OtCommand): void {
-        let data: any = {
-            type: "command",
-            commandId: command.contentVersion,
-            command: MarshallUtils.marshallCommand(command.command)
-        };
+        let data: any = this.createBatchItem("command", command);
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);
     }
@@ -255,10 +272,7 @@ export class ApiEditingSession implements IApiEditingSession {
      * @param selection
      */
     sendSelection(selection: string): void {
-        let data: any = {
-            type: "selection",
-            selection: selection
-        };
+        let data: any = this.createBatchItem("selection", selection);
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);
     }
@@ -268,10 +282,7 @@ export class ApiEditingSession implements IApiEditingSession {
      * @param command
      */
     sendUndo(command: OtCommand): void {
-        let data: any = {
-            type: "undo",
-            contentVersion: command.contentVersion
-        };
+        let data: any = this.createBatchItem("undo", command);
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);
     }
@@ -281,10 +292,7 @@ export class ApiEditingSession implements IApiEditingSession {
      * @param command
      */
     sendRedo(command: OtCommand): void {
-        let data: any = {
-            type: "redo",
-            contentVersion: command.contentVersion
-        };
+        let data: any = this.createBatchItem("redo", command);
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);
     }
@@ -299,6 +307,48 @@ export class ApiEditingSession implements IApiEditingSession {
         };
         let dataStr: string = JSON.stringify(data);
         this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to send a batch of commands to the server.
+     * @param items
+     */
+    sendBatch(items: any[]): void {
+        let data: any = {
+            type: "batch",
+            operations: items
+        };
+        let dataStr: string = JSON.stringify(data);
+        this.socket.send(dataStr);
+    }
+
+    /**
+     * Called to create a single item in a batch of messages.
+     * @param type
+     * @param data
+     */
+    createBatchItem(type: string, data: any): any {
+        let rval: any;
+        if (type === "command") {
+            let command: OtCommand = <OtCommand>data;
+            rval = {
+                type: type,
+                commandId: command.contentVersion,
+                command: MarshallUtils.marshallCommand(command.command)
+            }
+        } else if (type === "undo" || type === "redo") {
+            let command: OtCommand = <OtCommand>data;
+            rval = {
+                type: type,
+                contentVersion: command.contentVersion
+            }
+        } else if (type === "selection") {
+            rval = {
+                type: "selection",
+                selection: <string>data
+            }
+        }
+        return rval;
     }
 
     /**

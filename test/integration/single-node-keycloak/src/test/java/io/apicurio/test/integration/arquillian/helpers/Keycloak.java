@@ -87,7 +87,7 @@ public class Keycloak implements AutoCloseable {
     }
 
     public void importRealm(JsonObject realm) {
-        int res = rest("realms").post(Entity.json(realm.toString())).getStatus(); // TODO check
+        /*int res = */rest("realms").post(Entity.json(realm.toString())).getStatus(); // TODO check
     }
 
     public JsonArray getUsers() {

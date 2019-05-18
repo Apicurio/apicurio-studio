@@ -25,7 +25,9 @@ import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+import io.apicurio.hub.core.editing.ops.StorageError;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
 import io.apicurio.hub.core.editing.ops.VersionedOperation;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
@@ -47,7 +49,7 @@ public class UndoProcessor implements IOperationProcessor {
      * @see io.apicurio.hub.core.editing.ops.processors.IOperationProcessor#process(io.apicurio.hub.core.editing.IEditingSession, io.apicurio.hub.core.editing.ISessionContext, io.apicurio.hub.core.editing.ops.BaseOperation)
      */
     @Override
-    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) {
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) throws OperationProcessorException {
         VersionedOperation vo = (VersionedOperation) operation;
         String user = editingSession.getUser(context);
         String designId = editingSession.getDesignId();
@@ -61,19 +63,24 @@ public class UndoProcessor implements IOperationProcessor {
         try {
             reverted = storage.undoContent(user, designId, contentVersion);
         } catch (StorageException e) {
-            logger.error("Error undoing a command.", e);
-            // TODO do something sensible here - send a msg to the client?
-            return;
+            // Let the browser know that we failed to store the user's undo - so the browser needs to let the
+            // user know and perhaps try again later...
+            StorageError error = OperationFactory.storageError(contentVersion, "undo");
+            editingSession.sendTo(error, context);
+            throw new OperationProcessorException("Error undoing a command: " + vo.getContentVersion(), e);
         }
 
         // If the command wasn't successfully reverted (it was already reverted or didn't exist)
         // then return without doing anything else.
         if (!reverted) {
+            // Send a "action deferred" message back to the user
+            editingSession.sendTo(OperationFactory.deferred(contentVersion, "undo"), context);
+            logger.debug("DEFER sent back to client.");
             return;
         }
 
         // Send an ack message back to the user
-        editingSession.sendTo(OperationFactory.ack(contentVersion), context);
+        editingSession.sendTo(OperationFactory.ack(contentVersion, "undo"), context);
         logger.debug("ACK sent back to client.");
 
         // Now propagate the undo to all other clients

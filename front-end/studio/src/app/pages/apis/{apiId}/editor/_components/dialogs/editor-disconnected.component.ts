@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ViewChildren, QueryList} from "@angular/core";
+import {Component, ViewChildren, QueryList, Output, EventEmitter} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 
 
@@ -28,6 +28,8 @@ import {ModalDirective} from "ngx-bootstrap";
 export class EditorDisconnectedDialogComponent {
 
     @ViewChildren("editorDisconnectedModal") editorDisconnectedModal: QueryList<ModalDirective>;
+
+    @Output() onWorkOffline: EventEmitter<void> = new EventEmitter<void>();
 
     private _isOpen: boolean = false;
 
@@ -53,8 +55,8 @@ export class EditorDisconnectedDialogComponent {
     /**
      * Called when the user clicks "Reload Page".
      */
-    reload(): void {
-        window.location.reload();
+    workOffline(): void {
+        this.onWorkOffline.emit();
     }
 
     /**

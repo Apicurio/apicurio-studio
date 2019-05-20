@@ -13,11 +13,11 @@
                   [style.background-color]="'#' + collaborator.attributes['color']"
                   title="{{ collaborator.userName }}">{{ collaboratorInitial(collaborator) }}</span>
         </div>
-        <div class="unsaved-changes" *ngIf="hasFailedActions">
-            <span class="fa fa-fw fa-warning pulse" (click)="showFailedActionMessage = !showFailedActionMessage"
+        <div class="unsaved-changes" *ngIf="hasFailedActions || isOffline">
+            <span class="fa fa-fw fa-warning pulse" (click)="showOfflineModeMessage = !showOfflineModeMessage"
                   title="Offline/disconnected mode enabled - click for details."></span>
-            <div class="unsaved-message" *ngIf="showFailedActionMessage">
-                <button class="close" type="button" (click)="showFailedActionMessage = false"><span class="pficon pficon-close"></span></button>
+            <div class="unsaved-message" *ngIf="showOfflineModeMessage">
+                <button class="close" type="button" (click)="showOfflineModeMessage = false"><span class="pficon pficon-close"></span></button>
                 <h2>
                     <span class="fa-stack fa-lg">
                         <i class="fa fa-pencil fa-stack-1x"></i>
@@ -98,6 +98,6 @@
                 (onUndo)="onEditorUndo($event)"
                 (onRedo)="onEditorRedo($event)"></api-editor>
 </div>
-<editor-disconnected-dialog #editorDisconnectedModal></editor-disconnected-dialog>
+<editor-disconnected-dialog #editorDisconnectedModal (onWorkOffline)="goOffline()"></editor-disconnected-dialog>
 <configure-validation-dialog #configureValidationDialog [apiId]="apiDefinition.id"
                              (onChange)="changeValidationProfile($event)"></configure-validation-dialog>

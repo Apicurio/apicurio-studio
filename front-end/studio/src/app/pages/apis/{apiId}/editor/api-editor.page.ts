@@ -27,11 +27,8 @@ import {
 } from "@angular/core";
 import {
     ActivatedRoute,
-    ActivatedRouteSnapshot,
     CanDeactivate,
-    Router,
-    RouterStateSnapshot,
-    UrlTree
+    Router
 } from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
@@ -50,7 +47,6 @@ import {DispatchQueue} from "apicurio-ts-core";
 import {StorageError} from "../../../../models/storageError.model";
 import * as moment from "moment";
 import {DeferredAction} from "../../../../models/deferred.model";
-import {Observable} from "rxjs";
 
 
 enum PendingActionType {
@@ -200,10 +196,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     pendingActions: PendingActions = new PendingActions();
     hasFailedActions: boolean = false;
-    showFailedActionMessage: boolean = false;
+    showOfflineModeMessage: boolean = false;
     retryTimerId: number;
     retryTimerDate: Date;
     reconnecting: boolean = false;
+    isOffline: boolean;
 
     private currentEditorSelection: string;
 
@@ -247,7 +244,6 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param params
      */
     public loadAsyncPageData(params: any): void {
-        let __component: ApiEditorPageComponent = this;
         this.editorAvailable = false;
 
         console.info("[ApiEditorPageComponent] Loading async page data");
@@ -255,12 +251,26 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.apiDefinition.name = apiId;
         this.apiDefinition.id = apiId;
 
+        this.openEditingSession(apiId, false);
+    }
+
+    /**
+     * Called to open an editing session by creating a web socket connection to the server.  First,
+     * a REST call is made (for auth purposes) and then the
+     * @param apiId
+     * @param isReconnect
+     */
+    protected openEditingSession(apiId: string, isReconnect: boolean): void {
+        let __component: ApiEditorPageComponent = this;
+
         this.apis.editApi(apiId).then( def => {
             console.info("[ApiEditorPageComponent] Definition loaded.  Opening editing session.");
-            this.apiDefinition = def;
-            this.loaded("def");
-            this.updatePageTitle();
-            this.updateValidationProfile();
+            if (!isReconnect) {
+                this.apiDefinition = def;
+                this.loaded("def");
+                this.updatePageTitle();
+                this.updateValidationProfile();
+            }
             this.editingSession = this.apis.openEditingSession(def);
             this.editingSession.commandHandler({
                 onCommand: (command) => {
@@ -335,28 +345,37 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                     console.info("[ApiEditorPageComponent] Editing session connected.  Marking 'session' as loaded.");
                     this.zone.run(() => {
                         this.loaded("session");
+                        this.isOffline = false;
+                        if (isReconnect) {
+                            this.reconnecting = false;
+                            this.reconnect();
+                        }
                     });
                 },
                 onClosed: () => {
                     console.info("[ApiEditorPageComponent] **Notice** editing session disconnected normally.");
                 },
                 onDisconnected: (code) => {
-                    // TODO put the editor into "offline" mode - and show the user a dialog letting them know
                     console.info("[ApiEditorPageComponent] **Notice** editing session DROPPED!  Reason code: %o", code);
                     this.zone.run(() => {
+                        this.isOffline = true;
+                        this.reconnecting = false;
                         this.editorDisconnectedModal.open();
                     });
                 }
             });
         }).catch(error => {
             console.error("[ApiEditorPageComponent] Error editing API design.");
-            this.error(error);
+            if (!isReconnect) {
+                this.error(error);
+            } else {
+                this.reconnecting = false;
+            }
         });
     }
 
     @HostListener('window:beforeunload', ['$event'])
     public handleBeforeUnload(event: any){
-        console.info("+++++++++++ handleBeforeUnload??")
         if (!this.pendingActions.isEmpty()) {
             let msg: string = `You have ${ this.pendingActions.size() } unsaved changes.  Are you sure to close the page?`;
             event.returnValue = msg;
@@ -411,7 +430,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     /**
-     * Called when the editor fires this event.
+     * Called when the editor fires this event (the local user changed the document).
      * @param command
      */
     public onCommandExecuted(command: OtCommand): void {
@@ -422,8 +441,13 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         pendingAction.action = command;
         this.pendingActions.add(pendingAction);
 
-        this.editingSession.sendCommand(command);
-        this.reloadLivePreview();
+        // If we're in offline mode, immediately set the action status to deferred (and don't submit to the server).
+        if (this.isOffline) {
+            pendingAction.status = PendingActionStatus.deferred;
+        } else {
+            this.editingSession.sendCommand(command);
+            this.reloadLivePreview();
+        }
     }
 
     /**
@@ -448,8 +472,13 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
         console.info("[ApiEditorPageComponent] Added undo pending action with id: %o", pendingAction.id);
 
-        this.editingSession.sendUndo(event);
-        this.reloadLivePreview();
+        // If we're in offline mode, immediately set the action status to deferred (and don't submit to the server).
+        if (this.isOffline) {
+            pendingAction.status = PendingActionStatus.deferred;
+        } else {
+            this.editingSession.sendUndo(event);
+            this.reloadLivePreview();
+        }
     }
 
     /**
@@ -463,8 +492,13 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         pendingAction.action = event;
         this.pendingActions.add(pendingAction);
 
-        this.editingSession.sendRedo(event);
-        this.reloadLivePreview();
+        // If we're in offline mode, immediately set the action status to deferred (and don't submit to the server).
+        if (this.isOffline) {
+            pendingAction.status = PendingActionStatus.deferred;
+        } else {
+            this.editingSession.sendRedo(event);
+            this.reloadLivePreview();
+        }
     }
 
     /**
@@ -561,7 +595,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      */
     protected handleStorageError(error: StorageError) {
         if (!this.hasFailedActions) {
-            this.showFailedActionMessage = true;
+            this.showOfflineModeMessage = true;
             this.hasFailedActions = true;
             this.startRetryTimer();
         }
@@ -643,9 +677,14 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     public reconnectNow(): void {
         this.reconnecting = true;
         this.reconnect();
-        setTimeout(() => {
-            this.reconnecting = false;
-        }, 3000);
+        // If we're reconnecting due to failure, then we aren't really going to make a new socket
+        // connection.  So instead we need to set "reconnecting" to false after some amount of time.
+        // Because in this we're really just re-trying the commands, not actually re-connecting.
+        if (!this.isOffline) {
+            setTimeout(() => {
+                this.reconnecting = false;
+            }, 3000);
+        }
     }
 
     /**
@@ -653,6 +692,12 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      */
     public reconnect(): void {
         console.info("[ApiEditorPageComponent] Attempting to reconnect to the server.");
+
+        // Try to reconnect if we're currently offline.
+        if (this.isOffline) {
+            this.openEditingSession(this.apiDefinition.id, true);
+            return;
+        }
 
         // Retry failed actions (if we have any)
         if (this.pendingActions.hasFailedActions()) {
@@ -696,7 +741,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected checkPendingActions(): void {
         if (this.hasFailedActions && this.pendingActions.getFailedActions().length === 0) {
             this.hasFailedActions = false;
-            this.showFailedActionMessage = false;
+            this.showOfflineModeMessage = false;
         }
         console.debug("[ApiEditorPageComponent] Pending Action count: " + this.pendingActions.size());
         if (!this.pendingActions.hasFailedActions() && !this.pendingActions.hasDeferredActions()) {
@@ -746,6 +791,12 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             return moment(this.retryTimerDate).fromNow();
         }
         return "N/A";
+    }
+
+    public goOffline(): void {
+        this.isOffline = true;
+        this.editorDisconnectedModal.close();
+        this.startRetryTimer();
     }
 
 }

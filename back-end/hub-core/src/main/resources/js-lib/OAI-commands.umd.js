@@ -10248,6 +10248,13 @@
             return this.pendingCommands.length > 0;
         };
         /**
+         * Returns true if the OT engine has already seen the given command.
+         * @param command
+         */
+        OtEngine.prototype.hasCommand = function (command) {
+            return this.commands.filter(function (cmd) { return cmd.contentVersion === command.contentVersion; }).length > 0;
+        };
+        /**
          * Executes the given command in the correct sequence.  This command must have a valid
          * finalized contentVersion property.  This property will determine where in the sequence
          * of commands this one falls.  The engine will revert the document to an appropriate state
@@ -10277,12 +10284,17 @@
         OtEngine.prototype.executeCommand = function (command, pending) {
             if (pending) {
                 command.local = true;
-                console.info("[OtEngine] Executing PENDING command with contentId: %s", command.contentVersion);
+                console.info("[OtEngine] Executing PENDING command with contentId: %o", command.contentVersion);
                 command.execute(this.document);
                 this.pendingCommands.push(command);
                 return;
             }
-            console.info("[OtEngine] Executing command with content version: %s", command.contentVersion);
+            // If the OT engine has already seen this command, then this is a duplicate and we can skip it
+            if (this.hasCommand(command)) {
+                console.info("[OtEngine] Detected duplicate OtCommand with content version: %o", command.contentVersion);
+                return;
+            }
+            console.info("[OtEngine] Executing command with content version: %o", command.contentVersion);
             var pidx;
             // Check to see if this command was already "undone" - if so then there's much less
             // work to do - just insert it into the command list at the right place.
@@ -10339,7 +10351,7 @@
          * @param {number} finalizedContentVersion
          */
         OtEngine.prototype.finalizeCommand = function (pendingCommandId, finalizedContentVersion) {
-            console.info("[OtEngine] Finalizing command with contentId: %d  and new contentVersion: %d", pendingCommandId, finalizedContentVersion);
+            console.info("[OtEngine] Finalizing command with contentId: %o  and new contentVersion: %o", pendingCommandId, finalizedContentVersion);
             // Note: special case where the command being finalized is the first (or only) pending command in the list *AND* its
             // finalizedContentVersion > than the most recent finalized command.  This represents the case where a single user
             // is editing a document and results in a simple shifting of the pending command from one queue to another without

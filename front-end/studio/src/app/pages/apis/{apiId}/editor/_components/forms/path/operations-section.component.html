@@ -55,7 +55,7 @@
                     </div>
                     <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
                 </div>
-                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
+                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')" *ngIf="!is20Document()">
                     <div class="tab-label">
                         <collaborator-overlay [nodePath]="operationPath('trace')"></collaborator-overlay>
                         <span>Trace</span>

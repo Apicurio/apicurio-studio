@@ -23,7 +23,7 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas30PathItem, OasOperation, OasPathItem} from "oai-ts-core";
+import {Oas20PathItem, Oas30PathItem, OasOperation, OasPathItem} from "oai-ts-core";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {ModelUtils} from "../../../_util/model.util";
@@ -48,7 +48,7 @@ import {TopicSubscription} from "apicurio-ts-core";
 })
 export class OperationsSectionComponent extends AbstractBaseComponent {
 
-    @Input() path: Oas30PathItem;
+    @Input() path: Oas30PathItem | Oas20PathItem;
     protected _nodePath: string;
 
     public tab: string;
@@ -92,6 +92,10 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this._selectionSubscription.unsubscribe();
+    }
+
+    public is20Document(): boolean {
+        return this.path.ownerDocument().is2xDocument();
     }
 
     public operations(): OasOperation[] {

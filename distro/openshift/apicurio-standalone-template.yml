@@ -30,10 +30,10 @@ objects:
     name: auth
   spec:
     tags:
-      - name: 0.2.27.Final
+      - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-auth:0.2.27.Final
+          name: apicurio/apicurio-studio-auth:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -42,10 +42,10 @@ objects:
     name: api
   spec:
     tags:
-      - name: 0.2.27.Final
+      - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-api:0.2.27.Final
+          name: apicurio/apicurio-studio-api:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -54,10 +54,10 @@ objects:
     name: ws
   spec:
     tags:
-      - name: 0.2.27.Final
+      - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ws:0.2.27.Final
+          name: apicurio/apicurio-studio-ws:latest-release
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -66,10 +66,10 @@ objects:
     name: ui
   spec:
     tags:
-      - name: 0.2.27.Final
+      - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ui:0.2.27.Final
+          name: apicurio/apicurio-studio-ui:latest-release
         importPolicy:
           scheduled: true
 # Persistent volumes: Keycloak and Postgresql
@@ -349,7 +349,7 @@ objects:
             persistentVolumeClaim:
               claimName: keycloak-data
         containers:
-        - image: auth:0.2.27.Final
+        - image: auth:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-auth
           volumeMounts:
@@ -412,7 +412,7 @@ objects:
           - apicurio-studio-auth
         from:
           kind: ImageStreamTag
-          name: 'auth:0.2.27.Final'
+          name: 'auth:latest-release'
   status: {}
 # Apicurio API Deployment Configuration
 # #####################################
@@ -445,7 +445,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: api:0.2.27.Final
+        - image: api:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-api
           ports:
@@ -515,7 +515,7 @@ objects:
           - apicurio-studio-api
         from:
           kind: ImageStreamTag
-          name: 'api:0.2.27.Final'
+          name: 'api:latest-release'
     - type: ConfigChange
   status: {}
 # Apicurio WS Deployment Configuration
@@ -549,7 +549,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: ws:0.2.27.Final
+        - image: ws:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-ws
           ports:
@@ -615,7 +615,7 @@ objects:
           - apicurio-studio-ws
         from:
           kind: ImageStreamTag
-          name: 'ws:0.2.27.Final'
+          name: 'ws:latest-release'
     - type: ConfigChange
   status: {}
 # Apicurio UI Deployment Configuration
@@ -649,7 +649,7 @@ objects:
       spec:
         replicas: 1
         containers:
-        - image: ui:0.2.27.Final
+        - image: ui:latest-release
           imagePullPolicy: Always
           name: apicurio-studio-ui
           ports:
@@ -709,7 +709,7 @@ objects:
           - apicurio-studio-ui
         from:
           kind: ImageStreamTag
-          name: 'ui:0.2.27.Final'
+          name: 'ui:latest-release'
     - type: ConfigChange
   status: {}
 # The Routes: auth, api, ws, ui (no route needed for postgresql)

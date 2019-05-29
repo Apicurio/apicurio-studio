@@ -610,7 +610,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             body.getActions().add(action);
             
             // Set the POST body
-            post.setEntity(new StringEntity(mapper.writeValueAsString(body)));
+            post.setEntity(new StringEntity(mapper.writeValueAsString(body),StandardCharsets.UTF_8));
             
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 if (response.getStatusLine().getStatusCode() != 201) {

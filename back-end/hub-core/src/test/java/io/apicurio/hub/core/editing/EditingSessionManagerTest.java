@@ -28,9 +28,9 @@ import org.junit.Test;
 
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignType;
+import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.RollupExecutor;
 import io.apicurio.hub.core.storage.jdbc.H2SqlStatements;
 import io.apicurio.hub.core.storage.jdbc.JdbcStorage;

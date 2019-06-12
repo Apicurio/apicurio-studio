@@ -57,12 +57,17 @@ import com.squareup.javapoet.TypeSpec.Builder;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.Document;
+import io.apicurio.datamodels.core.util.VisitorUtil;
+import io.apicurio.datamodels.core.visitors.TraverserDirection;
 import io.apicurio.hub.api.codegen.beans.CodegenInfo;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaArgument;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
-import io.apicurio.hub.api.codegen.js.CodegenExecutor;
+import io.apicurio.hub.api.codegen.jaxrs.InterfacesVisitor;
+import io.apicurio.hub.api.codegen.jaxrs.OpenApi2CodegenVisitor;
 import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 
 
@@ -230,20 +235,17 @@ public class OpenApi2JaxRs {
      * needed to generate appropriate Java class(es).
      */
     protected CodegenInfo getInfoFromApiDoc() throws IOException {
-        String codegenJson = processApiDoc();
-        return mapper.readerFor(CodegenInfo.class).readValue(codegenJson);
-    }
+        Document document = Library.readDocumentFromJSONString(openApiDoc);
+        
+        // First, figure out the breakdown of the interfaces.
+        InterfacesVisitor iVisitor = new InterfacesVisitor();
+        VisitorUtil.visitTree(document, iVisitor, TraverserDirection.down);
+        
+        // Then generate the CodegenInfo object.
+        OpenApi2CodegenVisitor cgVisitor = new OpenApi2CodegenVisitor(this.settings.javaPackage, iVisitor.getInterfaces());
+        VisitorUtil.visitTree(document, cgVisitor, TraverserDirection.down);
 
-    /**
-     * Processes the OAI document and produces a -codegen.json file that can be
-     * deserialized into a {@link CodegenInfo} object.
-     */
-    protected String processApiDoc() throws IOException {
-        try {
-            return CodegenExecutor.executeCodegen(openApiDoc, this.settings.javaPackage);
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        return cgVisitor.getCodegenInfo();
     }
 
     /**

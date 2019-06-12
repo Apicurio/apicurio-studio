@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.js;
+package io.apicurio.hub.core.cmd;
 
 import java.nio.charset.Charset;
 import java.util.LinkedList;
@@ -24,7 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.apicurio.hub.core.js.OaiCommandExecutor;
+import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -37,7 +37,6 @@ public class OaiCommandExecutorTest {
 
     @Test
     public void testExecuteCommands() throws Exception {
-        OaiScriptEngineFactory.debug("::testExecuteCommands::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
         String document = OAI_DOC;
@@ -63,7 +62,6 @@ public class OaiCommandExecutorTest {
 
     @Test
     public void testExecuteCommands2() throws Exception {
-        OaiScriptEngineFactory.debug("::testExecuteCommands2::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
         String document = IOUtils.toString(getClass().getResource("testExecuteCommands2/__begin.json"), Charset.forName("UTF-8"));
@@ -90,7 +88,6 @@ public class OaiCommandExecutorTest {
 
     @Test
     public void testExecuteCommands_Rename() throws Exception {
-        OaiScriptEngineFactory.debug("::testExecuteCommands2::");
         OaiCommandExecutor executor = new OaiCommandExecutor();
         
         String document = IOUtils.toString(getClass().getResource("testExecuteCommands_Rename/__begin.json"), Charset.forName("UTF-8"));

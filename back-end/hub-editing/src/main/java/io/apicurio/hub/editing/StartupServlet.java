@@ -16,16 +16,15 @@
 
 package io.apicurio.hub.editing;
 
-import io.apicurio.hub.core.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServlet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.apicurio.hub.core.Version;
 
 /**
  * A simple startup servlet used to report the server version.
@@ -49,16 +48,6 @@ public class StartupServlet extends HttpServlet {
         builder.append("\n\tVersion:  " + version.getVersionString());
         builder.append("\n\tBuilt On: " + version.getVersionDate().toString());
         builder.append("\n\tBuild:    " + version.getVersionInfo());
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        builder.append("\n\tNashorn:  " + (engine != null));
-        boolean hasClass = false;
-        try {
-            Class<?> c = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
-            hasClass = c != null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        builder.append("\n\tNashorn Class:  " + hasClass);
         builder.append("\n------------------------------------------------");
         logger.info(builder.toString());
     }

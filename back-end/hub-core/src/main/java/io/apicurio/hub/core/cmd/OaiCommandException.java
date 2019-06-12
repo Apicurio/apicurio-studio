@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.js;
+package io.apicurio.hub.core.cmd;
 
 /**
  * @author eric.wittmann@gmail.com

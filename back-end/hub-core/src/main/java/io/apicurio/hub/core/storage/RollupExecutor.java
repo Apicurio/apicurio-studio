@@ -20,9 +20,10 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
+import io.apicurio.hub.core.cmd.OaiCommandException;
+import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.exceptions.NotFoundException;
-import io.apicurio.hub.core.js.OaiCommandException;
-import io.apicurio.hub.core.js.OaiCommandExecutor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

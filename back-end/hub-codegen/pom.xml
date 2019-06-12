@@ -12,6 +12,12 @@
     <name>apicurio-studio-be-hub-codegen</name>
 
     <dependencies>
+        <!-- Apicurio Data Model -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-data-models</artifactId>
+        </dependency>
+    
         <!-- Project Dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>

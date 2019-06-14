@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Oas20Operation, Oas30Operation} from "oai-ts-core";
+import {Oas20Operation, Oas30Operation} from "apicurio-data-models";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
 import {HttpCodeService} from "../../_services/httpcode.service";
 
@@ -71,7 +71,7 @@ export class CloneResponseDialogComponent {
         this.codes = [];
         this.codeExists = false;
         if (parent.responses) {
-            this.codes = parent.responses.responseStatusCodes();
+            this.codes = parent.responses.getResponseStatusCodes();
         }
     }
 

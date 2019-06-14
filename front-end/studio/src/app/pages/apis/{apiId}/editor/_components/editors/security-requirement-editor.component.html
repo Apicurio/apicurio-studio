@@ -35,7 +35,7 @@
                             <span class="fa fa-angle-right"></span>
                         </div>
                         <div class="list-view-pf-checkbox">
-                            <input type="checkbox" [checked]="anonEnabled" (change)="setAnon($event.target.checked)">
+                            <input type="checkbox" [checked]="anonEnabled" (change)="setAnon($event.target['checked'])">
                         </div>
                         <div class="list-view-pf-main-info" (click)="setAnon(!anonEnabled)">
                             <div class="list-view-pf-body">
@@ -60,13 +60,13 @@
                                   (click)="toggleExpansion(scheme)"></span>
                         </div>
                         <div class="list-view-pf-checkbox">
-                            <input type="checkbox" [checked]="isChecked(scheme)" (change)="toggleSecurityScheme(scheme, $event.target.checked)">
+                            <input type="checkbox" [checked]="isChecked(scheme)" (change)="toggleSecurityScheme(scheme, $event.target['checked'])">
                         </div>
                         <div class="list-view-pf-main-info" (click)="toggleSecurityScheme(scheme)">
                             <div class="list-view-pf-body">
                                 <div class="list-view-pf-description">
                                     <div class="list-group-item-heading">
-                                        <span class="name">{{ scheme.schemeName() }}</span>
+                                        <span class="name">{{ scheme.getSchemeName() }}</span>
                                         <span class="type">{{ scheme.type }}</span>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@
                                     <div class="scope" *ngFor="let scope of scopes(scheme)">
                                         <div class="scope-check">
                                             <input type="checkbox" [checked]="isScopeChecked(scheme, scope.name)" [disabled]="!isChecked(scheme)"
-                                                   (change)="toggleScope(scheme, scope.name, $event.target.checked)">
+                                                   (change)="toggleScope(scheme, scope.name, $event.target['checked'])">
                                         </div>
                                         <div class="scope-name">
                                             <a [class.disabled]="!isChecked(scheme)" title="{{ scope.description }}"

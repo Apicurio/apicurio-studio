@@ -18,7 +18,7 @@
 import {AfterViewInit, Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {TextAreaEditorComponent} from "./inline-editor.base";
 import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/common/code-editor.component";
-import {Oas20Schema, Oas30Schema} from "oai-ts-core";
+import {OasSchema} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {SelectionService} from "../../_services/selection.service";
 import {StringUtils} from "apicurio-ts-core";
@@ -32,7 +32,7 @@ import {StringUtils} from "apicurio-ts-core";
 })
 export class InlineExampleEditorComponent extends TextAreaEditorComponent implements AfterViewInit {
 
-    @Input() schema: Oas20Schema | Oas30Schema;
+    @Input() schema: OasSchema;
 
     @ViewChildren("codeEditor") codeEditor: QueryList<CodeEditorComponent>;
 
@@ -49,6 +49,14 @@ export class InlineExampleEditorComponent extends TextAreaEditorComponent implem
             }
         });
     }
+
+    displayValue(): string {
+        if (this.isEmpty()) {
+            return this.noValueMessage;
+        }
+        return this.formatValue(this.value);
+    }
+
 
     public codeEditorMode(): CodeEditorMode {
         return this._mode;

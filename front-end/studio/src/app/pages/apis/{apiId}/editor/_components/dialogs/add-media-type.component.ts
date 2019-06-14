@@ -18,7 +18,7 @@
 import {Component, EventEmitter, Output, QueryList, ViewChildren, Input} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
-import {Oas20Operation, Oas30Operation, Oas30RequestBody} from "oai-ts-core";
+import {Oas20Operation, Oas30Operation, Oas30RequestBody} from "apicurio-data-models";
 
 
 const STANDARD_TYPES = [ "application/json", "text/xml", "multipart/form-data" ];

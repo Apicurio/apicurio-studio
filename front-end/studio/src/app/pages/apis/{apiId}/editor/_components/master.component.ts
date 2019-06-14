@@ -25,6 +25,14 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
+    CombinedAllNodeVisitor,
+    CombinedVisitorAdapter,
+    CommandFactory,
+    DocumentType,
+    ICommand,
+    Library,
+    Node,
+    NodePath,
     Oas20Document,
     Oas20PathItem,
     Oas20ResponseDefinition,
@@ -33,36 +41,21 @@ import {
     Oas30PathItem,
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
-    OasAllNodeVisitor, OasCombinedVisitorAdapter,
     OasDocument,
-    OasLibraryUtils,
-    OasNode,
-    OasNodePath,
     OasPathItem,
-    OasVisitorUtil
-} from "oai-ts-core";
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {AddPathDialogComponent} from "./dialogs/add-path.component";
 import {ClonePathDialogComponent} from "./dialogs/clone-path.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindPathItemsVisitor} from "../_visitors/path-items.visitor";
 import {FindSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
-import {
-    createAddPathItemCommand,
-    createAddSchemaDefinitionCommand,
-    createDeletePathCommand,
-    createDeleteSchemaDefinitionCommand,
-    createNewPathCommand,
-    createNewSchemaDefinitionCommand,
-    createRenamePathItemCommand,
-    createRenameSchemaDefinitionCommand,
-    ICommand
-} from "oai-ts-commands";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
 import {EditorsService} from "../_services/editors.service";
 import {DataTypeData, DataTypeEditorComponent, IDataTypeEditorHandler} from "./editors/data-type-editor.component";
-import {AggregateCommand, createAggregateCommand} from "oai-ts-commands/src/commands/aggregate.command";
 import {RestResourceService} from "../_services/rest-resource.service";
 import {RenamePathDialogComponent} from "./dialogs/rename-path.component";
 import {AbstractBaseComponent} from "./common/base-component";
@@ -90,9 +83,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    private _library: OasLibraryUtils = new OasLibraryUtils();
-
-    contextMenuSelection: OasNodePath = null;
+    contextMenuSelection: NodePath = null;
     contextMenuType: string = null;
     contextMenuPos: any = {
         left: "0px",
@@ -147,7 +138,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         }
     }
 
-    protected handleArrowKeypress(event: KeyboardEvent, items: OasNode[]): void {
+    protected handleArrowKeypress(event: KeyboardEvent, items: Node[]): void {
         console.info("[EditorMasterComponent] Up/Down arrow detected.");
         let selectedIdx: number = -1;
         items.forEach( (item, idx) => {
@@ -177,7 +168,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
         console.info("[EditorMasterComponent] New Selection Index: ", selectedIdx);
 
-        let newSelection: OasNode = items[selectedIdx];
+        let newSelection: Node = items[selectedIdx];
         this.__selectionService.selectNode(newSelection);
     }
 
@@ -188,8 +179,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (!this._paths) {
             let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
             if (this.document && this.document.paths) {
-                this.document.paths.pathItems().forEach(pathItem => {
-                    OasVisitorUtil.visitNode(pathItem, viz);
+                this.document.paths.getPathItems().forEach(pathItem => {
+                    VisitorUtil.visitNode(pathItem, viz);
                 });
             }
             this._paths = viz.getSortedPathItems();
@@ -204,12 +195,12 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
         if (this.document) {
             if (this.document.is2xDocument() && (this.document as Oas20Document).definitions) {
-                (this.document as Oas20Document).definitions.definitions().forEach( definition => {
-                    OasVisitorUtil.visitNode(definition, viz);
+                (this.document as Oas20Document).definitions.getDefinitions().forEach( definition => {
+                    VisitorUtil.visitNode(definition, viz);
                 })
             } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
                 (this.document as Oas30Document).components.getSchemaDefinitions().forEach( definition => {
-                    OasVisitorUtil.visitNode(definition, viz);
+                    VisitorUtil.visitNode(definition, viz);
                 })
             }
         }
@@ -255,7 +246,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (ObjectUtils.isNullOrUndefined(this.document.paths)) {
             return false;
         }
-        let pi: any = this.document.paths.pathItem(pathItem.path());
+        let pi: any = this.document.paths.getPathItem(pathItem.getPath());
         return pi === pathItem;
     }
 
@@ -352,8 +343,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public getCurrentPathSelection(): string {
         let currentSelection: string = this.__selectionService.currentSelection();
-        let npath: OasNodePath = new OasNodePath(currentSelection);
-        let node: OasNode = npath.resolve(this.document);
+        let npath: NodePath = new NodePath(currentSelection);
+        let node: Node = npath.resolve(this.document);
         let rval: string = "/";
         if (node && node["_path"]) {
             rval = node["_path"] + "/";
@@ -371,9 +362,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param path
      */
     public addPath(path: string): void {
-        let command: ICommand = createNewPathCommand(this.document, path);
+        let command: ICommand = CommandFactory.createNewPathCommand(path);
         this.commandService.emit(command);
-        this.selectPath(this.document.paths.pathItem(path) as OasPathItem);
+        this.selectPath(this.document.paths.getPathItem(path) as OasPathItem);
     }
 
     /**
@@ -382,7 +373,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param node
      * @return
      */
-    public isSelected(node: OasNode): boolean {
+    public isSelected(node: Node): boolean {
         return ModelUtils.isSelected(node);
     }
 
@@ -399,7 +390,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param node
      * @return
      */
-    public isContexted(node: OasNode): boolean {
+    public isContexted(node: Node): boolean {
         if (this.contextMenuSelection === null) {
             return false;
         }
@@ -415,7 +406,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let commands: ICommand[] = [];
             // First, create the "new schema def" command
             let example: string = (data.example === "") ? null : data.example;
-            let newSchemaCmd: ICommand = createNewSchemaDefinitionCommand(this.document, data.name, example, data.description);
+            let newSchemaCmd: ICommand = CommandFactory.createNewSchemaDefinitionCommand(this.document.getDocumentType(),
+                data.name, example, data.description);
             commands.push(newSchemaCmd);
             // Next, add the "REST Resource" commands to the list
             this.restResourceService.generateRESTResourceCommands(data.name, this.document).forEach( cmd => commands.push(cmd));
@@ -423,11 +415,12 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let info: any = {
                 dataType: data.name
             };
-            let command: AggregateCommand = createAggregateCommand("CreateRESTResource", info, commands);
+            let command: ICommand = CommandFactory.createAggregateCommand("CreateRESTResource", info, commands);
             this.commandService.emit(command);
         } else {
             let example: string = (data.example === "") ? null : data.example;
-            let command: ICommand = createNewSchemaDefinitionCommand(this.document, data.name, example, data.description);
+            let command: ICommand = CommandFactory.createNewSchemaDefinitionCommand(this.document.getDocumentType(),
+                data.name, example, data.description);
             this.commandService.emit(command);
         }
         this.selectDefinition(this.getDefinitionByName(data.name));
@@ -436,11 +429,10 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     /**
      * Gets a definition by its name.
      * @param name
-     * @return
      */
     protected getDefinitionByName(name: string): Oas20SchemaDefinition | Oas30SchemaDefinition {
-        if (this.document.getSpecVersion() === "2.0") {
-            return (this.document as Oas20Document).definitions.definition(name);
+        if (this.document.getDocumentType() == DocumentType.openapi2) {
+            return (this.document as Oas20Document).definitions.getDefinition(name);
         } else {
             return (this.document as Oas30Document).components.getSchemaDefinition(name);
         }
@@ -470,7 +462,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
-        this.contextMenuSelection = this._library.createNodePath(pathItem);
+        this.contextMenuSelection = Library.createNodePath(pathItem);
         this.contextMenuType = "path";
     }
 
@@ -501,7 +493,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public newPath(): void {
         let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
-        this.addPathDialog.open(this.document, pathItem.path());
+        this.addPathDialog.open(this.document, pathItem.getPath());
         this.closeContextMenu();
     }
 
@@ -510,7 +502,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public deletePath(): void {
         let pathItem: OasPathItem = this.contextMenuSelection.resolve(this.document) as OasPathItem;
-        let command: ICommand = createDeletePathCommand(this.document, pathItem.path());
+        let command: ICommand = CommandFactory.createDeletePathCommand(pathItem.getPath());
         this.commandService.emit(command);
         this.closeContextMenu();
     }
@@ -525,8 +517,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         } else {
             let pathItem: OasPathItem = modalData.object;
             console.info("[EditorMasterComponent] Clone path item: %s", modalData.path);
-            let cloneSrcObj: any = this._library.writeNode(pathItem);
-            let command: ICommand = createAddPathItemCommand(this.document, modalData.path, cloneSrcObj);
+            let cloneSrcObj: any = Library.writeNode(pathItem);
+            let command: ICommand = CommandFactory.createAddPathItemCommand(modalData.path, cloneSrcObj);
             this.commandService.emit(command);
         }
     }
@@ -541,7 +533,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         event.stopPropagation();
         this.contextMenuPos.left = event.clientX + "px";
         this.contextMenuPos.top = event.clientY + "px";
-        this.contextMenuSelection = this._library.createNodePath(definition);
+        this.contextMenuSelection = Library.createNodePath(definition);
         this.contextMenuType = "definition";
     }
 
@@ -550,14 +542,14 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public deleteDefinition(): void {
         let schemaDefName: string = null;
-        if (this.document.getSpecVersion() === "2.0") {
+        if (this.document.getDocumentType() == DocumentType.openapi2) {
             let schemaDef: Oas20SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas20SchemaDefinition;
-            schemaDefName = schemaDef.definitionName();
+            schemaDefName = schemaDef.getName();
         } else {
             let schemaDef: Oas30SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas30SchemaDefinition;
-            schemaDefName = schemaDef.name();
+            schemaDefName = schemaDef.getName();
         }
-        let command: ICommand = createDeleteSchemaDefinitionCommand(this.document, schemaDefName);
+        let command: ICommand = CommandFactory.createDeleteSchemaDefinitionCommand(this.document.getDocumentType(), schemaDefName);
         this.commandService.emit(command);
         this.closeContextMenu();
     }
@@ -570,10 +562,11 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let schemaDef: any = this.contextMenuSelection.resolve(this.document);
             this.cloneDefinitionDialog.open(this.document, schemaDef);
         } else {
-            let definition: OasNode = modalData.definition;
+            let definition: Node = modalData.definition;
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
-            let cloneSrcObj: any = this._library.writeNode(definition);
-            let command: ICommand = createAddSchemaDefinitionCommand(this.document, modalData.name, cloneSrcObj);
+            let cloneSrcObj: any = Library.writeNode(definition);
+            let command: ICommand = CommandFactory.createAddSchemaDefinitionCommand(this.document.getDocumentType(),
+                modalData.name, cloneSrcObj);
             this.commandService.emit(command);
         }
     }
@@ -587,11 +580,11 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let name: string = this.definitionName(schemaDef);
             let definitionNames: string[] = [];
             let master: EditorMasterComponent = this;
-            OasVisitorUtil.visitTree(this.document, new class extends OasCombinedVisitorAdapter {
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
                 public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
                     definitionNames.push(master.definitionName(node));
                 }
-            });
+            }, TraverserDirection.down);
             this.renameDefinitionDialog.open(schemaDef, name, newName => {
                 return definitionNames.indexOf(newName) !== -1;
             });
@@ -599,7 +592,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let definition: Oas20SchemaDefinition | Oas30SchemaDefinition = <any>event.entity;
             let oldName: string = this.definitionName(definition);
             console.info("[EditorMasterComponent] Rename definition to: %s", event.newName);
-            let command: ICommand = createRenameSchemaDefinitionCommand(this.document, oldName, event.newName);
+            let command: ICommand = CommandFactory.createRenameSchemaDefinitionCommand(this.document.getDocumentType(),
+                oldName, event.newName);
             this.commandService.emit(command);
         }
     }
@@ -609,11 +603,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param schemaDef
      */
     protected definitionName(schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
-        if (schemaDef.ownerDocument().is2xDocument()) {
-            return (<Oas20SchemaDefinition>schemaDef).definitionName();
-        } else {
-            return (<Oas30SchemaDefinition>schemaDef).name();
-        }
+        return schemaDef.getName();
     }
 
     /**
@@ -626,9 +616,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             this.renamePathDialog.open(this.document, pathItem);
         } else {
             let path: Oas20PathItem | Oas30PathItem = modalData.path;
-            let oldName: string = path.path();
+            let oldName: string = path.getPath();
             console.info("[EditorMasterComponent] Rename definition to: %s", modalData.name);
-            let command: ICommand = createRenamePathItemCommand(this.document, oldName, modalData.name, modalData.renameSubpaths);
+            let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
             this.commandService.emit(command);
         }
     }
@@ -638,9 +628,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * node (either directly on the node or any descendant node).
      * @param node
      */
-    public hasValidationProblem(node: OasNode): boolean {
+    public hasValidationProblem(node: Node): boolean {
         let viz: HasProblemVisitor = new HasProblemVisitor();
-        OasVisitorUtil.visitTree(node, viz);
+        VisitorUtil.visitTree(node, viz, TraverserDirection.down);
         return viz.problemsFound;
     }
 
@@ -668,7 +658,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param node
      * @return
      */
-    public definitionClasses(node: OasNode): string {
+    public definitionClasses(node: Node): string {
         let classes: string[] = [];
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
@@ -700,7 +690,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * Gets the node path for the given data model node.
      * @param node
      */
-    public asNodePath(node: OasNode): string {
+    public asNodePath(node: Node): string {
         return ModelUtils.nodeToPath(node);
     }
 }
@@ -709,11 +699,11 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 /**
  * Visitor used to search through the data model for validation problems.
  */
-class HasProblemVisitor extends OasAllNodeVisitor {
+class HasProblemVisitor extends CombinedAllNodeVisitor {
 
     public problemsFound: boolean = false;
 
-    protected doVisitNode(node: OasNode): void {
+    visitNode(node: Node): void {
         if (node._validationProblems.length > 0) {
             this.problemsFound = true;
         }

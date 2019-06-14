@@ -23,20 +23,21 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {
-    createChangePropertyCommand,
-    createChangePropertyTypeCommand,
-    ICommand,
-    SimplifiedParameterType,
-    SimplifiedPropertyType,
-    SimplifiedType
-} from "oai-ts-commands";
-import {Oas20PropertySchema, Oas30PropertySchema} from "oai-ts-core";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
+import {
+    CommandFactory,
+    ICommand,
+    Oas20Schema,
+    Oas30Schema,
+    SimplifiedParameterType,
+    SimplifiedPropertyType, SimplifiedType
+} from "apicurio-data-models";
+import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
+import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
 
 @Component({
@@ -87,7 +88,7 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     public isRequired(): boolean {
         let required: string[] = this.item.parent()["required"];
         if (required && required.length > 0) {
-            return required.indexOf(this.item.propertyName()) != -1;
+            return required.indexOf(this.item.getPropertyName()) != -1;
         }
         return false;
     }
@@ -132,7 +133,7 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }
 
@@ -140,7 +141,7 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.model().required = newValue === "required";
         let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
         nt.required = this.model().required;
-        let command: ICommand = createChangePropertyTypeCommand(this.item.ownerDocument(), this.item, nt);
+        let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
         this.commandService.emit(command);
     }
 
@@ -148,10 +149,10 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         let nt: SimplifiedPropertyType = new SimplifiedPropertyType();
         nt.required = this.model().required;
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangePropertyTypeCommand(this.item.ownerDocument(), this.item, nt);
+        let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
         this.commandService.emit(command);
         this._model = nt;
     }

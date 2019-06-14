@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {OasDocument} from "oai-ts-core";
+import {OasDocument} from "apicurio-data-models";
 
 @Component({
     moduleId: module.id,
@@ -61,8 +61,8 @@ export class AddPathDialogComponent {
         this.paths = [];
         this.pathExists = false;
         if (document.paths) {
-            document.paths.pathItems().forEach( pathItem => {
-                this.paths.push(pathItem.path());
+            document.paths.getPathItems().forEach( pathItem => {
+                this.paths.push(pathItem.getPath());
             });
         }
     }

@@ -77,7 +77,7 @@
                 </signpost>
 
                 <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
-                    <div path-item [path]="path.path()" (click)="pathList.focus() ; selectPath(path)"
+                    <div path-item [path]="path.getPath()" (click)="pathList.focus() ; selectPath(path)"
                          (contextmenu)="showPathContextMenu($event, path)"></div>
                     <collaborator-aggregate [nodePath]="asNodePath(path)"></collaborator-aggregate>
                     <validation-aggregate [models]="[path]"></validation-aggregate>

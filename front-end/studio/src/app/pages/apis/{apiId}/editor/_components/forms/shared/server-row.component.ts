@@ -23,8 +23,14 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {
+    CommandFactory,
+    ICommand,
+    Oas30Document,
+    Oas30Operation,
+    Oas30PathItem,
+    Oas30Server
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
@@ -87,7 +93,7 @@ export class ServerRowComponent extends AbstractRowComponent<Oas30Server, string
 
     public setDescription(description: string): void {
         // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
-        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }
 

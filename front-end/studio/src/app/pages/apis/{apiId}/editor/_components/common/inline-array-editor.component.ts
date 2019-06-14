@@ -32,7 +32,7 @@ import {AbstractInlineEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
-import {OasNode} from "oai-ts-core";
+import {Node} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {KeypressUtils} from "../../_util/keypress.util";
 
@@ -49,7 +49,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     @Input() value: string[];
     @Input() noValueMessage: string;
     @Input() items: string[] | (()=>string[]);
-    @Input() baseNode: OasNode;
+    @Input() baseNode: Node;
     @Input() nodePath: string;
 
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();

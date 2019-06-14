@@ -16,15 +16,15 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasLibraryUtils, OasOperation, OasSecurityRequirement} from "oai-ts-core";
-import {CommandService} from "../../../_services/command.service";
 import {
-    createAddSecurityRequirementCommand,
-    createDeleteAllSecurityRequirementsCommand,
-    createDeleteSecurityRequirementCommand,
-    createReplaceSecurityRequirementCommand,
-    ICommand
-} from "oai-ts-commands";
+    CommandFactory,
+    ICommand,
+    Library,
+    OasDocument,
+    OasOperation,
+    OasSecurityRequirement
+} from "apicurio-data-models";
+import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {
     ISecurityRequirementEditorHandler,
@@ -88,9 +88,8 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
     public addSecurityRequirement(event: SecurityRequirementEditorEvent): void {
         console.info("[SecurityRequirementsSectionComponent] Adding security requirement: ", event);
         let requirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
-        let library: OasLibraryUtils = new OasLibraryUtils();
-        library.readNode(event.data, requirement);
-        let command: ICommand = createAddSecurityRequirementCommand(this.parent.ownerDocument(), this.parent, requirement);
+        Library.readNode(event.data, requirement);
+        let command: ICommand = CommandFactory.createAddSecurityRequirementCommand(this.parent, requirement);
         this.commandService.emit(command);
     }
 
@@ -100,9 +99,8 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      */
     public changeSecurityRequirement(event: SecurityRequirementEditorEvent): void {
         let newRequirement: OasSecurityRequirement = this.parent.createSecurityRequirement();
-        let library: OasLibraryUtils = new OasLibraryUtils();
-        library.readNode(event.data, newRequirement);
-        let command: ICommand = createReplaceSecurityRequirementCommand(this.parent.ownerDocument(), event.entity, newRequirement);
+        Library.readNode(event.data, newRequirement);
+        let command: ICommand = CommandFactory.createReplaceSecurityRequirementCommand(event.entity, newRequirement);
         this.commandService.emit(command);
     }
 
@@ -111,7 +109,7 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      * @param requirement
      */
     public deleteSecurityRequirement(requirement: OasSecurityRequirement): void {
-        let command: ICommand = createDeleteSecurityRequirementCommand(this.parent.ownerDocument(), this.parent, requirement);
+        let command: ICommand = CommandFactory.createDeleteSecurityRequirementCommand(this.parent, requirement);
         this.commandService.emit(command);
     }
 
@@ -120,7 +118,7 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      * @param requirement
      */
     public securityRequirementSummary(requirement: OasSecurityRequirement): string {
-        return requirement.securityRequirementNames().join(", ");
+        return requirement.getSecurityRequirementNames().join(", ");
     }
 
     /**
@@ -170,7 +168,7 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      * @param schemeName
      */
     public requirementScopes(requirement: OasSecurityRequirement, schemeName: string): string {
-        let scopes: any[] = requirement.scopes(schemeName);
+        let scopes: any[] = requirement.getScopes(schemeName);
         if (scopes && scopes.length > 0) {
             return scopes.join(", ");
         } else {
@@ -183,7 +181,7 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      * @param requirement
      */
     public isAnonSecurity(requirement: OasSecurityRequirement): boolean {
-        let schemes: string[] = requirement.securityRequirementNames();
+        let schemes: string[] = requirement.getSecurityRequirementNames();
         return !schemes || schemes.length === 0;
     }
 
@@ -191,7 +189,7 @@ export class SecurityRequirementsSectionComponent extends AbstractBaseComponent 
      * Called when the user clicks the trash icon to delete all the servers.
      */
     public deleteAllSecurityRequirements(): void {
-        let command: ICommand = createDeleteAllSecurityRequirementsCommand(this.parent);
+        let command: ICommand = CommandFactory.createDeleteAllSecurityRequirementsCommand(this.parent);
         this.commandService.emit(command);
     }
 

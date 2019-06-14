@@ -17,12 +17,12 @@
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {OasNode} from "oai-ts-core";
+import {Node} from "apicurio-data-models";
 
 
 export interface RenameEntityEvent {
 
-    entity: OasNode;
+    entity: Node;
     newName: string;
 
 }
@@ -47,7 +47,7 @@ export class RenameEntityDialogComponent {
 
     private _isOpen: boolean = false;
 
-    private entity: OasNode;
+    private entity: Node;
     originalName: string;
     newName: string;
     private checkExistence: (name: string) => boolean;
@@ -59,7 +59,7 @@ export class RenameEntityDialogComponent {
      * @param name
      * @param checkExistence
      */
-    public open(entity: OasNode, name: string, checkExistence: (name: string) => boolean): void {
+    public open(entity: Node, name: string, checkExistence: (name: string) => boolean): void {
         this._isOpen = true;
         this.entity = entity;
         this.originalName = name;

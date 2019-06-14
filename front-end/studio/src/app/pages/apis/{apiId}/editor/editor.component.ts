@@ -29,20 +29,23 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    IOasValidationSeverityRegistry,
+    CombinedVisitorAdapter,
+    DocumentType,
+    ICommand,
+    IValidationSeverityRegistry,
+    Library,
+    Node,
+    NodePath,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
-    OasCombinedVisitorAdapter,
     OasDocument,
-    OasLibraryUtils,
-    OasNode,
-    OasNodePath,
     OasPathItem,
-    OasValidationProblem,
-    OasVisitorUtil
-} from "oai-ts-core";
+    OtCommand,
+    OtEngine,
+    ValidationProblem,
+    VisitorUtil
+} from "apicurio-data-models";
 import {EditorMasterComponent} from "./_components/master.component";
-import {ICommand, OtCommand, OtEngine} from "oai-ts-commands";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
@@ -73,16 +76,15 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
-    @Input() validationRegistry: IOasValidationSeverityRegistry;
+    @Input() validationRegistry: IValidationSeverityRegistry;
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
-    @Output() onValidationChanged: EventEmitter<OasValidationProblem[]> = new EventEmitter<OasValidationProblem[]>();
+    @Output() onValidationChanged: EventEmitter<ValidationProblem[]> = new EventEmitter<ValidationProblem[]>();
     @Output() onUndo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onRedo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
-    private _library: OasLibraryUtils = new OasLibraryUtils();
     private _document: OasDocument = null;
     private _otEngine: OtEngine = null;
     _undoableCommandCount: number = 0;
@@ -90,10 +92,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 
     theme: string = "light";
 
-    private currentSelection: OasNodePath;
+    private currentSelection: NodePath;
     private currentSelectionType: string;
-    private currentSelectionNode: OasNode;
-    public validationErrors: OasValidationProblem[] = [];
+    private currentSelectionNode: Node;
+    public validationErrors: ValidationProblem[] = [];
 
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
@@ -170,7 +172,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
             this._otEngine = null;
             this._undoableCommandCount = 0;
             this._redoableCommandCount = 0;
-            if (this.document().getSpecVersion() === "2.0") {
+            if (this.document().getDocumentType() == DocumentType.openapi2) {
                 this.formType = "main_20";
             } else {
                 this.formType = "main_30";
@@ -201,12 +203,16 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public document(): OasDocument {
         if (this._document === null && this.api) {
             try {
-                this._document = this._library.createDocument(this.api.spec);
+                if (typeof this.api.spec == "object") {
+                    this._document = <OasDocument> Library.readDocument(this.api.spec);
+                } else {
+                    this._document = <OasDocument> Library.readDocumentFromJSONString(<string>this.api.spec);
+                }
                 console.info("[ApiEditorComponent] Loaded OAI content: ", this._document);
             } catch (e) {
                 console.error(e);
                 // If we can't process the document, then just create a new one
-                this._document = this._library.createDocument("3.0.2");
+                this._document = <OasDocument> Library.createDocument(DocumentType.openapi3);
             }
             this.validateModel();
         }
@@ -325,7 +331,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      */
     public executeCommand(command: OtCommand): void {
         this.preDocumentChange();
-        this.otEngine().executeCommand(command);
+        this.otEngine().executeCommand(command, false);
         this.postDocumentChange();
     }
 
@@ -401,9 +407,9 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
      * @param path
      */
     private updateFormDisplay(path: string): void {
-        let npath: OasNodePath = new OasNodePath(path);
+        let npath: NodePath = new NodePath(path);
         let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
-        OasVisitorUtil.visitPath(npath, visitor, this.document());
+        npath.resolveWithVisitor(this.document(), visitor);
 
         this.currentSelection = npath;
         this.formType = visitor.formType();
@@ -417,8 +423,8 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     public validateModel(): void {
         try {
             let doc: OasDocument = this.document();
-            let oldValidationErrors: OasValidationProblem[] = this.validationErrors;
-            this.validationErrors = this._library.validate(doc, true, this.validationRegistry);
+            let oldValidationErrors: ValidationProblem[] = this.validationErrors;
+            this.validationErrors = Library.validate(doc, this.validationRegistry);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);
             }
@@ -491,7 +497,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         apiDef.name = this.api.name;
         apiDef.tags = this.api.tags;
         let doc: OasDocument = this.document();
-        apiDef.spec = this._library.writeNode(doc);
+        apiDef.spec = Library.writeNode(doc);
         return apiDef;
     }
 
@@ -538,10 +544,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
 /**
  * Visitor used to determine what form should be displayed based on the selected node.
  */
-export class FormSelectionVisitor extends OasCombinedVisitorAdapter {
+export class FormSelectionVisitor extends CombinedVisitorAdapter {
 
     public _selectionType: string = "main";
-    public _selectedNode: OasNode = null;
+    public _selectedNode: Node = null;
 
     constructor(private version: string) {
         super();
@@ -555,7 +561,7 @@ export class FormSelectionVisitor extends OasCombinedVisitorAdapter {
         return this._selectionType + "_" + this.version;
     }
 
-    public selection(): OasNode {
+    public selection(): Node {
         return this._selectedNode;
     }
 

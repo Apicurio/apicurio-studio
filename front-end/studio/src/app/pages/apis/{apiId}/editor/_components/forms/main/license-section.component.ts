@@ -16,9 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasLicense} from "oai-ts-core";
+import {ChangeLicenseCommand, CommandFactory, ICommand, OasDocument, OasLicense} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
-import {createChangeLicenseCommand, createDeleteLicenseCommand, ICommand} from "oai-ts-commands";
 import {ILicense, LicenseService} from "../../../_services/license.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -97,7 +96,7 @@ export class LicenseSectionComponent extends AbstractBaseComponent {
      * @param licenseInfo
      */
     public setLicense(licenseInfo: any): void {
-        let command: ICommand = createChangeLicenseCommand(this.document, licenseInfo.name, licenseInfo.url);
+        let command: ICommand = CommandFactory.createChangeLicenseCommand(licenseInfo.name, licenseInfo.url);
         this.commandService.emit(command);
     }
 
@@ -105,7 +104,7 @@ export class LicenseSectionComponent extends AbstractBaseComponent {
      * Called when the user chooses to remove the license.
      */
     public deleteLicense(): void {
-        let command: ICommand = createDeleteLicenseCommand(this.document);
+        let command: ICommand = CommandFactory.createDeleteLicenseCommand(this.document.info);
         this.commandService.emit(command);
     }
 

@@ -24,14 +24,12 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
-    createChangeParameterTypeCommand,
-    createChangePropertyCommand,
-    createNewParamCommand,
-    ICommand,
-    SimplifiedParameterType,
-    SimplifiedType
-} from "oai-ts-commands";
-import {OasCombinedVisitorAdapter, OasOperation, OasParameterBase, OasPathItem} from "oai-ts-core";
+    CombinedVisitorAdapter, CommandFactory, ICommand,
+    OasOperation,
+    OasParameter,
+    OasPathItem,
+    SimplifiedParameterType, SimplifiedType
+} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
@@ -47,9 +45,9 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBase, SimplifiedParameterType> {
+export class HeaderParamRowComponent extends AbstractRowComponent<OasParameter, SimplifiedParameterType> {
 
-    private _overriddenParam: OasParameterBase;
+    private _overriddenParam: OasParameter;
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
@@ -76,7 +74,7 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
      */
     protected updateModel(): void {
         this._model = SimplifiedParameterType.fromParameter(this.item as any);
-        this.missingFlag = this.item.n_attribute("missing") === true;
+        this.missingFlag = this.item.getAttribute("missing") === true;
         this._overriddenParam = this.getOverriddenParam(this.item);
         this.overrideFlag = this._overriddenParam !== null;
         this._parentType = this.detectParentType();
@@ -158,13 +156,13 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
-        let command: ICommand = createChangePropertyCommand<boolean>(this.item.ownerDocument(), this.item, "required", this.model().required);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<boolean>(this.item, "required", this.model().required);
         this.commandService.emit(command);
     }
 
@@ -172,17 +170,18 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.required = this.model().required;
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangeParameterTypeCommand(this.item.ownerDocument(), this.item as any, nt);
+        let command: ICommand = CommandFactory.createChangeParameterTypeCommand(this.item.ownerDocument().getDocumentType(),
+            this.item as any, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
 
     public override(): void {
-        let command: ICommand = createNewParamCommand(this.item.ownerDocument(), this.item.parent() as any,
-            this.item.name, "header", null, null, true);
+        let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any, this.item.name,
+            "header", null, null, true);
         this.commandService.emit(command);
     }
 
@@ -206,7 +205,7 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
         return !this.overrideFlag && !this.missingFlag;
     }
 
-    public getOverriddenParam(param: OasParameterBase): OasParameterBase {
+    public getOverriddenParam(param: OasParameter): OasParameter {
         let viz: DetectOverrideVisitor = new DetectOverrideVisitor(param);
         param.parent().accept(viz);
         return viz.overriddenParam;
@@ -221,22 +220,22 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameterBa
 }
 
 
-class DetectOverrideVisitor extends OasCombinedVisitorAdapter {
+class DetectOverrideVisitor extends CombinedVisitorAdapter {
 
-    public overriddenParam: OasParameterBase = null;
+    public overriddenParam: OasParameter = null;
 
-    constructor(private param: OasParameterBase) {
+    constructor(private param: OasParameter) {
         super();
     }
 
     public visitOperation(node: OasOperation): void {
-        this.overriddenParam = (<OasPathItem>node.parent()).parameter(this.param.in, this.param.name) as OasParameterBase;
+        this.overriddenParam = (<OasPathItem>node.parent()).getParameter(this.param.in, this.param.name) as OasParameter;
     }
 
 }
 
 
-class DetectParentTypeVisitor extends OasCombinedVisitorAdapter {
+class DetectParentTypeVisitor extends CombinedVisitorAdapter {
 
     public parentType: string = null;
 

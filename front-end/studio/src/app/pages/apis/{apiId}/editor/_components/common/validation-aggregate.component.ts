@@ -16,8 +16,14 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input} from "@angular/core";
-import {OasAllNodeVisitor, OasNode, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
-import {OasValidationProblem} from "oai-ts-core/src/models/node.model";
+import {
+    CombinedAllNodeVisitor,
+    Node,
+    TraverserDirection,
+    ValidationProblem,
+    ValidationProblemSeverity,
+    VisitorUtil
+} from "apicurio-data-models";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "./base-component";
@@ -34,15 +40,15 @@ import {KeypressUtils} from "../../_util/keypress.util";
 })
 export class ValidationAggregateComponent extends AbstractBaseComponent {
 
-    protected _models: OasNode[];
+    protected _models: Node[];
     @Input()
-    set models(models: OasNode[]) {
+    set models(models: Node[]) {
         if (!ArrayUtils.equals(models, this._models)) {
             this._problems = undefined;
             this._models = models;
         }
     }
-    get models(): OasNode[] {
+    get models(): Node[] {
         return this._models;
     }
     @Input() properties: string[];
@@ -54,7 +60,7 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
     public left: string;
     public top: string;
 
-    private _problems: OasValidationProblem[] = undefined;
+    private _problems: ValidationProblem[] = undefined;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private problemsService: ProblemsService, private selectionService: SelectionService) {
@@ -118,7 +124,7 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
         return this.matchingProblems().length > 0;
     }
 
-    public matchingProblems(): OasValidationProblem[] {
+    public matchingProblems(): ValidationProblem[] {
         if (!this.models) {
             return [];
         }
@@ -130,9 +136,9 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
             for (let model of this.models) {
                 if (model !== null && model !== undefined) {
                     if (this.shallow) {
-                        OasVisitorUtil.visitNode(model, finder);
+                        VisitorUtil.visitNode(model, finder);
                     } else {
-                        OasVisitorUtil.visitTree(model, finder);
+                        VisitorUtil.visitTree(model, finder, TraverserDirection.down);
                     }
                 }
             }
@@ -142,24 +148,24 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
         return this._problems;
     }
 
-    public iconFor(problem: OasValidationProblem): string {
+    public iconFor(problem: ValidationProblem): string {
         switch (problem.severity) {
-            case OasValidationProblemSeverity.low:
+            case ValidationProblemSeverity.low:
                 return "pficon-info";
-            case OasValidationProblemSeverity.medium:
+            case ValidationProblemSeverity.medium:
                 return "pficon-warning-triangle-o";
-            case OasValidationProblemSeverity.high:
+            case ValidationProblemSeverity.high:
                 return "pficon-error-circle-o";
             default:
                 return "";
         }
     }
 
-    public summaryFor(problem: OasValidationProblem): string {
+    public summaryFor(problem: ValidationProblem): string {
         return this.problemsService.summary(problem);
     }
 
-    public goTo(problem: OasValidationProblem, event: MouseEvent): void {
+    public goTo(problem: ValidationProblem, event: MouseEvent): void {
         this.close();
         let goToPath: string = problem.nodePath.toString();
         if (problem.property) {
@@ -182,27 +188,27 @@ export class ValidationAggregateComponent extends AbstractBaseComponent {
     }
 }
 
-export class ProblemFinder extends OasAllNodeVisitor {
+export class ProblemFinder extends CombinedAllNodeVisitor {
 
-    private problems: OasValidationProblem[] = [];
+    private problems: ValidationProblem[] = [];
     
     constructor(private properties: string[], private codes: string[]) {
         super();
     }
 
-    public getProblems(): OasValidationProblem[] {
+    public getProblems(): ValidationProblem[] {
         return this.problems;
     }
 
-    protected doVisitNode(node: OasNode): void {
-        node.validationProblems().forEach( problem => {
+    visitNode(node: Node): void {
+        node.getValidationProblems().forEach( problem => {
             if (this.accepts(problem)) {
                 this.problems.push(problem);
             }
         });
     }
 
-    private accepts(problem: OasValidationProblem): boolean {
+    private accepts(problem: ValidationProblem): boolean {
         let accept: boolean = true;
         
         if (this.properties !== null && this.properties !== undefined && this.properties.length > 0) {

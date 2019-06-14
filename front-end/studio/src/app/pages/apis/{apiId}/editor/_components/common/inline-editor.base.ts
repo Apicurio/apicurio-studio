@@ -26,7 +26,7 @@ import {
     ViewChildren
 } from "@angular/core";
 import {SelectionService} from "../../_services/selection.service";
-import {OasNode} from "oai-ts-core";
+import {Node} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {KeypressUtils} from "../../_util/keypress.util";
 
@@ -43,7 +43,7 @@ export abstract class AbstractInlineEditor<T> {
     @Input() inputClass = "";
     @Input() formClass = "";
 
-    @Input() baseNode: OasNode;
+    @Input() baseNode: Node;
     @Input() nodePath: string;
 
     @Output() onChange: EventEmitter<T> = new EventEmitter<T>();

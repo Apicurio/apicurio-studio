@@ -3,7 +3,7 @@
         <div class="name">
             <validation-problem [model]="item"></validation-problem>
             <span class="fa fa-fw fa-file-o"></span>
-            <span title="{{ item.name() }}">{{ item.name() }}</span>
+            <span title="{{ item.getName() }}">{{ item.getName() }}</span>
         </div>
         <div class="type" (click)="toggleType()" [class.selected]="isEditingType()">
             <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingType()"></span>
@@ -54,7 +54,7 @@
                                 <tr *ngFor="let example of mediaTypeExamples()">
                                     <td class="name">
                                         <validation-problem [model]="example"></validation-problem>
-                                        <span>{{ example.name() }}</span>
+                                        <span>{{ example.getName() }}</span>
                                     </td>
                                     <td class="value pre-actions">
                                         <span>{{ exampleValue(example) }}</span>

@@ -22,7 +22,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 import {ValidationProfileExt, ValidationService} from "../../../services/validation.service";
 import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../../../models/validation.model";
-import {OasValidationProblemSeverity, OasValidationRuleset} from "oai-ts-core";
+import {ValidationProblemSeverity, ValidationRuleSet} from "apicurio-data-models";
 
 /**
  * The Settings/Profile Page component.
@@ -131,21 +131,21 @@ export class ValidationPageComponent extends AbstractPageComponent {
         newProfile.description = profile.description;
         newProfile.severities = {};
         if (profile.id == -1) { // Disable all rules
-            let ruleset: OasValidationRuleset = new OasValidationRuleset();
+            let ruleset: ValidationRuleSet = new ValidationRuleSet();
             ruleset.getAllRules().forEach( rule => {
-                newProfile.severities[rule.code] = OasValidationProblemSeverity.ignore;
+                newProfile.severities[rule.code] = ValidationProblemSeverity.ignore;
             });
         } else if (profile.id == -2) { // OpenAPI spec-only
-            let ruleset: OasValidationRuleset = new OasValidationRuleset();
+            let ruleset: ValidationRuleSet = new ValidationRuleSet();
             ruleset.getAllRules().forEach( rule => {
                 // Severity is "medium" if the rule is spec mandated otherwise it's "ignore"
-                newProfile.severities[rule.code] = rule.specMandated ? OasValidationProblemSeverity.medium : OasValidationProblemSeverity.ignore;
+                newProfile.severities[rule.code] = rule.specMandated ? ValidationProblemSeverity.medium : ValidationProblemSeverity.ignore;
             });
         } else if (profile.id == -3) { // Enable all rules
-            let ruleset: OasValidationRuleset = new OasValidationRuleset();
+            let ruleset: ValidationRuleSet = new ValidationRuleSet();
             ruleset.getAllRules().forEach( rule => {
                 // Severity is always high.
-                newProfile.severities[rule.code] = OasValidationProblemSeverity.high;
+                newProfile.severities[rule.code] = ValidationProblemSeverity.high;
             });
         } else {
             newProfile.severities = this.copySeverities(profile.severities);

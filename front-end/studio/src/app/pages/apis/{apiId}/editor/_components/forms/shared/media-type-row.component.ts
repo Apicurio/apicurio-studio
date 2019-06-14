@@ -17,16 +17,13 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation} from "@angular/core";
 import {
-    createAddExampleCommand,
-    createChangeMediaTypeTypeCommand,
-    createDeleteAllExamplesCommand,
-    createDeleteExampleCommand,
-    createDeleteMediaTypeCommand,
-    createSetExampleCommand,
+    CommandFactory,
     ICommand,
+    Oas30Example,
+    Oas30MediaType,
+    Oas30Schema,
     SimplifiedType
-} from "oai-ts-commands";
-import {Oas30Example, Oas30MediaType, Oas30Schema} from "oai-ts-core";
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -77,8 +74,8 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
     }
 
     public delete(): void {
-        console.info("[MediaTypeRowComponent] Deleting request body media type: " + this.item.name());
-        let command: ICommand = createDeleteMediaTypeCommand(this.item.ownerDocument(), this.item);
+        console.info("[MediaTypeRowComponent] Deleting request body media type: " + this.item.getName());
+        let command: ICommand = CommandFactory.createDeleteMediaTypeCommand(this.item);
         this.commandService.emit(command);
     }
 
@@ -105,10 +102,10 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
     public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedType = new SimplifiedType();
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangeMediaTypeTypeCommand(this.item.ownerDocument(), this.item, nt);
+        let command: ICommand = CommandFactory.createChangeMediaTypeTypeCommand(this.item, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
@@ -122,8 +119,8 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
     }
 
     public addExample(exampleData: any): void {
-        let command: ICommand = createAddExampleCommand(this.item.ownerDocument(), this.item,
-            exampleData.value, exampleData.name);
+        let command: ICommand = CommandFactory.createAddExampleCommand(this.item,
+            exampleData.value, exampleData.name, null, null);
         this.commandService.emit(command);
     }
 
@@ -135,19 +132,19 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
 
     public deleteExample(example: Oas30Example): void {
         console.info("[MediaTypeRowComponent] Deleting an example of a media type.");
-        let command: ICommand = createDeleteExampleCommand(this.item.ownerDocument(), example);
+        let command: ICommand = CommandFactory.createDeleteExampleCommand(example);
         this.commandService.emit(command);
     }
 
     public deleteAllExamples(): void {
-        let command: ICommand = createDeleteAllExamplesCommand(this.item.ownerDocument(), this.item);
+        let command: ICommand = CommandFactory.createDeleteAllExamplesCommand(this.item);
         this.commandService.emit(command);
     }
 
     public editExample(event: EditExampleEvent): void {
         console.info("[MediaTypeRowComponent] Changing the value of a Media Type example.");
-        let command: ICommand = createSetExampleCommand(this.item.ownerDocument(), this.item,
-            event.value, event.example.name());
+        let command: ICommand = CommandFactory.createSetExampleCommand(this.item.ownerDocument().getDocumentType(), this.item,
+            event.value, event.example.getName());
         this.commandService.emit(command);
     }
 

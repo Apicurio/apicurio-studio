@@ -1,5 +1,5 @@
 <div class="detail-title">
-    <div path-item class="detail-label" [path]="path.path()"></div>
+    <div path-item class="detail-label" [path]="path.getPath()"></div>
     <div class="detail-actions">
         <div class="dropdown">
             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -82,10 +82,10 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
                 <!-- Info Section -->
-                <path-info-section [path]="path" *ngIf="path.ownerDocument().is3xDocument()"></path-info-section>
+                <path-info-section [path]="path" *ngIf="is3xDocument()"></path-info-section>
 
                 <!-- Servers -->
-                <servers-section *ngIf="path.ownerDocument().is3xDocument()" [parent]="path" [collapsed]="true"
+                <servers-section *ngIf="is3xDocument()" [parent]="path" [collapsed]="true"
                                  [description]="'Configure servers specific to this Path Item and all its Operations.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
 
                 <!-- Path Parameters Section -->

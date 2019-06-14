@@ -17,13 +17,16 @@
 
 import {Component, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {
+    CombinedVisitorAdapter,
+    DocumentType,
     Oas20Scopes,
     Oas20SecurityScheme,
-    Oas30OAuthFlow,
-    Oas30SecurityScheme, OasCombinedVisitorAdapter,
-    OasDocument,
-    OasSecurityScheme, OasVisitorUtil
-} from "oai-ts-core";
+    Oas30SecurityScheme,
+    OasDocument, OAuthFlow,
+    SecurityScheme,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {Scope} from "../../_models/scope.model";
 import {NgModel} from "@angular/forms";
@@ -74,11 +77,11 @@ export interface SecurityScheme30Data extends SecuritySchemeData {
     flows: Flows;
 }
 
-export interface SecuritySchemeEditorEvent extends EntityEditorEvent<OasSecurityScheme> {
+export interface SecuritySchemeEditorEvent extends EntityEditorEvent<SecurityScheme> {
     data: SecurityScheme20Data | SecurityScheme30Data;
 }
 
-export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<OasSecurityScheme, SecuritySchemeEditorEvent> {
+export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<SecurityScheme, SecuritySchemeEditorEvent> {
     onSave(event: SecuritySchemeEditorEvent): void;
     onCancel(event: SecuritySchemeEditorEvent): void;
 }
@@ -91,7 +94,7 @@ export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<OasSe
     styleUrls: ["security-scheme-editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class SecuritySchemeEditorComponent extends EntityEditor<OasSecurityScheme, SecuritySchemeEditorEvent> {
+export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, SecuritySchemeEditorEvent> {
 
     @ViewChildren("nameInput") nameInput: QueryList<NgModel>;
 
@@ -107,23 +110,23 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
      * @param context
      * @param server
      */
-    public open(handler: ISecuritySchemeEditorHandler, context: OasDocument, scheme?: OasSecurityScheme): void {
+    public open(handler: ISecuritySchemeEditorHandler, context: OasDocument, scheme?: SecurityScheme): void {
         super.open(handler, context, scheme);
     }
 
     public is2x(): boolean {
-        return this.context.ownerDocument().is2xDocument();
+        return this.context.ownerDocument().getDocumentType() == DocumentType.openapi2;
     }
 
     public is3x(): boolean {
-        return this.context.ownerDocument().is3xDocument();
+        return this.context.ownerDocument().getDocumentType() == DocumentType.openapi3;
     }
 
     /**
      * Initializes the editor's data model from a provided entity.
      * @param entity
      */
-    public initializeModelFromEntity(entity: OasSecurityScheme): void {
+    public initializeModelFromEntity(entity: SecurityScheme): void {
         this.initModel(entity);
     }
 
@@ -158,17 +161,17 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
         return event;
     }
 
-    protected initModel(scheme?: OasSecurityScheme): void {
+    protected initModel(scheme?: SecurityScheme): void {
         this.schemeExists = false;
         let schemeNames: string[] = [];
-        OasVisitorUtil.visitTree(this.context.ownerDocument(), new class extends OasCombinedVisitorAdapter {
-            public visitSecurityScheme(node: OasSecurityScheme): void {
-                schemeNames.push(node.schemeName());
+        VisitorUtil.visitTree(this.context.ownerDocument(), new class extends CombinedVisitorAdapter {
+            public visitSecurityScheme(node: SecurityScheme): void {
+                schemeNames.push(node.getName());
             }
-        });
+        }, TraverserDirection.down);
         this.schemeNames = schemeNames;
 
-        if (this.context.ownerDocument().is2xDocument()) {
+        if (this.context.ownerDocument().getDocumentType() == DocumentType.openapi2) {
             this.model = {
                 schemeName: null,
                 description: null,
@@ -224,9 +227,9 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
         }
 
         if (scheme) {
-            if (this.context.ownerDocument().is2xDocument()) {
+            if (this.context.ownerDocument().getDocumentType() == DocumentType.openapi2) {
                 let scheme20: Oas20SecurityScheme = scheme as Oas20SecurityScheme;
-                this.model.schemeName = scheme20.schemeName();
+                this.model.schemeName = scheme20.getSchemeName();
                 this.model.description = scheme20.description;
                 this.model.type = scheme20.type;
                 this.model.in = scheme20.in;
@@ -238,7 +241,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
             } else {
                 let scheme30: Oas30SecurityScheme = scheme as Oas30SecurityScheme;
                 let model: SecurityScheme30Data = this.model as SecurityScheme30Data;
-                model.schemeName = scheme30.schemeName();
+                model.schemeName = scheme30.getSchemeName();
                 model.description = scheme30.description;
                 model.type = scheme30.type;
                 model.in = scheme30.in;
@@ -291,7 +294,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
      * @param flowModel
      * @param flow
      */
-    private readFlowInto(flowModel: Oas30OAuthFlow, flow: Flow) {
+    private readFlowInto(flowModel: OAuthFlow, flow: Flow) {
         flow.enabled = true;
         flow.authorizationUrl = flowModel.authorizationUrl;
         flow.tokenUrl = flowModel.tokenUrl;
@@ -316,7 +319,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<OasSecuritySchem
             return rval;
         } else if (scopes && this.is2x()) {
             let scopes20: Oas20Scopes = scopes as Oas20Scopes;
-            return scopes20.scopes().map( sname => {
+            return scopes20.getScopeNames().map( sname => {
                 return {
                     name: sname,
                     description: scopes20.getScopeDescription(sname)

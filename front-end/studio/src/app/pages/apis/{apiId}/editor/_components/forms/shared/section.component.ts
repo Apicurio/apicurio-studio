@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OasNode} from "oai-ts-core";
+import {Node} from "apicurio-data-models";
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -52,7 +52,7 @@ export class SectionComponent extends AbstractBaseComponent {
     @Input() counterItems: any[];
     @Input() contextHelp: string;
 
-    @Input() validationModels: OasNode[];
+    @Input() validationModels: Node[];
     @Input() validationShallow: boolean;
     @Input() validationProperties: string[];
 

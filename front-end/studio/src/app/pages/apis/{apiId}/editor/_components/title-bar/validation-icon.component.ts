@@ -24,7 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasValidationProblem} from "oai-ts-core";
+import {ValidationProblem} from "apicurio-data-models";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
 import {CommandService} from "../../_services/command.service";
@@ -40,7 +40,7 @@ import {SelectionService} from "../../_services/selection.service";
 })
 export class ValidationIconComponent extends AbstractBaseComponent {
 
-    @Input() validationErrors: OasValidationProblem[] = [];
+    @Input() validationErrors: ValidationProblem[] = [];
     @Output() onClick: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,

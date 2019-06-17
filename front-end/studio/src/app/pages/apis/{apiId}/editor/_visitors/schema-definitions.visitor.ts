@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasCombinedVisitorAdapter} from "oai-ts-core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, CombinedVisitorAdapter} from "apicurio-data-models";
 
 /**
  * Visitor used to find schema definitions.
  */
-export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
+export class FindSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
 
     schemaDefinitions: (Oas20SchemaDefinition|Oas30SchemaDefinition)[] = [];
 
@@ -56,22 +56,14 @@ export class FindSchemaDefinitionsVisitor extends OasCombinedVisitorAdapter {
     /**
      * Figures out the definition name regardless of the version of the model.
      * @param definition
-     * @return
      */
     public static definitionName(definition: Oas20SchemaDefinition|Oas30SchemaDefinition): string {
-        let name: string;
-        if (definition['definitionName']) {
-            name = (definition as Oas20SchemaDefinition).definitionName();
-        } else {
-            name = (definition as Oas30SchemaDefinition).name();
-        }
-        return name;
+        return definition.getName();
     }
 
     /**
      * Returns true if the given name is accepted by the current filter criteria.
      * @param name
-     * @return
      */
     private acceptThroughFilter(name: string): boolean {
         //console.info("Accepting: %s through filter: %s", name, this.filterCriteria);

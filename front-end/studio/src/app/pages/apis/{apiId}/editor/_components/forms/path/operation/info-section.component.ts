@@ -20,12 +20,19 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    QueryList, SimpleChanges,
+    QueryList,
+    SimpleChanges,
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Document, Oas20Operation, Oas30Operation} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {
+    CommandFactory,
+    DocumentType,
+    ICommand,
+    Oas20Document,
+    Oas20Operation,
+    Oas30Operation
+} from "apicurio-data-models";
 import {InlineArrayEditorComponent} from "../../../common/inline-array-editor.component";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
@@ -107,7 +114,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeSummary(newSummary: string): void {
         console.info("[InfoSectionComponent] User changed the summary.");
-        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation, "summary", newSummary);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "summary", newSummary);
         this.commandService.emit(command);
     }
 
@@ -117,7 +124,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeDescription(newDescription: string): void {
         console.info("[InfoSectionComponent] User changed the description.");
-        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation, "description", newDescription);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "description", newDescription);
         this.commandService.emit(command);
     }
 
@@ -127,7 +134,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeOperationId(newOperationId: string): void {
         console.info("[InfoSectionComponent] User changed the operationId.");
-        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation, "operationId", newOperationId);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "operationId", newOperationId);
         this.commandService.emit(command);
     }
 
@@ -137,7 +144,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeTags(newTags: string[]): void {
         console.info("[InfoSectionComponent] User changed the tags.");
-        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.operation, "tags", newTags);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "tags", newTags);
         this.commandService.emit(command);
     }
 
@@ -150,7 +157,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
         if (newValue && newValue.length === 0) {
             newValue = null;
         }
-        let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "consumes", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.operation, "consumes", newValue);
         this.commandService.emit(command);
         this._initConsumesProduces();
     }
@@ -171,7 +178,7 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
         if (newValue && newValue.length === 0) {
             newValue = null;
         }
-        let command: ICommand = createChangePropertyCommand<string[]>(this.operation.ownerDocument(), this.operation, "produces", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.operation, "produces", newValue);
         this.commandService.emit(command);
         this._initConsumesProduces();
     }
@@ -259,6 +266,10 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
                 return [];
             }
         }
+    }
+
+    public is2xDocument(): boolean {
+        return this.operation.ownerDocument().getDocumentType() == DocumentType.openapi2;
     }
 
 }

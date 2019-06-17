@@ -23,17 +23,19 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20PathItem, Oas30PathItem, OasOperation, OasPathItem} from "oai-ts-core";
+import {
+    CommandFactory,
+    ICommand,
+    Oas20PathItem,
+    Oas30PathItem,
+    OasDocument,
+    OasOperation,
+    OasPathItem
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {SelectionService} from "../../../_services/selection.service";
-import {
-    createDeleteAllOperationsCommand,
-    createDeleteOperationCommand,
-    createNewOperationCommand,
-    ICommand
-} from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {TopicSubscription} from "apicurio-ts-core";
 
@@ -95,7 +97,11 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     }
 
     public is20Document(): boolean {
-        return this.path.ownerDocument().is2xDocument();
+        return (<OasDocument> this.path.ownerDocument()).is2xDocument();
+    }
+
+    public is3xDocument(): boolean {
+        return (<OasDocument> this.operation().ownerDocument()).is3xDocument();
     }
 
     public operations(): OasOperation[] {
@@ -133,8 +139,8 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         // Choose a tab based on the availability of actual operations.  I.e. if the path only has
         // a "PUT" operation, then choose that one.
         for (let operation of this._operations) {
-            console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.method());
-            this.tab = operation.method();
+            console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.getMethod());
+            this.tab = operation.getMethod();
             this.__changeDetectorRef.markForCheck();
             return;
         }
@@ -203,7 +209,7 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
 
     public addOperation(): void {
         // Create the operation via a command.
-        let command: ICommand = createNewOperationCommand(this.path.ownerDocument(), this.path.path(), this.tab);
+        let command: ICommand = CommandFactory.createNewOperationCommand(this.path.getPath(), this.tab);
         this.commandService.emit(command);
         // And then select the new operation we just created.
         this.__selectionService.select(ModelUtils.nodeToPath(this.path) + "/" + this.tab);
@@ -213,13 +219,13 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
         if (!operation) {
             return;
         }
-        let command: ICommand = createDeleteOperationCommand(operation.ownerDocument(), operation.method(),
+        let command: ICommand = CommandFactory.createDeleteOperationCommand(operation.getMethod(),
             operation.parent() as OasPathItem);
         this.commandService.emit(command);
     }
 
     public deleteAllOperations(): void {
-        let command: ICommand = createDeleteAllOperationsCommand(this.path);
+        let command: ICommand = CommandFactory.createDeleteAllOperationsCommand(this.path);
         this.commandService.emit(command);
     }
 

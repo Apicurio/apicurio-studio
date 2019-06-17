@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "apicurio-data-models";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
@@ -43,9 +43,7 @@ export class DefinitionItemComponent extends AbstractBaseComponent {
      * Returns the name of the definition.
      */
     public definitionName(): string {
-        return this.schema.ownerDocument().is2xDocument() ?
-            (this.schema as Oas20SchemaDefinition).definitionName() :
-            (this.schema as Oas30SchemaDefinition).name();
+        return this.schema.getName();
     }
 
     /**

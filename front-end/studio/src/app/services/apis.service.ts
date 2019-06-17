@@ -19,7 +19,7 @@ import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiContributor, ApiContributors} from "../models/api-contributors.model";
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
-import {ICommand, MarshallUtils, OtCommand} from "oai-ts-commands";
+import {ICommand, MarshallCompat, OtCommand} from "apicurio-data-models";
 import {VersionedAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator.model";
 import {Invitation} from "../models/invitation.model";
@@ -27,10 +27,8 @@ import {ApiEditorUser} from "../models/editor-user.model";
 import {ApiDesignChange} from "../models/api-design-change.model";
 import {AbstractHubService} from "./hub";
 import {PublishApi} from "../models/publish-api.model";
-import {HttpClient, HttpEvent, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {User} from "../models/user.model";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {ConfigService} from "./config.service";
-import {OasLibraryUtils} from "oai-ts-core";
 import {IAuthenticationService} from "./auth.service";
 import {CodegenProject} from "../models/codegen-project.model";
 import {NewCodegenProject} from "../models/new-codegen-project.model";
@@ -101,7 +99,6 @@ export class ApiEditingSession implements IApiEditingSession {
     private _connectionHandler: IConnectionHandler;
     private _commandHandler: ICommandHandler;
     private _activityHandler: IActivityHandler;
-    private _oasLibrary: OasLibraryUtils;
 
     private _connected: boolean;
     private _pingIntervalId: number;
@@ -114,7 +111,6 @@ export class ApiEditingSession implements IApiEditingSession {
      * @param socket
      */
     constructor(private api: EditableApiDefinition, private socket: WebSocket) {
-        this._oasLibrary = new OasLibraryUtils();
         this._connected = false;
     }
 
@@ -142,7 +138,7 @@ export class ApiEditingSession implements IApiEditingSession {
                 console.info("                    Command: %o", msg.command);
                 console.info("                    Reverted: %o", msg.reverted);
                 if (this._commandHandler) {
-                    let command: ICommand = MarshallUtils.unmarshallCommand(msg.command);
+                    let command: ICommand = MarshallCompat.unmarshallCommand(msg.command);
                     let otCmd: OtCommand = new OtCommand();
                     otCmd.contentVersion = msg.contentVersion;
                     otCmd.command = command;
@@ -334,7 +330,7 @@ export class ApiEditingSession implements IApiEditingSession {
             rval = {
                 type: type,
                 commandId: command.contentVersion,
-                command: MarshallUtils.marshallCommand(command.command)
+                command: MarshallCompat.marshallCommand(command.command)
             }
         } else if (type === "undo" || type === "redo") {
             let command: OtCommand = <OtCommand>data;

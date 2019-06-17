@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Oas20PathItem, Oas30PathItem, OasDocument, OasVisitorUtil} from "oai-ts-core";
+import {Oas20PathItem, Oas30PathItem, OasDocument, TraverserDirection, VisitorUtil} from "apicurio-data-models";
 import {FindPathItemsVisitor} from "../../_visitors/path-items.visitor";
 
 
@@ -50,7 +50,7 @@ export class RenamePathDialogComponent {
     public open(document: OasDocument, path: Oas20PathItem | Oas30PathItem): void {
         this._isOpen = true;
         this.path = path;
-        this.name = path.path();
+        this.name = path.getPath();
         this.alsoSubpaths = true;
 
         this.renamePathModal.changes.subscribe( () => {
@@ -63,14 +63,14 @@ export class RenamePathDialogComponent {
         this.pathExists = false;
         let paths: (Oas20PathItem | Oas30PathItem)[] = this.getPaths(document);
         paths.forEach( path => {
-            this.paths.push(path.path());
+            this.paths.push(path.getPath());
         });
-        this.numSubpaths = this.calculateNumberOfSubpaths(path.path());
+        this.numSubpaths = this.calculateNumberOfSubpaths(path.getPath());
     }
 
     private getPaths(document: OasDocument): (Oas20PathItem | Oas30PathItem)[] {
         let vizzy: FindPathItemsVisitor = new FindPathItemsVisitor(null);
-        OasVisitorUtil.visitTree(document, vizzy);
+        VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
         return vizzy.getSortedPathItems() as (Oas20PathItem | Oas30PathItem)[];
     }
 

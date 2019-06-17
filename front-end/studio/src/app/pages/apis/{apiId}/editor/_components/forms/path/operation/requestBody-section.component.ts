@@ -25,36 +25,32 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
+    CommandFactory,
+    DocumentType,
+    ICommand,
     IOasParameterParent,
+    Node,
     Oas20Operation,
     Oas20Parameter,
     Oas30Operation,
     Oas30RequestBody,
-    OasNode,
     OasOperation,
-    OasPathItem
-} from "oai-ts-core";
+    OasPathItem,
+    OasSchema,
+    SimplifiedParameterType,
+    SimplifiedType
+} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {
     IParameterEditorHandler,
     ParameterData,
     ParameterEditorComponent
 } from "../../../editors/parameter-editor.component";
-import {
-    createChangeParameterTypeCommand,
-    createChangePropertyCommand,
-    createDeleteAllParametersCommand,
-    createDeleteParameterCommand,
-    createDeleteRequestBodyCommand,
-    createNewParamCommand,
-    createNewRequestBodyCommand,
-    createRenameParameterCommand,
-    ICommand,
-    SimplifiedParameterType,
-    SimplifiedType
-} from "oai-ts-commands";
 import {EditorsService} from "../../../../_services/editors.service";
-import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
+import {
+    DropDownOption,
+    DropDownOptionValue as Value
+} from "../../../../../../../../components/common/drop-down.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
@@ -87,22 +83,22 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     public ngOnInit(): void {
         super.ngOnInit();
-        this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
+        this.showRequestBody = this.operation.getMethod() === 'put' || this.operation.getMethod() === 'post';
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
         if (changes["operation"]) {
-            this.showRequestBody = this.operation.method() === 'put' || this.operation.method() === 'post';
+            this.showRequestBody = this.operation.getMethod() === 'put' || this.operation.getMethod() === 'post';
         }
     }
 
     public is20Document(): boolean {
-        return this.operation.ownerDocument().is2xDocument();
+        return this.operation.ownerDocument().getDocumentType() == DocumentType.openapi2;
     }
 
     public is30Document(): boolean {
-        return this.operation.ownerDocument().is3xDocument();
+        return this.operation.ownerDocument().getDocumentType() == DocumentType.openapi3;
     }
 
     public requestBodyPaths(): string | string[] {
@@ -134,13 +130,13 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     }
 
     public addFormDataParam(data: ParameterData): void {
-        let command: ICommand = createNewParamCommand(this.operation.ownerDocument(), this.operation, data.name,
-            "formData", data.description, data.type);
+        let command: ICommand = CommandFactory.createNewParamCommand(this.operation, data.name, "formData",
+            data.description, data.type, false);
         this.commandService.emit(command);
     }
 
     public parameters(paramType: string): Oas20Parameter[] {
-        let params: Oas20Parameter[] = this.operation.getParameters(paramType) as Oas20Parameter[];
+        let params: Oas20Parameter[] = this.operation.getParametersIn(paramType) as Oas20Parameter[];
         return params.sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
@@ -193,28 +189,28 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     public deleteRequestBody(): void {
         if (this.is30Document()) {
-            let command: ICommand = createDeleteRequestBodyCommand(this.operation.ownerDocument(), this.operation as Oas30Operation);
+            let command: ICommand = CommandFactory.createDeleteRequestBodyCommand(this.operation as Oas30Operation);
             this.commandService.emit(command);
         } else {
             if (this.hasBodyParam()) {
-                let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "body");
+                let command: ICommand = CommandFactory.createDeleteAllParametersCommand(this.operation, "body");
                 this.commandService.emit(command);
             } else {
-                let command: ICommand = createDeleteAllParametersCommand(this.operation.ownerDocument(), this.operation, "formData");
+                let command: ICommand = CommandFactory.createDeleteAllParametersCommand(this.operation, "formData");
                 this.commandService.emit(command);
             }
         }
     }
 
     public requestBodyParams(): Oas20Parameter[] {
-        let params: Oas20Parameter[] = this.operation.getParameters("body") as Oas20Parameter[];
-        this.operation.getParameters("formData").forEach( param => {
+        let params: Oas20Parameter[] = this.operation.getParametersIn("body") as Oas20Parameter[];
+        this.operation.getParametersIn("formData").forEach( param => {
             params.push(param as Oas20Parameter);
         });
         return params;
     }
 
-    public validationModels(): OasNode[] {
+    public validationModels(): Node[] {
         if (this.is20Document()) {
             return this.requestBodyParams();
         } else {
@@ -223,7 +219,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     }
 
     public addRequestBody(): void {
-        let command: ICommand = createNewRequestBodyCommand(this.operation.ownerDocument(), this.operation);
+        let command: ICommand = CommandFactory.createNewRequestBodyCommand(this.operation.ownerDocument().getDocumentType(), this.operation);
         this.commandService.emit(command);
     }
 
@@ -249,11 +245,11 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
         console.info("[RequestBodySectionComponent] Changing request body to: ", newBodyDescription);
         if (this.is20Document()) {
             let bodyParam: Oas20Parameter = this.bodyParam();
-            let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), bodyParam,
+            let command: ICommand = CommandFactory.createChangePropertyCommand<string>(bodyParam,
                 "description", newBodyDescription);
             this.commandService.emit(command);
         } else {
-            let command: ICommand = createChangePropertyCommand<string>(this.operation.ownerDocument(), this.requestBody(),
+            let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.requestBody(),
                 "description", newBodyDescription);
             this.commandService.emit(command);
         }
@@ -262,7 +258,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     public requestBodyType(): SimplifiedType {
         let bodyParam: Oas20Parameter = this.bodyParam();
         if (bodyParam && bodyParam.schema) {
-            return SimplifiedType.fromSchema(bodyParam.schema);
+            return SimplifiedType.fromSchema(<OasSchema> bodyParam.schema);
         }
         return null;
     }
@@ -271,17 +267,17 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
         let bodyParam: Oas20Parameter = this.bodyParam();
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
         nt.required = true; // Body params are always required
 
-        let command: ICommand = createChangeParameterTypeCommand(this.operation.ownerDocument(), bodyParam, nt);
+        let command: ICommand = CommandFactory.createChangeParameterTypeCommand(this.operation.ownerDocument().getDocumentType(), bodyParam, nt);
         this.commandService.emit(command);
     }
 
     public deleteParam(parameter: Oas20Parameter): void {
-        let command: ICommand = createDeleteParameterCommand(this.operation.ownerDocument(), parameter);
+        let command: ICommand = CommandFactory.createDeleteParameterCommand(parameter);
         this.commandService.emit(command);
     }
 
@@ -298,7 +294,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     public changeRequestBodyRequired(value: string): void {
         let isRequired: boolean = value === "required";
-        let command: ICommand = createChangePropertyCommand(this.operation.ownerDocument(), this.requestBody(), "required", isRequired);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.requestBody(), "required", isRequired);
         this.commandService.emit(command);
     }
 
@@ -308,7 +304,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
      */
     public openRenameFormDataParameterDialog(parameter: Oas20Parameter): void {
         let parent: IOasParameterParent = <any>parameter.parent();
-        let paramNames: string[] = parent.getParameters("formData").map( param => { return param.name; });
+        let paramNames: string[] = parent.getParametersIn("formData").map( param => { return param.name; });
         this.renameFormDataDialog.open(parameter, parameter.name, newName => {
             return paramNames.indexOf(newName) !== -1;
         });
@@ -321,7 +317,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
     public renameFormDataParameter(event: RenameEntityEvent): void {
         let parameter: Oas20Parameter = <any>event.entity;
         let parent: OasPathItem | OasOperation = <any>parameter.parent();
-        let command: ICommand = createRenameParameterCommand(parent, parameter.name, event.newName, "formData");
+        let command: ICommand = CommandFactory.createRenameParameterCommand(parent, parameter.name, event.newName, "formData");
         this.commandService.emit(command);
     }
 

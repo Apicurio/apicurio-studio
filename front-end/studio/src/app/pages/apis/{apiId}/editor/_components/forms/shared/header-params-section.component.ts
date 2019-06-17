@@ -20,27 +20,26 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    SimpleChanges, ViewChild,
+    SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
+    CommandFactory,
+    ICommand,
     IOasParameterParent,
+    Library,
     Oas20Operation,
     Oas20Parameter,
     Oas20PathItem,
     Oas30Operation,
     Oas30Parameter,
-    Oas30PathItem, OasCombinedVisitorAdapter,
-    OasLibraryUtils, OasOperation,
-    OasPathItem, OasTag, OasVisitorUtil
-} from "oai-ts-core";
+    Oas30PathItem,
+    OasOperation,
+    OasParameter,
+    OasPathItem
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
-import {
-    createDeleteAllParametersCommand,
-    createDeleteParameterCommand,
-    createNewParamCommand, createRenameParameterCommand, createRenameTagDefinitionCommand,
-    ICommand
-} from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {
@@ -63,13 +62,12 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 })
 export class HeaderParamsSectionComponent extends AbstractBaseComponent {
 
-    @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
+    @Input() parent: IOasParameterParent;
     @Input() path: OasPathItem;
 
     @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
 
-    private _headerParameters: (Oas30Parameter | Oas20Parameter)[] = null;
-    private _library: OasLibraryUtils = new OasLibraryUtils();
+    private _headerParameters: OasParameter[] = null;
 
     public showSectionBody: boolean;
 
@@ -112,26 +110,21 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public hasParameters(type: string): boolean {
-        if (!this.parent.parameters) {
-            return false;
-        }
-        return this.parent.parameters.filter((value) => {
-            return value.in === type;
-        }).length > 0;
+        return this.parent.getParametersIn(type).length > 0
     }
 
     public hasHeaderParameters(): boolean {
-        return this.parent.getParameters("header").length > 0 || this.path.getParameters("header").length > 0;
+        return this.parent.getParametersIn("header").length > 0 || this.path.getParametersIn("header").length > 0;
     }
 
-    public parameters(paramType: string): (Oas30Parameter | Oas20Parameter)[] {
-        let params: (Oas30Parameter | Oas20Parameter)[] = this.parent.getParameters(paramType) as (Oas30Parameter | Oas20Parameter)[];
+    public parameters(paramType: string): OasParameter[] {
+        let params: OasParameter[] = this.parent.getParametersIn(paramType);
         return params.sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
     }
 
-    public headerParameters(): (Oas30Parameter | Oas20Parameter)[] {
+    public headerParameters(): OasParameter[] {
         if (this.isPathItem()) {
             return this.parameters("header");
         }
@@ -140,9 +133,9 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
             return this._headerParameters;
         }
 
-        let opParams: (Oas30Parameter | Oas20Parameter)[] = this.parameters("header");
-        let piParams: (Oas30Parameter | Oas20Parameter)[] = this.path.getParameters("header") as (Oas30Parameter | Oas20Parameter)[];
-        let hasOpParam = function(param: Oas30Parameter | Oas20Parameter): boolean {
+        let opParams: OasParameter[] = this.parameters("header");
+        let piParams: OasParameter[] = this.path.getParametersIn("header");
+        let hasOpParam = function(param: OasParameter): boolean {
             var found: boolean = false;
             opParams.forEach( opParam => {
                 if (opParam.name === param.name) {
@@ -153,9 +146,9 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
         };
         piParams.forEach( param => {
             if (!hasOpParam(param)) {
-                let missingParam: Oas30Parameter | Oas20Parameter = this.parent.createParameter();
-                this._library.readNode(this._library.writeNode(param), missingParam);
-                missingParam.n_attribute("missing", true);
+                let missingParam: OasParameter = this.parent.createParameter();
+                Library.readNode(Library.writeNode(param), missingParam);
+                missingParam.setAttribute("missing", true);
                 opParams.push(missingParam);
             }
         });
@@ -166,7 +159,7 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public headerParameterPaths(): string[] {
-        return this.parent.getParameters("header").map( param => {
+        return this.parent.getParametersIn("header").map( param => {
             return ModelUtils.nodeToPath(param);
         });
     }
@@ -180,22 +173,22 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
             },
             onCancel: () => {}
         };
-        editor.open(handler, this.parent);
+        editor.open(handler, <OasPathItem | OasOperation> this.parent);
     }
 
     public deleteAllHeaderParams(): void {
-        let command: ICommand = createDeleteAllParametersCommand(this.parent.ownerDocument(), this.parent, "header");
+        let command: ICommand = CommandFactory.createDeleteAllParametersCommand(this.parent, "header");
         this.commandService.emit(command);
     }
 
-    public deleteParam(parameter: Oas30Parameter | Oas20Parameter): void {
-        let command: ICommand = createDeleteParameterCommand(this.parent.ownerDocument(), parameter);
+    public deleteParam(parameter: OasParameter): void {
+        let command: ICommand = CommandFactory.createDeleteParameterCommand(parameter);
         this.commandService.emit(command);
     }
 
     public addHeaderParam(data: ParameterData): void {
-        let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, data.name,
-            "header", data.description, data.type);
+        let command: ICommand = CommandFactory.createNewParamCommand(this.parent, data.name,
+            "header", data.description, data.type, false);
         this.commandService.emit(command);
     }
 
@@ -203,9 +196,9 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
      * Opens the rename parameter dialog.
      * @param parameter
      */
-    public openRenameDialog(parameter: Oas20Parameter | Oas30Parameter): void {
+    public openRenameDialog(parameter: OasParameter): void {
         let parent: IOasParameterParent = <any>parameter.parent();
-        let paramNames: string[] = parent.getParameters("header").map( param => { return param.name; });
+        let paramNames: string[] = parent.getParametersIn("header").map( param => { return param.name; });
         this.renameDialog.open(parameter, parameter.name, newName => {
             return paramNames.indexOf(newName) !== -1;
         });
@@ -216,9 +209,9 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
      * @param event
      */
     public rename(event: RenameEntityEvent): void {
-        let parameter: Oas20Parameter | Oas30Parameter = <any>event.entity;
+        let parameter: OasParameter = <any>event.entity;
         let parent: OasPathItem | OasOperation = <any>parameter.parent();
-        let command: ICommand = createRenameParameterCommand(parent, parameter.name, event.newName, "header");
+        let command: ICommand = CommandFactory.createRenameParameterCommand(parent, parameter.name, event.newName, "header");
         this.commandService.emit(command);
     }
 

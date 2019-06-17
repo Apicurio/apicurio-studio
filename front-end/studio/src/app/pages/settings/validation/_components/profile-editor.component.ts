@@ -18,7 +18,7 @@
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../../apis/{apiId}/editor/_util/keypress.util";
 import {ValidationProfile} from "../../../../models/validation.model";
-import {OasValidationProblemSeverity, OasValidationRuleset, ValidationRuleMetaData} from "oai-ts-core";
+import {ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 
 export interface ValidationRuleFilter {
@@ -53,7 +53,7 @@ export class ProfileEditorComponent {
      * Constructor.
      */
     constructor() {
-        let ruleset: OasValidationRuleset = new OasValidationRuleset();
+        let ruleset: ValidationRuleSet = new ValidationRuleSet();
         this.rules = ruleset.getAllRules();
         this.filter();
     }
@@ -65,22 +65,22 @@ export class ProfileEditorComponent {
     }
 
     isIgnore(rule: ValidationRuleMetaData): boolean {
-        return this.profile.severities[rule.code] === OasValidationProblemSeverity.ignore;
+        return this.profile.severities[rule.code] === ValidationProblemSeverity.ignore;
     }
 
     isInfo(rule: ValidationRuleMetaData): boolean {
         if (this.profile.severities[rule.code] === undefined) {
             return true;
         }
-        return this.profile.severities[rule.code] === OasValidationProblemSeverity.low;
+        return this.profile.severities[rule.code] === ValidationProblemSeverity.low;
     }
 
     isWarning(rule: ValidationRuleMetaData): boolean {
-        return this.profile.severities[rule.code] === OasValidationProblemSeverity.medium;
+        return this.profile.severities[rule.code] === ValidationProblemSeverity.medium;
     }
 
     isError(rule: ValidationRuleMetaData): boolean {
-        return this.profile.severities[rule.code] === OasValidationProblemSeverity.high;
+        return this.profile.severities[rule.code] === ValidationProblemSeverity.high;
     }
 
     isSelected(rule: ValidationRuleMetaData): boolean {
@@ -137,12 +137,12 @@ export class ProfileEditorComponent {
         });
     }
 
-    ignore(): OasValidationProblemSeverity { return OasValidationProblemSeverity.ignore; }
-    high(): OasValidationProblemSeverity { return OasValidationProblemSeverity.high; }
-    medium(): OasValidationProblemSeverity { return OasValidationProblemSeverity.medium; }
-    low(): OasValidationProblemSeverity { return OasValidationProblemSeverity.low; }
+    ignore(): ValidationProblemSeverity { return ValidationProblemSeverity.ignore; }
+    high(): ValidationProblemSeverity { return ValidationProblemSeverity.high; }
+    medium(): ValidationProblemSeverity { return ValidationProblemSeverity.medium; }
+    low(): ValidationProblemSeverity { return ValidationProblemSeverity.low; }
 
-    bulkEdit(severity: OasValidationProblemSeverity): void {
+    bulkEdit(severity: ValidationProblemSeverity): void {
         Object.getOwnPropertyNames(this.selectedRules).forEach( key => {
             let rule: ValidationRuleMetaData = this.findRule(key);
             if (rule) {
@@ -176,10 +176,10 @@ export class ProfileEditorComponent {
 
     severityOptions(): DropDownOption[] {
         return [
-            new Value("None", OasValidationProblemSeverity.ignore),
-            new Value("Low", OasValidationProblemSeverity.low),
-            new Value("Medium", OasValidationProblemSeverity.medium),
-            new Value("High", OasValidationProblemSeverity.high)
+            new Value("None", ValidationProblemSeverity.ignore),
+            new Value("Low", ValidationProblemSeverity.low),
+            new Value("Medium", ValidationProblemSeverity.medium),
+            new Value("High", ValidationProblemSeverity.high)
         ]
     }
 
@@ -327,13 +327,13 @@ export class ProfileEditorComponent {
 
     getFilterValue(filter: ValidationRuleFilter): string {
         if (filter.type === "severity") {
-            if (filter.value === OasValidationProblemSeverity.ignore) {
+            if (filter.value === ValidationProblemSeverity.ignore) {
                 return "None";
-            } else if (filter.value === OasValidationProblemSeverity.low) {
+            } else if (filter.value === ValidationProblemSeverity.low) {
                 return "Low";
-            } else if (filter.value === OasValidationProblemSeverity.medium) {
+            } else if (filter.value === ValidationProblemSeverity.medium) {
                 return "Medium";
-            } else if (filter.value === OasValidationProblemSeverity.high) {
+            } else if (filter.value === ValidationProblemSeverity.high) {
                 return "High";
             }
         }

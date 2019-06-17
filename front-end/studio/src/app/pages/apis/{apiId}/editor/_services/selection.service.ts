@@ -18,33 +18,32 @@
 
 import {Injectable} from "@angular/core";
 import {
+    CombinedAllNodeVisitor,
+    Library,
+    Node,
+    NodePath,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasLibraryUtils,
-    OasNode,
-    OasNodePath,
     OasPathItem,
-    OasValidationProblem,
-    OasVisitorUtil
-} from "oai-ts-core";
+    ValidationProblem
+} from "apicurio-data-models";
 import {ModelUtils} from "../_util/model.util";
-import {OasAllNodeVisitor} from "oai-ts-core/src/visitors/visitor.base";
 import {DocumentService} from "./document.service";
 import {Topic} from "apicurio-ts-core";
 
 
-class MainSelectionVisitor extends OasAllNodeVisitor {
+class MainSelectionVisitor extends CombinedAllNodeVisitor {
 
-    private _modFunction: (node: OasNode) => void;
-    private _nodeStack: OasNode[] = [];
+    private _modFunction: (node: Node) => void;
+    private _nodeStack: Node[] = [];
 
     constructor(clear: boolean = false) {
         super();
         this._modFunction = clear ? ModelUtils.clearSelection : ModelUtils.setSelection;
     }
 
-    protected doVisitNode(node: OasNode): void {
+    visitNode(node: Node): void {
         this._modFunction(node);
         this._nodeStack.push(node);
     }
@@ -65,10 +64,6 @@ class MainSelectionVisitor extends OasAllNodeVisitor {
         super.visitSchemaDefinition(node);
     }
 
-    public visitValidationProblem(node: OasValidationProblem): void {
-        this.clearNodeStack();
-        super.visitValidationProblem(node);
-    }
 }
 
 
@@ -78,8 +73,6 @@ class MainSelectionVisitor extends OasAllNodeVisitor {
  */
 @Injectable()
 export class SelectionService {
-
-    private _library: OasLibraryUtils = new OasLibraryUtils();
 
     private _selectionTopic: Topic<string>;
     private _highlightTopic: Topic<string>;
@@ -112,15 +105,15 @@ export class SelectionService {
         // Select the new thing
         let doc: OasDocument = this.documentService.currentDocument();
         let visitor: MainSelectionVisitor = new MainSelectionVisitor();
-        let npath: OasNodePath = new OasNodePath(path);
-        OasVisitorUtil.visitPath(npath, visitor, doc);
+        let npath: NodePath = new NodePath(path);
+        npath.resolveWithVisitor(doc, visitor);
 
         // Fire an event with the new selection path
         this._selectionTopic.send(path);
     }
 
-    public selectNode(node: OasNode): void {
-        this.select(this._library.createNodePath(node).toString());
+    public selectNode(node: Node): void {
+        this.select(Library.createNodePath(node).toString());
     }
 
     public selectRoot(): void {
@@ -148,8 +141,8 @@ export class SelectionService {
             let doc: OasDocument = this.documentService.currentDocument();
             if (doc) {
                 let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
-                let npath: OasNodePath = new OasNodePath(previousSelection);
-                OasVisitorUtil.visitPath(npath, visitor, doc);
+                let npath: NodePath = new NodePath(previousSelection);
+                npath.resolveWithVisitor(doc, visitor);
             }
         }
     }

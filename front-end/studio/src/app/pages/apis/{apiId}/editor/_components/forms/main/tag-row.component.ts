@@ -23,8 +23,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasTag} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, OasTag} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -93,7 +92,7 @@ export class TagRowComponent extends AbstractRowComponent<OasTag, string> {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }
 

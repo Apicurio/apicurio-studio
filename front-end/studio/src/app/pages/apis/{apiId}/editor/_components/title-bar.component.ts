@@ -29,8 +29,7 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {OasDocument, OasValidationProblem} from "oai-ts-core";
-import {createChangeTitleCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, OasDocument, ValidationProblem} from "apicurio-data-models";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
@@ -55,7 +54,7 @@ import {KeypressUtils} from "../_util/keypress.util";
 export class EditorTitleBarComponent extends AbstractBaseComponent implements AfterViewInit {
 
     @Input() document: OasDocument;
-    @Input() validationErrors: OasValidationProblem[];
+    @Input() validationErrors: ValidationProblem[];
     @Input() undoableCommandCount: number;
     @Input() redoableCommandCount: number;
     @Output() onUndoClick: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -110,7 +109,7 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
     public save(): void {
         this.editMode = false;
         console.info("[EditorTitleBarComponent] User changed the title to: " + this.newTitle);
-        let command: ICommand = createChangeTitleCommand(this.document, this.newTitle);
+        let command: ICommand = CommandFactory.createChangeTitleCommand(this.newTitle);
         this.commandService.emit(command);
     }
 

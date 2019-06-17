@@ -8,15 +8,15 @@
             <div class="context" *ngIf="contextIs === 'operation' || contextIs === 'pathItem'">
                 <div class="col-md-6 path">
                     <div class="context-label">Path</div>
-                    <div path-item class="context-value" [path]="pathItem().path()"></div>
+                    <div path-item class="context-value" [path]="pathItem().getPath()"></div>
                 </div>
                 <div class="col-md-6 operation" *ngIf="contextIs === 'operation'">
                     <span class="context-label">Operation</span>
                     <span class="label"
-                          [class.label-info]="operation().method() !== 'get' && operation().method() !== 'post' && operation().method() !== 'delete'"
-                          [class.label-success]="operation().method() === 'get'"
-                          [class.label-warning]="operation().method() === 'post'"
-                          [class.label-danger]="operation().method() === 'delete'">{{ operation().method() }}</span>
+                          [class.label-info]="operation().getMethod() !== 'get' && operation().getMethod() !== 'post' && operation().getMethod() !== 'delete'"
+                          [class.label-success]="operation().getMethod() === 'get'"
+                          [class.label-warning]="operation().getMethod() === 'post'"
+                          [class.label-danger]="operation().getMethod() === 'delete'">{{ operation().getMethod() }}</span>
                 </div>
             </div>
             <div class="context" *ngIf="contextIs === 'dataType'">

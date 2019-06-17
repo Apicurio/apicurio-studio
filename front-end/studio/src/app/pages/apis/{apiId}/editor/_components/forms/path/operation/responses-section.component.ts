@@ -23,17 +23,20 @@ import {
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Operation, Oas20Response, Oas30Operation, Oas30Response, OasResponse} from "oai-ts-core";
+import {
+    CommandFactory,
+    ICommand,
+    Oas20Operation,
+    Oas20Response,
+    Oas30Operation,
+    Oas30Response,
+    OasDocument,
+    OasResponse
+} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
 import {AddResponseDialogComponent} from "../../../dialogs/add-response.component";
 import {CloneResponseDialogComponent} from "../../../dialogs/clone-response.component";
-import {
-    createDeleteAllResponsesCommand,
-    createDeleteResponseCommand,
-    createNewResponseCommand,
-    ICommand
-} from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
@@ -84,18 +87,18 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public selectDefaultTab(): void {
-        let responses: OasResponse[] = this.operation.responses.responses();
+        let responses: OasResponse[] = this.operation.responses.getResponses();
         if (responses && responses.length > 0) {
-            this._responseTab = (responses[0] as Oas20Response | Oas30Response).statusCode();
+            this._responseTab = (responses[0] as Oas20Response | Oas30Response).getStatusCode();
         }
     }
 
     public is20Document(): boolean {
-        return this.operation.ownerDocument().is2xDocument();
+        return (<OasDocument>this.operation.ownerDocument()).is2xDocument();
     }
 
     public is30Document(): boolean {
-        return this.operation.ownerDocument().is3xDocument();
+        return (<OasDocument>this.operation.ownerDocument()).is3xDocument();
     }
 
     public openAddResponseModal(): void {
@@ -107,7 +110,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public addResponse(statusCode: string): void {
-        let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(), this.operation, statusCode);
+        let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, null);
         this.commandService.emit(command);
         // FIXME fire a selection event here instead of simply setting the tab selection - doing this will let OTHER users know what we're looking at.
         this._responseTab = statusCode;
@@ -115,14 +118,13 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
 
     public cloneResponse(statusCode: string): void {
         const selectedStatusCode = this._responseTab;
-        const originalResponse = this.operation.responses.response(selectedStatusCode);
-        let command: ICommand = createNewResponseCommand(this.operation.ownerDocument(),
-            this.operation, statusCode, originalResponse);
+        const originalResponse = this.operation.responses.getResponse(selectedStatusCode);
+        let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, originalResponse);
         this.commandService.emit(command);
     }
 
     public deleteAllResponses(): void {
-        let command: ICommand = createDeleteAllResponsesCommand(this.operation.ownerDocument(), this.operation);
+        let command: ICommand = CommandFactory.createDeleteAllResponsesCommand(this.operation);
         this.commandService.emit(command);
     }
 
@@ -131,12 +133,12 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
             return [];
         }
         let rval: (Oas20Response|Oas30Response)[] = [];
-        for (let scode of this.operation.responses.responseStatusCodes()) {
-            let response: Oas20Response | Oas30Response = this.operation.responses.response(scode) as Oas20Response | Oas30Response;
+        for (let scode of this.operation.responses.getResponseStatusCodes()) {
+            let response: Oas20Response | Oas30Response = this.operation.responses.getResponse(scode) as Oas20Response | Oas30Response;
             rval.push(response);
         }
         return rval.sort((a, b) => {
-            return a.statusCode().localeCompare(b.statusCode());
+            return a.getStatusCode().localeCompare(b.getStatusCode());
         });
     }
 
@@ -144,7 +146,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         if (!this.operation.responses) {
             return false;
         }
-        if (this.operation.responses.responseStatusCodes().length === 0) {
+        if (this.operation.responses.getResponseStatusCodes().length === 0) {
             return false;
         }
 
@@ -152,7 +154,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public deleteResponse(response: Oas20Response | Oas30Response): void {
-        let command: ICommand = createDeleteResponseCommand(this.operation.ownerDocument(), response);
+        let command: ICommand = CommandFactory.createDeleteResponseCommand(response);
         this.commandService.emit(command);
         if (this.isTabActive(response)) {
             this.selectDefaultTab();
@@ -193,16 +195,16 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     }
 
     public isTabActive(response: Oas20Response | Oas30Response): boolean {
-        return response.statusCode() === this._responseTab;
+        return response.getStatusCode() === this._responseTab;
     }
 
     public setTab(response: Oas20Response | Oas30Response): void {
-        this._responseTab = response.statusCode();
+        this._responseTab = response.getStatusCode();
     }
 
     public currentResponse(): Oas20Response | Oas30Response {
         if (this._responseTab) {
-            return this.operation.responses.response(this._responseTab) as Oas20Response | Oas30Response;
+            return this.operation.responses.getResponse(this._responseTab) as Oas20Response | Oas30Response;
         }
         return null;
     }
@@ -214,7 +216,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
                 if (code.indexOf("1") === 0) {
                     continue;
                 }
-                let response: any = this.operation.responses.response(code);
+                let response: any = this.operation.responses.getResponse(code);
                 if (!response) {
                     return code;
                 }

@@ -34,12 +34,11 @@ import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
 import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {OtCommand} from "oai-ts-commands";
+import {DefaultSeverityRegistry, IValidationSeverityRegistry, OtCommand} from "apicurio-data-models";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {Title} from "@angular/platform-browser";
-import {DefaultValidationSeverityRegistry, IOasValidationSeverityRegistry} from "oai-ts-core";
 import {ValidationProfileExt, ValidationService} from "../../../../services/validation.service";
 import {ConfigService} from "../../../../services/config.service";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
@@ -204,7 +203,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     private currentEditorSelection: string;
 
-    protected validationRegistry: IOasValidationSeverityRegistry = new DefaultValidationSeverityRegistry();
+    protected validationRegistry: IValidationSeverityRegistry = new DefaultSeverityRegistry();
 
     private previewWindow: Window = null;
 

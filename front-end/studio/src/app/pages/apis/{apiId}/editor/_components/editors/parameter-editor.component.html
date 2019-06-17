@@ -77,7 +77,7 @@
                     </div>
                     <div class="param-enum" id="param-enum" *ngIf="shouldShowEnumEditor()">
                         <span class="enum-label">Enum Values: </span>
-                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum" (onChange)="changeTypeEnum($event)"
+                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum_" (onChange)="changeTypeEnum($event)"
                                              noValueMessage="Click to define enum values."></inline-array-editor>
                     </div>
                 </div>

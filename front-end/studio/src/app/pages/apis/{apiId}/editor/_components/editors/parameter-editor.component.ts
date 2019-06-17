@@ -16,10 +16,19 @@
  */
 
 import {Component, ViewEncapsulation} from "@angular/core";
-import {IOasParameterParent, Oas20Parameter, Oas30Parameter} from "oai-ts-core";
+import {
+    IOasParameterParent,
+    Oas20Parameter,
+    Oas30Parameter, OasParameter,
+    SimplifiedParameterType,
+    SimplifiedType
+} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
-import {SimplifiedParameterType, SimplifiedType} from "oai-ts-commands";
-import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
+import {
+    DIVIDER,
+    DropDownOption,
+    DropDownOptionValue as Value
+} from "../../../../../../components/common/drop-down.component";
 import {ObjectUtils} from "apicurio-ts-core";
 
 export interface ParameterData {
@@ -60,7 +69,7 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
     public doAfterOpen(): void {
         this.params = [];
         this.paramExists = false;
-        let parameters: (Oas20Parameter | Oas30Parameter)[] = this.getParams();
+        let parameters: OasParameter[] = this.getParams();
         this.params = parameters.map(p => p.name);
     }
 
@@ -104,8 +113,8 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
     /**
      * Gets the array of parameters for the current context.
      */
-    private getParams(): (Oas20Parameter | Oas30Parameter)[] {
-        return (this.context as IOasParameterParent).getParameters(this._paramType) as any;
+    private getParams(): OasParameter[] {
+        return ((<IOasParameterParent>this.context).getParametersIn(this._paramType));
     }
 
     public isRequired(): boolean {
@@ -228,17 +237,17 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
     public changeType(type: string): void {
         if (type === "enum") {
             this.model.type.type = null;
-            this.model.type.enum = [];
+            this.model.type.enum_ = [];
         } else {
             this.model.type.type = type;
-            this.model.type.enum = null;
+            this.model.type.enum_ = null;
             this.model.type.of = null;
             this.model.type.as = null;
         }
     }
 
     public changeTypeEnum(value: string[]): void {
-        this.model.type.enum = value;
+        this.model.type.enum_ = value;
     }
 
     public changeTypeOf(typeOf: string): void {

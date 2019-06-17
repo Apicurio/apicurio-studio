@@ -16,8 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas30Response} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, Oas30Response} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
@@ -42,7 +41,7 @@ export class ResponseTab30Component extends AbstractBaseComponent {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.response.ownerDocument(), this.response, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.response, "description", description);
         this.commandService.emit(command);
     }
 

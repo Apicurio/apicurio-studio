@@ -23,19 +23,18 @@ import {
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20PathItem, Oas30PathItem, OasDocument, OasParameterBase, OasPathItem, OasPaths} from "oai-ts-core";
 import {
-    createAddPathItemCommand,
-    createChangeParameterTypeCommand,
-    createChangePropertyCommand,
-    createDeleteParameterCommand,
-    createDeletePathCommand,
-    createNewPathCommand,
-    createRenamePathItemCommand,
-    createReplacePathItemCommand,
+    CommandFactory,
     ICommand,
+    Library,
+    Oas20PathItem,
+    Oas30PathItem,
+    OasDocument,
+    OasParameter,
+    OasPathItem,
+    OasPaths,
     SimplifiedParameterType
-} from "oai-ts-commands";
+} from "apicurio-data-models";
 import {SourceFormComponent} from "./source-form.base";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";
@@ -44,7 +43,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
-import {SectionComponent} from "./shared/section.component";
 
 
 @Component({
@@ -81,52 +79,56 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     }
 
     protected createEmptyNodeForSource(): OasPathItem {
-        return (<OasPaths>this.path.parent()).createPathItem(this.path.path());
+        return (<OasPaths>this.path.parent()).createPathItem(this.path.getPath());
     }
 
     protected createReplaceNodeCommand(node: OasPathItem): ICommand {
-        return createReplacePathItemCommand(this.path.ownerDocument(), this.path as any, node as any);
+        return CommandFactory.createReplacePathItemCommand(this.path, node);
     }
 
     public document(): OasDocument {
-        return this.path.ownerDocument();
+        return <OasDocument>this.path.ownerDocument();
+    }
+
+    public is3xDocument(): boolean {
+        return (<OasDocument>this.path.ownerDocument()).is3xDocument();
     }
 
     public delete(): void {
-        let command: ICommand = createDeletePathCommand(this.path.ownerDocument(), this.path.path());
+        let command: ICommand = CommandFactory.createDeletePathCommand(this.path.getPath());
         this.commandService.emit(command);
     }
 
     public newPath(): void {
-        this.addPathDialog.open(this.path.ownerDocument(), this.path.path());
+        this.addPathDialog.open(<OasDocument>this.path.ownerDocument(), this.path.getPath());
     }
 
     public addPath(path: string): void {
-        let command: ICommand = createNewPathCommand(this.path.ownerDocument(), path);
+        let command: ICommand = CommandFactory.createNewPathCommand(path);
         this.commandService.emit(command);
     }
 
     public clone(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.clonePathDialog.open(this.path.ownerDocument(), this.path);
+            this.clonePathDialog.open(<OasDocument>this.path.ownerDocument(), this.path);
         } else {
             let pathItem: OasPathItem = modalData.object;
             console.info("[PathFormComponent] Clone path item: %s", modalData.path);
-            let cloneSrcObj: any = this.oasLibrary().writeNode(pathItem);
-            let command: ICommand = createAddPathItemCommand(this.path.ownerDocument(), modalData.path, cloneSrcObj);
+            let cloneSrcObj: any = Library.writeNode(pathItem);
+            let command: ICommand = CommandFactory.createAddPathItemCommand(modalData.path, cloneSrcObj);
             this.commandService.emit(command);
         }
     }
 
     public rename(modalData?: any): void {
         if (undefined === modalData || modalData === null) {
-            this.renamePathDialog.open(this.path.ownerDocument(), this.path as Oas20PathItem | Oas30PathItem);
+            this.renamePathDialog.open(<OasDocument>this.path.ownerDocument(), this.path as Oas20PathItem | Oas30PathItem);
         } else {
             let path: OasPathItem = modalData.path;
             console.info("[PathFormComponent] Rename path item: %s", modalData.path);
-            let oldName: string = path.path();
+            let oldName: string = path.getPath();
             console.info("[PathFormComponent] Rename definition to: %s", modalData.name);
-            let command: ICommand = createRenamePathItemCommand(this.path.ownerDocument(), oldName, modalData.name, modalData.renameSubpaths);
+            let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
             this.commandService.emit(command);
         }
     }
@@ -140,11 +142,11 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
             }).length > 0;
     }
 
-    public parameters(paramType: string): OasParameterBase[] {
+    public parameters(paramType: string): OasParameter[] {
         if (!this.path.parameters) {
             return [];
         }
-        let params: OasParameterBase[] = this.path.parameters;
+        let params: OasParameter[] = this.path.parameters;
         return params.filter( value => {
             return value.in === paramType;
         }).sort((param1, param2) => {
@@ -152,18 +154,19 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         });
     }
 
-    public changeParamDescription(param: OasParameterBase, newParamDescription: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.path.ownerDocument(), param, "description", newParamDescription);
+    public changeParamDescription(param: OasParameter, newParamDescription: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(param, "description", newParamDescription);
         this.commandService.emit(command);
     }
 
-    public changeParamType(param: OasParameterBase, newType: SimplifiedParameterType): void {
-        let command: ICommand = createChangeParameterTypeCommand(this.path.ownerDocument(), param as any, newType);
+    public changeParamType(param: OasParameter, newType: SimplifiedParameterType): void {
+        let command: ICommand = CommandFactory.createChangeParameterTypeCommand(this.path.ownerDocument().getDocumentType(),
+            param as any, newType);
         this.commandService.emit(command);
     }
 
-    public deleteParam(parameter: OasParameterBase): void {
-        let command: ICommand = createDeleteParameterCommand(this.path.ownerDocument(), parameter as any);
+    public deleteParam(parameter: OasParameter): void {
+        let command: ICommand = CommandFactory.createDeleteParameterCommand(parameter);
         this.commandService.emit(command);
     }
 

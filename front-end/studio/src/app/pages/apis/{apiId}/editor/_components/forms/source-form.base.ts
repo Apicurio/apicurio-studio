@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-import {OasLibraryUtils, OasNode} from "oai-ts-core";
+import {ICommand, Library, Node} from "apicurio-data-models";
 
 import * as YAML from 'js-yaml';
-import {ICommand} from "oai-ts-commands";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
@@ -32,9 +31,7 @@ import {ObjectUtils} from "apicurio-ts-core";
 /**
  * Base class for all forms that support a "Source" tab.
  */
-export abstract class SourceFormComponent<T extends OasNode> extends AbstractBaseComponent {
-
-    private static library: OasLibraryUtils = new OasLibraryUtils();
+export abstract class SourceFormComponent<T extends Node> extends AbstractBaseComponent {
 
     private _mode: string = "design";
     private _sourceFormat: CodeEditorMode = CodeEditorMode.YAML;
@@ -58,7 +55,7 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
 
     public sourceJs(): any {
         if (this._sourceJsObj === null) {
-            this._sourceJsObj = SourceFormComponent.library.writeNode(this.sourceNode);
+            this._sourceJsObj = Library.writeNode(this.sourceNode);
         }
         return this._sourceJsObj;
     }
@@ -95,10 +92,12 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
             this._source.parseable = true;
             let currentJsObj: any = this.sourceJs();
             this._source.dirty = !ObjectUtils.objectEquals(currentJsObj, newJsObject);
-            this._source.value = SourceFormComponent.library.readNode(newJsObject, this.createEmptyNodeForSource());
+            let node: Node = this.createEmptyNodeForSource();
+            Library.readNode(newJsObject, node);
+            this._source.value = node;
             this._source.valid = true;
         } catch (e) {
-            // TODO handle this error?
+            // OK to suppress this - it's likely the case that the text isn't valid/parseable.
         }
     }
 
@@ -246,10 +245,6 @@ export abstract class SourceFormComponent<T extends OasNode> extends AbstractBas
 
     public enableSourceMode(): void {
         this._mode = "source";
-    }
-
-    public oasLibrary(): OasLibraryUtils {
-        return SourceFormComponent.library;
     }
 
     public sourceEditorTheme(): CodeEditorTheme {

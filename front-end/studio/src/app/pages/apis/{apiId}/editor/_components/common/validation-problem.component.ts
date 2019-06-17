@@ -16,7 +16,13 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, Input} from "@angular/core";
-import {OasNode, OasValidationProblem, OasValidationProblemSeverity, OasVisitorUtil} from "oai-ts-core";
+import {
+    Node,
+    TraverserDirection,
+    ValidationProblem,
+    ValidationProblemSeverity,
+    VisitorUtil
+} from "apicurio-data-models";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";
@@ -32,15 +38,15 @@ import {KeypressUtils} from "../../_util/keypress.util";
 })
 export class ValidationProblemComponent extends AbstractBaseComponent {
 
-    protected _model: OasNode;
+    protected _model: Node;
     @Input()
-    set model(model: OasNode) {
+    set model(model: Node) {
         if (model !== this._model) {
             this._problems = undefined;
         }
         this._model = model;
     }
-    get model(): OasNode {
+    get model(): Node {
         return this._model;
     }
     @Input() property: string;
@@ -52,7 +58,7 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
     public left: string;
     public top: string;
 
-    private _problems: OasValidationProblem[] = undefined;
+    private _problems: ValidationProblem[] = undefined;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private problemsService: ProblemsService, private selectionService: SelectionService) {
@@ -95,7 +101,7 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
         return this.validationProblems().length > 0;
     }
 
-    public validationProblems(): OasValidationProblem[] {
+    public validationProblems(): ValidationProblem[] {
         if (this._problems === undefined) {
             if (this._model) {
 
@@ -108,9 +114,9 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
                 let finder: ProblemFinder = new ProblemFinder(props, codes);
 
                 if (this.shallow) {
-                    OasVisitorUtil.visitNode(this.model, finder);
+                    VisitorUtil.visitNode(this.model, finder);
                 } else {
-                    OasVisitorUtil.visitTree(this.model, finder);
+                    VisitorUtil.visitTree(this.model, finder, TraverserDirection.down);
                 }
 
                 this._problems = finder.getProblems();
@@ -122,39 +128,39 @@ export class ValidationProblemComponent extends AbstractBaseComponent {
     }
 
     public icon(): string {
-        let problems: OasValidationProblem[] = this.validationProblems();
-        let maxSeverity: OasValidationProblemSeverity = null;
+        let problems: ValidationProblem[] = this.validationProblems();
+        let maxSeverity: ValidationProblemSeverity = null;
         problems.forEach( problem => {
             if (maxSeverity === null || problem.severity > maxSeverity) {
                 maxSeverity = problem.severity;
             }
         });
         switch (maxSeverity) {
-            case OasValidationProblemSeverity.low:
+            case ValidationProblemSeverity.low:
                 return "pficon-info";
-            case OasValidationProblemSeverity.medium:
+            case ValidationProblemSeverity.medium:
                 return "pficon-warning-triangle-o";
-            case OasValidationProblemSeverity.high:
+            case ValidationProblemSeverity.high:
                 return "pficon-error-circle-o";
             default:
                 return "";
         }
     }
 
-    public iconFor(problem: OasValidationProblem): string {
+    public iconFor(problem: ValidationProblem): string {
         switch (problem.severity) {
-            case OasValidationProblemSeverity.low:
+            case ValidationProblemSeverity.low:
                 return "pficon-info";
-            case OasValidationProblemSeverity.medium:
+            case ValidationProblemSeverity.medium:
                 return "pficon-warning-triangle-o";
-            case OasValidationProblemSeverity.high:
+            case ValidationProblemSeverity.high:
                 return "pficon-error-circle-o";
             default:
                 return "";
         }
     }
 
-    public summaryFor(problem: OasValidationProblem): string {
+    public summaryFor(problem: ValidationProblem): string {
         return this.problemsService.summary(problem);
     }
 

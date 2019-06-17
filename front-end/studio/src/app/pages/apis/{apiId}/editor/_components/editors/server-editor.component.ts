@@ -16,7 +16,7 @@
  */
 
 import {Component, ViewChildren, QueryList} from "@angular/core";
-import {Oas30Server} from "oai-ts-core";
+import {Oas30Server} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {NgModel} from "@angular/forms";
 
@@ -69,10 +69,10 @@ export class ServerEditorComponent extends EntityEditor<Oas30Server, ServerEdito
         this.model.description = entity.description;
         this.model.variables = {};
         entity.getServerVariables().forEach( variable => {
-            this.model.variables[variable.name()] = {
-                "default": variable.default,
+            this.model.variables[variable.getName()] = {
+                "default": variable.default_,
                 "description": variable.description,
-                "enum": variable.enum
+                "enum": variable.enum_
             };
         });
         this.url = this.model.url;

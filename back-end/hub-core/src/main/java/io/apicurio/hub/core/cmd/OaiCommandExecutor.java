@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.js;
+package io.apicurio.hub.core.cmd;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
 
-import org.apache.commons.pool2.BasePooledObjectFactory;
-import org.apache.commons.pool2.ObjectPool;
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.cmd.ICommand;
+import io.apicurio.datamodels.compat.JsonCompat;
+import io.apicurio.datamodels.compat.MarshallCompat;
+import io.apicurio.datamodels.core.models.Document;
 
 /**
  * A service used to execute commands on an OAI document.  This executor uses 
@@ -48,25 +46,6 @@ import org.slf4j.LoggerFactory;
 public class OaiCommandExecutor {
 
     private static Logger logger = LoggerFactory.getLogger(OaiCommandExecutor.class);
-    private static ObjectPool<ScriptEngine> enginePool;
-    static {
-        enginePool = new GenericObjectPool<>(new BasePooledObjectFactory<ScriptEngine>() {
-
-            @Override
-            public ScriptEngine create() throws Exception {
-                URL libraryJsUrl = OaiCommandExecutor.class.getClassLoader().getResource("js-lib/core-library.js");
-
-                if (libraryJsUrl == null) { throw new Exception("Failed to load script: core-library.js"); }
-                
-                return OaiScriptEngineFactory.createScriptEngine(libraryJsUrl);
-            }
-
-            @Override
-            public PooledObject<ScriptEngine> wrap(ScriptEngine obj) {
-                return new DefaultPooledObject<ScriptEngine>(obj);
-            }
-        });
-    }
     
     /**
      * Executes the given sequence of commands (as serialized JSON) against the
@@ -79,23 +58,16 @@ public class OaiCommandExecutor {
         if (commands == null || commands.isEmpty()) {
             return oaiDocument;
         }
-        ScriptEngine engine = null;
-        try {
-            engine = enginePool.borrowObject();
-            final Invocable invocable = (Invocable) engine;
-            
-            String [] cmdList = commands.toArray(new String[commands.size()]);
-            String mutatedOaiDoc = invocable.invokeFunction("executeCommands", oaiDocument, cmdList).toString();
-            
-            return mutatedOaiDoc;
-        } catch (Exception e) {
-            logger.error("Error executing commands.", e);
-            throw new OaiCommandException(e);
-        } finally {
-            if (engine != null) {
-                try { enginePool.returnObject(engine); } catch (Exception e) {}
-            }
-        }
+        
+        logger.info("Applying {} commands to a document.", commands.size());
+        
+        Document doc = Library.readDocumentFromJSONString(oaiDocument);
+        commands.forEach(cmdStr -> {
+            ICommand cmd = MarshallCompat.unmarshallCommand(JsonCompat.parseJSON(cmdStr));
+            cmd.execute(doc);
+        });
+        
+        return Library.writeDocumentToJSONString(doc);
     }
 
 }

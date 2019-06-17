@@ -49,6 +49,7 @@ public class MockGitHubService implements IGitHubSourceConnector {
             "  \"swagger\" : \"2.0\",\r\n" + 
             "  \"info\" : {\r\n" + 
             "    \"title\": \"Swagger Sample App\",\r\n" + 
+            "    \"version\": \"1.0.1\",\r\n" + 
             "    \"description\": \"This is a sample server Petstore server.\",\r\n" + 
             "    \"termsOfService\": \"http://swagger.io/terms/\",\r\n" + 
             "    \"contact\": {\r\n" + 
@@ -59,8 +60,7 @@ public class MockGitHubService implements IGitHubSourceConnector {
             "    \"license\": {\r\n" + 
             "      \"name\": \"Apache 2.0\",\r\n" + 
             "      \"url\": \"http://www.apache.org/licenses/LICENSE-2.0.html\"\r\n" + 
-            "    },\r\n" + 
-            "    \"version\": \"1.0.1\"\r\n" + 
+            "    }\r\n" + 
             "  },\r\n" + 
             "  \"host\": \"example.org\",\r\n" + 
             "  \"basePath\" : \"/example-api\",\r\n" + 

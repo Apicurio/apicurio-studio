@@ -17,11 +17,11 @@
 
 import {Injectable} from "@angular/core";
 import {
-    DefaultValidationSeverityRegistry,
-    IOasValidationSeverityRegistry,
-    OasValidationProblemSeverity,
+    DefaultSeverityRegistry,
+    IValidationSeverityRegistry,
+    ValidationProblemSeverity,
     ValidationRuleMetaData
-} from "oai-ts-core";
+} from "apicurio-data-models";
 import {AbstractHubService} from "./hub";
 import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";
@@ -29,40 +29,40 @@ import {ConfigService} from "./config.service";
 import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../models/validation.model";
 
 
-export class StrictSeverityRegistry implements IOasValidationSeverityRegistry {
+export class StrictSeverityRegistry implements IValidationSeverityRegistry {
 
-    public lookupSeverity(): OasValidationProblemSeverity {
-        return OasValidationProblemSeverity.high;
+    public lookupSeverity(): ValidationProblemSeverity {
+        return ValidationProblemSeverity.high;
     }
 
 }
 
 
-export class NoValidationRegistry implements IOasValidationSeverityRegistry {
+export class NoValidationRegistry implements IValidationSeverityRegistry {
 
-    public lookupSeverity(): OasValidationProblemSeverity {
-        return OasValidationProblemSeverity.ignore;
+    public lookupSeverity(): ValidationProblemSeverity {
+        return ValidationProblemSeverity.ignore;
     }
 
 }
 
 
-export class MappedValidationSeverityRegistry implements IOasValidationSeverityRegistry {
+export class MappedValidationSeverityRegistry implements IValidationSeverityRegistry {
 
-    constructor(private severities: {[key: string]: OasValidationProblemSeverity}) {}
+    constructor(private severities: {[key: string]: ValidationProblemSeverity}) {}
 
-    public lookupSeverity(rule: ValidationRuleMetaData): OasValidationProblemSeverity {
+    public lookupSeverity(rule: ValidationRuleMetaData): ValidationProblemSeverity {
         if (this.severities[rule.code] !== undefined) {
             return this.severities[rule.code];
         }
-        return OasValidationProblemSeverity.low;
+        return ValidationProblemSeverity.low;
     }
 
 }
 
 
 export class ValidationProfileExt extends ValidationProfile {
-    registry: IOasValidationSeverityRegistry;
+    registry: IValidationSeverityRegistry;
     builtIn: boolean;
 }
 
@@ -101,7 +101,7 @@ export class ValidationService extends AbstractHubService {
                 description: "Validate against the OpenAPI specification rules only (no additional rules)",
                 severities: {},
                 builtIn: true,
-                registry: new DefaultValidationSeverityRegistry()
+                registry: new DefaultSeverityRegistry()
             },
             {
                 id: -3,
@@ -178,7 +178,7 @@ export class ValidationService extends AbstractHubService {
         console.info("[ValidationService] Fetching validation profiles: %s", url);
         return this.httpGet<ValidationProfile[]>(url, options).then( profiles => {
             this.profiles = profiles.map(profile => {
-                let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(profile.severities);
+                let severities: {[key: string]: ValidationProblemSeverity} = this.convertServerServerities(profile.severities);
                 return {
                     id: profile.id,
                     name: profile.name,
@@ -204,7 +204,7 @@ export class ValidationService extends AbstractHubService {
 
         console.info("[ValidationService] Creating a validation profile: %s", createUrl);
         return this.httpPostWithReturn<CreateValidationProfile, ValidationProfile>(createUrl, info, options).then( p => {
-            let severities: {[key: string]: OasValidationProblemSeverity} = this.convertServerServerities(p.severities);
+            let severities: {[key: string]: ValidationProblemSeverity} = this.convertServerServerities(p.severities);
             let newProfile: ValidationProfileExt = {
                 id: p.id,
                 name: p.name,
@@ -284,19 +284,19 @@ export class ValidationService extends AbstractHubService {
     }
 
     /**
-     * Convert from server format (strings) to local severity values (OasValidationProblemSeverity enum).
+     * Convert from server format (strings) to local severity values (ValidationProblemSeverity enum).
      * @param severities
      */
-    private convertServerServerities(severities: any): {[key: string]: OasValidationProblemSeverity} {
-        let rval: {[key: string]: OasValidationProblemSeverity} = {};
+    private convertServerServerities(severities: any): {[key: string]: ValidationProblemSeverity} {
+        let rval: {[key: string]: ValidationProblemSeverity} = {};
         Object.getOwnPropertyNames(severities).forEach( key => {
             let value: string = severities[key];
-            let severity: OasValidationProblemSeverity = OasValidationProblemSeverity.low;
+            let severity: ValidationProblemSeverity = ValidationProblemSeverity.low;
             switch (value) {
-                case "ignore": severity = OasValidationProblemSeverity.ignore; break;
-                case "low": severity = OasValidationProblemSeverity.low; break;
-                case "medium": severity = OasValidationProblemSeverity.medium; break;
-                case "high": severity = OasValidationProblemSeverity.high; break;
+                case "ignore": severity = ValidationProblemSeverity.ignore; break;
+                case "low": severity = ValidationProblemSeverity.low; break;
+                case "medium": severity = ValidationProblemSeverity.medium; break;
+                case "high": severity = ValidationProblemSeverity.high; break;
             }
             rval[key] = severity;
         });

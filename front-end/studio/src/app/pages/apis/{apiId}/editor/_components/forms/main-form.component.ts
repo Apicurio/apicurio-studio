@@ -16,12 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, OasLibraryUtils} from "oai-ts-core";
+import {OasDocument, Library, CommandFactory} from "apicurio-data-models";
 import {SourceFormComponent} from "./source-form.base";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
-import {createReplaceDocumentCommand, ICommand} from "oai-ts-commands";
+import {ICommand} from "apicurio-data-models";
 import {EditorsService} from "../../_services/editors.service";
 
 
@@ -33,8 +33,6 @@ import {EditorsService} from "../../_services/editors.service";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainFormComponent extends SourceFormComponent<OasDocument> {
-
-    library: OasLibraryUtils = new OasLibraryUtils();
 
     _document: OasDocument;
     @Input()
@@ -63,11 +61,11 @@ export class MainFormComponent extends SourceFormComponent<OasDocument> {
     }
 
     protected createEmptyNodeForSource(): OasDocument {
-        return this.library.createDocument(this.document.getSpecVersion());
+        return <OasDocument> Library.createDocument(this.document.getDocumentType());
     }
 
     protected createReplaceNodeCommand(node: OasDocument): ICommand {
-        return createReplaceDocumentCommand(this.document, node);
+        return CommandFactory.createReplaceDocumentCommand(this.document, node);
     }
 
     public saveSource(): void {

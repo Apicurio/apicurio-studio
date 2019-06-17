@@ -60,7 +60,7 @@
         </div>
 
         <!-- Consumes and Produces (2.0 only) -->
-        <div *ngIf="operation.ownerDocument().is2xDocument()">
+        <div *ngIf="is2xDocument()">
             <!-- Consumes -->
             <div class="section-field-label">
                 <validation-problem [model]="operation.ownerDocument()" property="consumes" [shallow]="true"></validation-problem>

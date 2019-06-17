@@ -23,7 +23,7 @@
                     <validation-problem [model]="requirement" [shallow]="true"></validation-problem>
                     <span class="fa fa-lock fa-fw" *ngIf="!isAnonSecurity(requirement)"></span>
                     <span class="fa fa-unlock fa-fw" *ngIf="isAnonSecurity(requirement)"></span>
-                    <span class="requirement-label" *ngIf="!isAnonSecurity(requirement)">{{ requirement.securityRequirementNames().join(", ") }}</span>
+                    <span class="requirement-label" *ngIf="!isAnonSecurity(requirement)">{{ requirement.getSecurityRequirementNames().join(", ") }}</span>
                     <span class="requirement-label no-security" *ngIf="isAnonSecurity(requirement)">No Security</span>
                 </div>
                 <div class="actions">

@@ -17,7 +17,7 @@
 
 
 import {Injectable} from "@angular/core";
-import {OasValidationProblem} from "oai-ts-core";
+import {ValidationProblem} from "apicurio-data-models";
 
 var PROBLEM_SUMMARIES = {
     // OpenAPI 2.0 Problems
@@ -476,7 +476,7 @@ export class ProblemsService {
      * Returns a human-readable summary for the given validation problem.
      * @param problem
      */
-    public summary(problem: OasValidationProblem): string {
+    public summary(problem: ValidationProblem): string {
         let summary: string = PROBLEM_SUMMARIES[problem.errorCode];
         if (summary === null || summary === undefined || summary === "") {
             summary = problem.message;
@@ -488,7 +488,7 @@ export class ProblemsService {
      * Returns a full human-readable explanation for the given validation problem.
      * @param problem
      */
-    public explanation(problem: OasValidationProblem): string {
+    public explanation(problem: ValidationProblem): string {
         let explanation: string = PROBLEM_EXPLANATIONS[problem.errorCode];
         if (!explanation) {
             explanation = "No additional information found.";

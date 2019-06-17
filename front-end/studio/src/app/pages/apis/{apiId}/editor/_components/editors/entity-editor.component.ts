@@ -19,19 +19,18 @@ import {
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasLibraryUtils,
-    OasNode,
+    Node,
     OasOperation,
-    OasPathItem
-} from "oai-ts-core";
+    OasPathItem, IDefinition, OasSchema
+} from "apicurio-data-models";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../_util/keypress.util";
 
-export interface EntityEditorEvent<T extends OasNode> {
+export interface EntityEditorEvent<T extends Node> {
     entity: T;
 }
 
-export interface IEntityEditorHandler<T extends OasNode, E extends EntityEditorEvent<T>> {
+export interface IEntityEditorHandler<T extends Node, E extends EntityEditorEvent<T>> {
     onSave(event: E): void;
     onCancel(event: E): void;
 }
@@ -41,9 +40,8 @@ export interface IEntityEditorHandler<T extends OasNode, E extends EntityEditorE
  * Base class for all entity editors.  T represents the type of entity being edited.  E represents
  * the event data structure.
  */
-export abstract class EntityEditor<T extends OasNode, E extends EntityEditorEvent<T>> {
+export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T>> {
 
-    public _library: OasLibraryUtils = new OasLibraryUtils();
     public _isOpen: boolean = false;
     public _mode: string = "create";
 
@@ -198,21 +196,23 @@ export class EntityEditorComponent implements OnChanges {
      * @param context
      */
     public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition): void {
-        if (context['_method']) {
+        if (context instanceof OasOperation) {
             this.contextIs = "operation";
             this._expandedContext.operation = context as OasOperation;
             this._expandedContext.pathItem = context.parent() as OasPathItem;
             this._expandedContext.document = context.ownerDocument();
-        } else if (context['_path']) {
+        } else if (context instanceof OasPathItem) {
             this.contextIs = "pathItem";
             this._expandedContext.pathItem = context as OasPathItem;
             this._expandedContext.document = context.ownerDocument();
         } else if (context.ownerDocument() === context) {
             this.contextIs = "document";
             this._expandedContext.document = context as OasDocument;
-        } else {
+        } else if (context instanceof OasSchema) {
             this.contextIs = "dataType";
             this._expandedContext.dataType = context as Oas20SchemaDefinition | Oas30SchemaDefinition;
+        } else {
+            console.warn("[EntityEditorComponent] Unknown/unexpected context: ", context);
         }
     }
 
@@ -242,11 +242,7 @@ export class EntityEditorComponent implements OnChanges {
      */
     public dataTypeName(): string {
         if (this._expandedContext.dataType) {
-            if (this._expandedContext.dataType["_definitionName"]) {
-                return (this._expandedContext.dataType as Oas20SchemaDefinition).definitionName();
-            } else {
-                return (this._expandedContext.dataType as Oas30SchemaDefinition).name();
-            }
+            return (<IDefinition> this._expandedContext.dataType).getName();
         }
         return null;
     }

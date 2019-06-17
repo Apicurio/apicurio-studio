@@ -26,7 +26,7 @@
 
         <!-- If we're using a 'body' param -->
         <div *ngIf="hasBodyParam()">
-            <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
+            <div class="alert alert-warning" *ngIf="operation.getMethod() === 'get'">
                 <span class="pficon pficon-warning-triangle-o"></span>
                 <strong>Not Recommended</strong>
                 <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
@@ -55,7 +55,7 @@
 
         <!-- If it's a 3.0 document -->
         <div *ngIf="hasRequestBody()">
-            <div class="alert alert-warning" *ngIf="operation.method() === 'get'">
+            <div class="alert alert-warning" *ngIf="operation.getMethod() === 'get'">
                 <span class="pficon pficon-warning-triangle-o"></span>
                 <strong>Not Recommended</strong>
                 <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
@@ -77,7 +77,7 @@
             </div>
             <div class="request-body-content">
                 <div class="form-label">Media Types</div>
-                <content [content]="requestBody().content" [parent]="requestBody()"></content>
+                <content [parent]="requestBody()"></content>
             </div>
         </div>
 

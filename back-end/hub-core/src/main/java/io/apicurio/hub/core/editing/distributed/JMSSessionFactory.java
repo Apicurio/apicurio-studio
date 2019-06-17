@@ -30,9 +30,9 @@ import javax.naming.InitialContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.hub.core.exceptions.NotFoundException;
-import io.apicurio.hub.core.js.OaiCommandException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.hub.core.util.JsonUtil;

@@ -62,7 +62,7 @@ public class HttpClientTest {
             portEnv = "9432";
         }
         HTTP_PORT = Integer.valueOf(portEnv);
-        System.out.println("Starting TCK test server on port " + HTTP_PORT);
+        System.out.println("[HttpClientTest] Starting test server on port " + HTTP_PORT);
         server = HttpServer.create(new InetSocketAddress(HTTP_PORT), 0);
         server.createContext("/echo", new EchoHandler());
         server.setExecutor(null);

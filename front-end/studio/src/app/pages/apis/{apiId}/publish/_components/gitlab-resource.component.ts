@@ -66,9 +66,11 @@ export class GitLabResourceComponent implements OnInit {
         // Get the list of groups (async)
         this.gettingGroups = true;
         this.onValid.emit(false);
-        this.preloadValue.group = this.value.group;
-        this.preloadValue.project = this.value.project;
-        this.preloadValue.branch = this.value.branch;
+        if (this.value) {
+            this.preloadValue.group = this.value.group;
+            this.preloadValue.project = this.value.project;
+            this.preloadValue.branch = this.value.branch;
+        }
         this.linkedAccounts.getAccountGroups("GitLab").then( groups => {
             groups.sort( (group1, group2) => {
                 return group1.name.localeCompare(group2.name);

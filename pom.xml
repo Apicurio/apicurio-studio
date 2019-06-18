@@ -115,7 +115,7 @@
         <version.org.apache.httpcomponents>4.5.9</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.11</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.6.2</version.org.apache.commons.commons-pool2>
-        <version.org.jboss.resteasy>3.7.0.Final</version.org.jboss.resteasy>
+        <version.org.jboss.resteasy>3.8.0.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
         <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>1.1.4.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>1.0.2.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>

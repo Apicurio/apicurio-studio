@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, Inject} from "@angular/core";
+import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApisService} from "../../../services/apis.service";
@@ -82,10 +82,6 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         return this.api.type === "OpenAPI30";
     }
 
-    public isMicrocksEnabled(): boolean {
-        return this.config.isMicrocksEnabled();
-    }
-
     /**
      * The page title.
      */
@@ -146,26 +142,30 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             console.error("[ApiDetailPageComponent] Error getting API activity");
             this.error(error);
         });
-        this.apis.getCollaborators(apiId).then( collaborators => {
-            this.collaborators = collaborators;
-            this.dataLoaded["collaborators"] = true;
+        if (!this.config.isShareWithEveryoneEnabled()) {
+            this.apis.getCollaborators(apiId).then(collaborators => {
+                this.collaborators = collaborators;
+                this.dataLoaded["collaborators"] = true;
 
-            // Now for the true test of whether the logged-in user can delete the API.
-            let user: User = this.authService.getAuthenticatedUserNow();
-            collaborators.forEach( collaborator => {
-                if (collaborator.userId === user.login) {
-                    this.canDelete = collaborator.role === "owner";
-                }
+                // Now for the true test of whether the logged-in user can delete the API.
+                let user: User = this.authService.getAuthenticatedUserNow();
+                collaborators.forEach(collaborator => {
+                    if (collaborator.userId === user.login) {
+                        this.canDelete = collaborator.role === "owner";
+                    }
+                });
             });
-        });
-        this.apis.getMocks(apiId).then( mocks => {
-            this.mocks = mocks;
-            if (mocks && mocks.length > 0) {
-                this.mock = mocks[0];
-                this.mockRef = JSON.parse(this.mock.info);
-            }
-            this.dataLoaded["mocks"] = true;
-        });
+        }
+        if (this.config.isMicrocksEnabled()) {
+            this.apis.getMocks(apiId).then(mocks => {
+                this.mocks = mocks;
+                if (mocks && mocks.length > 0) {
+                    this.mock = mocks[0];
+                    this.mockRef = JSON.parse(this.mock.info);
+                }
+                this.dataLoaded["mocks"] = true;
+            });
+        }
     }
 
     /**

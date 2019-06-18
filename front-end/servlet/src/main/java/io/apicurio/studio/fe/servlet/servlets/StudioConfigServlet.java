@@ -112,6 +112,7 @@ public class StudioConfigServlet extends HttpServlet {
             
             config.setFeatures(new StudioConfigFeatures());
             config.getFeatures().setMicrocks(uiConfig.isMicrocksEnabled());
+            config.getFeatures().setShareWithEveryone(uiConfig.isShareWithEveryoneEnabled());
             
             g.writeObject(config);
 

@@ -23,17 +23,7 @@ import {AbstractPageComponent} from "../../../../components/page-base.component"
 import {Title} from "@angular/platform-browser";
 import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
-import {
-    CommandFactory,
-    Document,
-    DocumentType,
-    Library,
-    Oas20Document,
-    Oas20to30TransformationVisitor,
-    Oas30Document,
-    TraverserDirection,
-    VisitorUtil
-} from "apicurio-data-models";
+import {CommandFactory, Document, DocumentType, Library, Oas20Document, Oas30Document} from "apicurio-data-models";
 import {Base64} from "js-base64";
 
 @Component({

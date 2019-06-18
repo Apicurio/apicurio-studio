@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, Input, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../components/common/drop-down.component';
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
-import {Base64Utils} from "../../../../util/common";
+import {Base64} from "js-base64";
 
 
 @Component({
@@ -66,7 +66,7 @@ export class ImportApiFormComponent {
             importApi.url = this.model.url;
         } else if (this.model.data) {
             try {
-                importApi.data = Base64Utils.encode(this.model.data);
+                importApi.data = Base64.encode(this.model.data);
             } catch (e) {
                 console.error(e);
             }

@@ -1,5 +1,3 @@
-import {HttpEvent, HttpResponse} from "@angular/common/http";
-
 /**
  * @license
  * Copyright 2017 JBoss Inc
@@ -17,42 +15,8 @@ import {HttpEvent, HttpResponse} from "@angular/common/http";
  * limitations under the License.
  */
 
-export class Base64Utils {
+import {HttpEvent, HttpResponse} from "@angular/common/http";
 
-    /**
-     * Converts from UTF8 to Base64 with support for Unicode.
-     */
-    public static encode(str: string): string {
-        if (window
-            && "btoa" in window
-            && "encodeURIComponent" in window) {
-            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-                return String.fromCharCode(("0x" + p1) as any);
-            }));
-        } else {
-            console.warn("[Base64Utils] Base64Utils.encode requirements: window.btoa and window.encodeURIComponent functions");
-            return null;
-        }
-
-    }
-
-    /**
-     * Converts from Base64 to UTF8 with support for Unicode.
-     */
-    public static decode(str: string): string {
-        if (window
-            && "atob" in window
-            && "decodeURIComponent" in window) {
-            return decodeURIComponent(Array.prototype.map.call(atob(str), (c) => {
-                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(""));
-        } else {
-            console.warn("[Base64Utils] b64DecodeUnicode requirements: window.atob and window.decodeURIComponent functions");
-            return null;
-        }
-    }
-
-}
 
 export class ArrayUtils {
 

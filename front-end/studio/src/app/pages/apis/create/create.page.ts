@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import {Component, OnInit, Inject, ViewChild} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {ApisService} from "../../../services/apis.service";
-import {Api} from "../../../models/api.model";
 import {CreateApiFormComponent, CreateApiFormData} from "./_components/create-form.component";
 import {NewApi} from "../../../models/new-api.model";
 import {AbstractPageComponent} from "../../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
 import {ImportApi} from "../../../models/import-api.model";
+import {Base64} from "js-base64";
 
 @Component({
     moduleId: module.id,
@@ -79,7 +79,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
             let importApi: ImportApi = new ImportApi();
             let spec: any = JSON.parse(JSON.stringify(eventData.template.content));
             this.updateSpec(spec, eventData);
-            importApi.data = btoa(JSON.stringify(spec));
+            importApi.data = Base64.encode(JSON.stringify(spec));
 
             this.apis.importApi(importApi).then(updatedApi => {
                 let link: string[] = [ "/apis", updatedApi.id ];

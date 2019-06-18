@@ -14,21 +14,7 @@
   background-color: #def3ff;
 }
 
-.list-group-item .api-tags {
-}
-.list-group-item .api-tags .api-tags-label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.list-group-item .api-tags .label {
-  margin-right: 5px;
-  margin-bottom: 3px;
-  padding: 5px;
-  display: inline-block;
-}
-.list-group-item .api-tags .label:hover {
-  filter: brightness(120%);
+:host ::ng-deep .list-group-item .tag-list .label:hover {
   cursor: pointer;
 }
 

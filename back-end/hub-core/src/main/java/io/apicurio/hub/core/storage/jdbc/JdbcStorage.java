@@ -716,7 +716,7 @@ public class JdbcStorage implements IStorage {
                       .bind(1, trimTo255(design.getDescription()))
                       .bind(2, design.getCreatedBy())
                       .bind(3, design.getCreatedOn())
-                      .bind(4, asCsv(design.getTags()))
+                      .bind(4, asCsv(design.getTags(), 2048))
                       .bind(5, design.getType().name())
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(String.class)
@@ -753,12 +753,15 @@ public class JdbcStorage implements IStorage {
     /**
      * Converts from a Set of tags to a CSV of those tags.
      * @param tags
+     * @param maxLength
      */
-    private static String asCsv(Set<String> tags) {
+    private static String asCsv(Set<String> tags, int maxLength) {
         StringBuilder builder = new StringBuilder();
         tags.forEach( tag -> {
-            builder.append(tag);
-            builder.append(',');
+            if (builder.length() + tag.length() + 2 < maxLength) {
+                builder.append(tag);
+                builder.append(',');
+            }
         });
         if (builder.length() > 0) {
             return builder.substring(0, builder.length() - 1);
@@ -844,7 +847,7 @@ public class JdbcStorage implements IStorage {
                 int rowCount = handle.createUpdate(statement)
                         .bind(0, design.getName())
                         .bind(1, trimTo255(design.getDescription()))
-                        .bind(2, asCsv(design.getTags()))
+                        .bind(2, asCsv(design.getTags(), 2048))
                         .bind(3, Long.valueOf(design.getId()))
                         .execute();
                 if (rowCount == 0) {

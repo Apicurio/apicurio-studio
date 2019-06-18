@@ -99,19 +99,14 @@ export class CopyPageComponent extends AbstractPageComponent {
     }
 
     public copyApi(): void {
-        console.info("+++++++++++++++ Copying an API.");
         if (!this.isValid()) {
             return;
         }
 
         this.copying = true;
 
-        console.info("+++++++++++++++ Copying an API for sure.");
-
         let importApi: ImportApi = new ImportApi();
         importApi.data = this.cloneApi();
-
-        console.info("+++++++++++++++ Clone made: ", importApi.data);
 
         this.apis.importApi(importApi).then(importedApi => {
             let link: string[] = [ "/apis", importedApi.id ];
@@ -132,7 +127,6 @@ export class CopyPageComponent extends AbstractPageComponent {
      * Clones the API and returns a serialized and base64'd copy of the content.
      */
     public cloneApi(): string {
-        console.info("+++++++++++++++ Cloning an API.");
         let sourceDoc: Document = this.document;
         CommandFactory.createChangeTitleCommand(this.title).execute(sourceDoc);
         if (sourceDoc.getDocumentType() == DocumentType.openapi2 && this.convertApi) {
@@ -140,13 +134,8 @@ export class CopyPageComponent extends AbstractPageComponent {
             sourceDoc = this.transformDocument(sourceDoc as Oas20Document);
         }
         let sourceJs: any = Library.writeNode(sourceDoc);
-        console.info("+++++++++++++++ API sourceJs: ", sourceJs);
         let sourceStr: string = JSON.stringify(sourceJs);
-        console.info("+++++++++++++++ sourceStr: ", sourceJs);
         let sourceB64: string = Base64.encode(sourceStr);
-
-        console.info("+++++++++++++++ sourceB64: ", sourceB64);
-
         return sourceB64;
     }
 

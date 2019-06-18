@@ -70,6 +70,7 @@ import {ConfigureValidationComponent} from './pages/apis/{apiId}/_components/con
 import {ValidationService} from "./services/validation.service";
 import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 import {ProfileEditorComponent} from "./pages/settings/validation/_components/profile-editor.component";
+import {TagListComponent} from "./components/common/tag-list.component";
 
 @NgModule({
     imports: [
@@ -85,7 +86,7 @@ import {ProfileEditorComponent} from "./pages/settings/validation/_components/pr
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
-        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent
+        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent, TagListComponent
 
     ],
     providers: [

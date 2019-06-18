@@ -14,10 +14,7 @@
                     </div>
                 </div>
                 <div class="list-view-pf-additional-info">
-                    <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
-                        <span class="api-tags-label">Tags:</span>
-                        <span class="label label-default" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
-                    </div>
+                    <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)"></tag-list>
                 </div>
             </div>
         </div>

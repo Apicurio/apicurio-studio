@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -246,6 +248,37 @@ public class JdbcStorageTest {
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
+    }
+    
+    @Test
+    public void testCreateApiDesignWithLotsOfTags() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("Just added the design!");
+        design.setName("API Name");
+        design.setType(ApiDesignType.OpenAPI20);
+        Set<String> tags = new TreeSet<>();
+        // We won't be able to store them all.  But try to put a whole bunch in there.  Only 76 will 
+        // fit in the 2048 characters we have allotted for the column.
+        for (int tagId = 0; tagId < 100; tagId++) {
+            tags.add("long-tag-name-goes-here-" + tagId);
+        }
+        design.setTags(tags);
+
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        ApiDesign storedDesign = storage.getApiDesign("user", id);
+        Set<String> storedTags = storedDesign.getTags();
+        System.out.println(storedTags);
+        Assert.assertEquals(76, storedTags.size());
+        
+        String actual = String.join(",", new TreeSet<>(storedTags));
+        String expected = "long-tag-name-goes-here-0,long-tag-name-goes-here-1,long-tag-name-goes-here-10,long-tag-name-goes-here-11,long-tag-name-goes-here-12,long-tag-name-goes-here-13,long-tag-name-goes-here-14,long-tag-name-goes-here-15,long-tag-name-goes-here-16,long-tag-name-goes-here-17,long-tag-name-goes-here-18,long-tag-name-goes-here-19,long-tag-name-goes-here-2,long-tag-name-goes-here-20,long-tag-name-goes-here-21,long-tag-name-goes-here-22,long-tag-name-goes-here-23,long-tag-name-goes-here-24,long-tag-name-goes-here-25,long-tag-name-goes-here-26,long-tag-name-goes-here-27,long-tag-name-goes-here-28,long-tag-name-goes-here-29,long-tag-name-goes-here-3,long-tag-name-goes-here-30,long-tag-name-goes-here-31,long-tag-name-goes-here-32,long-tag-name-goes-here-33,long-tag-name-goes-here-34,long-tag-name-goes-here-35,long-tag-name-goes-here-36,long-tag-name-goes-here-37,long-tag-name-goes-here-38,long-tag-name-goes-here-39,long-tag-name-goes-here-4,long-tag-name-goes-here-40,long-tag-name-goes-here-41,long-tag-name-goes-here-42,long-tag-name-goes-here-43,long-tag-name-goes-here-44,long-tag-name-goes-here-45,long-tag-name-goes-here-46,long-tag-name-goes-here-47,long-tag-name-goes-here-48,long-tag-name-goes-here-49,long-tag-name-goes-here-5,long-tag-name-goes-here-50,long-tag-name-goes-here-51,long-tag-name-goes-here-52,long-tag-name-goes-here-53,long-tag-name-goes-here-54,long-tag-name-goes-here-55,long-tag-name-goes-here-56,long-tag-name-goes-here-57,long-tag-name-goes-here-58,long-tag-name-goes-here-59,long-tag-name-goes-here-6,long-tag-name-goes-here-60,long-tag-name-goes-here-61,long-tag-name-goes-here-62,long-tag-name-goes-here-63,long-tag-name-goes-here-64,long-tag-name-goes-here-65,long-tag-name-goes-here-66,long-tag-name-goes-here-67,long-tag-name-goes-here-68,long-tag-name-goes-here-69,long-tag-name-goes-here-7,long-tag-name-goes-here-70,long-tag-name-goes-here-71,long-tag-name-goes-here-72,long-tag-name-goes-here-73,long-tag-name-goes-here-74,long-tag-name-goes-here-75,long-tag-name-goes-here-76,long-tag-name-goes-here-77";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test

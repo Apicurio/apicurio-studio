@@ -18,21 +18,8 @@
   margin-right: 3px;
 }
 
-.api-tags {
+:host ::ng-deep .tag-list {
   margin-top: 15px;
-}
-.api-tags .api-tags-label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-.api-tags .label {
-  margin-right: 5px;
-  padding: 5px;
-  display: inline-block;
-  margin-bottom: 3px;
-}
-.api-tags .label:hover {
-  filter: brightness(110%);
 }
 
 .api-description, .no-description {

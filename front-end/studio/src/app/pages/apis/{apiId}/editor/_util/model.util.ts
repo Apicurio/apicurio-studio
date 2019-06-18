@@ -137,6 +137,9 @@ export class ExampleGenerator {
         } else if (schema.type === "array") {
             console.info("[ExampleGenerator] Schema is type 'array'");
             object = this.generateArray(schema);
+        } else if (this.isEnum(schema)) {
+            console.info("[ExampleGenerator] Schema is enum.");
+            object = this.generateEnumValue(schema);
         } else if (this.isSimpleType(schema.type)) {
             console.info("[ExampleGenerator] Schema is a simple type.");
             object = this.generateSimpleType(schema.type, schema.format);
@@ -188,6 +191,17 @@ export class ExampleGenerator {
             "string", "boolean", "integer", "number"
         ]
         return simpleTypes.indexOf(type) !== -1;
+    }
+
+    private isEnum(schema: OasSchema): boolean {
+        return schema.enum_ && schema.enum_.length > 0;
+    }
+
+    private generateEnumValue(schema: OasSchema): any {
+        if (schema.enum_.length > 0) {
+            return schema.enum_[Math.floor(Math.random()*schema.enum_.length)];
+        }
+        return "??";
     }
 
     private generateSimpleType(type: string, format: string): any {

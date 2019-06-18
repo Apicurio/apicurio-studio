@@ -240,6 +240,12 @@ public interface ISqlStatements {
     public String selectApiPublicationActivity();
 
     /**
+     * A statement used to select rows from the api_content table (limited by a range).  Selects
+     * only the publication rows.  Filters by user.
+     */
+    public String selectApiPublicationActivityByUser();
+
+    /**
      * A statement used to select rows from the api_content table (limited by a range).  Selects 
      * only the mock rows.
      */

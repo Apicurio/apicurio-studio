@@ -371,6 +371,17 @@ public interface IStorage {
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException;
 
     /**
+     * Returns a collection of API publications done by the given user (recorded whenever a user publishes 
+     * an API).  This is a paged method similar to listApiDesignActivity().
+     * @param designId
+     * @param user
+     * @param from
+     * @param to
+     * @throws StorageException
+     */
+    public Collection<ApiPublication> listApiDesignPublicationsBy(String designId, String user, int from, int to) throws StorageException;
+
+    /**
      * Returns a collection of API mocks (recorded whenever a user mocks an API).  This
      * is a paged method similar to listApiDesignActivity().
      * @param designId

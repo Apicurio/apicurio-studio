@@ -267,6 +267,9 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public boolean hasWritePermission(String userId, String designId) throws StorageException {
+        if (this.shareForEveryone) {
+            return true;
+        }
         try {
             return this.jdbi.withHandle( handle -> {
                 // Check for permissions first
@@ -521,11 +524,12 @@ public class JdbcStorage implements IStorage {
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiDesignContributors();
-                return handle.createQuery(statement)
-                        .bind(0, Long.valueOf(designId))
-                        .bind(1, userId)
-                        .map(ContributorRowMapper.instance)
-                        .list();
+                Query query = handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId));
+                if (!shareForEveryone) {
+                    query = query.bind(1, userId);
+                }
+                return query.map(ContributorRowMapper.instance).list();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();
@@ -1151,7 +1155,29 @@ public class JdbcStorage implements IStorage {
                         .list();
             });
         } catch (Exception e) {
-            throw new StorageException("Error getting contributors.", e);
+            throw new StorageException("Error getting publications.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignPublicationsBy(java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiPublication> listApiDesignPublicationsBy(String designId, String user, int from, int to) throws StorageException {
+        logger.debug("Selecting publication activity for API Design: {} from {} to {} and by {}", designId, from, to, user);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiPublicationActivityByUser();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, user)
+                        .bind(2, to - from)
+                        .bind(3, from)
+                        .map(ApiPublicationRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting publications.", e);
         }
     }
     
@@ -1172,7 +1198,7 @@ public class JdbcStorage implements IStorage {
                         .list();
             });
         } catch (Exception e) {
-            throw new StorageException("Error getting contributors.", e);
+            throw new StorageException("Error getting mocks.", e);
         }
     }
     

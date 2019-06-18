@@ -1028,7 +1028,7 @@ public class JdbcStorageTest {
         Thread.sleep(5);
         storage.addContent("user", id, ApiContentType.Command, "{4}");
         Thread.sleep(5);
-        storage.addContent("user", id, ApiContentType.Publish, "{Publish-5}");
+        storage.addContent("user2", id, ApiContentType.Publish, "{Publish-5}");
         
         Collection<ApiPublication> activity = storage.listApiDesignPublications(id, 0, 10);
         Assert.assertNotNull(activity);
@@ -1039,6 +1039,16 @@ public class JdbcStorageTest {
         ApiPublication second = iter.next();
         Assert.assertEquals("{Publish-5}", first.getInfo());
         Assert.assertEquals("{Publish-3}", second.getInfo());
+        
+        activity = storage.listApiDesignPublicationsBy(id, "user", 0, 10);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(1, activity.size());
+
+        activity = storage.listApiDesignPublicationsBy(id, "user2", 0, 10);
+        Assert.assertNotNull(activity);
+        Assert.assertFalse(activity.isEmpty());
+        Assert.assertEquals(1, activity.size());
     }
 
     @Test

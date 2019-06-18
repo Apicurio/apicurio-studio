@@ -746,7 +746,7 @@ public class DesignsResource implements IDesignsResource {
             if (!this.storage.hasWritePermission(user, designId)) {
                 throw new NotFoundException();
             }
-            return this.storage.listApiDesignPublications(designId, from, to);
+            return this.storage.listApiDesignPublicationsBy(designId, user, from, to);
         } catch (StorageException e) {
             throw new ServerError(e);
         }

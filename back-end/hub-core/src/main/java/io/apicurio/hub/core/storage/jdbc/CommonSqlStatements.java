@@ -294,11 +294,18 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String selectApiDesignContributors() {
         // TODO order by the # of edits and LIMIT the results to 5
-        return "SELECT DISTINCT COUNT(c.created_by) as edits, c.created_by "
-                + "FROM api_content c "
-                + "JOIN acl a ON a.design_id = c.design_id "
-                + "WHERE c.design_id = ? AND a.user_id = ? "
-                + "GROUP BY c.created_by";
+        if (shareForEveryone) {
+            return "SELECT DISTINCT COUNT(c.created_by) as edits, c.created_by "
+                    + "FROM api_content c "
+                    + "WHERE c.design_id = ? "
+                    + "GROUP BY c.created_by";
+        } else {
+            return "SELECT DISTINCT COUNT(c.created_by) as edits, c.created_by "
+                    + "FROM api_content c "
+                    + "JOIN acl a ON a.design_id = c.design_id "
+                    + "WHERE c.design_id = ? AND a.user_id = ? "
+                    + "GROUP BY c.created_by";
+        }
     }
     
     /**
@@ -455,6 +462,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String selectApiPublicationActivity() {
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 2 ORDER BY created_on DESC LIMIT ? OFFSET ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiPublicationActivityByUser()
+     */
+    @Override
+    public String selectApiPublicationActivityByUser() {
+        return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.created_by = ? AND c.type = 2 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
 
     /**

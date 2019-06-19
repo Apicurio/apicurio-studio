@@ -405,7 +405,8 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (data.template === "resource") {
             let commands: ICommand[] = [];
             // First, create the "new schema def" command
-            let example: string = (data.example === "") ? null : data.example;
+            let example: any = (data.example === "") ? null : data.example;
+            example = this.exampleAsObject(example);
             let newSchemaCmd: ICommand = CommandFactory.createNewSchemaDefinitionCommand(this.document.getDocumentType(),
                 data.name, example, data.description);
             commands.push(newSchemaCmd);
@@ -418,12 +419,25 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let command: ICommand = CommandFactory.createAggregateCommand("CreateRESTResource", info, commands);
             this.commandService.emit(command);
         } else {
-            let example: string = (data.example === "") ? null : data.example;
+            let example: any = (data.example === "") ? null : data.example;
+            example = this.exampleAsObject(example);
             let command: ICommand = CommandFactory.createNewSchemaDefinitionCommand(this.document.getDocumentType(),
                 data.name, example, data.description);
             this.commandService.emit(command);
         }
         this.selectDefinition(this.getDefinitionByName(data.name));
+    }
+
+    /**
+     * Converts a JSON formatted string example to an object.
+     * @param from
+     */
+    protected exampleAsObject(from: string): any {
+        try {
+            return JSON.parse(from);
+        } catch (e) {
+            return from;
+        }
     }
 
     /**

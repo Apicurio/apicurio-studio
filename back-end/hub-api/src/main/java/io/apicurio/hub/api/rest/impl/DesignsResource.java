@@ -54,6 +54,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.DocumentType;
+import io.apicurio.datamodels.openapi.models.OasDocument;
 import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
@@ -93,10 +96,6 @@ import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.MockReference;
-import io.apicurio.hub.core.beans.OpenApi2Document;
-import io.apicurio.hub.core.beans.OpenApi3Document;
-import io.apicurio.hub.core.beans.OpenApiDocument;
-import io.apicurio.hub.core.beans.OpenApiInfo;
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -382,19 +381,19 @@ public class DesignsResource implements IDesignsResource {
             design.setCreatedOn(now);
 
             // The API Design content (OAI document)
-            OpenApiDocument doc;
+            OasDocument doc;
             if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
-                doc = new OpenApi2Document();
+                doc = (OasDocument) Library.createDocument(DocumentType.openapi2);
                 design.setType(ApiDesignType.OpenAPI20);
             } else {
-                doc = new OpenApi3Document();
+                doc = (OasDocument) Library.createDocument(DocumentType.openapi3);
                 design.setType(ApiDesignType.OpenAPI30);
             }
-            doc.setInfo(new OpenApiInfo());
-            doc.getInfo().setTitle(info.getName());
-            doc.getInfo().setDescription(info.getDescription());
-            doc.getInfo().setVersion("1.0.0");
-            String oaiContent = mapper.writeValueAsString(doc);
+            doc.info = doc.createInfo();
+            doc.info.title = info.getName();
+            doc.info.description = info.getDescription();
+            doc.info.version = "1.0.0";
+            String oaiContent = Library.writeDocumentToJSONString(doc);
 
             // Create the API Design in the database
             String designId = storage.createApiDesign(user, design, oaiContent);
@@ -403,7 +402,7 @@ public class DesignsResource implements IDesignsResource {
             metrics.apiCreate(info.getSpecVersion());
             
             return design;
-        } catch (JsonProcessingException | StorageException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }

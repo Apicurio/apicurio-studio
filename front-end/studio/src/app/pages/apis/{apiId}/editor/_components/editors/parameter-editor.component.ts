@@ -227,7 +227,7 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
         if (this.model.type && this.model.type.isArray() && this.model.type.of && this.model.type.of.isSimpleType()) {
             st = this.model.type.of;
         }
-        return st && st.isSimpleType() && (st.type !== "boolean");
+        return st && st.isSimpleType() && !st.isEnum() && (st.type !== "boolean");
     }
 
     public changeRequired(newValue: string): void {
@@ -236,7 +236,7 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
 
     public changeType(type: string): void {
         if (type === "enum") {
-            this.model.type.type = null;
+            this.model.type.type = "string";
             this.model.type.enum_ = [];
         } else {
             this.model.type.type = type;

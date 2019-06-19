@@ -46,6 +46,9 @@ import {SelectionService} from "../../../_services/selection.service";
 import {ObjectUtils} from "apicurio-ts-core";
 
 
+/**
+ * Component to select a "SimplifiedType" value
+ */
 @Component({
     moduleId: module.id,
     selector: "schema-type-editor",
@@ -54,9 +57,6 @@ import {ObjectUtils} from "apicurio-ts-core";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-/**
- * Component to select a "SimplifiedType" value
- */
 export class SchemaTypeEditorComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
@@ -226,7 +226,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         if (this.value && this.value.isArray() && this.value.of && this.value.of.isSimpleType()) {
             st = this.value.of;
         }
-        return st && st.isSimpleType() && (st.type !== "boolean");
+        return st && st.isSimpleType() && !st.isEnum() && (st.type !== "boolean");
     }
 
     public shouldShowEnumEditor(): boolean {
@@ -236,7 +236,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
     public changeType(type: string): void {
         let nt: SimplifiedType = new SimplifiedType();
         if (type === "enum") {
-            nt.type = null;
+            nt.type = "string";
             nt.enum_ = [];
             nt.of = null;
             nt.as = null;
@@ -251,7 +251,10 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
 
     public changeTypeEnum(value: string[]): void {
         let nt: SimplifiedType = new SimplifiedType();
-        nt.type = null;
+        nt.type = this.value.type;
+        if (!nt.type) {
+            nt.type = "string";
+        }
         nt.enum_ = value;
         nt.of = null;
         nt.as = null;

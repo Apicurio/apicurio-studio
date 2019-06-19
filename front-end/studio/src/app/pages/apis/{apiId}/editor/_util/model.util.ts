@@ -131,18 +131,18 @@ export class ExampleGenerator {
         let object: any;
         if (schema.$ref) {
             object = this.generateFromRef(schema);
-        } else if (schema.type === "object" || !schema.type) {
-            console.info("[ExampleGenerator] Schema is type 'object'");
-            object = this.generateObject(schema);
-        } else if (schema.type === "array") {
-            console.info("[ExampleGenerator] Schema is type 'array'");
-            object = this.generateArray(schema);
         } else if (this.isEnum(schema)) {
             console.info("[ExampleGenerator] Schema is enum.");
             object = this.generateEnumValue(schema);
         } else if (this.isSimpleType(schema.type)) {
             console.info("[ExampleGenerator] Schema is a simple type.");
             object = this.generateSimpleType(schema.type, schema.format);
+        } else if (schema.type === "object" || !schema.type) {
+            console.info("[ExampleGenerator] Schema is type 'object'");
+            object = this.generateObject(schema);
+        } else if (schema.type === "array") {
+            console.info("[ExampleGenerator] Schema is type 'array'");
+            object = this.generateArray(schema);
         }
         return object;
     }

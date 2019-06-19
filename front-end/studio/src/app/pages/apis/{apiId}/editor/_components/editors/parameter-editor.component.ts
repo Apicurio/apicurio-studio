@@ -269,6 +269,12 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
         if (this._paramType === "query") {
             return "Define a New Query Parameter";
         }
+        if (this._paramType === "header") {
+            return "Define a New Header Parameter";
+        }
+        if (this._paramType === "cookie") {
+            return "Define a New Cookie Parameter";
+        }
         if (this._paramType === "formData") {
             return "Define a New Form Data Parameter";
         }

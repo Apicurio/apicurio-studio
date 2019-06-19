@@ -6,6 +6,8 @@
             <h3>1. Enter Basic Information</h3>
             <p class="explanation">
                 <span *ngIf="_paramType === 'query'">Enter a name and description for the new query parameter.</span>
+                <span *ngIf="_paramType === 'header'">Enter a name and description for the new header parameter.</span>
+                <span *ngIf="_paramType === 'cookie'">Enter a name and description for the new cookie parameter.</span>
                 <span *ngIf="_paramType === 'formData'">Enter a name and description for the new form data parameter.</span>
             </p>
         </div>

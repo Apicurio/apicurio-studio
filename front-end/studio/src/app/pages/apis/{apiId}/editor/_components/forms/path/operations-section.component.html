@@ -95,6 +95,9 @@
             <!-- Header Parameters Section -->
             <header-params-section [parent]="operation()" [path]="path"></header-params-section>
 
+            <!-- Cookie Parameters Section -->
+            <cookie-params-section [parent]="operation()" [path]="path" *ngIf="is3xDocument()"></cookie-params-section>
+
             <!-- Request Body Section -->
             <requestBody-section [operation]="operation()"></requestBody-section>
 

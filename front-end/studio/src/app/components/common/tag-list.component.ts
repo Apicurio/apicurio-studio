@@ -38,6 +38,7 @@ import * as marked from "./markdown-summary.component";
 export class TagListComponent implements OnChanges {
 
     @Input() tags: string[];
+    @Input() maxWidth: number = 80;
     @Output() public tagSelected = new EventEmitter<string>();
 
     visibleTags: string[];
@@ -50,13 +51,13 @@ export class TagListComponent implements OnChanges {
     constructor() {}
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes["tags"]) {
+        if (changes["tags"] || changes["maxWidth"]) {
             this.visibleTags = [];
             this.overflowTags = [];
             if (this.tags) {
                 let totalSize: number = 0;
                 this.tags.forEach( tag => {
-                    if (totalSize < 80) {
+                    if (totalSize < this.maxWidth) {
                         this.visibleTags.push(tag);
                         totalSize += tag.length;
                     } else {

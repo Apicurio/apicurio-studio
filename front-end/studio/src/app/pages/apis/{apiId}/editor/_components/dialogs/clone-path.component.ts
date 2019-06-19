@@ -110,4 +110,12 @@ export class ClonePathDialogComponent {
         this.clonePathInput.first.nativeElement.selectionStart = this.clonePathInput.first.nativeElement.selectionEnd = this.path.length
     }
 
+    /**
+     * Called whenever the user types anything in the path field - this validates that the path entered
+     * is OK.
+     * @param newPath
+     */
+    validatePath(newPath: string) {
+        this.pathExists = this.paths.indexOf(newPath) != -1;
+    }
 }

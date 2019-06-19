@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.microcks;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
@@ -142,7 +143,7 @@ public class MicrocksConnector implements IMicrocksConnector {
         String oauthToken = this.getKeycloakOAuthToken();
         MultipartBody uploadRequest = Unirest.post(this.apiURL + "/artifact/upload")
                 .header("Authorization", "Bearer " + oauthToken)
-                .field("file", new ByteArrayInputStream(content.getBytes()), "open-api-contract.yml");
+                .field("file", new ByteArrayInputStream(content.getBytes(Charset.forName("UTF-8"))), "open-api-contract.yml");
 
         HttpResponse<String> response = null;
         try {

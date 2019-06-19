@@ -21,6 +21,7 @@ import * as marked from "marked";
 @Component({
     selector: "markdown",
     template: `<div class="md-container" [innerHTML]="convertedData" [class.empty]="isEmpty()"></div>`,
+    styleUrls: ["markdown.component.css"],
     encapsulation: ViewEncapsulation.None
 })
 export class MarkdownComponent implements OnChanges {

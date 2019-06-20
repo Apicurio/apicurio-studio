@@ -19,6 +19,7 @@
   padding-left: 47px;
   cursor: pointer;
   flex-grow: 1;
+  overflow: hidden;
 }
 .editor-title-bar > h1.no-title {
   font-style: italic;

@@ -336,7 +336,7 @@ public class ReleaseTool {
             Set<String> labels = labelsArray.toList().stream().map( label -> {
                 return ((Map<?,?>) label).get("name").toString();
             }).collect(Collectors.toSet());
-            return labels.contains("dependencies") || labels.contains("question") 
+            return labels.contains("dependencies") || labels.contains("question") || labels.contains("invalid")  
                     || labels.contains("wontfix")|| labels.contains("duplicate");
         }
         return false;

@@ -5,7 +5,7 @@
 
     <groupId>io.apicurio</groupId>
     <artifactId>apicurio-studio</artifactId>
-    <version>0.2.28-SNAPSHOT</version>
+    <version>0.2.28.Final</version>
     <packaging>pom</packaging>
     <name>apicurio-studio</name>
 

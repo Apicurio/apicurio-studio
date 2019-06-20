@@ -48,12 +48,16 @@ export class RestResourceService {
         let commands: ICommand[] = [];
 
         console.info("[RestResourceService] Creating REST resource from: ", dataTypeName);
-        let lcName: string = dataTypeName.replace(/^\w/, c => c.toLowerCase());
-        let pluralName: string = pluralize.plural(dataTypeName);
-        let lcPluralName: string = pluralName.replace(/^\w/, c => c.toLowerCase());
+        let lcName: string = dataTypeName.toLocaleLowerCase();
+        console.info("++++++++++ lcName: ", lcName);
+        let pluralName: string = pluralize.plural(lcName);
+        if (!this.canPluralize(lcName)) {
+            pluralName = lcName;
+        }
+        console.info("++++++++++ pluralName: ", pluralName);
 
-        let basePath: string = `/${lcPluralName}`;
-        let subPath: string = `/${lcPluralName}/{${lcName}Id}`;
+        let basePath: string = `/${pluralName}`;
+        let subPath: string = `/${pluralName}/{${lcName}Id}`;
 
         console.info(`[RestResourceService] Paths to create:\n\t${basePath}\n\t${subPath}`);
 
@@ -242,6 +246,11 @@ export class RestResourceService {
         commands.push(subPathCmd);
 
         return commands;
+    }
+
+    private canPluralize(name: string): boolean {
+        let regexp: RegExp = /^.+[a-zA-Z]$/;
+        return regexp.test(name);
     }
 
 }

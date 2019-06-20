@@ -34,6 +34,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Apicurio Data Model -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-data-models</artifactId>
+        </dependency>
+
         <!-- Third Party Libraries -->
         <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>

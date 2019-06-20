@@ -709,7 +709,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         return ModelUtils.nodeToPath(node);
     }
 
-    protected shouldShowValidationAggregate(): boolean {
+    shouldShowValidationAggregate(): boolean {
         return (this.paths().length + this.definitions().length) < 40;
     }
 }

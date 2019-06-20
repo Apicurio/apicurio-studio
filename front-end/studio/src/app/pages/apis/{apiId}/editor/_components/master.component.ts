@@ -193,7 +193,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public definitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
-        if (this.document) {
+        if (!this._defs) {
             if (this.document.is2xDocument() && (this.document as Oas20Document).definitions) {
                 (this.document as Oas20Document).definitions.getDefinitions().forEach( definition => {
                     VisitorUtil.visitNode(definition, viz);
@@ -203,8 +203,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
                     VisitorUtil.visitNode(definition, viz);
                 })
             }
+            this._defs = viz.getSortedSchemaDefinitions();
         }
-        return viz.getSortedSchemaDefinitions();
+        return this._defs;
     }
 
     public definitionsPath(): string {
@@ -706,6 +707,10 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      */
     public asNodePath(node: Node): string {
         return ModelUtils.nodeToPath(node);
+    }
+
+    protected shouldShowValidationAggregate(): boolean {
+        return (this.paths().length + this.definitions().length) < 40;
     }
 }
 

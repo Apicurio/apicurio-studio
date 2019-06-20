@@ -80,7 +80,7 @@
                     <div path-item [path]="path.getPath()" (click)="pathList.focus() ; selectPath(path)"
                          (contextmenu)="showPathContextMenu($event, path)"></div>
                     <collaborator-aggregate [nodePath]="asNodePath(path)"></collaborator-aggregate>
-                    <validation-aggregate [models]="[path]"></validation-aggregate>
+                    <validation-aggregate [models]="[path]" *ngIf="shouldShowValidationAggregate()"></validation-aggregate>
                 </div>
             </div>
         </section>

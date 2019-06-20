@@ -65,7 +65,7 @@
         <version.io.thorntail>2.4.0.Final</version.io.thorntail>
         
         <!-- Apicurio Data Models -->
-        <version.apicurio-data-models>1.0.2.Final</version.apicurio-data-models>
+        <version.apicurio-data-models>1.0.3.Final</version.apicurio-data-models>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>

@@ -55,7 +55,12 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
+import io.apicurio.datamodels.core.models.ValidationProblem;
+import io.apicurio.datamodels.core.models.ValidationProblemSeverity;
+import io.apicurio.datamodels.core.validation.IValidationSeverityRegistry;
+import io.apicurio.datamodels.core.validation.ValidationRuleMetaData;
 import io.apicurio.datamodels.openapi.models.OasDocument;
 import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
@@ -65,6 +70,7 @@ import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.beans.ValidationError;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
@@ -1299,7 +1305,7 @@ public class DesignsResource implements IDesignsResource {
     /**
      * Uses the information in the bean to create a resource URL.
      */
-    public String toResourceUrl(NewApiPublication info) {
+    private String toResourceUrl(NewApiPublication info) {
         if (info.getType() == LinkedAccountType.GitHub) {
             return gitHubResolver.create(info.getOrg(), info.getRepo(), info.getBranch(), info.getResource());
         }
@@ -1310,6 +1316,31 @@ public class DesignsResource implements IDesignsResource {
             return bitbucketResolver.create(info.getTeam(), info.getRepo(), info.getBranch(), info.getResource());
         }
         return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#validateDesign(java.lang.String)
+     */
+    @Override
+    public List<ValidationError> validateDesign(String designId) throws ServerError, NotFoundException {
+        logger.debug("Validating API design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/validation", "GET");
+        
+        String content = this.getApiContent(designId, FormatType.JSON);
+
+        Document doc = Library.readDocumentFromJSONString(content);
+        List<ValidationProblem> problems = Library.validate(doc, new IValidationSeverityRegistry() {
+            @Override
+            public ValidationProblemSeverity lookupSeverity(ValidationRuleMetaData rule) {
+                return ValidationProblemSeverity.high;
+            }
+        });
+        List<ValidationError> errors = new ArrayList<>();
+        for (ValidationProblem problem : problems) {
+            errors.add(new ValidationError(problem.errorCode, problem.nodePath.toString(), problem.property,
+                    problem.message, problem.severity.name()));
+        }
+        return errors;
     }
     
 }

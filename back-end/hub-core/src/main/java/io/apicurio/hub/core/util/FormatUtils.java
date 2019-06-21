@@ -67,6 +67,10 @@ public class FormatUtils {
      * @throws IOException
      */
     public static String formatJson(String content) throws IOException {
+        // If it's already formatted, do nothing.
+        if (content.contains("\n")) {
+            return content;
+        }
         JsonNode tree = jsonMapper.reader().readTree(content);
         return jsonMapper.writeValueAsString(tree);
     }

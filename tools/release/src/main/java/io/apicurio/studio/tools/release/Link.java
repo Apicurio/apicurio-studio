@@ -26,10 +26,12 @@ public class Link {
 
     public static Map<String, Link> parseAll(String allLinks) {
         Map<String, Link> rval = new HashMap<>();
-        String[] split = allLinks.split(",");
-        for (String singleLink : split) {
-            Link link = Link.parse(singleLink.trim());
-            rval.put(link.getType(), link);
+        if (allLinks != null) {
+            String[] split = allLinks.split(",");
+            for (String singleLink : split) {
+                Link link = Link.parse(singleLink.trim());
+                rval.put(link.getType(), link);
+            }
         }
         return rval;
     }

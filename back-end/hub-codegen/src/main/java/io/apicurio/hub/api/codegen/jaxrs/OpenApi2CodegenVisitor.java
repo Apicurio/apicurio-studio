@@ -28,7 +28,7 @@ import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter;
 import io.apicurio.datamodels.core.models.DocumentType;
 import io.apicurio.datamodels.core.models.Node;
-import io.apicurio.datamodels.core.models.common.ISchemaDefinition;
+import io.apicurio.datamodels.core.models.common.IDefinition;
 import io.apicurio.datamodels.core.models.common.Info;
 import io.apicurio.datamodels.core.models.common.Operation;
 import io.apicurio.datamodels.core.models.common.Parameter;
@@ -285,10 +285,10 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
     }
 
     /**
-     * @see io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter#visitSchemaDefinition(io.apicurio.datamodels.core.models.common.ISchemaDefinition)
+     * @see io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter#visitSchemaDefinition(io.apicurio.datamodels.core.models.common.IDefinition)
      */
     @Override
-    public void visitSchemaDefinition(ISchemaDefinition node) {
+    public void visitSchemaDefinition(IDefinition node) {
         String name = node.getName();
         
         CodegenJavaBean bean = new CodegenJavaBean();

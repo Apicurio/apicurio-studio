@@ -76,7 +76,11 @@ export class MockPageComponent extends AbstractPageComponent {
         let apiId: string = params["apiId"];
         this.apis.getApiDefinition(apiId).then(api => {
             this.api = api;
-            this.document = <OasDocument> Library.createDocument(this.api.spec);
+            if (typeof this.api.spec === "string") {
+                this.document = <OasDocument> Library.readDocumentFromJSONString(this.api.spec);
+            } else {
+                this.document = <OasDocument> Library.readDocument(this.api.spec);
+            }
             this.dataLoaded["api"] = true;
             this.updatePageTitle();
         }).catch(error => {

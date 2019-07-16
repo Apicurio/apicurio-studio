@@ -13,7 +13,8 @@ RUN yum install -y java-1.8.0-openjdk-devel && \
     yum install -y nodejs && \
     yum install -y npm && \
     yum install -y google-chrome-stable && \
-    yum install -y which
+    yum install -y which && \
+    yum install -y gcc glibc-devel zlib-devel
 
 WORKDIR /opt
 
@@ -23,6 +24,12 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-mav
 
 ENV PATH="/opt/maven/bin:${PATH}"
 ENV JAVA_HOME="/etc/alternatives/java_sdk_1.8.0_openjdk"
+
+RUN wget https://github.com/oracle/graal/releases/download/vm-19.1.0/graalvm-ce-linux-amd64-19.1.0.tar.gz && \
+    tar xfz graalvm-ce-linux-amd64-19.1.0.tar.gz && \
+    ln -s graalvm-ce-19.1.0 graalvm
+
+ENV GRAALVM_HOME="/opt/graalvm"
 
 USER circleci
 

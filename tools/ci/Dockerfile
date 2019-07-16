@@ -31,6 +31,8 @@ RUN wget https://github.com/oracle/graal/releases/download/vm-19.1.0/graalvm-ce-
 
 ENV GRAALVM_HOME="/opt/graalvm"
 
+RUN /opt/graalvm/bin/gu install native-image
+
 USER circleci
 
 WORKDIR /home/circleci

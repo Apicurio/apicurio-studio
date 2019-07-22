@@ -202,10 +202,10 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
             "query", data.description, data.type, false);
         this.commandService.emit(command);
 
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.parent);
+        let nodePath = Library.createNodePath(this.parent);
         let index: number = (this.parent as any).parameters.findIndex(p => p.name === data.name); // TODO hackish
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
     }
 
     /**

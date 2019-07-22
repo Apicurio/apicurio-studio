@@ -24,11 +24,15 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CombinedVisitorAdapter, CommandFactory, ICommand,
+    CombinedVisitorAdapter,
+    CommandFactory,
+    ICommand,
+    Library,
     OasOperation,
     OasParameter,
     OasPathItem,
-    SimplifiedParameterType, SimplifiedType
+    SimplifiedParameterType,
+    SimplifiedType
 } from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
@@ -164,10 +168,10 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "path", null, null, false);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let nodePath = Library.createNodePath(this.item.parent());
         let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
         this.__selectionService.select(nodePath.toString());
     }
 
@@ -175,10 +179,10 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "path", null, null, true);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let nodePath = Library.createNodePath(this.item.parent());
         let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
         this.__selectionService.select(nodePath.toString());
     }
 

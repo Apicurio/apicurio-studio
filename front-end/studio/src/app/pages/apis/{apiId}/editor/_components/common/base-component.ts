@@ -18,13 +18,10 @@ import {ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@a
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
 import {TopicSubscription} from "apicurio-ts-core";
-import {OasLibraryUtils} from "oai-ts-core";
 
 export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     private _docSub: TopicSubscription<void>;
-
-    protected static oasLibrary: OasLibraryUtils = new OasLibraryUtils();
 
     protected constructor(protected __changeDetectorRef: ChangeDetectorRef, protected __documentService: DocumentService,
                           protected __selectionService: SelectionService, protected __skipDocumentChanges: boolean = false) {}

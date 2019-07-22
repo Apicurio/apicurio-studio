@@ -27,6 +27,7 @@ import {
     CombinedVisitorAdapter,
     CommandFactory,
     ICommand,
+    Library,
     Oas20Document,
     Oas20SecurityDefinitions,
     Oas20SecurityScheme,
@@ -172,7 +173,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
             let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
-            let path = AbstractBaseComponent.oasLibrary.createNodePath(scheme);
+            let path = Library.createNodePath(scheme);
             this.selectionService.select(path.toString());
         } else {
             console.info("[SecuritySchemesSectionComponent] Adding a security scheme: %s", event.schemeName);
@@ -183,7 +184,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
             let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
-            let path = AbstractBaseComponent.oasLibrary.createNodePath(scheme);
+            let path = Library.createNodePath(scheme);
             this.selectionService.select(path.toString());
         }
     }

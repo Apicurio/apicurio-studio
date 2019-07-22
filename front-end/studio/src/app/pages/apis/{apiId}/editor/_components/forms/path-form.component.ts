@@ -108,8 +108,8 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     public addPath(path: string): void {
         let command: ICommand = CommandFactory.createNewPathCommand(path);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.path.ownerDocument());
-        nodePath.appendSegment("paths");
+        let nodePath = Library.createNodePath(this.path.ownerDocument());
+        nodePath.appendSegment("paths", false);
         nodePath.appendSegment(path, true);
         this.selectionService.select(nodePath.toString());
     }
@@ -123,8 +123,8 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
             let cloneSrcObj: any = Library.writeNode(pathItem);
             let command: ICommand = CommandFactory.createAddPathItemCommand(modalData.path, cloneSrcObj);
             this.commandService.emit(command);
-            let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.path.ownerDocument());
-            nodePath.appendSegment("paths");
+            let nodePath = Library.createNodePath(this.path.ownerDocument());
+            nodePath.appendSegment("paths", false);
             nodePath.appendSegment(modalData.path, true);
             this.selectionService.select(nodePath.toString());
         }

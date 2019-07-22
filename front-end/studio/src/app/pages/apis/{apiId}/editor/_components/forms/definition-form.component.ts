@@ -159,8 +159,8 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         let command: ICommand = CommandFactory.createNewSchemaPropertyCommand(this.definition,
             data.name, data.description, data.type);
         this.commandService.emit(command);
-        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.definition);
-        path.appendSegment("properties");
+        let path = Library.createNodePath(this.definition);
+        path.appendSegment("properties", false);
         path.appendSegment(data.name, true);
         this.__selectionService.select(path.toString());
     }

@@ -23,7 +23,7 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
+import {CommandFactory, ICommand, Library, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
@@ -124,8 +124,8 @@ export class ResponseTabComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
             exampleData.value, exampleData.contentType);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.response);
-        nodePath.appendSegment("examples");
+        let nodePath = Library.createNodePath(this.response);
+        nodePath.appendSegment("examples", false);
         this.selectionService.select(nodePath.toString());
     }
 
@@ -133,8 +133,8 @@ export class ResponseTabComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
             event.value, event.contentType);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.response);
-        nodePath.appendSegment("examples");
+        let nodePath = Library.createNodePath(this.response);
+        nodePath.appendSegment("examples", false);
         this.selectionService.select(nodePath.toString());
     }
 

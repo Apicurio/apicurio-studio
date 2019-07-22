@@ -24,19 +24,21 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CombinedVisitorAdapter, CommandFactory, ICommand,
+    CombinedVisitorAdapter,
+    CommandFactory,
+    ICommand,
+    Library,
     OasOperation,
     OasParameter,
     OasPathItem,
-    SimplifiedParameterType, SimplifiedType
+    SimplifiedParameterType,
+    SimplifiedType
 } from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-import {AbstractBaseComponent} from "../../common/base-component";
-
 
 @Component({
     moduleId: module.id,
@@ -185,7 +187,7 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameter, 
             "header", null, null, true);
         this.commandService.emit(command);
 
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let nodePath = Library.createNodePath(this.item.parent());
         this.__selectionService.select(nodePath.toString());
     }
 

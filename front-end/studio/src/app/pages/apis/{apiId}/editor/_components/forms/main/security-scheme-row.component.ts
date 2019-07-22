@@ -24,7 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, OasDocument, SecurityScheme} from "apicurio-data-models";
+import {CommandFactory, ICommand, Library, OasDocument, SecurityScheme} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -123,8 +123,8 @@ export class SecuritySchemeRowComponent extends AbstractBaseComponent {
     public setDescription(description: string): void {
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.scheme, "description", description);
         this.commandService.emit(command);
-        let path = AbstractBaseComponent.oasLibrary.createNodePath(this.scheme);
-        path.appendSegment("description");
+        let path = Library.createNodePath(this.scheme);
+        path.appendSegment("description", false);
         this.selectionService.select(path.toString());
     }
 

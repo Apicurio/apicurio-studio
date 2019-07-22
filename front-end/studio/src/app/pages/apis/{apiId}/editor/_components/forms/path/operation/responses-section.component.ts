@@ -26,6 +26,7 @@ import {
 import {
     CommandFactory,
     ICommand,
+    Library,
     Oas20Operation,
     Oas20Response,
     Oas30Operation,
@@ -112,7 +113,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
     public addResponse(statusCode: string): void {
         let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, null);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        let nodePath = Library.createNodePath(this.operation);
         nodePath.appendSegment(statusCode, true);
         this.selectionService.select(nodePath.toString());
 
@@ -124,7 +125,7 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         const originalResponse = this.operation.responses.getResponse(selectedStatusCode);
         let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, originalResponse);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.operation);
+        let nodePath = Library.createNodePath(this.operation);
         nodePath.appendSegment(statusCode, true);
         this.selectionService.select(nodePath.toString());
     }

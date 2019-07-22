@@ -26,6 +26,7 @@ import {
 import {
     CombinedVisitorAdapter, CommandFactory,
     ICommand,
+    Library,
     OasOperation,
     OasParameter,
     OasPathItem,
@@ -184,10 +185,10 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameter, S
             this.item.name, "query", null, null, true);
         this.commandService.emit(command);
 
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item.parent());
+        let nodePath = Library.createNodePath(this.item.parent());
         let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
         this.__selectionService.select(nodePath.toString());
     }
 

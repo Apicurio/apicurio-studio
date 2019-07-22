@@ -29,6 +29,7 @@ import {
     ICommand,
     IOasParameterParent,
     Library,
+    Node,
     Oas20Operation,
     Oas20Parameter,
     Oas20PathItem,
@@ -51,8 +52,6 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
-import { OasParameterBase } from "oai-ts-core";
-
 
 @Component({
     moduleId: module.id,
@@ -191,10 +190,10 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createNewParamCommand(this.parent, data.name,
             "header", data.description, data.type, false);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.parent);
-        let index: number = this.parent.parameters.findIndex(p => p.name === data.name); // TODO hackish
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        let nodePath = Library.createNodePath((this.parent as any) as Node); // This should be OK for now, but still unsafe, TODO fix
+        let index: number = this.parent.getParameters().findIndex(p => p.name === data.name); // TODO hackish
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
         this.__selectionService.select(nodePath.toString());
     }
 

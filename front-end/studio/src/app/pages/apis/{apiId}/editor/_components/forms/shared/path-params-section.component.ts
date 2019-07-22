@@ -148,10 +148,10 @@ export class PathParamsSectionComponent extends AbstractBaseComponent {
             null, null, false);
         this.commandService.emit(command);
 
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.parent);
+        let nodePath = Library.createNodePath(this.parent);
         let index: number = (this.parent as any).parameters.findIndex(p => p.name === paramName);
-        nodePath.appendSegment("parameters");
-        nodePath.appendSegment(index, true);
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
     }
 
     public getOverriddenParam(param: OasParameter): OasParameter {

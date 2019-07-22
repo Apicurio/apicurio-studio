@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewEncapsulation
 import {
     CommandFactory,
     ICommand,
+    Library,
     Oas30Example,
     Oas30MediaType,
     Oas30Schema,
@@ -123,8 +124,8 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
         let command: ICommand = CommandFactory.createAddExampleCommand(this.item,
             exampleData.value, exampleData.name, null, null);
         this.commandService.emit(command);
-        let nodePath = AbstractBaseComponent.oasLibrary.createNodePath(this.item);
-        nodePath.appendSegment("examples");
+        let nodePath = Library.createNodePath(this.item);
+        nodePath.appendSegment("examples", false);
         this.__selectionService.select(nodePath.toString());
     }
 

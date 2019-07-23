@@ -38,7 +38,7 @@ import {
     OasSchema,
     SimplifiedPropertyType,
     TraverserDirection,
-    VisitorUtil
+    VisitorUtil,
 } from "apicurio-data-models";
 
 import {SourceFormComponent} from "./source-form.base";
@@ -52,6 +52,7 @@ import {ModelUtils} from "../../_util/model.util";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
 import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
+import { AbstractBaseComponent } from "../common/base-component";
 
 
 @Component({
@@ -158,6 +159,10 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         let command: ICommand = CommandFactory.createNewSchemaPropertyCommand(this.definition,
             data.name, data.description, data.type);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.definition);
+        path.appendSegment("properties", false);
+        path.appendSegment(data.name, true);
+        this.__selectionService.select(path.toString());
     }
 
     public deleteAllSchemaProperties(): void {

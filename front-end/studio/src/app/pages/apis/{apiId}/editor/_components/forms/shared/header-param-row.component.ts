@@ -24,18 +24,21 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CombinedVisitorAdapter, CommandFactory, ICommand,
+    CombinedVisitorAdapter,
+    CommandFactory,
+    ICommand,
+    Library,
     OasOperation,
     OasParameter,
     OasPathItem,
-    SimplifiedParameterType, SimplifiedType
+    SimplifiedParameterType,
+    SimplifiedType
 } from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-
 
 @Component({
     moduleId: module.id,
@@ -183,6 +186,9 @@ export class HeaderParamRowComponent extends AbstractRowComponent<OasParameter, 
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any, this.item.name,
             "header", null, null, true);
         this.commandService.emit(command);
+
+        let nodePath = Library.createNodePath(this.item.parent());
+        this.__selectionService.select(nodePath.toString());
     }
 
     public isMissing(): boolean {

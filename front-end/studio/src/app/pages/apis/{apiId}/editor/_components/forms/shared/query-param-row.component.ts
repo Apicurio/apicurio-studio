@@ -26,6 +26,7 @@ import {
 import {
     CombinedVisitorAdapter, CommandFactory,
     ICommand,
+    Library,
     OasOperation,
     OasParameter,
     OasPathItem,
@@ -37,6 +38,7 @@ import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
+import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -182,6 +184,12 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameter, S
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "query", null, null, true);
         this.commandService.emit(command);
+
+        let nodePath = Library.createNodePath(this.item.parent());
+        let index: number = (this.item.parent() as any).parameters.findIndex(p => p.name === this.item.name); // TODO hackish
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
+        this.__selectionService.select(nodePath.toString());
     }
 
     public isMissing(): boolean {

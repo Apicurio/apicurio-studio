@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncaps
 import {
     CommandFactory,
     ICommand,
+    Library,
     Oas30Example,
     Oas30MediaType,
     Oas30RequestBody,
@@ -86,6 +87,10 @@ export class ContentComponent extends AbstractBaseComponent {
     public addMediaType(mediaType: string): void {
         let command: ICommand = CommandFactory.createNewMediaTypeCommand(this.parent, mediaType);
         this.commandService.emit(command);
+        let nodePath = Library.createNodePath(this.parent);
+        nodePath.appendSegment("content", false);
+        nodePath.appendSegment(mediaType, true);
+        this.selectionService.select(nodePath.toString());
     }
 
 }

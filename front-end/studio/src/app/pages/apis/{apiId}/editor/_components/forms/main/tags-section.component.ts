@@ -27,6 +27,7 @@ import {
     CombinedVisitorAdapter,
     CommandFactory,
     ICommand,
+    Library,
     OasDocument,
     OasTag,
     TraverserDirection,
@@ -109,6 +110,10 @@ export class TagsSectionComponent extends AbstractBaseComponent {
     public addTag(tag: any): void {
         let command: ICommand = CommandFactory.createNewTagCommand(tag.name, tag.description);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.document);
+        path.appendSegment("tags", false);
+        this.selectionService.select(path.toString());
+
     }
 
     /**

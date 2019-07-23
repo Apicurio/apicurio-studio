@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {CommandFactory, ICommand, Oas20Document, OasDocument, OasInfo} from "apicurio-data-models";
+import {CommandFactory, ICommand, Library, Oas20Document, OasDocument, OasInfo} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -103,6 +103,9 @@ export class InfoSectionComponent extends AbstractBaseComponent {
         console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.document, "produces", newValue);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.document);
+        path.appendSegment("produces", false);
+        this.selectionService.select(path.toString());
     }
 
     public consumes(): string[] {

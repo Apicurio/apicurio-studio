@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {ChangeLicenseCommand, CommandFactory, ICommand, OasDocument, OasLicense} from "apicurio-data-models";
+import {ChangeLicenseCommand, CommandFactory, ICommand, Library, OasDocument, OasLicense} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {ILicense, LicenseService} from "../../../_services/license.service";
 import {AbstractBaseComponent} from "../../common/base-component";
@@ -98,6 +98,10 @@ export class LicenseSectionComponent extends AbstractBaseComponent {
     public setLicense(licenseInfo: any): void {
         let command: ICommand = CommandFactory.createChangeLicenseCommand(licenseInfo.name, licenseInfo.url);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.document);
+        path.appendSegment("info", false);
+        path.appendSegment("license", false);
+        this.selectionService.select(path.toString());
     }
 
     /**

@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class StudioConfigFeatures {
     
     private boolean microcks;
+    private boolean shareWithEveryone;
     
     /**
      * Constructor.
@@ -47,6 +48,20 @@ public class StudioConfigFeatures {
      */
     public void setMicrocks(boolean microcks) {
         this.microcks = microcks;
+    }
+
+    /**
+     * @return the shareWithEveryone
+     */
+    public boolean isShareWithEveryone() {
+        return shareWithEveryone;
+    }
+
+    /**
+     * @param shareWithEveryone the shareWithEveryone to set
+     */
+    public void setShareWithEveryone(boolean shareWithEveryone) {
+        this.shareWithEveryone = shareWithEveryone;
     }
 
 }

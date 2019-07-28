@@ -17,15 +17,15 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
-    Oas30Document,
+    CommandFactory,
+    ICommand,
+    Library,
+    Oas30Example,
     Oas30MediaType,
     Oas30RequestBody,
-    Oas30RequestBodyContent,
     Oas30Response,
-    Oas30ResponseContent
-} from "oai-ts-core";
-import {createNewMediaTypeCommand, ICommand, SimplifiedType} from "oai-ts-commands";
-import {Oas30Example} from "oai-ts-core/src/models/3.0/example.model";
+    SimplifiedType
+} from "apicurio-data-models";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
@@ -63,9 +63,6 @@ export interface ExamplePropertyChangeEvent {
 export class ContentComponent extends AbstractBaseComponent {
 
     @Input() parent: Oas30Response | Oas30RequestBody;
-    @Input() content: Oas30ResponseContent | Oas30RequestBodyContent;
-
-    protected mediaTypeName: string;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService, private commandService: CommandService) {
@@ -73,26 +70,27 @@ export class ContentComponent extends AbstractBaseComponent {
     }
 
     public hasMediaTypes(): boolean {
-        if (this.content) {
-            return Object.keys(this.content).length > 0;
-        }
-        return false;
+        return this.parent.getMediaTypes().length > 0;
     }
 
     public mediaTypeNames(): string[] {
-        if (this.content) {
-            return Object.keys(this.content);
+        if (this.parent.content) {
+            return Object.keys(this.parent.content);
         }
         return [];
     }
 
     public mediaTypeByName(name: string): Oas30MediaType {
-        return this.content[name];
+        return this.parent.getMediaType(name);
     }
 
     public addMediaType(mediaType: string): void {
-        let command: ICommand = createNewMediaTypeCommand(this.parent.ownerDocument(), this.parent, mediaType);
+        let command: ICommand = CommandFactory.createNewMediaTypeCommand(this.parent, mediaType);
         this.commandService.emit(command);
+        let nodePath = Library.createNodePath(this.parent);
+        nodePath.appendSegment("content", false);
+        nodePath.appendSegment(mediaType, true);
+        this.selectionService.select(nodePath.toString());
     }
 
 }

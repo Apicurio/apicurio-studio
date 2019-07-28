@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {OasDocument, OasPathItem} from "oai-ts-core";
+import {OasDocument, OasPathItem} from "apicurio-data-models";
 
 
 @Component({
@@ -47,7 +47,7 @@ export class ClonePathDialogComponent {
      */
     public open(document: OasDocument, path: OasPathItem): void {
         this.object = path;
-        this.path = path.path();
+        this.path = path.getPath();
         if (!this.path.endsWith("/")) {
             this.path = this.path + "/";
         }
@@ -61,8 +61,8 @@ export class ClonePathDialogComponent {
         this.paths = [];
         this.pathExists = false;
         if (document.paths) {
-            document.paths.pathItems().forEach( pathItem => {
-                this.paths.push(pathItem.path());
+            document.paths.getPathItems().forEach( pathItem => {
+                this.paths.push(pathItem.getPath());
             });
         }
     }
@@ -110,4 +110,12 @@ export class ClonePathDialogComponent {
         this.clonePathInput.first.nativeElement.selectionStart = this.clonePathInput.first.nativeElement.selectionEnd = this.path.length
     }
 
+    /**
+     * Called whenever the user types anything in the path field - this validates that the path entered
+     * is OK.
+     * @param newPath
+     */
+    validatePath(newPath: string) {
+        this.pathExists = this.paths.indexOf(newPath) != -1;
+    }
 }

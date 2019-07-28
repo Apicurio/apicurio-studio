@@ -48,7 +48,7 @@ import {ApisCardsComponent} from './pages/apis/_components/apis-cards.component'
 import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
 import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
 import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
-import {ApiEditorPageComponent} from './pages/apis/{apiId}/editor/api-editor.page';
+import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
 import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
 import {GitHubResourceComponent} from "./pages/apis/{apiId}/publish/_components/github-resource.component";
 import {GitLabResourceComponent} from "./pages/apis/{apiId}/publish/_components/gitlab-resource.component";
@@ -70,6 +70,7 @@ import {ConfigureValidationComponent} from './pages/apis/{apiId}/_components/con
 import {ValidationService} from "./services/validation.service";
 import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 import {ProfileEditorComponent} from "./pages/settings/validation/_components/profile-editor.component";
+import {TagListComponent} from "./components/common/tag-list.component";
 
 @NgModule({
     imports: [
@@ -85,12 +86,12 @@ import {ProfileEditorComponent} from "./pages/settings/validation/_components/pr
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
-        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent
+        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent, TagListComponent
 
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
-        AuthenticationCanActivateGuard, CurrentUserService, TemplateService
+        AuthenticationCanActivateGuard, ApiEditorPageGuard, CurrentUserService, TemplateService
     ],
     bootstrap: [AppComponent]
 })

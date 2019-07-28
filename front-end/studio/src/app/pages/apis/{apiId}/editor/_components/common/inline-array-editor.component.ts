@@ -32,7 +32,7 @@ import {AbstractInlineEditor} from "./inline-editor.base";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
-import {OasNode} from "oai-ts-core";
+import {Node} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {KeypressUtils} from "../../_util/keypress.util";
 
@@ -49,7 +49,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     @Input() value: string[];
     @Input() noValueMessage: string;
     @Input() items: string[] | (()=>string[]);
-    @Input() baseNode: OasNode;
+    @Input() baseNode: Node;
     @Input() nodePath: string;
 
     @Output() onChange: EventEmitter<string[]> = new EventEmitter<string[]>();
@@ -62,6 +62,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     public evalues: {};
 
     public firstEnter: boolean;
+    public firstInputValue: boolean = true;
 
     /**
      * C'tor.
@@ -77,7 +78,10 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
     ngOnChanges(changes: SimpleChanges): void {
         super.ngOnChanges(changes);
         if (changes["value"]) {
-            this.onCancel();
+            if (!this.firstInputValue) {
+                this.onCancel();
+            }
+            this.firstInputValue = false;
         }
     }
 
@@ -142,6 +146,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
             }
             this.__selectionService.simpleSelect(path);
         }
+        this.__changeDetectorRef.markForCheck();
     }
 
     private adHocValues(): string[] {
@@ -187,8 +192,9 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
         }
 
         let newValue: string[] = Object.keys(result);
-        this.onChange.emit(newValue);
         this.editing = false;
+        AbstractInlineEditor.s_activeEditor = null;
+        this.onChange.emit(newValue);
     }
 
     public removeItem(item: string): void {
@@ -200,6 +206,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
 
     public onCancel(): void {
         this.editing = false;
+        AbstractInlineEditor.s_activeEditor = null;
         this.onClose.emit();
     }
 

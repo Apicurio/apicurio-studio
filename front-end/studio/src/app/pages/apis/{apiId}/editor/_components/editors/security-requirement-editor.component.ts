@@ -17,19 +17,20 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {
+    CombinedVisitorAdapter,
     Oas20Scopes,
     Oas30AuthorizationCodeOAuthFlow,
     Oas30ClientCredentialsOAuthFlow,
     Oas30ImplicitOAuthFlow,
-    Oas30OAuthFlow,
     Oas30PasswordOAuthFlow,
-    OasCombinedVisitorAdapter,
     OasDocument,
     OasOperation,
     OasSecurityRequirement,
-    OasSecurityScheme,
-    OasVisitorUtil
-} from "oai-ts-core";
+    OAuthFlow,
+    SecurityScheme,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {SelectionService} from "../../_services/selection.service";
 import {ModelUtils} from "../../_util/model.util";
@@ -67,7 +68,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
 
     protected model: SecurityRequirementData;
     anonEnabled: boolean = false;
-    schemes: OasSecurityScheme[];
+    schemes: SecurityScheme[];
     protected scopeCache: any;
 
     /**
@@ -89,7 +90,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
         this.model = {};
         this.anonEnabled = false;
         this.scopeCache = {};
-        this.schemes = this.findSchemes(context.ownerDocument());
+        this.schemes = this.findSchemes(<OasDocument> context.ownerDocument());
         super.open(handler, context, requirement);
 
         if (requirement) {
@@ -104,12 +105,12 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param entity
      */
     public initializeModelFromEntity(entity: OasSecurityRequirement): void {
-        let names: string[] = entity.securityRequirementNames();
+        let names: string[] = entity.getSecurityRequirementNames();
         if (names.length === 0) {
             this.anonEnabled = true;
         } else {
             names.forEach( name => {
-                this.model[name] = entity.scopes(name);
+                this.model[name] = entity.getScopes(name);
             });
         }
     }
@@ -160,9 +161,9 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scheme
      * @return
      */
-    public isChecked(scheme: OasSecurityScheme): boolean {
+    public isChecked(scheme: SecurityScheme): boolean {
         for (let n in this.model) {
-            if (n === scheme.schemeName()) {
+            if (n === scheme.getSchemeName()) {
                 return true;
             }
         }
@@ -174,7 +175,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scheme
      * @return
      */
-    public canExpand(scheme: OasSecurityScheme): boolean {
+    public canExpand(scheme: SecurityScheme): boolean {
         return scheme.type === "oauth2" || scheme.type === "openIdConnect";
     }
 
@@ -183,20 +184,20 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scheme
      * @return
      */
-    public isExpanded(scheme: OasSecurityScheme): boolean {
-        return this._expanded[scheme.schemeName()] ? true : false;
+    public isExpanded(scheme: SecurityScheme): boolean {
+        return this._expanded[scheme.getSchemeName()] ? true : false;
     }
 
     /**
      * Called to toggle the expansion of a scheme.
      * @param scheme
      */
-    public toggleExpansion(scheme: OasSecurityScheme): void {
-        let pval: boolean = this._expanded[scheme.schemeName()];
+    public toggleExpansion(scheme: SecurityScheme): void {
+        let pval: boolean = this._expanded[scheme.getSchemeName()];
         if (pval) {
-            this._expanded[scheme.schemeName()] = false;
+            this._expanded[scheme.getSchemeName()] = false;
         } else {
-            this._expanded[scheme.schemeName()] = true;
+            this._expanded[scheme.getSchemeName()] = true;
         }
     }
 
@@ -204,35 +205,35 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * Called to expand a scheme.
      * @param scheme
      */
-    public expand(scheme: OasSecurityScheme): void {
-        this._expanded[scheme.schemeName()] = true;
+    public expand(scheme: SecurityScheme): void {
+        this._expanded[scheme.getSchemeName()] = true;
     }
 
     /**
      * Called to collapse a scheme.
      * @param scheme
      */
-    public collapse(scheme: OasSecurityScheme): void {
-        this._expanded[scheme.schemeName()] = false;
+    public collapse(scheme: SecurityScheme): void {
+        this._expanded[scheme.getSchemeName()] = false;
     }
 
     /**
      * Adds/removes the security scheme from the model.
      * @param scheme
      */
-    public toggleSecurityScheme(scheme: OasSecurityScheme, enable?: boolean): void {
+    public toggleSecurityScheme(scheme: SecurityScheme, enable?: boolean): void {
         if (enable === undefined) {
             enable = !this.isChecked(scheme);
         }
         if (enable) {
             // any other security scheme is mutually exclusive with anonymous access
             this.anonEnabled = false;
-            this.model[scheme.schemeName()] = [];
+            this.model[scheme.getSchemeName()] = [];
             if (this.canExpand(scheme)) {
                 this.expand(scheme);
             }
         } else {
-            delete this.model[scheme.schemeName()];
+            delete this.model[scheme.getSchemeName()];
             if (this.canExpand(scheme)) {
                 this.collapse(scheme);
             }
@@ -244,15 +245,15 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scheme
      * @return
      */
-    public scopes(scheme: OasSecurityScheme): ScopeInfo[] {
+    public scopes(scheme: SecurityScheme): ScopeInfo[] {
         if (this.canExpand(scheme)) {
-            if (this.scopeCache[scheme.schemeName()]) {
-                return this.scopeCache[scheme.schemeName()];
+            if (this.scopeCache[scheme.getSchemeName()]) {
+                return this.scopeCache[scheme.getSchemeName()];
             }
             let visitor: ScopeFinder = new ScopeFinder();
-            OasVisitorUtil.visitTree(scheme, visitor);
+            VisitorUtil.visitTree(scheme, visitor, TraverserDirection.down);
             let rval: ScopeInfo[] = visitor.scopes();
-            this.scopeCache[scheme.schemeName()] = rval;
+            this.scopeCache[scheme.getSchemeName()] = rval;
             return rval;
         }
         return [];
@@ -264,8 +265,8 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scope
      * @return
      */
-    public isScopeChecked(scheme: OasSecurityScheme, scope: string): boolean {
-        let modelScopes: string[] = this.model[scheme.schemeName()];
+    public isScopeChecked(scheme: SecurityScheme, scope: string): boolean {
+        let modelScopes: string[] = this.model[scheme.getSchemeName()];
         if (modelScopes !== undefined) {
             return modelScopes.indexOf(scope) != -1;
         }
@@ -278,13 +279,13 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param scope
      * @param enable
      */
-    public toggleScope(scheme: OasSecurityScheme, scope: string, enable?: boolean): void {
+    public toggleScope(scheme: SecurityScheme, scope: string, enable?: boolean): void {
         let checked: boolean = enable;
         if (enable === undefined) {
             checked = !this.isScopeChecked(scheme, scope);
         }
 
-        let modelScopes: string[] = this.model[scheme.schemeName()];
+        let modelScopes: string[] = this.model[scheme.getSchemeName()];
         if (modelScopes === undefined) {
             return;
         }
@@ -302,9 +303,9 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param document
      * @return
      */
-    public findSchemes(document: OasDocument): OasSecurityScheme[] {
+    public findSchemes(document: OasDocument): SecurityScheme[] {
         let visitor: SecuritySchemeFinder = new SecuritySchemeFinder();
-        OasVisitorUtil.visitTree(document, visitor);
+        VisitorUtil.visitTree(document, visitor, TraverserDirection.down);
         return visitor.schemes();
     }
 
@@ -313,15 +314,15 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
 /**
  * Visitor used to find security schemes in a document.
  */
-class SecuritySchemeFinder extends OasCombinedVisitorAdapter {
+class SecuritySchemeFinder extends CombinedVisitorAdapter {
 
-    private _schemes: OasSecurityScheme[] = [];
+    private _schemes: SecurityScheme[] = [];
 
-    public schemes(): OasSecurityScheme[] {
+    public schemes(): SecurityScheme[] {
         return this._schemes;
     }
 
-    public visitSecurityScheme(node: OasSecurityScheme): void {
+    public visitSecurityScheme(node: SecurityScheme): void {
         this._schemes.push(node);
     }
 
@@ -332,7 +333,7 @@ class SecuritySchemeFinder extends OasCombinedVisitorAdapter {
  * Used to get an array of available scopes so that the user can choose which
  * of them are required.
  */
-class ScopeFinder extends OasCombinedVisitorAdapter {
+class ScopeFinder extends CombinedVisitorAdapter {
 
     private _scopes: ScopeInfo[] = [];
     private _scopeNames: string[] = [];
@@ -341,7 +342,7 @@ class ScopeFinder extends OasCombinedVisitorAdapter {
         return this._scopes;
     }
 
-    protected visitOAuthFlow(node: Oas30OAuthFlow): void {
+    protected visitOAuthFlow(node: OAuthFlow): void {
         for (let scope of node.getScopes()) {
             if (this._scopeNames.indexOf(scope) === -1) {
                 this._scopes.push({
@@ -354,7 +355,7 @@ class ScopeFinder extends OasCombinedVisitorAdapter {
     }
 
     public visitScopes(node: Oas20Scopes): void {
-        for (let scope of node.scopes()) {
+        for (let scope of node.getScopeNames()) {
             if (this._scopeNames.indexOf(scope) === -1) {
                 this._scopes.push({
                     name: scope,

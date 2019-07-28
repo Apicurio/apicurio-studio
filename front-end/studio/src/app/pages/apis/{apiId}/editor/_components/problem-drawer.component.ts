@@ -24,7 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasValidationProblem, OasValidationProblemSeverity} from "oai-ts-core";
+import {ValidationProblem, ValidationProblemSeverity} from "apicurio-data-models";
 import {SelectionService} from "../_services/selection.service";
 import {ProblemsService} from "../_services/problems.service";
 import {AbstractBaseComponent} from "./common/base-component";
@@ -46,7 +46,7 @@ import {FeaturesService} from "../_services/features.service";
 })
 export class EditorProblemDrawerComponent extends AbstractBaseComponent {
 
-    @Input() validationErrors: OasValidationProblem[];
+    @Input() validationErrors: ValidationProblem[];
     @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
@@ -68,7 +68,7 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
         return this.validationErrors && this.validationErrors.length > 0;
     }
 
-    public goTo(problem: OasValidationProblem): void {
+    public goTo(problem: ValidationProblem): void {
         this.close.emit(true);
         let goToPath: string = problem.nodePath.toString();
         if (problem.property) {
@@ -82,24 +82,24 @@ export class EditorProblemDrawerComponent extends AbstractBaseComponent {
         }, 50);
     }
 
-    public iconFor(problem: OasValidationProblem): string {
+    public iconFor(problem: ValidationProblem): string {
         switch (problem.severity) {
-            case OasValidationProblemSeverity.low:
+            case ValidationProblemSeverity.low:
                 return "pficon-info";
-            case OasValidationProblemSeverity.medium:
+            case ValidationProblemSeverity.medium:
                 return "pficon-warning-triangle-o";
-            case OasValidationProblemSeverity.high:
+            case ValidationProblemSeverity.high:
                 return "pficon-error-circle-o";
             default:
                 return "pficon-info";
         }
     }
 
-    public summaryFor(problem: OasValidationProblem): string {
+    public summaryFor(problem: ValidationProblem): string {
         return this.problemsService.summary(problem);
     }
 
-    public explanationFor(problem: OasValidationProblem): string {
+    public explanationFor(problem: ValidationProblem): string {
         return this.problemsService.explanation(problem);
     }
 

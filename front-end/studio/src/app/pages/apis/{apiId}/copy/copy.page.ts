@@ -23,8 +23,8 @@ import {AbstractPageComponent} from "../../../../components/page-base.component"
 import {Title} from "@angular/platform-browser";
 import {ApisService} from "../../../../services/apis.service";
 import {ImportApi} from "../../../../models/import-api.model";
-import {Oas20Document, OasDocument, OasLibraryUtils} from "oai-ts-core";
-import {createChangeTitleCommand} from "oai-ts-commands";
+import {CommandFactory, Document, DocumentType, Library, Oas20Document, Oas30Document} from "apicurio-data-models";
+import {Base64} from "js-base64";
 
 @Component({
     moduleId: module.id,
@@ -35,7 +35,7 @@ import {createChangeTitleCommand} from "oai-ts-commands";
 export class CopyPageComponent extends AbstractPageComponent {
 
     public api: ApiDefinition;
-    public document: OasDocument;
+    public document: Document;
 
     public title: string;
     public convertApi: boolean;
@@ -76,7 +76,11 @@ export class CopyPageComponent extends AbstractPageComponent {
         let apiId: string = params["apiId"];
         this.apis.getApiDefinition(apiId).then(api => {
             this.api = api;
-            this.document = new OasLibraryUtils().createDocument(this.api.spec);
+            if (typeof this.api.spec == "string") {
+                this.document = Library.readDocumentFromJSONString(this.api.spec);
+            } else {
+                this.document = Library.readDocument(this.api.spec);
+            }
             this.title = this.generateApiTitle();
             this.dataLoaded["api"] = true;
             this.updatePageTitle();
@@ -90,6 +94,10 @@ export class CopyPageComponent extends AbstractPageComponent {
         return this.isLoaded("api");
     }
 
+    public is2xDocument(): boolean {
+        return this.document.getDocumentType() == DocumentType.openapi2;
+    }
+
     public copyApi(): void {
         if (!this.isValid()) {
             return;
@@ -99,6 +107,7 @@ export class CopyPageComponent extends AbstractPageComponent {
 
         let importApi: ImportApi = new ImportApi();
         importApi.data = this.cloneApi();
+
         this.apis.importApi(importApi).then(importedApi => {
             let link: string[] = [ "/apis", importedApi.id ];
             console.info("[CopyPageComponent] Navigating to: %o", link);
@@ -118,16 +127,23 @@ export class CopyPageComponent extends AbstractPageComponent {
      * Clones the API and returns a serialized and base64'd copy of the content.
      */
     public cloneApi(): string {
-        let library: OasLibraryUtils = new OasLibraryUtils();
-        let sourceDoc: OasDocument = this.document;
-        createChangeTitleCommand(sourceDoc, this.title).execute(sourceDoc);
-        if (sourceDoc.is2xDocument() && this.convertApi) {
+        let sourceDoc: Document = this.document;
+        CommandFactory.createChangeTitleCommand(this.title).execute(sourceDoc);
+        if (sourceDoc.getDocumentType() == DocumentType.openapi2 && this.convertApi) {
             console.info("[CopyPageComponent] Converting API from 2.0 to 3.0.x!");
-            sourceDoc = library.transformDocument(sourceDoc as Oas20Document);
+            sourceDoc = this.transformDocument(sourceDoc as Oas20Document);
         }
-        let sourceJs: any = library.writeNode(sourceDoc);
-        let sourceB64: string = btoa(JSON.stringify(sourceJs));
+        let sourceJs: any = Library.writeNode(sourceDoc);
+        let sourceStr: string = JSON.stringify(sourceJs);
+        let sourceB64: string = Base64.encode(sourceStr);
         return sourceB64;
+    }
+
+    /**
+     * @param from
+     */
+    public transformDocument(from: Oas20Document): Oas30Document {
+        return Library.transformDocument(from);
     }
 
     public generateApiTitle(): string {

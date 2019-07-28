@@ -100,9 +100,7 @@ export class VerticalNavComponent implements OnInit {
      */
     onShadeClick(): void {
         this.subMenuOut = false;
-        setTimeout(() => {
-            this.currentSubMenu = VerticalNavSubMenuType.None;
-        }, 180);
+        this.currentSubMenu = VerticalNavSubMenuType.None;
     }
 
     /**

@@ -1,0 +1,8 @@
+<div class="tag-list" *ngIf="tags && tags.length > 0">
+    <span class="tag-list-label">Tags:</span>
+    <span class="label label-default" *ngFor="let tag of visibleTags" (click)="fireTagSelected(tag, $event)">{{ tag }}</span>
+    <a class="tag-list-more-button" *ngIf="hasOverflow()" (click)="toggleAllTags($event)" title="Show more tags"><span>...</span></a>
+    <div class="tag-list-more" *ngIf="hasOverflow() && showMore">
+        <span class="label label-default" *ngFor="let tag of overflowTags" (click)="fireTagSelected(tag, $event)">{{ tag }}</span>
+    </div>
+</div>

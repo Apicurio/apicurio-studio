@@ -1,0 +1,8 @@
+.md-container ul {
+  list-style-type: circle;
+  list-style-position: inside;
+}
+
+.md-container ul li {
+  padding-left: 18px;
+}

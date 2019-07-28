@@ -1158,7 +1158,7 @@ const PET_STORE_30 = {
         "/pets/{id}": {
             "get": {
                 "description": "Returns a user based on a single ID, if the user does not have access to the pet",
-                "operationId": "find pet by id",
+                "operationId": "findPetById",
                 "parameters": [
                     {
                         "name": "id",

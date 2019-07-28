@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {OasDocument} from "oai-ts-core";
+import {OasDocument} from "apicurio-data-models";
 
 @Component({
     moduleId: module.id,
@@ -61,8 +61,8 @@ export class AddPathDialogComponent {
         this.paths = [];
         this.pathExists = false;
         if (document.paths) {
-            document.paths.pathItems().forEach( pathItem => {
-                this.paths.push(pathItem.path());
+            document.paths.getPathItems().forEach( pathItem => {
+                this.paths.push(pathItem.getPath());
             });
         }
     }
@@ -106,4 +106,12 @@ export class AddPathDialogComponent {
         this.addPathInput.first.nativeElement.selectionStart = this.addPathInput.first.nativeElement.selectionEnd = this.path.length
     }
 
+    /**
+     * Called whenever the user types anything in the path field - this validates that the path entered
+     * is OK.
+     * @param newPath
+     */
+    validatePath(newPath: string) {
+        this.pathExists = this.paths.indexOf(newPath) != -1;
+    }
 }

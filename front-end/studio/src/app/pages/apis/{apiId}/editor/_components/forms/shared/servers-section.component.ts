@@ -16,14 +16,15 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas30Document, Oas30Operation, Oas30PathItem, Oas30Server, Oas30ServerVariable} from "oai-ts-core";
 import {
-    createChangeServerCommand,
-    createDeleteAllServersCommand,
-    createDeleteServerCommand,
-    createNewServerCommand,
-    ICommand
-} from "oai-ts-commands";
+    CommandFactory,
+    ICommand,
+    Oas30Document,
+    Oas30Operation,
+    Oas30PathItem,
+    Oas30Server,
+    Oas30ServerVariable
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerData, ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";
@@ -91,7 +92,7 @@ export class ServersSectionComponent extends AbstractBaseComponent {
      * @param server
      */
     public deleteServer(server: Oas30Server): void {
-        let command: ICommand = createDeleteServerCommand(this.parent.ownerDocument(), server);
+        let command: ICommand = CommandFactory.createDeleteServerCommand(server);
         this.commandService.emit(command);
     }
 
@@ -106,7 +107,7 @@ export class ServersSectionComponent extends AbstractBaseComponent {
 
         this.copyServerToModel(data, newServer);
 
-        let command: ICommand = createNewServerCommand(this.parent.ownerDocument(), this.parent, newServer);
+        let command: ICommand = CommandFactory.createNewServerCommand(this.parent, newServer);
         this.commandService.emit(command);
     }
 
@@ -121,7 +122,7 @@ export class ServersSectionComponent extends AbstractBaseComponent {
 
         this.copyServerToModel(event.data, newServer);
 
-        let command: ICommand = createChangeServerCommand(this.parent.ownerDocument(), newServer);
+        let command: ICommand = CommandFactory.createChangeServerCommand(newServer);
         this.commandService.emit(command);
     }
 
@@ -148,9 +149,9 @@ export class ServersSectionComponent extends AbstractBaseComponent {
         if (fromData.variables) {
             for (let varName in fromData.variables) {
                 let serverVar: Oas30ServerVariable = toServer.createServerVariable(varName);
-                serverVar.default = fromData.variables[varName].default;
+                serverVar.default_ = fromData.variables[varName].default;
                 serverVar.description = fromData.variables[varName].description;
-                serverVar.enum = fromData.variables[varName].enum;
+                serverVar.enum_ = fromData.variables[varName].enum;
                 toServer.addServerVariable(varName, serverVar);
             }
         }
@@ -164,7 +165,7 @@ export class ServersSectionComponent extends AbstractBaseComponent {
      * Called when the user clicks the trash icon to delete all the servers.
      */
     public deleteAllServers(): void {
-        let command: ICommand = createDeleteAllServersCommand(this.parent);
+        let command: ICommand = CommandFactory.createDeleteAllServersCommand(this.parent);
         this.commandService.emit(command);
     }
 

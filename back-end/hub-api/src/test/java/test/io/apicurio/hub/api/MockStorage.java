@@ -610,6 +610,15 @@ public class MockStorage implements IStorage {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiDesignPublicationsBy(java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public Collection<ApiPublication> listApiDesignPublicationsBy(String designId, String user, int from,
+            int to) throws StorageException {
+        return null;
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.IStorage#listApiDesignMocks(java.lang.String, int, int)
      */
     @Override

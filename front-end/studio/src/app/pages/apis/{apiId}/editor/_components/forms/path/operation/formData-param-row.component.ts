@@ -23,14 +23,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {
-    createChangeParameterTypeCommand,
-    createChangePropertyCommand,
-    ICommand,
-    SimplifiedParameterType,
-    SimplifiedType
-} from "oai-ts-commands";
-import {OasParameterBase} from "oai-ts-core";
+import {CommandFactory, ICommand, OasParameter, SimplifiedParameterType, SimplifiedType} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
@@ -46,7 +39,7 @@ import {AbstractRowComponent} from "../../../common/item-row.abstract";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormDataParamRowComponent extends AbstractRowComponent<OasParameterBase, SimplifiedParameterType> {
+export class FormDataParamRowComponent extends AbstractRowComponent<OasParameter, SimplifiedParameterType> {
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
@@ -131,13 +124,13 @@ export class FormDataParamRowComponent extends AbstractRowComponent<OasParameter
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.item.ownerDocument(), this.item, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
-        let command: ICommand = createChangePropertyCommand<boolean>(this.item.ownerDocument(), this.item, "required", this.model().required);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<boolean>(this.item, "required", this.model().required);
         this.commandService.emit(command);
     }
 
@@ -145,10 +138,11 @@ export class FormDataParamRowComponent extends AbstractRowComponent<OasParameter
         let nt: SimplifiedParameterType = new SimplifiedParameterType();
         nt.required = this.model().required;
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangeParameterTypeCommand(this.item.ownerDocument(), this.item as any, nt);
+        let command: ICommand = CommandFactory.createChangeParameterTypeCommand(this.item.ownerDocument().getDocumentType(),
+            this.item as any, nt);
         this.commandService.emit(command);
         this._model = nt;
     }

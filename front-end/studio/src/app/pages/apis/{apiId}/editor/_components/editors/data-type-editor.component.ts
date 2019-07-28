@@ -16,7 +16,13 @@
  */
 
 import {Component} from "@angular/core";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasVisitorUtil} from "oai-ts-core";
+import {
+    Oas20SchemaDefinition,
+    Oas30SchemaDefinition,
+    OasDocument,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
@@ -63,7 +69,7 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
     public doAfterOpen(): void {
         this.defs = [];
         this.defExists = false;
-        let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(this.context.ownerDocument());
+        let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(<OasDocument> this.context.ownerDocument());
         this.defs = definitions.map(definition => FindSchemaDefinitionsVisitor.definitionName(definition));
     }
 
@@ -163,7 +169,7 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
 
     private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let vizzy: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(document, vizzy);
+        VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
         return vizzy.getSortedSchemaDefinitions()
     }
 

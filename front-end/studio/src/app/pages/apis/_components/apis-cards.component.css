@@ -62,22 +62,10 @@
   overflow-y: auto;
 }
 
-.api-card .api-tags {
+:host ::ng-deep .api-card .tag-list {
   margin-bottom: 8px;
 }
-.api-card .api-tags .api-tags-label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.api-card .api-tags .label {
-  margin-right: 5px;
-  margin-bottom: 3px;
-  padding: 5px;
-  display: inline-block;
-}
-.api-card .api-tags .label:hover {
-  filter: brightness(120%);
+:host ::ng-deep .api-card .tag-list .label:hover {
   cursor: pointer;
 }
 

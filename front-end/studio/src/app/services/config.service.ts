@@ -130,4 +130,11 @@ export class ConfigService {
         }
         return this.config.ui.url;
     }
+
+    public isShareWithEveryoneEnabled(): boolean {
+        if (!this.config.features) {
+            return false;
+        }
+        return this.config.features.shareWithEveryone;
+    }
 }

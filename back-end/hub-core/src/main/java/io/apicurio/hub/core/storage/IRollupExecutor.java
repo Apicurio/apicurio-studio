@@ -15,8 +15,8 @@
  */
 package io.apicurio.hub.core.storage;
 
+import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
-import io.apicurio.hub.core.js.OaiCommandException;
 
 /**
  * Perform database rollup on a design.

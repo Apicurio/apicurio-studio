@@ -23,7 +23,7 @@ import {MockReference} from "../../../../models/mock-api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
 import {ApisService} from "../../../../services/apis.service";
-import {OasDocument, OasLibraryUtils} from "oai-ts-core";
+import {OasDocument, Library} from "apicurio-data-models";
 
 
 @Component({
@@ -76,7 +76,11 @@ export class MockPageComponent extends AbstractPageComponent {
         let apiId: string = params["apiId"];
         this.apis.getApiDefinition(apiId).then(api => {
             this.api = api;
-            this.document = new OasLibraryUtils().createDocument(this.api.spec);
+            if (typeof this.api.spec === "string") {
+                this.document = <OasDocument> Library.readDocumentFromJSONString(this.api.spec);
+            } else {
+                this.document = <OasDocument> Library.readDocument(this.api.spec);
+            }
             this.dataLoaded["api"] = true;
             this.updatePageTitle();
         }).catch(error => {

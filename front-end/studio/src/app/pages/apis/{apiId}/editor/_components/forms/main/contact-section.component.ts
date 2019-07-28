@@ -16,14 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasContact, OasDocument} from "oai-ts-core";
+import {CommandFactory, ICommand, OasContact, OasDocument} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
-import {
-    createChangeContactCommand,
-    createChangePropertyCommand,
-    createDeleteContactCommand,
-    ICommand
-} from "oai-ts-commands";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -70,7 +64,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      * Called to add empty contact info to the API definition.
      */
     public createEmptyContact(): void {
-        let command: ICommand = createChangeContactCommand(this.document, null, null, null);
+        let command: ICommand = CommandFactory.createChangeContactCommand(null, null, null);
         this.commandService.emit(command);
     }
 
@@ -78,7 +72,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      * Called when the user chooses to remove the contact info.
      */
     public deleteContact(): void {
-        let command: ICommand = createDeleteContactCommand(this.document);
+        let command: ICommand = CommandFactory.createDeleteContactCommand(this.document.info);
         this.commandService.emit(command);
     }
 
@@ -121,7 +115,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      */
     public changeContactName(newValue: string): void {
         if (!newValue) { newValue = null; }
-        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "name", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.contact(), "name", newValue);
         this.commandService.emit(command);
     }
 
@@ -131,7 +125,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      */
     public changeContactEmail(newValue: string): void {
         if (!newValue) { newValue = null; }
-        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "email", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.contact(), "email", newValue);
         this.commandService.emit(command);
     }
 
@@ -141,7 +135,7 @@ export class ContactSectionComponent extends AbstractBaseComponent {
      */
     public changeContactURL(newValue: string): void {
         if (!newValue) { newValue = null; }
-        let command: ICommand = createChangePropertyCommand(this.document, this.contact(), "url", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.contact(), "url", newValue);
         this.commandService.emit(command);
     }
 

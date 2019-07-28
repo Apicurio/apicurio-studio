@@ -54,6 +54,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.Document;
+import io.apicurio.datamodels.core.models.DocumentType;
+import io.apicurio.datamodels.core.models.ValidationProblem;
+import io.apicurio.datamodels.core.models.ValidationProblemSeverity;
+import io.apicurio.datamodels.core.validation.IValidationSeverityRegistry;
+import io.apicurio.datamodels.core.validation.ValidationRuleMetaData;
+import io.apicurio.datamodels.openapi.models.OasDocument;
 import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
@@ -62,6 +70,7 @@ import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.beans.ValidationError;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
@@ -93,18 +102,14 @@ import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.MockReference;
-import io.apicurio.hub.core.beans.OpenApi2Document;
-import io.apicurio.hub.core.beans.OpenApi3Document;
-import io.apicurio.hub.core.beans.OpenApiDocument;
-import io.apicurio.hub.core.beans.OpenApiInfo;
+import io.apicurio.hub.core.cmd.OaiCommandException;
+import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.js.OaiCommandException;
-import io.apicurio.hub.core.js.OaiCommandExecutor;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.hub.core.util.FormatUtils;
@@ -382,19 +387,19 @@ public class DesignsResource implements IDesignsResource {
             design.setCreatedOn(now);
 
             // The API Design content (OAI document)
-            OpenApiDocument doc;
+            OasDocument doc;
             if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
-                doc = new OpenApi2Document();
+                doc = (OasDocument) Library.createDocument(DocumentType.openapi2);
                 design.setType(ApiDesignType.OpenAPI20);
             } else {
-                doc = new OpenApi3Document();
+                doc = (OasDocument) Library.createDocument(DocumentType.openapi3);
                 design.setType(ApiDesignType.OpenAPI30);
             }
-            doc.setInfo(new OpenApiInfo());
-            doc.getInfo().setTitle(info.getName());
-            doc.getInfo().setDescription(info.getDescription());
-            doc.getInfo().setVersion("1.0.0");
-            String oaiContent = mapper.writeValueAsString(doc);
+            doc.info = doc.createInfo();
+            doc.info.title = info.getName();
+            doc.info.description = info.getDescription();
+            doc.info.version = "1.0.0";
+            String oaiContent = Library.writeDocumentToJSONString(doc);
 
             // Create the API Design in the database
             String designId = storage.createApiDesign(user, design, oaiContent);
@@ -403,7 +408,7 @@ public class DesignsResource implements IDesignsResource {
             metrics.apiCreate(info.getSpecVersion());
             
             return design;
-        } catch (JsonProcessingException | StorageException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -746,7 +751,7 @@ public class DesignsResource implements IDesignsResource {
             if (!this.storage.hasWritePermission(user, designId)) {
                 throw new NotFoundException();
             }
-            return this.storage.listApiDesignPublications(designId, from, to);
+            return this.storage.listApiDesignPublicationsBy(designId, user, from, to);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -1300,7 +1305,7 @@ public class DesignsResource implements IDesignsResource {
     /**
      * Uses the information in the bean to create a resource URL.
      */
-    public String toResourceUrl(NewApiPublication info) {
+    private String toResourceUrl(NewApiPublication info) {
         if (info.getType() == LinkedAccountType.GitHub) {
             return gitHubResolver.create(info.getOrg(), info.getRepo(), info.getBranch(), info.getResource());
         }
@@ -1311,6 +1316,31 @@ public class DesignsResource implements IDesignsResource {
             return bitbucketResolver.create(info.getTeam(), info.getRepo(), info.getBranch(), info.getResource());
         }
         return null;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#validateDesign(java.lang.String)
+     */
+    @Override
+    public List<ValidationError> validateDesign(String designId) throws ServerError, NotFoundException {
+        logger.debug("Validating API design with ID: {}", designId);
+        metrics.apiCall("/designs/{designId}/validation", "GET");
+        
+        String content = this.getApiContent(designId, FormatType.JSON);
+
+        Document doc = Library.readDocumentFromJSONString(content);
+        List<ValidationProblem> problems = Library.validate(doc, new IValidationSeverityRegistry() {
+            @Override
+            public ValidationProblemSeverity lookupSeverity(ValidationRuleMetaData rule) {
+                return ValidationProblemSeverity.high;
+            }
+        });
+        List<ValidationError> errors = new ArrayList<>();
+        for (ValidationProblem problem : problems) {
+            errors.add(new ValidationError(problem.errorCode, problem.nodePath.toString(), problem.property,
+                    problem.message, problem.severity.name()));
+        }
+        return errors;
     }
     
 }

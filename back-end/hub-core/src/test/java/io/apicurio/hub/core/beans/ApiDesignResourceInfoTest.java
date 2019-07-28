@@ -23,8 +23,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.apicurio.hub.core.exceptions.ApiValidationException;
-
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -33,7 +31,7 @@ public class ApiDesignResourceInfoTest {
     /**
      * Test method for {@link io.apicurio.hub.core.beans.ApiDesignResourceInfo#fromContent(java.lang.String)}.
      */
-    @Test(expected=ApiValidationException.class)
+    @Test(expected=RuntimeException.class)
     public void testFromContent_Empty() throws Exception {
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent("{}");
         Assert.assertNotNull(info);

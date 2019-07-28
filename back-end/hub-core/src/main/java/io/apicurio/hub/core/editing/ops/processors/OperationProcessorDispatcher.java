@@ -32,6 +32,7 @@ import io.apicurio.hub.core.editing.IEditingSession;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
 
 /**
  * This class manages a set of {@link IOperationProcessor} instances.  Its role is to figure
@@ -67,8 +68,19 @@ public class OperationProcessorDispatcher {
      * @param context
      * @param message
      */
-    public void process(IEditingSession editingSession, ISessionContext context, JsonNode message) {
+    public void process(IEditingSession editingSession, ISessionContext context, JsonNode message) throws OperationProcessorException {
         BaseOperation operation = OperationFactory.operation(message);
+        process(editingSession, context, operation);
+    }
+    
+    /**
+     * Process a given operation.
+     * @param editingSession
+     * @param context
+     * @param operation
+     * @throws OperationProcessorException
+     */
+    public void process(IEditingSession editingSession, ISessionContext context, BaseOperation operation) throws OperationProcessorException {
         String opType = operation.getType();
         IOperationProcessor processor = processorMap.get(opType);
 
@@ -78,7 +90,7 @@ public class OperationProcessorDispatcher {
             processor.process(editingSession, context, operation);
         } else {
             logger.error("Unknown message/operation type: {}. \nKnown types: {}", opType, processorMap);
-            throw new IllegalArgumentException("Unknown message type: '" + opType + "'");
+            throw new OperationProcessorException("Unknown message type: '" + opType + "'");
         }
     }
 }

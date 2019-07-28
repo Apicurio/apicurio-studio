@@ -18,6 +18,7 @@ package io.apicurio.test.integration.arquillian;
 import java.io.File;
 import java.util.Deque;
 
+import io.apicurio.test.integration.common.IntegrationTestProperties;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -202,13 +203,13 @@ public class VerifyDistributedSetupTestIT {
         waitOnInboundMessages("node_1_websockets_join_and_edit", inboundMessages1, 3);
 
         // Ack for new path
-        VersionedAck expectedAck = OperationFactory.ack(16, 101);
+        VersionedAck expectedAck = OperationFactory.ack(16, 101, "command");
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
         // Ack for change version (1)
-        VersionedAck expectedAck2 = OperationFactory.ack(17, 102);
+        VersionedAck expectedAck2 = OperationFactory.ack(17, 102, "command");
         testOperationProcessor.assertEquals(expectedAck2, inboundMessages1.pop());
         // Ack for change version (2)
-        VersionedAck expectedAck3 = OperationFactory.ack(18, 103);
+        VersionedAck expectedAck3 = OperationFactory.ack(18, 103, "command");
         testOperationProcessor.assertEquals(expectedAck3, inboundMessages1.pop());
     }
 
@@ -284,9 +285,9 @@ public class VerifyDistributedSetupTestIT {
         
         // Assert the Ack messages for node1 (should get one ACK for each command)
         ////////////////////////
-        VersionedAck expectedAck = OperationFactory.ack(17, 104);
+        VersionedAck expectedAck = OperationFactory.ack(17, 104, "command");
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
-        expectedAck = OperationFactory.ack(18, 105);
+        expectedAck = OperationFactory.ack(18, 105, "command");
         testOperationProcessor.assertEquals(expectedAck, inboundMessages1.pop());
 
         

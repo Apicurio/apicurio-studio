@@ -30,7 +30,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
+import io.apicurio.hub.api.codegen.beans.CodegenInfo;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -96,10 +99,15 @@ public class OpenApi2ThorntailTest {
     private void doGenerateOnlyTest(String codegenSpec, String apiDef, String expectedFilesPath, String groupId, 
             String artifactId, String _package, boolean debug) throws IOException {
         OpenApi2Thorntail generator = new OpenApi2Thorntail() {
+            /**
+             * @see io.apicurio.hub.api.codegen.OpenApi2JaxRs#getInfoFromApiDoc()
+             */
             @Override
-            protected String processApiDoc() {
+            protected CodegenInfo getInfoFromApiDoc() throws IOException {
                 try {
-                    return IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec), Charset.forName("UTF-8"));
+                    ObjectMapper mapper = new ObjectMapper();
+                    String data = IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec), Charset.forName("UTF-8"));
+                    return mapper.readerFor(CodegenInfo.class).readValue(data);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

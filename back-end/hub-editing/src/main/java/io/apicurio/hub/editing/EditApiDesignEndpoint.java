@@ -41,6 +41,7 @@ import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.ops.FullCommandOperation;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
@@ -178,7 +179,11 @@ public class EditApiDesignEndpoint {
         IEditingSession editingSession = editingSessionManager.getEditingSession(designId);
 
         // Route the call to an appropriate operation handler
-        operationProcessor.process(editingSession, context, message);
+        try {
+            operationProcessor.process(editingSession, context, message);
+        } catch (OperationProcessorException e) {
+            logger.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

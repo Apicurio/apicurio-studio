@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -36,6 +37,7 @@ import io.apicurio.hub.api.beans.NewApiPublication;
 import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
+import io.apicurio.hub.api.beans.ValidationError;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
@@ -197,5 +199,10 @@ public interface IDesignsResource {
     @Path("{designId}/codegen/projects/{projectId}")
     public void deleteCodegenProject(@PathParam("designId") String designId,
             @PathParam("projectId") String projectId) throws ServerError, NotFoundException, AccessDeniedException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/validation")
+    public List<ValidationError> validateDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
 }

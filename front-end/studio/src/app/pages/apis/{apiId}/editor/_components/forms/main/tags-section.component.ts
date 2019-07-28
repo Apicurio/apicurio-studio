@@ -23,16 +23,17 @@ import {
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {OasCombinedVisitorAdapter, OasDocument, OasTag, OasVisitorUtil} from "oai-ts-core";
-import {CommandService} from "../../../_services/command.service";
 import {
-    createChangePropertyCommand,
-    createDeleteAllTagsCommand,
-    createDeleteTagCommand,
-    createNewTagCommand,
-    createRenameTagDefinitionCommand,
-    ICommand
-} from "oai-ts-commands";
+    CombinedVisitorAdapter,
+    CommandFactory,
+    ICommand,
+    Library,
+    OasDocument,
+    OasTag,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
+import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
@@ -89,7 +90,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @param description
      */
     public changeTagDescription(tag: OasTag, description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.document, tag, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(tag, "description", description);
         this.commandService.emit(command);
     }
 
@@ -98,7 +99,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @param tag
      */
     public deleteTag(tag: OasTag): void {
-        let command: ICommand = createDeleteTagCommand(this.document, tag.name);
+        let command: ICommand = CommandFactory.createDeleteTagCommand(tag.name);
         this.commandService.emit(command);
     }
 
@@ -107,8 +108,12 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @param tag
      */
     public addTag(tag: any): void {
-        let command: ICommand = createNewTagCommand(this.document, tag.name, tag.description);
+        let command: ICommand = CommandFactory.createNewTagCommand(tag.name, tag.description);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.document);
+        path.appendSegment("tags", false);
+        this.selectionService.select(path.toString());
+
     }
 
     /**
@@ -122,7 +127,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * Called when the user clicks the trash icon to delete all the tags.
      */
     public deleteAllTags(): void {
-        let command: ICommand = createDeleteAllTagsCommand();
+        let command: ICommand = CommandFactory.createDeleteAllTagsCommand();
         this.commandService.emit(command);
     }
 
@@ -132,11 +137,11 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      */
     public openRenameDialog(tag: OasTag): void {
         let tagNames: string[] = [];
-        OasVisitorUtil.visitTree(tag.ownerDocument(), new class extends OasCombinedVisitorAdapter {
+        VisitorUtil.visitTree(tag.ownerDocument(), new class extends CombinedVisitorAdapter {
             public visitTag(node: OasTag): void {
                 tagNames.push(node.name);
             }
-        });
+        }, TraverserDirection.down);
         this.renameDialog.open(tag, tag.name, newName => {
             return tagNames.indexOf(newName) !== -1;
         });
@@ -148,7 +153,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      */
     public rename(event: RenameEntityEvent): void {
         let tag: OasTag = <any>event.entity;
-        let command: ICommand = createRenameTagDefinitionCommand(tag.name, event.newName);
+        let command: ICommand = CommandFactory.createRenameTagDefinitionCommand(tag.name, event.newName);
         this.commandService.emit(command);
     }
 

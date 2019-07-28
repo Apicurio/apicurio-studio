@@ -24,7 +24,7 @@ import {
 } from "../../../../../../components/common/code-editor.component";
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from 'js-yaml';
-import {Oas20Schema, Oas30Example} from "oai-ts-core";
+import {Oas20Schema, Oas30Example} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {StringUtils} from "apicurio-ts-core";
 

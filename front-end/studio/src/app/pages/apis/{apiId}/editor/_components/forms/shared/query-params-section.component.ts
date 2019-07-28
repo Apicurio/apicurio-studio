@@ -20,27 +20,24 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    SimpleChanges, ViewChild,
+    SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
+    CommandFactory,
+    ICommand,
     IOasParameterParent,
+    Library,
     Oas20Operation,
-    Oas20Parameter,
     Oas20PathItem,
     Oas30Operation,
-    Oas30Parameter,
     Oas30PathItem,
-    OasLibraryUtils, OasOperation,
+    OasOperation,
+    OasParameter,
     OasPathItem
-} from "oai-ts-core";
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
-import {
-    createDeleteAllParametersCommand,
-    createDeleteParameterCommand,
-    createNewParamCommand, createRenameParameterCommand,
-    ICommand
-} from "oai-ts-commands";
 import {DocumentService} from "../../../_services/document.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {
@@ -68,8 +65,7 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
 
     @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
 
-    private _queryParameters: (Oas30Parameter | Oas20Parameter)[] = null;
-    private _library: OasLibraryUtils = new OasLibraryUtils();
+    private _queryParameters: OasParameter[] = null;
 
     public showSectionBody: boolean;
 
@@ -129,17 +125,17 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public hasQueryParameters(): boolean {
-        return this.parent.getParameters("query").length > 0 || this.path.getParameters("query").length > 0;
+        return this.parent.getParametersIn("query").length > 0 || this.path.getParametersIn("query").length > 0;
     }
 
-    public parameters(paramType: string): (Oas30Parameter | Oas20Parameter)[] {
-        let params: (Oas30Parameter | Oas20Parameter)[] = this.parent.getParameters(paramType) as (Oas30Parameter | Oas20Parameter)[];
+    public parameters(paramType: string): OasParameter[] {
+        let params: OasParameter[] = this.parent.getParametersIn(paramType);
         return params.sort((param1, param2) => {
             return param1.name.localeCompare(param2.name);
         });
     }
 
-    public queryParameters(): (Oas30Parameter | Oas20Parameter)[] {
+    public queryParameters(): OasParameter[] {
         if (this.isPathItem()) {
             return this.parameters("query");
         }
@@ -148,9 +144,9 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
             return this._queryParameters;
         }
 
-        let opParams: (Oas30Parameter | Oas20Parameter)[] = this.parameters("query");
-        let piParams: (Oas30Parameter | Oas20Parameter)[] = this.path.getParameters("query") as (Oas30Parameter | Oas20Parameter)[];
-        let hasOpParam = function(param: Oas30Parameter | Oas20Parameter): boolean {
+        let opParams: OasParameter[] = this.parameters("query");
+        let piParams: OasParameter[] = this.path.getParametersIn("query");
+        let hasOpParam = function(param: OasParameter): boolean {
             var found: boolean = false;
             opParams.forEach( opParam => {
                 if (opParam.name === param.name) {
@@ -161,9 +157,9 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
         };
         piParams.forEach( param => {
             if (!hasOpParam(param)) {
-                let missingParam: Oas30Parameter | Oas20Parameter = this.parent.createParameter();
-                this._library.readNode(this._library.writeNode(param), missingParam);
-                missingParam.n_attribute("missing", true);
+                let missingParam: OasParameter = this.parent.createParameter();
+                Library.readNode(Library.writeNode(param), missingParam);
+                missingParam.setAttribute("missing", true);
                 opParams.push(missingParam);
             }
         });
@@ -174,7 +170,7 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public queryParameterPaths(): string[] {
-        return this.parent.getParameters("query").map( param => {
+        return this.parent.getParametersIn("query").map( param => {
             return ModelUtils.nodeToPath(param);
         });
     }
@@ -192,28 +188,33 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     }
 
     public deleteAllQueryParams(): void {
-        let command: ICommand = createDeleteAllParametersCommand(this.parent.ownerDocument(), this.parent, "query");
+        let command: ICommand = CommandFactory.createDeleteAllParametersCommand(this.parent, "query");
         this.commandService.emit(command);
     }
 
-    public deleteParam(parameter: Oas30Parameter | Oas20Parameter): void {
-        let command: ICommand = createDeleteParameterCommand(this.parent.ownerDocument(), parameter);
+    public deleteParam(parameter: OasParameter): void {
+        let command: ICommand = CommandFactory.createDeleteParameterCommand(parameter);
         this.commandService.emit(command);
     }
 
     public addQueryParam(data: ParameterData): void {
-        let command: ICommand = createNewParamCommand(this.parent.ownerDocument(), this.parent, data.name,
-            "query", data.description, data.type);
+        let command: ICommand = CommandFactory.createNewParamCommand(this.parent, data.name,
+            "query", data.description, data.type, false);
         this.commandService.emit(command);
+
+        let nodePath = Library.createNodePath(this.parent);
+        let index: number = (this.parent as any).parameters.findIndex(p => p.name === data.name); // TODO hackish
+        nodePath.appendSegment("parameters", false);
+        nodePath.appendSegment(String(index), true);
     }
 
     /**
      * Opens the rename parameter dialog.
      * @param parameter
      */
-    public openRenameDialog(parameter: Oas20Parameter | Oas30Parameter): void {
+    public openRenameDialog(parameter: OasParameter): void {
         let parent: IOasParameterParent = <any>parameter.parent();
-        let paramNames: string[] = parent.getParameters("query").map( param => { return param.name; });
+        let paramNames: string[] = parent.getParametersIn("query").map( param => { return param.name; });
         this.renameDialog.open(parameter, parameter.name, newName => {
             return paramNames.indexOf(newName) !== -1;
         });
@@ -224,9 +225,9 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
      * @param event
      */
     public rename(event: RenameEntityEvent): void {
-        let parameter: Oas20Parameter | Oas30Parameter = <any>event.entity;
+        let parameter: OasParameter = <any>event.entity;
         let parent: OasPathItem | OasOperation = <any>parameter.parent();
-        let command: ICommand = createRenameParameterCommand(parent, parameter.name, event.newName, "query");
+        let command: ICommand = CommandFactory.createRenameParameterCommand(parent, parameter.name, event.newName, "query");
         this.commandService.emit(command);
     }
 

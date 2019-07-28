@@ -45,7 +45,7 @@
                                                         <span>Preview Docs...</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="!config.isShareWithEveryoneEnabled()">
                                                     <a [routerLink]="[ 'collaboration' ]">
                                                         <span class="fa fa-fw fa-users"></span>
                                                         <span>Collaborate...</span>
@@ -63,7 +63,7 @@
                                                         <span>Publish...</span>
                                                     </a>
                                                 </li>
-                                                <li *ngIf="isMicrocksEnabled() && isOpenApi30()">
+                                                <li *ngIf="config.isMicrocksEnabled() && isOpenApi30()">
                                                     <a [routerLink]="[ 'mock' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
                                                         <span>Mock with Microcks...</span>
@@ -113,7 +113,7 @@
                                         <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
                                     </div>
-                                    <div class="info-full">
+                                    <div class="info-full" *ngIf="!config.isShareWithEveryoneEnabled()">
                                         <span class="fa fa-fw fa-users"></span>
                                         <a [routerLink]="[ 'collaboration' ]">
                                             <span class="num-collaborators">{{ getNumberOfCollaborators() }}</span>
@@ -122,10 +122,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
-                                    <span class="api-tags-label">Tags:</span>
-                                    <span class="label label-default" *ngFor="let tag of api.tags" (click)="selectTag(tag)">{{ tag }}</span>
-                                </div>
+                                <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)" [maxWidth]="140"></tag-list>
                                 <div class="api-action-buttons">
                                     <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
@@ -157,7 +154,7 @@
                     </div>
                 </div>
                 <!-- Microcks specific panel -->
-                <div class="row row-cards-pf" *ngIf="isMicrocksEnabled() && isOpenApi30()">
+                <div class="row row-cards-pf" *ngIf="config.isMicrocksEnabled() && isOpenApi30()">
                     <div class="card-pf">
                         <div class="card-pf-heading">
                             <h2 style="height: 18px;" class="card-pf-title">API Mocking</h2>

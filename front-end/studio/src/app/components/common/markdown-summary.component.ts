@@ -59,13 +59,13 @@ class PlainTextRenderer extends marked.Renderer {
     showImageText: boolean = false;
 
     public code(code, lang, escaped): string {
-        return this.delimiter + this.delimiter + code + this.delimiter + this.delimiter;
+        return this.delimiter + "<code>...</code>" + this.delimiter;
     }
     public blockquote(quote): string {
         return '\t' + quote + this.delimiter;
     }
     public html(html): string {
-        return html;
+        return escape(html);
     }
     public heading(text, level, raw): string {
         return text;

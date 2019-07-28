@@ -41,7 +41,7 @@ export class AppComponent {
      */
     constructor(public authService: IAuthenticationService) {
         this.routerOutletWrapperId = "api-page-body";
-        this.routerOutletWrapperClass = "";
+        this.routerOutletWrapperClass = "app-body";
 
         let w: any = window;
         if (w["ApicurioStudioInfo"]) {
@@ -56,7 +56,7 @@ export class AppComponent {
         authService.authenticated().subscribe(authed => {
             if (authed) {
                 this.routerOutletWrapperId = "api-page-body";
-                this.routerOutletWrapperClass = "";
+                this.routerOutletWrapperClass = "app-body";
             } else {
                 this.routerOutletWrapperId = "login-form";
                 this.routerOutletWrapperClass = "login-pf";
@@ -64,9 +64,11 @@ export class AppComponent {
         });
     }
 
+
     public user(): User {
         return this.authService.getAuthenticatedUserNow();
     }
+
 
     public logout(): void {
         this.helpExpanded = false;

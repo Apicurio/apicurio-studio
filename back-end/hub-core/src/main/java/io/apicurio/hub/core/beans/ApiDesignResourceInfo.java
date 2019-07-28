@@ -21,10 +21,17 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.Document;
+import io.apicurio.datamodels.core.models.DocumentType;
+import io.apicurio.datamodels.core.models.common.Tag;
+import io.apicurio.datamodels.openapi.v2.models.Oas20Document;
+import io.apicurio.datamodels.openapi.v3.models.Oas30Document;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 
 /**
@@ -56,16 +63,18 @@ public class ApiDesignResourceInfo {
         String description = null;
         FormatType format = FormatType.JSON;
         ObjectMapper mapper = jsonMapper;
-        
         if (!content.startsWith("{")) {
             format = FormatType.YAML;
             mapper = yamlMapper;
         }
         
-        OpenApiSharedDocument document = mapper.readerFor(OpenApiSharedDocument.class).readValue(content);
-        String oaiVersion = document.getSwagger();
-        if (oaiVersion == null) {
-            oaiVersion = document.getOpenapi();
+        JsonNode contentObj = mapper.readTree(content);
+        Document document = Library.readDocument(contentObj);
+        String oaiVersion = null;
+        if (document.getDocumentType() == DocumentType.openapi2) {
+            oaiVersion = ((Oas20Document) document).swagger;
+        } else {
+            oaiVersion = ((Oas30Document) document).openapi;
         }
         if (oaiVersion == null) {
             throw new ApiValidationException("Unable to determine OpenAPI version.");
@@ -73,12 +82,12 @@ public class ApiDesignResourceInfo {
         if (!SUPPORTED_OPENAPI_VERSIONS.contains(oaiVersion)) {
             throw new ApiValidationException("OpenAPI version not supported: " + oaiVersion);
         }
-        if (document.getInfo() != null) {
-            if (document.getInfo().getTitle() != null) {
-                name = document.getInfo().getTitle();
+        if (document.info != null) {
+            if (document.info.title != null) {
+                name = document.info.title;
             }
-            if (document.getInfo().getDescription() != null) {
-                description = document.getInfo().getDescription();
+            if (document.info.description != null) {
+                description = document.info.description;
             }
         }
 
@@ -86,9 +95,9 @@ public class ApiDesignResourceInfo {
         info.setFormat(format);
         info.setName(name);
         info.setDescription(description);
-        if (document.getTags() != null) {
-            for (Tag tag : document.getTags()) {
-                info.getTags().add(tag.getName());
+        if (document.tags != null) {
+            for (Tag tag : document.tags) {
+                info.getTags().add(tag.name);
             }
         }
 

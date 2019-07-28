@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -281,12 +283,15 @@ public class ReleaseTool {
     private static List<JSONObject> getIssuesForRelease(String since, String githubPAT) throws Exception {
         List<JSONObject> rval = new ArrayList<>();
 
-        String currentPageUrl = "https://api.github.com/repos/apicurio/apicurio-studio/issues?state=closed";
+        String currentPageUrl = "https://api.github.com/repos/apicurio/apicurio-studio/issues";
         int pageNum = 1;
         while (currentPageUrl != null) {
             System.out.println("Querying page " + pageNum + " of issues.");
             HttpResponse<JsonNode> response = Unirest.get(currentPageUrl)
-                    .header("Accept", "application/json").header("Authorization", "token " + githubPAT).asJson();
+                    .queryString("since", since)
+                    .queryString("state", "closed")
+                    .header("Accept", "application/json")
+                    .header("Authorization", "token " + githubPAT).asJson();
             if (response.getStatus() != 200) {
                 throw new Exception("Failed to list Issues: " + response.getStatusText());
             }
@@ -295,7 +300,13 @@ public class ReleaseTool {
                 JSONObject issue = (JSONObject) issueNode;
                 String closedOn = issue.getString("closed_at");
                 if (since.compareTo(closedOn) < 0) {
-                    rval.add(issue);
+                    if (!isIssueExcluded(issue)) {
+                        rval.add(issue);
+                    } else {
+                        System.out.println("Skipping issue (excluded): " + issue.getString("title"));
+                    }
+                } else {
+                    System.out.println("Skipping issue (old release): " + issue.getString("title"));
                 }
             });
 
@@ -312,6 +323,23 @@ public class ReleaseTool {
         }
 
         return rval;
+    }
+
+    /**
+     * Tests whether an issue should be excluded from the release notes based on 
+     * certain labels the issue might have (e.g. dependabot issues).
+     * @param issueNode
+     */
+    private static boolean isIssueExcluded(JSONObject issueNode) {
+        JSONArray labelsArray = issueNode.getJSONArray("labels");
+        if (labelsArray != null) {
+            Set<String> labels = labelsArray.toList().stream().map( label -> {
+                return ((Map<?,?>) label).get("name").toString();
+            }).collect(Collectors.toSet());
+            return labels.contains("dependencies") || labels.contains("question") || labels.contains("invalid")  
+                    || labels.contains("wontfix")|| labels.contains("duplicate");
+        }
+        return false;
     }
 
     /**
@@ -339,4 +367,12 @@ public class ReleaseTool {
             throw new Exception(e);
         }
     }
+    
+//    public static void testMain(String[] args) throws Exception {
+//        String pat = "XXXYYYZZZ";
+//        String since = "2019-03-01T12:00:00Z";
+//        List<JSONObject> list = getIssuesForRelease(since, pat);
+//        System.out.println("Found " + list.size() + " issues!");
+//    }
+
 }

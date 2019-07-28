@@ -1,4 +1,4 @@
-import {OasValidationProblemSeverity} from "oai-ts-core";
+import {ValidationProblemSeverity} from "apicurio-data-models";
 
 /**
  * @license
@@ -21,13 +21,13 @@ export class ValidationProfile {
     public id: number;
     public name: string;
     public description: string;
-    public severities: {[key: string]: OasValidationProblemSeverity};
+    public severities: {[key: string]: ValidationProblemSeverity};
 }
 
 export class CreateValidationProfile {
     public name: string;
     public description: string;
-    public severities: {[key: string]: OasValidationProblemSeverity};
+    public severities: {[key: string]: ValidationProblemSeverity};
 }
 
 export class UpdateValidationProfile extends CreateValidationProfile {

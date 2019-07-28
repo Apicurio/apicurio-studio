@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 import {Injectable} from "@angular/core";
-import {createAddPathItemCommand, ICommand} from "oai-ts-commands";
 import * as pluralize from "pluralize";
 import {
+    CommandFactory,
+    ICommand,
+    Library,
     Oas20Parameter,
     Oas20Response,
     Oas30MediaType,
@@ -25,21 +27,19 @@ import {
     Oas30Parameter,
     Oas30PathItem,
     Oas30Response,
+    Oas30Schema,
     OasDocument,
-    OasLibraryUtils,
     OasOperation,
     OasPathItem,
     OasResponse,
     OasResponses
-} from "oai-ts-core";
+} from "apicurio-data-models";
 
 /**
  * A service providing functionality related to managing standard REST resources.
  */
 @Injectable()
 export class RestResourceService {
-
-    private _library: OasLibraryUtils = new OasLibraryUtils();
 
     constructor() {
     }
@@ -48,12 +48,14 @@ export class RestResourceService {
         let commands: ICommand[] = [];
 
         console.info("[RestResourceService] Creating REST resource from: ", dataTypeName);
-        let lcName: string = dataTypeName.replace(/^\w/, c => c.toLowerCase());
-        let pluralName: string = pluralize.plural(dataTypeName);
-        let lcPluralName: string = pluralName.replace(/^\w/, c => c.toLowerCase());
+        let lcName: string = dataTypeName.toLocaleLowerCase();
+        let pluralName: string = pluralize.plural(lcName);
+        if (!this.canPluralize(lcName)) {
+            pluralName = lcName;
+        }
 
-        let basePath: string = `/${lcPluralName}`;
-        let subPath: string = `/${lcPluralName}/{${lcName}Id}`;
+        let basePath: string = `/${pluralName}`;
+        let subPath: string = `/${pluralName}/{${lcName}Id}`;
 
         console.info(`[RestResourceService] Paths to create:\n\t${basePath}\n\t${subPath}`);
 
@@ -134,7 +136,7 @@ export class RestResourceService {
         }
 
         // The command to create it
-        let basePathCmd: ICommand = createAddPathItemCommand(document, basePath, this._library.writeNode(basePathItem));
+        let basePathCmd: ICommand = CommandFactory.createAddPathItemCommand(basePath, Library.writeNode(basePathItem));
         commands.push(basePathCmd);
 
         // Create the sub-path item e.g. "/widgets/{widgetId}" with GET, PUT, and DELETE operations
@@ -213,7 +215,7 @@ export class RestResourceService {
             // Path parameter type
             let subPathParam30: Oas30Parameter = subPathParam as Oas30Parameter;
             subPathParam30.schema = subPathParam30.createSchema();
-            subPathParam30.schema.type = "string";
+            (<Oas30Schema>subPathParam30.schema).type = "string";
         }
         // OAI 2.0 specific
         if (document.is2xDocument()) {
@@ -238,10 +240,15 @@ export class RestResourceService {
         }
 
         // The command to create it
-        let subPathCmd: ICommand = createAddPathItemCommand(document, subPath, this._library.writeNode(subPathItem));
+        let subPathCmd: ICommand = CommandFactory.createAddPathItemCommand(subPath, Library.writeNode(subPathItem));
         commands.push(subPathCmd);
 
         return commands;
+    }
+
+    private canPluralize(name: string): boolean {
+        let regexp: RegExp = /^.+[a-zA-Z]$/;
+        return regexp.test(name);
     }
 
 }

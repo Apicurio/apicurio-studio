@@ -16,8 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas30PathItem} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, Oas30PathItem} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -55,7 +54,7 @@ export class PathInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeSummary(newSummary: string): void {
         console.info("[InfoSectionComponent] User changed the summary.");
-        let command: ICommand = createChangePropertyCommand(this.path.ownerDocument(), this.path, "summary", newSummary);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.path, "summary", newSummary);
         this.commandService.emit(command);
     }
 
@@ -65,8 +64,7 @@ export class PathInfoSectionComponent extends AbstractBaseComponent {
      */
     public changeDescription(newDescription: string): void {
         console.info("[PathInfoSectionComponent] User changed the data type description.");
-        let command: ICommand = createChangePropertyCommand(this.path.ownerDocument(), this.path, 
-            "description", newDescription);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.path,"description", newDescription);
         this.commandService.emit(command);
     }
 

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import {Oas20Schema, Oas30Schema, OasLibraryUtils, OasNode, ReferenceUtil} from "oai-ts-core";
+import {Library, Node, OasSchema, ReferenceUtil} from "apicurio-data-models";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
-
-const oasLibrary: OasLibraryUtils = new OasLibraryUtils();
 
 export class ModelUtils {
 
@@ -26,9 +24,9 @@ export class ModelUtils {
      * Converts a node into a nodepath.
      * @param node
      */
-    public static nodeToPath(node: OasNode): string {
+    public static nodeToPath(node: Node): string {
         if (node) {
-            return oasLibrary.createNodePath(node).toString();
+            return Library.createNodePath(node).toString();
         } else {
             return null;
         }
@@ -38,8 +36,8 @@ export class ModelUtils {
      * Clears any possible selection that may exist on the given node for the local user.
      * @param node
      */
-    public static clearSelection(node: OasNode): void {
-        node.n_attribute("local-selection", false);
+    public static clearSelection(node: Node): void {
+        node.setAttribute("local-selection", false);
     }
 
     /**
@@ -47,8 +45,8 @@ export class ModelUtils {
      * for the local user.
      * @param node
      */
-    public static setSelection(node: OasNode): void {
-        node.n_attribute("local-selection", true);
+    public static setSelection(node: Node): void {
+        node.setAttribute("local-selection", true);
     }
 
     /**
@@ -56,8 +54,8 @@ export class ModelUtils {
      * @param node
      * @return
      */
-    public static isSelected(node: OasNode): boolean {
-        let rval: boolean = node.n_attribute("local-selection");
+    public static isSelected(node: Node): boolean {
+        let rval: boolean = node.getAttribute("local-selection");
         if (rval === undefined || rval === null) {
             return false;
         }
@@ -69,8 +67,8 @@ export class ModelUtils {
      * @param user
      * @param node
      */
-    public static clearCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
-        let selections: any = node.n_attribute("collaborator-selections");
+    public static clearCollaboratorSelection(user: ApiEditorUser, node: Node): void {
+        let selections: any = node.getAttribute("collaborator-selections");
         if (selections) {
             delete selections[user.userId];
         }
@@ -82,11 +80,11 @@ export class ModelUtils {
      * @param user
      * @param node
      */
-    public static setCollaboratorSelection(user: ApiEditorUser, node: OasNode): void {
-        let selections: any = node.n_attribute("collaborator-selections");
+    public static setCollaboratorSelection(user: ApiEditorUser, node: Node): void {
+        let selections: any = node.getAttribute("collaborator-selections");
         if (!selections) {
             selections = {};
-            node.n_attribute("collaborator-selections", selections);
+            node.setAttribute("collaborator-selections", selections);
         }
         selections[user.userId] = user;
     }
@@ -97,8 +95,8 @@ export class ModelUtils {
      * @param node
      * @return
      */
-    public static isSelectedByCollaborator(node: OasNode): ApiEditorUser {
-        let selections: any = node.n_attribute("collaborator-selections");
+    public static isSelectedByCollaborator(node: Node): ApiEditorUser {
+        let selections: any = node.getAttribute("collaborator-selections");
         if (selections) {
             let rval: ApiEditorUser = null;
             for (let key in selections) {
@@ -116,7 +114,7 @@ export class ModelUtils {
      * Generates an example from the given schema.
      * @param schema
      */
-    public static generateExampleFromSchema(schema: Oas20Schema | Oas30Schema): any {
+    public static generateExampleFromSchema(schema: OasSchema): any {
         let generator: ExampleGenerator = new ExampleGenerator();
         return generator.generate(schema);
     }
@@ -128,29 +126,32 @@ export class ExampleGenerator {
 
     private refStack: any[] = [];
 
-    public generate(schema: Oas20Schema | Oas30Schema): any {
+    public generate(schema: OasSchema): any {
         console.info("[ExampleGenerator] Generating example from schema of type: ", schema.type);
         let object: any;
         if (schema.$ref) {
             object = this.generateFromRef(schema);
+        } else if (this.isEnum(schema)) {
+            console.info("[ExampleGenerator] Schema is enum.");
+            object = this.generateEnumValue(schema);
+        } else if (this.isSimpleType(schema.type)) {
+            console.info("[ExampleGenerator] Schema is a simple type.");
+            object = this.generateSimpleType(schema.type, schema.format);
         } else if (schema.type === "object" || !schema.type) {
             console.info("[ExampleGenerator] Schema is type 'object'");
             object = this.generateObject(schema);
         } else if (schema.type === "array") {
             console.info("[ExampleGenerator] Schema is type 'array'");
             object = this.generateArray(schema);
-        } else if (this.isSimpleType(schema.type)) {
-            console.info("[ExampleGenerator] Schema is a simple type.");
-            object = this.generateSimpleType(schema.type, schema.format);
         }
         return object;
     }
 
-    private generateFromRef(schema: Oas20Schema | Oas30Schema): any {
+    private generateFromRef(schema: OasSchema): any {
         if (this.refStack.indexOf(schema.$ref) !== -1) {
             return {};
         }
-        let refSchema: Oas20Schema | Oas30Schema = ReferenceUtil.resolveRef(schema.$ref, schema) as Oas20Schema | Oas30Schema;
+        let refSchema: OasSchema = ReferenceUtil.resolveRef(schema.$ref, schema) as OasSchema;
         if (refSchema) {
             console.info("[ExampleGenerator] Successfully resolved $ref: ", schema.$ref);
             this.refStack.push(schema.$ref);
@@ -162,25 +163,25 @@ export class ExampleGenerator {
         }
     }
 
-    private generateObject(schema: Oas20Schema | Oas30Schema): any {
+    private generateObject(schema: OasSchema): any {
         let object: any = {};
         if (schema.properties) {
             console.info("[ExampleGenerator] Schema has properties.");
             Object.keys(schema.properties).forEach( propertyName => {
                 console.info("[ExampleGenerator] Processing schema property named: ", propertyName);
-                let propertyExample: any = this.generate(schema.properties[propertyName] as Oas20Schema | Oas30Schema);
+                let propertyExample: any = this.generate(schema.properties[propertyName] as OasSchema);
                 object[propertyName] = propertyExample;
             });
         }
         return object;
     }
 
-    private generateArray(schema: Oas20Schema | Oas30Schema): any {
+    private generateArray(schema: OasSchema): any {
         let object: any[] = [];
         if (schema.items) {
             // Push two objects into the array...
-            object.push(this.generate(schema.items as Oas20Schema | Oas30Schema));
-            object.push(this.generate(schema.items as Oas20Schema | Oas30Schema));
+            object.push(this.generate(schema.items as OasSchema));
+            object.push(this.generate(schema.items as OasSchema));
         }
         return object;
     }
@@ -190,6 +191,17 @@ export class ExampleGenerator {
             "string", "boolean", "integer", "number"
         ]
         return simpleTypes.indexOf(type) !== -1;
+    }
+
+    private isEnum(schema: OasSchema): boolean {
+        return schema.enum_ && schema.enum_.length > 0;
+    }
+
+    private generateEnumValue(schema: OasSchema): any {
+        if (schema.enum_.length > 0) {
+            return schema.enum_[Math.floor(Math.random()*schema.enum_.length)];
+        }
+        return "??";
     }
 
     private generateSimpleType(type: string, format: string): any {

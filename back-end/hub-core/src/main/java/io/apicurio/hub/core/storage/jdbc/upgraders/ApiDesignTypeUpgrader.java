@@ -90,7 +90,7 @@ public class ApiDesignTypeUpgrader implements IDbUpgrader {
                     }
                 }
             })
-            .findOnly();
+            .one();
         try {
             ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
             return info.getType();

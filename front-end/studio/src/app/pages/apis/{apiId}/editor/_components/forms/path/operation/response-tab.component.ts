@@ -23,15 +23,7 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {Oas20Response, OasDocument} from "oai-ts-core";
-import {
-    createChangePropertyCommand,
-    createChangeResponseTypeCommand,
-    createDelete20ExampleCommand,
-    createSetExampleCommand,
-    ICommand,
-    SimplifiedType
-} from "oai-ts-commands";
+import {CommandFactory, ICommand, Library, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
@@ -75,22 +67,22 @@ export class ResponseTabComponent extends AbstractBaseComponent {
     }
 
     public document(): OasDocument {
-        return this.response.ownerDocument();
+        return <OasDocument> this.response.ownerDocument();
     }
 
     public hasExamples(): boolean {
         if (ObjectUtils.isNullOrUndefined(this.response.examples)) {
             return false;
         }
-        return this.response.examples.exampleContentTypes().length > 0;
+        return this.response.examples.getExampleContentTypes().length > 0;
     }
 
     public exampleContentTypes(): string[] {
-        return this.response.examples.exampleContentTypes();
+        return this.response.examples.getExampleContentTypes();
     }
 
     public exampleDisplayValue(contentType: string): string {
-        let evalue: any = this.response.examples.example(contentType);
+        let evalue: any = this.response.examples.getExample(contentType);
         if (typeof evalue === "object" || Array.isArray(evalue)) {
             evalue = JSON.stringify(evalue);
         }
@@ -98,7 +90,7 @@ export class ResponseTabComponent extends AbstractBaseComponent {
     }
 
     public exampleValue(contentType: string): string {
-        let evalue: any = this.response.examples.example(contentType);
+        let evalue: any = this.response.examples.getExample(contentType);
         return evalue;
     }
 
@@ -109,32 +101,41 @@ export class ResponseTabComponent extends AbstractBaseComponent {
     public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedType = new SimplifiedType();
         nt.type = newType.type;
-        nt.enum = newType.enum;
+        nt.enum_ = newType.enum_;
         nt.of = newType.of;
         nt.as = newType.as;
-        let command: ICommand = createChangeResponseTypeCommand(this.document(), this.response, nt);
+        let command: ICommand = CommandFactory.createChangeResponseTypeCommand(this.response, nt);
         this.commandService.emit(command);
         this._model = nt;
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.document(), this.response, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.response, "description",
+            description);
         this.commandService.emit(command);
     }
 
     public deleteExample(contentType: string): void {
-        let command: ICommand = createDelete20ExampleCommand(this.document(), this.response, contentType);
+        let command: ICommand = CommandFactory.createDelete20ExampleCommand(this.response, contentType);
         this.commandService.emit(command);
     }
 
     public addExample(exampleData: any): void {
-        let command: ICommand = createSetExampleCommand(this.document(), this.response, exampleData.value, exampleData.contentType);
+        let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
+            exampleData.value, exampleData.contentType);
         this.commandService.emit(command);
+        let nodePath = Library.createNodePath(this.response);
+        nodePath.appendSegment("examples", false);
+        this.selectionService.select(nodePath.toString());
     }
 
     public editExample(event: EditExample20Event): void {
-        let command: ICommand = createSetExampleCommand(this.document(), this.response, event.value, event.contentType);
+        let command: ICommand = CommandFactory.createSetExampleCommand(this.document().getDocumentType(), this.response,
+            event.value, event.contentType);
         this.commandService.emit(command);
+        let nodePath = Library.createNodePath(this.response);
+        nodePath.appendSegment("examples", false);
+        this.selectionService.select(nodePath.toString());
     }
 
 }

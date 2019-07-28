@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Output, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {Api} from "../../../models/api.model";
 
 
@@ -50,9 +50,7 @@ export class ApisListComponent {
         return this.selectedApis.indexOf(api) != -1;
     }
 
-    public selectTag(tag: string, event: MouseEvent): void {
-        event.stopPropagation();
-        event.preventDefault();
+    public selectTag(tag: string): void {
         this.onTagSelected.emit(tag);
     }
 

@@ -16,8 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, Oas20SchemaDefinition, Oas30SchemaDefinition} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -61,8 +60,7 @@ export class DefinitionInfoSectionComponent extends AbstractBaseComponent {
      */
     public onDescriptionChange(newDescription: string): void {
         console.info("[DefinitionInfoSectionComponent] User changed the data type description.");
-        let command: ICommand = createChangePropertyCommand(this.definition.ownerDocument(), this.definition, 
-            "description", newDescription);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.definition, "description", newDescription);
         this.commandService.emit(command);
     }
 

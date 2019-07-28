@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-export class ApiDesignCommandAck {
+export class VersionedAck {
 
+    ackType: string;
     commandId: number;
     contentVersion: number;
 

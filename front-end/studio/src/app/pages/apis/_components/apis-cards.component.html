@@ -8,10 +8,7 @@
                 </h2>
                 <div class="card-pf-body">
                     <hr/>
-                    <div class="api-tags" *ngIf="api.tags && api.tags.length > 0">
-                        <span class="api-tags-label">Tags:</span>
-                        <span class="label label-default" *ngFor="let tag of api.tags" (click)="selectTag(tag, $event)">{{ tag }}</span>
-                    </div>
+                    <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)"></tag-list>
                     <p class="api-description">
                         <markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary>
                     </p>

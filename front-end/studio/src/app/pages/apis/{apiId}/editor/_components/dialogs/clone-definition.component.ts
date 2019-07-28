@@ -17,7 +17,13 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasVisitorUtil} from "oai-ts-core";
+import {
+    Oas20SchemaDefinition,
+    Oas30SchemaDefinition,
+    OasDocument,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 
@@ -47,12 +53,7 @@ export class CloneDefinitionDialogComponent {
     public open(document: OasDocument, definition: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._isOpen = true;
         this.definition = definition;
-        this.name = "CloneOf";
-        if (this.definition.ownerDocument().getSpecVersion() === "2.0") {
-            this.name += (definition as Oas20SchemaDefinition).definitionName();
-        } else {
-            this.name += (definition as Oas30SchemaDefinition).name();
-        }
+        this.name = "CloneOf" + definition.getName();
 
         this.cloneDefinitionModal.changes.subscribe( () => {
             if (this.cloneDefinitionModal.first) {
@@ -70,7 +71,7 @@ export class CloneDefinitionDialogComponent {
 
     private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let vizzy: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(document, vizzy);
+        VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
         return vizzy.getSortedSchemaDefinitions()
     }
 

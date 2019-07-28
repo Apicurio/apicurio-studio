@@ -18,6 +18,8 @@ package io.apicurio.hub.api.github;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
@@ -84,10 +86,21 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
      * @throws SourceConnectorException
      */
     private GitHubClient githubClient() throws SourceConnectorException {
-        GitHubClient client = new GitHubClient();
-        String idpToken = getExternalToken();
-        client.setOAuth2Token(idpToken);
-        return client;
+        try {
+            String ghUrl = config.getGitHubApiUrl();
+
+            URI url = new URI(ghUrl);
+            String host = url.getHost();
+            int port = url.getPort();
+            String scheme = url.getScheme();
+            
+            GitHubClient client = new GitHubClient(host, port, scheme);
+            String idpToken = getExternalToken();
+            client.setOAuth2Token(idpToken);
+            return client;
+        } catch (URISyntaxException e) {
+            throw new SourceConnectorException("Error creating the GitHub client.", e);
+        }
     }
 
     /**

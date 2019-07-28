@@ -24,22 +24,21 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
+    CombinedVisitorAdapter,
+    CommandFactory,
+    ICommand,
+    Library,
     Oas20Document,
     Oas20SecurityDefinitions,
     Oas20SecurityScheme,
     Oas30Document,
-    Oas30SecurityScheme, OasCombinedVisitorAdapter,
+    Oas30SecurityScheme,
     OasDocument,
-    OasSecurityScheme, OasVisitorUtil
-} from "oai-ts-core";
+    SecurityScheme,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
-import {
-    createChangeSecuritySchemeCommand,
-    createDeleteAllSecuritySchemesCommand,
-    createDeleteSecuritySchemeCommand,
-    createNewSecuritySchemeCommand, createRenameSecuritySchemeCommand,
-    ICommand
-} from "oai-ts-commands";
 import {EditorsService} from "../../../_services/editors.service";
 import {
     ISecuritySchemeEditorHandler,
@@ -86,7 +85,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * Opens the security scheme dialog.
      * @param scheme
      */
-    public openSecuritySchemeModal(scheme?: OasSecurityScheme): void {
+    public openSecuritySchemeModal(scheme?: SecurityScheme): void {
         let editor: SecuritySchemeEditorComponent = this.editors.getSecuritySchemeEditor();
         let handler: ISecuritySchemeEditorHandler = {
             onSave: (event: SecuritySchemeEditorEvent) => {
@@ -113,12 +112,12 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * Returns all defined security schemes.
      * @return
      */
-    public securitySchemes(): OasSecurityScheme[] {
+    public securitySchemes(): SecurityScheme[] {
         if (this.document.is2xDocument()) {
             let secdefs: Oas20SecurityDefinitions = (this.document as Oas20Document).securityDefinitions;
             if (secdefs) {
-                return secdefs.securitySchemes().sort( (scheme1, scheme2) => {
-                    return scheme1.schemeName().localeCompare(scheme2.schemeName());
+                return secdefs.getSecuritySchemes().sort( (scheme1, scheme2) => {
+                    return scheme1.getSchemeName().localeCompare(scheme2.getSchemeName());
                 });
             }
             return [];
@@ -127,7 +126,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
             if (doc.components) {
                 let schemes: Oas30SecurityScheme[] = doc.components.getSecuritySchemes();
                 return schemes.sort( (scheme1, scheme2) => {
-                    return scheme1.schemeName().localeCompare(scheme2.schemeName());
+                    return scheme1.getSchemeName().localeCompare(scheme2.getSchemeName());
                 });
             }
             return [];
@@ -172,8 +171,10 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
             }
 
 
-            let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
+            let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
+            let path = Library.createNodePath(scheme);
+            this.selectionService.select(path.toString());
         } else {
             console.info("[SecuritySchemesSectionComponent] Adding a security scheme: %s", event.schemeName);
             let evt : SecurityScheme30Data = event as SecurityScheme30Data;
@@ -181,8 +182,10 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
             let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
             this.copySchemeToModel(evt, scheme);
 
-            let command: ICommand = createNewSecuritySchemeCommand(this.document, scheme);
+            let command: ICommand = CommandFactory.createNewSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
+            let path = Library.createNodePath(scheme);
+            this.selectionService.select(path.toString());
         }
     }
 
@@ -211,7 +214,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
                 }
             }
 
-            let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
+            let command: ICommand = CommandFactory.createChangeSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
         } else {
             console.info("[SecuritySchemesSectionComponent] Changing a 3.x security scheme: %s", event.schemeName);
@@ -220,7 +223,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
             let scheme: Oas30SecurityScheme = (this.document as Oas30Document).createComponents().createSecurityScheme(event.schemeName);
             this.copySchemeToModel(evt, scheme);
 
-            let command: ICommand = createChangeSecuritySchemeCommand(this.document, scheme);
+            let command: ICommand = CommandFactory.createChangeSecuritySchemeCommand(this.document.getDocumentType(), scheme);
             this.commandService.emit(command);
         }
     }
@@ -229,8 +232,8 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * Deletes a security scheme.
      * @param scheme
      */
-    public deleteSecurityScheme(scheme: OasSecurityScheme): void {
-        let command: ICommand = createDeleteSecuritySchemeCommand(this.document, scheme.schemeName());
+    public deleteSecurityScheme(scheme: SecurityScheme): void {
+        let command: ICommand = CommandFactory.createDeleteSecuritySchemeCommand(this.document.getDocumentType(), scheme.getSchemeName());
         this.commandService.emit(command);
     }
 
@@ -304,7 +307,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * Called when the user clicks the trash icon to delete all the servers.
      */
     public deleteAllSecuritySchemes(): void {
-        let command: ICommand = createDeleteAllSecuritySchemesCommand();
+        let command: ICommand = CommandFactory.createDeleteAllSecuritySchemesCommand();
         this.commandService.emit(command);
     }
 
@@ -312,14 +315,14 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * Opens the rename security scheme dialog.
      * @param scheme
      */
-    public openRenameDialog(scheme: OasSecurityScheme): void {
+    public openRenameDialog(scheme: SecurityScheme): void {
         let schemeNames: string[] = [];
-        OasVisitorUtil.visitTree(scheme.ownerDocument(), new class extends OasCombinedVisitorAdapter {
-            public visitSecurityScheme(node: OasSecurityScheme): void {
-                schemeNames.push(node.schemeName());
+        VisitorUtil.visitTree(scheme.ownerDocument(), new class extends CombinedVisitorAdapter {
+            public visitSecurityScheme(node: SecurityScheme): void {
+                schemeNames.push(node.getSchemeName());
             }
-        });
-        this.renameDialog.open(scheme, scheme.schemeName(), newName => {
+        }, TraverserDirection.down);
+        this.renameDialog.open(scheme, scheme.getSchemeName(), newName => {
             return schemeNames.indexOf(newName) !== -1;
         });
     }
@@ -329,8 +332,8 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
      * @param event
      */
     public rename(event: RenameEntityEvent): void {
-        let scheme: OasSecurityScheme = <any>event.entity;
-        let command: ICommand = createRenameSecuritySchemeCommand(scheme.schemeName(), event.newName);
+        let scheme: SecurityScheme = <any>event.entity;
+        let command: ICommand = CommandFactory.createRenameSecuritySchemeCommand(scheme.getSchemeName(), event.newName);
         this.commandService.emit(command);
     }
 

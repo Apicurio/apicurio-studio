@@ -69,10 +69,14 @@
             <img class="pf-c-avatar" src="assets/pf/img_avatar.svg" alt="Avatar Image">
         </div>
     </header>
-</div>
-<vertical-nav *ngIf="authService.isAuthenticated()"></vertical-nav>
-<div id="{{ routerOutletWrapperId }}" class="{{ routerOutletWrapperClass }}">
-    <router-outlet></router-outlet>
+
+    <div class="vnav">
+        <vertical-nav *ngIf="authService.isAuthenticated()"></vertical-nav>
+    </div>
+    <div id="{{ routerOutletWrapperId }}" class="{{ routerOutletWrapperClass }}">
+        <router-outlet></router-outlet>
+    </div>
+
 </div>
 
 <!-- The About Dialog -->

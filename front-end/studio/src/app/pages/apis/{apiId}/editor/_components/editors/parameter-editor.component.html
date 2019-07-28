@@ -6,6 +6,8 @@
             <h3>1. Enter Basic Information</h3>
             <p class="explanation">
                 <span *ngIf="_paramType === 'query'">Enter a name and description for the new query parameter.</span>
+                <span *ngIf="_paramType === 'header'">Enter a name and description for the new header parameter.</span>
+                <span *ngIf="_paramType === 'cookie'">Enter a name and description for the new cookie parameter.</span>
                 <span *ngIf="_paramType === 'formData'">Enter a name and description for the new form data parameter.</span>
             </p>
         </div>
@@ -77,7 +79,7 @@
                     </div>
                     <div class="param-enum" id="param-enum" *ngIf="shouldShowEnumEditor()">
                         <span class="enum-label">Enum Values: </span>
-                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum" (onChange)="changeTypeEnum($event)"
+                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum_" (onChange)="changeTypeEnum($event)"
                                              noValueMessage="Click to define enum values."></inline-array-editor>
                     </div>
                 </div>

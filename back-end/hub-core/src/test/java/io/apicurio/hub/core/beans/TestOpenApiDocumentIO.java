@@ -23,10 +23,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.apicurio.hub.core.beans.OpenApi3Document;
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.openapi.v3.models.Oas30Document;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -38,14 +36,12 @@ public class TestOpenApiDocumentIO {
      */
     @Test
     public void testOpenApiDocument() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
         URL contentUrl = getClass().getResource("simple-api-3.0.json");
         String content = IOUtils.toString(contentUrl, Charset.forName("UTF-8"));
-        OpenApi3Document document = mapper.readerFor(OpenApi3Document.class).readValue(content);
+        
+        Oas30Document document = (Oas30Document) Library.readDocumentFromJSONString(content);
         Assert.assertNotNull(document);
-        Assert.assertEquals(2, document.getTags().length);
+        Assert.assertEquals(2, document.tags.size());
     }
 
 }

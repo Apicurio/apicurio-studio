@@ -24,8 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {OasDocument, OasSecurityScheme} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, Library, OasDocument, SecurityScheme} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -44,7 +43,7 @@ import {KeypressUtils} from "../../../_util/keypress.util";
 export class SecuritySchemeRowComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
-    @Input() scheme: OasSecurityScheme;
+    @Input() scheme: SecurityScheme;
 
     @Output() onEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onDelete: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -58,15 +57,15 @@ export class SecuritySchemeRowComponent extends AbstractBaseComponent {
     }
 
     public name(): string {
-        if (this.scheme.schemeName()) {
-            return this.scheme.schemeName();
+        if (this.scheme.getSchemeName()) {
+            return this.scheme.getSchemeName();
         } else {
             return "No name.";
         }
     }
 
     public hasName(): boolean {
-        return this.scheme.schemeName() ? true : false;
+        return this.scheme.getSchemeName() ? true : false;
     }
 
     public schemeType(): string {
@@ -122,8 +121,11 @@ export class SecuritySchemeRowComponent extends AbstractBaseComponent {
     }
 
     public setDescription(description: string): void {
-        let command: ICommand = createChangePropertyCommand<string>(this.document, this.scheme, "description", description);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.scheme, "description", description);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.scheme);
+        path.appendSegment("description", false);
+        this.selectionService.select(path.toString());
     }
 
     public onGlobalKeyDown(event: KeyboardEvent): void {

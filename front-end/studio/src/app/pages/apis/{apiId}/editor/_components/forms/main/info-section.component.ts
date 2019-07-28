@@ -16,13 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas20Document, OasDocument, OasInfo} from "oai-ts-core";
-import {
-    createChangeDescriptionCommand,
-    createChangePropertyCommand,
-    createChangeVersionCommand,
-    ICommand
-} from "oai-ts-commands";
+import {CommandFactory, ICommand, Library, Oas20Document, OasDocument, OasInfo} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -77,7 +71,7 @@ export class InfoSectionComponent extends AbstractBaseComponent {
      */
     public onVersionChange(newVersion: string): void {
         console.info("[InfoSectionComponent] User changed the version to: ", newVersion);
-        let command: ICommand = createChangeVersionCommand(this.document, newVersion);
+        let command: ICommand = CommandFactory.createChangeVersionCommand(newVersion);
         this.commandService.emit(command);
     }
 
@@ -87,7 +81,7 @@ export class InfoSectionComponent extends AbstractBaseComponent {
      */
     public onDescriptionChange(newDescription: string): void {
         console.info("[InfoSectionComponent] User changed the description.");
-        let command: ICommand = createChangeDescriptionCommand(this.document, newDescription);
+        let command: ICommand = CommandFactory.createChangeDescriptionCommand(newDescription);
         this.commandService.emit(command);
     }
 
@@ -97,7 +91,7 @@ export class InfoSectionComponent extends AbstractBaseComponent {
      */
     public onConsumesChange(newValue: string[]): void {
         console.info("[InfoSectionComponent] User changed the consumes to: ", newValue);
-        let command: ICommand = createChangePropertyCommand<string[]>(this.document, this.document, "consumes", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.document, "consumes", newValue);
         this.commandService.emit(command);
     }
 
@@ -107,8 +101,11 @@ export class InfoSectionComponent extends AbstractBaseComponent {
      */
     public onProducesChange(newValue: string[]): void {
         console.info("[InfoSectionComponent] User changed the produces to: ", newValue);
-        let command: ICommand = createChangePropertyCommand<string[]>(this.document, this.document, "produces", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string[]>(this.document, "produces", newValue);
         this.commandService.emit(command);
+        let path = Library.createNodePath(this.document);
+        path.appendSegment("produces", false);
+        this.selectionService.select(path.toString());
     }
 
     public consumes(): string[] {

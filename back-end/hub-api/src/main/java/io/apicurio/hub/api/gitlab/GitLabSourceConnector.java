@@ -610,7 +610,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             body.getActions().add(action);
             
             // Set the POST body
-            post.setEntity(new StringEntity(mapper.writeValueAsString(body)));
+            post.setEntity(new StringEntity(mapper.writeValueAsString(body),StandardCharsets.UTF_8));
             
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 if (response.getStatusLine().getStatusCode() != 201) {
@@ -634,10 +634,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     private ResourceContent getResourceContentFromGitLab(GitLabResource resource) throws NotFoundException, SourceConnectorException {
         try (CloseableHttpClient httpClient = HttpClients.createSystem()) {
-            String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path?ref=:branch")
+            String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path")
                     .bind("id", toEncodedId(resource))
                     .bind("path", toEncodedPath(resource))
-                    .bind("branch", toEncodedBranch(resource))
+                    .queryParam("ref", toEncodedBranch(resource))
                     .toString();
             
             HttpGet get = new HttpGet(getContentUrl);

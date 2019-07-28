@@ -23,6 +23,7 @@ package io.apicurio.hub.core.editing.ops;
 public class VersionedAck extends VersionedOperation {
     
     private long commandId;
+    private String ackType;
 
     public long getCommandId() {
         return commandId;
@@ -30,6 +31,21 @@ public class VersionedAck extends VersionedOperation {
 
     public VersionedAck setCommandId(long commandId) {
         this.commandId = commandId;
+        return this;
+    }
+
+    /**
+     * @return the ackType
+     */
+    public String getAckType() {
+        return ackType;
+    }
+
+    /**
+     * @param ackType the ackType to set
+     */
+    public VersionedAck setAckType(String ackType) {
+        this.ackType = ackType;
         return this;
     }
     

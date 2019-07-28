@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {Injectable} from "@angular/core";
-import {OasDocument} from "oai-ts-core";
+import {OasDocument} from "apicurio-data-models";
 import {Topic} from "apicurio-ts-core";
 
 /**

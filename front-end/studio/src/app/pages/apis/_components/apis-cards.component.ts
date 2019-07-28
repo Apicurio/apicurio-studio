@@ -50,9 +50,7 @@ export class ApisCardsComponent {
         return this.selectedApis.indexOf(api) != -1;
     }
 
-    public selectTag(tag: string, event: MouseEvent): void {
-        event.stopPropagation();
-        event.preventDefault();
+    public selectTag(tag: string): void {
         this.onTagSelected.emit(tag);
     }
 

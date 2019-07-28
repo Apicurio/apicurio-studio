@@ -17,17 +17,26 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {
-    Oas20PropertySchema,
+    Oas20Schema,
     Oas20SchemaDefinition,
-    Oas30PropertySchema,
-    Oas30SchemaDefinition, OasDocument,
-    OasVisitorUtil
-} from "oai-ts-core";
+    Oas30Schema,
+    Oas30SchemaDefinition,
+    OasDocument,
+    SimplifiedPropertyType,
+    SimplifiedType,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
-import {SimplifiedPropertyType, SimplifiedType} from "oai-ts-commands";
-import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
+import {
+    DIVIDER,
+    DropDownOption,
+    DropDownOptionValue as Value
+} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 import {ObjectUtils} from "apicurio-ts-core";
+import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
+import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
 export interface PropertyData {
     name: string;
@@ -63,7 +72,7 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
         this.props = [];
         this.propExists = false;
         let properties: (Oas20PropertySchema | Oas30PropertySchema)[] = this.getProps();
-        this.props = properties.map(p => p.propertyName());
+        this.props = properties.map(p => p.getPropertyName());
     }
 
     /**
@@ -228,7 +237,7 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
         if (this.model.type && this.model.type.isArray() && this.model.type.of && this.model.type.of.isSimpleType()) {
             st = this.model.type.of;
         }
-        return st && st.isSimpleType() && (st.type !== "boolean");
+        return st && st.isSimpleType() && !st.isEnum() && (st.type !== "boolean");
     }
 
     public changeRequired(newValue: string): void {
@@ -237,18 +246,18 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
 
     public changeType(type: string): void {
         if (type === "enum") {
-            this.model.type.type = null;
-            this.model.type.enum = [];
+            this.model.type.type = "string";
+            this.model.type.enum_ = [];
         } else {
             this.model.type.type = type;
-            this.model.type.enum = null;
+            this.model.type.enum_ = null;
             this.model.type.of = null;
             this.model.type.as = null;
         }
     }
 
     public changeTypeEnum(value: string[]): void {
-        this.model.type.enum = value;
+        this.model.type.enum_ = value;
     }
 
     public changeTypeOf(typeOf: string): void {
@@ -267,19 +276,19 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
     }
 
     private addRefTypes(options: DropDownOption[]): void {
-        let doc: OasDocument = this.context.ownerDocument();
+        let doc: OasDocument = <OasDocument> this.context.ownerDocument();
         let refPrefix: string = "#/components/schemas/";
         if (doc.is2xDocument()) {
             refPrefix = "#/definitions/";
         }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(doc, viz);
+        VisitorUtil.visitTree(doc, viz, TraverserDirection.down);
         let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
         if (defs.length > 0) {
             options.push(DIVIDER);
             defs.forEach(def => {
-                let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                let defName: string = def.getName();
                 options.push(new Value(defName, refPrefix + defName));
             });
         }

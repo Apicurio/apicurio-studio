@@ -85,6 +85,14 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     }
     
     /**
+     * @see io.apicurio.hub.core.editing.IEditingMetrics#batchCommand(java.lang.String, int)
+     */
+    @Override
+    public void batchCommand(String designId, int count) {
+        commands.labels(designId).inc(count);
+    }
+    
+    /**
      * @see IEditingMetrics#undoCommand(java.lang.String, long)
      */
     @Override

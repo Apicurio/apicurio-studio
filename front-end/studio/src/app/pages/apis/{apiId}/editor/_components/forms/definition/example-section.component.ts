@@ -16,8 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition} from "oai-ts-core";
-import {createChangePropertyCommand, ICommand} from "oai-ts-commands";
+import {CommandFactory, ICommand, Oas20SchemaDefinition, Oas30SchemaDefinition} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -54,7 +53,7 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
      */
     public example(): string {
         let value: string = this.definition.example;
-        if (typeof value === "object" || Array.isArray(value)) {
+        if (value !== null && (typeof value === "object" || Array.isArray(value))) {
             value = JSON.stringify(value, null,  4);
         }
         return value;
@@ -74,8 +73,7 @@ export class DefinitionExampleSectionComponent extends AbstractBaseComponent {
                 console.info("[DefinitionExampleSectionComponent] Failed to parse example: ", e);
             }
         }
-        let command: ICommand = createChangePropertyCommand(this.definition.ownerDocument(), this.definition,
-            "example", newValue);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.definition,"example", newValue);
         this.commandService.emit(command);
     }
     

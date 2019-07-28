@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.CountDownLatch;
 
-import io.apicurio.test.integration.arquillian.IntegrationTestProperties;
+import io.apicurio.test.integration.common.IntegrationTestProperties;
 
 /**
  * Simple class that starts up an in-memory H2 database that can then be shared by

@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-test-integration</artifactId>
-        <version>0.2.26-SNAPSHOT</version>
+        <version>0.2.31-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-test-integration-single-node-keycloak</artifactId>
@@ -12,7 +12,7 @@
 
     <properties>
 
-        <it.version.keycloak>4.1.0.Final</it.version.keycloak><!-- Use ${version.org.keycloak} ? -->
+        <it.version.keycloak>${version.org.keycloak}</it.version.keycloak>
         <it.server.basePortOffset>100</it.server.basePortOffset>
         <it.server.apicurio.dir>${project.build.directory}/apicurio-studio/apicurio-studio-${project.version}</it.server.apicurio.dir>
         <it.server.apicurio.config>${basedir}/src/test/resources/wildfly/standalone-apicurio.xml</it.server.apicurio.config>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>5.2.2</version>
+            <version>5.2.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>3.6.3.Final</version>
+            <version>4.1.1.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -152,20 +152,12 @@
             <resource>
                 <filtering>true</filtering>
                 <directory>src/test/resources</directory>
-                <!--<includes>-->
-                    <!--<include>**/*</include>-->
-                    <!--<include>**/*.xml</include>-->
-                <!--</includes>-->
             </resource>
         </resources>
         <testResources>
             <testResource>
                 <filtering>true</filtering>
                 <directory>src/test/resources</directory>
-                <!--<includes>-->
-                    <!--<include>**/*</include>-->
-                    <!--<include>**/*.xml</include>-->
-                <!--</includes>-->
             </testResource>
         </testResources>
     </build>
@@ -247,7 +239,7 @@
                             <dependency>
                                 <groupId>org.apache.ant</groupId>
                                 <artifactId>ant</artifactId>
-                                <version>1.10.5</version>
+                                <version>1.10.6</version>
                             </dependency>
                             <dependency>
                                 <groupId>ant-contrib</groupId>
@@ -319,7 +311,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.22.1</version>
+                        <version>2.22.2</version>
                         <configuration>
                             <!-- Force JUnit (weird conflicts with NG) -->
                             <testNGArtifactName>none:none</testNGArtifactName>

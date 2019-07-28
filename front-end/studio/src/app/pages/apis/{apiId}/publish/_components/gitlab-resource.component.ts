@@ -54,6 +54,8 @@ export class GitLabResourceComponent implements OnInit {
     public gettingProjects: boolean = false;
     public gettingBranches: boolean = false;
 
+    public preloadValue: any = {};
+
     /**
      * Constructor.
      * @param linkedAccounts
@@ -61,10 +63,14 @@ export class GitLabResourceComponent implements OnInit {
     constructor( private linkedAccounts: LinkedAccountsService) {}
 
     public ngOnInit(): void {
-        console.info("[GitLabResourceComponent] ngOnInit()");
         // Get the list of groups (async)
         this.gettingGroups = true;
         this.onValid.emit(false);
+        if (this.value) {
+            this.preloadValue.group = this.value.group;
+            this.preloadValue.project = this.value.project;
+            this.preloadValue.branch = this.value.branch;
+        }
         this.linkedAccounts.getAccountGroups("GitLab").then( groups => {
             groups.sort( (group1, group2) => {
                 return group1.name.localeCompare(group2.name);
@@ -77,6 +83,10 @@ export class GitLabResourceComponent implements OnInit {
                         this._groupOptions.push(DIVIDER);
                     }
                 }
+                if (this.preloadValue.group && this.preloadValue.group === group.path) {
+                    this.model.group = group;
+                    this.preloadValue.group = null;
+                }
             });
             groups.forEach( group => {
                 if (!group.userGroup) {
@@ -85,10 +95,7 @@ export class GitLabResourceComponent implements OnInit {
             });
             this.gettingGroups = false;
 
-            if (this.value && this.value.group) {
-                this.model.group = this.value.group;
-                this.model.project = this.value.project;
-                this.model.branch = this.value.branch;
+            if (this.model.group) {
                 this.updateProjects();
             } else if (groups.length === 1) {
                 this.model.group = groups[0]
@@ -124,6 +131,10 @@ export class GitLabResourceComponent implements OnInit {
             this._projectOptions = [];
             projects.forEach( project => {
                 this._projectOptions.push(new Value(project.name, project));
+                if (this.preloadValue.project && this.preloadValue.project == project.name) {
+                    this.model.project = project;
+                    this.preloadValue.project = null;
+                }
             });
             this.gettingProjects = false;
 
@@ -131,6 +142,7 @@ export class GitLabResourceComponent implements OnInit {
                 this.updateBranches();
             } else if (projects.length === 1) {
                 this.model.project = projects[0];
+                this.updateBranches();
             }
         }).catch(error => {
             this.gettingProjects = false;
@@ -161,7 +173,11 @@ export class GitLabResourceComponent implements OnInit {
             this._branchOptions = [];
             branches.forEach( branch => {
                 this._branchOptions.push(new Value(branch.name, branch.name));
-            })
+                if (this.preloadValue.branch && this.preloadValue.branch === branch.name) {
+                    this.model.branch = branch.name;
+                    this.preloadValue.branch = null;
+                }
+            });
             this.gettingBranches = false;
             if (this.isValid()) {
                 this.onValid.emit(true);

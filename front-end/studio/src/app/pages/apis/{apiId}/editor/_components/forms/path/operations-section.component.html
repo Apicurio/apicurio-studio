@@ -55,12 +55,12 @@
                     </div>
                     <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
                 </div>
-                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')">
+                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')" *ngIf="!is20Document()">
                     <div class="tab-label">
                         <collaborator-overlay [nodePath]="operationPath('trace')"></collaborator-overlay>
                         <span>Trace</span>
                     </div>
-                    <validation-aggregate [models]="[ path.trace ]"></validation-aggregate>
+                    <validation-aggregate [models]="[ path['trace'] ]"></validation-aggregate>
                 </div>
             </div>
             <div class="actions">
@@ -83,7 +83,7 @@
             <operation-info-section [operation]="operation()"></operation-info-section>
 
             <!-- Servers (3.0 only) -->
-            <servers-section [parent]="operation()" [collapsed]="true" *ngIf="operation().ownerDocument().is3xDocument()"
+            <servers-section [parent]="operation()" [collapsed]="true" *ngIf="is3xDocument()"
                              description="Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port)."></servers-section>
 
             <!-- Path Parameters Section -->
@@ -94,6 +94,9 @@
 
             <!-- Header Parameters Section -->
             <header-params-section [parent]="operation()" [path]="path"></header-params-section>
+
+            <!-- Cookie Parameters Section -->
+            <cookie-params-section [parent]="operation()" [path]="path" *ngIf="is3xDocument()"></cookie-params-section>
 
             <!-- Request Body Section -->
             <requestBody-section [operation]="operation()"></requestBody-section>

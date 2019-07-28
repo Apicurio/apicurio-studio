@@ -1,7 +1,7 @@
 <!-- Rename Path Dialog -->
 <div>
     <div bsModal #renamePathModal="bs-modal" class="modal fade" id="renamePathModal" tabindex="-1" role="dialog"
-         aria-labelledby="renamePathModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" [config]="{ backdrop: false }"
+         aria-labelledby="renamePathModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" [config]="{ backdrop: true }"
          (onShown)="renamePathInput.focus()" (onHidden)="close()">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -18,10 +18,10 @@
                             <label class="col-sm-2 control-label required" for="pathName">Path</label>
                             <div class="col-sm-10">
                                 <input name="pathName" type="text" id="pathName" class="form-control" #renamePathInput
-                                       placeholder="Enter a Path Name" #pathName="ngModel" pattern="[\S]+"
+                                       placeholder="Enter a Path Name" #pathName="ngModel" pattern="(\/[^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+"
                                        required [(ngModel)]="name" (ngModelChange)="pathExists = paths.indexOf($event) != -1">
                                 <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
-                                <form-error-message [inputModel]="pathName" [type]="'pattern'" [alwaysOn]="true">Enter a valid path (whitespace not allowed).</form-error-message>
+                                <form-error-message [inputModel]="pathName" [type]="'pattern'" [alwaysOn]="true">Enter a valid path.</form-error-message>
                                 <form-error-message [inputModel]="pathName" [type]="'required'">Name is required.</form-error-message>
                             </div>
                         </div>

@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
-import {SimplifiedType} from "oai-ts-commands";
+import {SimplifiedType} from "apicurio-data-models";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
@@ -55,7 +55,7 @@ export class SchemaTypeComponent extends AbstractBaseComponent {
             }
             return "Array";
         } else if (this.type.isEnum()) {
-            return `Enum (${ this.type.enum.length } items)`;
+            return `Enum (${ this.type.enum_.length } items)`;
         } else if (this.type.isSimpleType()) {
             if (this.type.as) {
                 return this.type.type + " as " + this.type.as;

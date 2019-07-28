@@ -17,12 +17,12 @@
 
 import {AbstractBaseComponent} from "./base-component";
 import {ChangeDetectorRef, Input, SimpleChanges} from "@angular/core";
-import {OasDocument, OasNode} from "oai-ts-core";
+import {OasDocument, Node} from "apicurio-data-models";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
 import {ModelUtils} from "../../_util/model.util";
 
-export abstract class AbstractRowComponent<T extends OasNode, M> extends AbstractBaseComponent {
+export abstract class AbstractRowComponent<T extends Node, M> extends AbstractBaseComponent {
 
     @Input() item: T;
 
@@ -53,7 +53,7 @@ export abstract class AbstractRowComponent<T extends OasNode, M> extends Abstrac
     }
 
     public document(): OasDocument {
-        return this.item.ownerDocument();
+        return <OasDocument> this.item.ownerDocument();
     }
 
     public isEditing(): boolean {

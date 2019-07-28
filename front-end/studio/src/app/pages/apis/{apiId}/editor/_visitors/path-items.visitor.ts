@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {OasCombinedVisitorAdapter, OasPathItem} from "oai-ts-core";
+import {CombinedVisitorAdapter, OasPathItem} from "apicurio-data-models";
 
 /**
  * Visitor used to find path items.
  */
-export class FindPathItemsVisitor extends OasCombinedVisitorAdapter {
+export class FindPathItemsVisitor extends CombinedVisitorAdapter {
 
     public pathItems: OasPathItem[] = [];
 
@@ -36,7 +36,7 @@ export class FindPathItemsVisitor extends OasCombinedVisitorAdapter {
      * @param node
      */
     visitPathItem(node: OasPathItem): void {
-        if (this.acceptThroughFilter(node.path())) {
+        if (this.acceptThroughFilter(node.getPath())) {
             this.pathItems.push(node);
         }
     }
@@ -46,7 +46,7 @@ export class FindPathItemsVisitor extends OasCombinedVisitorAdapter {
      */
     public getSortedPathItems(): OasPathItem[] {
         return this.pathItems.sort( (pathItem1, pathItem2) => {
-            return pathItem1.path().localeCompare(pathItem2.path());
+            return pathItem1.getPath().localeCompare(pathItem2.getPath());
         });
     }
 

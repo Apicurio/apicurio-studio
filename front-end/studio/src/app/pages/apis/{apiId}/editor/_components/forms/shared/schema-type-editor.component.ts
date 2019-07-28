@@ -24,9 +24,20 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {SimplifiedType} from "oai-ts-commands";
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, OasDocument, OasNode, OasVisitorUtil} from "oai-ts-core";
-import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../../components/common/drop-down.component";
+import {
+    Node,
+    Oas20SchemaDefinition,
+    Oas30SchemaDefinition,
+    OasDocument,
+    SimplifiedType,
+    TraverserDirection,
+    VisitorUtil
+} from "apicurio-data-models";
+import {
+    DIVIDER,
+    DropDownOption,
+    DropDownOptionValue as Value
+} from "../../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -35,6 +46,9 @@ import {SelectionService} from "../../../_services/selection.service";
 import {ObjectUtils} from "apicurio-ts-core";
 
 
+/**
+ * Component to select a "SimplifiedType" value
+ */
 @Component({
     moduleId: module.id,
     selector: "schema-type-editor",
@@ -43,15 +57,12 @@ import {ObjectUtils} from "apicurio-ts-core";
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-/**
- * Component to select a "SimplifiedType" value
- */
 export class SchemaTypeEditorComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
     @Input() value: SimplifiedType;
     @Input() typeLabel: string = "Type";
-    @Input() validationModel: OasNode;
+    @Input() validationModel: Node;
     @Input() validationProperty: string;
 
     /**
@@ -147,12 +158,12 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         }
 
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        OasVisitorUtil.visitTree(this.document, viz);
+        VisitorUtil.visitTree(this.document, viz, TraverserDirection.down);
         let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
         if (defs.length > 0) {
             options.push(DIVIDER);
             defs.forEach(def => {
-                let defName: string = (def.ownerDocument().is2xDocument()) ? (def as Oas20SchemaDefinition).definitionName() : (def as Oas30SchemaDefinition).name();
+                let defName: string = def.getName();
                 options.push(new Value(defName, refPrefix + defName));
             });
         }
@@ -215,7 +226,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         if (this.value && this.value.isArray() && this.value.of && this.value.of.isSimpleType()) {
             st = this.value.of;
         }
-        return st && st.isSimpleType() && (st.type !== "boolean");
+        return st && st.isSimpleType() && !st.isEnum() && (st.type !== "boolean");
     }
 
     public shouldShowEnumEditor(): boolean {
@@ -225,13 +236,13 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
     public changeType(type: string): void {
         let nt: SimplifiedType = new SimplifiedType();
         if (type === "enum") {
-            nt.type = null;
-            nt.enum = [];
+            nt.type = "string";
+            nt.enum_ = [];
             nt.of = null;
             nt.as = null;
         } else {
             nt.type = type;
-            nt.enum = null;
+            nt.enum_ = null;
             nt.of = null;
             nt.as = null;
         }
@@ -240,8 +251,11 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
 
     public changeTypeEnum(value: string[]): void {
         let nt: SimplifiedType = new SimplifiedType();
-        nt.type = null;
-        nt.enum = value;
+        nt.type = this.value.type;
+        if (!nt.type) {
+            nt.type = "string";
+        }
+        nt.enum_ = value;
         nt.of = null;
         nt.as = null;
         this.onChange.emit(nt);
@@ -259,7 +273,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
     public changeTypeAs(typeAs: string): void {
         let nt: SimplifiedType = new SimplifiedType();
         nt.type = this.value.type;
-        nt.enum = null;
+        nt.enum_ = null;
         if (nt.isSimpleType()) {
             nt.of = null;
             nt.as = typeAs;

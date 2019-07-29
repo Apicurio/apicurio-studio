@@ -41,7 +41,7 @@ setup.ps1 192.168.0.1
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customisation. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want. In the near future we will generate the passwords and the Microcks client-secret in the setup process dynamically.
+After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want. In the near future we will generate the passwords and the Microcks client-secret in the setup process dynamically.
 
 If you want to change these settings (or the provided KeyCloak configuration) after you already started the stack, you have to remove the already existing docker volumes. The easiest way is to stop your running compose stack, and prune your volumes:
 
@@ -55,6 +55,10 @@ When your configs are generated, you can start the whole stack with this command
 ```
 docker-compose -f docker-compose.keycloak.yml build
 docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml up
+
+docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-mysql.yml up 
+docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
+
 ```
 
 ## Configure users in Keycloak

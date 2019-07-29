@@ -1,0 +1,14 @@
+version: '3'
+
+volumes:
+  postgre_apicurio:
+
+services:
+  apicurio-studio-db:
+    image: 'postgres:9.6'    
+    environment:
+      POSTGRES_DB: ${AS_DATABASE}
+      POSTGRES_USER: ${AS_DB_USER}
+      POSTGRES_PASSWORD: ${AS_DB_PASSWORD}
+    volumes:
+      - 'postgre_apicurio:/var/lib/postgresql/data'

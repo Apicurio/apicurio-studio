@@ -1,28 +1,12 @@
 version: '3'
 
-volumes:
-  mysql_apicurio2:
-
 services:
 
-  apicurio-studio-mysql:
-    image: 'percona:5.7'
-    command: [
-      '--character-set-server=utf8mb4',
-      '--collation-server=utf8mb4_unicode_ci'
-    ]
-    environment:
-      MYSQL_DATABASE: ${AS_MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${AS_MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${AS_MYSQL_USER}
-      MYSQL_PASSWORD: ${AS_MYSQL_PASSWORD}
-    volumes:
-      - 'mysql_apicurio2:/var/lib/mysql'
-
+  apicurio-studio-db:
 
   apicurio-studio-ws:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
-    depends_on: [apicurio-studio-mysql]
+    depends_on: [apicurio-studio-db]
     ports:
       - '8092:8080'
     environment:
@@ -38,7 +22,7 @@ services:
 
   apicurio-studio-api:
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
-    depends_on: [apicurio-studio-mysql, apicurio-studio-ws]
+    depends_on: [apicurio-studio-db, apicurio-studio-ws]
     ports:
       - '8091:8080'
     environment:
@@ -64,7 +48,7 @@ services:
 
   apicurio-studio-ui:
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
-    depends_on: [apicurio-studio-mysql, apicurio-studio-api, apicurio-studio-ws]
+    depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
     ports:
       - '8093:8080'
     environment:

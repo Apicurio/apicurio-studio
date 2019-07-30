@@ -89,6 +89,17 @@ A simple "reset" script is also included, it will remove the generated config fi
 ## Starting the environment
 
 When your configs are generated, you can start the whole stack with these commands:
+
+```
+For Mysql config:
+./start-mysql-environment.sh
+
+For PostgreSQL config:
+./start-postgresql-environment.sh
+```
+
+If you want to do it manually, here are the commands:
+
 ```
 docker-compose -f docker-compose.keycloak.yml build
 
@@ -101,6 +112,13 @@ docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f 
 ```
 
 Please do not mix up those commands! If you want to switch between databases, you have to clear the already existing volumes and configs.
+
+To clear the environment, please run these commands:
+
+```
+docker system prune --volumes
+./reset_env.sh
+```
 
 ## Configure users in Keycloak
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This setup contains a fully configured Apicurio-Studio package, already integrated with MySQL, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
+This setup contains a fully configured Apicurio-Studio package, already integrated with MySQL/Postgres, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
 
 Here is the port mapping:
 - 8090 for Keycloak
@@ -13,35 +13,55 @@ Here is the port mapping:
 
 ## Setup
 
-The folder contains a bash and a powershell script to make the initialization. The script will create the configuration files based on your IP address. The scripts will create 3 files:
+The folder contains a bash script to make the initialization. The script will create the configuration files based on your IP address and your chosen database type.
+
+The scripts will create 3 files:
 - .env
 - config/keycloak/apicurio-realm.json
 - config/keycloak/microcks-realm.json
 
-### Using the bash script
+Supported databases:
+- mysql
+- postgresql
 
-You just have to run it with an argument which is your IP address:
+### Docker based setup
+
+The easiest way is to open a terminal or PowerShell, and navigate into distro/docker-compose folder. In this folder enter the command below:
 
 ```
-chmod +x setup.sh
-./setup.sh 192.168.0.1
+docker run -v $(pwd):/apicurio apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+
+For example:
+docker run -v $(pwd):/apicurio apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
 ```
 
-### Using the PowerShell script
+This command will pull a minimal alpine linux based image, mount the current folder to it, and it will run the setup script. At the end of the run, it will print the admin password for Keycloak, and the URLs for the services. Like this:
 
-You have to start PowerShell, and you have to setup script running:
 ```
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+Keycloak username: admin
+Keycloak password: op4oUQ
+
+Keycloak URL: 192.168.1.231:8090
+Apicurio URL: 192.168.1.231:8093
+Microcks URL: 192.168.1.231:8900
+
 ```
 
-After this step you will be able to run our script, the argument with your IP is mandatory:
+Please copy these values somewhere where you can find them easily!
+
+### Script based setup
+
+If you're using NIX based OS, you can run the setup script without the docker wrapper. The only dependency is "util-linux" package which contains a tool called uuidgen.
+
 ```
-setup.ps1 192.168.0.1
+.setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
 ```
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want. In the near future we will generate the passwords and the Microcks client-secret in the setup process dynamically.
+After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
+
+The passwords for DBs, KeyCloak, and the uuid of the microcks-service-account is generated dynamically with every run of the setup script.
 
 If you want to change these settings (or the provided KeyCloak configuration) after you already started the stack, you have to remove the already existing docker volumes. The easiest way is to stop your running compose stack, and prune your volumes:
 
@@ -49,17 +69,27 @@ If you want to change these settings (or the provided KeyCloak configuration) af
 docker system prune --volumes
 ```
 
+A simple "reset" script is also included, it will remove the generated config files for you.
+
+```
+./reset_env.sh
+```
+
 ## Starting the environment
 
-When your configs are generated, you can start the whole stack with this command:
+When your configs are generated, you can start the whole stack with these commands:
 ```
 docker-compose -f docker-compose.keycloak.yml build
-docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml up
 
-docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-mysql.yml up 
+If you generated a config for MySQL:
+docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-mysql.yml up
+
+If you generated a config for PostgreSQL:
 docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
 
 ```
+
+Please do not mix up those commands! If you want to switch between databases, you have to clear the already existing volumes and configs.
 
 ## Configure users in Keycloak
 

@@ -16,7 +16,7 @@ HOST_IP=$1
 DB_TYPE=$2
 P=$(pwd)
 
-##if the scripts runs in the container, we have to adjust the path to the mount point
+##if the script runs in the container, we have to adjust the path to the mount point
 if [ $P == "/" ]
 then
   export P=/apicurio
@@ -56,4 +56,11 @@ sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/apicurio-realm.json.template > $
 sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/microcks-realm.json.template > $P/config/keycloak/microcks-realm.json.tmp
 sed 's/$SERVICE_CLIENT_SECRET/'"$SERVICE_CLIENT_SECRET"'/g' $P/config/keycloak/microcks-realm.json.tmp > $P/config/keycloak/microcks-realm.json
 
+rm -rf $P/config/keycloak/microcks-realm.json.tmp
+
+echo "Keycloak username: admin"
 echo "Keycloak password: $KC_PASSWORD"
+echo ""
+echo "Keycloak URL: $HOST_IP:8090"
+echo "Apicurio URL: $HOST_IP:8093"
+echo "Microcks URL: $HOST_IP:8900"

@@ -26,13 +26,24 @@ Supported databases:
 
 ### Docker based setup
 
-The easiest way is to open a terminal or PowerShell, and navigate into distro/docker-compose folder. In this folder enter the command below:
+The easiest way is to open a terminal or PowerShell, and navigate into distro/docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
 
 ```
-docker run -v $(pwd):/apicurio apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+On Linux/Mac:
+
+docker run -v $(pwd):/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
 
 For example:
-docker run -v $(pwd):/apicurio apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
+docker run -v $(pwd):/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
+```
+
+```
+On Windows:
+
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+
+For example:
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
 ```
 
 This command will pull a minimal alpine linux based image, mount the current folder to it, and it will run the setup script. At the end of the run, it will print the admin password for Keycloak, and the URLs for the services. Like this:
@@ -54,7 +65,7 @@ Please copy these values somewhere where you can find them easily!
 If you're using NIX based OS, you can run the setup script without the docker wrapper. The only dependency is "util-linux" package which contains a tool called uuidgen.
 
 ```
-.setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+./setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
 ```
 
 ## Environment customisation

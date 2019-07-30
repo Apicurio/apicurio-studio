@@ -601,7 +601,7 @@
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "77683296-4efd-4514-8a0a-842220f59a74",
+      "secret": "$SERVICE_CLIENT_SECRET",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,

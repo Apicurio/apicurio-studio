@@ -51,7 +51,7 @@
 }
 
 .path-parameter .header .description {
-  flex-basis: 39%;
+  flex-basis: 28%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -62,7 +62,7 @@
   cursor: pointer;
 }
 .path-parameter .header .summary {
-  flex-basis: 41%;
+  flex-basis: 27%;
 }
 .path-parameter .header .summary:hover {
   color: #0088ce;
@@ -74,6 +74,18 @@
 }
 .path-parameter .header .summary .parameter-required:hover {
   filter: brightness(120%);
+}
+
+.path-parameter .header .examples {
+  flex-basis: 25%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.path-parameter .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
 }
 
 .path-parameter .header .actions {
@@ -126,6 +138,13 @@
 }
 .path-parameter .body .param-type {
   margin-bottom: 10px;
+}
+
+.path-parameter .body .param-examplesform {
+  width: 100%;
+}
+.path-parameter .body .param-examples .form-label {
+  font-weight: 600;
 }
 
 .path-parameter .body .param-required .dropdown {

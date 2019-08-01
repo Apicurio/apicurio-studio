@@ -43,7 +43,7 @@
 }
 
 .query-param .header .description {
-  flex-basis: 39%;
+  flex-basis: 28%;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -54,7 +54,7 @@
   cursor: pointer;
 }
 .query-param .header .summary {
-  flex-basis: 41%;
+  flex-basis: 27%;
 }
 .query-param .header .summary:hover {
   color: #0088ce;
@@ -66,6 +66,18 @@
 }
 .query-param .header .summary .parameter-required:hover {
   filter: brightness(120%);
+}
+
+.query-param .header .examples {
+  flex-basis: 25%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.query-param .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
 }
 
 .query-param .header .actions {
@@ -118,6 +130,13 @@
 }
 .query-param .body .param-type {
   margin-bottom: 10px;
+}
+
+.query-param .body .param-examplesform {
+  width: 100%;
+}
+.query-param .body .param-examples .form-label {
+  font-weight: 600;
 }
 
 .query-param .body .param-required .dropdown {

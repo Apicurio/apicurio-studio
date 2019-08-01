@@ -95,6 +95,7 @@ export class ActivityItemComponent {
             case "AddSchemaDefinitionCommand_30":
             case "AddSecurityRequirementCommand":
             case "AddExampleCommand_30":
+            case "AddParameterExampleCommand_30":
                 rval = "plus";
                 break;
             case "ChangeContactCommand":
@@ -144,6 +145,7 @@ export class ActivityItemComponent {
             case "SetExampleCommand":
             case "SetExampleCommand_20":
             case "SetExampleCommand_30":
+            case "SetParameterExampleCommand_30":
             case "SetExtensionCommand":
             case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
@@ -198,6 +200,7 @@ export class ActivityItemComponent {
             case "DeleteExampleCommand":
             case "DeleteExampleCommand_20":
             case "DeleteExampleCommand_30":
+            case "DeleteParameterExampleCommand_30":
             case "DeleteExtensionCommand":
                 rval = "trash-o";
                 break;
@@ -577,11 +580,17 @@ export class ActivityItemComponent {
             case "AddExampleCommand_30":
                 rval = "added an example named '" + this.command()["_newExampleName"] + "' to the MediaType at location " + this.command()["_parentPath"] + ".";
                 break;
+            case "AddParameterExampleCommand_30":
+                rval = "added an example named '" + this.command()["_newExampleName"] + "' to the Parameter at location " + this.command()["_parentPath"] + ".";
+                break;
             case "SetExampleCommand_20":
                 rval = "changed the value of the example for content-type '" + this.command()["_newContentType"] + "' for the Response at location " + this.command()["_parentPath"] + ".";
                 break;
             case "SetExampleCommand_30":
                 rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the MediaType at location " + this.command()["_parentPath"] + ".";
+                break;
+            case "SetParameterExampleCommand_30":
+                rval = "changed the value of the example named '" + this.command()["_newExampleName"] + "' for the Parameter at location " + this.command()["_parentPath"] + ".";
                 break;
             case "SetExtensionCommand":
                 rval = `changed the value of the extension named '${ this.command()["_name"] }'.`;

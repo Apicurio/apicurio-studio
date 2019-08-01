@@ -28,15 +28,20 @@ import {
     CommandFactory,
     ICommand,
     Library,
+    Oas30Example,
+    Oas30Parameter,
+    OasDocument,
     OasOperation,
     OasParameter,
     OasPathItem,
     SimplifiedParameterType,
-    SimplifiedType
+    SimplifiedType,
+    Schema
 } from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
+import {EditExampleEvent} from "../../dialogs/edit-example.component";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
 import {AbstractBaseComponent} from "../../common/base-component";
 
@@ -99,6 +104,29 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
         }
     }
 
+    public is3xDocument(): boolean {
+        return (<OasDocument> this.item.ownerDocument()).is3xDocument();
+    }
+    
+    public hasExamples(): boolean {
+        if (this.item instanceof Oas30Parameter) {
+            return this.paramExamples().length > 0;
+        }
+        return false;
+    }
+
+    public paramExamples(): Oas30Example[] {
+        return (<Oas30Parameter> this.item).getExamples();
+    }
+
+    public exampleValue(example: Oas30Example): string {
+        let evalue: any = example.value;
+        if (typeof evalue === "object" || Array.isArray(evalue)) {
+            evalue = JSON.stringify(evalue);
+        }
+        return evalue;
+    }
+
     public description(): string {
         return this.item.description
     }
@@ -109,6 +137,10 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
 
     public isEditingSummary(): boolean {
         return this.isEditingTab("summary");
+    }
+
+    public isEditingExamples(): boolean {
+        return this.isEditingTab("examples");
     }
 
     public toggleDescription(): void {
@@ -127,12 +159,28 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
         this.toggleTab("summary");
     }
 
+    public toggleExamples(): void {
+        if (this.isOverridable() || this.isMissing()) {
+            this._editing = false;
+            return;
+        }
+        this.toggleTab("examples");
+    }
+
     public delete(): void {
         this.onDelete.emit();
     }
 
     public displayType(): SimplifiedParameterType {
         return SimplifiedParameterType.fromParameter(this.item as any);
+    }
+
+    public displayExamples(): string {
+        if (this.hasExamples()) {
+            return `${this.paramExamples().length} example(s) defined.`;
+        } else {
+            return "No examples defined."
+        }
     }
 
     public rename(): void {
@@ -162,6 +210,40 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
             this.item as any, nt);
         this.commandService.emit(command);
         this._model = nt;
+    }
+
+    public addExample(exampleData: any): void {
+        var param = <Oas30Parameter> this.item;
+        let command: ICommand = CommandFactory.createAddParameterExampleCommand(param,
+            exampleData.value, exampleData.name, null, null);
+        this.commandService.emit(command);
+        let nodePath = Library.createNodePath(this.item);
+        nodePath.appendSegment("examples", false);
+        this.__selectionService.select(nodePath.toString());
+    }
+
+    public deleteExample(example: Oas30Example): void {
+        console.info("[PathParamRowComponent] Deleting an example of a path parameter.");
+        let command: ICommand = CommandFactory.createDeleteParameterExampleCommand(example);
+        this.commandService.emit(command);
+    }
+
+    public deleteAllExamples(): void {
+        var param = <Oas30Parameter> this.item;
+        let command: ICommand = CommandFactory.createDeleteAllParameterExamplesCommand(param);
+        this.commandService.emit(command);
+    }
+
+    public editExample(event: EditExampleEvent): void {
+        console.info("[PathParamRowComponent] Changing the value of a Parameter example.");
+        let command: ICommand = CommandFactory.createSetParameterExampleCommand(this.item,
+            event.value, event.example.getName());
+        this.commandService.emit(command);
+    }
+
+    public schemaForExample(): Schema {
+        var param = <Oas30Parameter> this.item;
+        return param.schema;
     }
 
     public create(): void {

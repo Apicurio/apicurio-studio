@@ -24,3 +24,10 @@
 .response .response-content div.form-label {
   margin-bottom: 5px;
 }
+
+.response .response-ref em {
+  font-style: normal;
+}
+.response .response-ref em > a {
+  font-weight: bold;
+}

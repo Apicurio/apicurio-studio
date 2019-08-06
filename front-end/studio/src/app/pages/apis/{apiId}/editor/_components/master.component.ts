@@ -29,7 +29,7 @@ import {
     CombinedVisitorAdapter,
     CommandFactory,
     DocumentType,
-    ICommand,
+    ICommand, IDefinition,
     Library,
     Node,
     NodePath,
@@ -63,6 +63,9 @@ import {DocumentService} from "../_services/document.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "./dialogs/rename-entity.component";
 import {KeypressUtils} from "../_util/keypress.util";
 import {ObjectUtils} from "apicurio-ts-core";
+import {IResponseEditorHandler, ResponseData, ResponseEditorComponent} from "./editors/response-editor.component";
+import {FindResponseDefinitionsVisitor} from "../_visitors/response-definitions.visitor";
+import {CloneResponseDefinitionDialogComponent} from "./dialogs/clone-response-definition.component";
 
 
 /**
@@ -92,13 +95,18 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
     @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
     @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
+    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
+
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
-    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
+
+    @ViewChild("cloneResponseDialog") cloneResponseDialog: CloneResponseDefinitionDialogComponent;
+    @ViewChild("renameResponseDialog") renameResponseDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;
     _paths: OasPathItem[];
     _defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[];
+    _responses: (Oas20ResponseDefinition | Oas30ResponseDefinition)[];
 
     /**
      * C'tor.
@@ -122,6 +130,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     protected onDocumentChange(): void {
         this._paths = null;
         this._defs = null;
+        this._responses = null;
     }
 
     public onPathsKeypress(event: KeyboardEvent): void {
@@ -135,6 +144,13 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
             let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.definitions();
             this.handleArrowKeypress(event, definitions);
+        }
+    }
+
+    public onResponsesKeypress(event: KeyboardEvent): void {
+        if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
+            let responses: (Oas20ResponseDefinition | Oas30ResponseDefinition)[] = this.responses();
+            this.handleArrowKeypress(event, responses);
         }
     }
 
@@ -220,20 +236,28 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * Returns an array of responses filtered by the search criteria and sorted.
      */
     public responses(): (Oas20ResponseDefinition | Oas30ResponseDefinition)[] {
-        return [];
-        // if (this.document.responses) {
-        //     return this.document.responses.responses().filter( response => {
-        //         if (this.acceptThroughFilter(response.name())) {
-        //             return response;
-        //         } else {
-        //             return null;
-        //         }
-        //     }).sort( (response1, response2) => {
-        //         return response1.name().localeCompare(response2.name());
-        //     });
-        // } else {
-        //     return [];
-        // }
+        let viz: FindResponseDefinitionsVisitor = new FindResponseDefinitionsVisitor(this.filterCriteria);
+        if (!this._responses) {
+            if (this.document.is2xDocument() && (this.document as Oas20Document).responses) {
+                (this.document as Oas20Document).responses.getResponses().forEach( response => {
+                    VisitorUtil.visitNode(response, viz);
+                })
+            } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
+                (this.document as Oas30Document).components.getResponseDefinitions().forEach( response => {
+                    VisitorUtil.visitNode(response, viz);
+                })
+            }
+            this._responses = viz.getSortedResponseDefinitions();
+        }
+        return this._responses;
+    }
+
+    public responsesPath(): string {
+        if (this.document && this.document.is2xDocument()) {
+            return "/responses";
+        } else {
+            return "/components/responses";
+        }
     }
 
     /**
@@ -430,6 +454,17 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user fills out the Add Response editor and clicks Add.
+     */
+    public addResponse(data: ResponseData): void {
+        console.info("[EditorMasterComponent] Adding a response: ", data);
+        let command: ICommand = CommandFactory.createNewResponseDefinitionCommand(this.document.getDocumentType(),
+            data.name, data.description);
+        this.commandService.emit(command);
+        this.selectResponse(this.getResponseByName(data.name));
+    }
+
+    /**
      * Converts a JSON formatted string example to an object.
      * @param from
      */
@@ -454,6 +489,18 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Gets a response by its name.
+     * @param name
+     */
+    protected getResponseByName(name: string): Oas20ResponseDefinition | Oas30ResponseDefinition {
+        if (this.document.getDocumentType() == DocumentType.openapi2) {
+            return (this.document as Oas20Document).responses.getResponse(name);
+        } else {
+            return (this.document as Oas30Document).components.getResponseDefinition(name);
+        }
+    }
+
+    /**
      * Called when the user searches in the master area.
      * @param criteria
      */
@@ -465,6 +512,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         }
         this._paths = null;
         this._defs = null;
+        this._responses = null;
     }
 
     /**
@@ -539,7 +587,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
-     * Called when the user right-clicks on a path.
+     * Called when the user right-clicks on a data type.
      * @param event
      * @param definition
      */
@@ -553,18 +601,37 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user right-clicks on a response.
+     * @param event
+     * @param definition
+     */
+    public showResponseContextMenu(event: MouseEvent, definition: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(definition);
+        this.contextMenuType = "response";
+    }
+
+    /**
      * Called when the user clicks the "Delete Definition" item in the context-menu for a definition.
      */
     public deleteDefinition(): void {
-        let schemaDefName: string = null;
-        if (this.document.getDocumentType() == DocumentType.openapi2) {
-            let schemaDef: Oas20SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas20SchemaDefinition;
-            schemaDefName = schemaDef.getName();
-        } else {
-            let schemaDef: Oas30SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Oas30SchemaDefinition;
-            schemaDefName = schemaDef.getName();
-        }
+        let schemaDef: IDefinition = this.contextMenuSelection.resolve(this.document) as any;
+        let schemaDefName: string = schemaDef.getName();
         let command: ICommand = CommandFactory.createDeleteSchemaDefinitionCommand(this.document.getDocumentType(), schemaDefName);
+        this.commandService.emit(command);
+        this.closeContextMenu();
+    }
+
+    /**
+     * Called when the user clicks the "Delete Response" item in the context-menu for a response.
+     */
+    public deleteResponse(): void {
+        let def: IDefinition = this.contextMenuSelection.resolve(this.document) as any;
+        let defName: string = def.getName();
+        let command: ICommand = CommandFactory.createDeleteResponseDefinitionCommand(this.document.getDocumentType(), defName);
         this.commandService.emit(command);
         this.closeContextMenu();
     }
@@ -581,6 +648,24 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             console.info("[EditorMasterComponent] Clone definition: %s", modalData.name);
             let cloneSrcObj: any = Library.writeNode(definition);
             let command: ICommand = CommandFactory.createAddSchemaDefinitionCommand(this.document.getDocumentType(),
+                modalData.name, cloneSrcObj);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Clone Response" in the context-menu for a response.
+     */
+    public cloneResponse(modalData?: any): void {
+        console.info("[EditorMasterComponent] Cloning response definition: ", modalData);
+        if (undefined === modalData || modalData === null) {
+            let responseDef: any = this.contextMenuSelection.resolve(this.document);
+            this.cloneResponseDialog.open(this.document, responseDef);
+        } else {
+            let definition: Node = modalData.definition;
+            console.info("[EditorMasterComponent] Clone response def: %s", modalData.name);
+            let cloneSrcObj: any = Library.writeNode(definition);
+            let command: ICommand = CommandFactory.createAddResponseDefinitionCommand(this.document.getDocumentType(),
                 modalData.name, cloneSrcObj);
             this.commandService.emit(command);
         }
@@ -610,6 +695,36 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             let command: ICommand = CommandFactory.createRenameSchemaDefinitionCommand(this.document.getDocumentType(),
                 oldName, event.newName);
             this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Rename Response" in the context-menu for a response.
+     */
+    public renameResponse(event?: RenameEntityEvent): void {
+        console.info("[EditorMasterComponent] Renaming response: ", event);
+        if (undefined === event || event === null) {
+            let responseDef: Oas20ResponseDefinition | Oas30ResponseDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = responseDef.getName();
+            let definitionNames: string[] = [];
+            let master: EditorMasterComponent = this;
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitResponseDefinition(node: Oas20ResponseDefinition | Oas30ResponseDefinition): void {
+                    definitionNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameResponseDialog.open(responseDef, name, newName => {
+                return definitionNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let definition: Oas20ResponseDefinition | Oas30ResponseDefinition = <any>event.entity;
+            let oldName: string = definition.getName();
+            console.info("[EditorMasterComponent] Rename response definition to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameResponseDefinitionCommand(this.document.getDocumentType(),
+                oldName, event.newName);
+            this.commandService.emit(command);
+
+            // TODO select the newly renamed response def
         }
     }
 
@@ -649,12 +764,7 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         return viz.problemsFound;
     }
 
-    /**
-     * Returns the classes that should be applied to the path item in the master view.
-     * @param node
-     * @return
-     */
-    public pathClasses(node: OasPathItem): string {
+    public entityClasses(node: Node): string {
         let classes: string[] = [];
         if (this.hasValidationProblem(node)) {
             classes.push("problem-marker");
@@ -669,22 +779,30 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the classes that should be applied to the path item in the master view.
+     * @param node
+     * @return
+     */
+    public pathClasses(node: OasPathItem): string {
+        return this.entityClasses(node);
+    }
+
+    /**
      * Returns the classes that should be applied to the schema definition in the master view.
      * @param node
      * @return
      */
     public definitionClasses(node: Node): string {
-        let classes: string[] = [];
-        if (this.hasValidationProblem(node)) {
-            classes.push("problem-marker");
-        }
-        if (this.isContexted(node)) {
-            classes.push("contexted");
-        }
-        if (this.isSelected(node)) {
-            classes.push("selected");
-        }
-        return classes.join(' ');
+        return this.entityClasses(node);
+    }
+
+    /**
+     * Returns the classes that should be applied to the response definition in the master view.
+     * @param node
+     * @return
+     */
+    public responseClasses(node: Node): string {
+        return this.entityClasses(node);
     }
 
     /**
@@ -699,6 +817,20 @@ export class EditorMasterComponent extends AbstractBaseComponent {
             onCancel: () => { /* Do nothing on cancel... */ }
         };
         dtEditor.open(handler, this.document);
+    }
+
+    /**
+     * Opens the Add Response Editor (full screen editor for adding a response).
+     */
+    public openAddResponseEditor(): void {
+        let respEditor: ResponseEditorComponent = this.editors.getResponseEditor();
+        let handler: IResponseEditorHandler = {
+            onSave: (event) => {
+                this.addResponse(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        respEditor.open(handler, this.document);
     }
 
     /**

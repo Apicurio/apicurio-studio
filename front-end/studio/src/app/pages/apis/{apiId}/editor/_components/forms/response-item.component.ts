@@ -16,10 +16,11 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {AbstractBaseComponent} from "./base-component";
+import {Oas20ResponseDefinition, Oas30ResponseDefinition} from "apicurio-data-models";
+import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
+import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
@@ -31,10 +32,24 @@ import {SelectionService} from "../../_services/selection.service";
 })
 export class ResponseItemComponent extends AbstractBaseComponent {
 
-    @Input() name: string;
+    @Input() response: Oas20ResponseDefinition | Oas30ResponseDefinition;
 
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    /**
+     * Returns the name of the response.
+     */
+    public responseName(): string {
+        return this.response.getName();
+    }
+
+    /**
+     * Gets the node path for the response item.
+     */
+    public asNodePath(): string {
+        return ModelUtils.nodeToPath(this.response);
     }
 }

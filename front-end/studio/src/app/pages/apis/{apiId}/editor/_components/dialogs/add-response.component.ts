@@ -17,9 +17,15 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Oas20Operation, Oas30Operation} from "apicurio-data-models";
-import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
+import {Library, Oas20Operation, Oas30Operation, OasDocument, TraverserDirection} from "apicurio-data-models";
+import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {HttpCodeService} from "../../_services/httpcode.service";
+import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitions.visitor";
+
+export class AddResponseDialogData {
+    public code: string;
+    public ref: string;
+}
 
 
 @Component({
@@ -29,7 +35,7 @@ import {HttpCodeService} from "../../_services/httpcode.service";
 })
 export class AddResponseDialogComponent {
 
-    @Output() onAdd: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onAdd: EventEmitter<AddResponseDialogData> = new EventEmitter<AddResponseDialogData>();
 
     @ViewChildren("addResponseModal") addResponseModal: QueryList<ModalDirective>;
 
@@ -48,8 +54,11 @@ export class AddResponseDialogComponent {
         }
     }
 
+    doc: OasDocument;
     codes: string[] = [];
     codeExists: boolean = false;
+    refName: string;
+    references: string[] = [];
 
     /**
      * Called to open the dialog.
@@ -57,6 +66,7 @@ export class AddResponseDialogComponent {
      * @param statusCode
      */
     public open(parent: Oas20Operation | Oas30Operation, statusCode?: string): void {
+        this.doc = <OasDocument>parent.ownerDocument();
         this.statusCode = statusCode;
         if (!statusCode) {
             this.statusCode = "";
@@ -73,6 +83,24 @@ export class AddResponseDialogComponent {
         if (parent.responses) {
             this.codes = parent.responses.getResponseStatusCodes();
         }
+
+        this.references = this.getResponseDefinitionNames();
+        this.refName = null;
+    }
+
+    /**
+     * Gets a list of all the response definition names in the document.
+     */
+    private getResponseDefinitionNames(): string[] {
+        let viz: FindResponseDefinitionsVisitor = new FindResponseDefinitionsVisitor(null);
+        Library.visitTree(this.doc, viz, TraverserDirection.down);
+        return viz.getSortedResponseDefinitions().map( response => {
+            return response.getName();
+        });
+    }
+
+    hasReferences(): boolean {
+        return this.references && this.references.length > 0;
     }
 
     /**
@@ -88,7 +116,19 @@ export class AddResponseDialogComponent {
      */
     add(): void {
         if (this.isValid()) {
-            this.onAdd.emit(this.statusCode);
+            let refPrefix: string = "#/components/responses/";
+            if (this.doc.is2xDocument()) {
+                refPrefix = "#/responses/";
+            }
+
+            let data: AddResponseDialogData = {
+                code : this.statusCode,
+                ref : refPrefix + this.refName
+            };
+            if (!this.refName) {
+                data.ref = null;
+            }
+            this.onAdd.emit(data);
             this.cancel();
         }
     }
@@ -126,11 +166,25 @@ export class AddResponseDialogComponent {
         return HttpCodeService.generateDropDownOptions();
     }
 
+    public getReferenceDropDownOptions(): DropDownOption[] {
+        return this.references.map(name => {
+            return new DropDownOptionValue(name, name);
+        });
+    }
+
     public getStatusCode(): string {
         return this.statusCode;
     }
 
     public setStatusCode(statusCode: string) {
         this.statusCode = statusCode;
+    }
+
+    getReference(): string {
+        return this.refName;
+    }
+
+    setReference(newRefName: string): void {
+        this.refName = newRefName;
     }
 }

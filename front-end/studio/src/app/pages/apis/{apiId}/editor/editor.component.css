@@ -103,6 +103,8 @@
   background-color: #a5d6ef;
   border-left: 2px solid #39a5dc;
 }
+.api-editor .editor-master .editor-outline .api-response.contexted,
+.api-editor .editor-master .editor-outline .api-response.contexted:hover,
 .api-editor .editor-master .editor-outline .api-definition.contexted,
 .api-editor .editor-master .editor-outline .api-definition.contexted:hover {
   background-color: #FFCC87;
@@ -441,6 +443,7 @@
 .api-editor .editor-master .editor-outline .api-path.contexted {
   cursor: default;
 }
+.api-editor .editor-master .editor-outline .api-response,
 .api-editor .editor-master .editor-outline .api-definition {
   padding-left: 15px;
   font-size: 14px;

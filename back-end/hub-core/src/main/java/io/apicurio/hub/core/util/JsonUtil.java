@@ -72,8 +72,6 @@ public class JsonUtil {
     public static <T> T fromJson(String json, Class<T> unmarshallClass) {
         try {
             return OBJECT_MAPPER.readValue(json, unmarshallClass);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
         }

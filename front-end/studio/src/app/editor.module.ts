@@ -21,7 +21,6 @@ import {ValidationIconComponent} from "./pages/apis/{apiId}/editor/_components/t
 import {ServerUrlComponent} from "./pages/apis/{apiId}/editor/_components/common/server-url.component";
 import {SearchComponent} from "./pages/apis/{apiId}/editor/_components/common/search.component";
 import {SchemaTypeComponent} from "./pages/apis/{apiId}/editor/_components/common/schema-type.component";
-import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/common/response-item.component";
 import {PathItemComponent} from "./pages/apis/{apiId}/editor/_components/common/path-item.component";
 import {ContextHelpComponent} from "./pages/apis/{apiId}/editor/_components/common/context-help.component";
 import {SetLicenseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/set-license.component";
@@ -114,6 +113,10 @@ import {CollaboratorOverlayComponent} from "./pages/apis/{apiId}/editor/_compone
 import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/rename-entity.component";
 import {CookieParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-params-section.component";
 import {CookieParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-param-row.component";
+import {ResponseEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/response-editor.component";
+import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
+import {ResponseFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-form.component";
+import {CloneResponseDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response-definition.component";
 
 @NgModule({
     imports: [
@@ -139,7 +142,8 @@ import {CookieParamRowComponent} from "./pages/apis/{apiId}/editor/_components/f
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent,
-        CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent
+        CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent, ResponseEditorComponent,
+        ResponseFormComponent, CloneResponseDefinitionDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

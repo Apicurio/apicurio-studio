@@ -1,0 +1,39 @@
+<!-- Clone Response Definition Dialog -->
+<div>
+    <div bsModal #cloneResponseDefinitionModal="bs-modal" class="modal fade" id="cloneResponseDefinitionModal" tabindex="-1" role="dialog"
+         aria-labelledby="cloneResponseDefinitionModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" [config]="{ backdrop: true }"
+         (onShown)="cloneResponseDefinitionInput.focus()" (onHidden)="close()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="cloneResponseDefinitionModalLabel">Clone Response Definition</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter a new response definition name below and then click Clone.</p>
+                    <form id="clonedef-form" class="form-horizontal" #cloneResponseDefinitionForm="ngForm" data-dismiss="modal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label required" for="definitionName">Name</label>
+                            <div class="col-sm-10">
+                                <input name="definitionName" type="text" id="definitionName" class="form-control" #cloneResponseDefinitionInput
+                                       placeholder="Enter a Response Definition Name" pattern="[a-zA-Z0-9\.\-_]+" #defName="ngModel"
+                                       required [(ngModel)]="name" (ngModelChange)="defExists = defs.indexOf($event) != -1">
+                                <div class="form-error-message error" *ngIf="defExists">Response definition already exists.</div>
+                                <form-error-message [inputModel]="defName" [type]="'required'">Name is required.</form-error-message>
+                                <form-error-message [inputModel]="defName" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="clone()"
+                            [disabled]="!cloneResponseDefinitionForm.form.valid || defExists">Clone</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

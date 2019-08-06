@@ -23,6 +23,18 @@
                             <div class="form-error-message error" *ngIf="codeExists">Response with this code already exists.</div>
                         </div>
                     </div>
+
+                    <div class="form-group" *ngIf="hasReferences()">
+                        <label class="col-sm-5 control-label" for="refDropDown">Response Definition <i>(optional)</i></label>
+                        <div class="col-sm-7">
+                            <drop-down id="refDropDown" [id]="'refDropDown'"
+                                       [options]="getReferenceDropDownOptions()"
+                                       [value]="getReference()"
+                                       (onValueChange)="setReference($event)"
+                                       [noSelectionLabel]="'Response Reference.'"></drop-down>
+                        </div>
+                    </div>
+
                 </form>
             </div>
             <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>

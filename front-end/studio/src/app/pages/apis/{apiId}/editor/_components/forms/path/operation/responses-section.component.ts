@@ -19,12 +19,13 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Input, SimpleChanges,
+    Input,
+    SimpleChanges,
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CommandFactory,
+    CommandFactory, Constants,
     ICommand,
     Library,
     Oas20Operation,
@@ -36,7 +37,7 @@ import {
 } from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
-import {AddResponseDialogComponent} from "../../../dialogs/add-response.component";
+import {AddResponseDialogComponent, AddResponseDialogData} from "../../../dialogs/add-response.component";
 import {CloneResponseDialogComponent} from "../../../dialogs/clone-response.component";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
@@ -110,14 +111,26 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
         this.cloneResponseDialog.open(this.operation, this.nextAvailableResponseCode());
     }
 
-    public addResponse(statusCode: string): void {
-        let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, statusCode, null);
-        this.commandService.emit(command);
+    public addResponse(data: AddResponseDialogData): void {
         let nodePath = Library.createNodePath(this.operation);
-        nodePath.appendSegment(statusCode, true);
-        this.selectionService.select(nodePath.toString());
+        nodePath.appendSegment(Constants.PROP_RESPONSES);
+        nodePath.appendSegment(data.code.toString(), true);
 
-        this._responseTab = statusCode;
+        // Add the response - aggregate command if we're adding a $ref, otherwise not.
+        if (data.ref && data.ref.length > 0) {
+            let command: ICommand = CommandFactory.createAggregateCommand("NewResponseWithRef", { "$ref": data.ref }, [
+                CommandFactory.createNewResponseCommand(this.operation, data.code, null),
+                CommandFactory.createSetPropertyCommand(nodePath, Constants.PROP_$REF, data.ref)
+            ]);
+            this.commandService.emit(command);
+        } else {
+            let command: ICommand = CommandFactory.createNewResponseCommand(this.operation, data.code, null);
+            this.commandService.emit(command);
+        }
+
+        // Select the newly created response.
+        this.selectionService.select(nodePath.toString());
+        this._responseTab = data.code;
     }
 
     public cloneResponse(statusCode: string): void {

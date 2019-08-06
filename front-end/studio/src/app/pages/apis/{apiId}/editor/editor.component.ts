@@ -31,19 +31,18 @@ import {ApiDefinition} from "../../../../models/api.model";
 import {
     CombinedVisitorAdapter,
     DocumentType,
-    ICommand,
+    ICommand, IDefinition,
     IValidationSeverityRegistry,
     Library,
     Node,
-    NodePath,
-    Oas20SchemaDefinition,
+    NodePath, Oas20ResponseDefinition,
+    Oas20SchemaDefinition, Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
     OasPathItem,
     OtCommand,
     OtEngine,
-    ValidationProblem,
-    VisitorUtil
+    ValidationProblem
 } from "apicurio-data-models";
 import {EditorMasterComponent} from "./_components/master.component";
 import {VersionedAck} from "../../../../models/ack.model";
@@ -62,6 +61,7 @@ import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
+import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
 
 
 @Component({
@@ -105,6 +105,7 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
     @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
     @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
     @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("responseEditor") responseEditor: ResponseEditorComponent;
     @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
     @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
 
@@ -457,12 +458,27 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         }
     }
 
+    /**
+     * Returns the currently selected response.
+     */
+    public selectedResponse(): Oas20ResponseDefinition | Oas30ResponseDefinition {
+        if (this.currentSelectionType === "response") {
+            return this.currentSelectionNode as Oas20ResponseDefinition | Oas30ResponseDefinition;
+        } else {
+            return null;
+        }
+    }
+
     public deselectPath(): void {
         this.master.deselectPath();
     }
 
     public deselectDefinition(): void {
         this.master.deselectDefinition();
+    }
+
+    public deselectResponse(): void {
+        this.master.deselectResponse();
     }
 
     public preDocumentChange(): void {
@@ -530,6 +546,10 @@ export class ApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditor
         return this.dataTypeEditor;
     }
 
+    public getResponseEditor(): ResponseEditorComponent {
+        return this.responseEditor;
+    }
+
     public getParameterEditor(): ParameterEditorComponent {
         return this.parameterEditor;
     }
@@ -573,5 +593,10 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
     public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
+    }
+
+    public visitResponseDefinition(node: IDefinition): void {
+        this._selectedNode = node as any;
+        this._selectionType = "response";
     }
 }

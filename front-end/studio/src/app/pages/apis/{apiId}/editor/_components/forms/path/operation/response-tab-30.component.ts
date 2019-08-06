@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {CommandFactory, ICommand, Oas30Response} from "apicurio-data-models";
+import {CommandFactory, DocumentType, ICommand, NodePath, Oas30Response} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
@@ -35,9 +35,50 @@ export class ResponseTab30Component extends AbstractBaseComponent {
 
     @Input() response: Oas30Response;
 
+    /**
+     * C'tor.
+     * @param changeDetectorRef
+     * @param documentService
+     * @param commandService
+     * @param selectionService
+     */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    isRef(): boolean {
+        return this.response.$ref !== null && this.response.$ref !== undefined;
+    }
+
+    responseDefRefPrefix(): string {
+        let prefix: string = "#/components/responses/";
+        if (this.response.ownerDocument().getDocumentType() === DocumentType.openapi2) {
+            prefix = "#/responses/";
+        }
+        return prefix;
+    }
+
+    responseDefPathPrefix(): string {
+        return this.responseDefRefPrefix().substr(1);
+    }
+
+    definitionName(): string {
+        if (this.isRef()) {
+            let prefix: string = this.responseDefRefPrefix();
+            let $ref: string = this.response.$ref;
+            if ($ref.startsWith(prefix)) {
+                return $ref.substr(prefix.length);
+            }
+            return this.response.$ref
+        }
+        return null;
+    }
+
+    navigateToDefinition(): void {
+        let path: NodePath = new NodePath(this.responseDefPathPrefix());
+        path.appendSegment(this.definitionName(), true);
+        this.selectionService.select(path.toString());
     }
 
     public setDescription(description: string): void {

@@ -56,6 +56,31 @@
         </li>
     </ul>
 
+    <!-- Response Context Menu -->
+    <ul id="response-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'response'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameResponse()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename Response</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneResponse()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteResponse()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
     <!-- Search - Used to Filter Paths and Data Type -->
     <div class="editor-search">
         <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
@@ -104,33 +129,30 @@
         </section>
 
         <!-- Responses Section -->
-        <!--
-        <div class="section response-section panel-group">
-            <div class="section-header panel-title">
-                <a class="collapsed" data-toggle="collapse" data-target="#response-section-body">
-                    <span class="section-label">Responses</span>
-                </a>
-                <icon-button (onClick)="" [pullRight]="true" type="add"></icon-button>
+        <section type="response" label="Responses" [counterItems]="responses()" [inForm]="false"
+                 [collaborationNodePath]="responsesPath()"
+                 contextHelp="Define re-usable response definition in this section, allowing quick re-use across multiple operations.">
+            <span actions>
+                <icon-button (onClick)="openAddResponseEditor()" [pullRight]="true" type="add"></icon-button>
+            </span>
+            <div body tabindex="0" class="response-list master-entity-list" (keydown)="onResponsesKeypress($event)" #respList>
+                <signpost *ngIf="responses().length === 0">
+                    <span>No reusable responses have been created.</span>
+                    <a (click)="openAddResponseEditor()">Add a response</a>
+                </signpost>
+
+                <div response-item *ngFor="let resp of responses()" class="api-response {{ responseClasses(resp) }}" [response]="resp"
+                     (click)="respList.focus() ; selectResponse(resp)" (contextmenu)="showResponseContextMenu($event, resp)"></div>
             </div>
-            <div class="section-body collapse" id="response-section-body">
-                <div response-item class="api-response" *ngFor="let responseName of responseNames()" [name]="responseName"
-                     (click)="selectResponse(responseName)"
-                     [class.selected]="selectedItem === responseName && selectedType === 'response'"></div>
-                <div class="alert alert-info" *ngIf="responseNames().length === 0">
-                    <span class="pficon pficon-info"></span>
-                    <strong>None Found</strong>
-                    <span>Share responses across paths.</span>
-                    <span>&nbsp;</span>
-                    <button class="btn btn-xs btn-default pull-right" style="margin-top: 0px">Add Now</button>
-                </div>
-            </div>
-        </div>
-        -->
+        </section>
+
     </div>
 
     <!-- Dialogs -->
     <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
     <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
+    <rename-path-dialog #renamePathDialog (onRename)="renamePath($event)"></rename-path-dialog>
+
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-entity-dialog #renameDefinitionDialog
                           type="Data Type"
@@ -138,5 +160,12 @@
                           warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
                           (onRename)="renameDefinition($event)"></rename-entity-dialog>
-    <rename-path-dialog #renamePathDialog (onRename)="renamePath($event)"></rename-path-dialog>
+
+    <clone-response-definition-dialog #cloneResponseDialog (onClone)="cloneResponse($event)"></clone-response-definition-dialog>
+    <rename-entity-dialog #renameResponseDialog
+                          type="Response"
+                          title="Rename Response"
+                          warning="Renaming a Response will also update any references to it elsewhere in the API."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          (onRename)="renameResponse($event)"></rename-entity-dialog>
 </div>

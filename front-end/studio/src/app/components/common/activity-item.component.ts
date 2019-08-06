@@ -220,6 +220,9 @@ export class ActivityItemComponent {
             case "NewResponseCommand":
             case "NewResponseCommand_20":
             case "NewResponseCommand_30":
+            case "NewResponseDefinitionCommand":
+            case "NewResponseDefinitionCommand_20":
+            case "NewResponseDefinitionCommand_30":
             case "NewSchemaDefinitionCommand":
             case "NewSchemaDefinitionCommand_20":
             case "NewSchemaDefinitionCommand_30":
@@ -273,6 +276,9 @@ export class ActivityItemComponent {
         switch (name) {
             case "CreateRESTResource":
                 rval = "align-left";
+                break;
+            case "NewResponseWithRef":
+                rval = "reply-all";
                 break;
         }
         return rval;
@@ -510,10 +516,15 @@ export class ActivityItemComponent {
             case "NewResponseCommand_30":
                 rval = "added a new Response for response code '" + this.command()["_statusCode"] + "' for Operation at location " + this.command()["_operationPath"] + ".";
                 break;
+            case "NewResponseDefinitionCommand":
+            case "NewResponseDefinitionCommand_20":
+            case "NewResponseDefinitionCommand_30":
+                rval = `added a new Response Definition named '${ this.command()["_newDefinitionName"]}'.`;
+                break;
             case "NewSchemaDefinitionCommand":
             case "NewSchemaDefinitionCommand_20":
             case "NewSchemaDefinitionCommand_30":
-                rval = "added a new Data Type for response code '" + this.command()["_statusCode"] + "' for Operation at location " + this.command()["_operationPath"] + ".";
+                rval = `added a new Data Type named '${ this.command()["_newDefinitionName"]}'.`;
                 break;
             case "NewSchemaPropertyCommand":
             case "NewSchemaPropertyCommand_20":
@@ -612,6 +623,9 @@ export class ActivityItemComponent {
         switch (name) {
             case "CreateRESTResource":
                 rval = `created a Data Type and associated REST resource named '${ this.command()["info"].dataType }'.`;
+                break;
+            case "NewResponseWithRef":
+                rval = `created a Response that references the Response Definition at '${ this.command()["info"].$ref }'.`;
                 break;
             default:
                 console.info("[ActivityItemComponent] WARNING - unhandled AggregateCommand change item: %s", name);

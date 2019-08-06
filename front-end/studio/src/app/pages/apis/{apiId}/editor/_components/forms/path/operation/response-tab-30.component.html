@@ -1,5 +1,5 @@
 <div class="response">
-    <div class="response-description">
+    <div class="response-description" *ngIf="!isRef()">
         <div class="form-label">Description</div>
         <div class="problem-flex">
             <validation-problem [model]="response" property="description"></validation-problem>
@@ -10,8 +10,16 @@
             </div>
         </div>
     </div>
-    <div class="response-content">
+    <div class="response-content" *ngIf="!isRef()">
         <div class="form-label">Response Body</div>
         <content [parent]="response"></content>
+    </div>
+
+    <div class="response-ref" *ngIf="isRef()">
+        <div class="form-label">Response Definition</div>
+        <validation-problem [model]="response" property="$ref"></validation-problem>
+        <span>This response references the </span>
+        <em><a (click)="navigateToDefinition()">{{ definitionName() }}</a></em>
+        <span> Response Definition.</span>
     </div>
 </div>

@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-fe</artifactId>
-        <version>0.2.32.Final</version>
+        <version>0.2.33-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-fe-studio</artifactId>

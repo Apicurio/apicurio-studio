@@ -342,6 +342,10 @@ public class OpenApi2JaxRs {
                         paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "QueryParam"))
                                 .addMember("value", "$S", cgArgument.getName()).build());
                     }
+                    if (cgArgument.getIn().equals("header")) {
+                        paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "HeaderParam"))
+                                .addMember("value", "$S", cgArgument.getName()).build());
+                    }
                     methodBuilder.addParameter(paramBuilder.build());
                 }
             }
@@ -560,7 +564,35 @@ public class OpenApi2JaxRs {
         if (paramName == null) {
             return null;
         }
-        return paramName.replaceAll("[^a-zA-Z0-9_]", "_");
+        String [] split = paramName.replaceAll("[^a-zA-Z0-9_]", "_").split("_");
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String term : split) {
+            if (term.trim().length() == 0) {
+                continue;
+            }
+            if (first) {
+                builder.append(decapitalize(term));
+                first = false;
+            } else {
+                builder.append(capitalize(term));
+            }
+        }
+        return builder.toString();
+    }
+    
+    private static String capitalize(String term) {
+        if (term.length() == 1) {
+            return term.toUpperCase();
+        }
+        return term.substring(0, 1).toUpperCase() + term.substring(1);
+    }
+    
+    private static String decapitalize(String term) {
+        if (term.length() == 1) {
+            return term.toLowerCase();
+        }
+        return term.substring(0, 1).toLowerCase() + term.substring(1);
     }
 
     /**

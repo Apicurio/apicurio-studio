@@ -68,6 +68,8 @@ If you're using NIX based OS, you can run the setup script without the docker wr
 ./setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
 ```
 
+Note: make sure you use the external IP address of your host here.  `localhost` and `127.0.0.1` will not work.
+
 ## Environment customisation
 
 After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.

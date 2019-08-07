@@ -38,7 +38,7 @@ public interface TemplatesResource {
   @GET
   @Produces("application/json")
   Response thisIsTheSearchEndpointUseAGETRequestAlongWithParametersToSearchForMetadataOnTemplates(
-      @QueryParam("tag") String tag, @QueryParam("free-text") String free_text,
+      @QueryParam("tag") String tag, @QueryParam("free-text") String freeText,
       @QueryParam("author") String author);
 
   /**

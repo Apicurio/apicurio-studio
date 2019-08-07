@@ -2,14 +2,10 @@
 package org.example.api.beans;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
@@ -88,7 +84,7 @@ public class ArtifactMetaData {
      */
     @JsonProperty("type")
     @JsonPropertyDescription("")
-    private ArtifactMetaData.Type type;
+    private ArtifactType type;
     /**
      * Identifier provided by the client.  Must be globally unique.
      * 
@@ -243,7 +239,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("type")
-    public ArtifactMetaData.Type getType() {
+    public ArtifactType getType() {
         return type;
     }
 
@@ -253,7 +249,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("type")
-    public void setType(ArtifactMetaData.Type type) {
+    public void setType(ArtifactType type) {
         this.type = type;
     }
 
@@ -273,48 +269,6 @@ public class ArtifactMetaData {
     @JsonProperty("clientId")
     public void setClientId(String clientId) {
         this.clientId = clientId;
-    }
-
-    public enum Type {
-
-        AVRO("avro"),
-        PROTOBUFF("protobuff"),
-        JSON("json"),
-        OPENAPI("openapi"),
-        ASYNCAPI("asyncapi");
-        private final String value;
-        private final static Map<String, ArtifactMetaData.Type> CONSTANTS = new HashMap<String, ArtifactMetaData.Type>();
-
-        static {
-            for (ArtifactMetaData.Type c: values()) {
-                CONSTANTS.put(c.value, c);
-            }
-        }
-
-        private Type(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        @JsonValue
-        public String value() {
-            return this.value;
-        }
-
-        @JsonCreator
-        public static ArtifactMetaData.Type fromValue(String value) {
-            ArtifactMetaData.Type constant = CONSTANTS.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            } else {
-                return constant;
-            }
-        }
-
     }
 
 }

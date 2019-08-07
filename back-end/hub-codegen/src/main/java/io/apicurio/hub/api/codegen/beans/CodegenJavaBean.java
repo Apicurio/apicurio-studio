@@ -26,6 +26,7 @@ public class CodegenJavaBean {
     private String _package;
     private String name;
     private JsonNode $schema;
+    private String signature;
     
     /**
      * Constructor.
@@ -73,6 +74,20 @@ public class CodegenJavaBean {
      */
     public void set$schema(JsonNode $schema) {
         this.$schema = $schema;
+    }
+
+    /**
+     * @return the signature
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * @param signature the signature to set
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
 }

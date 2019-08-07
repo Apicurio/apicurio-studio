@@ -21,8 +21,12 @@
                 "requestBody": {
                     "description": "The content of the artifact being created - this is often, but not always, JSON data\nrepresenting one of the supported artifact types:\n\n* Avro\n* Protobuff\n* JSON Schema\n* OpenAPI\n* AsyncAPI",
                     "content": {
-                        "application/json": {},
-                        "application/x-yaml": {}
+                        "application/json": {
+
+                        },
+                        "application/x-yaml": {
+
+                        }
                     },
                     "required": true
                 },
@@ -80,10 +84,17 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "application/json": {},
-                            "application/x-yaml": {}
+                            "application/json": {
+
+                            },
+                            "application/x-yaml": {
+
+                            }
                         },
                         "description": "The most recent version of the artifact."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
                     }
                 },
                 "operationId": "getLatestArtifact",
@@ -93,8 +104,12 @@
             "put": {
                 "requestBody": {
                     "content": {
-                        "application/json": {},
-                        "application/x-yaml": {}
+                        "application/json": {
+
+                        },
+                        "application/x-yaml": {
+
+                        }
                     },
                     "required": true
                 },
@@ -111,6 +126,9 @@
                             }
                         },
                         "description": "When successful, returns the updated artifact meta-data."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
                     }
                 },
                 "operationId": "updateArtifact",
@@ -124,6 +142,9 @@
                 "responses": {
                     "204": {
                         "description": "Returned when the artifact was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
                     }
                 },
                 "operationId": "deleteArtifact",
@@ -181,8 +202,12 @@
                 "requestBody": {
                     "description": "The content of the artifact version being created - this is often, but not always, JSON data\nrepresenting one of the supported artifact types:\n\n* Avro\n* Protobuff\n* JSON Schema\n* OpenAPI\n* AsyncAPI",
                     "content": {
-                        "application/json": {},
-                        "application/x-yaml": {}
+                        "application/json": {
+
+                        },
+                        "application/x-yaml": {
+
+                        }
                     },
                     "required": true
                 },
@@ -243,8 +268,12 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "application/json": {},
-                            "application/x-yaml": {}
+                            "application/json": {
+
+                            },
+                            "application/x-yaml": {
+
+                            }
                         },
                         "description": "The content of the artifact version."
                     }
@@ -758,7 +787,8 @@
                     "createdOn",
                     "createdBy",
                     "version",
-                    "id"
+                    "id",
+                    "type"
                 ],
                 "type": "object",
                 "properties": {
@@ -783,11 +813,16 @@
                         "format": "int64",
                         "description": "",
                         "type": "integer"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ArtifactType",
+                        "description": ""
                     }
                 },
                 "example": {
                     "id": 12938472,
                     "version": 12,
+                    "type": "protobuff",
                     "name": "Artifact Name",
                     "description": "The description of the artifact",
                     "createdBy": "user1",
@@ -838,15 +873,8 @@
                         "type": "integer"
                     },
                     "type": {
-                        "description": "",
-                        "enum": [
-                            "avro",
-                            "protobuff",
-                            "json",
-                            "openapi",
-                            "asyncapi"
-                        ],
-                        "type": "string"
+                        "$ref": "#/components/schemas/ArtifactType",
+                        "description": ""
                     },
                     "clientId": {
                         "description": "Identifier provided by the client.  Must be globally unique.",
@@ -885,6 +913,47 @@
                     "name": "UniqueRuleName",
                     "config": "configuration_of_rule"
                 }
+            },
+            "ArtifactType": {
+                "description": "",
+                "enum": [
+                    "avro",
+                    "protobuff",
+                    "json",
+                    "openapi",
+                    "asyncapi"
+                ],
+                "type": "string"
+            },
+            "Error": {
+                "title": "Root Type for Error",
+                "description": "All error responses, whether `4xx` or `5xx` will include one of these as the response\nbody.",
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": 12345,
+                    "message": "An error occurred somewhere."
+                }
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "Common response for all operations that can return a `404` error."
             }
         }
     },

@@ -191,16 +191,7 @@ public class OpenApi2JaxRs {
             zipOutput.closeEntry();
         }
         
-        for (CodegenJavaInterface iface : info.getInterfaces()) {
-            log.append("Generating Interface: " + iface.getPackage() + "." + iface.getName() + "\r\n");
-            String javaInterface = generateJavaInterface(iface);
-            String javaInterfaceFileName = javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java";
-            log.append("Adding to zip: " + javaInterfaceFileName + "\r\n");
-            zipOutput.putNextEntry(new ZipEntry(javaInterfaceFileName));
-            zipOutput.write(javaInterface.getBytes());
-            zipOutput.closeEntry();
-        }
-        
+        // Generate the java beans from data types
         IndexedCodeWriter codeWriter = new IndexedCodeWriter();
         for (CodegenJavaBean bean : info.getBeans()) {
             log.append("Generating Bean: " + bean.getPackage() + "." + bean.getName() + "\r\n");
@@ -213,6 +204,18 @@ public class OpenApi2JaxRs {
             zipOutput.write(codeWriter.get(key).getBytes());
             zipOutput.closeEntry();
         }
+        
+        // Generate the JAX-RS interfaces
+        for (CodegenJavaInterface iface : info.getInterfaces()) {
+            log.append("Generating Interface: " + iface.getPackage() + "." + iface.getName() + "\r\n");
+            String javaInterface = generateJavaInterface(iface);
+            String javaInterfaceFileName = javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java";
+            log.append("Adding to zip: " + javaInterfaceFileName + "\r\n");
+            zipOutput.putNextEntry(new ZipEntry(javaInterfaceFileName));
+            zipOutput.write(javaInterface.getBytes());
+            zipOutput.closeEntry();
+        }
+
     }
     
     /**
@@ -244,8 +247,39 @@ public class OpenApi2JaxRs {
         // Then generate the CodegenInfo object.
         OpenApi2CodegenVisitor cgVisitor = new OpenApi2CodegenVisitor(this.settings.javaPackage, iVisitor.getInterfaces());
         VisitorUtil.visitTree(document, cgVisitor, TraverserDirection.down);
+        
+        // Now resolve any inline schemas/types
+        CodegenInfo info = cgVisitor.getCodegenInfo();
+        info.getInterfaces().forEach( iface -> {
+            iface.getMethods().forEach( method -> {
+                method.getArguments().forEach( arg -> {
+                    String argTypeSig = arg.getTypeSignature();
+                    CodegenJavaBean matchingBean = findMatchingBean(info, argTypeSig);
+                    if (matchingBean != null) {
+                        arg.setType(matchingBean.getPackage() + "." + StringUtils.capitalize(matchingBean.getName()));
+                    }
+                });
+            });
+        });
+        
+        return info;
+    }
 
-        return cgVisitor.getCodegenInfo();
+    /**
+     * Find a bean that matches the schema signature.
+     * @param info
+     * @param typeSignature
+     */
+    private static CodegenJavaBean findMatchingBean(CodegenInfo info, String typeSignature) {
+        if (typeSignature == null) {
+            return null;
+        }
+        for (CodegenJavaBean bean : info.getBeans()) {
+            if (typeSignature.equals(bean.getSignature())) {
+                return bean;
+            }
+        }
+        return null;
     }
 
     /**
@@ -332,6 +366,9 @@ public class OpenApi2JaxRs {
                     }
                     TypeName paramType = generateTypeName(cgArgument.getCollection(), cgArgument.getType(),
                             cgArgument.getFormat(), cgArgument.getRequired(), defaultParamType);
+                    if (cgArgument.getTypeSignature() != null) {
+                        // TODO try to find a re-usable data type that matches the type signature
+                    }
                     com.squareup.javapoet.ParameterSpec.Builder paramBuilder = ParameterSpec.builder(paramType,
                             paramNameToJavaArgName(cgArgument.getName()));
                     if (cgArgument.getIn().equals("path")) {
@@ -349,6 +386,10 @@ public class OpenApi2JaxRs {
                     methodBuilder.addParameter(paramBuilder.build());
                 }
             }
+            
+            // TODO:: error responses (4xx and 5xx)
+            // Should errors be modeled in some way?  JAX-RS has a few ways to handle them.  I'm inclined to 
+            // not generate anything in the interface for error responses.
             
             // Javadoc
             if (cgMethod.getDescription() != null) {
@@ -374,8 +415,7 @@ public class OpenApi2JaxRs {
      * @param required
      * @param defaultType
      */
-    private TypeName generateTypeName(String collection, String type, String format, Boolean required,
-            TypeName defaultType) {
+    private TypeName generateTypeName(String collection, String type, String format, Boolean required, TypeName defaultType) {
         if (type == null) {
             return defaultType;
         }

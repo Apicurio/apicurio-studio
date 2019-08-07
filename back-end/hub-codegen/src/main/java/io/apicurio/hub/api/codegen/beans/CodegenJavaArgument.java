@@ -27,6 +27,7 @@ public class CodegenJavaArgument {
     private String type;
     private String format;
     private Boolean required;
+    private String typeSignature;
     
     /**
      * Constructor.
@@ -116,6 +117,20 @@ public class CodegenJavaArgument {
      */
     public void setRequired(Boolean required) {
         this.required = required;
+    }
+
+    /**
+     * @return the typeSignature
+     */
+    public String getTypeSignature() {
+        return typeSignature;
+    }
+
+    /**
+     * @param typeSignature the typeSignature to set
+     */
+    public void setTypeSignature(String typeSignature) {
+        this.typeSignature = typeSignature;
     }
 
 }

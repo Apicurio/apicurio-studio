@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Request;
 import org.example.api.beans.ArtifactMetaData;
+import org.example.api.beans.ArtifactType;
 import org.example.api.beans.EditableMetaData;
 import org.example.api.beans.Rule;
 import org.example.api.beans.VersionMetaData;
@@ -52,7 +53,7 @@ public interface ArtifactsResource {
   @Produces("application/json")
   @Consumes({"application/json", "application/x-yaml"})
   ArtifactMetaData createArtifact(
-      @HeaderParam("X-Registry-ArtifactType") String xRegistryArtifactType,
+      @HeaderParam("X-Registry-ArtifactType") ArtifactType xRegistryArtifactType,
       @HeaderParam("X-Registry-ArtifactId") String xRegistryArtifactId, Request data);
 
   /**
@@ -153,7 +154,7 @@ public interface ArtifactsResource {
   @Produces("application/json")
   @Consumes({"application/json", "application/x-yaml"})
   VersionMetaData createArtifactVersion(@PathParam("artifactId") String artifactId,
-      @HeaderParam("X-Registry-ArtifactType") String xRegistryArtifactType, Request data);
+      @HeaderParam("X-Registry-ArtifactType") ArtifactType xRegistryArtifactType, Request data);
 
   /**
    * Retrieves a single version of the artifact content.  Both the `artifactId` and the

@@ -52,6 +52,7 @@ import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaReturn;
+import io.apicurio.hub.api.codegen.util.SchemaSigner;
 
 /**
  * Visitor used to create a Codegen Info object from a OpenAPI document.
@@ -71,6 +72,11 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
 
     private boolean _processPathItemParams = false;
     
+    /**
+     * Constructor.
+     * @param packageName
+     * @param interfaces
+     */
     public OpenApi2CodegenVisitor(String packageName, List<InterfaceInfo> interfaces) {
         this.codegenInfo.setName("Thorntail API");
         this.codegenInfo.setVersion("1.0.0");
@@ -91,7 +97,18 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
     public CodegenInfo getCodegenInfo() {
         return this.codegenInfo;
     }
-    
+
+    /**
+     * Creates a unique signature for the given schema.  The signature is used to determine whether two schemas
+     * are the same.
+     * @param node
+     */
+    private static String createSignature(OasSchema node) {
+        SchemaSigner signer = new SchemaSigner();
+        Library.visitNode(node, signer);
+        return signer.getSignature();
+    }
+
     /**
      * @see io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter#visitInfo(io.apicurio.datamodels.core.models.common.Info)
      */
@@ -199,9 +216,12 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
             if (cgReturn.getCollection() != null) { this._currentArgument.setCollection(cgReturn.getCollection()); }
             if (cgReturn.getType() != null) { this._currentArgument.setType(cgReturn.getType()); }
             if (cgReturn.getFormat() != null) { this._currentArgument.setFormat(cgReturn.getFormat()); }
+
+            this._currentArgument.setTypeSignature(createSignature((OasSchema) node.schema));
         } else if (node.type != null) {
             if (node.type != null) { this._currentArgument.setType(node.type); }
             if (node.format != null) { this._currentArgument.setFormat(node.format); }
+            // TODO:: sign the argument from the type and format on the node.
         }
     }
     private void visit30Parameter(Oas30Parameter node) {
@@ -213,6 +233,7 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
                 if (cgReturn.getCollection() != null) { this._currentArgument.setCollection(cgReturn.getCollection()); }
                 if (cgReturn.getType() != null) { this._currentArgument.setType(cgReturn.getType()); }
                 if (cgReturn.getFormat() != null) { this._currentArgument.setFormat(cgReturn.getFormat()); }
+                this._currentArgument.setTypeSignature(createSignature((OasSchema) mediaType.schema));
             }
         } else if (node.schema != null) {
             CodegenJavaReturn cgReturn = this.returnFromSchema((OasSchema) node.schema);
@@ -220,6 +241,7 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
                 if (cgReturn.getCollection() != null) { this._currentArgument.setCollection(cgReturn.getCollection()); }
                 if (cgReturn.getType() != null) { this._currentArgument.setType(cgReturn.getType()); }
                 if (cgReturn.getFormat() != null) { this._currentArgument.setFormat(cgReturn.getFormat()); }
+                this._currentArgument.setTypeSignature(createSignature((OasSchema) node.schema));
             }
         }
     }
@@ -295,6 +317,8 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         bean.setName(name);
         bean.setPackage(this.packageName + ".beans");
         bean.set$schema((JsonNode) Library.writeNode((Node) node));
+        bean.setSignature(createSignature((OasSchema) node));
+        
         this.codegenInfo.getBeans().add(bean);
     }
 

@@ -21,7 +21,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "description",
     "createdBy",
     "createdOn",
-    "id"
+    "id",
+    "type"
 })
 public class VersionMetaData {
 
@@ -58,6 +59,14 @@ public class VersionMetaData {
     @JsonProperty("id")
     @JsonPropertyDescription("")
     private Integer id;
+    /**
+     * 
+     * (Required)
+     * 
+     */
+    @JsonProperty("type")
+    @JsonPropertyDescription("")
+    private ArtifactType type;
 
     /**
      * 
@@ -157,6 +166,26 @@ public class VersionMetaData {
     @JsonProperty("id")
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     */
+    @JsonProperty("type")
+    public ArtifactType getType() {
+        return type;
+    }
+
+    /**
+     * 
+     * (Required)
+     * 
+     */
+    @JsonProperty("type")
+    public void setType(ArtifactType type) {
+        this.type = type;
     }
 
 }

@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "description",
     "createdBy",
     "createdOn",
-    "id",
     "type"
 })
 public class VersionMetaData {
@@ -51,14 +50,6 @@ public class VersionMetaData {
      */
     @JsonProperty("createdOn")
     private Date createdOn;
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("id")
-    @JsonPropertyDescription("")
-    private Integer id;
     /**
      * 
      * (Required)
@@ -146,26 +137,6 @@ public class VersionMetaData {
     @JsonProperty("createdOn")
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("id")
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * 
-     * (Required)
-     * 
-     */
-    @JsonProperty("id")
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     /**

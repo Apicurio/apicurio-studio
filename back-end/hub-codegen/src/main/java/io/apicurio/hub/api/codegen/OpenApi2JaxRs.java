@@ -423,6 +423,8 @@ public class OpenApi2JaxRs {
             required = Boolean.FALSE;
         }
         
+        boolean isList = "list".equals(collection);
+
         TypeName coreType = null;
         if (type.equals("string")) {
             coreType = ClassName.get(String.class);
@@ -436,18 +438,18 @@ public class OpenApi2JaxRs {
             coreType = ClassName.get(Integer.class);
             if (format != null) {
                 if (format.equals("int32")) {
-                    coreType = required ? TypeName.INT : ClassName.get(Integer.class);
+                    coreType = required && !isList ? TypeName.INT : ClassName.get(Integer.class);
                 } else if (format.equals("int64")) {
-                    coreType = required ? TypeName.LONG : ClassName.get(Long.class);
+                    coreType = required && !isList ? TypeName.LONG : ClassName.get(Long.class);
                 }
             }
         } else if (type.equals("number")) {
             coreType = ClassName.get(Number.class);
             if (format != null) {
                 if (format.equals("float")) {
-                    coreType = required ? TypeName.FLOAT : ClassName.get(Float.class);
+                    coreType = required && !isList ? TypeName.FLOAT : ClassName.get(Float.class);
                 } else if (format.equals("double")) {
-                    coreType = required ? TypeName.DOUBLE : ClassName.get(Double.class);
+                    coreType = required && !isList ? TypeName.DOUBLE : ClassName.get(Double.class);
                 }
             }
         } else if (type.equals("boolean")) {

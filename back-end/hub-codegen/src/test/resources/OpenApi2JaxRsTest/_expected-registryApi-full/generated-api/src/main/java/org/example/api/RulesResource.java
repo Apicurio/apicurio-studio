@@ -34,6 +34,7 @@ public interface RulesResource {
    *
    * This operation can fail for the following reasons:
    *
+   * * The named rule is unknown (HTTP error `400`)
    * * The rule already exists (HTTP error `409`)
    * * A server error occurred (HTTP error `500`)
    *

@@ -68,7 +68,7 @@ public class ArtifactMetaData {
      */
     @JsonProperty("id")
     @JsonPropertyDescription("")
-    private Integer id;
+    private String id;
     /**
      * 
      * (Required)
@@ -199,7 +199,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("id")
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -209,7 +209,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("id")
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

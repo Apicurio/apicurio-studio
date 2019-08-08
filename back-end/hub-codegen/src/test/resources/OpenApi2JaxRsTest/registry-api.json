@@ -68,11 +68,14 @@
                             }
                         },
                         "description": "Artifact was successfully created."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "createArtifact",
                 "summary": "Create Artifact",
-                "description": "Creates a new artifact by POSTing the artifact content.  The body of the request should\nbe the raw content of the artifact.  This will typically be in JSON format for *most*\nof the supported types, but may be in another format for a few (e.g. Protobuff).\n\nThe registry will attempt to figure out what kind of artifact is being added from the\nfollowing supported list:\n\n* Avro (avro)\n* Protobuff (protobuff)\n* JSON Schema (json)\n* OpenAPI (openapi)\n* AsyncAPI (asyncapi)\n\nAlternatively, the artifact type can be indicated by either explicitly specifying the \ntype via the `X-Registry-ArtifactType` HTTP Request Header or by including a hint in the \nRequest's `Content-Type`.\n\nFor example:\n\n```\nContent-Type: application/json+avro\n```\n"
+                "description": "Creates a new artifact by POSTing the artifact content.  The body of the request should\nbe the raw content of the artifact.  This will typically be in JSON format for *most*\nof the supported types, but may be in another format for a few (e.g. Protobuff).\n\nThe registry will attempt to figure out what kind of artifact is being added from the\nfollowing supported list:\n\n* Avro (avro)\n* Protobuff (protobuff)\n* JSON Schema (json)\n* OpenAPI (openapi)\n* AsyncAPI (asyncapi)\n\nAlternatively, the artifact type can be indicated by either explicitly specifying the \ntype via the `X-Registry-ArtifactType` HTTP Request Header or by including a hint in the \nRequest's `Content-Type`.\n\nFor example:\n\n```\nContent-Type: application/json+avro\n```\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
             }
         },
         "/artifacts/{artifactId}": {
@@ -85,7 +88,18 @@
                     "200": {
                         "content": {
                             "application/json": {
-
+                                "examples": {
+                                    "OpenAPI": {
+                                        "value": {
+                                            "openapi": "3.0.2",
+                                            "info": {
+                                                "title": "Empty API",
+                                                "version": "1.0.0",
+                                                "description": "An example API design using OpenAPI."
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             "application/x-yaml": {
 
@@ -95,6 +109,9 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "getLatestArtifact",
@@ -129,6 +146,9 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "updateArtifact",
@@ -145,6 +165,9 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "deleteArtifact",
@@ -152,6 +175,274 @@
                 "description": "Deletes an artifact completely, resulting in all versions of the artifact also being\ndeleted.  This may fail for one of the following reasons:\n\n* No artifact with the `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
             },
             "parameters": [
+                {
+                    "name": "artifactId",
+                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/artifacts/{artifactId}/meta": {
+            "summary": "Manage the meta-data of a single artifact.",
+            "get": {
+                "tags": [
+                    "meta-data"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArtifactMetaData"
+                                }
+                            }
+                        },
+                        "description": "The artifact's meta-data."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getArtifactMetaData",
+                "summary": "Get Artifact Meta-Data",
+                "description": "Gets the meta-data for an artifact in the registry.  The returned meta-data will include\nboth generated (read-only) and editable meta-data (such as name and description).\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Updated artifact meta-data.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EditableMetaData"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "meta-data"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The artifact's meta-data was updated."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "updateArtifactMetaData",
+                "summary": "Update Artifact Meta-Data",
+                "description": "Updates the editable parts of the artifact's meta-data.  Not all meta-data fields can\nbe updated.  For example `createdOn` and `createdBy` are both read-only properties.\n\nThis operation can fail for the following reasons:\n\n* No artifact with the `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "parameters": [
+                {
+                    "name": "artifactId",
+                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/artifacts/{artifactId}/rules": {
+            "summary": "Manage the rules for a single artifact.",
+            "get": {
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Rule"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Returns the rules configured for the artifact."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "listArtifactRules",
+                "summary": "List Artifact Rules",
+                "description": "Returns a list of all rules configured for the artifact.  The set of rules determines\nhow the content of an artifact can evolve over time.  If no rules are configured for\nan artifact, then the set of globally configured rules will be used.  If no global\nrules are defined then there are no restrictions on content evolution.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Rule"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The rule was added.  A URI to the new rule can be found in the `Location` response header."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    }
+                },
+                "operationId": "createArtifactRule",
+                "summary": "Create Artifact Rule",
+                "description": "Adds a rule to the list of rules that get applied to the artifact when adding new\nversions.  All configured rules must pass in order to successfully add a new artifact\nversion.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* Rule (named in the request body) is unknown (HTTP error `400`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "delete": {
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The rules were successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteArtifactRules",
+                "summary": "Delete Artifact Rules",
+                "description": "Deletes all of the rules configured for the artifact.  After this is done, the global\nrules will once again apply to the artifact.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "parameters": [
+                {
+                    "name": "artifactId",
+                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/artifacts/{artifactId}/rules/{rule}": {
+            "summary": "Manage the configuration of a single artifact rule.",
+            "get": {
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rule"
+                                }
+                            }
+                        },
+                        "description": "Information about a rule."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getArtifactRuleConfig",
+                "summary": "Get Artifact Rule Config",
+                "description": "Returns information about a single rule configured for an artifact.  This is useful\nwhen you want to know what the current configuration settings are for a specific rule.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Rule"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Rule"
+                                }
+                            }
+                        },
+                        "description": "Rule configuration was updated."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "updateArtifactRuleConfig",
+                "summary": "Update Artifact Rule Config",
+                "description": "Updates the configuration of a single rule for the artifact.  The configuration data\nis specific to each rule type, so the configuration of the **Compatibility** rule \nwill be of a different format than the configuration of the **Validation** rule.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "delete": {
+                "tags": [
+                    "rules"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The rule was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteArtifactRule",
+                "summary": "Delete Artifact Rule",
+                "description": "Deletes a rule from the artifact.  This results in the rule no longer applying for\nthis artifact.  If this is the only rule configured for the artifact, then this is\nthe same as deleting **all** rules:  the globally configured rules will now apply to\nthis artifact.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+            },
+            "parameters": [
+                {
+                    "name": "rule",
+                    "description": "The unique name of a rule.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                },
                 {
                     "name": "artifactId",
                     "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
@@ -176,6 +467,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
+                                        "format": "int64",
                                         "type": "integer"
                                     }
                                 },
@@ -192,6 +484,12 @@
                             }
                         },
                         "description": "List of all artifact versions (just the version IDs)."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "listArtifactVersions",
@@ -241,6 +539,12 @@
                             }
                         },
                         "description": "The artifact version was successfully created."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "createArtifactVersion",
@@ -269,13 +573,30 @@
                     "200": {
                         "content": {
                             "application/json": {
-
+                                "examples": {
+                                    "OpenAPI": {
+                                        "value": {
+                                            "openapi": "3.0.2",
+                                            "info": {
+                                                "title": "Empty API",
+                                                "version": "1.0.0",
+                                                "description": "An example API design using OpenAPI."
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             "application/x-yaml": {
 
                             }
                         },
                         "description": "The content of the artifact version."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "getArtifactVersion",
@@ -289,6 +610,12 @@
                 "responses": {
                     "204": {
                         "description": "The artifact version was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "deleteArtifactVersion",
@@ -316,150 +643,91 @@
                 }
             ]
         },
-        "/artifacts/{artifactId}/rules": {
-            "summary": "Manage the rules for a single artifact.",
+        "/artifacts/{artifactId}/versions/{version}/meta": {
+            "summary": "Manage the meta-data for a single version of an artifact in the registry.",
             "get": {
                 "tags": [
-                    "rules"
+                    "versions",
+                    "meta-data"
                 ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Rule"
-                                    }
+                                    "$ref": "#/components/schemas/VersionMetaData"
                                 }
                             }
                         },
-                        "description": "Returns the rules configured for the artifact."
-                    }
-                },
-                "operationId": "listArtifactRules",
-                "summary": "List Artifact Rules",
-                "description": "Returns a list of all rules configured for the artifact.  The set of rules determines\nhow the content of an artifact can evolve over time.  If no rules are configured for\nan artifact, then the set of globally configured rules will be used.  If no global\nrules are defined then there are no restrictions on content evolution.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Rule"
-                            }
-                        }
+                        "description": "The artifact version's meta-data."
                     },
-                    "required": true
-                },
-                "tags": [
-                    "rules"
-                ],
-                "responses": {
-                    "201": {
-                        "description": "The rule was added.  A URI to the new rule can be found in the `Location` response header."
-                    }
-                },
-                "operationId": "createArtifactRule",
-                "summary": "Create Artifact Rule",
-                "description": "Adds a rule to the list of rules that get applied to the artifact when adding new\nversions.  All configured rules must pass in order to successfully add a new artifact\nversion.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* Rule (named in the request body) not found (HTTP error `400`)\n* A server error occurred (HTTP error `500`)"
-            },
-            "delete": {
-                "tags": [
-                    "rules"
-                ],
-                "responses": {
-                    "204": {
-                        "description": "The rules were successfully deleted."
-                    }
-                },
-                "operationId": "deleteArtifactRules",
-                "summary": "Delete Artifact Rules",
-                "description": "Deletes all of the rules configured for the artifact.  After this is done, the global\nrules will once again apply to the artifact.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
-            },
-            "parameters": [
-                {
-                    "name": "artifactId",
-                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
-                    "schema": {
-                        "type": "string"
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
                     },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/artifacts/{artifactId}/rules/{rule}": {
-            "summary": "Manage the configuration of a single artifact rule.",
-            "get": {
-                "tags": [
-                    "rules"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Rule"
-                                }
-                            }
-                        },
-                        "description": "Information about a rule."
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
-                "operationId": "getArtifactRuleConfig",
-                "summary": "Get Artifact Rule Config",
-                "description": "Returns information about a single rule configured for an artifact.  This is useful\nwhen you want to know what the current configuration settings are for a specific rule.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+                "operationId": "getArtifactVersionMetaData",
+                "summary": "Get Artifact Version Meta-Data",
+                "description": "Retrieves the meta-data for a single version of the artifact.  The version meta-data\nis a subset of the artifact meta-data - it is only the meta-data that is specific to\nthe version (and so doesn't include e.g. `modifiedOn`).\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
             },
             "put": {
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Rule"
+                                "$ref": "#/components/schemas/EditableMetaData"
                             }
                         }
                     },
                     "required": true
                 },
                 "tags": [
-                    "rules"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Rule"
-                                }
-                            }
-                        },
-                        "description": "Rule configuration was updated."
-                    }
-                },
-                "operationId": "updateArtifactRuleConfig",
-                "summary": "Update Artifact Rule Config",
-                "description": "Updates the configuration of a single rule for the artifact.  The configuration data\nis specific to each rule type, so the configuration of the **Compatibility** rule \nwill be of a different format than the configuration of the **Validation** rule.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
-            },
-            "delete": {
-                "tags": [
-                    "rules"
+                    "versions",
+                    "meta-data"
                 ],
                 "responses": {
                     "204": {
-                        "description": "The rule was successfully deleted."
+                        "description": "The artifact version's meta-data was successfully updated."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
-                "operationId": "deleteArtifactRule",
-                "summary": "Delete Artifact Rule",
-                "description": "Deletes a rule from the artifact.  This results in the rule no longer applying for\nthis artifact.  If this is the only rule configured for the artifact, then this is\nthe same as deleting **all** rules:  the globally configured rules will now apply to\nthis artifact.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No rule with this name is configured for this artifact (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
+                "operationId": "updateArtifactVersionMetaData",
+                "summary": "Update Artifact Version Meta-Data",
+                "description": "Updates the user-editable portion of the artifact version's meta-data.  Only some of \nthe meta-data fields are editable by the user.  For example the `description` is editable\nbut the `createdOn` is not.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "delete": {
+                "tags": [
+                    "versions",
+                    "meta-data"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The artifact version's user-editable meta-data was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteArtifactVersionMetaData",
+                "summary": "Delete Artifact Version Meta-Data",
+                "description": "Deletes the user-editable meta-data properties of the artifact version.  Any properties\nthat are not user-editable will be preserved.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
             },
             "parameters": [
                 {
-                    "name": "rule",
-                    "description": "The unique name of a rule.",
+                    "name": "version",
+                    "description": "The unique identifier of a specific version of the artifact content.",
                     "schema": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "in": "path",
                     "required": true
@@ -495,6 +763,9 @@
                             }
                         },
                         "description": "The list of globally configured rules."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "listGlobalRules",
@@ -519,11 +790,20 @@
                 "responses": {
                     "201": {
                         "description": "The global rule was added.  A URI to the new rule can be found in the `Location` response header."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/Conflict"
                     }
                 },
                 "operationId": "createGlobalRule",
                 "summary": "Create Global Rule",
-                "description": "Adds a rule to the list of globally configured rules.\n\nThis operation can fail for the following reasons:\n\n* The rule already exists (HTTP error `409`)\n* A server error occurred (HTTP error `500`)\n"
+                "description": "Adds a rule to the list of globally configured rules.\n\nThis operation can fail for the following reasons:\n\n* The named rule is unknown (HTTP error `400`)\n* The rule already exists (HTTP error `409`)\n* A server error occurred (HTTP error `500`)\n"
             },
             "delete": {
                 "tags": [
@@ -533,152 +813,15 @@
                 "responses": {
                     "204": {
                         "description": "All global rules have been removed successfully."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "deleteAllGlobalRules",
                 "summary": "Delete All Global Rules",
                 "description": "Deletes all globally configured rules.\n\nThis operation can fail for the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
             }
-        },
-        "/artifacts/{artifactId}/meta": {
-            "summary": "Manage the meta-data of a single artifact.",
-            "get": {
-                "tags": [
-                    "meta-data"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ArtifactMetaData"
-                                }
-                            }
-                        },
-                        "description": "The artifact's meta-data."
-                    }
-                },
-                "operationId": "getArtifactMetaData",
-                "summary": "Get Artifact Meta-Data",
-                "description": "Gets the meta-data for an artifact in the registry.  The returned meta-data will include\nboth generated (read-only) and editable meta-data (such as name and description).\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
-            },
-            "put": {
-                "requestBody": {
-                    "description": "Updated artifact meta-data.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EditableMetaData"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "tags": [
-                    "meta-data"
-                ],
-                "responses": {
-                    "204": {
-                        "description": "The artifact's meta-data was updated."
-                    }
-                },
-                "operationId": "updateArtifactMetaData",
-                "summary": "Update Artifact Meta-Data",
-                "description": "Updates the editable parts of the artifact's meta-data.  Not all meta-data fields can\nbe updated.  For example `createdOn` and `createdBy` are both read-only properties.\n\nThis operation can fail for the following reasons:\n\n* No artifact with the `artifactId` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)"
-            },
-            "parameters": [
-                {
-                    "name": "artifactId",
-                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/artifacts/{artifactId}/versions/{version}/meta": {
-            "summary": "Manage the meta-data for a single version of an artifact in the registry.",
-            "get": {
-                "tags": [
-                    "versions",
-                    "meta-data"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VersionMetaData"
-                                }
-                            }
-                        },
-                        "description": "The artifact version's meta-data."
-                    }
-                },
-                "operationId": "getArtifactVersionMetaData",
-                "summary": "Get Artifact Version Meta-Data",
-                "description": "Retrieves the meta-data for a single version of the artifact.  The version meta-data\nis a subset of the artifact meta-data - it is only the meta-data that is specific to\nthe version (and so doesn't include e.g. `modifiedOn`).\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
-            },
-            "put": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EditableMetaData"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "tags": [
-                    "versions",
-                    "meta-data"
-                ],
-                "responses": {
-                    "204": {
-                        "description": "The artifact version's meta-data was successfully updated."
-                    }
-                },
-                "operationId": "updateArtifactVersionMetaData",
-                "summary": "Update Artifact Version Meta-Data",
-                "description": "Updates the user-editable portion of the artifact version's meta-data.  Only some of \nthe meta-data fields are editable by the user.  For example the `description` is editable\nbut the `createdOn` is not.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
-            },
-            "delete": {
-                "tags": [
-                    "versions",
-                    "meta-data"
-                ],
-                "responses": {
-                    "204": {
-                        "description": "The artifact version's user-editable meta-data was successfully deleted."
-                    }
-                },
-                "operationId": "deleteArtifactVersionMetaData",
-                "summary": "Delete Artifact Version Meta-Data",
-                "description": "Deletes the user-editable meta-data properties of the artifact version.  Any properties\nthat are not user-editable will be preserved.\n\nThis operation can fail for the following reasons:\n\n* No artifact with this `artifactId` exists (HTTP error `404`)\n* No version with this `version` exists (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
-            },
-            "parameters": [
-                {
-                    "name": "version",
-                    "description": "The unique identifier of a specific version of the artifact content.",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                },
-                {
-                    "name": "artifactId",
-                    "description": "The artifact ID.  Can be a string (client provided) or integer (server generated) representing the unique artifact identifier.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
         },
         "/rules/{rule}": {
             "summary": "Manage the configuration of a single global artifact rule.",
@@ -697,6 +840,12 @@
                             }
                         },
                         "description": "The global rule's configuration."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "getGlobalRuleConfig",
@@ -728,6 +877,12 @@
                             }
                         },
                         "description": "The global rule's configuration was successfully updated."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "updateGlobalRuleConfig",
@@ -742,6 +897,12 @@
                 "responses": {
                     "204": {
                         "description": "The global rule was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
                 },
                 "operationId": "deleteGlobalRule",
@@ -787,7 +948,6 @@
                     "createdOn",
                     "createdBy",
                     "version",
-                    "id",
                     "type"
                 ],
                 "type": "object",
@@ -809,19 +969,13 @@
                         "format": "date-time",
                         "type": "string"
                     },
-                    "id": {
-                        "format": "int64",
-                        "description": "",
-                        "type": "integer"
-                    },
                     "type": {
                         "$ref": "#/components/schemas/ArtifactType",
                         "description": ""
                     }
                 },
                 "example": {
-                    "id": 12938472,
-                    "version": 12,
+                    "version": 1221432,
                     "type": "protobuff",
                     "name": "Artifact Name",
                     "description": "The description of the artifact",
@@ -864,11 +1018,11 @@
                         "type": "string"
                     },
                     "id": {
-                        "format": "int64",
                         "description": "",
-                        "type": "integer"
+                        "type": "string"
                     },
                     "version": {
+                        "format": "int64",
                         "description": "",
                         "type": "integer"
                     },
@@ -954,6 +1108,29 @@
                     }
                 },
                 "description": "Common response for all operations that can return a `404` error."
+            },
+            "ServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "Common response for all operations that can fail with an unexpected server error."
+            },
+            "BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "Common response for all operations that can return a `400` error."
+            },
+            "Conflict": {
+                "description": "Common response used when an input conflicts with existing data."
             }
         }
     },

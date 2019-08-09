@@ -139,11 +139,11 @@ public class OpenApi2JaxRs {
      * @throws IOException
      */
     public final void generate(OutputStream output) throws IOException {
-        CodegenInfo info = getInfoFromApiDoc();
         StringBuilder log = new StringBuilder();
 
         try (ZipOutputStream zos = new ZipOutputStream(output)) {
             try {
+                CodegenInfo info = getInfoFromApiDoc();
                 generateAll(info, log, zos);
             } catch (Exception e) {
                 // If we get an error, put an PROJECT_GENERATION_ERROR file into the ZIP.

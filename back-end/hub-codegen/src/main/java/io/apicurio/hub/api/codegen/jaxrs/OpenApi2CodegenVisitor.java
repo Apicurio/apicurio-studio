@@ -350,9 +350,13 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
             String[] nameSegments = operation.summary.split(" ");
             StringBuilder builder = new StringBuilder();
             for (String segment : nameSegments) {
-                builder.append(capitalize(segment.replaceAll("\\W", "")));
+                String sanitized = segment.replaceAll("\\W", "");
+                builder.append(capitalize(sanitized));
             }
-            return decapitalize(builder.toString());
+            String cname = builder.toString();
+            if (cname.trim().length() > 0) {
+                return decapitalize(builder.toString());
+            }
         }
         return "generatedMethod" + this._methodCounter++;
     }
@@ -419,6 +423,9 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
      * @param word
      */
     private String capitalize(String word) {
+        if (word == null || word.trim().length() == 0) {
+            return "";
+        }
         return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 
@@ -427,6 +434,9 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
      * @param word
      */
     private String decapitalize(String word) {
+        if (word == null || word.trim().length() == 0) {
+            return "";
+        }
         return word.substring(0, 1).toLowerCase() + word.substring(1);
     }
 

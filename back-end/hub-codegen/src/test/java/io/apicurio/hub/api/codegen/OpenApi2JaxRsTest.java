@@ -85,6 +85,14 @@ public class OpenApi2JaxRsTest {
     }
 
     /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
+    public void testGenerateFull_Issue885Api() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/issue-885-api.json", UpdateOnly.no, Reactive.no, "_expected-issue885Api-full/generated-api", false);
+    }
+
+    /**
      * Shared test method.
      * @param apiDef
      * @param updateOnly

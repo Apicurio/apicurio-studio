@@ -28,7 +28,6 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;

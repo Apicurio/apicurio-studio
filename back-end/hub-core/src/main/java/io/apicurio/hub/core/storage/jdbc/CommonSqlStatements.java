@@ -163,7 +163,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         return "SELECT c.design_id, MAX(c.version) AS version "
         		+ "FROM api_content c "
         		+ "JOIN acl a ON a.design_id = c.design_id "
-        		+ "WHERE a.user_id = ? "
+        		+ "WHERE a.user_id = ? AND c.created_by = ? "
         		+ "GROUP BY c.design_id "
         		+ "ORDER BY version DESC "
         		+ "LIMIT 5";

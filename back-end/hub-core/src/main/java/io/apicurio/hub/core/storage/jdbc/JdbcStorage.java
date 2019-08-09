@@ -905,6 +905,7 @@ public class JdbcStorage implements IStorage {
                 Collection<ApiDesign> designs = new ArrayList<>();
                 Collection<Long> recentApiIds = handle.createQuery(statement)
                         .bind(0, userId)
+                        .bind(1, userId)
                         .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
                             @Override
                             public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {

@@ -47,7 +47,7 @@ public class OpenApi2ThorntailTest {
     public void testGenerateOnly() throws IOException {
         doGenerateOnlyTest("OpenApi2ThorntailTest/beer-api.codegen.json", 
                 "OpenApi2ThorntailTest/beer-api.json", "_expected/generated-api", 
-                "org.example.api", "generated-api", "org.example.api", true);
+                "org.example.api", "generated-api", "org.example.api", false);
     }
 
     /**

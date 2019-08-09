@@ -88,7 +88,7 @@ public class OpenApi2JaxRsTest {
     /**
      * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
      */
-    @Test @Ignore
+    @Test
     public void testGenerateFull_Issue885Api() throws IOException {
         // Note: I can't seem to get this working in the maven build, but it works in Eclipse.
         doFullTest("OpenApi2JaxRsTest/issue-885-api.json", UpdateOnly.no, Reactive.no, "_expected-issue885Api-full/generated-api", false);

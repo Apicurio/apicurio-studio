@@ -79,6 +79,7 @@ import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 public class OpenApi2JaxRs {
 
     protected static ObjectMapper mapper = new ObjectMapper();
+    protected static Charset utf8 = Charset.forName("UTF-8");
 
     private String openApiDoc;
     private JaxRsProjectSettings settings;
@@ -151,7 +152,7 @@ public class OpenApi2JaxRs {
                 zos.write("An unexpected server error was encountered while generating the project.  See\r\n".getBytes());
                 zos.write("the details of the error below.\r\n\r\n".getBytes());
                 zos.write("Generation Log:\r\n\r\n".getBytes());
-                zos.write(log.toString().getBytes());
+                zos.write(log.toString().getBytes(utf8));
                 zos.write("\r\n\r\nServer Stack Trace:\r\n".getBytes());
                 
                 PrintWriter writer = new PrintWriter(zos);
@@ -174,20 +175,20 @@ public class OpenApi2JaxRs {
         if (!this.updateOnly && !this.settings.codeOnly) {
             log.append("Generating pom.xml\r\n");
             zipOutput.putNextEntry(new ZipEntry("pom.xml"));
-            zipOutput.write(generatePomXml(info).getBytes());
+            zipOutput.write(generatePomXml(info).getBytes(utf8));
             zipOutput.closeEntry();
         }
 
         log.append("Generating src/main/resources/META-INF/openapi.json\r\n");
         zipOutput.putNextEntry(new ZipEntry("src/main/resources/META-INF/openapi.json"));
-        zipOutput.write(this.openApiDoc.getBytes());
+        zipOutput.write(this.openApiDoc.getBytes(utf8));
         zipOutput.closeEntry();
         
         if (!this.updateOnly) {
             String appFileName = javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java";
             log.append("Generating " + appFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(appFileName));
-            zipOutput.write(generateJaxRsApplication().getBytes());
+            zipOutput.write(generateJaxRsApplication().getBytes(utf8));
             zipOutput.closeEntry();
         }
         
@@ -201,7 +202,7 @@ public class OpenApi2JaxRs {
             String javaClassFileName = javaClassToZipPath(key);
             log.append("Adding to zip: " + javaClassFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(javaClassFileName));
-            zipOutput.write(codeWriter.get(key).getBytes());
+            zipOutput.write(codeWriter.get(key).getBytes(utf8));
             zipOutput.closeEntry();
         }
         
@@ -212,7 +213,7 @@ public class OpenApi2JaxRs {
             String javaInterfaceFileName = javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java";
             log.append("Adding to zip: " + javaInterfaceFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(javaInterfaceFileName));
-            zipOutput.write(javaInterface.getBytes());
+            zipOutput.write(javaInterface.getBytes(utf8));
             zipOutput.closeEntry();
         }
 

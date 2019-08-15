@@ -1,8 +1,8 @@
 package io.openapi.simple;
 
+import java.io.InputStream;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Request;
 
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.
@@ -13,5 +13,5 @@ public interface Apis {
    * Publish an API and make it immediately available on the gateway.
    */
   @PUT
-  void publishAnAPI(Request body);
+  void publishAnAPI(InputStream body);
 }

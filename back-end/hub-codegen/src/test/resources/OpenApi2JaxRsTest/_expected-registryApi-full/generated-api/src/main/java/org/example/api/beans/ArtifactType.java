@@ -8,11 +8,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ArtifactType {
 
-    AVRO("avro"),
-    PROTOBUFF("protobuff"),
-    JSON("json"),
-    OPENAPI("openapi"),
-    ASYNCAPI("asyncapi");
+    avro("avro"),
+    protobuff("protobuff"),
+    json("json"),
+    openapi("openapi"),
+    asyncapi("asyncapi");
     private final String value;
     private final static Map<String, ArtifactType> CONSTANTS = new HashMap<String, ArtifactType>();
 

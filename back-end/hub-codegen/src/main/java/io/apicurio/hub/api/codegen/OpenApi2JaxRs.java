@@ -35,6 +35,7 @@ import javax.lang.model.element.Modifier;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -42,6 +43,7 @@ import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.Rule;
 import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,6 +56,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
+import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 
@@ -363,7 +366,7 @@ public class OpenApi2JaxRs {
                 for (CodegenJavaArgument cgArgument : cgMethod.getArguments()) {
                     TypeName defaultParamType = ClassName.OBJECT;
                     if (cgArgument.getIn().equals("body")) {
-                        defaultParamType = ClassName.get("javax.ws.rs.core", "Request");
+                        defaultParamType = ClassName.get("java.io", "InputStream");
                     }
                     TypeName paramType = generateTypeName(cgArgument.getCollection(), cgArgument.getType(),
                             cgArgument.getFormat(), cgArgument.getRequired(), defaultParamType);
@@ -546,7 +549,7 @@ public class OpenApi2JaxRs {
         };
 
         SchemaMapper schemaMapper = new SchemaMapper(
-                new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore() {
+                new JaxRsRuleFactory(config, new Jackson2Annotator(config), new SchemaStore() {
                     @Override
                     public Schema create(Schema parent, String path, String refFragmentPathDelimiters) {
                         String beanClassname = schemaRefToFQCN(path);
@@ -657,6 +660,24 @@ public class OpenApi2JaxRs {
      */
     public void setUpdateOnly(boolean updateOnly) {
         this.updateOnly = updateOnly;
+    }
+    
+    public static class JaxRsRuleFactory extends RuleFactory {
+        
+        /**
+         * Constructor.
+         */
+        public JaxRsRuleFactory(GenerationConfig generationConfig, Annotator annotator, SchemaStore schemaStore) {
+            super(generationConfig, annotator, schemaStore);
+        }
+        
+        /**
+         * @see org.jsonschema2pojo.rules.RuleFactory#getEnumRule()
+         */
+        @Override
+        public Rule<JClassContainer, JType> getEnumRule() {
+            return new JaxRsEnumRule(this);
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.example.api;
 
+import java.io.InputStream;
 import java.lang.String;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -10,7 +11,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 /**
@@ -29,7 +29,7 @@ public interface TemplatesResource {
   @Path("es/metadata")
   @POST
   @Consumes("application/json")
-  void generatedMethod2(Request data);
+  void generatedMethod2(InputStream data);
 
   /**
    * Search template metadata and return a list of matching template metadata
@@ -55,7 +55,7 @@ public interface TemplatesResource {
   @Path("es/metadata/{id}")
   @PUT
   @Consumes("application/json")
-  void generatedMethod4(Request data);
+  void generatedMethod4(InputStream data);
 
   /**
    * Delete the metadata for a single template by id

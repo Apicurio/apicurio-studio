@@ -14,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import org.example.api.beans.ArtifactMetaData;
 import org.example.api.beans.ArtifactType;
 import org.example.api.beans.EditableMetaData;
@@ -75,7 +76,7 @@ public interface ArtifactsResource {
   @Path("/{artifactId}")
   @GET
   @Produces({"application/json", "application/x-yaml"})
-  void getLatestArtifact(@PathParam("artifactId") String artifactId);
+  Response getLatestArtifact(@PathParam("artifactId") String artifactId);
 
   /**
    * Updates an artifact by uploading new content.  The update could fail for a number
@@ -302,7 +303,7 @@ public interface ArtifactsResource {
   @Path("/{artifactId}/versions/{version}")
   @GET
   @Produces({"application/json", "application/x-yaml"})
-  void getArtifactVersion(@PathParam("version") Integer version,
+  Response getArtifactVersion(@PathParam("version") Integer version,
       @PathParam("artifactId") String artifactId);
 
   /**

@@ -123,7 +123,7 @@
         <version.org.jdbi>3.9.1</version.org.jdbi>
         <version.org.json>20190722</version.org.json>
         <version.org.jsonschema2pojo>1.0.1</version.org.jsonschema2pojo>
-        <version.org.keycloak>4.8.3.Final</version.org.keycloak>
+        <version.org.keycloak>7.0.0</version.org.keycloak>
         <version.mysql>5.1.48</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.28</version.org.slf4j>

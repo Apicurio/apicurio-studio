@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.apicurio.registry.types.ArtifactType;
 
 
 /**
@@ -24,8 +25,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "modifiedOn",
     "id",
     "version",
-    "type",
-    "clientId"
+    "type"
 })
 public class ArtifactMetaData {
 
@@ -85,13 +85,6 @@ public class ArtifactMetaData {
     @JsonProperty("type")
     @JsonPropertyDescription("")
     private ArtifactType type;
-    /**
-     * Identifier provided by the client.  Must be globally unique.
-     * 
-     */
-    @JsonProperty("clientId")
-    @JsonPropertyDescription("Identifier provided by the client.  Must be globally unique.")
-    private String clientId;
 
     @JsonProperty("name")
     public String getName() {
@@ -251,24 +244,6 @@ public class ArtifactMetaData {
     @JsonProperty("type")
     public void setType(ArtifactType type) {
         this.type = type;
-    }
-
-    /**
-     * Identifier provided by the client.  Must be globally unique.
-     * 
-     */
-    @JsonProperty("clientId")
-    public String getClientId() {
-        return clientId;
-    }
-
-    /**
-     * Identifier provided by the client.  Must be globally unique.
-     * 
-     */
-    @JsonProperty("clientId")
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
     }
 
 }

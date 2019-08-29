@@ -1,5 +1,6 @@
 package org.example.api;
 
+import io.apicurio.registry.types.ArtifactType;
 import java.io.InputStream;
 import java.lang.Integer;
 import java.lang.Long;
@@ -16,9 +17,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import org.example.api.beans.ArtifactMetaData;
-import org.example.api.beans.ArtifactType;
 import org.example.api.beans.EditableMetaData;
 import org.example.api.beans.Rule;
+import org.example.api.beans.RuleType;
 import org.example.api.beans.VersionMetaData;
 
 /**
@@ -34,24 +35,23 @@ public interface ArtifactsResource {
    * The registry will attempt to figure out what kind of artifact is being added from the
    * following supported list:
    *
-   * * Avro (avro)
-   * * Protobuff (protobuff)
-   * * JSON Schema (json)
-   * * OpenAPI (openapi)
-   * * AsyncAPI (asyncapi)
+   * * Avro (AVRO)
+   * * Protobuff (PROTOBUFF)
+   * * JSON Schema (JSON)
+   * * OpenAPI (OPENAPI)
+   * * AsyncAPI (ASYNCAPI)
    *
    * Alternatively, the artifact type can be indicated by either explicitly specifying the 
    * type via the `X-Registry-ArtifactType` HTTP Request Header or by including a hint in the 
-   * Request's `Content-Type`.
-   *
-   * For example:
+   * Request's `Content-Type`.  For example:
    *
    * ```
-   * Content-Type: application/json+avro
+   * Content-Type: application/json; artifactType=AVRO
    * ```
    *
    * This operation may fail for one of the following reasons:
    *
+   * * An invalid `ArtifactType` was indicated (HTTP error `400`)
    * * A server error occurred (HTTP error `500`)
    *
    */
@@ -65,7 +65,7 @@ public interface ArtifactsResource {
   /**
    * Returns the latest version of the artifact in its raw form.  The `Content-Type` of the
    * response will depend on what type of artifact it is.  In most cases this will be
-   * `application/json` but for some types it may be different (e.g. *avro*).
+   * `application/json` but for some types it may be different (e.g. *protobuff*).
    *
    * This operation may fail for one of the following reasons:
    *
@@ -79,11 +79,32 @@ public interface ArtifactsResource {
   Response getLatestArtifact(@PathParam("artifactId") String artifactId);
 
   /**
-   * Updates an artifact by uploading new content.  The update could fail for a number
-   * of reasons including:
+   * Updates an artifact by uploading new content.  The body of the request should
+   * be the raw content of the artifact.  This will typically be in JSON format for *most*
+   * of the supported types, but may be in another format for a few (e.g. Protobuff).
+   *
+   * The registry will attempt to figure out what kind of artifact is being added from the
+   * following supported list:
+   *
+   * * Avro (AVRO)
+   * * Protobuff (PROTOBUFF)
+   * * JSON Schema (JSON)
+   * * OpenAPI (OPENAPI)
+   * * AsyncAPI (ASYNCAPI)
+   *
+   * Alternatively, the artifact type can be indicated by either explicitly specifying the 
+   * type via the `X-Registry-ArtifactType` HTTP Request Header or by including a hint in the 
+   * Request's `Content-Type`.  For example:
+   *
+   * ```
+   * Content-Type: application/json; artifactType=AVRO
+   * ```
+   *
+   * The update could fail for a number of reasons including:
    *
    * * No artifact with the `artifactId` exists (HTTP error `404`)
    * * The new content violates one of the rules configured for the artifact (HTTP error `400`)
+   * * The provided Artifact Type is not recognized (HTTP error `404`)
    * * A server error occurred (HTTP error `500`)
    *
    * When successful, this creates a new version of the artifact, making it the most recent
@@ -93,7 +114,8 @@ public interface ArtifactsResource {
   @PUT
   @Produces("application/json")
   @Consumes({"application/json", "application/x-yaml"})
-  ArtifactMetaData updateArtifact(@PathParam("artifactId") String artifactId, InputStream data);
+  ArtifactMetaData updateArtifact(@PathParam("artifactId") String artifactId,
+      @HeaderParam("X-Registry-ArtifactType") ArtifactType xRegistryArtifactType, InputStream data);
 
   /**
    * Deletes an artifact completely, resulting in all versions of the artifact also being
@@ -135,58 +157,14 @@ public interface ArtifactsResource {
   void updateArtifactMetaData(@PathParam("artifactId") String artifactId, EditableMetaData data);
 
   /**
-   * Returns a list of all rules configured for the artifact.  The set of rules determines
-   * how the content of an artifact can evolve over time.  If no rules are configured for
-   * an artifact, then the set of globally configured rules will be used.  If no global
-   * rules are defined then there are no restrictions on content evolution.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * A server error occurred (HTTP error `500`)
-   */
-  @Path("/{artifactId}/rules")
-  @GET
-  @Produces("application/json")
-  List<Rule> listArtifactRules(@PathParam("artifactId") String artifactId);
-
-  /**
-   * Adds a rule to the list of rules that get applied to the artifact when adding new
-   * versions.  All configured rules must pass in order to successfully add a new artifact
-   * version.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * Rule (named in the request body) is unknown (HTTP error `400`)
-   * * A server error occurred (HTTP error `500`)
-   */
-  @Path("/{artifactId}/rules")
-  @POST
-  @Consumes("application/json")
-  void createArtifactRule(@PathParam("artifactId") String artifactId, Rule data);
-
-  /**
-   * Deletes all of the rules configured for the artifact.  After this is done, the global
-   * rules will once again apply to the artifact.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * A server error occurred (HTTP error `500`)
-   */
-  @Path("/{artifactId}/rules")
-  @DELETE
-  void deleteArtifactRules(@PathParam("artifactId") String artifactId);
-
-  /**
    * Returns information about a single rule configured for an artifact.  This is useful
    * when you want to know what the current configuration settings are for a specific rule.
    *
    * This operation can fail for the following reasons:
    *
    * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * No rule with this name is configured for this artifact (HTTP error `404`)
+   * * No rule with this name/type is configured for this artifact (HTTP error `404`)
+   * * Invalid rule type (HTTP error `400`)
    * * A server error occurred (HTTP error `500`)
    */
   @Path("/{artifactId}/rules/{rule}")
@@ -203,7 +181,8 @@ public interface ArtifactsResource {
    * This operation can fail for the following reasons:
    *
    * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * No rule with this name is configured for this artifact (HTTP error `404`)
+   * * No rule with this name/type is configured for this artifact (HTTP error `404`)
+   * * Invalid rule type (HTTP error `400`)
    * * A server error occurred (HTTP error `500`)
    *
    */
@@ -223,7 +202,8 @@ public interface ArtifactsResource {
    * This operation can fail for the following reasons:
    *
    * * No artifact with this `artifactId` exists (HTTP error `404`)
-   * * No rule with this name is configured for this artifact (HTTP error `404`)
+   * * No rule with this name/type is configured for this artifact (HTTP error `404`)
+   * * Invalid rule type (HTTP error `400`)
    * * A server error occurred (HTTP error `500`)
    */
   @Path("/{artifactId}/rules/{rule}")
@@ -258,11 +238,11 @@ public interface ArtifactsResource {
    * The registry will attempt to figure out what kind of artifact is being added from the
    * following supported list:
    *
-   * * Avro (avro)
-   * * Protobuff (protobuff)
-   * * JSON Schema (json)
-   * * OpenAPI (openapi)
-   * * AsyncAPI (asyncapi)
+   * * Avro (AVRO)
+   * * Protobuff (PROTOBUFF)
+   * * JSON Schema (JSON)
+   * * OpenAPI (OPENAPI)
+   * * AsyncAPI (ASYNCAPI)
    *
    * Alternatively, the artifact type can be indicated by either explicitly specifying the 
    * type via the `X-Registry-ArtifactType` HTTP Request Header or by including a hint in the 
@@ -271,7 +251,7 @@ public interface ArtifactsResource {
    * For example:
    *
    * ```
-   * Content-Type: application/json+avro
+   * Content-Type: application/json; artifactType=AVRO
    * ```
    *
    * This operation can fail for the following reasons:
@@ -291,7 +271,7 @@ public interface ArtifactsResource {
    * Retrieves a single version of the artifact content.  Both the `artifactId` and the
    * unique `version` number must be provided.  The `Content-Type` of the
    * response will depend on what type of artifact it is.  In most cases this will be
-   * `application/json` but for some types it may be different (e.g. *avro*).
+   * `application/json` but for some types it may be different (e.g. *protobuff*).
    *
    * This operation can fail for the following reasons:
    *
@@ -374,4 +354,49 @@ public interface ArtifactsResource {
   @DELETE
   void deleteArtifactVersionMetaData(@PathParam("version") Integer version,
       @PathParam("artifactId") String artifactId);
+
+  /**
+   * Returns a list of all rules configured for the artifact.  The set of rules determines
+   * how the content of an artifact can evolve over time.  If no rules are configured for
+   * an artifact, then the set of globally configured rules will be used.  If no global
+   * rules are defined then there are no restrictions on content evolution.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * No artifact with this `artifactId` exists (HTTP error `404`)
+   * * A server error occurred (HTTP error `500`)
+   */
+  @Path("/{artifactId}/rules")
+  @GET
+  @Produces("application/json")
+  List<RuleType> listArtifactRules(@PathParam("artifactId") String artifactId);
+
+  /**
+   * Adds a rule to the list of rules that get applied to the artifact when adding new
+   * versions.  All configured rules must pass in order to successfully add a new artifact
+   * version.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * No artifact with this `artifactId` exists (HTTP error `404`)
+   * * Rule (named in the request body) is unknown (HTTP error `400`)
+   * * A server error occurred (HTTP error `500`)
+   */
+  @Path("/{artifactId}/rules")
+  @POST
+  @Consumes("application/json")
+  void createArtifactRule(@PathParam("artifactId") String artifactId, Rule data);
+
+  /**
+   * Deletes all of the rules configured for the artifact.  After this is done, the global
+   * rules will once again apply to the artifact.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * No artifact with this `artifactId` exists (HTTP error `404`)
+   * * A server error occurred (HTTP error `500`)
+   */
+  @Path("/{artifactId}/rules")
+  @DELETE
+  void deleteArtifactRules(@PathParam("artifactId") String artifactId);
 }

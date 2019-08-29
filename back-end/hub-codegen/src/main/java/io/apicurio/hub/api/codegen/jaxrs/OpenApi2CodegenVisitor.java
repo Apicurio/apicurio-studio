@@ -52,6 +52,7 @@ import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaReturn;
+import io.apicurio.hub.api.codegen.util.CodegenUtil;
 import io.apicurio.hub.api.codegen.util.SchemaSigner;
 
 /**
@@ -320,13 +321,14 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
     @Override
     public void visitSchemaDefinition(IDefinition node) {
         String name = node.getName();
+        OasSchema schema = (OasSchema) node;
         
         CodegenJavaBean bean = new CodegenJavaBean();
         bean.setName(name);
-        bean.setPackage(this.packageName + ".beans");
-        bean.set$schema((JsonNode) Library.writeNode((Node) node));
-        bean.setSignature(createSignature((OasSchema) node));
-        
+        bean.setPackage(CodegenUtil.schemaToPackageName(schema, this.packageName + ".beans"));
+        bean.set$schema((JsonNode) Library.writeNode((Node) schema));
+        bean.setSignature(createSignature(schema));
+
         this.codegenInfo.getBeans().add(bean);
     }
 

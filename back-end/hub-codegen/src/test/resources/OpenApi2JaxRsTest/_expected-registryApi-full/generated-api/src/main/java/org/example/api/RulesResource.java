@@ -11,12 +11,59 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import org.example.api.beans.Rule;
+import org.example.api.beans.RuleType;
 
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.
  */
 @Path("/rules")
 public interface RulesResource {
+  /**
+   * Returns information about the named globally configured rule.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * Invalid rule name/type (HTTP error `400`)
+   * * No rule with name/type `rule` exists (HTTP error `404`)
+   * * A server error occurred (HTTP error `500`)
+   *
+   */
+  @Path("/{rule}")
+  @GET
+  @Produces("application/json")
+  Rule getGlobalRuleConfig(@PathParam("rule") String rule);
+
+  /**
+   * Updates the configuration for a globally configured rule.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * Invalid rule name/type (HTTP error `400`)
+   * * No rule with name/type `rule` exists (HTTP error `404`)
+   * * A server error occurred (HTTP error `500`)
+   *
+   */
+  @Path("/{rule}")
+  @PUT
+  @Produces("application/json")
+  @Consumes("application/json")
+  Rule updateGlobalRuleConfig(@PathParam("rule") String rule, Rule data);
+
+  /**
+   * Deletes a single global rule.  If this is the only rule configured, this is the same
+   * as deleting **all** rules.
+   *
+   * This operation can fail for the following reasons:
+   *
+   * * Invalid rule name/type (HTTP error `400`)
+   * * No rule with name/type `rule` exists (HTTP error `404`)
+   * * A server error occurred (HTTP error `500`)
+   *
+   */
+  @Path("/{rule}")
+  @DELETE
+  void deleteGlobalRule(@PathParam("rule") String rule);
+
   /**
    * Gets a list of all the currently configured global rules (if any).
    *
@@ -27,14 +74,14 @@ public interface RulesResource {
    */
   @GET
   @Produces("application/json")
-  List<Rule> listGlobalRules();
+  List<RuleType> listGlobalRules();
 
   /**
    * Adds a rule to the list of globally configured rules.
    *
    * This operation can fail for the following reasons:
    *
-   * * The named rule is unknown (HTTP error `400`)
+   * * The rule type is unknown (HTTP error `400`)
    * * The rule already exists (HTTP error `409`)
    * * A server error occurred (HTTP error `500`)
    *
@@ -53,47 +100,4 @@ public interface RulesResource {
    */
   @DELETE
   void deleteAllGlobalRules();
-
-  /**
-   * Returns information about the named globally configured rule.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No rule named `rule` exists (HTTP error `404`)
-   * * A server error occurred (HTTP error `500`)
-   *
-   */
-  @Path("/{rule}")
-  @GET
-  @Produces("application/json")
-  Rule getGlobalRuleConfig(@PathParam("rule") String rule);
-
-  /**
-   * Updates the configuration for a globally configured rule.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No rule named `rule` exists (HTTP error `404`)
-   * * A server error occurred (HTTP error `500`)
-   *
-   */
-  @Path("/{rule}")
-  @PUT
-  @Produces("application/json")
-  @Consumes("application/json")
-  Rule updateGlobalRuleConfig(@PathParam("rule") String rule, Rule data);
-
-  /**
-   * Deletes a single global rule.  If this is the only rule configured, this is the same
-   * as deleting **all** rules.
-   *
-   * This operation can fail for the following reasons:
-   *
-   * * No rule named `rule` exists (HTTP error `404`)
-   * * A server error occurred (HTTP error `500`)
-   *
-   */
-  @Path("/{rule}")
-  @DELETE
-  void deleteGlobalRule(@PathParam("rule") String rule);
 }

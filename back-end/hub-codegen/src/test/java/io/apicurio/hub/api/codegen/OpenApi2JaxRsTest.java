@@ -134,6 +134,12 @@ public class OpenApi2JaxRsTest {
                     Assert.assertNotNull(name);
                     
                     URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/" + expectedFilesPath + "/" + name);
+                    if (expectedFile == null && "PROJECT_GENERATION_FAILED.txt".equals(name)) {
+                        String errorLog = IOUtils.toString(zipInputStream, Charset.forName("UTF-8"));
+                        System.out.println("----- UNEXPECTED ERROR LOG -----");
+                        System.out.println(errorLog);
+                        System.out.println("----- UNEXPECTED ERROR LOG -----");
+                    }
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile, Charset.forName("UTF-8"));
 

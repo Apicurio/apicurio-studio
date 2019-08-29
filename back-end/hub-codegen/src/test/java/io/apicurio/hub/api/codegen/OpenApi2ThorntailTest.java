@@ -30,35 +30,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
-import io.apicurio.hub.api.codegen.beans.CodegenInfo;
-
 /**
  * @author eric.wittmann@gmail.com
  */
 public class OpenApi2ThorntailTest {
-    
-    /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
-     */
-    @Test
-    public void testGenerateOnly() throws IOException {
-        doGenerateOnlyTest("OpenApi2ThorntailTest/beer-api.codegen.json", 
-                "OpenApi2ThorntailTest/beer-api.json", "_expected/generated-api", 
-                "org.example.api", "generated-api", "org.example.api", false);
-    }
-
-    /**
-     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
-     */
-    @Test
-    public void testGenerateOnly_GatewayApiNoTypes() throws IOException {
-        doGenerateOnlyTest("OpenApi2ThorntailTest/gateway-api-notypes.codegen.json", 
-                "OpenApi2ThorntailTest/gateway-api.json", "_expected-gatewayApiNoTypes/simple-api", 
-                "io.openapi.simple", "simple-api", "io.openapi.simple", false);
-    }
 
     /**
      * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Thorntail#generate()}.
@@ -94,72 +69,6 @@ public class OpenApi2ThorntailTest {
     
     /**
      * Shared test method.
-     * @throws IOException
-     */
-    private void doGenerateOnlyTest(String codegenSpec, String apiDef, String expectedFilesPath, String groupId, 
-            String artifactId, String _package, boolean debug) throws IOException {
-        OpenApi2Thorntail generator = new OpenApi2Thorntail() {
-            /**
-             * @see io.apicurio.hub.api.codegen.OpenApi2JaxRs#getInfoFromApiDoc()
-             */
-            @Override
-            protected CodegenInfo getInfoFromApiDoc() throws IOException {
-                try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    String data = IOUtils.toString(OpenApi2ThorntailTest.class.getClassLoader().getResource(codegenSpec), Charset.forName("UTF-8"));
-                    return mapper.readerFor(CodegenInfo.class).readValue(data);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            @Override
-            protected String getResourceName(String name) {
-                return "_OpenApi2Thorntail/" + name;
-            }
-        };
-        generator.setUpdateOnly(false);
-        generator.setSettings(new JaxRsProjectSettings(groupId, artifactId, _package));
-        generator.setOpenApiDocument(getClass().getClassLoader().getResource(apiDef));
-        ByteArrayOutputStream outputStream = generator.generate();
-        
-        if (debug) {
-            File tempFile = File.createTempFile("api", "zip");
-            FileUtils.writeByteArrayToFile(File.createTempFile("api", "zip"), outputStream.toByteArray());
-            System.out.println("Generated ZIP (debug) can be found here: " + tempFile.getAbsolutePath());
-
-        }
-
-        // Validate the result
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray()))) {
-            ZipEntry zipEntry = zipInputStream.getNextEntry();
-            while (zipEntry != null) {
-                if (!zipEntry.isDirectory()) {
-                    String name = zipEntry.getName();
-                    if (debug) {
-                        System.out.println(name);
-                    }
-                    Assert.assertNotNull(name);
-                    
-                    URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + 
-                            "/" + expectedFilesPath + "/" + name);
-                    Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
-                    String expected = IOUtils.toString(expectedFile, Charset.forName("UTF-8"));
-
-                    String actual = IOUtils.toString(zipInputStream, Charset.forName("UTF-8"));
-                    if (debug) {
-                        System.out.println("-----");
-                        System.out.println(actual);
-                        System.out.println("-----");
-                    }
-                    Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
-                }
-                zipEntry = zipInputStream.getNextEntry();
-            }
-        }
-    }
-    
-    /**
-     * Shared test method.
      * @param apiDef
      * @param updateOnly
      * @param expectedFilesPath
@@ -190,6 +99,12 @@ public class OpenApi2ThorntailTest {
                     Assert.assertNotNull(name);
                     
                     URL expectedFile = getClass().getClassLoader().getResource(getClass().getSimpleName() + "/" + expectedFilesPath + "/" + name);
+                    if (expectedFile == null && "PROJECT_GENERATION_FAILED.txt".equals(name)) {
+                        String errorLog = IOUtils.toString(zipInputStream, Charset.forName("UTF-8"));
+                        System.out.println("----- UNEXPECTED ERROR LOG -----");
+                        System.out.println(errorLog);
+                        System.out.println("----- UNEXPECTED ERROR LOG -----");
+                    }
                     Assert.assertNotNull("Could not find expected file for entry: " + name, expectedFile);
                     String expected = IOUtils.toString(expectedFile, Charset.forName("UTF-8"));
 

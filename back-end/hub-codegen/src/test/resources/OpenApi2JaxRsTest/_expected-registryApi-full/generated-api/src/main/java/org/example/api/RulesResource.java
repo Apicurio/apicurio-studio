@@ -1,5 +1,6 @@
 package org.example.api;
 
+import io.apicurio.registry.types.RuleType;
 import java.lang.String;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -11,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import org.example.api.beans.Rule;
-import org.example.api.beans.RuleType;
 
 /**
  * A JAX-RS interface.  An implementation of this interface must be provided.

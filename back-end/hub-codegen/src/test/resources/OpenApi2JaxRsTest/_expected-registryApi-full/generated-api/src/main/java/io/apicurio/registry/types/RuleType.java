@@ -1,5 +1,5 @@
 
-package org.example.api.beans;
+package io.apicurio.registry.types;
 
 import java.util.HashMap;
 import java.util.Map;

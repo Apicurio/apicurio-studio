@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter;
+import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
 import io.apicurio.datamodels.core.models.Node;
 import io.apicurio.datamodels.core.models.common.IDefinition;
@@ -333,6 +334,9 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
     }
 
     private CodegenJavaInterface getOrCreateInterface(String path) {
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
         String interfaceName = this.interfacesIndex.get(path);
         for (CodegenJavaInterface cgInterface : this.codegenInfo.getInterfaces()) {
             if (cgInterface.getName().equals(interfaceName)) {
@@ -390,7 +394,7 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         CodegenJavaReturn cgReturn = new CodegenJavaReturn();
         cgReturn.setType(null);
         if (schema.$ref != null) {
-            cgReturn.setType(this.typeFromSchemaRef(schema.$ref));
+            cgReturn.setType(this.typeFromSchemaRef(schema.ownerDocument(), schema.$ref));
         } else if ("array".equals(schema.type)) {
             cgReturn.setCollection("list");
             OasSchema items = (OasSchema) schema.items;
@@ -412,14 +416,8 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         return cgReturn;
     }
 
-    private String typeFromSchemaRef(String schemaRef) {
-        if (schemaRef != null && schemaRef.indexOf("#/components/schemas/") == 0) {
-            return this.packageName + ".beans." + schemaRef.substring(21);
-        }
-        if (schemaRef != null && schemaRef.indexOf("#/definitions/") == 0) {
-            return this.packageName + ".beans." + schemaRef.substring(14);
-        }
-        return null;
+    private String typeFromSchemaRef(Document document, String schemaRef) {
+        return CodegenUtil.schemaRefToFQCN(document, schemaRef, this.packageName + ".beans");
     }
 
     private boolean isPathItem(Node node) {

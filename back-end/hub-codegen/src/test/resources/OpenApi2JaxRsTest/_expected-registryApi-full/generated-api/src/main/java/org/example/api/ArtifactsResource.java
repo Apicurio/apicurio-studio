@@ -1,6 +1,7 @@
 package org.example.api;
 
 import io.apicurio.registry.types.ArtifactType;
+import io.apicurio.registry.types.RuleType;
 import java.io.InputStream;
 import java.lang.Integer;
 import java.lang.Long;
@@ -19,7 +20,6 @@ import javax.ws.rs.core.Response;
 import org.example.api.beans.ArtifactMetaData;
 import org.example.api.beans.EditableMetaData;
 import org.example.api.beans.Rule;
-import org.example.api.beans.RuleType;
 import org.example.api.beans.VersionMetaData;
 
 /**

@@ -50,6 +50,9 @@ public class InterfacesVisitor extends CombinedVisitorAdapter {
     @Override
     public void visitPathItem(OasPathItem node) {
         String p = node.getPath();
+        if (!p.startsWith("/")) {
+            p = "/" + p;
+        }
         String[] split = p.split("/");
         if (ModelUtils.isDefined(split) && split.length > 1) {
             String firstSegment = split[1];

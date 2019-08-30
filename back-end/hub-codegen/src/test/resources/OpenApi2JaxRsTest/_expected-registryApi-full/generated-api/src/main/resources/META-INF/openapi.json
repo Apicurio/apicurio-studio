@@ -1117,7 +1117,8 @@
                     "VALIDATION",
                     "COMPATIBILITY"
                 ],
-                "type": "string"
+                "type": "string",
+                "x-codegen-package": "io.apicurio.registry.types"
             },
             "ArtifactType": {
                 "description": "",

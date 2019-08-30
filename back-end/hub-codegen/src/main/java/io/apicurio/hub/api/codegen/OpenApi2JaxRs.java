@@ -64,10 +64,6 @@ import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.util.VisitorUtil;
 import io.apicurio.datamodels.core.visitors.TraverserDirection;
-import io.apicurio.datamodels.openapi.v2.models.Oas20Document;
-import io.apicurio.datamodels.openapi.v2.models.Oas20SchemaDefinition;
-import io.apicurio.datamodels.openapi.v3.models.Oas30Document;
-import io.apicurio.datamodels.openapi.v3.models.Oas30SchemaDefinition;
 import io.apicurio.hub.api.codegen.beans.CodegenInfo;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaArgument;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
@@ -595,25 +591,7 @@ public class OpenApi2JaxRs {
     }
 
     protected String schemaRefToFQCN(String path) {
-        String cname = "GeneratedClass_" + System.currentTimeMillis();
-        String pname = this.settings.javaPackage + ".beans";
-        if (path.startsWith("#/definitions/")) {
-            cname = path.substring(14);
-            Oas20Document doc20 = (Oas20Document) document;
-            if (doc20.definitions != null) {
-                Oas20SchemaDefinition definition = doc20.definitions.getDefinition(cname);
-                pname = CodegenUtil.schemaToPackageName(definition, pname);
-            }
-        }
-        if (path.startsWith("#/components/schemas/")) {
-            cname = path.substring(21);
-            Oas30Document doc30 = (Oas30Document) document;
-            if (doc30.components != null) {
-                Oas30SchemaDefinition definition = doc30.components.getSchemaDefinition(cname);
-                pname = CodegenUtil.schemaToPackageName(definition, pname);
-            }
-        }
-        return pname + "." + StringUtils.capitalize(cname);
+        return CodegenUtil.schemaRefToFQCN(document, path, this.settings.javaPackage + ".beans");
     }
 
     private static String javaPackageToZipPath(String javaPackage) {

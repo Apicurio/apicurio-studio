@@ -120,7 +120,7 @@
         <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>1.1.4.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>1.0.3.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
         <version.org.jboss.spec.jboss-javaee-7.0>1.1.1.Final</version.org.jboss.spec.jboss-javaee-7.0>
-        <version.org.jdbi>3.9.1</version.org.jdbi>
+        <version.org.jdbi>3.10.0</version.org.jdbi>
         <version.org.json>20190722</version.org.json>
         <version.org.jsonschema2pojo>1.0.1</version.org.jsonschema2pojo>
         <version.org.keycloak>4.8.3.Final</version.org.keycloak>

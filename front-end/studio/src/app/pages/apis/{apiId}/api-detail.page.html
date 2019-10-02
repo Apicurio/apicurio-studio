@@ -24,7 +24,8 @@
                         <!-- Overview Information Card -->
                         <div class="card-pf card-pf-accented" *ngIf="isLoaded('api')">
                             <div class="card-pf-heading">
-                                <h1 class="card-pf-title" [class.oai2]="isOpenApi20()" [class.oai3]="isOpenApi30()">
+                                <h1 [title]="apiIconTitle()" class="card-pf-title"
+                                    [class.oai2]="isOpenApi20()" [class.oai3]="isOpenApi30()" [class.aai2]="isAsyncApi20()">
                                     <span class="name-and-icon">{{ displayName() }}</span>
                                     <div class="pull-right">
                                         <div class="dropdown dropdown-kebab-pf" style="display:inline;">

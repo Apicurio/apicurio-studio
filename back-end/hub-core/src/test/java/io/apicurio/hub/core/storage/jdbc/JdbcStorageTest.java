@@ -332,13 +332,14 @@ public class JdbcStorageTest {
         String designId = storage.createApiDesign("user", design, "{}");
         
         // Fetch it by its ID
-        design = storage.getApiDesign("user", designId);
-        Assert.assertNotNull(design);
-        Assert.assertEquals("user", design.getCreatedBy());
-        Assert.assertEquals(now, design.getCreatedOn());
-        Assert.assertEquals("Just added the design!", design.getDescription());
-        Assert.assertEquals("API Name", design.getName());
-        Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2")), design.getTags());
+        ApiDesign dbDesign = storage.getApiDesign("user", designId);
+        Assert.assertNotNull(dbDesign);
+        Assert.assertEquals(design.getCreatedBy(), dbDesign.getCreatedBy());
+        Assert.assertEquals(now, dbDesign.getCreatedOn());
+        Assert.assertEquals(design.getDescription(), dbDesign.getDescription());
+        Assert.assertEquals(design.getName(), dbDesign.getName());
+        Assert.assertEquals(design.getType(), dbDesign.getType());
+        Assert.assertEquals(new HashSet<String>(Arrays.asList("tag1", "tag2")), dbDesign.getTags());
         
         try {
             storage.getApiDesign("user", "17");
@@ -353,6 +354,25 @@ public class JdbcStorageTest {
         } catch (NotFoundException e) {
             // OK!
         }
+        
+        // AsyncAPI design
+        design = new ApiDesign();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setDescription("An async api.");
+        design.setName("Async API");
+        design.setType(ApiDesignType.AsyncAPI20);
+
+        designId = storage.createApiDesign("user", design, "{}");
+        
+        // Fetch it by its ID
+        dbDesign = storage.getApiDesign("user", designId);
+        Assert.assertNotNull(dbDesign);
+        Assert.assertEquals(design.getCreatedBy(), dbDesign.getCreatedBy());
+        Assert.assertEquals(now, dbDesign.getCreatedOn());
+        Assert.assertEquals(design.getDescription(), dbDesign.getDescription());
+        Assert.assertEquals(design.getName(), dbDesign.getName());
+        Assert.assertEquals(design.getType(), dbDesign.getType());
     }
     
     @Test

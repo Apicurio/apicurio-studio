@@ -16,14 +16,18 @@
 
 package io.apicurio.hub.api.beans;
 
+import io.apicurio.hub.core.beans.ApiDesignType;
+
 /**
  * @author eric.wittmann@gmail.com
  */
 public class NewApiDesign {
 
+    @Deprecated
     private String specVersion;
     private String name;
     private String description;
+    private ApiDesignType type;
     
     /**
      * @return the name
@@ -65,6 +69,20 @@ public class NewApiDesign {
      */
     public void setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
+    }
+
+    /**
+     * @return the type
+     */
+    public ApiDesignType getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(ApiDesignType type) {
+        this.type = type;
     }
     
 }

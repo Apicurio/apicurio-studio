@@ -17,7 +17,7 @@
 
 export interface ApiDesignTemplate {
 
-    specVersion: string;
+    type: string;
     name: string;
     description: string;
     content: any;

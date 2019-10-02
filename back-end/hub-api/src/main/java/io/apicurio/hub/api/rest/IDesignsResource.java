@@ -73,7 +73,6 @@ public interface IDesignsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ApiDesign createDesign(NewApiDesign info) throws ServerError;
-
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -117,6 +117,7 @@ import {ResponseEditorComponent} from "./pages/apis/{apiId}/editor/_components/e
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
 import {ResponseFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-form.component";
 import {CloneResponseDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response-definition.component";
+import {AsyncApiEditorComponent} from "./pages/apis/{apiId}/editor/aaieditor.component";
 
 @NgModule({
     imports: [
@@ -143,14 +144,14 @@ import {CloneResponseDefinitionDialogComponent} from "./pages/apis/{apiId}/edito
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent,
         CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent, ResponseEditorComponent,
-        ResponseFormComponent, CloneResponseDefinitionDialogComponent
+        ResponseFormComponent, CloneResponseDefinitionDialogComponent, AsyncApiEditorComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
         RestResourceService, FeaturesService, CollaboratorService
     ],
     exports: [
-        ApiEditorComponent
+        ApiEditorComponent, AsyncApiEditorComponent
     ]
 })
 export class ApicurioEditorModule {

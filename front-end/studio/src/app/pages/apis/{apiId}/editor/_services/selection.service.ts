@@ -24,7 +24,7 @@ import {
     NodePath,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
-    OasDocument,
+    Document,
     OasPathItem,
     ValidationProblem
 } from "apicurio-data-models";
@@ -103,7 +103,7 @@ export class SelectionService {
         this.clearCurrentSelection();
 
         // Select the new thing
-        let doc: OasDocument = this.documentService.currentDocument();
+        let doc: Document = this.documentService.currentDocument();
         let visitor: MainSelectionVisitor = new MainSelectionVisitor();
         let npath: NodePath = new NodePath(path);
         npath.resolveWithVisitor(doc, visitor);
@@ -138,7 +138,7 @@ export class SelectionService {
     private clearCurrentSelection(): void {
         let previousSelection: string = this.currentSelection();
         if (previousSelection) {
-            let doc: OasDocument = this.documentService.currentDocument();
+            let doc: Document = this.documentService.currentDocument();
             if (doc) {
                 let visitor: MainSelectionVisitor = new MainSelectionVisitor(true);
                 let npath: NodePath = new NodePath(previousSelection);

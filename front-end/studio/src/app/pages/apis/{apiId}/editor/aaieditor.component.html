@@ -1,0 +1,19 @@
+<div (window:keydown)="onGlobalKeyDown($event)" class="aai-editor">
+
+    <title-bar [document]="document()"
+               [validationErrors]="validationErrors"
+               [undoableCommandCount]="_undoableCommandCount"
+               [redoableCommandCount]="_redoableCommandCount"
+               (onUndoClick)="undoLastCommand()"
+               (onRedoClick)="redoLastCommand()"
+               (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
+
+    <div class="editor-source">
+        <code-editor [theme]="sourceTheme()" #codeEditor
+                     [mode]="sourceMode()"
+                     [debounceTime]="1000"
+                     [(text)]="sourceValue"
+                     [editorStyle]="{ position: 'absolute', top: '0', bottom: '0', right: '0', left: '0', fontSize: '15px' }"></code-editor>
+    </div>
+
+</div>

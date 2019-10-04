@@ -357,7 +357,7 @@ public class OpenApi2JaxRs {
                 TypeName returnType = generateTypeName(cgMethod.getReturn().getCollection(),
                         cgMethod.getReturn().getType(), cgMethod.getReturn().getFormat(), true,
                         ClassName.get("javax.ws.rs.core", "Response"));
-                if (getSettings().reactive) {
+                if (getSettings().reactive || cgMethod.isAsync()) {
                     returnType = generateReactiveTypeName(returnType);
                 }
                 methodBuilder.returns(returnType);

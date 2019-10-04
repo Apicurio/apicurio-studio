@@ -7,6 +7,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.lang.String;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -58,7 +59,7 @@ public interface ArtifactsResource {
   @POST
   @Produces("application/json")
   @Consumes({"application/json", "application/x-yaml"})
-  ArtifactMetaData createArtifact(
+  CompletionStage<ArtifactMetaData> createArtifact(
       @HeaderParam("X-Registry-ArtifactType") ArtifactType xRegistryArtifactType,
       @HeaderParam("X-Registry-ArtifactId") String xRegistryArtifactId, InputStream data);
 

@@ -34,6 +34,7 @@ public class CodegenJavaMethod {
     private Set<String> consumes = new HashSet<>();
     private List<CodegenJavaArgument> arguments = new ArrayList<>();
     private CodegenJavaReturn _return;
+    private boolean async;
     
     /**
      * Constructor.
@@ -151,6 +152,20 @@ public class CodegenJavaMethod {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the async
+     */
+    public boolean isAsync() {
+        return async;
+    }
+
+    /**
+     * @param async the async to set
+     */
+    public void setAsync(boolean async) {
+        this.async = async;
     }
     
 }

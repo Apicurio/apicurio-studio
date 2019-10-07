@@ -110,6 +110,26 @@ public interface ISqlStatements {
     public String updateCollaborationInvitationStatus();
 
     /**
+     * A statement used to delete the sharing config for a design.
+     */
+    public String deleteSharingConfig();
+    
+    /**
+     * Gets sharing config for an API design by design id.
+     */
+    public String selectSharingConfig();
+
+    /**
+     * Gets sharing info for an API design by sharing UUID.
+     */
+    public String selectSharingInfo();
+    
+    /**
+     * A statement used to update a row in the sharing table.
+     */
+    public String upsertSharing();
+
+    /**
      * A statement used to insert a row into the acl table.
      */
     public String insertAcl();
@@ -179,6 +199,12 @@ public interface ISqlStatements {
      * a given API design.
      */
     public String selectLatestContentDocument();
+
+    /**
+     * A statement used to return the latest 'document' style api_content row for
+     * a given API design.
+     */
+    public String selectLatestContentDocumentForSharing();
 
     /**
      * A statement used to return all of the 'command' style api_content rows for
@@ -310,5 +336,10 @@ public interface ISqlStatements {
      * A statement used to delete a single row in the validation profiles table.
      */
     public String deleteValidationProfile();
+
+    /**
+     * Returns true if the DB supports standard "upsert" syntax (e.g. mysql and postgresql).
+     */
+    public boolean supportsUpsert();
 
 }

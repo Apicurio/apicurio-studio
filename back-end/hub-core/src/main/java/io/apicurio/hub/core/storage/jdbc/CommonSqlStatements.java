@@ -325,6 +325,18 @@ public abstract class CommonSqlStatements implements ISqlStatements {
                 + "WHERE c.design_id = ? AND c.type = 0 AND a.user_id = ? "
                 + "ORDER BY c.version DESC LIMIT 1";
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectLatestContentDocumentForSharing()
+     */
+    @Override
+    public String selectLatestContentDocumentForSharing() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "JOIN sharing s ON s.design_id = c.design_id "
+                + "WHERE s.uuid = ? AND s.level = 'DOCUMENTATION' AND c.type = 0 "
+                + "ORDER BY c.version DESC LIMIT 1";
+    }
 
     /**
      * @see ISqlStatements#selectLatestContentCommand()
@@ -558,5 +570,29 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String deleteValidationProfile() {
         return "DELETE FROM validation_profiles WHERE id = ? AND owner = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteSharingConfig()
+     */
+    @Override
+    public String deleteSharingConfig() {
+        return "DELETE FROM sharing WHERE design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectSharingConfig()
+     */
+    @Override
+    public String selectSharingConfig() {
+        return "SELECT * FROM sharing WHERE design_id = ?";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectSharingInfo()
+     */
+    @Override
+    public String selectSharingInfo() {
+        return "SELECT * FROM sharing WHERE uuid = ?";
     }
 }

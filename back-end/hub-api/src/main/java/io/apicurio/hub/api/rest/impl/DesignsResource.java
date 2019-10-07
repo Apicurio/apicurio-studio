@@ -102,6 +102,9 @@ import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.MockReference;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -443,7 +446,7 @@ public class DesignsResource implements IDesignsResource {
             logger.debug("\tUSER: {}", user);
 
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-            String content = designContent.getOaiDocument();
+            String content = designContent.getDocument();
             long contentVersion = designContent.getContentVersion();
             String secret = this.security.getToken().substring(0, Math.min(64, this.security.getToken().length() - 1));
             String sessionId = this.editingSessionManager.createSessionUuid(designId, user, secret, contentVersion);
@@ -515,7 +518,7 @@ public class DesignsResource implements IDesignsResource {
             for (ApiDesignCommand apiCommand : apiCommands) {
                 commands.add(apiCommand.getCommand());
             }
-            String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+            String content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
             String ct = "application/json; charset=" + StandardCharsets.UTF_8;
             String cl = null;
             
@@ -912,7 +915,7 @@ public class DesignsResource implements IDesignsResource {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
             
-            String content = designContent.getOaiDocument();
+            String content = designContent.getDocument();
             
             List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
             if (!apiCommands.isEmpty()) {
@@ -920,7 +923,7 @@ public class DesignsResource implements IDesignsResource {
                 for (ApiDesignCommand apiCommand : apiCommands) {
                     commands.add(apiCommand.getCommand());
                 }
-                content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+                content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
             }
 
             // Convert to yaml if necessary
@@ -1341,6 +1344,56 @@ public class DesignsResource implements IDesignsResource {
                     problem.message, problem.severity.name()));
         }
         return errors;
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#configureSharing(java.lang.String, io.apicurio.hub.core.beans.UpdateSharingConfiguration)
+     */
+    @Override
+    public SharingConfiguration configureSharing(String designId, UpdateSharingConfiguration config)
+            throws ServerError, NotFoundException {
+        logger.debug("Configuring sharing settings for API: {} ", designId);
+        metrics.apiCall("/designs/{designId}/sharing", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            String uuid = UUID.randomUUID().toString(); // Note: only used if this is the first time
+            
+            if (!this.storage.hasOwnerPermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            
+            this.storage.setSharingConfig(designId, uuid, config.getLevel());
+            
+            return this.storage.getSharingConfig(designId);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+        
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getSharingConfiguration(java.lang.String)
+     */
+    @Override
+    public SharingConfiguration getSharingConfiguration(String designId)
+            throws ServerError, NotFoundException {
+        logger.debug("Getting sharing settings for API: {} ", designId);
+        metrics.apiCall("/designs/{designId}/sharing", "GET");
+        
+        // Make sure we have access to the design.
+        this.getDesign(designId);
+
+        try {
+            SharingConfiguration sharingConfig = this.storage.getSharingConfig(designId);
+            if (sharingConfig == null) {
+                sharingConfig = new SharingConfiguration();
+                sharingConfig.setLevel(SharingLevel.NONE);
+            }
+            return sharingConfig;
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
     }
     
 }

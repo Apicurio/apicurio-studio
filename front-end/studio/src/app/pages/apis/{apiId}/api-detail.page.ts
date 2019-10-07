@@ -29,6 +29,7 @@ import {User} from "../../../models/user.model";
 import {ApiCollaborator} from "../../../models/api-collaborator.model";
 import {ConfigService} from "../../../services/config.service";
 import {ApiMock, MockReference} from "../../../models/mock-api.model";
+import {SharingDialogData} from "./_components/sharing.dialog";
 
 @Component({
     moduleId: module.id,

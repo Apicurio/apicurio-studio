@@ -33,6 +33,9 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingInfo;
+import io.apicurio.hub.core.beans.SharingLevel;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -218,6 +221,14 @@ public interface IStorage {
      * @throws StorageException
      */
     public ApiDesignContent getLatestContentDocument(String userId, String designId) throws NotFoundException, StorageException;
+
+    /**
+     * Returns the most recent full content row for the given API Design.
+     * @param sharingUuid
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid) throws NotFoundException, StorageException;
 
     /**
      * Returns a list of commands for a given API design that have been executed since 
@@ -482,5 +493,29 @@ public interface IStorage {
      * @throws StorageException
      */
     public void deleteValidationProfile(String userId, long profileId) throws StorageException, NotFoundException;
+
+    /**
+     * Gets the sharing config for a given API design.
+     * @param designId
+     * @throws StorageException
+     */
+    public SharingConfiguration getSharingConfig(String designId) throws StorageException;
+    
+    /**
+     * Sets the sharing configuration for the given API design.
+     * @param designId
+     * @param uuid
+     * @param level
+     * @throws StorageException
+     */
+    public void setSharingConfig(String designId, String uuid, SharingLevel level) throws StorageException;
+    
+    /**
+     * Returns the sharing info given the share UUID.
+     * @param uuid
+     * @throws StorageException
+     * @throws NotFoundException
+     */
+    public SharingInfo getSharingInfo(String uuid) throws StorageException, NotFoundException;
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2019 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,43 +19,28 @@ package io.apicurio.hub.core.beans;
 /**
  * @author eric.wittmann@gmail.com
  */
-public class ApiDesignContent {
-
-    private String document;
-    private long contentVersion;
+public class UpdateSharingConfiguration {
+    
+    private SharingLevel level;
     
     /**
      * Constructor.
      */
-    public ApiDesignContent() {
+    public UpdateSharingConfiguration() {
     }
 
     /**
-     * @return the oaiDocument
+     * @return the level
      */
-    public String getDocument() {
-        return document;
+    public SharingLevel getLevel() {
+        return level;
     }
 
     /**
-     * @param oaiDocument the oaiDocument to set
+     * @param level the level to set
      */
-    public void setDocument(String oaiDocument) {
-        this.document = oaiDocument;
+    public void setLevel(SharingLevel level) {
+        this.level = level;
     }
 
-    /**
-     * @return the contentVersion
-     */
-    public long getContentVersion() {
-        return contentVersion;
-    }
-
-    /**
-     * @param contentVersion the contentVersion to set
-     */
-    public void setContentVersion(long contentVersion) {
-        this.contentVersion = contentVersion;
-    }
-    
 }

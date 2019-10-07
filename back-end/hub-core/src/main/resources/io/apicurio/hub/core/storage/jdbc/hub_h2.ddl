@@ -45,3 +45,9 @@ CREATE INDEX IDX_codegen_2 ON codegen(design_id);
 CREATE TABLE validation_profiles (id BIGINT AUTO_INCREMENT NOT NULL, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities CLOB NOT NULL);
 ALTER TABLE validation_profiles ADD PRIMARY KEY (id);
 CREATE INDEX IDX_vprof_1 ON validation_profiles(owner);
+
+CREATE TABLE sharing (design_id BIGINT NOT NULL, uuid VARCHAR(255) NOT NULL, level VARCHAR(64) NOT NULL);
+ALTER TABLE sharing ADD PRIMARY KEY (design_id);
+ALTER TABLE sharing ADD CONSTRAINT FK_shar_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
+CREATE INDEX IDX_shar_1 ON sharing(uuid);
+CREATE INDEX IDX_shar_2 ON sharing(level);

@@ -48,5 +48,21 @@ public class MySQL5SqlStatements extends CommonSqlStatements {
     public String isDatabaseInitialized() {
         return "SELECT count(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs' LIMIT 1";
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#supportsUpsert()
+     */
+    @Override
+    public boolean supportsUpsert() {
+        return true;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#upsertSharing()
+     */
+    @Override
+    public String upsertSharing() {
+        return "INSERT INTO TABLE sharing (design_id, uuid, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = ?";
+    }
 
 }

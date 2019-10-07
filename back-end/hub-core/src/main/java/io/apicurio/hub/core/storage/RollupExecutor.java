@@ -64,7 +64,7 @@ public class RollupExecutor implements IRollupExecutor {
         for (ApiDesignCommand apiCommand : apiCommands) {
             commands.add(apiCommand.getCommand());
         }
-        String content = this.oaiCommandExecutor.executeCommands(designContent.getOaiDocument(), commands);
+        String content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
         long contentVersion = storage.addContent(userId, designId, ApiContentType.Document, content);
         logger.debug("Rollup of {} commands complete with new content version: {}", commands.size(), contentVersion);
 

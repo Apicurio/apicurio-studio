@@ -52,6 +52,9 @@ import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
@@ -660,6 +663,39 @@ public class DesignsResourceTest {
         collaborator = iterator.next();
         Assert.assertEquals("user2", collaborator.getUserId());
         Assert.assertEquals("owner", collaborator.getRole());
+    }
+
+    @Test
+    public void testSharing() throws Exception {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("3.0.2");
+        info.setName("My Shared API");
+        info.setDescription("Description of my shared API.");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("1", design.getId());
+        
+        SharingConfiguration configuration = resource.getSharingConfiguration("1");
+        Assert.assertEquals(SharingLevel.NONE, configuration.getLevel());
+        Assert.assertNull(configuration.getUuid());
+        
+        UpdateSharingConfiguration update = new UpdateSharingConfiguration();
+        update.setLevel(SharingLevel.DOCUMENTATION);
+        resource.configureSharing("1", update);
+        
+        configuration = resource.getSharingConfiguration("1");
+        Assert.assertEquals(SharingLevel.DOCUMENTATION, configuration.getLevel());
+        Assert.assertNotNull(configuration.getUuid());
+        
+        update = new UpdateSharingConfiguration();
+        update.setLevel(SharingLevel.NONE);
+        resource.configureSharing("1", update);
+        
+        configuration = resource.getSharingConfiguration("1");
+        Assert.assertEquals(SharingLevel.NONE, configuration.getLevel());
+        Assert.assertNotNull(configuration.getUuid());
     }
 
     /**

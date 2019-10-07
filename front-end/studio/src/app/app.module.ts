@@ -71,6 +71,7 @@ import {ValidationService} from "./services/validation.service";
 import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 import {ProfileEditorComponent} from "./pages/settings/validation/_components/profile-editor.component";
 import {TagListComponent} from "./components/common/tag-list.component";
+import {SharingDialogComponent} from "./pages/apis/{apiId}/_components/sharing.dialog";
 
 @NgModule({
     imports: [
@@ -86,7 +87,8 @@ import {TagListComponent} from "./components/common/tag-list.component";
         ApiCollaborationPageComponent, ApiAcceptPageComponent, ApiDetailPageComponent, ApiEditorPageComponent,
         PublishPageComponent, GitHubResourceComponent, GitLabResourceComponent, BitbucketResourceComponent,
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
-        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent, TagListComponent
+        DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent, TagListComponent,
+        SharingDialogComponent
 
     ],
     providers: [

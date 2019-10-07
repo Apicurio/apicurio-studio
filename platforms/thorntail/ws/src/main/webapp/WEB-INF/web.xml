@@ -18,4 +18,13 @@
     <url-pattern>/metrics</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>SharingServlet</servlet-name>
+    <servlet-class>io.apicurio.hub.editing.sharing.SharingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SharingServlet</servlet-name>
+    <url-pattern>/sharing/*</url-pattern>
+  </servlet-mapping>
+
 </web-app>

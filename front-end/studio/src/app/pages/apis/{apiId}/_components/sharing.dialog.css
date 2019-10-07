@@ -1,0 +1,24 @@
+a.sharing {
+    cursor: default;
+    text-decoration: none;
+}
+
+.form-control-apicurio-copybox {
+    display: flex;
+    width: 100%;
+}
+.form-control-apicurio-copybox > input {
+    flex-grow: 1;
+}
+.form-control-apicurio-copybox > button {
+    box-shadow: none;
+    margin-left: -1px;
+}
+
+.copybox-success {
+    color: #f0b618;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    text-align: right;
+}

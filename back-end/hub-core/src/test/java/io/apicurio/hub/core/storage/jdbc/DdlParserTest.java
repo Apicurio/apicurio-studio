@@ -202,6 +202,27 @@ public class DdlParserTest {
             "---\n" + 
             "CREATE INDEX IDX_FK_contracts_a ON contracts(clientv_id)\n" + 
             "---\n" + 
+            "CREATE FUNCTION upsert_sharing(i BIGINT, u VARCHAR(255), l VARCHAR(64)) RETURNS VOID AS\n" + 
+            "$$\n" + 
+            "BEGIN\n" + 
+            "    LOOP\n" + 
+            "        -- first try to update\n" + 
+            "        UPDATE sharing SET level = l WHERE design_id = i;\n" + 
+            "        IF found THEN\n" + 
+            "            RETURN;\n" + 
+            "        END IF;\n" + 
+            "        -- not there, so try to insert the data\n" + 
+            "        BEGIN\n" + 
+            "            INSERT INTO sharing(design_id, uuid, level) VALUES (i, u, l);\n" + 
+            "            RETURN;\n" + 
+            "        EXCEPTION WHEN unique_violation THEN\n" + 
+            "            -- do nothing, and loop to try the UPDATE again\n" + 
+            "        END;\n" + 
+            "    END LOOP;\n" + 
+            "END;\n" + 
+            "$$\n" + 
+            "LANGUAGE plpgsql\n" + 
+            "---\n" + 
             "";
 
     /**

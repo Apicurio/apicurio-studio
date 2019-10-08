@@ -90,7 +90,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 10;
+    private static int DB_VERSION = 11;
     private static final Object dbMutex = new Object();
 
     @Inject

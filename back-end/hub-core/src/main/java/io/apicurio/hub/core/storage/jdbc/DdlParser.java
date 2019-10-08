@@ -63,14 +63,20 @@ public class DdlParser {
             if (line.startsWith("--")) {
                 continue;
             }
-            if (line.trim().isEmpty()) {
+            if (line.trim().isEmpty() && !isInMultiLineStatement) {
                 continue;
+            }
+            if (line.trim().isEmpty() && isInMultiLineStatement) {
+                isInMultiLineStatement = false;
             }
             if (line.endsWith("'") || line.endsWith("(")) {
                 isInMultiLineStatement = true;
             }
             if (line.startsWith("'") || line.startsWith(")")) {
                 isInMultiLineStatement = false;
+            }
+            if (line.startsWith("CREATE FUNCTION")) {
+                isInMultiLineStatement = true;
             }
             builder.append(line);
             builder.append("\n");

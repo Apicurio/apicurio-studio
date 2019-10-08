@@ -40,6 +40,8 @@ import {ApiMock, MockReference} from "../models/mock-api.model";
 import {HttpUtils} from "../util/common";
 import {StorageError} from "../models/storageError.model";
 import {DeferredAction} from "../models/deferred.model";
+import {SharingConfiguration} from "../models/sharing-config.model";
+import {UpdateSharingConfiguration} from "../models/update-sharing-config.model";
 
 
 export interface IConnectionHandler {
@@ -770,7 +772,6 @@ export class ApisService extends AbstractHubService {
      * Called to create a new codegen project for the given API.
      * @param apiId
      * @param project
-     * 
      */
     public createCodegenProject(apiId: string, project: NewCodegenProject): Promise<CodegenProject> {
         console.info("[ApisService] Creating a codegen project for API %s", apiId);
@@ -789,7 +790,6 @@ export class ApisService extends AbstractHubService {
      * @param apiId
      * @param projectId
      * @param project
-     * 
      */
     public updateCodegenProject(apiId: string, projectId: string, project: UpdateCodegenProject): Promise<CodegenProject> {
         console.info("[ApisService] Updating a codegen project for API %s", apiId);
@@ -807,7 +807,6 @@ export class ApisService extends AbstractHubService {
     /**
      * Called to get a list of all the codegen projects for a given API design.
      * @param apiId
-     * 
      */
     public getCodegenProjects(apiId: string): Promise<CodegenProject[]> {
         console.info("[ApisService] Getting codegen projects for API Design %s", apiId);
@@ -842,4 +841,41 @@ export class ApisService extends AbstractHubService {
         console.info("[ApisService] Fetching API publications: %s", getPublicationsUrl);
         return this.httpGet<ApiPublication[]>(getPublicationsUrl, options);
     }
+
+    /**
+     * Gets the sharing config info for the given API design id.
+     * @param apiId
+     */
+    public getSharingConfiguration(apiId: string): Promise<SharingConfiguration> {
+        console.info("[ApisService] Getting sharing config for API %s", apiId);
+
+        let getSharingConfigUrl: string = this.endpoint("/designs/:designId/sharing", {
+            designId: apiId
+        });
+
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ApisService] Getting sharing config: %s", getSharingConfigUrl);
+        return this.httpGet<SharingConfiguration>(getSharingConfigUrl, options);
+    }
+
+    /**
+     * Called to update sharing config for a given API design.
+     * @param apiId
+     * @param level
+     */
+    public configureSharing(apiId: string, level: string): Promise<SharingConfiguration> {
+        console.info("[ApisService] Configuring sharing config for API %s", apiId);
+
+        let configureSharingUrl: string = this.endpoint("/designs/:designId/sharing", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
+        let body: UpdateSharingConfiguration = new UpdateSharingConfiguration();
+        body.level = level;
+
+        console.info("[ApisService] Configuring sharing: %s", configureSharingUrl);
+        return this.httpPutWithReturn<UpdateSharingConfiguration, SharingConfiguration>(configureSharingUrl, body, options);
+    }
+
 }

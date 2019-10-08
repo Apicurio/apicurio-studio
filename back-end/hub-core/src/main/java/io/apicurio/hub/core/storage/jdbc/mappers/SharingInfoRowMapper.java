@@ -16,37 +16,32 @@
 
 package io.apicurio.hub.core.storage.jdbc.mappers;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.io.IOUtils;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 
-import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.SharingInfo;
+import io.apicurio.hub.core.beans.SharingLevel;
 
 /**
- * A row mapper to read a 'document' style row from the api_content table.
  * @author eric.wittmann@gmail.com
  */
-public class ApiDesignContentRowMapper implements RowMapper<ApiDesignContent> {
+public class SharingInfoRowMapper implements RowMapper<SharingInfo> {
     
-    public static final ApiDesignContentRowMapper instance = new ApiDesignContentRowMapper();
+    public static final SharingInfoRowMapper instance = new SharingInfoRowMapper();
 
     /**
      * @see org.jdbi.v3.core.mapper.RowMapper#map(java.sql.ResultSet, org.jdbi.v3.core.statement.StatementContext)
      */
     @Override
-    public ApiDesignContent map(ResultSet rs, StatementContext ctx) throws SQLException {
-        try {
-            ApiDesignContent content = new ApiDesignContent();
-            content.setContentVersion(rs.getLong("version"));
-            content.setDocument(IOUtils.toString(rs.getCharacterStream("data")));
-            return content;
-        } catch (IOException e) {
-            throw new SQLException(e);
-        }
+    public SharingInfo map(ResultSet rs, StatementContext ctx) throws SQLException {
+        SharingInfo design = new SharingInfo();
+        design.setDesignId(rs.getString("design_id"));
+        design.setShareUuid(rs.getString("uuid"));
+        design.setLevel(SharingLevel.valueOf(rs.getString("level")));
+        return design;
     }
 
 }

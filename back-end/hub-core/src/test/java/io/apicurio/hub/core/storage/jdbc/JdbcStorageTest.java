@@ -52,6 +52,8 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingLevel;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.beans.ValidationSeverity;
 import io.apicurio.hub.core.config.HubConfiguration;
@@ -645,7 +647,7 @@ public class JdbcStorageTest {
         
         ApiDesignContent content = storage.getLatestContentDocument("user", id);
         Assert.assertNotNull(content);
-        Assert.assertEquals("{ROLLUP:123}", content.getOaiDocument());
+        Assert.assertEquals("{ROLLUP:123}", content.getDocument());
         Assert.assertNotNull(content.getContentVersion());
     }
 
@@ -1471,6 +1473,37 @@ public class JdbcStorageTest {
 
     }
 
+    @Test
+    public void testSharing() throws Exception {
+        ApiDesign design = new ApiDesign();
+        Date now = new Date();
+        design.setCreatedBy("user");
+        design.setCreatedOn(now);
+        design.setName("Shared API");
+        design.setType(ApiDesignType.OpenAPI30);
+
+        String id = storage.createApiDesign("user", design, "{}");
+        Assert.assertNotNull(id);
+        Assert.assertEquals("1", id);
+        
+        SharingConfiguration sc = storage.getSharingConfig("1");
+        Assert.assertNull(sc);
+        
+        storage.setSharingConfig("1", "12345", SharingLevel.DOCUMENTATION);
+        
+        sc = storage.getSharingConfig("1");
+        Assert.assertNotNull(sc);
+        Assert.assertEquals("12345", sc.getUuid());
+        Assert.assertEquals(SharingLevel.DOCUMENTATION, sc.getLevel());
+        
+        storage.setSharingConfig("1", "54321", SharingLevel.NONE);
+
+        sc = storage.getSharingConfig("1");
+        Assert.assertNotNull(sc);
+        Assert.assertEquals("54321", sc.getUuid());
+        Assert.assertEquals(SharingLevel.NONE, sc.getLevel());
+    }
+    
     /**
      * Creates an in-memory datasource.
      * @throws SQLException

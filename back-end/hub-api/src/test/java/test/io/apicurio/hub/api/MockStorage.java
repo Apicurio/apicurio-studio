@@ -29,6 +29,9 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingInfo;
+import io.apicurio.hub.core.beans.SharingLevel;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -56,6 +59,7 @@ public class MockStorage implements IStorage {
     private Map<String, MockUuidRow> uuids = new HashMap<>();
     private Map<String, MockInviteRow> invites = new HashMap<>();
     private Map<String, String> permissions = new HashMap<>();
+    private Map<String, SharingConfiguration> sharing = new HashMap<>();
     private int counter = 1;
     
     /**
@@ -182,11 +186,10 @@ public class MockStorage implements IStorage {
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listLinkedAccounts(java.lang.String)
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<LinkedAccount> listLinkedAccounts(String userId) throws StorageException {
         if (!accounts.containsKey(userId)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return accounts.get(userId).values();
     }
@@ -259,8 +262,17 @@ public class MockStorage implements IStorage {
         
         ApiDesignContent rval = new ApiDesignContent();
         rval.setContentVersion(found.version);
-        rval.setOaiDocument(found.data);
+        rval.setDocument(found.data);
         return rval;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
+     */
+    @Override
+    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid)
+            throws NotFoundException, StorageException {
+        return null;
     }
     
     /**
@@ -736,6 +748,33 @@ public class MockStorage implements IStorage {
      */
     @Override
     public void deleteValidationProfile(String userId, long profileId) throws StorageException {
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getSharingConfig(java.lang.String)
+     */
+    @Override
+    public SharingConfiguration getSharingConfig(String designId) throws StorageException {
+        return this.sharing.get(designId);
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#setSharingConfig(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.SharingLevel)
+     */
+    @Override
+    public void setSharingConfig(String designId, String uuid, SharingLevel level) throws StorageException {
+        SharingConfiguration config = new SharingConfiguration();
+        config.setLevel(level);
+        config.setUuid(uuid);
+        this.sharing.put(designId, config);
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getSharingInfo(java.lang.String)
+     */
+    @Override
+    public SharingInfo getSharingInfo(String uuid) throws StorageException, NotFoundException {
+        return null;
     }
 
 }

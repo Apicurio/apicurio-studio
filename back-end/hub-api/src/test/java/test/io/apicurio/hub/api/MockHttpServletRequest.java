@@ -142,10 +142,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
     /**
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String[]> getParameterMap() {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     /**

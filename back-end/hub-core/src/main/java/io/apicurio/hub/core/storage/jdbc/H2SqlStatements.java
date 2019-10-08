@@ -48,5 +48,21 @@ public class H2SqlStatements extends CommonSqlStatements {
     public String isDatabaseInitialized() {
         return "SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_name = 'API_DESIGNS'";
     }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#supportsUpsert()
+     */
+    @Override
+    public boolean supportsUpsert() {
+        return false;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#upsertSharing()
+     */
+    @Override
+    public String upsertSharing() {
+        return "MERGE INTO sharing (design_id, uuid, level) KEY (design_id) VALUES(?, ?, ?);";
+    }
 
 }

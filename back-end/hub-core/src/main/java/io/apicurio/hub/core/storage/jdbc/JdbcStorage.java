@@ -58,6 +58,9 @@ import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.SharingInfo;
+import io.apicurio.hub.core.beans.SharingLevel;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
@@ -74,6 +77,8 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ApiPublicationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.CodegenProjectRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ContributorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.InvitationRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.SharingConfigurationRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.SharingInfoRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 
 /**
@@ -85,7 +90,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 9;
+    private static int DB_VERSION = 10;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -657,6 +662,27 @@ public class JdbcStorage implements IStorage {
     }
     
     /**
+     * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
+     */
+    @Override
+    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid)
+            throws NotFoundException, StorageException {
+        logger.debug("Selecting the most recent api_content row of type 'document' for sharing UUID: {}", sharingUuid);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectLatestContentDocumentForSharing();
+                Query query = handle.createQuery(statement)
+                        .bind(0, sharingUuid);
+                return query.map(ApiDesignContentRowMapper.instance).one();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting content document.", e);
+        }
+    }
+    
+    /**
      * @see io.apicurio.hub.core.storage.IStorage#listContentCommands(java.lang.String, java.lang.String, long)
      */
     @Override
@@ -803,6 +829,10 @@ public class JdbcStorage implements IStorage {
 
                 // And also delete the codegen rows
                 statement = sqlStatements.deleteCodegenProjects();
+                handle.createUpdate(statement).bind(0, did).execute();
+
+                // And also delete sharing config
+                statement = sqlStatements.deleteSharingConfig();
                 handle.createUpdate(statement).bind(0, did).execute();
 
                 // Then delete the api design itself
@@ -1466,5 +1496,72 @@ public class JdbcStorage implements IStorage {
         }
     }
 
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getSharingConfig(java.lang.String)
+     */
+    @Override
+    public SharingConfiguration getSharingConfig(String designId) throws StorageException {
+        logger.debug("Getting sharing config for API Design: {}", designId);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectSharingConfig();
+                Query query = handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId));
+                return query.map(SharingConfigurationRowMapper.instance).one();
+            });
+        } catch (IllegalStateException e) {
+            return null;
+        } catch (Exception e) {
+            throw new StorageException("Error getting sharing config.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getSharingInfo(java.lang.String)
+     */
+    @Override
+    public SharingInfo getSharingInfo(String uuid) throws StorageException, NotFoundException {
+        logger.debug("Getting sharing info for UUID: {}", uuid);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectSharingInfo();
+                Query query = handle.createQuery(statement)
+                        .bind(0, uuid);
+                return query.map(SharingInfoRowMapper.instance).one();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting sharing info.", e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#setSharingConfig(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.SharingLevel)
+     */
+    @Override
+    public void setSharingConfig(String designId, String uuid, SharingLevel level) throws StorageException {
+        logger.debug("Updating sharing settings for: {}", designId);
+        try {
+            this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.upsertSharing();
+                if (sqlStatements.supportsUpsert()) {
+                    handle.createUpdate(statement)
+                            .bind(0, designId)
+                            .bind(1, uuid)
+                            .bind(2, level.name())
+                            .bind(3, level.name())
+                            .execute();
+                } else {
+                    handle.createUpdate(statement)
+                            .bind(0, designId)
+                            .bind(1, uuid)
+                            .bind(2, level.name())
+                            .execute();
+                }
+                return null;
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error updating sharing config.", e);
+        }        
+    }
 
 }

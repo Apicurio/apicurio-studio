@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 9);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 10);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP, used_on TIMESTAMP, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);

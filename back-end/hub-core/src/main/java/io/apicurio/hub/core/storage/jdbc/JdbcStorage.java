@@ -90,7 +90,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 10;
+    private static int DB_VERSION = 11;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -1543,16 +1543,17 @@ public class JdbcStorage implements IStorage {
         try {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.upsertSharing();
+                Long did = Long.valueOf(designId);
                 if (sqlStatements.supportsUpsert()) {
                     handle.createUpdate(statement)
-                            .bind(0, designId)
+                            .bind(0, did)
                             .bind(1, uuid)
                             .bind(2, level.name())
                             .bind(3, level.name())
                             .execute();
                 } else {
                     handle.createUpdate(statement)
-                            .bind(0, designId)
+                            .bind(0, did)
                             .bind(1, uuid)
                             .bind(2, level.name())
                             .execute();

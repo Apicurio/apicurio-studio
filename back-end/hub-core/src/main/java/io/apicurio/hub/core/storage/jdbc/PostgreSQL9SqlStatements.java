@@ -54,7 +54,7 @@ public class PostgreSQL9SqlStatements extends CommonSqlStatements {
      */
     @Override
     public boolean supportsUpsert() {
-        return true;
+        return false;
     }
     
     /**
@@ -62,7 +62,7 @@ public class PostgreSQL9SqlStatements extends CommonSqlStatements {
      */
     @Override
     public String upsertSharing() {
-        return "INSERT INTO TABLE sharing (design_id, uuid, level) VALUES (?, ?, ?) ON CONFLICT (design_id) DO UPDATE SET level = ?";
+        return "SELECT upsert_sharing(?, ?, ?)";
     }
     
 }

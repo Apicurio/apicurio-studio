@@ -62,7 +62,7 @@ public class MySQL5SqlStatements extends CommonSqlStatements {
      */
     @Override
     public String upsertSharing() {
-        return "INSERT INTO TABLE sharing (design_id, uuid, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = ?";
+        return "INSERT INTO sharing (design_id, uuid, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE level = ?";
     }
 
 }

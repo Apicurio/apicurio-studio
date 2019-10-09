@@ -1543,16 +1543,17 @@ public class JdbcStorage implements IStorage {
         try {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.upsertSharing();
+                Long did = Long.valueOf(designId);
                 if (sqlStatements.supportsUpsert()) {
                     handle.createUpdate(statement)
-                            .bind(0, designId)
+                            .bind(0, did)
                             .bind(1, uuid)
                             .bind(2, level.name())
                             .bind(3, level.name())
                             .execute();
                 } else {
                     handle.createUpdate(statement)
-                            .bind(0, designId)
+                            .bind(0, did)
                             .bind(1, uuid)
                             .bind(2, level.name())
                             .execute();

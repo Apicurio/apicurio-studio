@@ -47,7 +47,7 @@ public class OpenApi2Quarkus extends OpenApi2JaxRs {
     protected void generateAll(CodegenInfo info, StringBuilder log, ZipOutputStream zipOutput)
             throws IOException {
         super.generateAll(info, log, zipOutput);
-        if (!this.isUpdateOnly()) {
+        if (!this.isUpdateOnly() && !this.settings.codeOnly) {
             log.append("Generating Dockerfiles\r\n");
             zipOutput.putNextEntry(new ZipEntry("src/main/docker/Dockerfile.jvm"));
             zipOutput.write(generateDockerfileJvm().getBytes());

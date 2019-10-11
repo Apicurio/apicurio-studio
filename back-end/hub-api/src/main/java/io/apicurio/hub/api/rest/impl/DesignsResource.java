@@ -74,6 +74,7 @@ import io.apicurio.hub.api.beans.ValidationError;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs;
 import io.apicurio.hub.api.codegen.OpenApi2JaxRs.JaxRsProjectSettings;
+import io.apicurio.hub.api.codegen.OpenApi2Quarkus;
 import io.apicurio.hub.api.codegen.OpenApi2Thorntail;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
@@ -1212,6 +1213,15 @@ public class DesignsResource implements IDesignsResource {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
 
                 OpenApi2JaxRs generator = new OpenApi2JaxRs();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
+                
+                return generateAndPublish(project, generator);
+            } else if (project.getType() == CodegenProjectType.quarkus) {
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
+
+                OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(oaiContent);
                 generator.setUpdateOnly(updateOnly);

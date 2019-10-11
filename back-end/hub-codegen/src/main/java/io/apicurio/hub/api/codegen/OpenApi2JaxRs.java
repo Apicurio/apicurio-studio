@@ -87,7 +87,7 @@ public class OpenApi2JaxRs {
 
     private String openApiDoc;
     protected transient Document document;
-    private JaxRsProjectSettings settings;
+    protected JaxRsProjectSettings settings;
     private boolean updateOnly;
     
     /**

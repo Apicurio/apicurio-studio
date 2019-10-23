@@ -1063,6 +1063,17 @@ public class DesignsResource implements IDesignsResource {
                 generator.setUpdateOnly(updateOnly);
                 
                 return asResponse(settings, generator);
+            } else if (project.getType() == CodegenProjectType.quarkus) {
+                JaxRsProjectSettings settings = toJaxRsSettings(project);
+                
+                boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
+
+                final OpenApi2Quarkus generator = new OpenApi2Quarkus();
+                generator.setSettings(settings);
+                generator.setOpenApiDocument(oaiContent);
+                generator.setUpdateOnly(updateOnly);
+                
+                return asResponse(settings, generator);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
@@ -1199,7 +1210,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             String oaiContent = this.getApiContent(project.getDesignId(), FormatType.JSON);
             
-            // TODO support other types besides Thorntail
+            // TODO support other types besides JAX-RS
             if (project.getType() == CodegenProjectType.thorntail) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
 

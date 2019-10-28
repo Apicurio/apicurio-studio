@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $APICURIO_KEYCLOAK_USER ] && [ $APICURIO_KEYCLOAK_PASSWORD ]; then
-    keycloak/bin/add-user-keycloak.sh --user $APICURIO_KEYCLOAK_USER --password $APICURIO_KEYCLOAK_PASSWORD
+    /opt/jboss/keycloak/bin/add-user-keycloak.sh --user $APICURIO_KEYCLOAK_USER --password $APICURIO_KEYCLOAK_PASSWORD
 fi
 
 

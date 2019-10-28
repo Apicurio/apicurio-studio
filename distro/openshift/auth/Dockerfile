@@ -1,4 +1,4 @@
-FROM jboss/keycloak:4.1.0.Final
+FROM jboss/keycloak:7.0.1
 
 LABEL authors="Eric Wittmann <eric.wittmann@redhat.com>"
 

@@ -13,6 +13,7 @@
                      [mode]="sourceMode()"
                      [debounceTime]="1000"
                      [(text)]="sourceValue"
+                     (textChange)="onSourceChange($event)"
                      [editorStyle]="{ position: 'absolute', top: '0', bottom: '0', right: '0', left: '0', fontSize: '15px' }"></code-editor>
     </div>
 

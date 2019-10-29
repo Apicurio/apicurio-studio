@@ -430,45 +430,12 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         // TODO what to do here?  ignore for now
     }
 
-}
-
-
-/**
- * Visitor used to determine what form should be displayed based on the selected node.
- */
-export class FormSelectionVisitor extends CombinedVisitorAdapter {
-
-    public _selectionType: string = "main";
-    public _selectedNode: Node = null;
-
-    constructor(private version: string) {
-        super();
+    /**
+     * Called when the user changes something in the source.
+     * @param source
+     */
+    public onSourceChange(source: string): void {
+        
     }
 
-    public selectionType(): string {
-        return this._selectionType;
-    }
-
-    public formType(): string {
-        return this._selectionType + "_" + this.version;
-    }
-
-    public selection(): Node {
-        return this._selectedNode;
-    }
-
-    public visitPathItem(node: OasPathItem): void {
-        this._selectedNode = node;
-        this._selectionType = "path";
-    }
-
-    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
-        this._selectedNode = node;
-        this._selectionType = "definition";
-    }
-
-    public visitResponseDefinition(node: IDefinition): void {
-        this._selectedNode = node as any;
-        this._selectionType = "response";
-    }
 }

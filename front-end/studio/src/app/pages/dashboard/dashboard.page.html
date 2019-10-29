@@ -72,7 +72,11 @@
                     <div class="card-pf-body api-recent-apis">
                         <div class="api-item" *ngFor="let api of recentApis">
                             <a [routerLink]="['/apis', api.id]">
-                                <span class="fa fa-fw fa-bolt"></span><span>{{ api.name }}</span>
+                                <span class="api-icon"
+                                      title="{{ api.type }}"
+                                      [class.oai2-icon16]="isOpenApi20(api)"
+                                      [class.oai3-icon16]="isOpenApi30(api)"
+                                      [class.aai2-icon16]="isAsyncApi20(api)"></span><span>{{ api.name }}</span>
                             </a>
                             <p><markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary></p>
                         </div>

@@ -29,7 +29,7 @@ import {
 import {ApiDefinition} from "../../../../models/api.model";
 import {
     AaiDocument,
-    CombinedVisitorAdapter,
+    CombinedVisitorAdapter, CommandFactory,
     DocumentType,
     ICommand,
     IDefinition,
@@ -83,7 +83,9 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     _undoableCommandCount: number = 0;
     _redoableCommandCount: number = 0;
 
+    sourceOriginal: string = "";
     sourceValue: string = "";
+    sourceIsValid: boolean = true;
 
     public validationErrors: ValidationProblem[] = [];
 
@@ -173,6 +175,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return CodeEditorMode.YAML;
     }
 
+    isDirty(): boolean {
+        return this.sourceOriginal != this.sourceValue;
+    }
+
     /**
      * Gets the spec as a document.
      */
@@ -197,6 +203,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
                 lineWidth: 110,
                 noRefs: true
             });
+            this.sourceOriginal = this.sourceValue;
+            this.sourceIsValid = true;
         }
         return this._document;
     }
@@ -362,16 +370,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     public onNodeSelected(path: string): void {
         console.info("[AsyncApiEditorComponent] Selection changed to path: %s", path);
 
-        this.updateFormDisplay(path);
-
         this.onSelectionChanged.emit(path);
-    }
-
-    /**
-     * Called to update which form is displayed (the details view).
-     * @param path
-     */
-    private updateFormDisplay(path: string): void {
     }
 
     /**
@@ -402,8 +401,9 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         // After changing the model, we should re-validate it
         this.validateModel();
 
-        // Update the form being displayed (this might change if the thing currently selected was deleted)
-        this.updateFormDisplay(this.selectionService.currentSelection());
+        // Set the current state
+        this.sourceOriginal = this.sourceValue;
+        this.sourceIsValid = true;
 
         // Fire a change event in the document service
         this.documentService.emitChange();
@@ -431,11 +431,39 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     }
 
     /**
-     * Called when the user changes something in the source.
-     * @param source
+     * Called when the user clicks save.
      */
-    public onSourceChange(source: string): void {
-        
+    public saveSource(): void {
+        console.info("[AsyncAPI Editor] Saving source code changes");
+        try {
+            let doc: AaiDocument = this.document();
+            let newJs: any = YAML.safeLoad(this.sourceValue);
+            let newDoc: AaiDocument = Library.readDocument(newJs) as AaiDocument;
+            let command: ICommand = CommandFactory.createReplaceDocumentCommand(doc, newDoc);
+            this.commandService.emit(command);
+        } catch (e) {
+            console.warn("[AsyncAPI Editor] Error saving source changes: ", e);
+        }
+    }
+
+    /**
+     * Called when the user clicks revert.
+     */
+    public revertSource(): void {
+        console.info("[AsyncAPI Editor] Reverting source code changes");
+        this.sourceValue = this.sourceOriginal;
+    }
+
+    /**
+     * Validates that the current source text is valid.
+     */
+    public validate(): void {
+        try {
+            YAML.safeLoad(this.sourceValue);
+            this.sourceIsValid = true;
+        } catch (e) {
+            this.sourceIsValid = false;
+        }
     }
 
 }

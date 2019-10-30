@@ -1,3 +1,29 @@
+.aai-editor .editor-toolbar {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.aai-editor .editor-toolbar .title {
+    flex-grow: 1;
+    height: 42px;
+    line-height: 42px;
+    font-size: 18px;
+    padding-left: 10px;
+}
+.aai-editor .editor-toolbar .title > em {
+    font-weight: bold;
+}
+.aai-editor .editor-toolbar .actions {
+    height: 42px;
+    line-height: 42px;
+    flex-grow: 0;
+}
+.aai-editor .editor-toolbar .actions > .btn {
+    margin-right: 10px;
+}
+
 .aai-editor .dropdown.empty > button.btn > span {
     color: #bbb;
 }

@@ -138,4 +138,8 @@ export class DashboardPageComponent extends AbstractPageComponent {
         return api.type === "AsyncAPI20";
     }
 
+    public isGraphQL(api: Api): boolean {
+        return api.type === "GraphQL";
+    }
+
 }

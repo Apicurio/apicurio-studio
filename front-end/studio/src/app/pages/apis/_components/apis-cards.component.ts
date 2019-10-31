@@ -66,6 +66,10 @@ export class ApisCardsComponent {
         return api.type === "AsyncAPI20";
     }
 
+    public isGraphQL(api: Api): boolean {
+        return api.type === "GraphQL";
+    }
+
     public apiIconTitle(api: Api): string {
         if (api.type === "OpenAPI20") {
             return "OpenAPI 2.0";

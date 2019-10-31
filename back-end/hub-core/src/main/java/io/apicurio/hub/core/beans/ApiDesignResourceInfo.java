@@ -26,6 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
@@ -34,7 +36,9 @@ import io.apicurio.hub.core.exceptions.ApiValidationException;
 
 /**
  * Represents some basic information extracted from an API Design resource (the 
- * content of an API design, typically an OpenAPI document).
+ * content of an API design, typically an OpenAPI or AsyncAPI document).  If the
+ * information cannot be determined from the source (e.g. a GraphQL document) then
+ * some information is generated instead.
  * @author eric.wittmann@gmail.com
  */
 public class ApiDesignResourceInfo {
@@ -52,48 +56,77 @@ public class ApiDesignResourceInfo {
     }
 
     public static ApiDesignResourceInfo fromContent(String content) throws Exception, ApiValidationException {
-        String name = null;
-        String description = null;
-        FormatType format = FormatType.JSON;
-        ObjectMapper mapper = jsonMapper;
-        if (!content.startsWith("{")) {
-            format = FormatType.YAML;
-            mapper = yamlMapper;
+        ApiDesignResourceInfo info = fromDataModelContent(content);
+        if (info == null) {
+            info = fromGraphQLContent(content);
         }
-
-        JsonNode contentObj = mapper.readTree(content);
-        Document document = Library.readDocument(contentObj);
-
-        if (document.info != null) {
-            if (document.info.title != null) {
-                name = document.info.title;
-            }
-            if (document.info.description != null) {
-                description = document.info.description;
-            }
-        }
-
-        ApiDesignResourceInfo info = new ApiDesignResourceInfo();
-        info.setFormat(format);
-        info.setName(name);
-        info.setDescription(description);
-        if (document.tags != null) {
-            for (Tag tag : document.tags) {
-                info.getTags().add(tag.name);
-            }
-        }
-
-        if (document.getDocumentType() == DocumentType.openapi2) {
-            info.setType(ApiDesignType.OpenAPI20);
-        } else if (document.getDocumentType() == DocumentType.openapi3) {
-            info.setType(ApiDesignType.OpenAPI30);
-        } else if (document.getDocumentType() == DocumentType.asyncapi2) {
-            info.setType(ApiDesignType.AsyncAPI20);
-        }
-
         return info;
     }
     
+    public static ApiDesignResourceInfo fromDataModelContent(String content) throws Exception, ApiValidationException {
+        try {
+            String name = null;
+            String description = null;
+            FormatType format = FormatType.JSON;
+            ObjectMapper mapper = jsonMapper;
+            if (!content.startsWith("{")) {
+                format = FormatType.YAML;
+                mapper = yamlMapper;
+            }
+    
+            JsonNode contentObj = mapper.readTree(content);
+            Document document = Library.readDocument(contentObj);
+    
+            if (document.info != null) {
+                if (document.info.title != null) {
+                    name = document.info.title;
+                }
+                if (document.info.description != null) {
+                    description = document.info.description;
+                }
+            }
+    
+            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
+            info.setFormat(format);
+            info.setName(name);
+            info.setDescription(description);
+            if (document.tags != null) {
+                for (Tag tag : document.tags) {
+                    info.getTags().add(tag.name);
+                }
+            }
+    
+            if (document.getDocumentType() == DocumentType.openapi2) {
+                info.setType(ApiDesignType.OpenAPI20);
+            } else if (document.getDocumentType() == DocumentType.openapi3) {
+                info.setType(ApiDesignType.OpenAPI30);
+            } else if (document.getDocumentType() == DocumentType.asyncapi2) {
+                info.setType(ApiDesignType.AsyncAPI20);
+            }
+    
+            return info;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    private static ApiDesignResourceInfo fromGraphQLContent(String content) {
+        try {
+            SchemaParser schemaParser = new SchemaParser();
+            TypeDefinitionRegistry typeDefinitionRegistry = schemaParser.parse(content);
+            int numTypes = typeDefinitionRegistry.types().size();
+            ApiDesignResourceInfo info = new ApiDesignResourceInfo();
+            info.setFormat(FormatType.SDL);
+            info.setName("Imported GraphQL Schema");
+            String typeList = String.join(", ", typeDefinitionRegistry.types().keySet());
+            info.setDescription("An imported GraphQL schema with the following " + numTypes + " types: " + typeList);
+            info.setType(ApiDesignType.GraphQL);
+            return info;
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     
     private String name;
     private String description;

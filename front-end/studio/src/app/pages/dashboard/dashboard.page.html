@@ -76,6 +76,7 @@
                                       title="{{ api.type }}"
                                       [class.oai2-icon16]="isOpenApi20(api)"
                                       [class.oai3-icon16]="isOpenApi30(api)"
+                                      [class.graphql-icon16]="isGraphQL(api)"
                                       [class.aai2-icon16]="isAsyncApi20(api)"></span><span>{{ api.name }}</span>
                             </a>
                             <p><markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary></p>

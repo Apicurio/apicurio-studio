@@ -128,7 +128,7 @@ public interface IDesignsResource {
     public MockReference mockApi(@PathParam("designId") String designId) throws ServerError, NotFoundException;
 
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml" })
+    @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml", "application/graphql" })
     @Path("{designId}/content")
     public Response getContent(@PathParam("designId") String designId, @QueryParam("format") String format) throws ServerError, NotFoundException;
 

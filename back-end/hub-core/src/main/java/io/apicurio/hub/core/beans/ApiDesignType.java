@@ -21,6 +21,6 @@ package io.apicurio.hub.core.beans;
  */
 public enum ApiDesignType {
 
-    OpenAPI20, OpenAPI30, AsyncAPI20
+    OpenAPI20, OpenAPI30, AsyncAPI20, GraphQL
 
 }

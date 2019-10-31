@@ -21,6 +21,6 @@ package io.apicurio.hub.core.beans;
  */
 public enum FormatType {
     
-    JSON, YAML
+    JSON, YAML, SDL
 
 }

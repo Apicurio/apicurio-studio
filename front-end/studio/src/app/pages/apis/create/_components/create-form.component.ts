@@ -70,7 +70,8 @@ export class CreateApiFormComponent {
         return [
             new Value("Open API 2.0 (Swagger)", "OpenAPI20"),
             new Value("Open API 3.0.2", "OpenAPI30"),
-            new Value("Async API 2.0.0", "AsyncAPI20")
+            new Value("Async API 2.0.0", "AsyncAPI20"),
+            new Value("GraphQL", "GraphQL")
         ];
     }
 

@@ -1096,7 +1096,7 @@ public class DesignsResource implements IDesignsResource {
 
                 final OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return asResponse(settings, generator);
@@ -1260,7 +1260,7 @@ public class DesignsResource implements IDesignsResource {
 
                 OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return generateAndPublish(project, generator);

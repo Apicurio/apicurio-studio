@@ -257,3 +257,26 @@ CREATE INDEX IDX_FK_contracts_s ON contracts(apiv_id);
 
 -- Changeset ~/git/foo-repo/distro/ddl/src/main/liquibase/current/200-apiman-manager-api.db.indexes.changelog.xml::createIndex-18::apiman
 CREATE INDEX IDX_FK_contracts_a ON contracts(clientv_id);
+
+
+CREATE FUNCTION upsert_sharing(i BIGINT, u VARCHAR(255), l VARCHAR(64)) RETURNS VOID AS
+$$
+BEGIN
+    LOOP
+        -- first try to update
+        UPDATE sharing SET level = l WHERE design_id = i;
+        IF found THEN
+            RETURN;
+        END IF;
+        -- not there, so try to insert the data
+        BEGIN
+            INSERT INTO sharing(design_id, uuid, level) VALUES (i, u, l);
+            RETURN;
+        EXCEPTION WHEN unique_violation THEN
+            -- do nothing, and loop to try the UPDATE again
+        END;
+    END LOOP;
+END;
+$$
+LANGUAGE plpgsql;
+

@@ -49,4 +49,20 @@ public class PostgreSQL9SqlStatements extends CommonSqlStatements {
         return "SELECT count(*) AS count FROM information_schema.tables WHERE table_name = 'api_designs' LIMIT 1";
     }
     
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#supportsUpsert()
+     */
+    @Override
+    public boolean supportsUpsert() {
+        return false;
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#upsertSharing()
+     */
+    @Override
+    public String upsertSharing() {
+        return "SELECT upsert_sharing(?, ?, ?)";
+    }
+    
 }

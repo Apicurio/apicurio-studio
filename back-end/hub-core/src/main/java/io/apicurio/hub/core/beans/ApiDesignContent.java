@@ -21,7 +21,7 @@ package io.apicurio.hub.core.beans;
  */
 public class ApiDesignContent {
 
-    private String oaiDocument;
+    private String document;
     private long contentVersion;
     
     /**
@@ -33,15 +33,15 @@ public class ApiDesignContent {
     /**
      * @return the oaiDocument
      */
-    public String getOaiDocument() {
-        return oaiDocument;
+    public String getDocument() {
+        return document;
     }
 
     /**
      * @param oaiDocument the oaiDocument to set
      */
-    public void setOaiDocument(String oaiDocument) {
-        this.oaiDocument = oaiDocument;
+    public void setDocument(String oaiDocument) {
+        this.document = oaiDocument;
     }
 
     /**

@@ -45,6 +45,12 @@
                                                         <span>Preview Docs...</span>
                                                     </a>
                                                 </li>
+                                                <li *ngIf="actionEnabled('share-docs')">
+                                                    <a (click)="sharingModal.open(api.id)">
+                                                        <span class="fa fa-fw fa-share-alt"></span>
+                                                        <span>Share Docs</span>
+                                                    </a>
+                                                </li>
                                                 <li *ngIf="actionEnabled('collaborate')">
                                                     <a [routerLink]="[ 'collaboration' ]">
                                                         <span class="fa fa-fw fa-users"></span>
@@ -255,4 +261,5 @@
         <span>This will <strong>permanently</strong> delete the API definition from Apicurio Studio.  This operation cannot be undone.</span>
     </div>
 </confirm-delete-dialog>
+<sharing-dialog #sharingModal></sharing-dialog>
 <generate-project-wizard #generateProjectModal [apiId]="api.id"></generate-project-wizard>

@@ -47,6 +47,8 @@ import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.MockReference;
+import io.apicurio.hub.core.beans.SharingConfiguration;
+import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -88,6 +90,16 @@ public interface IDesignsResource {
     @Path("{designId}")
     public void deleteDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
     
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/sharing")
+    public SharingConfiguration getSharingConfiguration(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/sharing")
+    public SharingConfiguration configureSharing(@PathParam("designId") String designId, UpdateSharingConfiguration config) throws ServerError, NotFoundException;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/contributors")

@@ -28,6 +28,7 @@ import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
+import io.apicurio.datamodels.core.models.Extension;
 import io.apicurio.datamodels.core.models.Node;
 import io.apicurio.datamodels.core.models.common.IDefinition;
 import io.apicurio.datamodels.core.models.common.Info;
@@ -166,6 +167,13 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
                 method.setConsumes(new HashSet<>(consumes));
             }
         }
+        
+        boolean async = false;
+        Extension asyncExt = node.getExtension("x-codegen-async");
+        if (asyncExt != null && asyncExt.value != null) {
+            async = Boolean.valueOf(asyncExt.value.toString());
+        }
+        method.setAsync(async);
 
         this._currentMethod = method;
         this._currentInterface.getMethods().add(method);

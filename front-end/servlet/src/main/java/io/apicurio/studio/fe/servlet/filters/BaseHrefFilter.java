@@ -19,6 +19,7 @@ package io.apicurio.studio.fe.servlet.filters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,7 +28,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -55,21 +55,18 @@ public class BaseHrefFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest httpReq = (HttpServletRequest) request;
-        
         CharResponseWrapper wrappedResponse = new CharResponseWrapper((HttpServletResponse) response);
         chain.doFilter(request, wrappedResponse);
         
         byte[] bytes = wrappedResponse.getByteArray();
-        if (httpReq.getServletPath().contains("index.html")) {
-            String out = new String(bytes);
+        if (bytes != null && response.getContentType().contains("text/html")) {
+            String out = new String(bytes, StandardCharsets.UTF_8);
             out = out.replace("<base href=\"/\">", "<base href=\"/studio/\">");
-            response.setContentLength(out.getBytes().length);
-            response.getOutputStream().write(out.getBytes());
-        } else {
-            if (bytes != null && bytes.length > 0) {
-                response.getOutputStream().write(bytes);
-            }
+            byte[] newBytes = out.getBytes(StandardCharsets.UTF_8);
+            response.setContentLength(newBytes.length);
+            response.getOutputStream().write(newBytes);
+        } else if (bytes != null && bytes.length > 0) {
+            response.getOutputStream().write(bytes);
         }
     }
 

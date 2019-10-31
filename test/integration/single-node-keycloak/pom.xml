@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-test-integration</artifactId>
-        <version>0.2.41-SNAPSHOT</version>
+        <version>0.2.44-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-test-integration-single-node-keycloak</artifactId>
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>4.3.1.Final</version>
+            <version>4.4.0.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>

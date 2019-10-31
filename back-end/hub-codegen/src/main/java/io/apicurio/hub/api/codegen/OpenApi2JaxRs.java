@@ -87,7 +87,7 @@ public class OpenApi2JaxRs {
 
     private String openApiDoc;
     protected transient Document document;
-    private JaxRsProjectSettings settings;
+    protected JaxRsProjectSettings settings;
     private boolean updateOnly;
     
     /**
@@ -179,9 +179,12 @@ public class OpenApi2JaxRs {
     protected void generateAll(CodegenInfo info, StringBuilder log, ZipOutputStream zipOutput) throws IOException {
         if (!this.updateOnly && !this.settings.codeOnly) {
             log.append("Generating pom.xml\r\n");
-            zipOutput.putNextEntry(new ZipEntry("pom.xml"));
-            zipOutput.write(generatePomXml(info).getBytes(utf8));
-            zipOutput.closeEntry();
+            String pomXml = generatePomXml(info);
+            if (pomXml != null) {
+                zipOutput.putNextEntry(new ZipEntry("pom.xml"));
+                zipOutput.write(pomXml.getBytes(utf8));
+                zipOutput.closeEntry();
+            }
         }
 
         log.append("Generating src/main/resources/META-INF/openapi.json\r\n");
@@ -191,10 +194,13 @@ public class OpenApi2JaxRs {
         
         if (!this.updateOnly) {
             String appFileName = javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java";
-            log.append("Generating " + appFileName + "\r\n");
-            zipOutput.putNextEntry(new ZipEntry(appFileName));
-            zipOutput.write(generateJaxRsApplication().getBytes(utf8));
-            zipOutput.closeEntry();
+            String jaxRsApp = generateJaxRsApplication();
+            if (jaxRsApp != null) {
+                log.append("Generating " + appFileName + "\r\n");
+                zipOutput.putNextEntry(new ZipEntry(appFileName));
+                zipOutput.write(jaxRsApp.getBytes(utf8));
+                zipOutput.closeEntry();
+            }
         }
         
         // Generate the java beans from data types
@@ -292,7 +298,7 @@ public class OpenApi2JaxRs {
      * Generates the pom.xml file.
      * @param info 
      */
-    private String generatePomXml(CodegenInfo info) throws IOException {
+    protected String generatePomXml(CodegenInfo info) throws IOException {
         String template = IOUtils.toString(getResource("pom.xml"), Charset.forName("UTF-8"));
         return template.replace("$GROUP_ID$", this.settings.groupId)
                 .replace("$ARTIFACT_ID$", this.settings.artifactId)
@@ -304,7 +310,7 @@ public class OpenApi2JaxRs {
     /**
      * Generates the JaxRsApplication java class.
      */
-    private String generateJaxRsApplication() throws IOException {
+    protected String generateJaxRsApplication() throws IOException {
         TypeSpec jaxRsApp = TypeSpec.classBuilder(ClassName.get(this.settings.javaPackage, "JaxRsApplication"))
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ClassName.get("javax.ws.rs.core", "Application"))
@@ -322,7 +328,7 @@ public class OpenApi2JaxRs {
      * Generates a Jax-rs interface from the given codegen information.
      * @param _interface
      */
-    private String generateJavaInterface(CodegenJavaInterface _interface) {
+    protected String generateJavaInterface(CodegenJavaInterface _interface) {
         // Create the JAX-RS interface spec itself.
         Builder interfaceBuilder = TypeSpec
                 .interfaceBuilder(ClassName.get(_interface.getPackage(), _interface.getName()));
@@ -357,7 +363,7 @@ public class OpenApi2JaxRs {
                 TypeName returnType = generateTypeName(cgMethod.getReturn().getCollection(),
                         cgMethod.getReturn().getType(), cgMethod.getReturn().getFormat(), true,
                         ClassName.get("javax.ws.rs.core", "Response"));
-                if (getSettings().reactive) {
+                if (getSettings().reactive || cgMethod.isAsync()) {
                     returnType = generateReactiveTypeName(returnType);
                 }
                 methodBuilder.returns(returnType);

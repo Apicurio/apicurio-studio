@@ -42,7 +42,7 @@ public class ApiDesignContentRowMapper implements RowMapper<ApiDesignContent> {
         try {
             ApiDesignContent content = new ApiDesignContent();
             content.setContentVersion(rs.getLong("version"));
-            content.setOaiDocument(IOUtils.toString(rs.getCharacterStream("data")));
+            content.setDocument(IOUtils.toString(rs.getCharacterStream("data")));
             return content;
         } catch (IOException e) {
             throw new SQLException(e);

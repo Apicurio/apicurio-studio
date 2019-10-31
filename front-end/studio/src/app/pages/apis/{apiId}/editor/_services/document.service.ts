@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {Injectable} from "@angular/core";
-import {OasDocument} from "apicurio-data-models";
+import {Document} from "apicurio-data-models";
 import {Topic} from "apicurio-ts-core";
 
 /**
@@ -26,18 +26,18 @@ import {Topic} from "apicurio-ts-core";
 @Injectable()
 export class DocumentService {
 
-    private _document: OasDocument;
+    private _document: Document;
     private _change: Topic<void>;
 
     constructor() {
         this.reset();
     }
 
-    public setDocument(document: OasDocument): void {
+    public setDocument(document: Document): void {
         this._document = document;
     }
 
-    public currentDocument(): OasDocument {
+    public currentDocument(): Document {
         return this._document;
     }
 

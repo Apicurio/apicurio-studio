@@ -50,6 +50,7 @@ import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.SharingConfiguration;
@@ -296,6 +297,42 @@ public class DesignsResourceTest {
         Assert.assertEquals("1.0.0", version);
         oaiVersion = jsonData.get("openapi").asText();
         Assert.assertEquals("3.0.2", oaiVersion);
+        
+        // 3.0 document (type)
+        info = new NewApiDesign();
+        info.setType(ApiDesignType.OpenAPI30);
+        info.setName("Empty 3.0 API");
+        info.setDescription("Description of API.");
+        design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        
+        response = resource.getContent(design.getId(), "json");
+        content = response.getEntity().toString();
+        jsonData = new ObjectMapper().reader().readTree(content);
+        version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        oaiVersion = jsonData.get("openapi").asText();
+        Assert.assertEquals("3.0.2", oaiVersion);
+
+        // AsyncAPI document
+        info = new NewApiDesign();
+        info.setType(ApiDesignType.AsyncAPI20);
+        info.setName("Async 3.0 API");
+        info.setDescription("Description of async API.");
+        design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        
+        response = resource.getContent(design.getId(), "json");
+        content = response.getEntity().toString();
+        jsonData = new ObjectMapper().reader().readTree(content);
+        version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        oaiVersion = jsonData.get("asyncapi").asText();
+        Assert.assertEquals("2.0.0", oaiVersion);
     }
 
     @Test

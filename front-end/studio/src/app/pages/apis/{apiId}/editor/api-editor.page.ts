@@ -46,6 +46,7 @@ import {DispatchQueue} from "apicurio-ts-core";
 import {StorageError} from "../../../../models/storageError.model";
 import * as moment from "moment";
 import {DeferredAction} from "../../../../models/deferred.model";
+import {AbstractApiEditorComponent} from "./editor.base";
 
 
 enum PendingActionType {
@@ -180,7 +181,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected isDirty: boolean = false;
     protected isSaving: boolean = false;
 
-    @ViewChildren("apiEditor") _apiEditor: QueryList<ApiEditorComponent>;
+    @ViewChildren("apiEditor") _apiEditor: QueryList<AbstractApiEditorComponent>;
     @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
     private editorAvailable: boolean;
 
@@ -408,7 +409,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     public loadingState(): string {
         if (this.isLoaded("session")) {
-            return "loaded";
+            if (this.apiDefinition.type === "OpenAPI20" || this.apiDefinition.type === "OpenAPI30") {
+                return "loaded-oai";
+            } else {
+                return "loaded-aai";
+            }
         }
         if (this.isLoaded("def")) {
             return "loading-session";

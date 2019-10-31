@@ -62,4 +62,18 @@ export class ApisCardsComponent {
         return api.type === "OpenAPI30";
     }
 
+    public isAsyncApi20(api: Api): boolean {
+        return api.type === "AsyncAPI20";
+    }
+
+    public apiIconTitle(api: Api): string {
+        if (api.type === "OpenAPI20") {
+            return "OpenAPI 2.0";
+        } else if (api.type === "OpenAPI30") {
+            return "OpenAPI 3.0.x";
+        } else if (api.type === "AsyncAPI20") {
+            return "AsyncAPI 2.0.x";
+        }
+    }
+
 }

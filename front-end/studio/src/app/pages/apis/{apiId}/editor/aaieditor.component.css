@@ -1,0 +1,251 @@
+.aai-editor .editor-toolbar {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.aai-editor .editor-toolbar .title {
+    flex-grow: 1;
+    height: 42px;
+    line-height: 42px;
+    font-size: 18px;
+    padding-left: 10px;
+}
+.aai-editor .editor-toolbar .title > em {
+    font-weight: bold;
+}
+.aai-editor .editor-toolbar .actions {
+    height: 42px;
+    line-height: 42px;
+    flex-grow: 0;
+}
+.aai-editor .editor-toolbar .actions > .btn {
+    margin-right: 10px;
+}
+
+.aai-editor .dropdown.empty > button.btn > span {
+    color: #bbb;
+}
+.aai-editor span.empty,
+.aai-editor div.empty,
+.aai-editor button.empty {
+    color: #bbb;
+}
+.aai-editor span.server-variable {
+    color: #ff6a7c;
+}
+
+.modal.in .modal-dialog {
+    -ms-transform: none;
+    transform: none;
+    margin-top: 50px;
+}
+.modal.fade .modal-dialog {
+    -ms-transform: none;
+    transform: none;
+    transition: margin-top 0.3s ease-out;
+}
+.modal-dialog {
+    width: 650px;
+    margin-top: 0px;
+    margin-left: auto;
+}
+.aai-editor span.server-variable {
+    font-weight: 400;
+}
+
+.aai-editor div.tab-panel {
+    border-top: none;
+}
+.aai-editor div.tab-panel {
+    border-color: #dddddd;
+}
+.aai-editor .nav-tabs > li > a {
+    cursor: pointer;
+}
+.aai-editor .nav-tabs > li > a.active {
+    cursor: default;
+}
+.aai-editor .nav-tabs > li > a > button {
+    visibility: hidden;
+}
+.aai-editor .nav-tabs > li > a:hover > button {
+    visibility: visible;
+}
+
+.aai-editor .editor-problem-drawer {
+    position: absolute;
+    z-index: 200;
+    top: 41px;
+    right: 0;
+    width: 320px;
+    bottom: 0;
+}
+.aai-editor .editor-problem-drawer .drawer-pf {
+    height: 100%;
+    width: 360px;
+}
+.aai-editor .editor-problem-drawer .drawer-pf .panel-body {
+    padding: 0;
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification {
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification:hover {
+    background-color: #efefef;
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-message {
+    line-height: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info {
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info .explanation {
+    line-height: 15px;
+    font-size: 13px;
+}
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info a {
+    cursor: pointer;
+}
+
+.api-details table td.icons {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.aai-editor .modal-header {
+    background-color: rgb(57, 165, 220);
+    color: white;
+}
+.aai-editor .modal-header button.close {
+    color: white;
+}
+.aai-editor .modal-footer {
+    border-top: 1px solid rgb(221, 221, 221);
+    background-color: rgb(239, 239, 239);
+}
+.aai-editor .modal-dialog {
+    margin-top: 50px;
+}
+.aai-editor form input.ng-invalid.ng-touched {
+    border-color: red;
+}
+.aai-editor .center-text {
+    text-align: center;
+}
+.aai-editor .dropdown-menu > li > a {
+    cursor: pointer;
+}
+.aai-editor .dropdown-menu {
+    font-size: 13px;
+}
+.aai-editor div.notice-of-required {
+    margin-top: 15px;
+    font-size: 11px;
+}
+.aai-editor div.notice-of-required .required-icon {
+    color: red;
+}
+.aai-editor div.modal-notice-of-required {
+    margin-bottom: -12px;
+    padding-left: 15px;
+}
+.aai-editor .form-group .control-label {
+    white-space: nowrap;
+}
+.aai-editor .form-group .control-label.required::after {
+    color: red;
+    content: '*'
+}
+.aai-editor .form-group .form-error-message.error {
+    color: red;
+}
+
+.aai-editor span.validation-aggregate {
+}
+.aai-editor span.validation-aggregate > a > .fa-exclamation-circle {
+    color: #0088ce;
+    cursor: pointer;
+    font-size: 14px;
+}
+.aai-editor span.validation-aggregate > a > .fa-exclamation-circle:hover {
+    color: #00659c;
+}
+
+.aai-editor .validation-problem-icon {
+    cursor: pointer;
+    margin-right: 4px;
+}
+.aai-editor .validation-problem-icon:hover {
+    filter: brightness(125%);
+}
+.aai-editor h2 .validation-problem-icon {
+    font-size: 15px;
+}
+
+.aai-editor .validation-aggregate .validation-aggregate-panel, .aai-editor .validation-problems-panel {
+    position: fixed;
+    margin: 0;
+    border: 1px solid #bbb;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+    z-index: 150;
+    background: white;
+    max-width: 425px;
+    max-height: 125px;
+    cursor: default;
+    overflow-y: auto;
+    color: #4d5258;
+    line-height: 18px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
+.aai-editor .validation-aggregate .validation-aggregate-panel .problem,
+.aai-editor .validation-problems-panel .problem {
+    width: 100%;
+    text-align: left;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.aai-editor .validation-aggregate .validation-aggregate-panel .problem .fa,
+.aai-editor .validation-problems-panel .problem .fa {
+    margin-right: 3px;
+}
+
+.aai-editor .inline-editor-label {
+    cursor: pointer;
+}
+.aai-editor .inline-editor-label .fa {
+    visibility: hidden;
+    color: #0088ce;
+}
+.aai-editor .inline-editor-label .fa:hover {
+    color: #00659c;
+}
+.aai-editor .inline-editor-label:hover .fa {
+    visibility: visible;
+}
+
+.aai-editor .dropdown-label {
+    margin-right: 3px;
+}
+.aai-editor .dropdowns-label {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.aai-editor .editor-source {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}

@@ -41,3 +41,7 @@
 .container-dashboard .card-pf-heading .card-pf-title > .fa {
   margin-right: 5px;
 }
+
+.container-dashboard .api-recent-apis .api-item .api-icon {
+  padding-right: 20px;
+}

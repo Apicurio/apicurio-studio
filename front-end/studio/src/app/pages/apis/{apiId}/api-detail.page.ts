@@ -82,6 +82,20 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         return this.api.type === "OpenAPI30";
     }
 
+    public isAsyncApi20(): boolean {
+        return this.api.type === "AsyncAPI20";
+    }
+
+    public apiIconTitle(): string {
+        if (this.api.type === "OpenAPI20") {
+            return "OpenAPI 2.0";
+        } else if (this.api.type === "OpenAPI30") {
+            return "OpenAPI 3.0.x";
+        } else if (this.api.type === "AsyncAPI20") {
+            return "AsyncAPI 2.0.x";
+        }
+    }
+
     /**
      * The page title.
      */
@@ -241,6 +255,23 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return false;
         }
         return this.mock.on < latestActivity.on;
+    }
+
+    public actionEnabled(action: string): boolean {
+        if (action == "delete") {
+            return this.canDelete;
+        }
+        if (action == "collaborate") {
+            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20();
+        }
+        if (action == "generate-project") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "preview-docs") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+
+        return true;
     }
 
 }

@@ -30,8 +30,6 @@ import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
 import io.apicurio.datamodels.core.models.common.Tag;
-import io.apicurio.datamodels.openapi.v2.models.Oas20Document;
-import io.apicurio.datamodels.openapi.v3.models.Oas30Document;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 
 /**
@@ -43,7 +41,6 @@ public class ApiDesignResourceInfo {
 
     protected static final ObjectMapper jsonMapper;
     protected static final ObjectMapper yamlMapper;
-    protected static final Set<String> SUPPORTED_OPENAPI_VERSIONS = new HashSet<>();
     static {
         jsonMapper = new ObjectMapper();
         jsonMapper.setSerializationInclusion(Include.NON_NULL);
@@ -52,10 +49,6 @@ public class ApiDesignResourceInfo {
         factory.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
         yamlMapper = new ObjectMapper(factory);
         yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        SUPPORTED_OPENAPI_VERSIONS.add("2.0");
-        SUPPORTED_OPENAPI_VERSIONS.add("3.0.0");
-        SUPPORTED_OPENAPI_VERSIONS.add("3.0.1");
-        SUPPORTED_OPENAPI_VERSIONS.add("3.0.2");
     }
 
     public static ApiDesignResourceInfo fromContent(String content) throws Exception, ApiValidationException {
@@ -67,21 +60,10 @@ public class ApiDesignResourceInfo {
             format = FormatType.YAML;
             mapper = yamlMapper;
         }
-        
+
         JsonNode contentObj = mapper.readTree(content);
         Document document = Library.readDocument(contentObj);
-        String oaiVersion = null;
-        if (document.getDocumentType() == DocumentType.openapi2) {
-            oaiVersion = ((Oas20Document) document).swagger;
-        } else {
-            oaiVersion = ((Oas30Document) document).openapi;
-        }
-        if (oaiVersion == null) {
-            throw new ApiValidationException("Unable to determine OpenAPI version.");
-        }
-        if (!SUPPORTED_OPENAPI_VERSIONS.contains(oaiVersion)) {
-            throw new ApiValidationException("OpenAPI version not supported: " + oaiVersion);
-        }
+
         if (document.info != null) {
             if (document.info.title != null) {
                 name = document.info.title;
@@ -101,13 +83,14 @@ public class ApiDesignResourceInfo {
             }
         }
 
-        if (oaiVersion.startsWith("2")) {
+        if (document.getDocumentType() == DocumentType.openapi2) {
             info.setType(ApiDesignType.OpenAPI20);
-        }
-        if (oaiVersion.startsWith("3")) {
+        } else if (document.getDocumentType() == DocumentType.openapi3) {
             info.setType(ApiDesignType.OpenAPI30);
+        } else if (document.getDocumentType() == DocumentType.asyncapi2) {
+            info.setType(ApiDesignType.AsyncAPI20);
         }
-        
+
         return info;
     }
     

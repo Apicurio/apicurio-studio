@@ -87,8 +87,8 @@
         </div>
     </div>
 
-    <!-- The API Editor -->
-    <api-editor #apiEditor *ngSwitchCase="'loaded'"
+    <!-- The OpenAPI Editor -->
+    <api-editor #apiEditor *ngSwitchCase="'loaded-oai'"
                 [api]="apiDefinition"
                 [features]="editorFeatures"
                 [validationRegistry]="validationRegistry"
@@ -97,6 +97,18 @@
                 (onConfigureValidation)="configureValidationDialog.open()"
                 (onUndo)="onEditorUndo($event)"
                 (onRedo)="onEditorRedo($event)"></api-editor>
+
+    <!-- The AsyncAPI Editor -->
+    <async-api-editor #apiEditor *ngSwitchCase="'loaded-aai'"
+                [api]="apiDefinition"
+                [features]="editorFeatures"
+                [validationRegistry]="validationRegistry"
+                (onSelectionChanged)="onSelectionChanged($event)"
+                (onCommandExecuted)="onCommandExecuted($event)"
+                (onConfigureValidation)="configureValidationDialog.open()"
+                (onUndo)="onEditorUndo($event)"
+                (onRedo)="onEditorRedo($event)"></async-api-editor>
+
 </div>
 <editor-disconnected-dialog #editorDisconnectedModal (onWorkOffline)="goOffline()"></editor-disconnected-dialog>
 <configure-validation-dialog #configureValidationDialog [apiId]="apiDefinition.id"

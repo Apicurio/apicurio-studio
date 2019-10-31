@@ -61,7 +61,6 @@ import io.apicurio.datamodels.core.models.ValidationProblem;
 import io.apicurio.datamodels.core.models.ValidationProblemSeverity;
 import io.apicurio.datamodels.core.validation.IValidationSeverityRegistry;
 import io.apicurio.datamodels.core.validation.ValidationRuleMetaData;
-import io.apicurio.datamodels.openapi.models.OasDocument;
 import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
@@ -336,7 +335,7 @@ public class DesignsResource implements IDesignsResource {
                 if (name == null) {
                     name = "Imported API Design";
                 }
-    
+
                 Date now = new Date();
                 String user = this.security.getCurrentUser().getLogin();
     
@@ -391,30 +390,57 @@ public class DesignsResource implements IDesignsResource {
             design.setCreatedOn(now);
 
             // The API Design content (OAI document)
-            OasDocument doc;
-            if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
-                doc = (OasDocument) Library.createDocument(DocumentType.openapi2);
-                design.setType(ApiDesignType.OpenAPI20);
+            ApiDesignType type;
+            if (info.getType() != null) {
+                type = info.getType();
             } else {
-                doc = (OasDocument) Library.createDocument(DocumentType.openapi3);
-                design.setType(ApiDesignType.OpenAPI30);
+                if (info.getSpecVersion() == null || info.getSpecVersion().equals("2.0")) {
+                    type = ApiDesignType.OpenAPI20;
+                } else {
+                    type = ApiDesignType.OpenAPI30;
+                }
             }
-            doc.info = doc.createInfo();
-            doc.info.title = info.getName();
-            doc.info.description = info.getDescription();
-            doc.info.version = "1.0.0";
-            String oaiContent = Library.writeDocumentToJSONString(doc);
+            Document doc = createNewDocument(type, info.getName(), info.getDescription());
+            design.setType(type);
+            String content = Library.writeDocumentToJSONString(doc);
 
             // Create the API Design in the database
-            String designId = storage.createApiDesign(user, design, oaiContent);
+            String designId = storage.createApiDesign(user, design, content);
             design.setId(designId);
             
-            metrics.apiCreate(info.getSpecVersion());
+            metrics.apiCreate(type);
             
             return design;
         } catch (StorageException e) {
             throw new ServerError(e);
         }
+    }
+
+    /**
+     * Creates a new document.
+     * @param type
+     * @param name
+     * @param description
+     */
+    private Document createNewDocument(ApiDesignType type, String name, String description) {
+        Document doc;
+        switch (type) {
+            case AsyncAPI20:
+                doc = Library.createDocument(DocumentType.asyncapi2);
+                break;
+            case OpenAPI20:
+                doc = Library.createDocument(DocumentType.openapi2);
+                break;
+            case OpenAPI30:
+            default:
+                doc = Library.createDocument(DocumentType.openapi3);
+                break;
+        }
+        doc.info = doc.createInfo();
+        doc.info.title = name;
+        doc.info.description = description;
+        doc.info.version = "1.0.0";
+        return doc;
     }
 
     /**
@@ -1038,7 +1064,7 @@ public class DesignsResource implements IDesignsResource {
                 throw new AccessDeniedException();
             }
             CodegenProject project = this.storage.getCodegenProject(user, designId, projectId);
-            String oaiContent = this.getApiContent(designId, FormatType.JSON);
+            String content = this.getApiContent(designId, FormatType.JSON);
             
             // TODO support other types besides Thorntail
             if (project.getType() == CodegenProjectType.thorntail) {
@@ -1048,7 +1074,7 @@ public class DesignsResource implements IDesignsResource {
 
                 final OpenApi2Thorntail generator = new OpenApi2Thorntail();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return asResponse(settings, generator);
@@ -1059,7 +1085,7 @@ public class DesignsResource implements IDesignsResource {
 
                 final OpenApi2JaxRs generator = new OpenApi2JaxRs();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return asResponse(settings, generator);
@@ -1070,7 +1096,7 @@ public class DesignsResource implements IDesignsResource {
 
                 final OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return asResponse(settings, generator);
@@ -1208,7 +1234,7 @@ public class DesignsResource implements IDesignsResource {
     private String generateAndPublishProject(CodegenProject project, boolean updateOnly)
             throws ServerError, NotFoundException {
         try {
-            String oaiContent = this.getApiContent(project.getDesignId(), FormatType.JSON);
+            String content = this.getApiContent(project.getDesignId(), FormatType.JSON);
             
             // TODO support other types besides JAX-RS
             if (project.getType() == CodegenProjectType.thorntail) {
@@ -1216,7 +1242,7 @@ public class DesignsResource implements IDesignsResource {
 
                 OpenApi2Thorntail generator = new OpenApi2Thorntail();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return generateAndPublish(project, generator);
@@ -1225,7 +1251,7 @@ public class DesignsResource implements IDesignsResource {
 
                 OpenApi2JaxRs generator = new OpenApi2JaxRs();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return generateAndPublish(project, generator);
@@ -1234,7 +1260,7 @@ public class DesignsResource implements IDesignsResource {
 
                 OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
-                generator.setOpenApiDocument(oaiContent);
+                generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
                 
                 return generateAndPublish(project, generator);

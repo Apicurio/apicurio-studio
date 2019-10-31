@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2019 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,55 +24,47 @@ import {
     OnInit,
     Output,
     SimpleChanges,
-    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    CombinedVisitorAdapter,
+    AaiDocument,
+    CombinedVisitorAdapter, CommandFactory,
     DocumentType,
-    ICommand, IDefinition,
+    ICommand,
+    IDefinition,
     IValidationSeverityRegistry,
     Library,
     Node,
-    NodePath, Oas20ResponseDefinition,
-    Oas20SchemaDefinition, Oas30ResponseDefinition,
     Oas30SchemaDefinition,
-    OasDocument,
     OasPathItem,
     OtCommand,
     OtEngine,
     ValidationProblem
 } from "apicurio-data-models";
-import {EditorMasterComponent} from "./_components/master.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
-import {ServerEditorComponent} from "./_components/editors/server-editor.component";
-import {EditorsService, IEditorsProvider} from "./_services/editors.service";
-import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
-import {SecurityRequirementEditorComponent} from "./_components/editors/security-requirement-editor.component";
-import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
-import {ParameterEditorComponent} from "./_components/editors/parameter-editor.component";
-import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
+import {EditorsService} from "./_services/editors.service";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
-import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
 import {AbstractApiEditorComponent} from "./editor.base";
+import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
+import * as YAML from 'js-yaml';
 
 
 @Component({
     moduleId: module.id,
-    selector: "api-editor",
-    templateUrl: "editor.component.html",
-    styleUrls: ["editor.component.css"],
+    selector: "async-api-editor",
+    templateUrl: "aaieditor.component.html",
+    styleUrls: ["aaieditor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class ApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditorsProvider {
+export class AsyncApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
@@ -86,31 +78,19 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @Output() onRedo: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onConfigureValidation: EventEmitter<void> = new EventEmitter<void>();
 
-    private _document: OasDocument = null;
+    private _document: AaiDocument = null;
     private _otEngine: OtEngine = null;
     _undoableCommandCount: number = 0;
     _redoableCommandCount: number = 0;
 
-    theme: string = "light";
+    sourceOriginal: string = "";
+    sourceValue: string = "";
+    sourceIsValid: boolean = true;
 
-    private currentSelection: NodePath;
-    private currentSelectionType: string;
-    private currentSelectionNode: Node;
     public validationErrors: ValidationProblem[] = [];
 
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
-
-    @ViewChild("master") master: EditorMasterComponent;
-    @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
-    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
-    @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
-    @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
-    @ViewChild("responseEditor") responseEditor: ResponseEditorComponent;
-    @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
-    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
-
-    formType: string;
 
     /**
      * Constructor.
@@ -129,25 +109,19 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * Called when the editor is initialized by angular.
      */
     public ngOnInit(): void {
-        let me: ApiEditorComponent = this;
+        let me: AsyncApiEditorComponent = this;
         this._selectionSubscription = this.selectionService.selection().subscribe( selectedPath => {
             if (selectedPath) {
-                console.info("[ApiEditorComponent] Node selection detected (from the selection service)")
+                console.info("[AsyncApiEditorComponent] Node selection detected (from the selection service)")
                 me.onNodeSelected(selectedPath);
             }
         });
         this._commandSubscription = this.commandService.commands().subscribe( command => {
             if (command) {
-                console.info("[ApiEditorComponent] Command execution detected (from the command service)")
+                console.info("[AsyncApiEditorComponent] Command execution detected (from the command service)")
                 me.onCommand(command);
             }
         });
-
-        // TODO why was this here??
-        // // If we're in embedded mode, select the root now.
-        // if (this.embedded && this.api) {
-        //     this.documentService.emitDocument(this.document());
-        // }
     }
 
     /**
@@ -168,17 +142,11 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
             this.collaboratorService.reset();
             this.commandService.reset();
             this.documentService.reset();
-            this.editorsService.setProvider(this);
 
             this._document = null;
             this._otEngine = null;
             this._undoableCommandCount = 0;
             this._redoableCommandCount = 0;
-            if (this.document().getDocumentType() == DocumentType.openapi2) {
-                this.formType = "main_20";
-            } else {
-                this.formType = "main_30";
-            }
 
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
@@ -199,24 +167,44 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         }
     }
 
+    sourceTheme(): CodeEditorTheme {
+        return CodeEditorTheme.Light;
+    }
+
+    sourceMode(): CodeEditorMode {
+        return CodeEditorMode.YAML;
+    }
+
+    isDirty(): boolean {
+        return this.sourceOriginal != this.sourceValue;
+    }
+
     /**
-     * Gets the OpenAPI spec as a document.
+     * Gets the spec as a document.
      */
-    public document(): OasDocument {
+    public document(): AaiDocument {
         if (this._document === null && this.api) {
             try {
                 if (typeof this.api.spec == "object") {
-                    this._document = <OasDocument> Library.readDocument(this.api.spec);
+                    this._document = <AaiDocument> Library.readDocument(this.api.spec);
                 } else {
-                    this._document = <OasDocument> Library.readDocumentFromJSONString(<string>this.api.spec);
+                    this._document = <AaiDocument> Library.readDocumentFromJSONString(<string>this.api.spec);
                 }
-                console.info("[ApiEditorComponent] Loaded OAI content: ", this._document);
+                console.info("[AsyncApiEditorComponent] Loaded AAI content: ", this._document);
             } catch (e) {
                 console.error(e);
                 // If we can't process the document, then just create a new one
-                this._document = <OasDocument> Library.createDocument(DocumentType.openapi3);
+                this._document = <AaiDocument> Library.createDocument(DocumentType.asyncapi2);
             }
             this.validateModel();
+            let sourceJs: any = Library.writeNode(this._document);
+            this.sourceValue = YAML.safeDump(sourceJs, {
+                indent: 4,
+                lineWidth: 110,
+                noRefs: true
+            });
+            this.sourceOriginal = this.sourceValue;
+            this.sourceIsValid = true;
         }
         return this._document;
     }
@@ -238,23 +226,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * @param event
      */
     public onGlobalKeyDown(event: KeyboardEvent): void {
-        // TODO skip any event that was sent to an input field (e.g. input, textarea, etc)
-        if (ApiEditorComponent.isUndo(event)) {
-            this.undoLastCommand();
-        }
-        if (ApiEditorComponent.isRedo(event)) {
-            this.redoLastCommand();
-        }
-    }
-
-    private static isUndo(event: KeyboardEvent): boolean {
-        return (event.ctrlKey && event.key === 'z' && !event.metaKey && !event.altKey) ||
-            (event.metaKey && event.key === 'z' && !event.ctrlKey && !event.altKey);  // macOS: cmd + z
-    }
-
-    private static isRedo(event: KeyboardEvent): boolean {
-        return (event.ctrlKey && event.key === 'y' && !event.metaKey && !event.altKey) ||
-            (event.metaKey && event.shiftKey && event.key === 'z' && !event.ctrlKey && !event.altKey); // macOS: cmd + shift + z
     }
 
     /**
@@ -264,7 +235,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         if (this._undoableCommandCount === 0) {
             return;
         }
-        console.info("[ApiEditorComponent] User wants to 'undo' the last command.");
+        console.info("[AsyncApiEditorComponent] User wants to 'undo' the last command.");
         this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().undoLastLocalCommand();
         // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
@@ -284,7 +255,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         if (this._redoableCommandCount === 0) {
             return;
         }
-        console.info("[ApiEditorComponent] User wants to 'redo' the last command.");
+        console.info("[AsyncApiEditorComponent] User wants to 'redo' the last command.");
         this.preDocumentChange();
         let cmd: OtCommand = this.otEngine().redoLastLocalCommand();
         // TODO if the command is "pending" we need to hold on to the "undo" event until we get the ACK for the command - then we can send the "undo" with the updated contentVersion
@@ -397,26 +368,9 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * @param path
      */
     public onNodeSelected(path: string): void {
-        console.info("[ApiEditorComponent] Selection changed to path: %s", path);
-
-        this.updateFormDisplay(path);
+        console.info("[AsyncApiEditorComponent] Selection changed to path: %s", path);
 
         this.onSelectionChanged.emit(path);
-    }
-
-    /**
-     * Called to update which form is displayed (the details view).
-     * @param path
-     */
-    private updateFormDisplay(path: string): void {
-        let npath: NodePath = new NodePath(path);
-        let visitor: FormSelectionVisitor = new FormSelectionVisitor(this.document().is2xDocument() ? "20" : "30");
-        npath.resolveWithVisitor(this.document(), visitor);
-
-        this.currentSelection = npath;
-        this.formType = visitor.formType();
-        this.currentSelectionNode = visitor.selection();
-        this.currentSelectionType = visitor.selectionType();
     }
 
     /**
@@ -424,62 +378,15 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      */
     public validateModel(): void {
         try {
-            let doc: OasDocument = this.document();
+            let doc: AaiDocument = this.document();
             let oldValidationErrors: ValidationProblem[] = this.validationErrors;
             this.validationErrors = Library.validate(doc, this.validationRegistry);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);
             }
         } catch (e) {
-            console.info("[ApiEditorComponent] Error validating model: ", e);
+            console.info("[AsyncApiEditorComponent] Error validating model: ", e);
         }
-    }
-
-    /**
-     * Returns the currently selected path item.
-     * @return
-     */
-    public selectedPath(): OasPathItem {
-        if (this.currentSelectionType === "path") {
-            return this.currentSelectionNode as OasPathItem;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the currently selected definition.
-     * @return
-     */
-    public selectedDefinition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
-        if (this.currentSelectionType === "definition") {
-            return this.currentSelectionNode as Oas20SchemaDefinition;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the currently selected response.
-     */
-    public selectedResponse(): Oas20ResponseDefinition | Oas30ResponseDefinition {
-        if (this.currentSelectionType === "response") {
-            return this.currentSelectionNode as Oas20ResponseDefinition | Oas30ResponseDefinition;
-        } else {
-            return null;
-        }
-    }
-
-    public deselectPath(): void {
-        this.master.deselectPath();
-    }
-
-    public deselectDefinition(): void {
-        this.master.deselectDefinition();
-    }
-
-    public deselectResponse(): void {
-        this.master.deselectResponse();
     }
 
     public preDocumentChange(): void {
@@ -494,8 +401,9 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         // After changing the model, we should re-validate it
         this.validateModel();
 
-        // Update the form being displayed (this might change if the thing currently selected was deleted)
-        this.updateFormDisplay(this.selectionService.currentSelection());
+        // Set the current state
+        this.sourceOriginal = this.sourceValue;
+        this.sourceIsValid = true;
 
         // Fire a change event in the document service
         this.documentService.emitChange();
@@ -513,91 +421,49 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         apiDef.description = this.api.description;
         apiDef.name = this.api.name;
         apiDef.tags = this.api.tags;
-        let doc: OasDocument = this.document();
+        let doc: AaiDocument = this.document();
         apiDef.spec = Library.writeNode(doc);
         return apiDef;
     }
 
+    public select(path: string, highlight: boolean = true): void {
+        // TODO what to do here?  ignore for now
+    }
+
     /**
-     * Call this to select some content in the open document by the content's node path.  If highlight
-     * is true then the appropriate content section is also highlighted and scrolled into view.
-     * @param path
-     * @param highlight
+     * Called when the user clicks save.
      */
-    public select(path: string, highlight: boolean = false): void {
-        this.selectionService.select(path);
-        if (highlight) {
-            this.selectionService.highlightPath(path);
+    public saveSource(): void {
+        console.info("[AsyncAPI Editor] Saving source code changes");
+        try {
+            let doc: AaiDocument = this.document();
+            let newJs: any = YAML.safeLoad(this.sourceValue);
+            let newDoc: AaiDocument = Library.readDocument(newJs) as AaiDocument;
+            let command: ICommand = CommandFactory.createReplaceDocumentCommand(doc, newDoc);
+            this.commandService.emit(command);
+        } catch (e) {
+            console.warn("[AsyncAPI Editor] Error saving source changes: ", e);
         }
     }
 
-    public getServerEditor(): ServerEditorComponent {
-        return this.serverEditor;
+    /**
+     * Called when the user clicks revert.
+     */
+    public revertSource(): void {
+        console.info("[AsyncAPI Editor] Reverting source code changes");
+        this.sourceValue = this.sourceOriginal;
     }
 
-    public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
-        return this.securitySchemeEditor;
+    /**
+     * Validates that the current source text is valid.
+     */
+    public validate(): void {
+        try {
+            YAML.safeLoad(this.sourceValue);
+            this.sourceIsValid = true;
+        } catch (e) {
+            this.sourceIsValid = false;
+        }
     }
 
-    public getSecurityRequirementEditor(): SecurityRequirementEditorComponent {
-        return this.securityRequirementEditor;
-    }
-
-    public getDataTypeEditor(): DataTypeEditorComponent {
-        return this.dataTypeEditor;
-    }
-
-    public getResponseEditor(): ResponseEditorComponent {
-        return this.responseEditor;
-    }
-
-    public getParameterEditor(): ParameterEditorComponent {
-        return this.parameterEditor;
-    }
-
-    public getPropertyEditor(): PropertyEditorComponent {
-        return this.propertyEditor;
-    }
-
-}
-
-
-/**
- * Visitor used to determine what form should be displayed based on the selected node.
- */
-export class FormSelectionVisitor extends CombinedVisitorAdapter {
-
-    public _selectionType: string = "main";
-    public _selectedNode: Node = null;
-
-    constructor(private version: string) {
-        super();
-    }
-
-    public selectionType(): string {
-        return this._selectionType;
-    }
-
-    public formType(): string {
-        return this._selectionType + "_" + this.version;
-    }
-
-    public selection(): Node {
-        return this._selectedNode;
-    }
-
-    public visitPathItem(node: OasPathItem): void {
-        this._selectedNode = node;
-        this._selectionType = "path";
-    }
-
-    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
-        this._selectedNode = node;
-        this._selectionType = "definition";
-    }
-
-    public visitResponseDefinition(node: IDefinition): void {
-        this._selectedNode = node as any;
-        this._selectionType = "response";
-    }
 }

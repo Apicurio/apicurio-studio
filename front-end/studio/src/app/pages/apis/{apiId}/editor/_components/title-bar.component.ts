@@ -29,7 +29,7 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, OasDocument, ValidationProblem} from "apicurio-data-models";
+import {CommandFactory, Document, DocumentType, ICommand, ValidationProblem} from "apicurio-data-models";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
@@ -53,7 +53,7 @@ import {KeypressUtils} from "../_util/keypress.util";
 })
 export class EditorTitleBarComponent extends AbstractBaseComponent implements AfterViewInit {
 
-    @Input() document: OasDocument;
+    @Input() document: Document;
     @Input() validationErrors: ValidationProblem[];
     @Input() undoableCommandCount: number;
     @Input() redoableCommandCount: number;
@@ -114,11 +114,15 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
     }
 
     public isOAI30(): boolean {
-        return this.document.is3xDocument();
+        return this.document.getDocumentType() === DocumentType.openapi3;
+    }
+
+    public isAAI20(): boolean {
+        return this.document.getDocumentType() === DocumentType.asyncapi2;
     }
 
     public isSwagger2(): boolean {
-        return this.document.is2xDocument();
+        return this.document.getDocumentType() === DocumentType.openapi2;
     }
 
     /**
@@ -141,6 +145,9 @@ export class EditorTitleBarComponent extends AbstractBaseComponent implements Af
         }
         if (this.isSwagger2()) {
             classes.push("oai20");
+        }
+        if (this.isAAI20()) {
+            classes.push("aai20");
         }
         if (this.showProblems) {
             classes.push("expanded");

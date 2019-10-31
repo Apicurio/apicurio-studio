@@ -18,6 +18,7 @@ package io.apicurio.hub.api.metrics;
 
 import java.io.IOException;
 
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
@@ -44,7 +45,7 @@ public interface IApiMetrics {
      * Indicates that an API was created.
      * @param specVersion
      */
-    public void apiCreate(String specVersion);
+    public void apiCreate(ApiDesignType type);
 
     /**
      * Indicates that an API was imported.

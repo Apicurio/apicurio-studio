@@ -19,6 +19,7 @@ package test.io.apicurio.hub.api;
 import java.io.IOException;
 
 import io.apicurio.hub.api.metrics.IApiMetrics;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 
 /**
@@ -56,10 +57,10 @@ public class MockMetrics implements IApiMetrics {
     }
     
     /**
-     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(java.lang.String)
+     * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(io.apicurio.hub.core.beans.ApiDesignType)
      */
     @Override
-    public void apiCreate(String specVersion) {
+    public void apiCreate(ApiDesignType type) {
     }
     
     /**

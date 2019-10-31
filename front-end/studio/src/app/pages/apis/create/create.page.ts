@@ -62,7 +62,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
     public onCreateApi(eventData: CreateApiFormData) {
         if (!eventData.template) {
             let newApi: NewApi = new NewApi();
-            newApi.specVersion = eventData.type;
+            newApi.type = eventData.type;
             newApi.name = eventData.name;
             newApi.description = eventData.description;
 

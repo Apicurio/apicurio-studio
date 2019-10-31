@@ -35,25 +35,25 @@ export class TemplateService {
     private loadTemplates(): ApiDesignTemplate[] {
         return [
             {
-                specVersion: "2.0",
+                type: "OpenAPI20",
                 name: "Simple API",
                 description: "Creates a very simple API with some basic settings that can be used as a starting point for your custom API.",
                 content: SIMPLE_20
             },
             {
-                specVersion: "2.0",
+                type: "OpenAPI20",
                 name: "Pet Store Example",
                 description: "Creates a standard/famous Swagger 2.0 Pet Store API sample.  Can be found here: https://petstore.swagger.io/v2/swagger.json",
                 content: PET_STORE_20
             },
             {
-                specVersion: "3.0.2",
+                type: "OpenAPI30",
                 name: "Pet Store Example",
                 description: "Creates a version of the classic Swagger Pet Store example but redesigned using OpenAPI 3!",
                 content: PET_STORE_30
             },
             {
-                specVersion: "3.0.2",
+                type: "OpenAPI30",
                 name: "USPTO Dataset API",
                 description: "Creates an API using the USPTO Data Set API (DSAPI) as a basis.",
                 content: USPTO_30
@@ -63,12 +63,12 @@ export class TemplateService {
 
     /**
      * Gets a list of templates for the given spec version.
-     * @param specVersion
+     * @param type
      */
-    public getTemplates(specVersion: string): ApiDesignTemplate[] {
+    public getTemplates(type: string): ApiDesignTemplate[] {
         let rval: ApiDesignTemplate[] = [];
         this.templates.forEach( template => {
-            if (specVersion === template.specVersion) {
+            if (type === template.type) {
                 rval.push(template);
             }
         });

@@ -126,4 +126,16 @@ export class DashboardPageComponent extends AbstractPageComponent {
         });
     }
 
+    public isOpenApi20(api: Api): boolean {
+        return api.type === "OpenAPI20";
+    }
+
+    public isOpenApi30(api: Api): boolean {
+        return api.type === "OpenAPI30";
+    }
+
+    public isAsyncApi20(api: Api): boolean {
+        return api.type === "AsyncAPI20";
+    }
+
 }

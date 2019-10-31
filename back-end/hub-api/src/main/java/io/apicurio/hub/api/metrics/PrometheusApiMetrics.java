@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
@@ -39,7 +40,7 @@ public class PrometheusApiMetrics implements IApiMetrics {
     
     static final Counter apiRequests = Counter.build().labelNames("endpoint", "method")
             .name("apicurio_api_calls_total").help("Total number of API calls made.").register();
-    static final Counter apisCreated = Counter.build().labelNames("version")
+    static final Counter apisCreated = Counter.build().labelNames("type")
             .name("apicurio_api_creates").help("Total number of APIs created.").register();
     static final Counter apisImported = Counter.build().labelNames("from")
             .name("apicurio_api_imports").help("Total number of APIs imported.").register();
@@ -79,8 +80,8 @@ public class PrometheusApiMetrics implements IApiMetrics {
      * @see io.apicurio.hub.api.metrics.IApiMetrics#apiCreate(java.lang.String)
      */
     @Override
-    public void apiCreate(String specVersion) {
-        apisCreated.labels(specVersion).inc();
+    public void apiCreate(ApiDesignType type) {
+        apisCreated.labels(type.name()).inc();
     }
 
     /**

@@ -17,24 +17,14 @@ jobs:
     
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: java -version
-      - run: mvn --version
-      - run: mvn install -DskipTests
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-        
-      # run tests!
-      - run: mvn clean package
-      - run: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration
-
+      - run:
+          name: Check Tool Versions
+          command: |
+            java -version
+            mvn --version
+      - run:
+          name: Build & Test
+          command: mvn clean install
+      - run:
+          name: Run Integration Tests
+          command: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration

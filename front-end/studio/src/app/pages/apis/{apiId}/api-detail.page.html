@@ -33,31 +33,31 @@
                                                 <span class="fa fa-ellipsis-v"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
-                                                <li>
+                                                <li *ngIf="actionEnabled('edit')">
                                                     <a [routerLink]="[ 'editor' ]">
                                                         <span class="fa fa-fw fa-edit"></span>
                                                         <span>Edit...</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('preview-docs')">
                                                     <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank">
                                                         <span class="fa fa-fw fa-eye"></span>
                                                         <span>Preview Docs...</span>
                                                     </a>
                                                 </li>
-                                                <li *ngIf="!config.isShareWithEveryoneEnabled()">
+                                                <li *ngIf="actionEnabled('collaborate')">
                                                     <a [routerLink]="[ 'collaboration' ]">
                                                         <span class="fa fa-fw fa-users"></span>
                                                         <span>Collaborate...</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('copy')">
                                                     <a [routerLink]="[ 'copy' ]">
                                                         <span class="fa fa-fw fa-clone"></span>
                                                         <span>Make a Copy...</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('publish')">
                                                     <a [routerLink]="[ 'publish' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
                                                         <span>Publish...</span>
@@ -70,28 +70,28 @@
                                                     </a>
                                                 </li>
                                                 <li role="separator" class="divider"></li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('download')">
                                                     <a href="{{ uiUrl }}download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (YAML)</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('download')">
                                                     <a href="{{ uiUrl }}download?type=api&format=json&id={{ api.id }}" download="{{ api.name }}.json">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (JSON)</span>
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li *ngIf="actionEnabled('generate-project')">
                                                     <a (click)="generateProjectModal.open()">
                                                         <span class="fa fa-fw fa-file-code-o"></span>
                                                         <span>Generate Project</span>
                                                     </a>
                                                 </li>
 
-                                                <li role="separator" class="divider" *ngIf="canDelete"></li>
-                                                <li>
-                                                    <a (click)="confirmDeleteModal.open()" *ngIf="canDelete">
+                                                <li role="separator" class="divider" *ngIf="actionEnabled('edit')"></li>
+                                                <li *ngIf="actionEnabled('delete')">
+                                                    <a (click)="confirmDeleteModal.open()">
                                                         <span class="fa fa-fw fa-trash"></span>
                                                         <span>Delete</span>
                                                     </a>
@@ -113,7 +113,7 @@
                                         <span class="fa fa-fw fa-user"></span>
                                         <span>Created by <em>{{ api.createdBy }}</em></span>
                                     </div>
-                                    <div class="info-full" *ngIf="!config.isShareWithEveryoneEnabled()">
+                                    <div class="info-full" *ngIf="actionEnabled('collaborate')">
                                         <span class="fa fa-fw fa-users"></span>
                                         <a [routerLink]="[ 'collaboration' ]">
                                             <span class="num-collaborators">{{ getNumberOfCollaborators() }}</span>
@@ -124,8 +124,8 @@
                                 </div>
                                 <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)" [maxWidth]="140"></tag-list>
                                 <div class="api-action-buttons">
-                                    <a [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
-                                    <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
+                                    <a *ngIf="actionEnabled('edit')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
                                 </div>
                             </div>
                         </div>

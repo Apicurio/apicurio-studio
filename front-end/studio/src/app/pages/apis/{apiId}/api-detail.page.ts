@@ -257,4 +257,21 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         return this.mock.on < latestActivity.on;
     }
 
+    public actionEnabled(action: string): boolean {
+        if (action == "delete") {
+            return this.canDelete;
+        }
+        if (action == "collaborate") {
+            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20();
+        }
+        if (action == "generate-project") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "preview-docs") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+
+        return true;
+    }
+
 }

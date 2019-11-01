@@ -655,6 +655,7 @@ public class JdbcStorage implements IStorage {
                 return query.map(ApiDesignContentRowMapper.instance).one();
             });
         } catch (IllegalStateException e) {
+            logger.error("Error getting latest content document", e);
             throw new NotFoundException();
         } catch (Exception e) {
             throw new StorageException("Error getting content document.", e);

@@ -716,12 +716,20 @@ public class JdbcStorage implements IStorage {
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectAllContentCommands();
-                return handle.createQuery(statement)
-                        .bind(0, Long.valueOf(designId))
-                        .bind(1, userId)
-                        .bind(2, sinceVersion)
-                        .map(ApiDesignCommandRowMapper.instance)
-                        .list();
+                if (shareForEveryone) {
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, sinceVersion)
+                            .map(ApiDesignCommandRowMapper.instance)
+                            .list();
+                } else {
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, userId)
+                            .bind(2, sinceVersion)
+                            .map(ApiDesignCommandRowMapper.instance)
+                            .list();
+                }
             });
         } catch (Exception e) {
             throw new StorageException("Error getting content commands.", e);
@@ -934,16 +942,29 @@ public class JdbcStorage implements IStorage {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectRecentApiDesigns();
                 Collection<ApiDesign> designs = new ArrayList<>();
-                Collection<Long> recentApiIds = handle.createQuery(statement)
-                        .bind(0, userId)
-                        .bind(1, userId)
-                        .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
-                            @Override
-                            public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
-                                return r.getLong(columnNumber);
-                            }
-                        }, "design_id"))
-                        .list();
+                Collection<Long> recentApiIds;
+                if (shareForEveryone) {
+                    recentApiIds = handle.createQuery(statement)
+                            .bind(0, userId)
+                            .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
+                                @Override
+                                public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
+                                    return r.getLong(columnNumber);
+                                }
+                            }, "design_id"))
+                            .list();
+                } else {
+                    recentApiIds = handle.createQuery(statement)
+                            .bind(0, userId)
+                            .bind(1, userId)
+                            .map(new SingleColumnMapper<Long>(new ColumnMapper<Long>() {
+                                @Override
+                                public Long map(ResultSet r, int columnNumber, StatementContext ctx) throws SQLException {
+                                    return r.getLong(columnNumber);
+                                }
+                            }, "design_id"))
+                            .list();
+                }
                 for (Long did : recentApiIds) {
                     designs.add(this.getApiDesign(userId, String.valueOf(did)));
                 }

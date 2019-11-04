@@ -160,13 +160,22 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     
     @Override
     public String selectRecentApiDesigns() {
-        return "SELECT c.design_id, MAX(c.version) AS version "
-        		+ "FROM api_content c "
-        		+ "JOIN acl a ON a.design_id = c.design_id "
-        		+ "WHERE a.user_id = ? AND c.created_by = ? "
-        		+ "GROUP BY c.design_id "
-        		+ "ORDER BY version DESC "
-        		+ "LIMIT 5";
+        if (shareForEveryone) {
+            return "SELECT c.design_id, MAX(c.version) AS version "
+                    + "FROM api_content c "
+                    + "WHERE c.created_by = ? "
+                    + "GROUP BY c.design_id "
+                    + "ORDER BY version DESC "
+                    + "LIMIT 5";
+        } else {
+            return "SELECT c.design_id, MAX(c.version) AS version "
+                    + "FROM api_content c "
+                    + "JOIN acl a ON a.design_id = c.design_id "
+                    + "WHERE a.user_id = ? AND c.created_by = ? "
+                    + "GROUP BY c.design_id "
+                    + "ORDER BY version DESC "
+                    + "LIMIT 5";
+        }
     }
 
     /**
@@ -372,6 +381,12 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectAllContentCommands() {
+        if (shareForEveryone) {
+            return "SELECT c.* "
+                    + "FROM api_content c "
+                    + "WHERE c.design_id = ? AND c.type = 1 AND c.version > ? "
+                    + "ORDER BY c.version ASC";
+        }
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN acl a ON a.design_id = c.design_id "

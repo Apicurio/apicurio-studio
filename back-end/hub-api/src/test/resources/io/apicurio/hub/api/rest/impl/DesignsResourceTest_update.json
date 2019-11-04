@@ -1,0 +1,505 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Rate Limiter API",
+    "description": "A REST API used by clients to access the standalone Rate Limiter micro-service.",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Apiman Open Source Project",
+      "url": "http://apiman.io",
+      "email": "apiman@redhat.com"
+    },
+    "license": {
+      "name": "Apache 2",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "1.0.1"
+  },
+  "host": "localhost:8080",
+  "basePath": "/limits",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Returns all limits currently being managed by the Rate Limiter API.",
+        "operationId": "listLimits",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "which page of results to return",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "number of results per page to return",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 20
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a list of rate limits - one page of results",
+            "schema": {
+              "$ref": "#/definitions/LimitList"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new rate limit to be managed by the server.",
+        "operationId": "createLimit",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "body",
+            "description": "Limit to add to the server",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewLimit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "rate limit response",
+            "schema": {
+              "$ref": "#/definitions/Limit"
+            }
+          },
+          "409": {
+            "description": "A conflict happens if the rate already exists with conflicting parameters/settings.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "429": {
+            "description": "The limit already exists and has been exceeded.",
+            "schema": {
+              "$ref": "#/definitions/LimitExceededError"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/{limitId}": {
+      "get": {
+        "description": "Returns a limit based on a single ID.",
+        "operationId": "getLimit",
+        "parameters": [
+          {
+            "name": "limitId",
+            "in": "path",
+            "description": "ID of limit to fetch",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single rate limit.",
+            "schema": {
+              "$ref": "#/definitions/Limit"
+            }
+          },
+          "404": {
+            "description": "Limit with the given ID is not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Increments a single limit.",
+        "operationId": "incrementLimit",
+        "parameters": [
+          {
+            "name": "limitId",
+            "in": "path",
+            "description": "ID of limit to increment",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "increment",
+            "in": "body",
+            "description": "The amount to increment the limit by",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LimitIncrement"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single rate limit details.",
+            "schema": {
+              "$ref": "#/definitions/Limit"
+            }
+          },
+          "404": {
+            "description": "Limit with the given ID is not found"
+          },
+          "429": {
+            "description": "The limit has been exceeded.",
+            "schema": {
+              "$ref": "#/definitions/LimitExceededError"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a single limit based on the ID supplied.",
+        "operationId": "deleteLimit",
+        "parameters": [
+          {
+            "name": "limitId",
+            "in": "path",
+            "description": "ID of limit to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Limit successfully deleted"
+          },
+          "404": {
+            "description": "Limit with the given ID is not found"
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Limit": {
+      "required": [
+        "id",
+        "value",
+        "maxValue",
+        "period",
+        "remainingValue",
+        "resetOn",
+        "createdOn",
+        "modifiedOn"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "value": {
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "maxValue": {
+          "format": "int64",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "period": {
+          "enum": [
+            "second",
+            "minute",
+            "hour",
+            "day",
+            "month",
+            "year"
+          ],
+          "type": "string"
+        },
+        "remainingValue": {
+          "format": "int64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "resetOn": {
+          "format": "dateTime",
+          "type": "string"
+        },
+        "createdOn": {
+          "format": "dateTime",
+          "type": "string"
+        },
+        "modifiedOn": {
+          "format": "dateTime",
+          "type": "string"
+        },
+        "links": {
+          "$ref": "#/definitions/LimitLinks"
+        }
+      },
+      "example": {
+        "id": "MyLimit",
+        "value": 17,
+        "maxValue": 1000,
+        "period": "day",
+        "remainingValue": 983,
+        "resetOn": "2016-06-18T00:00:00Z",
+        "createdOn": "2016-06-17T03:22:19Z",
+        "modifiedOn": "2016-06-17T05:42:51Z",
+        "links": {
+          "self": "/limits/MyLimit",
+          "increment": "/limits/MyLimit",
+          "delete": "/limits/MyLimit"
+        }
+      }
+    },
+    "LimitLinks": {
+      "required": [
+        "self",
+        "increment",
+        "delete"
+      ],
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "string"
+        },
+        "increment": {
+          "type": "string"
+        },
+        "delete": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "self": "/limits/MyLimit",
+        "increment": "/limits/MyLimit",
+        "delete": "/limits/MyLimit"
+      }
+    },
+    "LimitList": {
+      "type": "array",
+      "items": {
+        "required": [
+          "page",
+          "pageSize",
+          "limits",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "limits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Limit"
+            }
+          },
+          "links": {
+            "$ref": "#/definitions/LimitListLinks"
+          }
+        }
+      },
+      "example": {
+        "page": 2,
+        "pageSize": 50,
+        "limits": [
+          {
+            "id": "Limit1",
+            "value": 75,
+            "maxValue": 100,
+            "period": "day",
+            "remainingValue": 25,
+            "resetOn": "2016-06-18T00:00:00Z",
+            "createdOn": "2016-06-17T03:22:19Z",
+            "modifiedOn": "2016-06-17T05:42:51Z",
+            "links": {
+              "self": "/limits/Limit1",
+              "increment": "/limits/Limit1",
+              "delete": "/limits/Limit1"
+            }
+          },
+          {
+            "id": "Limit2",
+            "value": 50,
+            "maxValue": 1000,
+            "period": "day",
+            "remainingValue": 950,
+            "resetOn": "2016-06-18T00:00:00Z",
+            "createdOn": "2016-06-17T03:22:19Z",
+            "modifiedOn": "2016-06-17T05:42:51Z",
+            "links": {
+              "self": "/limits/Limit1",
+              "increment": "/limits/Limit1",
+              "delete": "/limits/Limit1"
+            }
+          }
+        ],
+        "links": {
+          "self": "/limits?page=2&pageSize=50",
+          "prevPage": "/limits?page=3&pageSize=50",
+          "nextPage": "/limits?page=1&pageSize=50"
+        }
+      }
+    },
+    "LimitListLinks": {
+      "required": [
+        "self",
+        "prevPage",
+        "nextPage"
+      ],
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "string"
+        },
+        "prevPage": {
+          "type": "string"
+        },
+        "nextPage": {
+          "type": "string"
+        },
+        "create": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "self": "/limits?page=2&pageSize=50",
+        "prevPage": "/limits?page=3&pageSize=50",
+        "nextPage": "/limits?page=1&pageSize=50",
+        "create": "/limits"
+      }
+    },
+    "LimitIncrement": {
+      "required": [
+        "incrementBy"
+      ],
+      "properties": {
+        "incrementBy": {
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "example": {
+        "incrementBy": 15
+      }
+    },
+    "NewLimit": {
+      "required": [
+        "id",
+        "value",
+        "maxValue",
+        "period"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "value": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "maxValue": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "period": {
+          "enum": [
+            "second",
+            "minute",
+            "hour",
+            "day",
+            "month",
+            "year"
+          ],
+          "type": "string"
+        },
+        "tz": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "id": "Limit1",
+        "value": 1,
+        "maxValue": 1000,
+        "period": "day"
+      }
+    },
+    "LimitExceededError": {
+      "required": [
+        "resetOn"
+      ],
+      "properties": {
+        "resetOn": {
+          "format": "dateTime",
+          "type": "string"
+        }
+      },
+      "example": {
+        "resetOn": "2016-06-18T00:00:00Z"
+      }
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "code": 10002,
+        "message": "Unexpected error attempting to create a limit."
+      }
+    }
+  }
+}

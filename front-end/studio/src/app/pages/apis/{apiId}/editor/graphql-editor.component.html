@@ -1,0 +1,20 @@
+<div (window:keydown)="onGlobalKeyDown($event)" class="graphql-editor">
+
+    <div class="editor-toolbar">
+        <div class="title">Editing API: <em>{{ api.name }}</em></div>
+        <div class="actions">
+            <button [disabled]="!sourceIsValid || !isDirty()" (click)="saveSource()" class="btn btn-primary"><span class="pficon pficon-save"></span> Save Changes</button>
+            <button [disabled]="!isDirty()" (click)="revertSource()" class="btn btn-default"><span class="icon fa fa-ban"></span> Revert Changes</button>
+        </div>
+    </div>
+
+    <div class="editor-source">
+        <code-editor [theme]="sourceTheme()" #codeEditor
+                     [mode]="sourceMode()"
+                     [debounceTime]="300"
+                     [(text)]="sourceValue"
+                     (textChange)="validate()"
+                     [editorStyle]="{ position: 'absolute', top: '0', bottom: '0', right: '0', left: '0', fontSize: '15px' }"></code-editor>
+    </div>
+
+</div>

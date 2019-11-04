@@ -25,7 +25,10 @@
                         <div class="card-pf card-pf-accented" *ngIf="isLoaded('api')">
                             <div class="card-pf-heading">
                                 <h1 [title]="apiIconTitle()" class="card-pf-title">
-                                    <span [class.oai2-icon16]="isOpenApi20()" [class.oai3-icon16]="isOpenApi30()" [class.aai2-icon16]="isAsyncApi20()" class="name-and-icon">{{ displayName() }}</span>
+                                    <span [class.oai2-icon16]="isOpenApi20()"
+                                          [class.oai3-icon16]="isOpenApi30()"
+                                          [class.graphql-icon16]="isGraphQL()"
+                                          [class.aai2-icon16]="isAsyncApi20()" class="name-and-icon">{{ displayName() }}</span>
                                     <div class="pull-right">
                                         <div class="dropdown dropdown-kebab-pf" style="display:inline;">
                                             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight" data-toggle="dropdown"
@@ -33,8 +36,14 @@
                                                 <span class="fa fa-ellipsis-v"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
-                                                <li *ngIf="actionEnabled('edit')">
+                                                <li *ngIf="actionEnabled('edit-data-model')">
                                                     <a [routerLink]="[ 'editor' ]">
+                                                        <span class="fa fa-fw fa-edit"></span>
+                                                        <span>Edit...</span>
+                                                    </a>
+                                                </li>
+                                                <li *ngIf="actionEnabled('edit-text')">
+                                                    <a [routerLink]="[ 'teditor' ]">
                                                         <span class="fa fa-fw fa-edit"></span>
                                                         <span>Edit...</span>
                                                     </a>
@@ -69,23 +78,29 @@
                                                         <span>Publish...</span>
                                                     </a>
                                                 </li>
-                                                <li *ngIf="config.isMicrocksEnabled() && isOpenApi30()">
+                                                <li *ngIf="actionEnabled('mock')">
                                                     <a [routerLink]="[ 'mock' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
                                                         <span>Mock with Microcks...</span>
                                                     </a>
                                                 </li>
                                                 <li role="separator" class="divider"></li>
-                                                <li *ngIf="actionEnabled('download')">
+                                                <li *ngIf="actionEnabled('download-yaml')">
                                                     <a href="{{ uiUrl }}download?type=api&format=yaml&id={{ api.id }}" download="{{ api.name }}.yaml">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (YAML)</span>
                                                     </a>
                                                 </li>
-                                                <li *ngIf="actionEnabled('download')">
+                                                <li *ngIf="actionEnabled('download-json')">
                                                     <a href="{{ uiUrl }}download?type=api&format=json&id={{ api.id }}" download="{{ api.name }}.json">
                                                         <span class="fa fa-fw fa-download"></span>
                                                         <span>Download (JSON)</span>
+                                                    </a>
+                                                </li>
+                                                <li *ngIf="actionEnabled('download-sdl')">
+                                                    <a href="{{ uiUrl }}download?type=api&format=sdl&id={{ api.id }}" download="{{ api.name }}.graphql">
+                                                        <span class="fa fa-fw fa-download"></span>
+                                                        <span>Download (SDL)</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('generate-project')">
@@ -130,7 +145,8 @@
                                 </div>
                                 <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)" [maxWidth]="140"></tag-list>
                                 <div class="api-action-buttons">
-                                    <a *ngIf="actionEnabled('edit')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a *ngIf="actionEnabled('edit-data-model')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a *ngIf="actionEnabled('edit-text')" [routerLink]="[ 'teditor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
                                 </div>
                             </div>
@@ -160,7 +176,7 @@
                     </div>
                 </div>
                 <!-- Microcks specific panel -->
-                <div class="row row-cards-pf" *ngIf="config.isMicrocksEnabled() && isOpenApi30()">
+                <div class="row row-cards-pf" *ngIf="actionEnabled('mock')">
                     <div class="card-pf">
                         <div class="card-pf-heading">
                             <h2 style="height: 18px;" class="card-pf-title">API Mocking</h2>

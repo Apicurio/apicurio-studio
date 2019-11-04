@@ -86,6 +86,10 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         return this.api.type === "AsyncAPI20";
     }
 
+    public isGraphQL(): boolean {
+        return this.api.type === "GraphQL";
+    }
+
     public apiIconTitle(): string {
         if (this.api.type === "OpenAPI20") {
             return "OpenAPI 2.0";
@@ -93,6 +97,8 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return "OpenAPI 3.0.x";
         } else if (this.api.type === "AsyncAPI20") {
             return "AsyncAPI 2.0.x";
+        } else if (this.api.type === "GraphQL") {
+            return "GraphQL";
         }
     }
 
@@ -262,13 +268,34 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return this.canDelete;
         }
         if (action == "collaborate") {
-            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20();
+            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20() && !this.isGraphQL();
         }
         if (action == "generate-project") {
             return this.isOpenApi20() || this.isOpenApi30();
         }
         if (action == "preview-docs") {
             return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "share-docs") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "download-json") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "download-yaml") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+        if (action == "download-sql") {
+            return this.isGraphQL();
+        }
+        if (action == "mock") {
+            return this.config.isMicrocksEnabled() && this.isOpenApi30();
+        }
+        if (action == "edit-data-model") {
+            return this.isOpenApi30() || this.isOpenApi20() || this.isAsyncApi20();
+        }
+        if (action == "edit-text") {
+            return this.isGraphQL();
         }
 
         return true;

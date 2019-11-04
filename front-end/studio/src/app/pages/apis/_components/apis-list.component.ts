@@ -66,6 +66,10 @@ export class ApisListComponent {
         return api.type === "AsyncAPI20";
     }
 
+    public isGraphQL(api: Api): boolean {
+        return api.type === "GraphQL";
+    }
+
     public apiIconTitle(api: Api): string {
         if (api.type === "OpenAPI20") {
             return "OpenAPI 2.0";
@@ -73,6 +77,8 @@ export class ApisListComponent {
             return "OpenAPI 3.0.x";
         } else if (api.type === "AsyncAPI20") {
             return "AsyncAPI 2.0.x";
+        } else if (api.type === "GraphQL") {
+            return "GraphQL";
         }
     }
 

@@ -30,5 +30,14 @@ public class ApiValidationException extends Exception {
     public ApiValidationException(String reason) {
         super(reason);
     }
+    
+    /**
+     * Constructor.
+     * @param reason
+     * @param root
+     */
+    public ApiValidationException(String reason, Throwable root) {
+        super(reason, root);
+    }
 
 }

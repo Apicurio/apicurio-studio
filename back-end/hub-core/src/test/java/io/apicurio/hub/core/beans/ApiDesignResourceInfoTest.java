@@ -31,14 +31,10 @@ public class ApiDesignResourceInfoTest {
     /**
      * Test method for {@link io.apicurio.hub.core.beans.ApiDesignResourceInfo#fromContent(java.lang.String)}.
      */
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testFromContent_Empty() throws Exception {
         ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent("{}");
-        Assert.assertNotNull(info);
-        Assert.assertEquals(FormatType.JSON, info.getFormat());
-        Assert.assertNull(info.getName());
-        Assert.assertNull(info.getDescription());
-        Assert.assertTrue(info.getTags().isEmpty());
+        Assert.assertNull(info);
     }
 
     /**
@@ -102,13 +98,9 @@ public class ApiDesignResourceInfoTest {
      */
     @Test
     public void testFromContent_InvalidContent() throws Exception {
-        try {
-            String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_Invalid.txt"), Charset.forName("UTF-8"));
-            ApiDesignResourceInfo.fromContent(content);
-            Assert.fail("Expected a parser error here!");
-        } catch (Exception e) {
-            // OK!
-        }
+        String content = IOUtils.toString(ApiDesignResourceInfoTest.class.getResourceAsStream("ApiDesignResourceInfoTest_Invalid.txt"), Charset.forName("UTF-8"));
+        ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
+        Assert.assertNull(info);
     }
 
 }

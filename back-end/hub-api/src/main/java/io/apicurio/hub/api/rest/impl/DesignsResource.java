@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import graphql.schema.idl.SchemaParser;
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
@@ -221,31 +222,7 @@ public class DesignsResource implements IDesignsResource {
             ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getUrl());
             ResourceContent initialApiContent = connector.getResourceContent(info.getUrl());
             
-            Date now = new Date();
-            String user = this.security.getCurrentUser().getLogin();
-            String description = resourceInfo.getDescription();
-            if (description == null) {
-                description = "";
-            }
-
-            ApiDesign design = new ApiDesign();
-            design.setName(resourceInfo.getName());
-            design.setDescription(description);
-            design.setCreatedBy(user);
-            design.setCreatedOn(now);
-            design.setTags(resourceInfo.getTags());
-            design.setType(resourceInfo.getType());
-            
-            try {
-                String content = initialApiContent.getContent();
-                if (resourceInfo.getFormat() == FormatType.YAML) {
-                    content = FormatUtils.yamlToJson(content);
-                }
-                String id = this.storage.createApiDesign(user, design, content);
-                design.setId(id);
-            } catch (StorageException e) {
-                throw new ServerError(e);
-            }
+            ApiDesign design = doImport(resourceInfo, initialApiContent.getContent());
             
             metrics.apiImport(connector.getType());
             
@@ -270,40 +247,14 @@ public class DesignsResource implements IDesignsResource {
                 String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
                 
-                String name = resourceInfo.getName();
-                if (name == null) {
-                    name = "Imported API Design";
-                }
-
-                Date now = new Date();
-                String user = this.security.getCurrentUser().getLogin();
-    
-                ApiDesign design = new ApiDesign();
-                design.setName(name);
-                design.setDescription(resourceInfo.getDescription());
-                design.setCreatedBy(user);
-                design.setCreatedOn(now);
-                design.setTags(resourceInfo.getTags());
-                design.setType(resourceInfo.getType());
-    
-                try {
-                    if (resourceInfo.getFormat() == FormatType.YAML) {
-                        content = FormatUtils.yamlToJson(content);
-                    }
-                    String id = this.storage.createApiDesign(user, design, content);
-                    design.setId(id);
-                } catch (StorageException e) {
-                    throw new ServerError(e);
-                }
+                ApiDesign design = doImport(resourceInfo, content);
                 
                 metrics.apiImport(null);
                 
                 return design;
             }
-        } catch (IOException e) {
-            throw new ServerError(e);
-        } catch (ApiValidationException ave) {
-            throw ave;
+        } catch (ApiValidationException | ServerError e) {
+            throw e;
         } catch (Exception e) {
             throw new ServerError(e);
         }
@@ -332,42 +283,61 @@ public class DesignsResource implements IDesignsResource {
                         name = name.substring(name.indexOf("/") + 1);
                     }
                 }
-                if (name == null) {
-                    name = "Imported API Design";
-                }
+                
+                resourceInfo.setName(name);
 
-                Date now = new Date();
-                String user = this.security.getCurrentUser().getLogin();
-    
-                ApiDesign design = new ApiDesign();
-                design.setName(name);
-                design.setDescription(resourceInfo.getDescription());
-                design.setCreatedBy(user);
-                design.setCreatedOn(now);
-                design.setTags(resourceInfo.getTags());
-                design.setType(resourceInfo.getType());
-    
-                try {
-                    if (resourceInfo.getFormat() == FormatType.YAML) {
-                        content = FormatUtils.yamlToJson(content);
-                    }
-                    String id = this.storage.createApiDesign(user, design, content);
-                    design.setId(id);
-                } catch (StorageException e) {
-                    throw new ServerError(e);
-                }
+                ApiDesign design = doImport(resourceInfo, content);
                 
                 metrics.apiImport(null);
                 
                 return design;
             }
-        } catch (ApiValidationException ave) {
-            throw ave;
-        } catch (IOException e) {
-            throw new ServerError(e);
+        } catch (ApiValidationException | ServerError e) {
+            throw e;
         } catch (Exception e) {
             throw new ServerError(e);
         }
+    }
+    
+    /**
+     * Common functionality when importing a design.
+     * @param info
+     * @param content
+     * @throws NotFoundException
+     * @throws ServerError
+     * @throws ApiValidationException
+     */
+    private ApiDesign doImport(ApiDesignResourceInfo info, String content) throws ServerError, IOException {
+        Date now = new Date();
+        String user = this.security.getCurrentUser().getLogin();
+        
+        if (info.getName() == null) {
+            info.setName("Imported API Design");
+        }
+        if (info.getDescription() == null) {
+            info.setDescription("");
+        }
+
+        ApiDesign design = new ApiDesign();
+        design.setName(info.getName());
+        design.setDescription(info.getDescription());
+        design.setCreatedBy(user);
+        design.setCreatedOn(now);
+        design.setTags(info.getTags());
+        design.setType(info.getType());
+        
+        try {
+            // Convert from YAML to JSON if the source is YAML (always store as JSON).  Only for non-GraphQL designs.
+            if (info.getType() != ApiDesignType.GraphQL && info.getFormat() == FormatType.YAML) {
+                content = FormatUtils.yamlToJson(content);
+            }
+            String id = this.storage.createApiDesign(user, design, content);
+            design.setId(id);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+        
+        return design;
     }
 
     /**
@@ -389,7 +359,7 @@ public class DesignsResource implements IDesignsResource {
             design.setCreatedBy(user);
             design.setCreatedOn(now);
 
-            // The API Design content (OAI document)
+            // The API Design content
             ApiDesignType type;
             if (info.getType() != null) {
                 type = info.getType();
@@ -400,9 +370,9 @@ public class DesignsResource implements IDesignsResource {
                     type = ApiDesignType.OpenAPI30;
                 }
             }
-            Document doc = createNewDocument(type, info.getName(), info.getDescription());
             design.setType(type);
-            String content = Library.writeDocumentToJSONString(doc);
+
+            String content = createNewDocument(type, info.getName(), info.getDescription());
 
             // Create the API Design in the database
             String designId = storage.createApiDesign(user, design, content);
@@ -422,8 +392,8 @@ public class DesignsResource implements IDesignsResource {
      * @param name
      * @param description
      */
-    private Document createNewDocument(ApiDesignType type, String name, String description) {
-        Document doc;
+    private String createNewDocument(ApiDesignType type, String name, String description) {
+        Document doc = null;
         switch (type) {
             case AsyncAPI20:
                 doc = Library.createDocument(DocumentType.asyncapi2);
@@ -432,15 +402,21 @@ public class DesignsResource implements IDesignsResource {
                 doc = Library.createDocument(DocumentType.openapi2);
                 break;
             case OpenAPI30:
-            default:
                 doc = Library.createDocument(DocumentType.openapi3);
                 break;
+            case GraphQL:
+                return "# GraphQL Schema '" + name + "' created " + new Date();
         }
-        doc.info = doc.createInfo();
-        doc.info.title = name;
-        doc.info.description = description;
-        doc.info.version = "1.0.0";
-        return doc;
+        
+        if (doc != null) {
+            doc.info = doc.createInfo();
+            doc.info.title = name;
+            doc.info.description = description;
+            doc.info.version = "1.0.0";
+            return Library.writeDocumentToJSONString(doc);
+        }
+        
+        throw new RuntimeException("Unhandled API design type: " + type);
     }
 
     /**
@@ -456,6 +432,61 @@ public class DesignsResource implements IDesignsResource {
             ApiDesign design = this.storage.getApiDesign(user, designId);
             return design;
         } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateDesign(java.lang.String, java.io.InputStream)
+     */
+    @Override
+    public void updateDesign(String designId, InputStream content)
+            throws ServerError, NotFoundException, ApiValidationException {
+        logger.debug("Updating an API design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            
+            String encoding = "UTF8";
+            if (request != null) {
+                encoding = request.getCharacterEncoding();
+            }
+            String contentStr = IOUtils.toString(content, encoding);
+            
+            try {
+                if (design.getType() == ApiDesignType.GraphQL) {
+                    SchemaParser schemaParser = new SchemaParser();
+                    schemaParser.parse(contentStr);
+                } else {
+                    Document doc = Library.readDocumentFromJSONString(contentStr);
+                    switch (design.getType()) {
+                        case AsyncAPI20:
+                            if (doc.getDocumentType() != DocumentType.asyncapi2) {
+                                throw new Exception("Expected AsyncAPI 2 content.");
+                            }
+                            break;
+                        case OpenAPI20:
+                            if (doc.getDocumentType() != DocumentType.openapi2) {
+                                throw new Exception("Expected OpenAPI 2 content.");
+                            }
+                            break;
+                        case OpenAPI30:
+                            if (doc.getDocumentType() != DocumentType.openapi3) {
+                                throw new Exception("Expected OpenAPI 3 content.");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new ApiValidationException("Content is invalid.", e);
+            }
+            
+            storage.addContent(user, designId, ApiContentType.Document, contentStr);
+        } catch (IOException | StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -539,25 +570,41 @@ public class DesignsResource implements IDesignsResource {
 
         try {
             String user = this.security.getCurrentUser().getLogin();
-            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
-            List<String> commands = new ArrayList<>(apiCommands.size());
-            for (ApiDesignCommand apiCommand : apiCommands) {
-                commands.add(apiCommand.getCommand());
-            }
-            String content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
-            String ct = "application/json; charset=" + StandardCharsets.UTF_8;
-            String cl = null;
             
-            // Convert to yaml if necessary
-            if ("yaml".equals(format)) {
-                content = FormatUtils.jsonToYaml(content);
-                ct = "application/x-yaml; charset=" + StandardCharsets.UTF_8;
-            }
+            String content = null;
+            String ct = null;
             
+            ApiDesign apiDesign = this.storage.getApiDesign(user, designId);
+            if (apiDesign.getType() == ApiDesignType.GraphQL) {
+                ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+                content = designContent.getDocument();
+                ct = "application/graphql; charset=" + StandardCharsets.UTF_8;
+                
+                if ("json".equals(format)) {
+                    // TODO: Convert from SDL to JSON
+                    throw new ServerError("Format 'JSON' not yet supported for GraphQL designs.");
+                }
+            } else {
+                ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+    
+                // Load and apply commands if any exist.
+                List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
+                List<String> commands = new ArrayList<>(apiCommands.size());
+                for (ApiDesignCommand apiCommand : apiCommands) {
+                    commands.add(apiCommand.getCommand());
+                }
+                content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
+                ct = "application/json; charset=" + StandardCharsets.UTF_8;
+                
+                // Convert to yaml if necessary
+                if ("yaml".equals(format)) {
+                    content = FormatUtils.jsonToYaml(content);
+                    ct = "application/x-yaml; charset=" + StandardCharsets.UTF_8;
+                }
+            }
+
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-            cl = String.valueOf(bytes.length);
-            
+            String cl = String.valueOf(bytes.length);
             ResponseBuilder builder = Response.ok().entity(content)
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
@@ -940,24 +987,32 @@ public class DesignsResource implements IDesignsResource {
     private String getApiContent(String designId, FormatType format) throws ServerError, NotFoundException {
         try {
             String user = this.security.getCurrentUser().getLogin();
-            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
             
-            String content = designContent.getDocument();
-            
-            List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
-            if (!apiCommands.isEmpty()) {
-                List<String> commands = new ArrayList<>(apiCommands.size());
-                for (ApiDesignCommand apiCommand : apiCommands) {
-                    commands.add(apiCommand.getCommand());
-                }
-                content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
-            }
+            ApiDesign design = this.storage.getApiDesign(user, designId);
 
-            // Convert to yaml if necessary
-            if (format == FormatType.YAML) {
-                content = FormatUtils.jsonToYaml(content);
+            ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
+            String content = designContent.getDocument();
+
+            if (design.getType() == ApiDesignType.GraphQL) {
+                if (format != null && format != FormatType.SDL) {
+                    throw new ServerError("Unsupported format: " + format);
+                }
             } else {
-                content = FormatUtils.formatJson(content);
+                List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
+                if (!apiCommands.isEmpty()) {
+                    List<String> commands = new ArrayList<>(apiCommands.size());
+                    for (ApiDesignCommand apiCommand : apiCommands) {
+                        commands.add(apiCommand.getCommand());
+                    }
+                    content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
+                }
+    
+                // Convert to yaml if necessary
+                if (format == FormatType.YAML) {
+                    content = FormatUtils.jsonToYaml(content);
+                } else {
+                    content = FormatUtils.formatJson(content);
+                }
             }
             
             return content;
@@ -1375,6 +1430,8 @@ public class DesignsResource implements IDesignsResource {
     public List<ValidationError> validateDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Validating API design with ID: {}", designId);
         metrics.apiCall("/designs/{designId}/validation", "GET");
+        
+        // TODO support validation of GraphQL APIs.
         
         String content = this.getApiContent(designId, FormatType.JSON);
 

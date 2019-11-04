@@ -91,6 +91,9 @@ export class PublishPageComponent extends AbstractPageComponent {
             this.api = api;
             this.dataLoaded["api"] = true;
             this.updatePageTitle();
+            if (api.type === "GraphQL") {
+                this.format = "SDL";
+            }
         }).catch(error => {
             console.error("[PublishPageComponent] Error getting API");
             this.error(error);
@@ -214,6 +217,9 @@ export class PublishPageComponent extends AbstractPageComponent {
         if (this.model && this.resource && this.resource.endsWith(".yml")) {
             this.format = "YAML";
         }
+        if (this.model && this.resource && this.resource.endsWith(".graphql")) {
+            this.format = "SDL";
+        }
     }
 
     public isValid(): boolean {
@@ -229,6 +235,11 @@ export class PublishPageComponent extends AbstractPageComponent {
     }
 
     public formatOptions(): DropDownOption[] {
+        if (this.api && this.api.type === "GraphQL") {
+            return [
+                new Value("SDL", "SDL")
+            ];
+        }
         return [
             new Value("YAML", "YAML"),
             new Value("JSON", "JSON")

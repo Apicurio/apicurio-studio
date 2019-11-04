@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -250,6 +251,22 @@ public class DesignsResourceTest {
     }
 
     @Test
+    public void testImportDesign_Data_GraphQL() throws ServerError, AlreadyExistsException, NotFoundException, IOException, ApiValidationException {
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_import.graphql");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        String b64Data = Base64.encodeBase64String(rawData.getBytes());
+        
+        ImportApiDesign info = new ImportApiDesign();
+        info.setData(b64Data);
+        ApiDesign design = resource.importDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        Assert.assertEquals("Imported GraphQL Schema", design.getName());
+        Assert.assertEquals("An imported GraphQL schema with the following 5 types: CacheControlScope, Continent, Country, Language, Query", design.getDescription());
+    }
+
+    @Test
     public void testCreateDesign() throws Exception {
         NewApiDesign info = new NewApiDesign();
         info.setSpecVersion("2.0");
@@ -333,6 +350,21 @@ public class DesignsResourceTest {
         Assert.assertEquals("1.0.0", version);
         oaiVersion = jsonData.get("asyncapi").asText();
         Assert.assertEquals("2.0.0", oaiVersion);
+        
+        // GraphQL document
+        info = new NewApiDesign();
+        info.setType(ApiDesignType.GraphQL);
+        info.setName("GraphQL API");
+        info.setDescription("Description of GraphQL API.");
+        design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+
+        response = resource.getContent(design.getId(), "sdl");
+        content = response.getEntity().toString();
+        Assert.assertNotNull(content);
+        Assert.assertTrue(content.startsWith("# GraphQL Schema 'GraphQL API' created"));
     }
 
     @Test
@@ -360,6 +392,73 @@ public class DesignsResourceTest {
                 "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
+    }
+    
+    @Test
+    public void testUpdateDesign() throws Exception {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("2.0");
+        info.setName("My API");
+        info.setDescription("Description of my API.");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        
+        Response response = resource.getContent(design.getId(), "json");
+        String content = response.getEntity().toString();
+        JsonNode jsonData = new ObjectMapper().reader().readTree(content);
+        String version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        String oaiVersion = jsonData.get("swagger").asText();
+        Assert.assertEquals("2.0", oaiVersion);
+
+        // Now update the content
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_update.json");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
+        resource.updateDesign(design.getId(), istream);
+        
+        // Make sure that worked!
+        response = resource.getContent(design.getId(), "json");
+        content = response.getEntity().toString();
+        jsonData = new ObjectMapper().reader().readTree(content);
+        version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.1", version);
+        oaiVersion = jsonData.get("swagger").asText();
+        Assert.assertEquals("2.0", oaiVersion);
+        Assert.assertEquals(rawData, content);
+    }
+
+    @Test
+    public void testUpdateDesign_GraphQL() throws Exception {
+        NewApiDesign info = new NewApiDesign();
+        info.setType(ApiDesignType.GraphQL);
+        info.setName("My GraphQL API");
+        info.setDescription("Description of my GraphQL API.");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        
+        Response response = resource.getContent(design.getId(), "sdl");
+        String content = response.getEntity().toString();
+        Assert.assertTrue(content.startsWith("# GraphQL Schema 'My GraphQL API'"));
+
+        // Now update the content
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_update.graphql");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
+        resource.updateDesign(design.getId(), istream);
+        
+        // Make sure that worked!
+        response = resource.getContent(design.getId(), "sdl");
+        content = response.getEntity().toString();
+        Assert.assertEquals(rawData, content);
     }
 
     @Test
@@ -472,6 +571,33 @@ public class DesignsResourceTest {
         // TODO need a better test to assert that the content is really the expected YAML
         Assert.assertFalse(actualYaml.charAt(0) == '{');
         Assert.assertTrue(actualYaml.startsWith("---"));
+    }
+
+    @Test
+    public void testGetContent_GraphQL() throws ServerError, AlreadyExistsException, NotFoundException, InterruptedException, JsonProcessingException, IOException, ApiValidationException {
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_import.graphql");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        String b64Data = Base64.encodeBase64String(rawData.getBytes());
+        
+        ImportApiDesign info = new ImportApiDesign();
+        info.setData(b64Data);
+        ApiDesign design = resource.importDesign(info);
+
+        // Now ask for the content
+        Response content = resource.getContent(design.getId(), null);
+        Assert.assertNotNull(content);
+        Assert.assertEquals(new MediaType("application", "graphql", StandardCharsets.UTF_8.name()), content.getMediaType());
+
+        String actualContent = content.getEntity().toString();
+        String expected = rawData;
+        Assert.assertEquals(expected, actualContent);
+        
+        // TODO enable this when serializing as JSON is supported
+//        content = resource.getContent(design.getId(), "json");
+//        Assert.assertNotNull(content);
+//        Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
+//        String actualJson = content.getEntity().toString();
+//        Assert.assertNotNull(actualJson);
     }
 
     @Test

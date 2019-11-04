@@ -1,0 +1,74 @@
+#api-teditor {
+  position: absolute;
+  margin-top: 37px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.right-of-breadcrumbs {
+  height: 37px;
+  float: right;
+}
+
+.right-of-breadcrumbs .unsaved-changes {
+  float: left;
+  line-height: 34px;
+  margin-right: 5px;
+  position: relative;
+}
+.right-of-breadcrumbs .unsaved-changes > span.fa {
+  font-size: 18px;
+  padding-top: 2px;
+  margin-top: 10px;
+  color: #ec7a08;
+  cursor: pointer;
+}
+.right-of-breadcrumbs .unsaved-changes > span.fa:hover {
+  filter: brightness(85%);
+}
+
+.right-of-breadcrumbs .api-actions {
+  float: right;
+  line-height: 34px;
+  margin-right: 10px;
+}
+
+
+.right-of-breadcrumbs .unsaved-changes .unsaved-message {
+  position: absolute;
+  width: auto;
+  min-width: 350px;
+  background: white;
+  border: 1px solid #ccc;
+  height: auto;
+  z-index: 500;
+  padding: 15px;
+  top: 32px;
+  right: -6px;
+  line-height: 18px;
+  box-shadow: 0px 0px 6px #999;
+}
+.right-of-breadcrumbs .unsaved-changes .unsaved-message h2 {
+  font-size: 18px;
+  padding: 0;
+  white-space: nowrap;
+  margin: 0 50px 15px 0;
+}
+
+.right-of-breadcrumbs .unsaved-changes .unsaved-message hr {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.right-of-breadcrumbs .unsaved-changes .unsaved-message .reconnect-info em {
+  font-weight: bold;
+  font-style: normal;
+  color: red;
+}
+
+.right-of-breadcrumbs .unsaved-changes .unsaved-message .reconnect-actions {
+  text-align: right;
+}
+

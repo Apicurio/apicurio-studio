@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -85,6 +86,11 @@ public interface IDesignsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{designId}/session")
     public Response editDesign(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON, "application/x-yaml", "application/graphql"})
+    @Path("{designId}")
+    public void updateDesign(@PathParam("designId") String designId, InputStream content) throws ServerError, NotFoundException, ApiValidationException;
 
     @DELETE
     @Path("{designId}")

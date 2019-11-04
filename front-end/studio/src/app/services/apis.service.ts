@@ -493,6 +493,29 @@ export class ApisService extends AbstractHubService {
     }
 
     /**
+     * Updates the content of the API.
+     * @param api
+     */
+    public updateApi(api: Api, content: string): Promise<void> {
+        console.info("[ApisService] Updating content of the API: ", api.name);
+
+        let ct: string = "application/json";
+        if (api.type == "GraphQL") {
+            ct = "application/graphql";
+        }
+
+        let url: string = this.endpoint("/designs/:designId", {
+            designId: api.id
+        });
+        let options: any = this.options({ "Content-Type": ct });
+
+        console.info("[ApisService] Updating an API Design: %s", url);
+        return this.httpPut(url, content, options, () => {
+            console.info("[ApisService] Successfully updated API %s", api.id);
+        });
+    }
+
+    /**
      * @see ApisService.deleteApi
      */
     public deleteApi(api: Api): Promise<void> {
@@ -588,6 +611,11 @@ export class ApisService extends AbstractHubService {
                 designId: apiId
             });
             let options: any = this.options({ "Accept": "application/json" });
+            if (api.type == "GraphQL") {
+                console.info("[ApisService] Getting GraphQL content!");
+                options = this.options({ "Accept": "application/graphql" });
+                options["responseType"] = "text";
+            }
             console.info("[ApisService] Getting API Design content: %s", getContentUrl);
             options["observe"] = "response";
             return HttpUtils.mappedPromise(this.http.get<HttpResponse<any>>(getContentUrl, options).toPromise(), response => {

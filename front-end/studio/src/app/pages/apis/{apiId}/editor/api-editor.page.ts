@@ -32,7 +32,6 @@ import {
 } from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
-import {ApiEditorComponent} from "./editor.component";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {DefaultSeverityRegistry, IValidationSeverityRegistry, OtCommand} from "apicurio-data-models";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
@@ -411,8 +410,10 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         if (this.isLoaded("session")) {
             if (this.apiDefinition.type === "OpenAPI20" || this.apiDefinition.type === "OpenAPI30") {
                 return "loaded-oai";
-            } else {
+            } else if (this.apiDefinition.type === "AsyncAPI20") {
                 return "loaded-aai";
+            } else {
+                return "loaded-graphql";
             }
         }
         if (this.isLoaded("def")) {

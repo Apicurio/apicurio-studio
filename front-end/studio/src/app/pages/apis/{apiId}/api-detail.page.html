@@ -36,8 +36,14 @@
                                                 <span class="fa fa-ellipsis-v"></span>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight">
-                                                <li *ngIf="actionEnabled('edit')">
+                                                <li *ngIf="actionEnabled('edit-data-model')">
                                                     <a [routerLink]="[ 'editor' ]">
+                                                        <span class="fa fa-fw fa-edit"></span>
+                                                        <span>Edit...</span>
+                                                    </a>
+                                                </li>
+                                                <li *ngIf="actionEnabled('edit-text')">
+                                                    <a [routerLink]="[ 'teditor' ]">
                                                         <span class="fa fa-fw fa-edit"></span>
                                                         <span>Edit...</span>
                                                     </a>
@@ -139,7 +145,8 @@
                                 </div>
                                 <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)" [maxWidth]="140"></tag-list>
                                 <div class="api-action-buttons">
-                                    <a *ngIf="actionEnabled('edit')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a *ngIf="actionEnabled('edit-data-model')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
+                                    <a *ngIf="actionEnabled('edit-text')" [routerLink]="[ 'teditor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
                                 </div>
                             </div>

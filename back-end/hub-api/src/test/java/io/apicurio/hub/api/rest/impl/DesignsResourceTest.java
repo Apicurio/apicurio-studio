@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -391,6 +392,73 @@ public class DesignsResourceTest {
                 "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
                 "---", 
                 ghLog);
+    }
+    
+    @Test
+    public void testUpdateDesign() throws Exception {
+        NewApiDesign info = new NewApiDesign();
+        info.setSpecVersion("2.0");
+        info.setName("My API");
+        info.setDescription("Description of my API.");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        
+        Response response = resource.getContent(design.getId(), "json");
+        String content = response.getEntity().toString();
+        JsonNode jsonData = new ObjectMapper().reader().readTree(content);
+        String version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.0", version);
+        String oaiVersion = jsonData.get("swagger").asText();
+        Assert.assertEquals("2.0", oaiVersion);
+
+        // Now update the content
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_update.json");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
+        resource.updateDesign(design.getId(), istream);
+        
+        // Make sure that worked!
+        response = resource.getContent(design.getId(), "json");
+        content = response.getEntity().toString();
+        jsonData = new ObjectMapper().reader().readTree(content);
+        version = jsonData.get("info").get("version").asText();
+        Assert.assertEquals("1.0.1", version);
+        oaiVersion = jsonData.get("swagger").asText();
+        Assert.assertEquals("2.0", oaiVersion);
+        Assert.assertEquals(rawData, content);
+    }
+
+    @Test
+    public void testUpdateDesign_GraphQL() throws Exception {
+        NewApiDesign info = new NewApiDesign();
+        info.setType(ApiDesignType.GraphQL);
+        info.setName("My GraphQL API");
+        info.setDescription("Description of my GraphQL API.");
+        ApiDesign design = resource.createDesign(info);
+        Assert.assertNotNull(design);
+        Assert.assertEquals(info.getName(), design.getName());
+        Assert.assertEquals(info.getDescription(), design.getDescription());
+        Assert.assertEquals("1", design.getId());
+        Assert.assertEquals("user", design.getCreatedBy());
+        
+        Response response = resource.getContent(design.getId(), "sdl");
+        String content = response.getEntity().toString();
+        Assert.assertTrue(content.startsWith("# GraphQL Schema 'My GraphQL API'"));
+
+        // Now update the content
+        URL resourceUrl = getClass().getResource("DesignsResourceTest_update.graphql");
+        String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
+        ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
+        resource.updateDesign(design.getId(), istream);
+        
+        // Make sure that worked!
+        response = resource.getContent(design.getId(), "sdl");
+        content = response.getEntity().toString();
+        Assert.assertEquals(rawData, content);
     }
 
     @Test

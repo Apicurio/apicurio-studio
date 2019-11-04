@@ -1,0 +1,35 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="apiDefinition.name" [route]="[ '/apis', apiDefinition.id ]"></li>
+        <li breadcrumb label="Editor" class="active"></li>
+    </breadcrumbs>
+    <div class="right-of-breadcrumbs">
+        <div class="api-actions">
+        </div>
+    </div>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div id="api-teditor" *ngIf="!pageError">
+
+    <!-- "Definition Loading" spinner -->
+    <div class="container-fluid container-cards-pf api-editor-overview" *ngIf="!isLoaded('api')">
+        <div class="row row-cards-pf">
+            <div class="">
+                <div class="card-pf card-pf-accented">
+                    <div class="card-pf-heading">
+                        <h1 class="card-pf-title">
+                            <p><span class="spinner spinner-xs spinner-inline"></span> Loading API definition...</p>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The GraphQL Editor -->
+    <graphql-editor #apiEditor *ngIf="isLoaded('api')"
+                    (textChanged)="saveChanges($event)"
+                    [api]="apiDefinition"></graphql-editor>
+
+</div>

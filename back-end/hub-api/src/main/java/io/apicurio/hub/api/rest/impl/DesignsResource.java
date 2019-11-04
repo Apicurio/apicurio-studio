@@ -54,6 +54,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import graphql.schema.idl.SchemaParser;
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.datamodels.core.models.DocumentType;
@@ -431,6 +432,61 @@ public class DesignsResource implements IDesignsResource {
             ApiDesign design = this.storage.getApiDesign(user, designId);
             return design;
         } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /**
+     * @see io.apicurio.hub.api.rest.IDesignsResource#updateDesign(java.lang.String, java.io.InputStream)
+     */
+    @Override
+    public void updateDesign(String designId, InputStream content)
+            throws ServerError, NotFoundException, ApiValidationException {
+        logger.debug("Updating an API design with ID {}", designId);
+        metrics.apiCall("/designs/{designId}", "PUT");
+
+        try {
+            String user = this.security.getCurrentUser().getLogin();
+            ApiDesign design = this.storage.getApiDesign(user, designId);
+            
+            String encoding = "UTF8";
+            if (request != null) {
+                encoding = request.getCharacterEncoding();
+            }
+            String contentStr = IOUtils.toString(content, encoding);
+            
+            try {
+                if (design.getType() == ApiDesignType.GraphQL) {
+                    SchemaParser schemaParser = new SchemaParser();
+                    schemaParser.parse(contentStr);
+                } else {
+                    Document doc = Library.readDocumentFromJSONString(contentStr);
+                    switch (design.getType()) {
+                        case AsyncAPI20:
+                            if (doc.getDocumentType() != DocumentType.asyncapi2) {
+                                throw new Exception("Expected AsyncAPI 2 content.");
+                            }
+                            break;
+                        case OpenAPI20:
+                            if (doc.getDocumentType() != DocumentType.openapi2) {
+                                throw new Exception("Expected OpenAPI 2 content.");
+                            }
+                            break;
+                        case OpenAPI30:
+                            if (doc.getDocumentType() != DocumentType.openapi3) {
+                                throw new Exception("Expected OpenAPI 3 content.");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new ApiValidationException("Content is invalid.", e);
+            }
+            
+            storage.addContent(user, designId, ApiContentType.Document, contentStr);
+        } catch (IOException | StorageException e) {
             throw new ServerError(e);
         }
     }

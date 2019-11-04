@@ -126,7 +126,7 @@
         <version.org.keycloak>7.0.1</version.org.keycloak>
         <version.mysql>5.1.48</version.mysql>
         <version.org.postgresql>9.4.1212</version.org.postgresql>
-        <version.org.slf4j>1.7.28</version.org.slf4j>
+        <version.org.slf4j>1.7.29</version.org.slf4j>
         <version.scala>2.13.1</version.scala>
     </properties>
 

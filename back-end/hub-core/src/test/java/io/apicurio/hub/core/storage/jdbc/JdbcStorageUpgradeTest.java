@@ -17,14 +17,17 @@
 package io.apicurio.hub.core.storage.jdbc;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.io.FileUtils;
+import org.h2.tools.RunScript;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,7 +47,7 @@ public class JdbcStorageUpgradeTest {
 
     @Test
     public void testUpgradeFromVersion7toVersion8() throws Exception {
-        BasicDataSource ds = createDatasource("upgrade-test.v7to8.mv.db");
+        BasicDataSource ds = createDatasourceFrom("upgrade-test.v7to8.mv.sql");
         try {
             HubConfiguration config = new HubConfiguration();
             H2SqlStatements sqlStatements = new H2SqlStatements(config);
@@ -69,19 +72,18 @@ public class JdbcStorageUpgradeTest {
             ds.close();
         }
     }
-    
+
     /**
      * Creates a datasource from a DB file found in the test resources.
      * @throws SQLException
      */
-    private static BasicDataSource createDatasource(String dbFileName) throws Exception {
+    private static BasicDataSource createDatasourceFrom(String sqlFileName) throws Exception {
         // Step 1 - copy the db file from the classpath to a temp location
-        URL dbUrl = JdbcStorageUpgradeTest.class.getResource(dbFileName);
-        Assert.assertNotNull(dbUrl);
+        URL sqlUrl = JdbcStorageUpgradeTest.class.getResource(sqlFileName);
+        Assert.assertNotNull(sqlUrl);
         File tempDbFile = File.createTempFile("_apicurio_junit", ".mv.db");
-        FileUtils.copyURLToFile(dbUrl, tempDbFile);
         tempDbFile.deleteOnExit();
-        
+
         String jdbcUrl = "jdbc:h2:file:" + tempDbFile.getAbsolutePath().replaceAll(".mv.db", "");
         
         // Step 2 - create a datasource from the file path
@@ -90,7 +92,11 @@ public class JdbcStorageUpgradeTest {
         ds.setUsername("sa");
         ds.setPassword("sa");
         ds.setUrl(jdbcUrl);
+        
+        try (Connection connection = ds.getConnection(); Reader reader = new InputStreamReader(sqlUrl.openStream())) {
+            RunScript.execute(connection, reader);
+        }
+        
         return ds;
     }
-
 }

@@ -108,7 +108,7 @@
         <version.commons-io>2.6</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-lang3>3.9</version.commons-lang3>
-        <version.io.gatling>3.3.0</version.io.gatling>
+        <version.io.gatling>3.3.1</version.io.gatling>
         <version.io.prometheus>0.8.0</version.io.prometheus>
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>

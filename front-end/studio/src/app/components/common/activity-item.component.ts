@@ -255,9 +255,12 @@ export class ActivityItemComponent {
                 rval = "code";
                 break;
             case "RenamePathItemCommand":
+            case "RenameParameterCommand":
             case "RenameSchemaDefinitionCommand":
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":
+            case "RenameResponseDefinitionCommand_20":
+            case "RenameResponseDefinitionCommand_30":
                 rval = "exchange";
                 break;
 
@@ -573,10 +576,18 @@ export class ActivityItemComponent {
             case "RenamePathItemCommand":
                 rval = `renamed a path from '${this.command()['_oldPath']}' to '${this.command()['_newPath']}'.`;
                 break;
+            case "RenameParameterCommand":
+                rval = `renamed a ${this.command()['_paramIn']} parameter from '${this.command()['_oldParamName']}' to '${this.command()['_newParamName']}'.`;
+                break;
             case "RenameSchemaDefinitionCommand":
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":
                 rval = "renamed a schema definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
+                break;
+            case "RenameResponseDefinitionCommand":
+            case "RenameResponseDefinitionCommand_20":
+            case "RenameResponseDefinitionCommand_30":
+                rval = "renamed a response definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
                 break;
             case "DeleteExampleCommand":
             case "DeleteExampleCommand_20":

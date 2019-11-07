@@ -185,7 +185,12 @@
                                     <div class="name column text" title="{{ rule.name }}">{{ rule.name }}</div>
                                     <div class="rule-type column text" title="{{ rule.type }}">{{ rule.type }}</div>
                                     <div class="entity-type column text" title="{{ rule.entity }}">{{ rule.entity }}</div>
-                                    <div class="versions column text">{{ rule.versions.join(', ') }}</div>
+                                    <div class="versions column">
+                                        <div title="OpenAPI 2.0" *ngIf="isOpenApi20(rule)" class="type-icon oai2-icon16">&nbsp;</div>
+                                        <div title="OpenAPI 3.x" *ngIf="isOpenApi30(rule)" class="type-icon oai3-icon16">&nbsp;</div>
+                                        <div title="GraphQL" *ngIf="isGraphQL(rule)" class="type-icon graphql-icon16">&nbsp;</div>
+                                        <div title="AsyncAPI 2.x" *ngIf="isAsyncApi20(rule)" class="type-icon aai2-icon16">&nbsp;</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

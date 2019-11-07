@@ -147,6 +147,13 @@
   flex-basis: 138px;
 }
 
+.profile-editor .rule-list .rule .header > .versions .type-icon {
+  display: inline-block;
+  line-height: 16px;
+  width: 16px;
+  margin-right: 3px;
+}
+
 .profile-editor .rules-section .section-header {
   font-weight: bold;
 }

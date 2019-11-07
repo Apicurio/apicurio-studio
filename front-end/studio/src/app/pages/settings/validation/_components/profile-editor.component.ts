@@ -18,7 +18,7 @@
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../../apis/{apiId}/editor/_util/keypress.util";
 import {ValidationProfile} from "../../../../models/validation.model";
-import {ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "apicurio-data-models";
+import {DocumentType, ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 
 export interface ValidationRuleFilter {
@@ -216,13 +216,14 @@ export class ProfileEditorComponent {
         let optionNames: any = {};
         this.rules.forEach( rule => {
             rule.versions.forEach( version => {
-                optionNames[version] = true;
+                optionNames[version] = this.ruleVersionName(version);
             });
         });
 
         let options: DropDownOption[] = [];
-        Object.getOwnPropertyNames(optionNames).forEach( name => {
-            options.push(new Value(name, name));
+        Object.getOwnPropertyNames(optionNames).forEach( value => {
+            let name: string = optionNames[value];
+            options.push(new Value(name, value));
         });
         return options;
     }
@@ -307,7 +308,7 @@ export class ProfileEditorComponent {
         } else if (filter.type === "entityType") {
             return rule.entity === filter.value;
         } else if (filter.type === "version") {
-            return rule.versions.indexOf(filter.value) !== -1;
+            return rule.versions.indexOf(Number(filter.value)) !== -1;
         }
     }
 
@@ -337,6 +338,17 @@ export class ProfileEditorComponent {
                 return "High";
             }
         }
+        if (filter.type === "version") {
+            if (filter.value == DocumentType.openapi2) {
+                return "OpenAPI 2.0";
+            }
+            if (filter.value == DocumentType.openapi3) {
+                return "OpenAPI 3.x";
+            }
+            if (filter.value == DocumentType.asyncapi2) {
+                return "AsyncAPI 2.x";
+            }
+        }
         return filter.value;
     }
 
@@ -352,6 +364,35 @@ export class ProfileEditorComponent {
             event.preventDefault();
             event.stopPropagation();
             this.addFilter();
+        }
+    }
+
+    isOpenApi20(rule: ValidationRuleMetaData): boolean {
+        return rule.versions.indexOf(DocumentType.openapi2) != -1;
+    }
+    isOpenApi30(rule: ValidationRuleMetaData): boolean {
+        return rule.versions.indexOf(DocumentType.openapi3) != -1;
+    }
+    isAsyncApi20(rule: ValidationRuleMetaData): boolean {
+        return rule.versions.indexOf(DocumentType.asyncapi2) != -1;
+    }
+    isGraphQL(rule: ValidationRuleMetaData): boolean {
+        return false;
+    }
+
+    ruleVersions(rule: ValidationRuleMetaData): string {
+        return rule.versions.map(dt => this.ruleVersionName(dt)).join(', ')
+    }
+
+    ruleVersionName(docType: DocumentType): string {
+        if (docType == DocumentType.openapi2) {
+            return "OpenAPI 2.0";
+        }
+        if (docType == DocumentType.openapi3) {
+            return "OpenAPI 3.x";
+        }
+        if (docType == DocumentType.asyncapi2) {
+            return "AsyncAPI 2.x";
         }
     }
 

@@ -85,6 +85,7 @@ export class BitbucketResourceComponent implements OnInit {
                 this.updateRepos();
             } else if (teams.length === 1) {
                 this.model.team = teams[0].username;
+                this.onChange.emit(this.model);
                 this.updateRepos();
             }
         }).catch( error => {
@@ -118,13 +119,14 @@ export class BitbucketResourceComponent implements OnInit {
             this._repoOptions = [];
             repos.forEach( repo => {
                 this._repoOptions.push(new Value(repo.name, repo.name));
-            })
+            });
             this.gettingRepos = false;
 
             if (this.model.repo) {
                 this.updateBranches();
             } else if (repos.length === 1) {
                 this.model.repo = repos[0].name;
+                this.onChange.emit(this.model);
                 this.updateBranches();
             }
         }).catch(error => {
@@ -158,9 +160,10 @@ export class BitbucketResourceComponent implements OnInit {
                 this._branchOptions.push(new Value(branch.name, branch.name));
             });
             this.gettingBranches = false;
-            if (this.isValid()) {
-                this.onValid.emit(true);
+            if (!this.model.branch) {
+                this.model.branch = "master";
             }
+            this.changeBranch(this.model.branch);
         }).catch(error => {
             this.gettingBranches = false;
             this.onError.emit(error);

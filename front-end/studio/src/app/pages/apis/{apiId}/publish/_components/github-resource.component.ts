@@ -83,6 +83,7 @@ export class GitHubResourceComponent implements OnInit {
                 this.updateRepos();
             } else if (orgs.length === 1) {
                 this.model.org = orgs[0].id;
+                this.onChange.emit(this.model);
                 this.updateRepos();
             }
         }).catch( error => {
@@ -123,6 +124,7 @@ export class GitHubResourceComponent implements OnInit {
                 this.updateBranches();
             } else if (repos.length === 1) {
                 this.model.repo = repos[0].name;
+                this.onChange.emit(this.model);
                 this.updateBranches();
             }
         }).catch(error => {
@@ -156,8 +158,10 @@ export class GitHubResourceComponent implements OnInit {
                 this._branchOptions.push(new Value(branch.name, branch.name));
             });
             this.gettingBranches = false;
-            if (this.isValid()) {
-                this.onValid.emit(true);
+            if (this.model && this.model.branch) {
+                this.changeBranch(this.model.branch);
+            } else {
+                this.changeBranch("master");
             }
         }).catch(error => {
             this.gettingBranches = false;

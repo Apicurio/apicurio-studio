@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 import {GitLabGroup} from "../../../../../models/gitlab-group.model";
@@ -99,6 +99,7 @@ export class GitLabResourceComponent implements OnInit {
                 this.updateProjects();
             } else if (groups.length === 1) {
                 this.model.group = groups[0]
+                this.onChange.emit(this.model);
                 this.updateProjects();
             }
         }).catch( error => {
@@ -142,6 +143,7 @@ export class GitLabResourceComponent implements OnInit {
                 this.updateBranches();
             } else if (projects.length === 1) {
                 this.model.project = projects[0];
+                this.onChange.emit(this.model);
                 this.updateBranches();
             }
         }).catch(error => {
@@ -179,9 +181,10 @@ export class GitLabResourceComponent implements OnInit {
                 }
             });
             this.gettingBranches = false;
-            if (this.isValid()) {
-                this.onValid.emit(true);
+            if (!this.model.branch) {
+                this.model.branch = "master";
             }
+            this.changeBranch(this.model.branch);
         }).catch(error => {
             this.gettingBranches = false;
             this.onError.emit(error);

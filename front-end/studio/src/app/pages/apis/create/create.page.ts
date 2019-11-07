@@ -93,10 +93,13 @@ export class CreateApiPageComponent extends AbstractPageComponent {
     }
 
     public updateSpec(spec: any, eventData: CreateApiFormData): void {
-        if (eventData.type === "2.0") {
+        // OpenAPI20, OpenAPI30, AsyncAPI20, GraphQL
+        if (eventData.type == "OpenAPI20") {
             spec.swagger = "2.0";
-        } else {
-            spec.openapi = eventData.type;
+        } else if (eventData.type == "OpenAPI30") {
+            spec.openapi = "3.0.2";
+        } else if (eventData.type == "AsyncAPI20") {
+            spec.asyncapi = "2.0.0";
         }
         if (!spec.info) {
             spec.info = {};

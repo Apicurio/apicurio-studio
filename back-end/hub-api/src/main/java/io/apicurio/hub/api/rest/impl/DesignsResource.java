@@ -247,6 +247,10 @@ public class DesignsResource implements IDesignsResource {
                 String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
                 
+                if (resourceInfo == null) {
+                    throw new ApiValidationException("Failed to determine API Design type from content.");
+                }
+                
                 ApiDesign design = doImport(resourceInfo, content);
                 
                 metrics.apiImport(null);

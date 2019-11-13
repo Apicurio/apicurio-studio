@@ -26,7 +26,7 @@ import {
     Oas30SchemaDefinition,
     Document,
     OasPathItem,
-    ValidationProblem
+    ValidationProblem, IDefinition
 } from "apicurio-data-models";
 import {ModelUtils} from "../_util/model.util";
 import {DocumentService} from "./document.service";
@@ -60,6 +60,11 @@ class MainSelectionVisitor extends CombinedAllNodeVisitor {
     }
 
     public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+        this.clearNodeStack();
+        super.visitSchemaDefinition(node);
+    }
+
+    public visitResponseDefinition(node: IDefinition): void {
         this.clearNodeStack();
         super.visitSchemaDefinition(node);
     }

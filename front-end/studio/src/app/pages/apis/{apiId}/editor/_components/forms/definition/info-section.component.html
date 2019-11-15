@@ -4,6 +4,16 @@
          [validationModels]="[definition]" [validationProperties]="['description']" [validationShallow]="true">
     <span actions></span>
     <div body>
+        <!-- Type -->
+        <div class="section-field type" *ngIf="isObject()">
+            <div>This data type is currently a complex object.</div>
+            <a (click)="switchToSimpleType()">Switch to simple type</a>
+        </div>
+        <div class="section-field type" *ngIf="!isObject()">
+            <div>This data type is currently a simple type.</div>
+            <a (click)="switchToObject()">Switch to complex (object) type</a>
+        </div>
+
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="definition" property="description" [shallow]="true"></validation-problem>

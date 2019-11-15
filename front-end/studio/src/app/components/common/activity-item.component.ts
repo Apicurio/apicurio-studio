@@ -125,6 +125,7 @@ export class ActivityItemComponent {
             case "ChangePropertyTypeCommand_30":
             case "ChangeResponseTypeCommand":
             case "ChangeResponseTypeCommand_20":
+            case "ChangeSchemaTypeCommand":
             case "ChangeResponseDefinitionTypeCommand":
             case "ChangeResponseDefinitionTypeCommand_20":
                 rval = "info";
@@ -359,6 +360,9 @@ export class ActivityItemComponent {
             case "ChangePropertyTypeCommand_20":
             case "ChangePropertyTypeCommand_30":
                 rval = "changed the type of the Schema Property named '" + this.command()["_propName"] + "' at location " + this.command()["_propPath"] + ".";
+                break;
+            case "ChangeSchemaTypeCommand":
+                rval = "changed the type of the Schema at location " + this.command()["_schemaPath"] + ".";
                 break;
             case "ChangeResponseTypeCommand":
             case "ChangeResponseTypeCommand_20":

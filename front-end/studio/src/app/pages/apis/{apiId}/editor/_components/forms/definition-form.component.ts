@@ -36,7 +36,7 @@ import {
     Oas30SchemaDefinition,
     OasDocument,
     OasSchema,
-    SimplifiedPropertyType,
+    SimplifiedPropertyType, SimplifiedType,
     TraverserDirection,
     VisitorUtil,
 } from "apicurio-data-models";
@@ -248,6 +248,26 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         let propertyName: string = property.getPropertyName();
         let parent: OasSchema = <any>property.parent();
         let command: ICommand = CommandFactory.createRenamePropertyCommand(parent, propertyName, event.newName);
+        this.commandService.emit(command);
+    }
+
+    public isObject(): boolean {
+        return this.definition.type == "object" || this.definition.type == null || this.definition.type == undefined;
+    }
+
+    public simpleType(): SimplifiedType {
+        // TODO cache this?
+        let rval: SimplifiedType = SimplifiedType.fromSchema(this.definition);
+        return rval;
+    }
+
+    public changeSimpleType(newType: SimplifiedType): void {
+        let nt: SimplifiedType = new SimplifiedType();
+        nt.type = newType.type;
+        nt.enum_ = newType.enum_;
+        nt.of = newType.of;
+        nt.as = newType.as;
+        let command: ICommand = CommandFactory.createChangeSchemaTypeCommand(this.definition, nt);
         this.commandService.emit(command);
     }
 

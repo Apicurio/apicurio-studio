@@ -81,8 +81,20 @@
                 <!-- Info about the Definition -->
                 <definition-info-section [definition]="definition"></definition-info-section>
 
-                <!-- Properties -->
-                <section type="properties" label="PROPERTIES"
+                <!-- Simple Type -->
+                <section type="simpleType" label="TYPE" *ngIf="!isObject()"
+                         contextHelp="Use this section to manage the type information."
+                         [validationModels]="[ definition ]"
+                         [validationProperties]="['type', 'format', 'items']"
+                         [validationShallow]="true">
+                    <div body>
+                        <schema-type-editor [document]="definition.ownerDocument()" [value]="simpleType()" [isParameter]="false"
+                                            (onChange)="changeSimpleType($event)"></schema-type-editor>
+                    </div>
+                </section>
+
+                <!-- Object Type : Properties -->
+                <section type="properties" label="PROPERTIES" *ngIf="isObject()"
                          contextHelp="Use this section to define the properties that make up this data type."
                          [counterItems]="properties()"
                          [collaborationNodePath]="propertiesNodePath()"

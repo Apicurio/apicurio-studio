@@ -22,6 +22,7 @@ import {ApisService} from "../../../../services/apis.service";
 import {LinkedAccountsService} from "../../../../services/accounts.service";
 import {TemplateService} from "../../../../services/template.service";
 import {ApiDesignTemplate} from "../../../../models/api-design-template.model";
+import {ConfigService} from "../../../../services/config.service";
 
 export interface CreateApiFormData {
     type: string;
@@ -48,6 +49,7 @@ export class CreateApiFormComponent {
     };
     creatingApi: boolean = false;
     error: string;
+    toptions: DropDownOption[];
 
     /**
      * Constructor.
@@ -58,21 +60,27 @@ export class CreateApiFormComponent {
      */
     constructor(private apisService: ApisService,
                 @Inject(IAuthenticationService) private authService: IAuthenticationService,
-                private accountsService: LinkedAccountsService, private templateService: TemplateService)
+                private accountsService: LinkedAccountsService, private templateService: TemplateService,
+                private config: ConfigService)
     {
         this.creatingApi = false;
     }
 
     public ngOnInit(): void {
+        this.toptions = [
+            new Value("Open API 2.0 (Swagger)", "OpenAPI20"),
+            new Value("Open API 3.0.2", "OpenAPI30")
+        ];
+        if (this.config.isAsyncAPIEnabled()) {
+            this.toptions.push(new Value("Async API 2.0.0", "AsyncAPI20"));
+        }
+        if (this.config.isGraphQLEnabled()) {
+            this.toptions.push(new Value("GraphQL", "GraphQL"));
+        }
     }
 
     public typeOptions(): DropDownOption[] {
-        return [
-            new Value("Open API 2.0 (Swagger)", "OpenAPI20"),
-            new Value("Open API 3.0.2", "OpenAPI30"),
-            new Value("Async API 2.0.0", "AsyncAPI20"),
-            new Value("GraphQL", "GraphQL")
-        ];
+        return this.toptions;
     }
 
     public changeType(value: string): void {

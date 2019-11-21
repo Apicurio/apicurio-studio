@@ -826,12 +826,12 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-apicurio-data-models@1.0.16:
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.0.16.tgz#25d75a7534ecb01c2c1a33b648bc808320602162"
-  integrity sha512-imu3qli0thdDfb6tvwPfE+uUIDILkEWtZJvWsnv2eZH/eqf2SHSLuYQNbTAVZv1Qo6mpjyZNwjTSOmWaUkdF+w==
+apicurio-data-models@1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.0.17.tgz#78a941ddf79bcee74c50abc5329d4d51bbc77265"
+  integrity sha512-sC7V7lvjrTbNJcqbo745tzWq/JMGwTJMVMb9JHfbxzghVr52Uu1Q37T5zt3yWEcINbKYWxUVbCkk/sUc89V5fA==
   dependencies:
-    core-js "3.4.0"
+    core-js "3.4.1"
 
 apicurio-ts-core@0.1.3:
   version "0.1.3"
@@ -1842,10 +1842,10 @@ core-js@2.6.5, core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
   integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
 
-core-js@3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.0.tgz#29ea478601789c72f2978e9bb98f43546f89d3aa"
-  integrity sha512-lQxb4HScV71YugF/X28LtePZj9AB7WqOpcB+YztYxusvhrgZiQXPmCYfPC5LHsw/+ScEtDbXU3xbqH3CjBRmYA==
+core-js@3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.1.tgz#76dd6828412900ab27c8ce0b22e6114d7ce21b18"
+  integrity sha512-KX/dnuY/J8FtEwbnrzmAjUYgLqtk+cxM86hfG60LGiW3MmltIc2yAmDgBgEkfm0blZhUrdr1Zd84J2Y14mLxzg==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"

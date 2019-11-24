@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: apicurio-studio-ui
+  name: apicurio-studio-ui
+spec:
+  replicas: 1
+  strategy: {}
+  selector:
+    matchLabels:
+      module: apicurio-studio-ui
+  template:
+    metadata:
+      labels:
+        module: apicurio-studio-ui
+    spec:
+      containers:
+      - env:
+#        - name: APICURIO_LOGGING_LEVEL
+#          value: debug
+        - name: APICURIO_KC_AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: keycloak-url
+        - name: APICURIO_KC_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-kc-realm          
+        - name: APICURIO_KC_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-kc-client-id
+        - name: APICURIO_KC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: apicurio-kc-client-secret
+        - name: APICURIO_UI_FEATURE_MICROCKS
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-ui-feature-microcks          
+        - name: APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-ui-feature-share-with-everyone          
+        - name: APICURIO_UI_LOGOUT_REDIRECT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-ui-logout-redirect-uri
+        - name: APICURIO_UI_HUB_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-ui-hub-api-url
+        - name: APICURIO_UI_EDITING_URL
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-ui-editing-url
+        - name: JAVA_TOOL_OPTIONS
+          value: -Djava.net.preferIPv4Stack=true
+        - name: APICURIO_MICROCKS_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-microcks-api-url
+        - name: APICURIO_MICROCKS_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: apicurio-microcks-client-id
+        - name: APICURIO_MICROCKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: apicurio-microcks-client-secret
+        image: 'apicurio/apicurio-studio-ui'
+        imagePullPolicy: Always
+        name: apicurio-studio-ui
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always

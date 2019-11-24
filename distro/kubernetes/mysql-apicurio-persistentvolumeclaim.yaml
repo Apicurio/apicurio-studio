@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: apicuriodb-aws-pv
+  name: apicuriodb-pv
   labels:
     type: local
 spec:

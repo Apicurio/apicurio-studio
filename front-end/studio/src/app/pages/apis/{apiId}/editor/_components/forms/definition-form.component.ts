@@ -64,11 +64,14 @@ import { AbstractBaseComponent } from "../common/base-component";
 })
 export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
+    private _stype: SimplifiedType = null;
+
     private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
     @Input()
     set definition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition) {
         this._definition = definition;
         this.sourceNode = definition;
+        this._stype = null;
         this.revertSource();
     }
 
@@ -256,9 +259,15 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     }
 
     public simpleType(): SimplifiedType {
-        // TODO cache this?
-        let rval: SimplifiedType = SimplifiedType.fromSchema(this.definition);
-        return rval;
+        if (this._stype === null) {
+            this._stype = SimplifiedType.fromSchema(this.definition);
+        }
+        return this._stype;
+    }
+
+    protected onDocumentChange(): void {
+        super.onDocumentChange();
+        this._stype = null;
     }
 
     public changeSimpleType(newType: SimplifiedType): void {

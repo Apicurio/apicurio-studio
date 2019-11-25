@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class StudioConfigFeatures {
     
     private boolean microcks;
+    private boolean asyncapi;
+    private boolean graphql;
     private boolean shareWithEveryone;
     
     /**
@@ -62,6 +64,34 @@ public class StudioConfigFeatures {
      */
     public void setShareWithEveryone(boolean shareWithEveryone) {
         this.shareWithEveryone = shareWithEveryone;
+    }
+
+    /**
+     * @return the asyncapi
+     */
+    public boolean isAsyncapi() {
+        return asyncapi;
+    }
+
+    /**
+     * @param asyncapi the asyncapi to set
+     */
+    public void setAsyncapi(boolean asyncapi) {
+        this.asyncapi = asyncapi;
+    }
+
+    /**
+     * @return the graphql
+     */
+    public boolean isGraphql() {
+        return graphql;
+    }
+
+    /**
+     * @param graphql the graphql to set
+     */
+    public void setGraphql(boolean graphql) {
+        this.graphql = graphql;
     }
 
 }

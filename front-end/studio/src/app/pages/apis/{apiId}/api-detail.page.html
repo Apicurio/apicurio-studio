@@ -24,8 +24,9 @@
                         <!-- Overview Information Card -->
                         <div class="card-pf card-pf-accented" *ngIf="isLoaded('api')">
                             <div class="card-pf-heading">
-                                <h1 [title]="apiIconTitle()" class="card-pf-title">
-                                    <span [class.oai2-icon16]="isOpenApi20()"
+                                <h1 class="card-pf-title">
+                                    <span [title]="apiIconTitle()"
+                                          [class.oai2-icon16]="isOpenApi20()"
                                           [class.oai3-icon16]="isOpenApi30()"
                                           [class.graphql-icon16]="isGraphQL()"
                                           [class.aai2-icon16]="isAsyncApi20()" class="name-and-icon">{{ displayName() }}</span>

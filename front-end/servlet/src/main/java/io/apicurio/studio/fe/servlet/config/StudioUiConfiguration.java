@@ -45,6 +45,12 @@ public class StudioUiConfiguration extends Configuration {
     private static final String FEATURE_MICROCKS_ENV = "APICURIO_UI_FEATURE_MICROCKS";
     private static final String FEATURE_MICROCKS_SYSPROP = "apicurio-ui.feature.microcks";
 
+    private static final String FEATURE_ASYNCAPI_ENV = "APICURIO_UI_FEATURE_ASYNCAPI";
+    private static final String FEATURE_ASYNCAPI_SYSPROP = "apicurio-ui.feature.asyncapi";
+
+    private static final String FEATURE_GRAPHQL_ENV = "APICURIO_UI_FEATURE_GRAPHQL";
+    private static final String FEATURE_GRAPHQL_SYSPROP = "apicurio-ui.feature.graphql";
+
     private static final String FEATURE_SHARE_WITH_EVERYONE_ENV = "APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE";
     private static final String FEATURE_SHARE_WITH_EVERYONE_SYSPROP = "apicurio-ui.feature.shareWithEveryone";
 
@@ -82,6 +88,20 @@ public class StudioUiConfiguration extends Configuration {
      */
     public boolean isMicrocksEnabled() {
         return "true".equals(getConfigurationProperty(FEATURE_MICROCKS_ENV, FEATURE_MICROCKS_SYSPROP, "false"));
+    }
+
+    /**
+     * Returns true if GraphQL support is enabled in the UI
+     */
+    public boolean isGraphQLEnabled() {
+        return "true".equals(getConfigurationProperty(FEATURE_GRAPHQL_ENV, FEATURE_GRAPHQL_SYSPROP, "false"));
+    }
+
+    /**
+     * Returns true if AsyncAPI support is enabled in the UI
+     */
+    public boolean isAsyncAPIEnabled() {
+        return "true".equals(getConfigurationProperty(FEATURE_ASYNCAPI_ENV, FEATURE_ASYNCAPI_SYSPROP, "false"));
     }
 
     /**

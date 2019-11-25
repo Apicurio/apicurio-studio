@@ -26,3 +26,4 @@ The following environment variables control configuration of the app:
 	APICURIO_DB_PASSWORD=sa
 	APICURIO_DB_INITIALIZE=true
 	APICURIO_LOGGING_LEVEL=INFO
+	APICURIO_SHARE_FOR_EVERYONE=false

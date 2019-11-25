@@ -32,7 +32,9 @@ let DEFAULT_CONFIG: any = {
         uiUrl: "http://localhost:8080/studio/"
     },
     features: {
-        "microcks": true
+        "microcks": true,
+        "graphql": true,
+        "asyncapi": true
     }
 };
 
@@ -122,6 +124,20 @@ export class ConfigService {
             return false;
         }
         return this.config.features.microcks;
+    }
+
+    public isAsyncAPIEnabled(): boolean {
+        if (!this.config.features) {
+            return false;
+        }
+        return this.config.features.asyncapi;
+    }
+
+    public isGraphQLEnabled(): boolean {
+        if (!this.config.features) {
+            return false;
+        }
+        return this.config.features.graphql;
     }
 
     public uiUrl(): string {

@@ -1,0 +1,55 @@
+#change apiversion to extensions/v1beta if kubernetes < v1.16.0
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: apicurio-studio-db
+  name: apicurio-studio-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      module: apicurio-studio-db
+  template:
+    metadata:
+      labels:
+        module: apicurio-studio-db
+    spec:
+      containers:
+      - args:
+        - --default-authentication-plugin=mysql_native_password
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        env:
+        - name: MYSQL_DATABASE
+          value: apicuriodb
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef: 
+              name: apicurio-secret
+              key: db-password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: db-root-password
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: db-user
+        image: percona:5.7
+        name: apicurio-studio-db
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-apicurio
+      restartPolicy: Always
+      volumes:
+      - name: mysql-apicurio
+        persistentVolumeClaim:
+         claimName: apicuriodata
+      - name: apicurio-secret
+        secret:
+          secretName: apicurio-secret

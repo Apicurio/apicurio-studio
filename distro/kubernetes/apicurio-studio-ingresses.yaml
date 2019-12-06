@@ -1,0 +1,61 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: apicurio-studio-api
+  annotations:
+#if subpath needed uncomment line and add to path beneath in specs
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+    module: apicurio-studio-api
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - backend:
+          serviceName: "apicurio-studio-api"
+          servicePort: 8091
+        path: /studio-api/?(.*)
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: apicurio-studio-ui
+  annotations:
+#    ingress.kubernetes.io/rewrite-target: /
+  labels:
+    module: apicurio-studio-ui
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - backend:
+          serviceName: "apicurio-studio-ui"
+          servicePort: 8093
+        path: /
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: apicurio-studio-ui
+  annotations:
+    #    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    ingress.kubernetes.io/proxy-read-timeout: "3600"
+    ingress.kubernetes.io/proxy-send-timeout: "3600"
+    ingress.kubernetes.io/send-timeout: "3600"    
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+  labels:
+    module: apicurio-studio-ws
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - backend:
+          serviceName: "apicurio-studio-ws"
+          servicePort: 8092
+        path: /ws

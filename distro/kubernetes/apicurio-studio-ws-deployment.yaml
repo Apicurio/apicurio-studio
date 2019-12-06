@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: apicurio-studio-ws
+  name: apicurio-studio-ws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      module: apicurio-studio-ws
+  template:
+    metadata:
+      labels:
+        module: apicurio-studio-ws
+    spec:
+      containers:
+      - env:
+#        - name: APICURIO_LOGGING_LEVEL
+#          value: debug
+        - name: APICURIO_DB_CONNECTION_URL
+          valueFrom:
+            configMapKeyRef:
+              name: apicurio-configmap
+              key: keycloak-url
+        - name: APICURIO_DB_DRIVER_NAME
+          value: mysql
+        - name: APICURIO_DB_INITIALIZE
+          value: "false"
+        - name: APICURIO_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: db-password
+        - name: APICURIO_DB_TYPE
+          value: mysql5
+        - name: APICURIO_DB_USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: apicurio-secret
+              key: db-user
+        - name: JAVA_TOOL_OPTIONS
+          value: -Djava.net.preferIPv4Stack=true
+        image: 'apicurio/apicurio-studio-ws'
+        name: apicurio-studio-ws
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always

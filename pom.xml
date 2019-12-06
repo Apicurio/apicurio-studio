@@ -62,7 +62,7 @@
         <version.wildfly>17.0.1.Final</version.wildfly>
 
         <!-- Thorntail Version -->
-        <version.io.thorntail>2.5.0.Final</version.io.thorntail>
+        <version.io.thorntail>2.6.0.Final</version.io.thorntail>
         
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.0.17.Final</version.apicurio-data-models>

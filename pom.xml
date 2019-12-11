@@ -115,7 +115,7 @@
         <version.junit>4.12</version.junit>
         <version.org.apache.httpcomponents>4.5.10</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.12</version.org.apache.httpcore>
-        <version.org.apache.commons.commons-pool2>2.7.0</version.org.apache.commons.commons-pool2>
+        <version.org.apache.commons.commons-pool2>2.8.0</version.org.apache.commons.commons-pool2>
         <version.org.eclipse.mylyn.github>2.1.5</version.org.eclipse.mylyn.github>
         <version.org.jboss.resteasy>3.9.3.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>

@@ -286,7 +286,7 @@ public class DesignsResourceTest {
                 "---",
                 ghLog);
         
-        Response response = resource.getContent(design.getId(), "json");
+        Response response = resource.getContent(design.getId(), "json", null);
         String content = response.getEntity().toString();
         JsonNode jsonData = new ObjectMapper().reader().readTree(content);
         String version = jsonData.get("info").get("version").asText();
@@ -307,7 +307,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("2", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
         
-        response = resource.getContent(design.getId(), "json");
+        response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
         version = jsonData.get("info").get("version").asText();
@@ -325,7 +325,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
         
-        response = resource.getContent(design.getId(), "json");
+        response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
         version = jsonData.get("info").get("version").asText();
@@ -343,7 +343,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
         
-        response = resource.getContent(design.getId(), "json");
+        response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
         version = jsonData.get("info").get("version").asText();
@@ -361,7 +361,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
 
-        response = resource.getContent(design.getId(), "sdl");
+        response = resource.getContent(design.getId(), "sdl", null);
         content = response.getEntity().toString();
         Assert.assertNotNull(content);
         Assert.assertTrue(content.startsWith("# GraphQL Schema 'GraphQL API' created"));
@@ -407,7 +407,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
         
-        Response response = resource.getContent(design.getId(), "json");
+        Response response = resource.getContent(design.getId(), "json", null);
         String content = response.getEntity().toString();
         JsonNode jsonData = new ObjectMapper().reader().readTree(content);
         String version = jsonData.get("info").get("version").asText();
@@ -422,7 +422,7 @@ public class DesignsResourceTest {
         resource.updateDesign(design.getId(), istream);
         
         // Make sure that worked!
-        response = resource.getContent(design.getId(), "json");
+        response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
         version = jsonData.get("info").get("version").asText();
@@ -445,7 +445,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
         
-        Response response = resource.getContent(design.getId(), "sdl");
+        Response response = resource.getContent(design.getId(), "sdl", null);
         String content = response.getEntity().toString();
         Assert.assertTrue(content.startsWith("# GraphQL Schema 'My GraphQL API'"));
 
@@ -456,7 +456,7 @@ public class DesignsResourceTest {
         resource.updateDesign(design.getId(), istream);
         
         // Make sure that worked!
-        response = resource.getContent(design.getId(), "sdl");
+        response = resource.getContent(design.getId(), "sdl", null);
         content = response.getEntity().toString();
         Assert.assertEquals(rawData, content);
     }
@@ -543,7 +543,7 @@ public class DesignsResourceTest {
 
         // Now ask for the content - the most recent Document should be mutated
         // by the two commands above to give a final value.
-        Response content = resource.getContent(design.getId(), null);
+        Response content = resource.getContent(design.getId(), null, null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
         
@@ -563,7 +563,7 @@ public class DesignsResourceTest {
                 "---", 
                 ghLog);
         
-        content = resource.getContent(design.getId(), "yaml");
+        content = resource.getContent(design.getId(), "yaml", null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "x-yaml", StandardCharsets.UTF_8.name()), content.getMediaType());
         String actualYaml = content.getEntity().toString();
@@ -584,7 +584,7 @@ public class DesignsResourceTest {
         ApiDesign design = resource.importDesign(info);
 
         // Now ask for the content
-        Response content = resource.getContent(design.getId(), null);
+        Response content = resource.getContent(design.getId(), null, null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "graphql", StandardCharsets.UTF_8.name()), content.getMediaType());
 

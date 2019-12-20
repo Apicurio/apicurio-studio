@@ -1,0 +1,52 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Three Data Type API",
+        "version": "1.0.0"
+    },
+    "paths": {},
+    "components": {
+        "schemas": {
+            "Error": {
+                "title": "Root Type for Error",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "code": 17,
+                    "message": "a problem was found"
+                }
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "Standard 404 response."
+            },
+            "ServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "A standard 500 error."
+            }
+        }
+    }
+}

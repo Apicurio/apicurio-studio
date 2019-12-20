@@ -136,7 +136,8 @@ public interface IDesignsResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml", "application/graphql" })
     @Path("{designId}/content")
-    public Response getContent(@PathParam("designId") String designId, @QueryParam("format") String format) throws ServerError, NotFoundException;
+    public Response getContent(@PathParam("designId") String designId, @QueryParam("format") String format, 
+            @QueryParam("dereference") String dereference) throws ServerError, NotFoundException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

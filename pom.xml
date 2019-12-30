@@ -90,7 +90,7 @@
         <version.surefire.plugin>2.22.2</version.surefire.plugin>
         <version.surefire-report.plugin>2.22.2</version.surefire-report.plugin>
         <version.war.plugin>3.2.3</version.war.plugin>
-        <version.frontend-maven.plugin>1.8.0</version.frontend-maven.plugin>
+        <version.frontend-maven.plugin>1.9.0</version.frontend-maven.plugin>
         <version.scala-maven.plugin>4.3.0</version.scala-maven.plugin>
 
         <!-- Dependency Versions -->

@@ -100,6 +100,8 @@ export class CreateApiPageComponent extends AbstractPageComponent {
             spec.openapi = "3.0.2";
         } else if (eventData.type == "AsyncAPI20") {
             spec.asyncapi = "2.0.0";
+        } else if (eventData.type == "GraphQL") {
+            spec.graphql = "June 2018";
         }
         if (!spec.info) {
             spec.info = {};

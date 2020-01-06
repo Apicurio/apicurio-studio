@@ -80,7 +80,7 @@ export class GraphQLEditorComponent extends TextEditorComponent implements OnCha
     }
 
     sourceMode(): CodeEditorMode {
-        return CodeEditorMode.Text;
+        return CodeEditorMode.GRAPHQL;
     }
 
     isDirty(): boolean {

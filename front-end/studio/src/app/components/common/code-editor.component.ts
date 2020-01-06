@@ -25,9 +25,8 @@ export enum CodeEditorTheme {
 }
 
 export enum CodeEditorMode {
-    Text, JSON, YAML, Markdown, XML
+    Text, JSON, YAML, Markdown, XML, GRAPHQL
 }
-
 
 @Component({
     moduleId: module.id,
@@ -84,6 +83,8 @@ export class CodeEditorComponent {
                 return 'xml';
             case CodeEditorMode.Markdown:
                 return 'markdown';
+            case CodeEditorMode.GRAPHQL:
+                return 'graphqlschema';
             default:
                 return 'text';
         }

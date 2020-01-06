@@ -26,6 +26,7 @@ import "brace/mode/html";
 import "brace/mode/markdown";
 import "brace/mode/xml";
 import "brace/mode/yaml";
+import "brace/mode/graphqlschema";
 
 declare var ace: any;
 

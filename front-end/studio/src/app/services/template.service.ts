@@ -57,12 +57,6 @@ export class TemplateService {
                 name: "USPTO Dataset API",
                 description: "Creates an API using the USPTO Data Set API (DSAPI) as a basis.",
                 content: USPTO_30
-            },
-            {
-                type: "GraphQL",
-                name: "GraphQL Example User API",
-                description: "Creates an example GraphQL User API.",
-                content: GraphQLUser
             }
         ];
     }
@@ -82,28 +76,6 @@ export class TemplateService {
     }
 
 
-}
-
-const GraphQLUser = {
-	info: {},
-	content: `
-	## Your business object
-	type User {
-	   id: ID!
-	   firstName: String!
-	   lastName: String!
-		
-	}
-	
-	## GraphQL operations
-	type Query {
-	   getUser(id: ID!): User
-	}
-   
-	type Mutation {
-	   createUser(firstName: String!, lastName: String!): User
-	}
-   `
 }
 
 const PET_STORE_20 =

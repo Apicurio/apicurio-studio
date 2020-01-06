@@ -54,6 +54,8 @@ This will start Wildfly on your local machine and you can access the UI at [http
 
 Apicurio Studio is open source, and we welcome anybody who wants to participate and contribute!
 
+Apicurio Studio is being developed using Eclipse IDE. Please follow [Setting your development environment](https://apicurio-studio.readme.io/docs/setting-up-a-development-environment) guide to setup your local machine for development.
+
 If you want to fix a bug or make any changes, please [log an issue in GitHub](https://github.com/apicurio/apicurio-studio/issues) describing the bug
 or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates
 a branch for the APISTUDIO-1234 issue:

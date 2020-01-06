@@ -67,6 +67,9 @@ import io.apicurio.datamodels.openapi.v3.models.Oas30Schema.Oas30OneOfSchema;
 import io.apicurio.datamodels.openapi.v3.visitors.IOas30Visitor;
 
 /**
+ * TODO: move all model cloning into apicurio-data-models - seems like a useful thing
+ * TODO: create model factories for OpenAPI (already exists for AsyncAPI) to make this easier
+ * 
  * @author eric.wittmann@gmail.com
  */
 public class Oas30ModelClonerVisitor extends ModelClonerVisitor implements IOas30Visitor {

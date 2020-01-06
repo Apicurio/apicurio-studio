@@ -39,7 +39,7 @@ public class ContentDereferencer {
     @Inject
     private AbsoluteReferenceResolver absoluteResolver;
     @Inject
-    private ApicurioReferenceResolver apicurioResolver;
+    private InternalReferenceResolver apicurioResolver;
 
     @PostConstruct
     void init() {

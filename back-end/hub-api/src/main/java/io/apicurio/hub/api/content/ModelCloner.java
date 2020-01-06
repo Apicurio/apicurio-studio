@@ -40,6 +40,9 @@ public class ModelCloner {
             default:
                 break;
         }
+        if (visitor == null) {
+            throw new RuntimeException("No model cloner found for: " + source.ownerDocument().getDocumentType());
+        }
         Library.visitNode(source, visitor);
         return visitor.getClone();
     }

@@ -54,6 +54,10 @@ const INHERITANCE_TYPES: DropDownOption[] = [
     new Value("AllOf", "allOf"),
     new Value("OneOf", "oneOf")
 ];
+const INHERITANCE_TYPES_20: DropDownOption[] = [
+    new Value("No inheritance", "none"),
+    new Value("AllOf", "allOf")
+];
 
 
 @Component({
@@ -213,6 +217,9 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
     }
 
     public inheritanceTypeOptions(): DropDownOption[] {
+        if (this.definition.ownerDocument().getDocumentType() === DocumentType.openapi2) {
+            return INHERITANCE_TYPES_20;
+        }
         return INHERITANCE_TYPES;
     }
 

@@ -280,12 +280,12 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return this.isOpenApi20() || this.isOpenApi30();
         }
         if (action == "download-json") {
-            return this.isOpenApi20() || this.isOpenApi30();
+            return this.isOpenApi20() || this.isOpenApi30() || this.isAsyncApi20();
         }
         if (action == "download-yaml") {
-            return this.isOpenApi20() || this.isOpenApi30();
+            return this.isOpenApi20() || this.isOpenApi30() || this.isAsyncApi20();
         }
-        if (action == "download-sql") {
+        if (action == "download-sdl") {
             return this.isGraphQL();
         }
         if (action == "mock") {

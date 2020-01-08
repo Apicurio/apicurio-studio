@@ -1,6 +1,6 @@
 {
   "name": "apicurio-design-studio",
-  "version": "0.2.44",
+  "version": "0.2.45",
   "description": "A web application to help design restful APIs.",
   "author": "Eric Wittmann",
   "license": "Apache-2.0",

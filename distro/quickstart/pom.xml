@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-distro</artifactId>
-        <version>0.2.45-SNAPSHOT</version>
+        <version>0.2.45.Final</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-distro-quickstart</artifactId>

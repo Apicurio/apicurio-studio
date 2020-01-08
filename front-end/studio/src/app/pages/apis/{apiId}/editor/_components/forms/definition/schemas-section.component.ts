@@ -75,7 +75,7 @@ export class InheritanceSchemasSectionComponent extends AbstractBaseComponent {
     }
 
     public deleteSchema(schema: OasSchema): void {
-        let command: ICommand = CommandFactory.createDeletePropertyCommand(schema as any);
+        let command: ICommand = CommandFactory.createDeleteChildSchemaCommand(schema);
         this.commandService.emit(command);
     }
 
@@ -87,8 +87,8 @@ export class InheritanceSchemasSectionComponent extends AbstractBaseComponent {
     }
 
     public deleteAllSchemas(): void {
-        // let command: ICommand = CommandFactory.createDeleteAllChildSchemasCommand(this.definition, this.inheritanceType());
-        // this.commandService.emit(command);
+        let command: ICommand = CommandFactory.createDeleteAllChildSchemasCommand(this.definition, this.inheritanceType());
+        this.commandService.emit(command);
     }
 
     public inheritanceType(): string {

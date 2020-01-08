@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
-import {Library, Oas20Operation, Oas30Operation, OasDocument, TraverserDirection} from "apicurio-data-models";
+import {Library, Document, TraverserDirection, OasDocument} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
@@ -47,9 +47,9 @@ export class AddSchemaDialogComponent {
      * Called to open the dialog.
      * @param parent
      */
-    public open(doc: OasDocument): void {
+    public open(doc: Document): void {
         console.info("[AddSchemaDialogComponent] Opening dialog.");
-        this.doc = doc;
+        this.doc = doc as OasDocument;
         this._isOpen = true;
         this.addSchemaModal.changes.subscribe( thing => {
             if (this.addSchemaModal.first) {

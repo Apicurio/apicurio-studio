@@ -2,7 +2,9 @@
     <div class="header">
         <div class="name">
             <validation-problem [model]="item"></validation-problem>
-            <span title="{{ displayName() }}">{{ displayName() }}</span>
+            <a (click)="navigateToSchema()">
+                <span title="{{ displayName() }}">{{ displayName() }}</span>
+            </a>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">

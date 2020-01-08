@@ -23,21 +23,11 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-import {
-    CommandFactory,
-    ICommand,
-    Oas20Schema,
-    Oas30Schema, OasSchema,
-    SimplifiedParameterType,
-    SimplifiedPropertyType, SimplifiedType
-} from "apicurio-data-models";
-import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
-import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
+import {DocumentType, NodePath, OasSchema} from "apicurio-data-models";
 
 
 @Component({
@@ -60,7 +50,7 @@ export class SchemaRowComponent extends AbstractRowComponent<OasSchema, any> {
      * @param selectionService
      */
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
-                private commandService: CommandService, selectionService: SelectionService) {
+                private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
@@ -68,12 +58,41 @@ export class SchemaRowComponent extends AbstractRowComponent<OasSchema, any> {
     }
 
     displayName(): string {
-        // TODO need something here
-        return this.item.$ref;
+        return this.name();
     }
 
     public delete(): void {
         this.onDelete.emit();
+    }
+
+    refToName($ref: string): string {
+        if ($ref) {
+            return $ref.substring($ref.lastIndexOf('/') + 1);
+        } else {
+            return "N/A";
+        }
+    }
+
+    name(): string {
+        return this.refToName(this.item.$ref);
+    }
+
+    navigateToSchema(): void {
+        let path: NodePath = new NodePath(this.pathPrefix());
+        path.appendSegment(this.name(), true);
+        this.selectionService.select(path.toString());
+    }
+
+    refPrefix(): string {
+        let prefix: string = "#/components/schemas/";
+        if (this.item.ownerDocument().getDocumentType() === DocumentType.openapi2) {
+            prefix = "#/definitions/";
+        }
+        return prefix;
+    }
+
+    pathPrefix(): string {
+        return this.refPrefix().substr(1);
     }
 
 }

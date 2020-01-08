@@ -17,5 +17,16 @@
                                     [baseNode]="definition" nodePath="description"
                                     [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-markdown-editor>
         </div>
+
+        <!-- Type -->
+        <div class="section-field type" *ngIf="isObject()">
+            <div>This data type is currently a complex object.</div>
+            <a (click)="switchToSimpleType()">Switch to simple type</a>
+        </div>
+        <div class="section-field type" *ngIf="!isObject()">
+            <div>This data type is currently a simple type.</div>
+            <a (click)="switchToObject()">Switch to complex (object) type</a>
+        </div>
+
     </div>
 </section>

@@ -81,35 +81,36 @@
                 <!-- Info about the Definition -->
                 <definition-info-section [definition]="definition"></definition-info-section>
 
-                <!-- Properties -->
-                <section type="properties" label="PROPERTIES"
-                         contextHelp="Use this section to define the properties that make up this data type."
-                         [counterItems]="properties()"
-                         [collaborationNodePath]="propertiesNodePath()"
-                         [validationModels]="properties()">
-                    <span actions>
-                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
-                                     [title]="'Add a property to the schema.'"></icon-button>
-                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
-                                     [title]="'Delete all properties from the schema.'"></icon-button>
-                    </span>
+                <!-- Simple Type -->
+                <section type="simpleType" label="TYPE" *ngIf="!isObject()"
+                         contextHelp="Use this section to manage the type information."
+                         [validationModels]="[ definition ]"
+                         [validationProperties]="['type', 'format', 'items']"
+                         [validationShallow]="true">
                     <div body>
-                        <!-- Warning when no properties exist -->
-                        <signpost *ngIf="!hasProperties()">
-                            <span>No schema properties have been defined.</span>
-                            <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
-                        </signpost>
+                        <schema-type-editor [document]="definition.ownerDocument()" [value]="simpleType()" [isParameter]="false"
+                                            (onChange)="changeSimpleType($event)"></schema-type-editor>
+                    </div>
+                </section>
 
-                        <!-- The list of schema properties -->
-                        <div class="container-fluid path-parameters typed-item-list">
-                            <property-row *ngFor="let property of properties()" [item]="property"
-                                          (onDelete)="deleteProperty(property)"
-                                          (onRename)="openRenamePropertyDialog(property)"
-                                          (onDescriptionChange)="changePropertyDescription(property, $event)"
-                                          (onTypeChange)="changePropertyType(property, $event)"></property-row>
+                <!-- Inheritance -->
+                <section type="inheritance" label="INHERITANCE" *ngIf="isObject()">
+                    <div body>
+                        <div class="section-field-label">
+                            <span>Inheritance Type</span>
+                        </div>
+                        <div class="section-field inheritance-type">
+                            <drop-down [id]="'inheritance-type'" [value]="inheritanceType()" [options]="inheritanceTypeOptions()"
+                                       (onValueChange)="setInheritanceType($event)"></drop-down>
                         </div>
                     </div>
                 </section>
+
+                <!-- Object Type : Properties -->
+                <schemas-section [definition]="definition" *ngIf="isInheritanceEnabled()"></schemas-section>
+
+                <!-- Object Type : Properties -->
+                <properties-section [definition]="definition" *ngIf="isObject()"></properties-section>
 
                 <!-- Definition Example -->
                 <definition-example-section [definition]="definition"></definition-example-section>
@@ -126,8 +127,3 @@
                       warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="rename($event)"></rename-entity-dialog>
-<rename-entity-dialog #renamePropertyDialog
-                      type="Property"
-                      title="Rename Property"
-                      validationPattern="[a-zA-Z0-9\.\-_]+"
-                      (onRename)="renameProperty($event)"></rename-entity-dialog>

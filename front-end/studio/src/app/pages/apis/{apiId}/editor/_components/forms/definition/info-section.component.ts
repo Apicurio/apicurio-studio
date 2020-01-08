@@ -16,7 +16,13 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {CommandFactory, ICommand, Oas20SchemaDefinition, Oas30SchemaDefinition} from "apicurio-data-models";
+import {
+    CommandFactory,
+    DocumentType,
+    ICommand, Oas20Document,
+    Oas20SchemaDefinition, Oas30Document,
+    Oas30SchemaDefinition
+} from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
@@ -28,6 +34,7 @@ import {ModelUtils} from "../../../_util/model.util";
     moduleId: module.id,
     selector: "definition-info-section",
     templateUrl: "info-section.component.html",
+    styleUrls: [ "info-section.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -62,6 +69,39 @@ export class DefinitionInfoSectionComponent extends AbstractBaseComponent {
         console.info("[DefinitionInfoSectionComponent] User changed the data type description.");
         let command: ICommand = CommandFactory.createChangePropertyCommand(this.definition, "description", newDescription);
         this.commandService.emit(command);
+    }
+
+    isObject(): boolean {
+        return this.definition.type === "object" || this.definition === null || this.definition === undefined;
+    }
+
+    switchToSimpleType(): void {
+        let newDefinition: Oas20SchemaDefinition | Oas30SchemaDefinition = this.createSchemaDefinition(this.definition.description);
+        newDefinition.type = "string";
+        let command: ICommand = CommandFactory.createReplaceSchemaDefinitionCommand(
+            this.definition.ownerDocument().getDocumentType(), this.definition, newDefinition);
+        this.commandService.emit(command);
+    }
+
+    switchToObject(): void {
+        let newDefinition: Oas20SchemaDefinition | Oas30SchemaDefinition = this.createSchemaDefinition(this.definition.description);
+        newDefinition.type = "object";
+        let command: ICommand = CommandFactory.createReplaceSchemaDefinitionCommand(
+            this.definition.ownerDocument().getDocumentType(), this.definition, newDefinition);
+        this.commandService.emit(command);
+    }
+
+    createSchemaDefinition(description: string): Oas30SchemaDefinition | Oas20SchemaDefinition {
+        let newDefinition: Oas20SchemaDefinition | Oas30SchemaDefinition;
+        if (this.definition.ownerDocument().getDocumentType() == DocumentType.openapi2) {
+            let doc20: Oas20Document = <Oas20Document> this.definition.ownerDocument();
+            newDefinition = doc20.definitions.createSchemaDefinition(this.definition.getName());
+        } else {
+            let doc30: Oas30Document = <Oas30Document> this.definition.ownerDocument();
+            newDefinition = doc30.components.createSchemaDefinition(this.definition.getName());
+        }
+        newDefinition.description = description;
+        return newDefinition;
     }
 
 }

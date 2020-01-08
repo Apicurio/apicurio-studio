@@ -117,7 +117,7 @@ export class InlineArrayEditorComponent extends AbstractBaseComponent implements
 
     public onStartEditing(): void {
         this.firstEnter = true;
-        if (AbstractInlineEditor.s_activeEditor != null && AbstractInlineEditor.s_activeEditor !== this) {
+        if (AbstractInlineEditor.s_activeEditor !== null && AbstractInlineEditor.s_activeEditor !== this) {
             AbstractInlineEditor.s_activeEditor.onCancel();
         }
         AbstractInlineEditor.s_activeEditor = this;

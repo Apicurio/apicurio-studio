@@ -1,0 +1,26 @@
+<div class="schema">
+    <div class="header">
+        <div class="name">
+            <validation-problem [model]="item"></validation-problem>
+            <a (click)="navigateToSchema()">
+                <span title="{{ displayName() }}">{{ displayName() }}</span>
+            </a>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <!-- TODO: content when expanding the row??  details about the properties? -->
+        </div>
+    </div>
+</div>

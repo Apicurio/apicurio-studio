@@ -1,0 +1,31 @@
+<section type="properties" label="PROPERTIES"
+         contextHelp="Use this section to define the properties that make up this data type."
+         [counterItems]="properties()"
+         [collaborationNodePath]="propertiesNodePath()"
+         [validationModels]="properties()">
+                    <span actions>
+                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
+                                     [title]="'Add a property to the schema.'"></icon-button>
+                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
+                                     [title]="'Delete all properties from the schema.'"></icon-button>
+                    </span>
+    <div body>
+        <!-- Warning when no properties exist -->
+        <signpost *ngIf="!hasProperties()">
+            <span>No schema properties have been defined.</span>
+            <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
+        </signpost>
+
+        <!-- The list of schema properties -->
+        <div class="container-fluid path-parameters typed-item-list">
+            <property-row *ngFor="let property of properties()" [item]="property"
+                          (onDelete)="deleteProperty(property)"
+                          (onRename)="openRenamePropertyDialog(property)"></property-row>
+        </div>
+    </div>
+</section>
+<rename-entity-dialog #renamePropertyDialog
+                      type="Property"
+                      title="Rename Property"
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      (onRename)="renameProperty($event)"></rename-entity-dialog>

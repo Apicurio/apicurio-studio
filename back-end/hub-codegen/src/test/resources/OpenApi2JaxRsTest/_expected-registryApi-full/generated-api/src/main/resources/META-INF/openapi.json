@@ -1076,7 +1076,7 @@
             },
             "Rule": {
                 "title": "Root Type for Rule",
-                "description": "",
+                "description": "A simple rule.",
                 "required": [
                     "config"
                 ],
@@ -1113,7 +1113,7 @@
                 }
             },
             "RuleType": {
-                "description": "",
+                "description": "Rule type enum.",
                 "enum": [
                     "VALIDATION",
                     "COMPATIBILITY"
@@ -1122,7 +1122,7 @@
                 "x-codegen-package": "io.apicurio.registry.types"
             },
             "ArtifactType": {
-                "description": "",
+                "description": "Artifact type enum.",
                 "enum": [
                     "AVRO",
                     "PROTOBUFF",

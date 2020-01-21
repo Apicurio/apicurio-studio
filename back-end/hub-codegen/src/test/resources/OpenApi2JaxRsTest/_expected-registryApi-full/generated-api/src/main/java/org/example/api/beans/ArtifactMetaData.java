@@ -78,12 +78,12 @@ public class ArtifactMetaData {
     @JsonPropertyDescription("")
     private Integer version;
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */
     @JsonProperty("type")
-    @JsonPropertyDescription("")
+    @JsonPropertyDescription("Artifact type enum.")
     private ArtifactType type;
 
     @JsonProperty("name")
@@ -227,7 +227,7 @@ public class ArtifactMetaData {
     }
 
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */
@@ -237,7 +237,7 @@ public class ArtifactMetaData {
     }
 
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */

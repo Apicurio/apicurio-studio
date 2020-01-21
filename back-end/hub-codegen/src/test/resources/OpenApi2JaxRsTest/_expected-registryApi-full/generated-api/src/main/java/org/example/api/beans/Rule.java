@@ -11,7 +11,7 @@ import io.apicurio.registry.types.RuleType;
 /**
  * Root Type for Rule
  * <p>
- * 
+ * A simple rule.
  * 
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -29,11 +29,11 @@ public class Rule {
     @JsonProperty("config")
     private String config;
     /**
-     * 
+     * Rule type enum.
      * 
      */
     @JsonProperty("type")
-    @JsonPropertyDescription("")
+    @JsonPropertyDescription("Rule type enum.")
     private RuleType type;
 
     /**
@@ -57,7 +57,7 @@ public class Rule {
     }
 
     /**
-     * 
+     * Rule type enum.
      * 
      */
     @JsonProperty("type")
@@ -66,7 +66,7 @@ public class Rule {
     }
 
     /**
-     * 
+     * Rule type enum.
      * 
      */
     @JsonProperty("type")

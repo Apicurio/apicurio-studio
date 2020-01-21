@@ -52,12 +52,12 @@ public class VersionMetaData {
     @JsonProperty("createdOn")
     private Date createdOn;
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */
     @JsonProperty("type")
-    @JsonPropertyDescription("")
+    @JsonPropertyDescription("Artifact type enum.")
     private ArtifactType type;
 
     /**
@@ -141,7 +141,7 @@ public class VersionMetaData {
     }
 
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */
@@ -151,7 +151,7 @@ public class VersionMetaData {
     }
 
     /**
-     * 
+     * Artifact type enum.
      * (Required)
      * 
      */

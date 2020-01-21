@@ -79,6 +79,7 @@ import io.apicurio.hub.api.codegen.OpenApi2Thorntail;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
+import io.apicurio.hub.api.content.ContentDereferencer;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.metrics.IApiMetrics;
@@ -143,6 +144,8 @@ public class DesignsResource implements IDesignsResource {
     private IApiMetrics metrics;
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
+    @Inject
+    private ContentDereferencer dereferencer;
     @Inject
     private IEditingSessionManager editingSessionManager;
     @Inject
@@ -565,10 +568,11 @@ public class DesignsResource implements IDesignsResource {
     }
     
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public Response getContent(String designId, String format) throws ServerError, NotFoundException {
+    public Response getContent(String designId, String format, String dereference)
+            throws ServerError, NotFoundException {
         logger.debug("Getting content for API design with ID: {}", designId);
         metrics.apiCall("/designs/{designId}/content", "GET");
 
@@ -599,6 +603,11 @@ public class DesignsResource implements IDesignsResource {
                 }
                 content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
                 ct = "application/json; charset=" + StandardCharsets.UTF_8;
+                
+                // If we should dereference the content, do that now.
+                if ("true".equalsIgnoreCase(dereference)) {
+                    content = dereferencer.dereference(content);
+                }
                 
                 // Convert to yaml if necessary
                 if ("yaml".equals(format)) {

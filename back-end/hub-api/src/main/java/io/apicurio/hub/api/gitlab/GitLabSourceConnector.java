@@ -231,6 +231,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 .bind("sha", commitSha)
                 .toString();
 
+        // TODO reuse the HTTP client!!
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(addCommentUrl);
             addSecurity(post);

@@ -1,0 +1,24 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Three Data Type API",
+        "version": "1.0.0"
+    },
+    "paths": {},
+    "components": {
+        "schemas": {
+            "DataType1": {
+                "description": "The first",
+                "type": "object"
+            },
+            "DataType2": {
+                "description": "The second",
+                "type": "object"
+            },
+            "DataType3": {
+                "description": "The third",
+                "type": "object"
+            }
+        }
+    }
+}

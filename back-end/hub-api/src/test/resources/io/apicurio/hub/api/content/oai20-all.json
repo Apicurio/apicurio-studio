@@ -1,0 +1,144 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ExternalRefs20",
+        "version": "1.0.0",
+        "description": "This is a simple 2.0 API definition.",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        }
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/widgets": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns an array of `Widget` entities.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Widget"
+                            }
+                        }
+                    }
+                },
+                "operationId": "getWidgets",
+                "summary": "List All Widgets",
+                "description": "Gets a list of all `Widget` entities."
+            },
+            "post": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "A new `Widget` to be created.",
+                        "schema": {
+                            "$ref": "#/definitions/Widget"
+                        },
+                        "in": "body",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "createWidget",
+                "summary": "Create a Widget",
+                "description": "Creates a new instance of a `Widget`."
+            }
+        },
+        "/widgets/{widgetId}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns a single `Widget`.",
+                        "schema": {
+                            "$ref": "#/definitions/Widget"
+                        }
+                    }
+                },
+                "operationId": "getWidget",
+                "summary": "Get a Widget",
+                "description": "Gets the details of a single instance of a `Widget`."
+            },
+            "put": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "Updated `Widget` information.",
+                        "schema": {
+                            "$ref": "#/definitions/Widget"
+                        },
+                        "in": "body",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "updateWidget",
+                "summary": "Update a Widget",
+                "description": "Updates an existing `Widget`."
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "deleteWidget",
+                "summary": "Delete a Widget",
+                "description": "Deletes an existing `Widget`."
+            },
+            "parameters": [
+                {
+                    "name": "widgetId",
+                    "description": "A unique identifier for a `Widget`.",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }
+    },
+    "definitions": {
+        "Widget": {
+            "title": "Root Type for Widget",
+            "description": "A very simple, generic data type.",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The name of the widget.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "The description of the widget.",
+                    "type": "string"
+                }
+            },
+            "example": "{\n    \"name\": \"My Widget\",\n    \"description\": \"Just a little widget for your review.\"\n}"
+        },
+        "Thing": {
+            "description": "",
+            "type": "object"
+        }
+    },
+    "responses": {
+        "NotFound": {
+            "description": "Standard 404 response."
+        },
+        "ServerError": {
+            "description": "Standard 500 response."
+        }
+    }
+}

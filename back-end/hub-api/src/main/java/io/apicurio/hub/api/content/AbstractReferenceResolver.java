@@ -52,7 +52,7 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
      * @see io.apicurio.datamodels.core.util.IReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)
      */
     @Override
-    public final Node resolveRef(String reference, Node from) {
+    public Node resolveRef(String reference, Node from) {
         try {
             URI uri = new URI(reference);
             if (accepts(uri)) {

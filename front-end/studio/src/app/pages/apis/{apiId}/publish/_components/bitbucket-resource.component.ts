@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {LinkedAccountsService} from "../../../../../services/accounts.service";
 import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../components/common/drop-down.component";
 import {BitbucketRepository} from "../../../../../models/bitbucket-repository.model";

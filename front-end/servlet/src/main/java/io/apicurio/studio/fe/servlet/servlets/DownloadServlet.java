@@ -92,6 +92,7 @@ public class DownloadServlet extends HttpServlet {
         if ("api".equals(type)) {
             String format = req.getParameter("format");
             String designId = req.getParameter("id");
+            String dereference = req.getParameter("dereference");
             
             String url = generateHubApiUrl(req);
             if (url.endsWith("/")) {
@@ -100,6 +101,10 @@ public class DownloadServlet extends HttpServlet {
             url += "/designs/{designId}/content?format={format}"
                     .replace("{designId}", designId)
                     .replace("{format}", format);
+            
+            if (dereference != null) {
+                url += "&dereference=" + dereference;
+            }
             
             disableHttpCaching(resp);
             proxyUrlTo(url, req, resp);

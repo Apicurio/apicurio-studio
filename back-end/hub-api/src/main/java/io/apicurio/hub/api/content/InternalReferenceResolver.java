@@ -59,7 +59,7 @@ public class InternalReferenceResolver extends AbstractReferenceResolver {
     @Override
     protected boolean accepts(URI uri) {
         String scheme = uri.getScheme();
-        return scheme != null && scheme.toLowerCase().startsWith("apicurio");
+        return scheme != null && scheme.equalsIgnoreCase("apicurio");
     }
     
     /**

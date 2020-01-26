@@ -60,7 +60,7 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
             }
             return null;
         } catch (Exception e) {
-            logger.error("Error resolving http(s) reference", e);
+            logger.error("Error resolving external reference", e);
             return null;
         }
     }
@@ -104,6 +104,9 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
     protected abstract String fetchUriContent(URI referenceUri) throws IOException;
 
     /**
+     * TODO add javadoc 
+     * TODO also support YAML!
+     * 
      * @param externalContent
      * @throws JsonProcessingException 
      * @throws JsonMappingException 
@@ -115,6 +118,10 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
     /**
      * Resolves the location within the document by evaluating the fragment and following
      * it to a node within the JSON tree.
+     * 
+     * TODO move this logic in some way into the apicurio-data-models library
+     * TODO check for implementation of JSON Pointer/Reference (whatever is used by the spec) or at least review the RFC
+     * 
      * @param externalContentRoot
      * @param fragment
      */

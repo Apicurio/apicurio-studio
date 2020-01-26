@@ -76,7 +76,6 @@ public class AbsoluteReferenceResolver extends AbstractReferenceResolver {
      */
     @Override
     protected String fetchUriContent(URI referenceUri) throws IOException {
-
         HttpGet get = new HttpGet(referenceUri);
         try (CloseableHttpResponse response = httpClient.execute(get)) {
             if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {

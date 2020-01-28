@@ -4,9 +4,3 @@
 .editor-master .editor-outline .master-entity-list:focus {
   outline: none;
 }
-
-.editor-master .editor-outline .section-body .collaborator-aggregate {
-  position: absolute;
-  top: -1px;
-  right: 24px;
-}

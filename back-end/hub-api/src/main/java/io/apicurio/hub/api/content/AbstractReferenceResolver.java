@@ -97,6 +97,7 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
     }
 
     /**
+     * Fetch the content at the given URI using some sort of implementation-specific approach.
      * @param referenceUri
      * @throws IOException 
      * @throws MalformedURLException 
@@ -104,8 +105,10 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
     protected abstract String fetchUriContent(URI referenceUri) throws IOException;
 
     /**
-     * TODO add javadoc 
-     * TODO also support YAML!
+     * Parse the given external content.  The content may be JSON or YAML.  This method should 
+     * figure out which (or simply try both).
+     * 
+     * TODO support YAML
      * 
      * @param externalContent
      * @throws JsonProcessingException 

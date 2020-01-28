@@ -27,6 +27,7 @@ import {ModelUtils} from "../../_util/model.util";
     moduleId: module.id,
     selector: "[response-item]",
     templateUrl: "response-item.component.html",
+    styleUrls: [ "response-item.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -52,4 +53,14 @@ export class ResponseItemComponent extends AbstractBaseComponent {
     public asNodePath(): string {
         return ModelUtils.nodeToPath(this.response);
     }
+
+    /**
+     * Returns true iff the schema definition is "imported".  A definition is imported if it has a $ref
+     * that refers to an external source (anything other than #/ references).
+     */
+    isImported(): boolean {
+        let $ref: string = this.response.$ref;
+        return ($ref && $ref.indexOf("#") != 0);
+    }
+
 }

@@ -61,6 +61,7 @@
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
+  display: flex;
 }
 .api-editor .editor-master .editor-outline .api-path:hover {
   background-color: #d1eaf7;
@@ -89,12 +90,24 @@
   border: 1px solid black;
   box-shadow: 0 0 3px #141414;
 }
+
+.api-editor .editor-master .editor-outline .api-path > * {
+  margin-right: 4px;
+}
+.api-editor .editor-master .editor-outline .api-path > .api-path-item {
+  flex-grow: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .api-editor .editor-master .editor-outline .api-definition {
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
+  display: flex;
 }
 .api-editor .editor-master .editor-outline .api-definition:hover {
   background-color: #d1eaf7;
@@ -110,12 +123,18 @@
   background-color: #FFCC87;
   border-left: 2px dotted #E89F3D;
 }
+
+.api-editor .editor-master .editor-outline .api-definition > * {
+  margin-right: 4px;
+}
+
 .api-editor .editor-master .editor-outline .api-response {
   -webkit-transition: background-color 200ms;
   -moz-transition: background-color 200ms;
   -ms-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
+  display: flex;
 }
 .api-editor .editor-master .editor-outline .api-response:hover {
   background-color: #d1eaf7;
@@ -124,6 +143,11 @@
   background-color: #a5d6ef;
   border-left: 2px solid #39a5dc;
 }
+
+.api-editor .editor-master .editor-outline .api-response > * {
+  margin-right: 4px;
+}
+
 .api-editor .editor-detail .detail-title {
   border-bottom: 1px solid #ddd;
 }
@@ -947,21 +971,6 @@
   position: absolute;
   right: -15px;
   top: -6px;
-}
-.api-editor .editor-master .editor-outline .api-path .validation-aggregate {
-  position: absolute;
-  right: 3px;
-  top: -1px;
-}
-.api-editor .editor-master .editor-outline .api-path .api-operations .validation-aggregate {
-  position: absolute;
-  right: -9px;
-  top: -6px;
-}
-.api-editor .editor-master .editor-outline .api-definition .validation-aggregate {
-  position: absolute;
-  right: 3px;
-  top: -1px;
 }
 .api-editor .detail-content .operations-section .api-operation .type {
   position: relative;

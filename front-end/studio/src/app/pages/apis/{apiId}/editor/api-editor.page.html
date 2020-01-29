@@ -92,6 +92,7 @@
                 [api]="apiDefinition"
                 [features]="editorFeatures"
                 [validationRegistry]="validationRegistry"
+                [contentFetcher]="fetchExternalContent"
                 (onSelectionChanged)="onSelectionChanged($event)"
                 (onCommandExecuted)="onCommandExecuted($event)"
                 (onConfigureValidation)="configureValidationDialog.open()"

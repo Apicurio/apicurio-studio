@@ -63,6 +63,7 @@ import {CollaboratorService} from "./_services/collaborator.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
 import {AbstractApiEditorComponent} from "./editor.base";
+import {ApiCatalogService} from "./_services/api-catalog.service";
 
 
 @Component({
@@ -78,6 +79,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
+    @Input() contentFetcher: (externalReference: string) => Promise<any>;
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -120,10 +122,12 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * @param editorsService
      * @param featuresService
      * @param collaboratorService
+     * @param catalog
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
-                private featuresService: FeaturesService, private collaboratorService: CollaboratorService) { super(); }
+                private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
+                private catalog: ApiCatalogService) { super(); }
 
     /**
      * Called when the editor is initialized by angular.
@@ -163,6 +167,11 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * @param changes
      */
     ngOnChanges(changes: SimpleChanges): void {
+        if (changes["contentFetcher"]) {
+            console.debug("[ApiEditorComponent] Content fetcher is: ", this.contentFetcher);
+            this.catalog.setFetcher(this.contentFetcher);
+        }
+
         if (changes["api"]) {
             this.selectionService.reset();
             this.collaboratorService.reset();
@@ -183,6 +192,8 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
+
+            this.catalog.reset(this.document());
         }
 
         if (changes["features"]) {
@@ -496,6 +507,9 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
         // Update the form being displayed (this might change if the thing currently selected was deleted)
         this.updateFormDisplay(this.selectionService.currentSelection());
+
+        // Potentially update the API catalog
+        this.catalog.update(this.documentService.currentDocument());
 
         // Fire a change event in the document service
         this.documentService.emitChange();

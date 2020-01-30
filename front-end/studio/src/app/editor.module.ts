@@ -123,6 +123,7 @@ import {PropertiesSectionComponent} from "./pages/apis/{apiId}/editor/_component
 import {InheritanceSchemasSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/schemas-section.component";
 import {SchemaRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/schema-row.component";
 import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema.component";
+import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catalog.service";
 
 @NgModule({
     imports: [
@@ -154,7 +155,7 @@ import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
-        RestResourceService, FeaturesService, CollaboratorService
+        RestResourceService, FeaturesService, CollaboratorService, ApiCatalogService
     ],
     exports: [
         ApiEditorComponent, AsyncApiEditorComponent, GraphQLEditorComponent

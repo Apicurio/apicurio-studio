@@ -33,7 +33,7 @@ import {
 import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {DefaultSeverityRegistry, IValidationSeverityRegistry, OtCommand} from "apicurio-data-models";
+import {DefaultSeverityRegistry, IValidationSeverityRegistry, Library, OtCommand} from "apicurio-data-models";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
@@ -200,6 +200,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     retryTimerDate: Date;
     reconnecting: boolean = false;
     isOffline: boolean;
+    httpFetchEnabled: boolean = false; // TODO should be configurable - true in PROD mode and false in DEV mode (see usage below)
 
     private currentEditorSelection: string;
 
@@ -251,6 +252,50 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.apiDefinition.id = apiId;
 
         this.openEditingSession(apiId, false);
+    }
+
+    /**
+     * Fetches external content on behalf of the editor.  This implementation should handle both
+     * external http(s) content as well as internal Apicurio Studio content.
+     * @param externalRef
+     */
+    public fetchExternalContent = (externalRef: string): Promise<any> => {
+        console.info("[ApiEditorPageComponent] Fetching content from: ", externalRef);
+        if (externalRef.startsWith("apicurio:")) {
+            let designId: string = externalRef.substring(externalRef.indexOf(":") + 1);
+            return this.apis.getApiDefinition(designId).then( apiDef => {
+                return apiDef.spec;
+            });
+        } else if (externalRef.toLowerCase().startsWith("http") && this.httpFetchEnabled) {
+            // try {
+            //     let options: any = {
+            //         observe: "response"
+            //     };
+            //     this.http.get<HttpResponse<any>>(externalRef, options).toPromise(), response => {
+            //         if (response.statusCode >= 200 && response.statusCode <= 299) {
+            //             // Only handle the response if the cache is expecting this ref to be fetched.
+            //             if (this.apiCache[externalRef] == null) {
+            //                 console.debug("[ApiCatalogService] Successfully fetched external http/s content:");
+            //                 console.debug(response.body);
+            //                 let body: any = response.body;
+            //                 let content: any = this.parseExternalResource(body);
+            //                 this.cacheContent(externalRef, content);
+            //             } else {
+            //                 console.warn("[ApiCatalogService] Successfully fetched content for reference that is no longer needed: ", externalRef);
+            //             }
+            //         } else {
+            //             console.error("[ApiCatalogService] Failed to fetch external resource: ", externalRef);
+            //             this.cacheContent(externalRef, null);
+            //         }
+            //     };
+            // } catch (e) {
+            //     console.error("[ApiCatalogService] Error fetching external http(s) API/content.");
+            //     console.error(e);
+            //     this.cacheContent(externalRef, null);
+            // }
+        } else {
+            return Promise.resolve(null);
+        }
     }
 
     /**

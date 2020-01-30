@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OtCommand} from "apicurio-data-models";
+import {Document, OtCommand} from "apicurio-data-models";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 

@@ -19,13 +19,14 @@ import {Injectable} from "@angular/core";
 import {Topic} from "apicurio-ts-core";
 import {CombinedAllNodeVisitor, Document, Library, Node, TraverserDirection} from "apicurio-data-models";
 import * as YAML from 'js-yaml';
-import {DocumentService} from "./document.service";
 
 
 /**
  * A service to manage a collection of APIs that should be loaded to accommodate various bits
  * of functionality, but primarily to assist with resolving external references.  This service
  * itself does not resolve external resources, but requires a helper for that.
+ *
+ * TODO also maintain a list of errors - populated when we fail to resolve a resource URL (and why)
  */
 @Injectable()
 export class ApiCatalogService {
@@ -56,8 +57,7 @@ export class ApiCatalogService {
      * the given document.
      * @param document
      */
-    private refresh(document: Document): void {
-        // TODO visit the doc to get the list of $refs and then remove anything from the cache that is no longer needed and add anything that's missing
+    private refresh(document: Document, isReset: boolean = false): void {
         let changesMade: boolean = false;
         this.fetchCounter = 0;
 
@@ -89,7 +89,7 @@ export class ApiCatalogService {
 
         // If there are any refs remaining in the old cache, then we've made changes to the cache and
         // should fire that as an event to anyone listening.
-        if (changesMade) {
+        if (isReset || changesMade) {
             console.debug("[ApiCatalogService] Catalog changes detected, firing event.");
             this.changeTopic.send(this.apiCache);
         }
@@ -101,7 +101,7 @@ export class ApiCatalogService {
      */
     public reset(document: Document): void {
         console.info("[ApiCatalogService] Resetting the API catalog.");
-        this.refresh(document);
+        this.refresh(document, true);
     }
 
     /**
@@ -194,6 +194,20 @@ export class ApiCatalogService {
         if (this.fetchCounter === 0) {
             console.debug("[ApiCatalogService] Firing 'change' event.");
             this.changeTopic.send(this.apiCache);
+        }
+    }
+
+    /**
+     * Called to lookup a resource stored in the catalog.  Returns a JS object if one is found or null
+     * if not found.
+     * @param resourceUrl
+     */
+    public lookup(resourceUrl: string) {
+        let rval: any = this.apiCache[resourceUrl];
+        if (rval) {
+            return rval;
+        } else {
+            return null;
         }
     }
 }

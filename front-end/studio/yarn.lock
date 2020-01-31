@@ -826,10 +826,10 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
-apicurio-data-models@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.1.0.tgz#eca5f31c55f90a0f004402fbcea240c366f3eea5"
-  integrity sha512-yCzDG4cCYphrvIB+7gX2inxu+FBKzCnFRrntR83W7ylm4j0jdw3xALbfucrMhsSiHOpQfKk7hMpfhvFxCNYliA==
+apicurio-data-models@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.1.1.tgz#b8ce65f0a6d7ea6a63e457a4117d66f9ac88610d"
+  integrity sha512-3wkkL9X9j6QDvLfiAAZFH0pgi2Ht9w/CfJM+AkqSlJTlP4tlWH/RGi9Zf0RdYlCJvCG6p/zHCRF+3GS2IECvoQ==
   dependencies:
     core-js "3.6.4"
 

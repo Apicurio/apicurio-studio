@@ -31,9 +31,9 @@ import {ApiDefinition} from "../../../../models/api.model";
 import {
     CombinedVisitorAdapter,
     DocumentType,
-    ICommand, IDefinition,
+    ICommand, IDefinition, IReferenceResolver,
     IValidationSeverityRegistry,
-    Library,
+    Library, ModelCloner,
     Node,
     NodePath, Oas20ResponseDefinition,
     Oas20SchemaDefinition, Oas30ResponseDefinition,
@@ -41,7 +41,7 @@ import {
     OasDocument,
     OasPathItem,
     OtCommand,
-    OtEngine,
+    OtEngine, ReferenceUtil, RegexCompat,
     ValidationProblem
 } from "apicurio-data-models";
 import {EditorMasterComponent} from "./_components/master.component";
@@ -73,7 +73,8 @@ import {ApiCatalogService} from "./_services/api-catalog.service";
     styleUrls: ["editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class ApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditorsProvider {
+export class ApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy,
+    IEditorsProvider, IReferenceResolver {
 
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
@@ -102,6 +103,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
+    private _catalogSubscription: TopicSubscription<any>;
 
     @ViewChild("master") master: EditorMasterComponent;
     @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
@@ -146,12 +148,13 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
                 me.onCommand(command);
             }
         });
-
-        // TODO why was this here??
-        // // If we're in embedded mode, select the root now.
-        // if (this.embedded && this.api) {
-        //     this.documentService.emitDocument(this.document());
-        // }
+        this._catalogSubscription = this.catalog.changes().subscribe( () => {
+            // Re-validate whenever the contents of the API catalog change
+            this.validateModel();
+            // Make sure any validation widgets refresh themselves
+            this.documentService.emitChange();
+        });
+        Library.addReferenceResolver(this);
     }
 
     /**
@@ -160,6 +163,8 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     public ngOnDestroy(): void {
         this._selectionSubscription.unsubscribe();
         this._commandSubscription.unsubscribe();
+        this._catalogSubscription.unsubscribe();
+        Library.removeReferenceResolver(this);
     }
 
     /**
@@ -543,6 +548,45 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         if (highlight) {
             this.selectionService.highlightPath(path);
         }
+    }
+
+    /**
+     * Resolves a $ref reference from a Document.  Uses the API catalog to resolve the external
+     * content and, if found, selects the appropriate
+     * @param reference
+     * @param from
+     */
+    public resolveRef(reference: string, from: Node): Node {
+        // Don't try to resolve internal refs, only external ones.
+        if (reference && !reference.startsWith("#")) {
+            console.info("[ApiEditorComponent] Resolving a reference: ", reference);
+            let hashIdx: number = reference.indexOf("#");
+            if (hashIdx == -1) {
+                return null;
+            }
+            let resourceUrl: string = reference.substring(0, hashIdx);
+            console.debug("[ApiEditorComponent] Resource URL: ", resourceUrl);
+            let resourceContent: any = this.catalog.lookup(resourceUrl);
+            if (!resourceContent) {
+                // Content not available in API catalog.  Return null.
+                return null;
+            }
+            console.debug("[ApiEditorComponent] FOUND some content for URL: ", resourceUrl);
+            let fragment: string = reference.substr(hashIdx + 1);
+            console.debug("[ApiEditorComponent] Fragment: ", fragment);
+            let cnode: any = ReferenceUtil.resolveFragmentFromJS(resourceContent, fragment);
+
+            // If we resolved a js object (not null) then convert it to a data model (Node)
+            if (cnode) {
+                console.debug("[ApiEditorComponent] Found a cnode (cloning): ", cnode);
+                let emptyClone: any = ModelCloner.createEmptyClone(from);
+                return Library.readNode(cnode, emptyClone);
+            } else {
+                console.debug("[ApiEditorComponent] No node found at fragment.");
+                return null;
+            }
+        }
+        return null;
     }
 
     public getServerEditor(): ServerEditorComponent {

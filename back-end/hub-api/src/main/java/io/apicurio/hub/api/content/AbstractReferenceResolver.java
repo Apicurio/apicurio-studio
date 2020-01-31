@@ -19,7 +19,6 @@ package io.apicurio.hub.api.content;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.cloning.ModelCloner;
-import io.apicurio.datamodels.compat.NodeCompat;
-import io.apicurio.datamodels.compat.RegexCompat;
 import io.apicurio.datamodels.core.models.Node;
 import io.apicurio.datamodels.core.util.IReferenceResolver;
+import io.apicurio.datamodels.core.util.ReferenceUtil;
 
 /**
  * A base class for all reference resolvers.  This class handles any common functionality
@@ -122,24 +120,11 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
      * Resolves the location within the document by evaluating the fragment and following
      * it to a node within the JSON tree.
      * 
-     * TODO move this logic in some way into the apicurio-data-models library
-     * TODO check for implementation of JSON Pointer/Reference (whatever is used by the spec) or at least review the RFC
-     * 
      * @param externalContentRoot
      * @param fragment
      */
     protected JsonNode resolveNode(JsonNode externalContentRoot, String fragment) {
-        List<String[]> split = RegexCompat.findMatches(fragment, "([^/]+)/?");
-        JsonNode cnode = externalContentRoot;
-        for (String[] mi : split) {
-            String seg = mi[1];
-            if (NodeCompat.equals(seg, "#")) {
-                cnode = externalContentRoot;
-            } else if (cnode != null) {
-                cnode = cnode.get(seg);
-            }
-        }
-        return cnode;
+        return (JsonNode) ReferenceUtil.resolveFragmentFromJS(externalContentRoot, fragment);
     }
 
     /**

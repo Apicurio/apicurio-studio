@@ -152,6 +152,7 @@ export class ActivityItemComponent {
                 rval = "pencil";
                 break;
             case "DeleteAllOperationsCommand":
+            case "DeleteAllParametersCommand":
             case "DeleteAllParametersCommand_20":
             case "DeleteAllParametersCommand_30":
             case "DeleteAllPropertiesCommand":
@@ -252,6 +253,9 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand":
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
+            case "ReplaceResponseDefinitionCommand":
+            case "ReplaceResponseDefinitionCommand_20":
+            case "ReplaceResponseDefinitionCommand_30":
             case "ReplaceDocumentCommand":
                 rval = "code";
                 break;
@@ -569,9 +573,9 @@ export class ActivityItemComponent {
             case "ReplaceSchemaDefinitionCommand_30":
                 rval = "fully replaced the source for Data Type '" + this.command()["_defName"] + "'.";
                 break;
-            case "ReplaceSchemaDefinitionCommand":
-            case "ReplaceSchemaDefinitionCommand_20":
-            case "ReplaceSchemaDefinitionCommand_30":
+            case "ReplaceResponseDefinitionCommand":
+            case "ReplaceResponseDefinitionCommand_20":
+            case "ReplaceResponseDefinitionCommand_30":
                 rval = "fully replaced the source for Data Type '" + this.command()["_defName"] + "'.";
                 break;
             case "ReplaceSecurityRequirementCommand":

@@ -129,7 +129,20 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
                 private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
-                private catalog: ApiCatalogService) { super(); }
+                private catalog: ApiCatalogService) {
+        super();
+
+        Library.addReferenceResolver(this);
+        console.debug("[ApiEditorComponent] Subscribing to API Catalog changes.");
+        this._catalogSubscription = this.catalog.changes().subscribe( () => {
+            console.debug("[ApiEditorComponent] Re-validating model due to API Catalog change.");
+            // Re-validate whenever the contents of the API catalog change
+            console.debug("+++++  DEBUG DEBUG DEBUG +++++  VALIDATING (API Catalog)");
+            this.validateModel();
+            // Make sure any validation widgets refresh themselves
+            this.documentService.emitChange();
+        });
+    }
 
     /**
      * Called when the editor is initialized by angular.
@@ -148,13 +161,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
                 me.onCommand(command);
             }
         });
-        this._catalogSubscription = this.catalog.changes().subscribe( () => {
-            // Re-validate whenever the contents of the API catalog change
-            this.validateModel();
-            // Make sure any validation widgets refresh themselves
-            this.documentService.emitChange();
-        });
-        Library.addReferenceResolver(this);
     }
 
     /**
@@ -173,7 +179,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      */
     ngOnChanges(changes: SimpleChanges): void {
         if (changes["contentFetcher"]) {
-            console.debug("[ApiEditorComponent] Content fetcher is: ", this.contentFetcher);
             this.catalog.setFetcher(this.contentFetcher);
         }
 

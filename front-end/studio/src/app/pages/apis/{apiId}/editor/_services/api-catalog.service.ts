@@ -57,7 +57,7 @@ export class ApiCatalogService {
      * the given document.
      * @param document
      */
-    private refresh(document: Document, isReset: boolean = false): void {
+    private refresh(document: Document): void {
         let changesMade: boolean = false;
         this.fetchCounter = 0;
 
@@ -89,11 +89,12 @@ export class ApiCatalogService {
 
         // If there are any refs remaining in the old cache, then we've made changes to the cache and
         // should fire that as an event to anyone listening.
-        if (isReset || changesMade) {
+        if (changesMade && this.fetchCounter == 0) {
             console.debug("[ApiCatalogService] Catalog changes detected, firing event.");
             this.changeTopic.send(this.apiCache);
         }
     }
+
     /**
      * Called to reset the API cache.  This will remove any cached APIs that are not needed by
      * the given document.
@@ -101,7 +102,7 @@ export class ApiCatalogService {
      */
     public reset(document: Document): void {
         console.info("[ApiCatalogService] Resetting the API catalog.");
-        this.refresh(document, true);
+        this.refresh(document);
     }
 
     /**

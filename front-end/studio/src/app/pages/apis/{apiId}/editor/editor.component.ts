@@ -29,19 +29,26 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    CombinedVisitorAdapter,
+    AggregateCommand,
+    CombinedVisitorAdapter, CommandFactory,
     DocumentType,
-    ICommand, IDefinition, IReferenceResolver,
+    ICommand,
+    IDefinition,
+    IReferenceResolver,
     IValidationSeverityRegistry,
-    Library, ModelCloner,
+    Library,
+    ModelCloner,
     Node,
-    NodePath, Oas20ResponseDefinition,
-    Oas20SchemaDefinition, Oas30ResponseDefinition,
+    NodePath,
+    Oas20ResponseDefinition,
+    Oas20SchemaDefinition,
+    Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasPathItem,
+    OasPathItem, OasSchema,
     OtCommand,
-    OtEngine, ReferenceUtil, RegexCompat,
+    OtEngine,
+    ReferenceUtil,
     ValidationProblem
 } from "apicurio-data-models";
 import {EditorMasterComponent} from "./_components/master.component";
@@ -64,6 +71,8 @@ import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
 import {AbstractApiEditorComponent} from "./editor.base";
 import {ApiCatalogService} from "./_services/api-catalog.service";
+import {ComponentType} from "./_models/component-type.model";
+import {ImportedComponent} from "./_models/imported-component.model";
 
 
 @Component({
@@ -81,6 +90,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
     @Input() contentFetcher: (externalReference: string) => Promise<any>;
+    @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -137,7 +147,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         this._catalogSubscription = this.catalog.changes().subscribe( () => {
             console.debug("[ApiEditorComponent] Re-validating model due to API Catalog change.");
             // Re-validate whenever the contents of the API catalog change
-            console.debug("+++++  DEBUG DEBUG DEBUG +++++  VALIDATING (API Catalog)");
             this.validateModel();
             // Make sure any validation widgets refresh themselves
             this.documentService.emitChange();
@@ -587,7 +596,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
                 let emptyClone: any = ModelCloner.createEmptyClone(from);
                 return Library.readNode(cnode, emptyClone);
             } else {
-                console.debug("[ApiEditorComponent] No node found at fragment.");
+                console.warn("[ApiEditorComponent] No node found at fragment.");
                 return null;
             }
         }
@@ -622,6 +631,39 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         return this.propertyEditor;
     }
 
+    importComponent(type: ComponentType) {
+        if (this.componentImporter) {
+            this.componentImporter(type).then(imports => {
+                let commands: ICommand[] = [];
+
+                imports.forEach(imp => {
+                    console.info("[ApiEditorComponent] Importing component: ", imp.name);
+                    // TODO check for name collisions
+                    let name: string = imp.name;
+                    let fromRef: any = {$ref: imp.$ref};
+                    if (imp.type === ComponentType.schema) {
+                        commands.push(CommandFactory.createAddSchemaDefinitionCommand(this.document().getDocumentType(), name, fromRef));
+                    } else if (type === ComponentType.response) {
+                        commands.push(CommandFactory.createAddResponseDefinitionCommand(this.document().getDocumentType(), name, fromRef));
+                    }
+                });
+
+                if (commands != null && commands.length == 1) {
+                    console.info("[ApiEditorComponent] Importing a single component.");
+                    this.commandService.emit(commands[0]);
+                } else if (commands != null && commands.length > 1) {
+                    console.info("[ApiEditorComponent] Importing multiple components. :: ", commands.length);
+                    let aggregateInfo: any = {
+                        type: type,
+                        numComponents: commands.length
+                    };
+                    this.commandService.emit(CommandFactory.createAggregateCommand("ImportedComponents", aggregateInfo, commands));
+                }
+            }).catch(error => {
+                // FIXME what to do if we get an error???
+            });
+        }
+    }
 }
 
 

@@ -7,7 +7,7 @@
                (onUndoClick)="undoLastCommand()"
                (onRedoClick)="redoLastCommand()"
                (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
-    <master [document]="document()" #master></master>
+    <master [document]="document()" (onImportComponent)="importComponent($event)" #master></master>
     <div class="editor-detail" [ngSwitch]="formType">
         <main-form [document]="document()" class="editor-detail-form"
                       *ngSwitchCase="'main_20'"></main-form>

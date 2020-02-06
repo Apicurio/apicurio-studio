@@ -1,0 +1,35 @@
+table.dataTable {
+    width: 100%;
+}
+table.dataTable thead {
+}
+table.dataTable thead tr {
+}
+table.dataTable thead tr th.header-select-all {
+    width: 1px;
+}
+table.dataTable thead tr th.header-select-all input {
+    visibility: hidden;
+}
+table.dataTable tbody {
+}
+table.dataTable tbody tr {
+}
+table.dataTable tbody tr td {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-group {
+    display: flex;
+}
+
+.filter-group .btn-find {
+    margin-left: 5px;
+}
+
+.table-view-pf-select-results {
+    line-height: 28px;
+}

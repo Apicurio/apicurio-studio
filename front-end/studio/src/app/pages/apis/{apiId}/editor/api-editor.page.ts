@@ -46,6 +46,9 @@ import {StorageError} from "../../../../models/storageError.model";
 import * as moment from "moment";
 import {DeferredAction} from "../../../../models/deferred.model";
 import {AbstractApiEditorComponent} from "./editor.base";
+import {ComponentType} from "./_models/component-type.model";
+import {ImportedComponent} from "./_models/imported-component.model";
+import {ImportComponentsWizard} from "../_components/import-components.wizard";
 
 
 enum PendingActionType {
@@ -182,6 +185,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     @ViewChildren("apiEditor") _apiEditor: QueryList<AbstractApiEditorComponent>;
     @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
+    @ViewChild("importComponentsWizard") importComponentsWizard: ImportComponentsWizard;
     private editorAvailable: boolean;
 
     private editingSession: IApiEditingSession;
@@ -225,6 +229,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.apiDefinition = new EditableApiDefinition();
         this.editorFeatures = new ApiEditorComponentFeatures();
         this.editorFeatures.validationSettings = true;
+        this.editorFeatures.componentImports = true;
     }
 
     /**
@@ -255,6 +260,14 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     /**
+     * Called to import one or more components of the given type.
+     * @param componentType
+     */
+    public importComponents = (componentType: ComponentType) : Promise<ImportedComponent[]> => {
+        return this.importComponentsWizard.open(componentType);
+    }
+
+    /**
      * Fetches external content on behalf of the editor.  This implementation should handle both
      * external http(s) content as well as internal Apicurio Studio content.
      * @param externalRef
@@ -267,6 +280,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 return apiDef.spec;
             });
         } else if (externalRef.toLowerCase().startsWith("http") && this.httpFetchEnabled) {
+            // TODO implement external HTTP content - needs a servlet on the server to enable this due to CORS restrictions
             // try {
             //     let options: any = {
             //         observe: "response"

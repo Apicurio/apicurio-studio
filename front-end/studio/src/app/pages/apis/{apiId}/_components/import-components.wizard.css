@@ -1,0 +1,38 @@
+.wizard-pf-main {
+  padding: 25px;
+}
+.wizard-pf-complete {
+  padding-bottom: 0px;
+  padding-top: 50px;
+}
+
+.wizard-pf-failure-icon {
+  color: #8b0000;
+  font-size: 67.2px;
+  line-height: 67.2px;
+}
+
+label.disabled, .moreInfo.disabled {
+  color: #9c9c9c;
+}
+
+.wizard-pf-contents input[type="radio"] {
+  margin-right: 5px;
+}
+
+ul.review {
+  list-style: initial;
+  margin: 5px;
+  padding: 5px;
+}
+ul.review li {
+  padding: initial;
+  margin: initial;
+  margin-left: 20px;
+}
+ul.review li .from {
+}
+ul.review li .component {
+  font-weight: bold;
+}
+

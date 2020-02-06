@@ -1,0 +1,57 @@
+<!-- Toolbar -->
+<div class="row toolbar-pf table-view-pf-toolbar" id="toolbar1">
+    <div class="col-sm-12">
+        <form class="toolbar-pf-actions">
+            <div class="form-group toolbar-pf-filter">
+                <div class="input-group filter-group">
+                    <input name="filterCriteria" type="text" class="form-control" placeholder="Filter..." autocomplete="off" id="filterInput" [(ngModel)]="filterCriteria" (change)="filter()">
+                    <button class="btn btn-link btn-find" type="button" (click)="filter()">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="toolbar-pf-action-right">
+                <div class="table-view-pf-select-results">
+                    <strong>{{ selectedRows.length }}</strong> of <strong>{{ rows.length }}</strong> selected
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Table HTML -->
+<table class="table table-striped table-bordered table-hover dataTable" id="table1">
+    <thead>
+        <tr>
+            <th class="header-select-all"><label class="sr-only" for="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll" (change)="selectAll()"></th>
+            <th *ngFor="let col of columns" [class.sorting_asc]="isColSortAsc(col)" [class.sorting_desc]="isColSortDesc(col)" width="{{ col.width ? col.width : '' }}" nowrap="nowrap" (click)="sortBy(col)">{{ col.displayName }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of displayRows" [class.selected]="isSelected(row)">
+            <td class="table-view-pf-select">
+                <input type="checkbox" [checked]="isSelected(row)" (change)="select(row)">
+            </td>
+            <td *ngFor="let cell of row.cells" [colSpan]="cell.colspan"><span title="{{ cell.displayName }}">{{ cell.displayName }}</span></td>
+        </tr>
+        <tr *ngIf="displayRows.length == 0">
+            <td [colSpan]="columns.length + 1" class="dataTables_empty" valign="top">No records found</td>
+        </tr>
+    </tbody>
+</table>
+<!-- Pagination Footer -->
+<form class="content-view-pf-pagination table-view-pf-pagination clearfix">
+    <div class="form-group">
+        <span><span class="pagination-pf-items-current">{{ start+1 }}-{{ end }}</span> of <span class="pagination-pf-items-total">{{ filteredRows.length }}</span></span>
+        <ul class="pagination pagination-pf-back">
+            <li [class.disabled]="page == 1"><a title="First Page" (click)="firstPage()"><span class="i fa fa-angle-double-left"></span></a></li>
+            <li [class.disabled]="page == 1"><a title="Previous Page" (click)="previousPage()"><span class="i fa fa-angle-left"></span></a></li>
+        </ul>
+        <label for="pagination1-page" class="sr-only">Current Page</label>
+        <input name="pageNumber" class="pagination-pf-page" type="text" [(ngModel)]="page" (ngModelChange)="showPage($event)" id="pagination1-page"/>
+        <span>of <span class="pagination-pf-pages">{{ numPages }}</span></span>
+        <ul class="pagination pagination-pf-forward">
+            <li [class.disabled]="page == numPages"><a title="Next Page" (click)="nextPage()"><span class="i fa fa-angle-right"></span></a></li>
+            <li [class.disabled]="page == numPages"><a title="Last Page" (click)="lastPage()"><span class="i fa fa-angle-double-right"></span></a></li>
+        </ul>
+    </div>
+</form>

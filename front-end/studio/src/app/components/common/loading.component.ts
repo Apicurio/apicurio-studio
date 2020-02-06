@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2019 Red Hat
+ * Copyright 2020 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,16 @@
  * limitations under the License.
  */
 
-export class ApiEditorComponentFeatures {
-    validationSettings: boolean = false;
-    componentImports: boolean = false;
+import {Component, Input} from "@angular/core";
+
+@Component({
+    moduleId: module.id,
+    selector: "loading",
+    templateUrl: "loading.component.html",
+    styleUrls: [ "loading.component.css" ]
+})
+export class LoadingComponent {
+
+    @Input() message: string;
+
 }

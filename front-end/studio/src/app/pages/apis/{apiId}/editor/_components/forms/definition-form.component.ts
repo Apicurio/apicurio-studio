@@ -33,7 +33,7 @@ import {
     Oas30Document,
     Oas30SchemaDefinition,
     OasDocument,
-    OasSchema,
+    OasSchema, ReferenceUtil,
     SimplifiedType,
     TraverserDirection,
     VisitorUtil,
@@ -47,6 +47,7 @@ import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../components/common/drop-down.component";
+import {ApiCatalogService} from "../../_services/api-catalog.service";
 
 const INHERITANCE_TYPES: DropDownOption[] = [
     new Value("No inheritance", "none"),
@@ -94,17 +95,23 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
      * @param commandService
      * @param documentService
      * @param editors
+     * @param catalog
      */
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,
                        protected commandService: CommandService,
                        protected documentService: DocumentService,
-                       private editors: EditorsService) {
+                       private editors: EditorsService,
+                       private catalog: ApiCatalogService) {
         super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
     public definitionName(): string {
         return this._definitionName(this.definition);
+    }
+
+    isImported(): boolean {
+        return this.definition.$ref && !this.definition.$ref.startsWith("#");
     }
 
     protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition {
@@ -231,6 +238,44 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         console.info("[DefinitionFormComponent] Setting inheritance type to: ", newInheritanceType);
         let command: ICommand = CommandFactory.createChangeSchemaInheritanceCommand(this.definition, newInheritanceType);
         this.commandService.emit(command);
+    }
+
+    /**
+     * When the definition is an import, returns the content for the imported entity.
+     */
+    referenceContent(): string {
+        if (this.definition.$ref && this.definition.$ref.indexOf("#") > 0) {
+            let hashIdx: number = this.definition.$ref.indexOf("#");
+            let resourceUrl: string = this.definition.$ref.substring(0, hashIdx);
+            let content: any = this.catalog.lookup(resourceUrl);
+            if (content) {
+                let fragment: string = this.definition.$ref.substring(hashIdx+1);
+                content = ReferenceUtil.resolveFragmentFromJS(content, fragment);
+                if (content) {
+                    return JSON.stringify(content, null, 3);
+                }
+            }
+        }
+        return "Content not available.";
+    }
+
+    refLink(): string {
+        if (this.definition.$ref && this.definition.$ref.startsWith("apicurio:")) {
+            let currentUrl: string = window.location.href;
+            let refId: string = this.getRefId();
+            // Drop the /editor and /12345 (apiId) from the URL
+            let prefix: string = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+            prefix = prefix.substring(0, prefix.lastIndexOf('/'));
+            return prefix + "/" + refId;
+        } else {
+            return this.definition.$ref;
+        }
+    }
+
+    private getRefId(): string {
+        let colonIdx: number = this.definition.$ref.indexOf(':');
+        let hashIdx: number = this.definition.$ref.indexOf('#');
+        return this.definition.$ref.substring(colonIdx + 1, hashIdx);
     }
 
 }

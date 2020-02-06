@@ -2,6 +2,7 @@
     <div class="detail-label">
         <span class="fa fa-fw fa-code"></span>
         <span>{{ definitionName() }}</span>
+        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
     </div>
     <div class="detail-actions">
         <div class="dropdown">
@@ -74,7 +75,7 @@
 
 <!-- Design Mode -->
 <div class="detail-content" *ngIf="isDesignMode()">
-    <div class="api-definition-detail">
+    <div class="api-definition-detail" *ngIf="!isImported()">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active">
 
@@ -115,6 +116,30 @@
                 <!-- Definition Example -->
                 <definition-example-section [definition]="definition"></definition-example-section>
 
+            </div>
+        </div>
+    </div>
+    <div class="api-definition-detail" *ngIf="isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+                <!-- Reference -->
+                <section type="dtReference" label="REFERENCE"
+                         contextHelp="This section describes the externally referenced Data Type."
+                         [validationModels]="[ definition ]"
+                         [validationProperties]="['$ref']"
+                         [validationShallow]="true">
+                    <div body>
+                        <span>This Data Type is an external reference to: </span>
+                        <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
+                    </div>
+                </section>
+                <!-- Reference Details -->
+                <section type="dtReferenceDetails" label="REFERENCE DETAILS"
+                         contextHelp="This section shows details about the externally referenced Data Type.">
+                    <div body>
+                        <pre>{{ referenceContent() }}</pre>
+                    </div>
+                </section>
             </div>
         </div>
     </div>

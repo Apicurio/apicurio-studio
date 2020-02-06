@@ -12,7 +12,6 @@ rm -rf $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/*.js
 rm -rf $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/*.css
 rm -rf $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/*.html
 rm -rf $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/assets
-cp -rf dist/* $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/
+cp -rf dist-app/* $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war/
 rm -rf $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war.*
 touch $WILDFLY_DIRECTORY/standalone/deployments/apicurio-studio.war.dodeploy
-rm -rf dist

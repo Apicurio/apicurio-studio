@@ -38,7 +38,7 @@ import {
     OasSchema,
     SimplifiedPropertyType,
     TraverserDirection,
-    VisitorUtil, OasResponse,
+    VisitorUtil, OasResponse, ReferenceUtil,
 } from "apicurio-data-models";
 
 import {SourceFormComponent} from "./source-form.base";
@@ -54,6 +54,7 @@ import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
 import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 import { AbstractBaseComponent } from "../common/base-component";
 import {CloneResponseDefinitionDialogComponent} from "../dialogs/clone-response-definition.component";
+import {ApiCatalogService} from "../../_services/api-catalog.service";
 
 
 @Component({
@@ -87,12 +88,14 @@ export class ResponseFormComponent extends SourceFormComponent<OasResponse> {
      * @param commandService
      * @param documentService
      * @param editors
+     * @param catalog
      */
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,
                        protected commandService: CommandService,
                        protected documentService: DocumentService,
-                       private editors: EditorsService) {
+                       private editors: EditorsService,
+                       private catalog: ApiCatalogService) {
         super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
@@ -178,6 +181,48 @@ export class ResponseFormComponent extends SourceFormComponent<OasResponse> {
      */
     protected _responseName(response: Oas20ResponseDefinition | Oas30ResponseDefinition): string {
         return response.getName();
+    }
+
+    isImported(): boolean {
+        return this.response.$ref && !this.response.$ref.startsWith("#");
+    }
+
+    /**
+     * When the response is an import, returns the content for the imported entity.
+     */
+    referenceContent(): string {
+        if (this.response.$ref && this.response.$ref.indexOf("#") > 0) {
+            let hashIdx: number = this.response.$ref.indexOf("#");
+            let resourceUrl: string = this.response.$ref.substring(0, hashIdx);
+            let content: any = this.catalog.lookup(resourceUrl);
+            if (content) {
+                    let fragment: string = this.response.$ref.substring(hashIdx+1);
+                    content = ReferenceUtil.resolveFragmentFromJS(content, fragment);
+                    if (content) {
+                            return JSON.stringify(content, null, 3);
+                        }
+                }
+        }
+        return "Content not available.";
+    }
+
+    refLink(): string {
+        if (this.response.$ref && this.response.$ref.startsWith("apicurio:")) {
+            let currentUrl: string = window.location.href;
+            let refId: string = this.getRefId();
+            // Drop the /editor and /12345 (apiId) from the URL
+                let prefix: string = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+            prefix = prefix.substring(0, prefix.lastIndexOf('/'));
+            return prefix + "/" + refId;
+        } else {
+            return this.response.$ref;
+        }
+    }
+
+    private getRefId(): string {
+        let colonIdx: number = this.response.$ref.indexOf(':');
+        let hashIdx: number = this.response.$ref.indexOf('#');
+        return this.response.$ref.substring(colonIdx + 1, hashIdx);
     }
 
 }

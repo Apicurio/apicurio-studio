@@ -2,6 +2,7 @@
     <div class="detail-label">
         <span class="fa fa-fw fa-reply-all"></span>
         <span>{{ responseName() }}</span>
+        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
     </div>
     <div class="detail-actions">
         <div class="dropdown">
@@ -74,13 +75,35 @@
 
 <!-- Design Mode -->
 <div class="detail-content" *ngIf="isDesignMode()">
-    <div class="api-response-detail">
+    <div class="api-response-detail" *ngIf="!isImported()">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active">
-
                 <response-tab [response]="response" *ngIf="is20Document()"></response-tab>
                 <response-tab-30 [response]="response" *ngIf="is30Document()"></response-tab-30>
-
+            </div>
+        </div>
+    </div>
+    <div class="api-response-detail" *ngIf="isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+                <!-- Reference -->
+                <section type="respReference" label="REFERENCE"
+                         contextHelp="This section describes the externally referenced Response."
+                         [validationModels]="[ response ]"
+                         [validationProperties]="['$ref']"
+                         [validationShallow]="true">
+                    <div body>
+                        <span>This Response is an external reference to: </span>
+                        <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ response.$ref }}</a></em>
+                    </div>
+                </section>
+                <!-- Reference Details -->
+                <section type="respReferenceDetails" label="REFERENCE DETAILS"
+                         contextHelp="This section shows details about the externally referenced Response.">
+                    <div body>
+                        <pre>{{ referenceContent() }}</pre>
+                    </div>
+                </section>
             </div>
         </div>
     </div>

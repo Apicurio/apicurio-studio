@@ -283,6 +283,11 @@
                 <version>${version.org.apache.httpcomponents}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+                <version>${version.org.apache.httpcomponents}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.prometheus</groupId>
                 <artifactId>simpleclient</artifactId>
                 <version>${version.io.prometheus}</version>

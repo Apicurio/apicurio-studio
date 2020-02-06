@@ -49,6 +49,8 @@ import {AbstractApiEditorComponent} from "./editor.base";
 import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {ImportComponentsWizard} from "../_components/import-components.wizard";
+import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpUtils} from "../../../../util/common";
 
 
 enum PendingActionType {
@@ -204,7 +206,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     retryTimerDate: Date;
     reconnecting: boolean = false;
     isOffline: boolean;
-    httpFetchEnabled: boolean = false; // TODO should be configurable - true in PROD mode and false in DEV mode (see usage below)
+    httpFetchEnabled: boolean = true; // TODO should be configurable - true in PROD mode and false in DEV mode (see usage below)
+    uiUrl: string = "";
 
     private currentEditorSelection: string;
 
@@ -217,12 +220,13 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param router
      * @param route
      * @param zone
+     * @param http
      * @param apis
      * @param titleService
      * @param validationService
      * @param config
      */
-    constructor(private router: Router, route: ActivatedRoute, private zone: NgZone,
+    constructor(private router: Router, route: ActivatedRoute, private zone: NgZone, protected http: HttpClient,
                 private apis: ApisService, titleService: Title, private validationService: ValidationService,
                 private config: ConfigService) {
         super(route, titleService);
@@ -230,6 +234,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.editorFeatures = new ApiEditorComponentFeatures();
         this.editorFeatures.validationSettings = true;
         this.editorFeatures.componentImports = true;
+        if (this.config.uiUrl()) {
+            this.uiUrl = this.config.uiUrl();
+        }
     }
 
     /**
@@ -280,36 +287,23 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
                 return apiDef.spec;
             });
         } else if (externalRef.toLowerCase().startsWith("http") && this.httpFetchEnabled) {
-            // TODO implement external HTTP content - needs a servlet on the server to enable this due to CORS restrictions
-            // try {
-            //     let options: any = {
-            //         observe: "response"
-            //     };
-            //     this.http.get<HttpResponse<any>>(externalRef, options).toPromise(), response => {
-            //         if (response.statusCode >= 200 && response.statusCode <= 299) {
-            //             // Only handle the response if the cache is expecting this ref to be fetched.
-            //             if (this.apiCache[externalRef] == null) {
-            //                 console.debug("[ApiCatalogService] Successfully fetched external http/s content:");
-            //                 console.debug(response.body);
-            //                 let body: any = response.body;
-            //                 let content: any = this.parseExternalResource(body);
-            //                 this.cacheContent(externalRef, content);
-            //             } else {
-            //                 console.warn("[ApiCatalogService] Successfully fetched content for reference that is no longer needed: ", externalRef);
-            //             }
-            //         } else {
-            //             console.error("[ApiCatalogService] Failed to fetch external resource: ", externalRef);
-            //             this.cacheContent(externalRef, null);
-            //         }
-            //     };
-            // } catch (e) {
-            //     console.error("[ApiCatalogService] Error fetching external http(s) API/content.");
-            //     console.error(e);
-            //     this.cacheContent(externalRef, null);
-            // }
-        } else {
-            return Promise.resolve(null);
+            try {
+                let fetchUrl: string = `${ this.uiUrl }fetch?url=${ encodeURI(externalRef) }`;
+                console.debug("[ApiEditorPageComponent] Fetch URL: ", fetchUrl);
+                let options: any = {
+                    observe: "response"
+                };
+                return HttpUtils.mappedPromise<any>(
+                    this.http.get<HttpResponse<any>>(fetchUrl, options).toPromise(),
+                    (response) => {
+                        return response.body; }
+                );
+            } catch (e) {
+                console.error("[ApiCatalogService] Error fetching external http(s) API/content.");
+                console.error(e);
+            }
         }
+        return Promise.resolve(null);
     }
 
     /**

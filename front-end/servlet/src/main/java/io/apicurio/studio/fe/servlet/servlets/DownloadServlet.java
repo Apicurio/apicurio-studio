@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
 import javax.servlet.ServletException;
@@ -80,6 +81,15 @@ public class DownloadServlet extends HttpServlet {
         } catch (Exception e) {
             logger.error("Error creating HTTP client.", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @PreDestroy
+    protected void preDestroy() {
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+            logger.error("Error closing HTTP client.", e);
         }
     }
     

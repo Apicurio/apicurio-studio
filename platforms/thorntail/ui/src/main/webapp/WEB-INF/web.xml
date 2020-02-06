@@ -93,6 +93,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>FetchServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.FetchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchServlet</servlet-name>
+    <url-pattern>/fetch</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>PreviewServlet</servlet-name>
     <servlet-class>io.apicurio.studio.fe.servlet.servlets.PreviewServlet</servlet-class>
   </servlet>

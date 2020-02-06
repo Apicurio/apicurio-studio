@@ -18,9 +18,9 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component,
+    Component, EventEmitter,
     HostListener,
-    Input,
+    Input, Output,
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
@@ -66,6 +66,8 @@ import {ObjectUtils} from "apicurio-ts-core";
 import {IResponseEditorHandler, ResponseData, ResponseEditorComponent} from "./editors/response-editor.component";
 import {FindResponseDefinitionsVisitor} from "../_visitors/response-definitions.visitor";
 import {CloneResponseDefinitionDialogComponent} from "./dialogs/clone-response-definition.component";
+import {FeaturesService} from "../_services/features.service";
+import {ComponentType} from "../_models/component-type.model";
 
 
 /**
@@ -85,6 +87,8 @@ import {CloneResponseDefinitionDialogComponent} from "./dialogs/clone-response-d
 export class EditorMasterComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
+
+    @Output() onImportComponent: EventEmitter<ComponentType> = new EventEmitter<ComponentType>();
 
     contextMenuSelection: NodePath = null;
     contextMenuType: string = null;
@@ -116,10 +120,12 @@ export class EditorMasterComponent extends AbstractBaseComponent {
      * @param commandService
      * @param editors
      * @param restResourceService
+     * @param features
      */
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
                 selectionService: SelectionService, private commandService: CommandService,
-                private editors: EditorsService, private restResourceService: RestResourceService) {
+                private editors: EditorsService, private restResourceService: RestResourceService,
+                private features: FeaturesService) {
         super(changeDetectorRef, documentService, selectionService);
     }
 
@@ -844,6 +850,19 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     shouldShowValidationAggregate(): boolean {
         return (this.paths().length + this.definitions().length) < 40;
     }
+
+    importsEnabled(): boolean {
+        return this.features.getFeatures().componentImports;
+    }
+
+    importDataTypes(): void {
+        this.onImportComponent.emit(ComponentType.schema);
+    }
+
+    importResponses(): void {
+        this.onImportComponent.emit(ComponentType.response);
+    }
+
 }
 
 

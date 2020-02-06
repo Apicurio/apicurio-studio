@@ -1,0 +1,115 @@
+<div bsModal #importComponentsModal="bs-modal" class="modal fade" id="importComponentsModal" tabindex="-1" role="dialog"
+     aria-labelledby="importComponentsModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: true }" >
+    <div class="modal-dialog modal-lg wizard-pf" style="width: 900px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="importComponentsModalLabel">{{ title() }}</h4>
+            </div>
+            <div class="modal-body wizard-pf-body clearfix" *ngIf="!error">
+                <div class="wizard-pf-steps">
+                    <ul class="wizard-pf-steps-indicator wizard-pf-steps-alt-indicator active">
+
+                        <li class="wizard-pf-step" [class.active]="currentPage === 'resources'">
+                            <a (click)="goTo('resources')">
+                                <span class="wizard-pf-step-number">1</span>
+                                <span class="wizard-pf-step-title">Select Resource(s)</span>
+                            </a>
+                        </li>
+
+                        <li class="wizard-pf-step" [class.active]="currentPage === 'components'">
+                            <a (click)="goTo('components')">
+                                <span class="wizard-pf-step-number">2</span>
+                                <span class="wizard-pf-step-title">Choose {{ displayType() }}</span>
+                            </a>
+                        </li>
+
+                        <li class="wizard-pf-step" [class.active]="currentPage === 'summary'">
+                            <a (click)="goTo('summary')">
+                                <span class="wizard-pf-step-number">3</span>
+                                <span class="wizard-pf-step-title">Review</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="wizard-pf-row" style="height: 500px">
+                    <div class="wizard-pf-main">
+                        <!-- Resources -->
+                        <div class="wizard-pf-contents" *ngIf="currentPage === 'resources'">
+                            <p>Choose one or more component source from the list below.</p>
+                            <data-table *ngIf="!loadingApis" [pageSize]="10" [columns]="apiColumns" [rows]="apiRows"
+                                        [(selectedValues)]="selectedApis" (onChange)="mustLoadComponents=true"></data-table>
+                            <p *ngIf="loadingApis">
+                                <loading message="Please wait, loading list of resources..."></loading>
+                            </p>
+                        </div>
+                        <!-- Components -->
+                        <div class="wizard-pf-contents" *ngIf="currentPage === 'components'">
+                            <p>Choose one or more {{ displayType() }} from the list below.</p>
+                            <data-table *ngIf="!loadingComponents" [pageSize]="10" [columns]="componentColumns" [rows]="componentRows" [(selectedValues)]="selectedComponents"></data-table>
+                            <p *ngIf="loadingComponents">
+                                <loading message="Please wait, loading list of {{ displayType() }}(s)..."></loading>
+                            </p>
+                        </div>
+                        <!-- Summary/Review -->
+                        <div class="wizard-pf-contents" *ngIf="currentPage === 'summary'">
+                            <p>
+                                Please review your {{ displayType() }} selections below and then click <em>Import</em>.  Note
+                                that if you already have components with the same name in your API Design, then the new components
+                                will not be imported.
+                            </p>
+                            <ul class="review">
+                                <li *ngFor="let ic of componentsForReview()">
+                                    <span class="from">{{ ic.from.name }}</span>
+                                    <span> / </span>
+                                    <span class="component">{{ ic.name }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body wizard-pf-body clearfix" *ngIf="error">
+                <div class="wizard-pf-row" style="height: 500px">
+                    <div class="wizard-pf-main">
+                        <!-- Error -->
+                        <div class="wizard-pf-contents">
+                            <div class="wizard-pf-complete blank-slate-pf">
+                                <div class="wizard-pf-failure-icon"><span class="glyphicon glyphicon-warning-sign"></span></div>
+                                <h3 class="blank-slate-pf-main-action">{{ errorMessage }}</h3>
+                                <p class="blank-slate-pf-secondary-action">
+                                    <span>
+                                        Uh oh!  It seems we have encountered an error while trying to import from
+                                        other resources.  Please close the wizard and try again.
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer wizard-pf-footer">
+                <button type="button" class="btn btn-default btn-cancel wizard-pf-cancel wizard-pf-dismiss" (click)="cancel()"
+                        *ngIf="showCancelButton()">
+                    <span>Cancel</span>
+                </button>
+                <button type="button" class="btn btn-default wizard-pf-back" [disabled]="!isBackButtonEnabled()" (click)="goBack()"
+                        *ngIf="showBackButton()">
+                    <span class="i fa fa-angle-left"></span>
+                    <span>Back</span>
+                </button>
+                <button type="button" class="btn btn-primary wizard-pf-next" *ngIf="showNextButton()"
+                        [disabled]="!isNextButtonEnabled()" (click)="goNext()">
+                    <span>Next</span>
+                    <span class="i fa fa-angle-right"></span>
+                </button>
+                <button type="button" class="btn btn-primary wizard-pf-finish" *ngIf="showFinishButton()"
+                        [disabled]="!isFinishButtonEnabled()" (click)="finish()">
+                    <span class="pficon pficon-import"></span><span>&nbsp;</span><span>Import</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

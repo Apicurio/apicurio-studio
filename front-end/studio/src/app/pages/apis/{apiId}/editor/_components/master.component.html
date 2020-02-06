@@ -115,7 +115,8 @@
                  [collaborationNodePath]="definitionsPath()"
                  contextHelp="It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
             <span actions>
-                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add"></icon-button>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
             </span>
             <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
                 <signpost *ngIf="definitions().length === 0">
@@ -133,7 +134,8 @@
                  [collaborationNodePath]="responsesPath()"
                  contextHelp="Define re-usable response definition in this section, allowing quick re-use across multiple operations.">
             <span actions>
-                <icon-button (onClick)="openAddResponseEditor()" [pullRight]="true" type="add"></icon-button>
+                <icon-button (onClick)="openAddResponseEditor()" [pullRight]="true" type="add" title="Create Response"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importResponses()" [pullRight]="true" type="import" title="Import Response"></icon-button>
             </span>
             <div body tabindex="0" class="response-list master-entity-list" (keydown)="onResponsesKeypress($event)" #respList>
                 <signpost *ngIf="responses().length === 0">

@@ -21,6 +21,7 @@ import { MockReference } from "../../models/mock-api.model";
 import {ICommand, MarshallCompat} from "apicurio-data-models";
 import {PublishApi} from "../../models/publish-api.model";
 import * as moment from "moment";
+import {componentTypeToString} from "../../pages/apis/{apiId}/editor/_models/component-type.model";
 
 
 @Component({
@@ -288,6 +289,11 @@ export class ActivityItemComponent {
             case "NewResponseWithRef":
                 rval = "reply-all";
                 break;
+            case "ImportedComponents":
+                rval = "plus";
+                break;
+            default:
+                console.warn("[ActivityItemComponent] Unhandled AggregateCommand change item (ICON): %s", name);
         }
         return rval;
     }
@@ -646,8 +652,11 @@ export class ActivityItemComponent {
             case "NewResponseWithRef":
                 rval = `created a Response that references the Response Definition at '${ this.command()["info"].$ref }'.`;
                 break;
+            case "ImportedComponents":
+                rval = `imported ${ this.command()["info"].numComponents } external components of type '${ componentTypeToString(this.command()["info"].type) }'.`;
+                break;
             default:
-                console.info("[ActivityItemComponent] WARNING - unhandled AggregateCommand change item: %s", name);
+                console.warn("[ActivityItemComponent] Unhandled AggregateCommand change item: %s", name);
                 rval = "performed some unknown action...";
         }
         return rval;

@@ -93,6 +93,7 @@
                 [features]="editorFeatures"
                 [validationRegistry]="validationRegistry"
                 [contentFetcher]="fetchExternalContent"
+                [componentImporter]="importComponents"
                 (onSelectionChanged)="onSelectionChanged($event)"
                 (onCommandExecuted)="onCommandExecuted($event)"
                 (onConfigureValidation)="configureValidationDialog.open()"
@@ -114,3 +115,4 @@
 <editor-disconnected-dialog #editorDisconnectedModal (onWorkOffline)="goOffline()"></editor-disconnected-dialog>
 <configure-validation-dialog #configureValidationDialog [apiId]="apiDefinition.id"
                              (onChange)="changeValidationProfile($event)"></configure-validation-dialog>
+<import-components-wizard #importComponentsWizard></import-components-wizard>

@@ -14,8 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {ComponentType} from "./component-type.model";
 
-export class ApiEditorComponentFeatures {
-    validationSettings: boolean = false;
-    componentImports: boolean = false;
+export interface ImportedFrom {
+    name: string;
+    id: string;
+}
+
+export interface ImportedComponent {
+
+    type: ComponentType;
+    name: string;
+    $ref: string;
+    description?: string;
+    from?: ImportedFrom;
+
 }

@@ -87,6 +87,11 @@ export class ApiCatalogService {
         });
         newRefs.forEach( ref => this.fetchAndCache(ref) );
 
+        // If anything remains in oldCache then set changesMade=true (means that something was removed).
+        if (Object.keys(oldCache).length > 0) {
+            changesMade = true;
+        }
+
         // If there are any refs remaining in the old cache, then we've made changes to the cache and
         // should fire that as an event to anyone listening.
         if (changesMade && this.fetchCounter == 0) {
@@ -142,7 +147,6 @@ export class ApiCatalogService {
         if (this.fetcher) {
             this.fetcher(externalRef).then( content => {
                 console.debug("[ApiCatalogService] Successfully fetched external content:");
-                console.debug(content);
                 content = this.parseContent(content);
                 this.cacheContent(externalRef, content);
             }).catch(error => {
@@ -168,7 +172,8 @@ export class ApiCatalogService {
             return body;
         }
         try { return JSON.parse(body); } catch (e) {}
-        try { YAML.safeLoad(body); } catch (e) {}
+        try { return YAML.safeLoad(body); } catch (e) {}
+        // TODO debug or warning here
         return null;
     }
 
@@ -215,6 +220,8 @@ export class ApiCatalogService {
 
 /**
  * Visitor used to find all references in a document.
+ * TODO consolidate this functionality in apicurio-data-models
+ * TODO possibly use the Reference class in apicurio-data-models instead of using strings
  */
 class ReferenceFinder extends CombinedAllNodeVisitor {
 

@@ -50,8 +50,11 @@ export class RestResourceService {
         console.info("[RestResourceService] Creating REST resource from: ", dataTypeName);
         let lcName: string = dataTypeName.toLocaleLowerCase();
         let pluralName: string = pluralize.plural(lcName);
+        let pluralCapitalized: string = pluralize.plural(dataTypeName);
+
         if (!this.canPluralize(lcName)) {
             pluralName = lcName;
+            pluralCapitalized = dataTypeName;
         }
 
         let basePath: string = `/${pluralName}`;
@@ -68,8 +71,8 @@ export class RestResourceService {
         // The GET operation
         let baseGetOp: OasOperation = basePathItem.createOperation("get");
         basePathItem.get = baseGetOp;
-        baseGetOp.summary = `List All ${pluralName}`;
-        baseGetOp.operationId = `get${pluralName}`;
+        baseGetOp.summary = `List All ${pluralCapitalized}`;
+        baseGetOp.operationId = `get${pluralCapitalized}`;
         baseGetOp.description = `Gets a list of all \`${dataTypeName}\` entities.`;
         let baseGetOpResponses: OasResponses = baseGetOp.createResponses();
         baseGetOp.responses = baseGetOpResponses;

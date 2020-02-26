@@ -50,11 +50,11 @@ export class RestResourceService {
         console.info("[RestResourceService] Creating REST resource from: ", dataTypeName);
         let lcName: string = dataTypeName.toLocaleLowerCase();
         let pluralName: string = pluralize.plural(lcName);
-	let pluralCapitalized: string = pluralize.plural(dataTypeName);
+        let pluralCapitalized: string = pluralize.plural(dataTypeName);
 
         if (!this.canPluralize(lcName)) {
             pluralName = lcName;
-	    pluralCapitalized = dataTypeName;
+            pluralCapitalized = dataTypeName;
         }
 
         let basePath: string = `/${pluralName}`;

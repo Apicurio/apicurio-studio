@@ -110,6 +110,7 @@
         <version.commons-lang3>3.9</version.commons-lang3>
         <version.io.gatling>3.3.1</version.io.gatling>
         <version.io.prometheus>0.8.1</version.io.prometheus>
+        <version.javax.annotation>1.3.2</version.javax.annotation>
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>
         <version.junit>4.13</version.junit>
@@ -323,6 +324,11 @@
                 <groupId>com.sun.codemodel</groupId>
                 <artifactId>codemodel</artifactId>
                 <version>${version.com.sun.codemodel}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${version.javax.annotation}</version>
             </dependency>
 
             <!-- Gatling -->
@@ -711,6 +717,29 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java13</id>
+            <activation>
+                <jdk>(1.8,]</jdk>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <source>8</source>
                         </configuration>
                     </plugin>
                 </plugins>

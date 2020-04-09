@@ -32,6 +32,14 @@
                                        [baseNode]="operation" nodePath="operationId"
                                        (onChange)="changeOperationId($event)"></pf-inline-text-editor>
             </div>
+
+            <!-- Deprecated -->
+            <div class="section-field deprecated">
+                <drop-down [value]="operation.deprecated"
+                           [options]="deprecatedOptions()"
+                           (onValueChange)="changeDeprecated($event)"
+                           noSelectionLabel="Not Deprecated"></drop-down>
+            </div>
         </div>
 
         <!-- Description -->

@@ -39,6 +39,7 @@ import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {ModelUtils} from "../../../../_util/model.util";
+import {DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
 
 
 @Component({
@@ -145,6 +146,16 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
     public changeTags(newTags: string[]): void {
         console.info("[InfoSectionComponent] User changed the tags.");
         let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "tags", newTags);
+        this.commandService.emit(command);
+    }
+
+    /**
+     * Called when the user changes the deprecated.
+     * @param newDeprecated
+     */
+    public changeDeprecated(newDeprecated: boolean): void {
+        console.info("[InfoSectionComponent] User changed the deprecated.");
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "deprecated", newDeprecated);
         this.commandService.emit(command);
     }
 
@@ -270,6 +281,13 @@ export class OperationInfoSectionComponent extends AbstractBaseComponent {
 
     public is2xDocument(): boolean {
         return this.operation.ownerDocument().getDocumentType() == DocumentType.openapi2;
+    }
+
+    public deprecatedOptions() {
+        return [
+            new Value("Deprecated", true),
+            new Value("Not Deprectated", false)
+        ];
     }
 
 }

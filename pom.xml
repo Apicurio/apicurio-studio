@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.apicurio</groupId>
@@ -66,6 +66,7 @@
         
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.1.2</version.apicurio-data-models>
+        <version.apicurio-registry>1.1.2.Final</version.apicurio-registry>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>
@@ -150,6 +151,18 @@
                 <groupId>io.apicurio</groupId>
                 <artifactId>apicurio-data-models</artifactId>
                 <version>${version.apicurio-data-models}</version>
+            </dependency>
+
+            <!-- Kafka (from Registry) -->
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-registry-utils-kafka</artifactId>
+                <version>${version.apicurio-registry}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-registry-common</artifactId>
+                <version>${version.apicurio-registry}</version>
             </dependency>
 
             <!-- Third Party Libraries -->
@@ -445,6 +458,7 @@
                                         <regexIgnoredClasses>
                                             <regexIgnoredClass>javax\..+</regexIgnoredClass>
                                             <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
+                                            <regexIgnoredClass>org.apache.kafka\..+</regexIgnoredClass>
                                         </regexIgnoredClasses>
                                         <useClassesFromLastBuild>true</useClassesFromLastBuild>
                                     </illegalTransitiveDependencyCheck>

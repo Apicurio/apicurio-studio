@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.apicurio.hub.core.editing.ops.BaseOperation;
 
 import java.io.IOException;
@@ -47,6 +46,17 @@ public class JsonUtil {
     }
 
     /**
+     * Convert object to JSON bytes
+     */
+    public static <T> byte[] toJsonBytes(T object) {
+        try {
+            return OBJECT_MAPPER.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Convert JSON content into a tree represented using {@link JsonNode} structure.
      *
      * @param json the json string
@@ -62,6 +72,21 @@ public class JsonUtil {
     }
 
     /**
+     * Convert JSON content into a tree represented using {@link JsonNode} structure.
+     *
+     * @param bytes the json bytes
+     * @return root json node
+     */
+    public static JsonNode toJsonTree(byte[] bytes) {
+        try {
+            return OBJECT_MAPPER.readTree(bytes);
+        } catch (IOException ioe) {
+            System.err.println(new String(bytes));
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
+    /**
      * Unmarshall from JSON into a specific object tree, with clazz as the root.
      *
      * @param json the json string
@@ -72,6 +97,22 @@ public class JsonUtil {
     public static <T> T fromJson(String json, Class<T> unmarshallClass) {
         try {
             return OBJECT_MAPPER.readValue(json, unmarshallClass);
+        } catch (IOException ioe) {
+            throw new UncheckedIOException(ioe);
+        }
+    }
+
+    /**
+     * Unmarshall from JSON into a specific object tree, with clazz as the root.
+     *
+     * @param bytes the json bytes
+     * @param unmarshallClass the root class to unmarshall json into
+     * @param <T> the class type
+     * @return instance of clazz
+     */
+    public static <T> T fromJson(byte[] bytes, Class<T> unmarshallClass) {
+        try {
+            return OBJECT_MAPPER.readValue(bytes, unmarshallClass);
         } catch (IOException ioe) {
             throw new UncheckedIOException(ioe);
         }

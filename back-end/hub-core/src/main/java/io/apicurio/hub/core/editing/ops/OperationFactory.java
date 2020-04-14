@@ -16,14 +16,14 @@
 
 package io.apicurio.hub.core.editing.ops;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.util.JsonUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates operations!
@@ -105,6 +105,10 @@ public final class OperationFactory {
                 .setCommand(commandContent)
                 .setCommandId(commandId)
                 .setType("command");
+    }
+
+    public static JoinLeaveOperation join(String user, ISessionContext context) {
+        return join(user, context.getId());
     }
 
     public static JoinLeaveOperation join(String user, String id) {

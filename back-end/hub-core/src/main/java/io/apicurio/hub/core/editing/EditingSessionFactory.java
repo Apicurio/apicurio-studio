@@ -23,6 +23,8 @@ import javax.inject.Inject;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.distributed.JMSEditingSession;
 import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
+import io.apicurio.hub.core.editing.kafka.KafkaEditingSession;
+import io.apicurio.hub.core.editing.kafka.KafkaHandler;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 
@@ -40,7 +42,9 @@ public class EditingSessionFactory {
     private OperationProcessorDispatcher operationProcessor;
     @Inject
     private IRollupExecutor rollupExecutor;
-    
+    @Inject // Kafka Handler should be lazy, so we're fine
+    private KafkaHandler kafkaHandler;
+
     private Object jms;
     
     @PostConstruct
@@ -61,6 +65,8 @@ public class EditingSessionFactory {
         String type = config.getEditingSessionType();
         if ("jms".equals(type)) {
             return new JMSEditingSession(designId, (JMSSessionFactory) jms, operationProcessor);
+        } else if ("kafka".equals(type)) {
+            return new KafkaEditingSession(designId, kafkaHandler);
         } else {
             return new EditingSession(designId, rollupExecutor);
         }

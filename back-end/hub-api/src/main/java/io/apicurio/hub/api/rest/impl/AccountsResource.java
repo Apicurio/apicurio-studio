@@ -357,16 +357,16 @@ public class AccountsResource implements IAccountsResource {
      * @see io.apicurio.hub.api.rest.IAccountsResource#getProjectBranches(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public Collection<SourceCodeBranch> getProjectBranches(String accountType, String group, String project)
+    public Collection<SourceCodeBranch> getProjectBranches(String accountType, String project)
             throws ServerError {
-        metrics.apiCall("/accounts/{accountType}/groups/{group}/projects/{project}/branches", "GET");
+        metrics.apiCall("/accounts/{accountType}/projects/{project}/repository/branches", "GET");
 
         LinkedAccountType at = LinkedAccountType.valueOf(accountType);
         if (at != LinkedAccountType.GitLab) {
             throw new ServerError("Invalid account type.  Expected 'GitLab' but got: " + accountType);
         }
         try {
-            return gitLab.getBranches(group, project);
+            return gitLab.getBranches(project);
         } catch (GitLabException | SourceConnectorException e) {
             throw new ServerError(e);
         }

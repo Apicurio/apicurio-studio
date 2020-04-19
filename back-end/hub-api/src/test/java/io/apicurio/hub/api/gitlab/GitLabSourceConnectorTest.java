@@ -217,7 +217,7 @@ public class GitLabSourceConnectorTest {
     @Test
     @Ignore
     public void testGetBranches() throws GitLabException, SourceConnectorException {
-        Collection<SourceCodeBranch> branches = service.getBranches("Apicurio", "api-samples");
+        Collection<SourceCodeBranch> branches = service.getBranches( "api-samples");
         Assert.assertNotNull(branches);
         System.out.println("Found " + branches.size() + " branches!");
         branches.forEach( branch -> {

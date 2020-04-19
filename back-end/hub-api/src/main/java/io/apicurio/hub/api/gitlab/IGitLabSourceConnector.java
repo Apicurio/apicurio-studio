@@ -50,6 +50,6 @@ public interface IGitLabSourceConnector extends ISourceConnector {
      * @param group
      * @param project
      */
-    public Collection<SourceCodeBranch> getBranches(String group, String project) throws GitLabException, SourceConnectorException;
+    public Collection<SourceCodeBranch> getBranches(String project) throws GitLabException, SourceConnectorException;
 
 }

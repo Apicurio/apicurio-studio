@@ -161,7 +161,7 @@ public class KafkaHandlerImpl implements KafkaHandler {
 
     @Override
     public void send(String designId, KafkaAction action) {
-        producer.apply(new ProducerRecord<>(designId, action))
+        producer.apply(new ProducerRecord<>(configuration.getKafkaTopic(), designId, action))
                 .whenComplete((rmd, t) -> {
                     if (t != null) {
                         log.error("Error sending action: {} [{}]", action, designId, t);

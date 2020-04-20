@@ -115,9 +115,9 @@ public interface IAccountsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{accountType}/projects/{project}/repository/branches")
+    @Path("{accountType}/projects/{projectId}/repository/branches")
     public Collection<SourceCodeBranch> getProjectBranches(@PathParam("accountType") String accountType, 
-            @PathParam("project") String project) throws ServerError;
+            @PathParam("projectId") String projectId) throws ServerError;
 
     /*
      * Bitbucket specific endpoints - only valid when "accountType" is "Bitbucket"

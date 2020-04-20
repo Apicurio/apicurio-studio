@@ -149,7 +149,7 @@ export class GitHubResourceComponent implements OnInit {
 
     public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAccounts.getAccountBranches("GitHub", this.model.org, this.model.repo, null).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitHub", this.model.org, this.model.repo).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });

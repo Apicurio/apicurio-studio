@@ -168,7 +168,7 @@ export class GitLabResourceComponent implements OnInit {
 
     public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAccounts.getAccountBranches("GitLab", this.model.group.full_path, this.model.project.path,this.model.project.id).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitLab", this.model.group.full_path, this.model.project.id).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });

@@ -151,7 +151,7 @@ export class BitbucketResourceComponent implements OnInit {
 
     public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAccounts.getAccountBranches("Bitbucket", this.model.team, this.model.repo,null).then( branches => {
+        this.linkedAccounts.getAccountBranches("Bitbucket", this.model.team, this.model.repo).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });

@@ -160,17 +160,16 @@ export class LinkedAccountsService extends AbstractHubService {
     /**
      * @see LinkedAccountsService.getAccountBranches
      */
-    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string, projectID: number): Promise<SourceCodeBranch[]> {
-         let urlTemplate: string = "/accounts/:accountType/organizations/:orgOrTeam/repositories/:projectOrRepo/branches";
-          if (accountType === "GitLab") {
-              urlTemplate = "/accounts/:accountType/projects/:projectID/repository/branches";
+    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string|number): Promise<SourceCodeBranch[]> {
+        let urlTemplate: string = "/accounts/:accountType/organizations/:orgOrTeam/repositories/:projectOrRepo/branches";
+        if (accountType === "GitLab") {
+            urlTemplate = "/accounts/:accountType/projects/:projectOrRepo/repository/branches";
         } else if (accountType === "Bitbucket") {
             urlTemplate = "/accounts/:accountType/teams/:orgOrTeam/repositories/:projectOrRepo/branches";
         }
         let branchesUrl: string = this.endpoint(urlTemplate, {
             accountType: accountType,
             orgOrTeam: orgOrTeam,
-            projectID: projectID,
             projectOrRepo: projectOrRepo
         });
         let options: any = this.options({ "Accept": "application/json" });

@@ -160,10 +160,10 @@ export class LinkedAccountsService extends AbstractHubService {
     /**
      * @see LinkedAccountsService.getAccountBranches
      */
-    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string): Promise<SourceCodeBranch[]> {
+    public getAccountBranches(accountType: string, orgOrTeam: string, projectOrRepo: string|number): Promise<SourceCodeBranch[]> {
         let urlTemplate: string = "/accounts/:accountType/organizations/:orgOrTeam/repositories/:projectOrRepo/branches";
         if (accountType === "GitLab") {
-            urlTemplate = "/accounts/:accountType/groups/:orgOrTeam/projects/:projectOrRepo/branches";
+            urlTemplate = "/accounts/:accountType/projects/:projectOrRepo/repository/branches";
         } else if (accountType === "Bitbucket") {
             urlTemplate = "/accounts/:accountType/teams/:orgOrTeam/repositories/:projectOrRepo/branches";
         }
@@ -194,7 +194,7 @@ export class LinkedAccountsService extends AbstractHubService {
     /**
      * @see LinkedAccountsService.getAccountProjects
      */
-    public getAccountProjects(accountType: string, group: string): Promise<GitLabProject[]> {
+    public getAccountProjects(accountType: string, group: number): Promise<GitLabProject[]> {
         let projectsUrl: string = this.endpoint("/accounts/:accountType/groups/:group/projects", {
             accountType: accountType,
             group: group

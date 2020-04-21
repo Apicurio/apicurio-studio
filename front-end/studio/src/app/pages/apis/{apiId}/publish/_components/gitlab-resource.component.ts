@@ -125,7 +125,7 @@ export class GitLabResourceComponent implements OnInit {
 
     public updateProjects(): void {
         this.gettingProjects = true;
-        this.linkedAccounts.getAccountProjects("GitLab", this.model.group.full_path).then( projects => {
+        this.linkedAccounts.getAccountProjects("GitLab", this.model.group.id).then( projects => {
             projects.sort( (project1, project2) => {
                 return project1.name.localeCompare(project2.name);
             });
@@ -168,7 +168,7 @@ export class GitLabResourceComponent implements OnInit {
 
     public updateBranches(): void {
         this.gettingBranches = true;
-        this.linkedAccounts.getAccountBranches("GitLab", this.model.group.full_path, this.model.project.path).then( branches => {
+        this.linkedAccounts.getAccountBranches("GitLab", this.model.group.full_path, this.model.project.id).then( branches => {
             branches.sort( (branch1, branch2) => {
                 return branch1.name.localeCompare(branch2.name);
             });

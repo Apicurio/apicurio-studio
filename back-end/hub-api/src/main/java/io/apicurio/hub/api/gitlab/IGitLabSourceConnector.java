@@ -46,10 +46,9 @@ public interface IGitLabSourceConnector extends ISourceConnector {
     public Collection<GitLabProject> getProjects(String group) throws GitLabException, SourceConnectorException;
 
     /**
-     * Lists all of the branches available in the given GitLab group/project.
-     * @param group
-     * @param project
+     * Lists all of the branches available in the given GitLab project.
+     * @param projectId
      */
-    public Collection<SourceCodeBranch> getBranches(String group, String project) throws GitLabException, SourceConnectorException;
+    public Collection<SourceCodeBranch> getBranches(String projectId) throws GitLabException, SourceConnectorException;
 
 }

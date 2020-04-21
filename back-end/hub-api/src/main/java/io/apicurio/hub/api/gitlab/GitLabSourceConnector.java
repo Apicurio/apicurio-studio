@@ -484,16 +484,16 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     }
 
     /**
-     * @see io.apicurio.hub.api.gitlab.IGitLabSourceConnector#getBranches(java.lang.String, java.lang.String)
+     * @see io.apicurio.hub.api.gitlab.IGitLabSourceConnector#getBranches(java.lang.String)
      */
     @Override
-    public Collection<SourceCodeBranch> getBranches(String group, String project)
+    public Collection<SourceCodeBranch> getBranches(String projectId)
             throws GitLabException, SourceConnectorException {
-        logger.debug("Getting the branches from {} / {}", group, project);
+        logger.debug("Getting the branches for {}", projectId);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             Endpoint endpoint = pagedEndpoint("/api/v4/projects/:id/repository/branches", 1, DEFAULT_PAGE_SIZE)
-                    .bind("id", toEncodedId(group, project));
+                    .bind("id", toEncodedId(projectId));
             return getAllBranches(httpClient, endpoint);
         } catch (IOException e) {
             throw new GitLabException("Error getting GitLab branches.", e);
@@ -699,6 +699,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
     private String toEncodedId(GitLabResource resource) {
         return toEncodedId(resource.getGroup(), resource.getProject());
+    }
+
+    private String toEncodedId(String project) {
+        return toId(String.format("%s",project));
     }
 
     private String toEncodedId(String group, String project) {

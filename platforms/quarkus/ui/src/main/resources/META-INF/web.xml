@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+
+  <filter>
+    <filter-name>ResourceCacheControlFilter</filter-name>
+    <filter-class>io.apicurio.studio.fe.servlet.filters.ResourceCacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ResourceCacheControlFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>QuarkusAuthenticationFilter</filter-name>
+    <filter-class>io.apicurio.studio.fe.servlet.filters.QuarkusAuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>QuarkusAuthenticationFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>AngularServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.AngularServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/apis/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/settings/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>StudioConfigServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.StudioConfigServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StudioConfigServlet</servlet-name>
+    <url-pattern>/config.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>KeycloakNoopServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.KeycloakNoopServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>KeycloakNoopServlet</servlet-name>
+    <url-pattern>/keycloak.js</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>KeycloakLogoutServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.KeycloakLogoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>KeycloakLogoutServlet</servlet-name>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TokenRefreshServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.TokenRefreshServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TokenRefreshServlet</servlet-name>
+    <url-pattern>/token</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ReadyServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.ReadyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReadyServlet</servlet-name>
+    <url-pattern>/ready</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DownloadServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.DownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadServlet</servlet-name>
+    <url-pattern>/download</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>FetchServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.FetchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FetchServlet</servlet-name>
+    <url-pattern>/fetch</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>PreviewServlet</servlet-name>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.PreviewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewServlet</servlet-name>
+    <url-pattern>/preview</url-pattern>
+  </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>All</web-resource-name>
+      <url-pattern>/index.html</url-pattern>
+      <url-pattern>/token</url-pattern>
+      <url-pattern>/logout</url-pattern>
+      <url-pattern>/config.js</url-pattern>
+      <url-pattern>/dashboard</url-pattern>
+      <url-pattern>/settings/*</url-pattern>
+      <url-pattern>/apis/*</url-pattern>
+      <url-pattern>/download</url-pattern>
+      <url-pattern>/preview</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>*</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>KEYCLOAK</auth-method>
+  </login-config>
+
+  <security-role>
+    <role-name>*</role-name>
+  </security-role>
+</web-app>

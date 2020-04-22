@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+
+  <servlet>
+    <servlet-name>StartupServlet</servlet-name>
+    <servlet-class>io.apicurio.hub.editing.StartupServlet</servlet-class>
+    <load-on-startup>true</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>MetricsServlet</servlet-name>
+    <servlet-class>io.apicurio.hub.editing.metrics.MetricsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MetricsServlet</servlet-name>
+    <url-pattern>/metrics</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SharingServlet</servlet-name>
+    <servlet-class>io.apicurio.hub.editing.sharing.SharingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SharingServlet</servlet-name>
+    <url-pattern>/sharing/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>

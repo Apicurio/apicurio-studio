@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -97,7 +96,8 @@ public class JdbcStorage implements IStorage {
     private HubConfiguration config;
     @Inject
     private ISqlStatements sqlStatements;
-    @Resource(mappedName="java:jboss/datasources/ApicurioDS")
+    @Inject
+    @ApicurioDataSource
     private DataSource dataSource;
 
     private Jdbi jdbi;

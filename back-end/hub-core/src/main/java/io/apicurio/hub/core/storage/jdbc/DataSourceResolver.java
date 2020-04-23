@@ -42,13 +42,13 @@ public class DataSourceResolver {
     public DataSource dataSource() throws NamingException {
 
         if (dataSources.isUnsatisfied()) {
-           return fetchJdniDataSource();
+           return fetchJndiDataSource();
         } else {
             return dataSources.get();
         }
     }
 
-    private DataSource fetchJdniDataSource() throws NamingException {
+    private DataSource fetchJndiDataSource() throws NamingException {
         logger.debug("Creating an instance of Datasource for injection");
 
         Context ctx = new InitialContext();

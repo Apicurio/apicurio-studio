@@ -1,9 +1,0 @@
-{
-	"realm": "${env.APICURIO_KC_REALM:apicurio-local}",
-	"bearer-only": true,
-	"auth-server-url": "${env.APICURIO_KC_AUTH_URL:http://localhost:8180/auth}",
-	"ssl-required": "${env.APICURIO_KC_SSL_REQUIRED:NONE}",
-	"enable-cors": true,
-	"disable-trust-manager": "${env.APICURIO_KC_DISABLE_TRUST_MANAGER:true}",
-	"resource": "${env.APICURIO_KC_CLIENT_ID:apicurio-api}"
-}

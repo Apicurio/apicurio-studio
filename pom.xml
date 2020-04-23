@@ -393,7 +393,7 @@
                 <artifactId>javax.jms-api</artifactId>
                 <version>${version.javax.jms.jms-api}</version>
             </dependency>
-            
+
             <!-- Test -->
             <dependency>
                 <groupId>junit</groupId>

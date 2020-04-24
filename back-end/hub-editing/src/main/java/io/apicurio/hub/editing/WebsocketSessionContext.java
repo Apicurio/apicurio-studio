@@ -99,7 +99,7 @@ public class WebsocketSessionContext implements ISessionContext {
      */
     @Override
     public void sendAsText(String serialized) throws IOException {
-        session.getBasicRemote().sendText(serialized);
+        session.getAsyncRemote().sendText(serialized);
     }
 
     /**
@@ -107,7 +107,7 @@ public class WebsocketSessionContext implements ISessionContext {
      */
     @Override
     public <T> void sendAsText(T obj) throws IOException {
-        session.getBasicRemote().sendText(JsonUtil.toJson(obj));
+        session.getAsyncRemote().sendText(JsonUtil.toJson(obj));
     }
 
     /**

@@ -60,7 +60,7 @@ public class QuarkusAuthenticationFilter implements Filter {
             auth.setLogoutUrl(((HttpServletRequest) request).getContextPath() + "/logout");
             auth.setToken(principal.getRawToken());
             //TODO carnalca unsafe cast from long to int
-            auth.setTokenRefreshPeriod(expirationToRefreshPeriod((int) principal.getExpirationTime()));
+            auth.setTokenRefreshPeriod((int) expirationToRefreshPeriod(principal.getExpirationTime()));
             httpSession.setAttribute(RequestAttributeKeys.AUTH_KEY, auth);
 
             // Fabricate a User object from information in the access token and store it in the request.
@@ -80,14 +80,12 @@ public class QuarkusAuthenticationFilter implements Filter {
      *
      * @param expiration
      */
-    private int expirationToRefreshPeriod(int expiration) {
-        int nowInSeconds = org.keycloak.common.util.Time.currentTime();
-        int expiresInSeconds = expiration;
-
-        if (expiresInSeconds <= nowInSeconds) {
+    private long expirationToRefreshPeriod(long expiration) {
+        long nowInSeconds = System.currentTimeMillis() / 1000;
+        if (expiration <= nowInSeconds) {
             return 1;
         } else {
-            return expiresInSeconds - nowInSeconds;
+            return expiration - nowInSeconds;
         }
     }
 

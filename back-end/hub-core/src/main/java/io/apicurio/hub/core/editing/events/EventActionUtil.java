@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.editing.kafka;
+package io.apicurio.hub.core.editing.events;
 
-import io.apicurio.hub.core.editing.events.EventsEditingSession;
+import io.apicurio.hub.core.util.JsonUtil;
 
 /**
- * Kafka based editing session.
+ * Event serialization, etc
  *
  * @author Ales Justin
  */
-public class KafkaEditingSession extends EventsEditingSession {
+public class EventActionUtil {
+    public static EventAction deserialize(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+        return JsonUtil.fromJson(bytes, EventAction.class);
+    }
 
-    public KafkaEditingSession(String designId, KafkaHandler handler) {
-        super(designId, handler);
-        handler.addSession(this);
-        handler.start();
+    public static byte[] serialize(EventAction action) {
+        if (action == null) {
+            return null;
+        }
+        return JsonUtil.toJsonBytes(action);
     }
 }

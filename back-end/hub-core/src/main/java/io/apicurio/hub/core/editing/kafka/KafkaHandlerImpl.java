@@ -18,6 +18,9 @@ package io.apicurio.hub.core.editing.kafka;
 
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.editing.events.ActionType;
+import io.apicurio.hub.core.editing.events.EventAction;
+import io.apicurio.hub.core.editing.events.IEditingSessionExt;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 import io.apicurio.hub.core.storage.StorageException;
@@ -63,10 +66,10 @@ public class KafkaHandlerImpl implements KafkaHandler {
     @Inject
     IRollupExecutor rollupExecutor;
 
-    private ProducerActions<String, KafkaAction> producer;
-    private ConsumerContainer.DynamicPool<String, KafkaAction> consumer;
+    private ProducerActions<String, EventAction> producer;
+    private ConsumerContainer.DynamicPool<String, EventAction> consumer;
 
-    private Map<String, KafkaEditingSession> sessions = new ConcurrentHashMap<>();
+    private Map<String, IEditingSessionExt> sessions = new ConcurrentHashMap<>();
 
     private Map<String, Future<?>> rollups = new ConcurrentHashMap<>();
     private ScheduledExecutorService executorService;
@@ -124,12 +127,12 @@ public class KafkaHandlerImpl implements KafkaHandler {
     }
 
     @Override
-    public void addSession(KafkaEditingSession session) {
+    public void addSession(IEditingSessionExt session) {
         sessions.put(session.getDesignId(), session);
     }
 
     @Override
-    public void removeSession(KafkaEditingSession session) {
+    public void removeSession(IEditingSessionExt session) {
         String designId = session.getDesignId();
         sessions.remove(designId);
 
@@ -146,7 +149,7 @@ public class KafkaHandlerImpl implements KafkaHandler {
             TimeUnit.SECONDS
         );
         rollups.put(uuid, schedule);
-        send(designId, KafkaAction.close(uuid));
+        send(designId, EventAction.close(uuid));
     }
 
     private void rollup(String uuid, String designId) {
@@ -160,7 +163,7 @@ public class KafkaHandlerImpl implements KafkaHandler {
     }
 
     @Override
-    public void send(String designId, KafkaAction action) {
+    public void send(String designId, EventAction action) {
         producer.apply(new ProducerRecord<>(configuration.getKafkaTopic(), designId, action))
                 .whenComplete((rmd, t) -> {
                     if (t != null) {
@@ -171,18 +174,18 @@ public class KafkaHandlerImpl implements KafkaHandler {
                 });
     }
 
-    private void consume(ConsumerRecord<String, KafkaAction> cr) {
+    private void consume(ConsumerRecord<String, EventAction> cr) {
         String designId = cr.key();
-        KafkaAction action = cr.value();
+        EventAction action = cr.value();
         ActionType type = action.getType();
         String id = action.getId();
 
-        KafkaEditingSession session = sessions.get(designId);
+        IEditingSessionExt session = sessions.get(designId);
         if (session != null && type != ActionType.ROLLUP) {
             switch (type) {
                 case CLOSE:
                     if (session.isEmpty() == false) {
-                        send(designId, KafkaAction.rollup(id));
+                        send(designId, EventAction.rollup(id));
                     }
                     return;
                 case SEND_TO_OTHERS:

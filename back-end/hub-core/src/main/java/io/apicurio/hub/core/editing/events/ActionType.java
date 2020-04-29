@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.editing.kafka;
-
-import io.apicurio.hub.core.editing.events.EventsEditingSession;
+package io.apicurio.hub.core.editing.events;
 
 /**
- * Kafka based editing session.
- *
  * @author Ales Justin
  */
-public class KafkaEditingSession extends EventsEditingSession {
-
-    public KafkaEditingSession(String designId, KafkaHandler handler) {
-        super(designId, handler);
-        handler.addSession(this);
-        handler.start();
-    }
+public enum ActionType {
+    CLOSE,
+    ROLLUP,
+    SEND_TO_OTHERS,
+    SEND_TO_LIST,
+    SEND_TO_EXECUTE
 }

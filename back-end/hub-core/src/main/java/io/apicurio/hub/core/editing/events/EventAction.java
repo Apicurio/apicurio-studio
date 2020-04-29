@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.editing.kafka;
+package io.apicurio.hub.core.editing.events;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,45 +29,45 @@ import java.util.List;
  * @author Ales Justin
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KafkaAction {
+public class EventAction {
     private ActionType type;
     private String id;
     private byte[] op;
     private List<JoinLeaveOperation> ops;
 
-    public KafkaAction() {
+    public EventAction() {
     }
 
-    private KafkaAction(ActionType type, String id, BaseOperation op, List<JoinLeaveOperation> ops) {
+    private EventAction(ActionType type, String id, BaseOperation op, List<JoinLeaveOperation> ops) {
         this.type = type;
         this.id = id;
         this.op = JsonUtil.toJsonBytes(op);
         this.ops = ops;
     }
 
-    public static KafkaAction close(String uuid) {
-        return new KafkaAction(ActionType.CLOSE, uuid, null, null);
+    public static EventAction close(String uuid) {
+        return new EventAction(ActionType.CLOSE, uuid, null, null);
     }
 
-    public static KafkaAction rollup(String uuid) {
-        return new KafkaAction(ActionType.ROLLUP, uuid, null, null);
+    public static EventAction rollup(String uuid) {
+        return new EventAction(ActionType.ROLLUP, uuid, null, null);
     }
 
-    public static KafkaAction sendToOthers(BaseOperation op, String excludedContextId) {
-        return new KafkaAction(ActionType.SEND_TO_OTHERS, excludedContextId, op, null);
+    public static EventAction sendToOthers(BaseOperation op, String excludedContextId) {
+        return new EventAction(ActionType.SEND_TO_OTHERS, excludedContextId, op, null);
     }
 
-    public static KafkaAction sendToList(String toContextId) {
-        return new KafkaAction(ActionType.SEND_TO_LIST, toContextId, null, null);
+    public static EventAction sendToList(String toContextId) {
+        return new EventAction(ActionType.SEND_TO_LIST, toContextId, null, null);
     }
 
-    public static KafkaAction sendToExecute(List<JoinLeaveOperation> ops, String toContextId) {
-        return new KafkaAction(ActionType.SEND_TO_EXECUTE, toContextId, null, ops);
+    public static EventAction sendToExecute(List<JoinLeaveOperation> ops, String toContextId) {
+        return new EventAction(ActionType.SEND_TO_EXECUTE, toContextId, null, ops);
     }
 
     @Override
     public String toString() {
-        return String.format("KafkaAction: %s", type);
+        return String.format("EventAction: %s", type);
     }
 
     public BaseOperation toBaseOperation() {

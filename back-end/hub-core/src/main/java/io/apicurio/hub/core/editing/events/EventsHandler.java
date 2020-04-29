@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.editing.kafka;
+package io.apicurio.hub.core.editing.events;
 
 /**
  * @author Ales Justin
  */
-public enum ActionType {
-    CLOSE,
-    ROLLUP,
-    SEND_TO_OTHERS,
-    SEND_TO_LIST,
-    SEND_TO_EXECUTE
+public interface EventsHandler extends AutoCloseable {
+    void removeSession(IEditingSessionExt session);
+    void send(String designId, EventAction action);
 }

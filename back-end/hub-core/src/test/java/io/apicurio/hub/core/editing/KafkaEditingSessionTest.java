@@ -16,8 +16,8 @@
 
 package io.apicurio.hub.core.editing;
 
+import io.apicurio.hub.core.editing.events.EventAction;
 import io.apicurio.hub.core.editing.kafka.JsonSerde;
-import io.apicurio.hub.core.editing.kafka.KafkaAction;
 import io.apicurio.hub.core.editing.ops.JoinLeaveOperation;
 import io.apicurio.hub.core.editing.ops.OperationFactory;
 import org.junit.Assert;
@@ -37,17 +37,17 @@ public class KafkaEditingSessionTest {
     @Test
     public void testSerde() {
         String uuid = UUID.randomUUID().toString();
-        testSerde(KafkaAction.close(uuid));
-        testSerde(KafkaAction.rollup(uuid));
+        testSerde(EventAction.close(uuid));
+        testSerde(EventAction.rollup(uuid));
         JoinLeaveOperation join = OperationFactory.join("alesj", "foobar");
-        testSerde(KafkaAction.sendToOthers(join, uuid));
-        testSerde(KafkaAction.sendToList(uuid));
-        testSerde(KafkaAction.sendToExecute(Collections.singletonList(join), uuid));
+        testSerde(EventAction.sendToOthers(join, uuid));
+        testSerde(EventAction.sendToList(uuid));
+        testSerde(EventAction.sendToExecute(Collections.singletonList(join), uuid));
     }
 
-    private void testSerde(KafkaAction original) {
+    private void testSerde(EventAction original) {
         byte[] bytes = serde.serialize(null, original);
-        KafkaAction copy = serde.deserialize(null, bytes);
+        EventAction copy = serde.deserialize(null, bytes);
         Assert.assertEquals(original.getType(), copy.getType());
         Assert.assertEquals(original.getId(), copy.getId());
         Assert.assertArrayEquals(original.getOp(), copy.getOp());

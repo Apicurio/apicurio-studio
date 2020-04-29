@@ -16,14 +16,15 @@
 
 package io.apicurio.hub.core.editing.kafka;
 
+import io.apicurio.hub.core.editing.events.EventsHandler;
+import io.apicurio.hub.core.editing.events.IEditingSessionExt;
+
 /**
  * Kafka handler - producer / consumer.
  *
  * @author Ales Justin
  */
-public interface KafkaHandler extends AutoCloseable {
+public interface KafkaHandler extends EventsHandler {
     void start();
-    void addSession(KafkaEditingSession session);
-    void removeSession(KafkaEditingSession session);
-    void send(String designId, KafkaAction action);
+    void addSession(IEditingSessionExt session);
 }

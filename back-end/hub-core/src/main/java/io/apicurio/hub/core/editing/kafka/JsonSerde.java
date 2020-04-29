@@ -16,30 +16,23 @@
 
 package io.apicurio.hub.core.editing.kafka;
 
-import io.apicurio.hub.core.util.JsonUtil;
+import io.apicurio.hub.core.editing.events.EventAction;
+import io.apicurio.hub.core.editing.events.EventActionUtil;
 import io.apicurio.registry.utils.kafka.SelfSerde;
-import org.apache.kafka.common.errors.SerializationException;
 
 /**
  * JSON serde
  *
  * @author Ales Justin
  */
-public class JsonSerde extends SelfSerde<KafkaAction> {
+public class JsonSerde extends SelfSerde<EventAction> {
     @Override
-    public KafkaAction deserialize(String topic, byte[] bytes) {
-        if (bytes == null)
-            return null;
-
-        try {
-            return JsonUtil.fromJson(bytes, KafkaAction.class);
-        } catch (Exception e) {
-            throw new SerializationException(e);
-        }
+    public EventAction deserialize(String topic, byte[] bytes) {
+        return EventActionUtil.deserialize(bytes);
     }
 
     @Override
-    public byte[] serialize(String topic, KafkaAction action) {
-        return JsonUtil.toJsonBytes(action);
+    public byte[] serialize(String topic, EventAction action) {
+        return EventActionUtil.serialize(action);
     }
 }

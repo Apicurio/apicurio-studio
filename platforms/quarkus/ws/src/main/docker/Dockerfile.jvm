@@ -14,52 +14,13 @@
 # docker run -i --rm -p 8080:8080 apicurio/apicurio-studio-ws
 #
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
+FROM fabric8/java-alpine-openjdk8-jre
 LABEL authors="Carles Arnal <carnalca@redhat.com>"
-
-ARG JAVA_PACKAGE=java-11-openjdk-headless
-ARG RUN_JAVA_VERSION=1.3.5
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
-
-ENV JAVA_TOOL_OPTIONS=-Djava.net.preferIPv4Stack=true
-ENV APICURIO_PORT_OFFSET=0
-ENV APICURIO_DB_CONNECTION_URL=jdbc:h2:~/apicuriodb;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-ENV APICURIO_DB_USER_NAME=sa
-ENV APICURIO_DB_PASSWORD=sa
-ENV APICURIO_DB_DRIVER_NAME=h2
-ENV APICURIO_DB_VALID_CONNECTION_CHECKER_CLASS_NAME=org.jboss.jca.adapters.jdbc.extensions.novendor.NullValidConnectionChecker
-ENV APICURIO_DB_VALID_ON_MATCH=
-ENV APICURIO_DB_BACKGROUND_VALIDATION=
-ENV APICURIO_DB_EXCEPTION_SORTER_CLASS_NAME=org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter
-ENV APICURIO_LOGGING_LEVEL=INFO
-ENV APICURIO_MIN_HEAP=768m
-ENV APICURIO_MAX_HEAP=2048m
-
-# Install java and the run-java script
-# Also set up permissions for user `1001`
-RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
-    && microdnf update \
-    && microdnf clean all \
-    && mkdir /deployments \
-    && chown 1001 /deployments \
-    && chmod "g+rwX" /deployments \
-    && chown 1001:root /deployments \
-    && curl https://repo1.maven.org/maven2/io/fabric8/run-java-sh/${RUN_JAVA_VERSION}/run-java-sh-${RUN_JAVA_VERSION}-sh.sh -o /deployments/run-java.sh \
-    && chown 1001 /deployments/run-java.sh \
-    && chmod 540 /deployments/run-java.sh \
-    && echo "securerandom.source=file:/dev/urandom" >> /etc/alternatives/jre/lib/security/java.security
-
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
-ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 \
- -Djava.util.logging.manager=org.jboss.logmanager.LogManager \
-  -Dquarkus.datasource.db-kind=${APICURIO_DB_DRIVER_NAME} \
-  -Dquarkus.datasource.jdbc.url=${APICURIO_DB_CONNECTION_URL} \
-  -Dquarkus.datasource.username=${APICURIO_DB_USER_NAME} \
-  -Dquarkus.datasource.password=${APICURIO_DB_PASSWORD} \
-  -Dapicurio.hub.storage.jdbc.init=${APICURIO_DB_INITIALIZE} \
-  -Dapicurio.hub.storage.jdbc.type=${APICURIO_DB_TYPE}"
+ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
 COPY target/lib/* /deployments/lib/
 COPY target/*-runner.jar /deployments/app.jar

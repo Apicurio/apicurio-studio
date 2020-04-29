@@ -16,14 +16,12 @@
 
 package io.apicurio.hub.core.editing.kafka;
 
-import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.editing.events.AbstractEventsHandler;
 import io.apicurio.hub.core.editing.events.ActionType;
 import io.apicurio.hub.core.editing.events.EventAction;
 import io.apicurio.hub.core.editing.events.IEditingSessionExt;
-import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
-import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.registry.utils.IoUtil;
 import io.apicurio.registry.utils.kafka.AsyncProducer;
 import io.apicurio.registry.utils.kafka.ConsumerContainer;
@@ -35,8 +33,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Properties;
@@ -47,32 +43,25 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * Kafka handler - producer / consumer.
  *
  * @author Ales Justin
  */
-@ApplicationScoped
-public class KafkaHandlerImpl implements KafkaHandler {
-    private static final Logger log = LoggerFactory.getLogger(KafkaHandlerImpl.class);
-
-    @Inject
-    HubConfiguration configuration;
-
-    @Inject
-    IRollupExecutor rollupExecutor;
+public class KafkaEventsHandler extends AbstractEventsHandler {
+    private HubConfiguration configuration;
 
     private ProducerActions<String, EventAction> producer;
     private ConsumerContainer.DynamicPool<String, EventAction> consumer;
 
-    private Map<String, IEditingSessionExt> sessions = new ConcurrentHashMap<>();
-
     private Map<String, Future<?>> rollups = new ConcurrentHashMap<>();
     private ScheduledExecutorService executorService;
+
+    public KafkaEventsHandler(HubConfiguration configuration, IRollupExecutor rollupExecutor) {
+        super(rollupExecutor);
+        this.configuration = configuration;
+    }
 
     public synchronized void start() {
         if (consumer != null) {
@@ -112,7 +101,6 @@ public class KafkaHandlerImpl implements KafkaHandler {
         consumer.start();
     }
 
-    @PreDestroy
     public void close() {
         try {
             IoUtil.closeIgnore(producer);
@@ -127,14 +115,9 @@ public class KafkaHandlerImpl implements KafkaHandler {
     }
 
     @Override
-    public void addSession(IEditingSessionExt session) {
-        sessions.put(session.getDesignId(), session);
-    }
-
-    @Override
     public void removeSession(IEditingSessionExt session) {
+        super.removeSession(session);
         String designId = session.getDesignId();
-        sessions.remove(designId);
 
         // schedule for rollup, if nobody replies that it's still alive
         // not thread safe .. if this causes serious issues, we need to re-impl this
@@ -154,12 +137,8 @@ public class KafkaHandlerImpl implements KafkaHandler {
 
     private void rollup(String uuid, String designId) {
         log.debug("Executing rollup: {} [{}]", uuid, designId);
+        rollup(designId);
         rollups.remove(uuid);
-        try {
-            this.rollupExecutor.rollupCommands(designId);
-        } catch (NotFoundException | StorageException | OaiCommandException e) {
-            log.error("Error detected closing an Editing Session.", e);
-        }
     }
 
     @Override
@@ -184,6 +163,7 @@ public class KafkaHandlerImpl implements KafkaHandler {
         if (session != null && type != ActionType.ROLLUP) {
             switch (type) {
                 case CLOSE:
+                    // send cancel-rollup if not empty == still alive
                     if (session.isEmpty() == false) {
                         send(designId, EventAction.rollup(id));
                     }
@@ -193,7 +173,7 @@ public class KafkaHandlerImpl implements KafkaHandler {
                     return;
                 case SEND_TO_LIST:
                     session.sendTo(id);
-                    break;
+                    return;
                 case SEND_TO_EXECUTE:
                     session.sendTo(action.getOps(), id);
                     return;

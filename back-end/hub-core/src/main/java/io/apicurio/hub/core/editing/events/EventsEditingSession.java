@@ -31,13 +31,27 @@ import java.util.function.BiFunction;
  *
  * @author Ales Justin
  */
-public abstract class EventsEditingSession extends AbstractEditingSession implements IEditingSessionExt {
+public class EventsEditingSession extends AbstractEditingSession implements IEditingSessionExt {
 
     private final EventsHandler handler;
 
     public EventsEditingSession(String designId, EventsHandler handler) {
         super(designId);
         this.handler = handler;
+        handler.addSession(this);
+        handler.start();
+    }
+
+    @Override
+    public void join(ISessionContext context, String user) {
+        super.join(context, user);
+        handler.addSessionContext(getDesignId(), context);
+    }
+
+    @Override
+    public void leave(ISessionContext context) {
+        handler.removeSessionContext(getDesignId(), context);
+        super.leave(context);
     }
 
     @Override

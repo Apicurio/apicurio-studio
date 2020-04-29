@@ -16,10 +16,20 @@
 
 package io.apicurio.hub.core.editing.events;
 
+import io.apicurio.hub.core.editing.ISessionContext;
+
 /**
  * @author Ales Justin
  */
 public interface EventsHandler extends AutoCloseable {
+    void start();
+    void addSession(IEditingSessionExt session);
     void removeSession(IEditingSessionExt session);
     void send(String designId, EventAction action);
+
+    default void addSessionContext(String designId, ISessionContext context) {
+    }
+
+    default void removeSessionContext(String designId, ISessionContext context) {
+    }
 }

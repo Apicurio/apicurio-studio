@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.core.editing.kafka;
+package io.apicurio.hub.core.editing.infinispan;
 
-import io.apicurio.hub.core.editing.events.EventsEditingSession;
+import org.infinispan.util.function.SerializableBiFunction;
 
 /**
- * Kafka based editing session.
- *
  * @author Ales Justin
  */
-public class KafkaEditingSession extends EventsEditingSession {
+public class IncrementOp<K> implements SerializableBiFunction<K, Integer, Integer> {
+    private static final long serialVersionUID = 1L;
 
-    public KafkaEditingSession(String designId, KafkaHandler handler) {
-        super(designId, handler);
-        handler.addSession(this);
-        handler.start();
+    private int increment;
+
+    public IncrementOp(int increment) {
+        this.increment = increment;
+    }
+
+    @Override
+    public Integer apply(K key, Integer value) {
+        return (value == null) ? increment : value + increment;
     }
 }

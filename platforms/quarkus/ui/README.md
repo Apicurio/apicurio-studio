@@ -47,15 +47,3 @@ Also for both profiles, you need to configure the location of both the api and t
  |---|---|---|
  |API URL|`-D.apicurio-ui.hub-api.url`|`APICURIO_UI_EDITING_URL`|
  |WS URL|`-Dapicurio-ui.editing.url`|`APICURIO_UI_HUB_API_URL`|
- 
- 
-
-## Creating a native executable
-
-You can create a native executable using: `mvn package -Pnative`.
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `mvn package -Pnative -Dquarkus.native.container-build=true`.
-
-You can then execute your native executable with: `./target/apicurio-studio-platforms-quarkus-ui-0.2.47-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.

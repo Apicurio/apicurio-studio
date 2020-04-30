@@ -50,19 +50,5 @@ For both profiles you need to provide connection configuration for a oidc server
  
 To see additional options, visit:
  - [OIDC options](https://quarkus.io/guides/security-openid-connect) 
- 
- 
-
 
 Note that in order to have the full `apicurio-studio` app running both the `api` and the `ws` needs to share the same database.
-
-
-## Creating a native executable
-
-You can create a native executable using: `mvn package -Pnative,prod`.
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `mvn package -Pnative,prod -Dquarkus.native.container-build=true`.
-
-You can then execute your native executable with: `./target/apicurio-studio-api-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image-guide.

@@ -44,14 +44,3 @@ To see additional options, visit:
  - [Data Source options](https://quarkus.io/guides/datasource-guide#configuration-reference) 
  
 Note that in order to have the full `apicurio-studio` app running both the `api` and the `ws` needs to share the same database.
-
- 
-## Creating a native executable
-
-You can create a native executable using: `mvn package -Pnative`.
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `mvn package -Pnative -Dquarkus.native.container-build=true`.
-
-You can then execute your native executable with: `./target/apicurio-studio-platforms-quarkus-ws-0.2.47-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.

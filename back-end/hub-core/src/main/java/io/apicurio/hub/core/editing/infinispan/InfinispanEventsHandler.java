@@ -33,6 +33,9 @@ import org.infinispan.notifications.Listener;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryCreated;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryModified;
 import org.infinispan.notifications.cachelistener.event.CacheEntryEvent;
+import org.infinispan.remoting.transport.Address;
+
+import java.util.Map;
 
 /**
  * @author Ales Justin
@@ -44,10 +47,7 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
 
     private EmbeddedCacheManager manager;
     private Cache<String, EventAction> eventActionCache;
-    private Cache<String, Integer> counterCache;
-
-    private final IncrementOp<String> addOp = new IncrementOp<>(1);
-    private final IncrementOp<String> removeOp = new IncrementOp<>(-1);
+    private Cache<String, Map<String, Integer>> counterCache;
 
     public InfinispanEventsHandler(IRollupExecutor rollupExecutor) {
         super(rollupExecutor);
@@ -90,12 +90,14 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
 
     @Override
     public void addSessionContext(String designId, ISessionContext context) {
-        counterCache.compute(designId, addOp);
+        Address address = manager.getAddress();
+        counterCache.compute(designId, new NodeCounterOp<>(1, address.toString()));
     }
 
     @Override
     public void removeSessionContext(String designId, ISessionContext context) {
-        counterCache.compute(designId, removeOp);
+        Address address = manager.getAddress();
+        counterCache.compute(designId, new NodeCounterOp<>(-1, address.toString()));
     }
 
     @CacheEntryCreated
@@ -107,22 +109,35 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
         String id = action.getId();
 
         IEditingSessionExt session = sessions.get(designId);
-        if (session != null && type != ActionType.ROLLUP) {
+        if (session != null && type != ActionType.CLOSE) {
             switch (type) {
-                case CLOSE:
-                    Integer count = counterCache.get(designId);
-                    if (count != null && count == 0) {
-                        rollup(designId);
-                    }
-                    return;
                 case SEND_TO_OTHERS:
                     session.sendToOthers(action.toBaseOperation(), id);
                     return;
                 case SEND_TO_LIST:
                     session.sendTo(id);
-                    break;
+                    return;
                 case SEND_TO_EXECUTE:
                     session.sendTo(action.getOps(), id);
+                    return;
+            }
+        }
+
+        // only do rollup once - on the event origin node
+        if (type == ActionType.CLOSE && event.isOriginLocal()) {
+            Map<String, Integer> map = counterCache.get(designId);
+            int count = 0;
+            // only count live nodes
+            for (Address member : manager.getMembers()) {
+                count += map.getOrDefault(member.toString(), 0);
+            }
+            if (count == 0) {
+                try {
+                    rollup(designId);
+                } finally {
+                    counterCache.remove(designId);
+                    eventActionCache.remove(designId);
+                }
             }
         }
     }

@@ -17,6 +17,7 @@
 package io.apicurio.hub.core.editing.events;
 
 import io.apicurio.hub.core.cmd.OaiCommandException;
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IRollupExecutor;
 import io.apicurio.hub.core.storage.StorageException;
@@ -32,11 +33,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractEventsHandler implements EventsHandler {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    protected final HubConfiguration configuration;
     private final IRollupExecutor rollupExecutor;
 
     protected Map<String, IEditingSessionExt> sessions = new ConcurrentHashMap<>();
 
-    public AbstractEventsHandler(IRollupExecutor rollupExecutor) {
+    public AbstractEventsHandler(HubConfiguration configuration, IRollupExecutor rollupExecutor) {
+        this.configuration = configuration;
         this.rollupExecutor = rollupExecutor;
     }
 

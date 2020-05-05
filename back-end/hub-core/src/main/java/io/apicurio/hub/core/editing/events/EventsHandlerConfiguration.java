@@ -44,7 +44,7 @@ public class EventsHandlerConfiguration {
         if ("kafka".equals(type)) {
             return new KafkaEventsHandler(configuration, rollupExecutor);
         } else if ("infinispan".equals(type)) {
-            return new InfinispanEventsHandler(rollupExecutor);
+            return new InfinispanEventsHandler(configuration, rollupExecutor);
         } else {
             throw new IllegalArgumentException("Unsupported type: " + type);
         }

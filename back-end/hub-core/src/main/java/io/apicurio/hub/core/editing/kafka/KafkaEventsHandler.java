@@ -50,8 +50,6 @@ import java.util.concurrent.TimeUnit;
  * @author Ales Justin
  */
 public class KafkaEventsHandler extends AbstractEventsHandler {
-    private HubConfiguration configuration;
-
     private ProducerActions<String, EventAction> producer;
     private ConsumerContainer.DynamicPool<String, EventAction> consumer;
 
@@ -59,8 +57,7 @@ public class KafkaEventsHandler extends AbstractEventsHandler {
     private ScheduledExecutorService executorService;
 
     public KafkaEventsHandler(HubConfiguration configuration, IRollupExecutor rollupExecutor) {
-        super(rollupExecutor);
-        this.configuration = configuration;
+        super(configuration, rollupExecutor);
     }
 
     public synchronized void start() {

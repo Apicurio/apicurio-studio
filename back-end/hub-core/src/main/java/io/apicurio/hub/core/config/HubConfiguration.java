@@ -96,6 +96,9 @@ public class HubConfiguration extends Configuration {
     private static final String KAFKA_TIMEOUT_ENV = "APICURIO_HUB_EDITING_SESSION_TIMEOUT";
     private static final String KAFKA_TIMEOUT_SYSPROP = "apicurio.hub.editing.session.timeout";
 
+    private static final String INFINISPAN_CLUSTER_NAME_ENV = "APICURIO_HUB_EDITING_SESSION_CLUSTER_NAME";
+    private static final String INFINISPAN_CLUSTER_NAME_SYSPROP = "apicurio.hub.editing.session.cluster.name";
+
     /**
      * @return the configured JDBC type (default: h2)
      */
@@ -265,5 +268,12 @@ public class HubConfiguration extends Configuration {
     public int getKafkaTimeout() {
         String timeout = getConfigurationProperty(KAFKA_TIMEOUT_ENV, KAFKA_TIMEOUT_SYSPROP, "5");
         return Integer.parseInt(timeout);
+    }
+
+    /**
+     * @return Infinispan cluster name
+     */
+    public String getInfinispanClusterName() {
+        return getConfigurationProperty(INFINISPAN_CLUSTER_NAME_ENV, INFINISPAN_CLUSTER_NAME_SYSPROP, "apicurio-studio");
     }
 }

@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.editing.infinispan;
 
+import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.ISessionContext;
 import io.apicurio.hub.core.editing.events.AbstractEventsHandler;
 import io.apicurio.hub.core.editing.events.ActionType;
@@ -27,6 +28,7 @@ import org.infinispan.Cache;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.configuration.global.TransportConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.notifications.Listener;
@@ -49,8 +51,8 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
     private Cache<String, EventAction> eventActionCache;
     private Cache<String, Map<String, Integer>> counterCache;
 
-    public InfinispanEventsHandler(IRollupExecutor rollupExecutor) {
-        super(rollupExecutor);
+    public InfinispanEventsHandler(HubConfiguration configuration, IRollupExecutor rollupExecutor) {
+        super(configuration, rollupExecutor);
     }
 
     @Override
@@ -61,6 +63,9 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
 
         GlobalConfigurationBuilder gConf = GlobalConfigurationBuilder.defaultClusteredBuilder();
         gConf.serialization().addAdvancedExternalizer(new EventActionExternalizer());
+
+        TransportConfigurationBuilder transport = gConf.transport();
+        transport.clusterName(configuration.getInfinispanClusterName());
 
         manager = new DefaultCacheManager(gConf.build());
 

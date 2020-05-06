@@ -18,6 +18,7 @@ package io.apicurio.hub.core.config;
 
 import io.apicurio.studio.shared.config.Configuration;
 
+import java.util.Properties;
 import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -98,6 +99,9 @@ public class HubConfiguration extends Configuration {
 
     private static final String INFINISPAN_CLUSTER_NAME_ENV = "APICURIO_HUB_EDITING_SESSION_CLUSTER_NAME";
     private static final String INFINISPAN_CLUSTER_NAME_SYSPROP = "apicurio.hub.editing.session.cluster.name";
+
+    private static final String INFINISPAN_TRANSPORT_ENV = "APICURIO_HUB_EDITING_SESSION_TRANSPORT_";
+    private static final String INFINISPAN_TRANSPORT_SYSPROP = "apicurio.hub.editing.session.transport.";
 
     /**
      * @return the configured JDBC type (default: h2)
@@ -275,5 +279,12 @@ public class HubConfiguration extends Configuration {
      */
     public String getInfinispanClusterName() {
         return getConfigurationProperty(INFINISPAN_CLUSTER_NAME_ENV, INFINISPAN_CLUSTER_NAME_SYSPROP, "apicurio-studio");
+    }
+
+    /**
+     * @return Infinispan transport properties
+     */
+    public Properties getInfinispanTransportProperties() {
+        return getConfigurationProperties(INFINISPAN_TRANSPORT_ENV, INFINISPAN_TRANSPORT_SYSPROP, false);
     }
 }

@@ -38,6 +38,7 @@ import org.infinispan.notifications.cachelistener.event.CacheEntryEvent;
 import org.infinispan.remoting.transport.Address;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Ales Justin
@@ -66,6 +67,11 @@ public class InfinispanEventsHandler extends AbstractEventsHandler {
 
         TransportConfigurationBuilder transport = gConf.transport();
         transport.clusterName(configuration.getInfinispanClusterName());
+
+        Properties transportProperties = configuration.getInfinispanTransportProperties();
+        if (transportProperties.size() > 0) {
+            transport.withProperties(transportProperties);
+        }
 
         manager = new DefaultCacheManager(gConf.build());
 

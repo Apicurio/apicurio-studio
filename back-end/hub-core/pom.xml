@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+>
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.apicurio</groupId>
@@ -28,6 +27,25 @@
         <dependency>
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-data-models</artifactId>
+        </dependency>
+
+        <!-- Kafka (from Registry) -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-utils-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-common</artifactId>
+        </dependency>
+        <!-- Infinispan -->
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
         </dependency>
 
         <!-- Third Party Libraries -->

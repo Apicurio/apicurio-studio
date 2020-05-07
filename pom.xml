@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.apicurio</groupId>
@@ -69,6 +68,7 @@
 
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.1.2</version.apicurio-data-models>
+        <version.apicurio-registry>1.1.2.Final</version.apicurio-registry>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>
@@ -135,6 +135,7 @@
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.30</version.org.slf4j>
         <version.scala>2.13.2</version.scala>
+        <version.infinispan>9.4.14.Final</version.infinispan>
     </properties>
 
     <dependencyManagement>
@@ -163,6 +164,18 @@
                 <groupId>io.apicurio</groupId>
                 <artifactId>apicurio-data-models</artifactId>
                 <version>${version.apicurio-data-models}</version>
+            </dependency>
+
+            <!-- Kafka (from Registry) -->
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-registry-utils-kafka</artifactId>
+                <version>${version.apicurio-registry}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-registry-common</artifactId>
+                <version>${version.apicurio-registry}</version>
             </dependency>
 
             <!-- Third Party Libraries -->
@@ -343,6 +356,16 @@
                 <artifactId>javax.annotation-api</artifactId>
                 <version>${version.javax.annotation}</version>
             </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-commons</artifactId>
+                <version>${version.infinispan}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-core</artifactId>
+                <version>${version.infinispan}</version>
+            </dependency>
 
             <!-- Gatling -->
             <dependency>
@@ -458,6 +481,7 @@
                                         <regexIgnoredClasses>
                                             <regexIgnoredClass>javax\..+</regexIgnoredClass>
                                             <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
+                                            <regexIgnoredClass>org.apache.kafka\..+</regexIgnoredClass>
                                         </regexIgnoredClasses>
                                         <useClassesFromLastBuild>true</useClassesFromLastBuild>
                                     </illegalTransitiveDependencyCheck>

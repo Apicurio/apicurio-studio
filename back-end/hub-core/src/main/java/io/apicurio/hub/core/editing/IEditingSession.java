@@ -16,9 +16,10 @@
 
 package io.apicurio.hub.core.editing;
 
-import java.util.Set;
-
 import io.apicurio.hub.core.editing.ops.BaseOperation;
+
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -70,11 +71,23 @@ public interface IEditingSession {
      * @param exclude
      */
     public void sendToOthers(BaseOperation operation, ISessionContext exclude);
-    
+
     /**
      * Sends an operation/message to just the given collaborator.
      * @param operation
      * @param to
      */
     public void sendTo(BaseOperation operation, ISessionContext to);
+
+    /**
+     * Sends an operation/message to just the given collaborator.
+     * @param userSessionFn the function to obtain operation/message
+     * @param to
+     */
+    public default void sendTo(BiFunction<String, ISessionContext, BaseOperation> userSessionFn, ISessionContext to) {
+        for (ISessionContext otherContext : getUserContexts()) {
+            String otherUser = getUser(otherContext);
+            sendTo(userSessionFn.apply(otherUser, otherContext), to);
+        }
+    }
 }

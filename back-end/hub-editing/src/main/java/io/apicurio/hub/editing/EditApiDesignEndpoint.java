@@ -16,9 +16,23 @@
 
 package io.apicurio.hub.editing;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.apicurio.hub.core.beans.ApiDesignCommand;
+import io.apicurio.hub.core.editing.IEditingMetrics;
+import io.apicurio.hub.core.editing.IEditingSession;
+import io.apicurio.hub.core.editing.IEditingSessionManager;
+import io.apicurio.hub.core.editing.ops.FullCommandOperation;
+import io.apicurio.hub.core.editing.ops.OperationFactory;
+import io.apicurio.hub.core.editing.ops.OperationProcessorException;
+import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
+import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.storage.StorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
@@ -28,24 +42,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import io.apicurio.hub.core.beans.ApiDesignCommand;
-import io.apicurio.hub.core.editing.IEditingMetrics;
-import io.apicurio.hub.core.editing.IEditingSession;
-import io.apicurio.hub.core.editing.IEditingSessionManager;
-import io.apicurio.hub.core.editing.ISessionContext;
-import io.apicurio.hub.core.editing.ops.FullCommandOperation;
-import io.apicurio.hub.core.editing.ops.OperationFactory;
-import io.apicurio.hub.core.editing.ops.OperationProcessorException;
-import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
-import io.apicurio.hub.core.exceptions.ServerError;
-import io.apicurio.hub.core.storage.IStorage;
-import io.apicurio.hub.core.storage.StorageException;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -122,10 +118,7 @@ public class EditApiDesignEndpoint {
             }
 
             // Send "join" messages for each user already in the session
-            for (ISessionContext otherContext : editingSession.getUserContexts()) {
-                String otherUser = editingSession.getUser(otherContext);
-                editingSession.sendTo(OperationFactory.join(otherUser, otherContext.getId()), context);
-            }
+            editingSession.sendTo(OperationFactory::join, context);
 
             // Add websocket context to the editing session
             editingSession.join(context, userId);

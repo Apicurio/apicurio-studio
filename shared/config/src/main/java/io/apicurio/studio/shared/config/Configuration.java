@@ -19,6 +19,9 @@ package io.apicurio.studio.shared.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.Properties;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -68,4 +71,41 @@ public abstract class Configuration {
 
         return rval;
     }
+
+    /**
+     * Get configuration properties
+     * * per env prefix
+     * * per system property prefix
+     */
+    protected static Properties getConfigurationProperties(String envPrefix, String sysPropPrefix, boolean toLowerCase) {
+        Properties properties = new Properties();
+
+        // first system properties
+        Properties props = System.getProperties();
+        for (Map.Entry<Object, Object> entry : props.entrySet()) {
+            String key = entry.getKey().toString();
+            if (key.startsWith(sysPropPrefix)) {
+                String subKey = key.substring(sysPropPrefix.length());
+                properties.put(subKey, entry.getValue());
+            }
+        }
+
+        // then env vars
+        Map<String, String> envs = System.getenv();
+        for (Map.Entry<String, String> entry : envs.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith(envPrefix)) {
+                String subKey = key.substring(envPrefix.length());
+                if (toLowerCase) {
+                    subKey = subKey.toLowerCase();
+                }
+                properties.put(subKey.replace("_", "."), entry.getValue());
+            }
+        }
+
+        logger.debug("Config Properties: {}", properties);
+        return properties;
+    }
+
+
 }

@@ -16,15 +16,17 @@
 
 package io.apicurio.hub.core.editing;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.editing.distributed.JMSEditingSession;
 import io.apicurio.hub.core.editing.distributed.JMSSessionFactory;
+import io.apicurio.hub.core.editing.events.EventsEditingSession;
+import io.apicurio.hub.core.editing.events.EventsHandler;
 import io.apicurio.hub.core.editing.ops.processors.OperationProcessorDispatcher;
 import io.apicurio.hub.core.storage.IRollupExecutor;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Factory used to create an appropriate editing session based on how the Apicurio application
@@ -40,7 +42,9 @@ public class EditingSessionFactory {
     private OperationProcessorDispatcher operationProcessor;
     @Inject
     private IRollupExecutor rollupExecutor;
-    
+    @Inject // EventsHandler should be lazy, so we're fine
+    private EventsHandler handler;
+
     private Object jms;
     
     @PostConstruct
@@ -61,6 +65,8 @@ public class EditingSessionFactory {
         String type = config.getEditingSessionType();
         if ("jms".equals(type)) {
             return new JMSEditingSession(designId, (JMSSessionFactory) jms, operationProcessor);
+        } else if ("kafka".equals(type) || "infinispan".equals(type)) {
+            return new EventsEditingSession(designId, handler);
         } else {
             return new EditingSession(designId, rollupExecutor);
         }

@@ -18,6 +18,8 @@ package io.apicurio.hub.core.config;
 
 import io.apicurio.studio.shared.config.Configuration;
 
+import java.util.Properties;
+import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -76,6 +78,30 @@ public class HubConfiguration extends Configuration {
 
     private static final String EDITING_SESSION_TYPE_ENV = "APICURIO_HUB_EDITING_SESSION_TYPE";
     private static final String EDITING_SESSION_TYPE_SYSPROP = "apicurio.hub.editing.session.type";
+
+    private static final String KAFKA_BOOTSTRAP_SERVERS_ENV = "KAFKA_BOOTSTRAP_SERVERS";
+    private static final String KAFKA_BOOTSTRAP_SERVERS_SYSPROP = "boostrap.servers";
+
+    private static final String KAFKA_GROUP_ID_ENV = "KAFKA_GROUP_ID";
+    private static final String KAFKA_GROUP_ID_SYSPROP = "group.id";
+
+    private static final String KAFKA_TOPIC_ENV = "APICURIO_HUB_EDITING_SESSION_KAFKA_TOPIC";
+    private static final String KAFKA_TOPIC_SYSPROP = "apicurio.hub.editing.session.topic";
+
+    private static final String KAFKA_CONSUMERS_ENV = "APICURIO_HUB_EDITING_SESSION_CONSUMERS";
+    private static final String KAFKA_CONSUMERS_SYSPROP = "apicurio.hub.editing.session.consumers";
+
+    private static final String KAFKA_THREADS_ENV = "APICURIO_HUB_EDITING_SESSION_THREADS";
+    private static final String KAFKA_THREADS_SYSPROP = "apicurio.hub.editing.session.threads";
+
+    private static final String KAFKA_TIMEOUT_ENV = "APICURIO_HUB_EDITING_SESSION_TIMEOUT";
+    private static final String KAFKA_TIMEOUT_SYSPROP = "apicurio.hub.editing.session.timeout";
+
+    private static final String INFINISPAN_CLUSTER_NAME_ENV = "APICURIO_HUB_EDITING_SESSION_CLUSTER_NAME";
+    private static final String INFINISPAN_CLUSTER_NAME_SYSPROP = "apicurio.hub.editing.session.cluster.name";
+
+    private static final String INFINISPAN_TRANSPORT_ENV = "APICURIO_HUB_EDITING_SESSION_TRANSPORT_";
+    private static final String INFINISPAN_TRANSPORT_SYSPROP = "apicurio.hub.editing.session.transport.";
 
     /**
      * @return the configured JDBC type (default: h2)
@@ -203,4 +229,62 @@ public class HubConfiguration extends Configuration {
         return getConfigurationProperty(EDITING_SESSION_TYPE_ENV, EDITING_SESSION_TYPE_SYSPROP, null);
     }
 
+    /**
+     * @return Kafka bootstrap servers
+     */
+    public String getKafkaBootstrapServers() {
+        return getConfigurationProperty(KAFKA_BOOTSTRAP_SERVERS_ENV, KAFKA_BOOTSTRAP_SERVERS_SYSPROP, "localhost:9092");
+    }
+
+    /**
+     * @return Kafka group id
+     */
+    public String getKafkaGroupId() {
+        return getConfigurationProperty(KAFKA_GROUP_ID_ENV, KAFKA_GROUP_ID_SYSPROP, UUID.randomUUID().toString());
+    }
+
+    /**
+     * @return Kafka topic
+     */
+    public String getKafkaTopic() {
+        return getConfigurationProperty(KAFKA_TOPIC_ENV, KAFKA_TOPIC_SYSPROP, "editing-session-topic");
+    }
+
+    /**
+     * @return Kafka consumers
+     */
+    public int getKafkaConsumers() {
+        String numberOfConsumers = getConfigurationProperty(KAFKA_CONSUMERS_ENV, KAFKA_CONSUMERS_SYSPROP, "1");
+        return Integer.parseInt(numberOfConsumers);
+    }
+
+    /**
+     * @return Kafka threads
+     */
+    public int getKafkaThreads() {
+        String threads = getConfigurationProperty(KAFKA_THREADS_ENV, KAFKA_THREADS_ENV, "3");
+        return Integer.parseInt(threads);
+    }
+
+    /**
+     * @return Kafka timeout
+     */
+    public int getKafkaTimeout() {
+        String timeout = getConfigurationProperty(KAFKA_TIMEOUT_ENV, KAFKA_TIMEOUT_SYSPROP, "5");
+        return Integer.parseInt(timeout);
+    }
+
+    /**
+     * @return Infinispan cluster name
+     */
+    public String getInfinispanClusterName() {
+        return getConfigurationProperty(INFINISPAN_CLUSTER_NAME_ENV, INFINISPAN_CLUSTER_NAME_SYSPROP, "apicurio-studio");
+    }
+
+    /**
+     * @return Infinispan transport properties
+     */
+    public Properties getInfinispanTransportProperties() {
+        return getConfigurationProperties(INFINISPAN_TRANSPORT_ENV, INFINISPAN_TRANSPORT_SYSPROP, false);
+    }
 }

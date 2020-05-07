@@ -37,6 +37,6 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build Project
         run: mvn clean install
-      - name: Run Integration Tests
-        run: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration
+      #- name: Run Integration Tests
+      #  run: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration
       

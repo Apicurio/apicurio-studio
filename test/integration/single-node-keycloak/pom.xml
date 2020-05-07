@@ -259,7 +259,7 @@
                                 <phase>initialize</phase>
                                 <configuration>
                                     <exportAntProperties>true</exportAntProperties>
-                                    <tasks>
+                                    <target>
                                         <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
                                         <math result="it.server.basePortOffset.8080" operand1="8080" operation="+" operand2="${it.server.basePortOffset}" datatype="int"/>
                                         <math result="it.server.basePortOffset.9990" operand1="9990" operation="+" operand2="${it.server.basePortOffset}" datatype="int"/>
@@ -267,7 +267,7 @@
                                         <math result="it.server.portOffset2.8080" operand1="8080" operation="+" operand2="${it.server.portOffset2}" datatype="int"/>
                                         <math result="it.server.portOffset3" operand1="${it.server.portOffset2}" operation="+" operand2="100" datatype="int"/>
                                         <math result="it.server.portOffset3.8080" operand1="8080" operation="+" operand2="${it.server.portOffset3}" datatype="int"/>
-                                    </tasks>
+                                    </target>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
@@ -277,7 +277,7 @@
                                 <id>prepare-keycloak</id>
                                 <phase>process-resources</phase><!-- Can't do in generate-resources because we need filtered resources. -->
                                 <configuration>
-                                    <tasks>
+                                    <target>
                                         <!-- Prepare wildfly (Apicurio Studio Quickstart - test version -->
                                         <unzip src="${project.build.directory}/apicurio-studio.zip"
                                                dest="${project.build.directory}/apicurio-studio"
@@ -291,7 +291,7 @@
                                         <copy file="${project.build.directory}/classes/wildfly/standalone-apicurio.xml"
                                               todir="${it.server.apicurio.dir}/standalone/configuration"
                                               overwrite="true" />
-                                    </tasks>
+                                    </target>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>

@@ -93,10 +93,10 @@ jobs:
           rm -rf node_modules
           yarn install
           yarn run build-editor
-      - name: Login to NPM Registry
-        run: NPM_USER=${{ secrets.NPM_USERNAME }} NPM_PASS=${{ secrets.NPM_PASSWORD }} NPM_EMAIL=${{ secrets.NPM_EMAIL }} npm-cli-login
-      - name: Publish to NPM
-        run: cd studio/front-end/studio/dist-editor && npm publish
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: studio/front-end/studio/dist-editor/package.json
       - name: Signing and Archiving the Quickstart ZIP
         run: |
           cd studio

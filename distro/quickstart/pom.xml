@@ -106,7 +106,7 @@
                         <id>prepare-wildfly</id>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <antversion property="antversion" />
                                 <echo>Ant Version: ${antversion}</echo>
 
@@ -133,7 +133,7 @@
                                 
                                 <!-- Rename to 'apicurio-studio-$version' -->
                                 <move file="${wildfly.appserver.dir}" tofile="${project.build.directory}/apicurio-studio-${project.version}" /> 
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>

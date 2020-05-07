@@ -261,7 +261,7 @@
                                 <id>prepare-wildfly</id>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <tasks>
+                                    <target>
                                         <antversion property="antversion" />
                                         <echo>Ant Version: ${antversion}</echo>
 
@@ -318,7 +318,7 @@
                                               todir="${wildfly.appserver.dir.1}/wildfly-${wildfly.version}/standalone/configuration" overwrite="false"/>
                                         <copy file="${wildfly.config}"
                                               todir="${wildfly.appserver.dir.2}/wildfly-${wildfly.version}/standalone/configuration" overwrite="false"/>
-                                    </tasks>
+                                    </target>
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>

@@ -21,6 +21,7 @@ jobs:
   build-verify:
     name: Verify Build
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'Apicurio'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

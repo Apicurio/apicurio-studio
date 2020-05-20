@@ -68,7 +68,7 @@
 
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.1.2</version.apicurio-data-models>
-        <version.apicurio-registry>1.1.2.Final</version.apicurio-registry>
+        <version.apicurio-registry>1.2.0.Final</version.apicurio-registry>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>

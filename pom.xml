@@ -68,7 +68,7 @@
 
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.1.2</version.apicurio-data-models>
-        <version.apicurio-registry>1.1.2.Final</version.apicurio-registry>
+        <version.apicurio-registry>1.2.0.Final</version.apicurio-registry>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>
@@ -94,7 +94,7 @@
         <version.surefire-report.plugin>2.22.2</version.surefire-report.plugin>
         <version.war.plugin>3.2.3</version.war.plugin>
         <version.frontend-maven.plugin>1.10.0</version.frontend-maven.plugin>
-        <version.scala-maven.plugin>4.3.1</version.scala-maven.plugin>
+        <version.scala-maven.plugin>4.4.0</version.scala-maven.plugin>
         <version.jandex-maven.plugin>1.0.8</version.jandex-maven.plugin>
 
         <!-- Dependency Versions -->
@@ -113,7 +113,7 @@
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-lang3>3.10</version.commons-lang3>
         <version.io.gatling>3.3.1</version.io.gatling>
-        <version.io.prometheus>0.8.1</version.io.prometheus>
+        <version.io.prometheus>0.9.0</version.io.prometheus>
         <version.javax.annotation>1.3.2</version.javax.annotation>
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>
@@ -122,13 +122,13 @@
         <version.org.apache.httpcore>4.4.13</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.8.0</version.org.apache.commons.commons-pool2>
         <version.org.eclipse.mylyn.github>2.1.5</version.org.eclipse.mylyn.github>
-        <version.org.jboss.resteasy>3.11.2.Final</version.org.jboss.resteasy>
+        <version.org.jboss.resteasy>3.12.0.Final</version.org.jboss.resteasy>
         <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.0_spec>
         <version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>2.0.0.Final</version.org.jboss.spec.javax.websocket.jboss-websocket-api_1.1_spec>
         <version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>2.0.1.Final</version.org.jboss.spec.javax.ws.jboss-jaxrs-api_2.1_spec>
         <version.org.jboss.spec.jboss-javaee-7.0>1.1.1.Final</version.org.jboss.spec.jboss-javaee-7.0>
         <version.org.jdbi>3.12.0</version.org.jdbi>
-        <version.org.json>20190722</version.org.json>
+        <version.org.json>20200518</version.org.json>
         <version.org.jsonschema2pojo>1.0.2</version.org.jsonschema2pojo>
         <version.org.keycloak>7.0.1</version.org.keycloak>
         <version.mysql>5.1.49</version.mysql>

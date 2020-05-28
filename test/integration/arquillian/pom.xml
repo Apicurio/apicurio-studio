@@ -152,7 +152,7 @@
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.0</version>
+            <version>1.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -253,7 +253,7 @@
                             <dependency>
                                 <groupId>org.apache.ant</groupId>
                                 <artifactId>ant</artifactId>
-                                <version>1.10.7</version>
+                                <version>1.10.8</version>
                             </dependency>
                         </dependencies>
                         <executions>

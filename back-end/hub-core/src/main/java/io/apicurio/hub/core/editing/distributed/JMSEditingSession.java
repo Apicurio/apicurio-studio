@@ -107,8 +107,8 @@ public class JMSEditingSession extends EditingSession {
      * Called to send a "join" message over the JMS channel for each connected websocket.
      */
     private void sendJoinToRemote() {
-        for (ISessionContext conext : this.getSessions().values()) {
-            JoinLeaveOperation joinOperation = OperationFactory.join(getUser(conext), conext.getId());
+        for (ISessionContext context : this.getSessions().values()) {
+            JoinLeaveOperation joinOperation = OperationFactory.join(getUser(context), context.getId());
             distributedSession.sendOperation(joinOperation);
         }
     }

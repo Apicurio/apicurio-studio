@@ -109,7 +109,7 @@
         <version.commons-cli>1.4</version.commons-cli>
         <version.commons-codec>1.14</version.commons-codec>
         <version.commons-dbcp>1.4</version.commons-dbcp>
-        <version.commons-io>2.6</version.commons-io>
+        <version.commons-io>2.7</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-lang3>3.10</version.commons-lang3>
         <version.io.gatling>3.3.1</version.io.gatling>

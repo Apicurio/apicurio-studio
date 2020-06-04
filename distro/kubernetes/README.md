@@ -82,7 +82,7 @@ Depending on the k8s settings, especially regarding the storage provisioner, it 
 
 
 ```
-kubectl apply -f mysql-apicurio-persistancevolumeclaim.yaml
+kubectl apply -f mysql-apicurio-persistentvolumeclaim.yaml
 kubectl apply -f apicurio-configmap.yaml
 kubectl apply -f apicurio-secrets.yaml
 kubectl apply -f apicurio-studio-db-deployment.yaml

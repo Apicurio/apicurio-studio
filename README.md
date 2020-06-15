@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/Apicurio/apicurio-studio.svg?style=svg)](https://circleci.com/gh/Apicurio/apicurio-studio)
+![Verify Build Workflow](https://github.com/Apicurio/apicurio-studio/workflows/Verify%20Build%20Workflow/badge.svg)
 
 # The apicurio-studio project (Open Source API Design Studio)
 

@@ -262,7 +262,7 @@ public class HubConfiguration extends Configuration {
      * @return Kafka threads
      */
     public int getKafkaThreads() {
-        String threads = getConfigurationProperty(KAFKA_THREADS_ENV, KAFKA_THREADS_ENV, "3");
+        String threads = getConfigurationProperty(KAFKA_THREADS_ENV, KAFKA_THREADS_SYSPROP, "3");
         return Integer.parseInt(threads);
     }
 

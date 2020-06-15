@@ -54,33 +54,34 @@ public class HTwoDatabase {
         };
         process = Runtime.getRuntime().exec(cmdArray);
         InputStream is = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        final CountDownLatch latch = new CountDownLatch(1);
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String line = null;
-                    while (process.isAlive()) {
-                        line = reader.readLine();
-                        if (line != null) {
-                            System.out.println("H2DB>> " + line);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            final CountDownLatch latch = new CountDownLatch(1);
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String line = null;
+                        while (process.isAlive()) {
+                            line = reader.readLine();
+                            if (line != null) {
+                                System.out.println("H2DB>> " + line);
+                            }
+                            if (line != null && line.contains("TCP server running")) {
+                                latch.countDown();
+                            }
                         }
-                        if (line != null && line.contains("TCP server running")) {
-                            latch.countDown();
-                        }
+                        System.out.println("H2 Server process exited with: " + process.exitValue());
+                        latch.countDown();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    System.out.println("H2 Server process exited with: " + process.exitValue());
-                    latch.countDown();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
-        });
-        t.start();
-        latch.await();
-        System.out.println("H2 server started!");
-        System.out.println("----------------------------------");
+            });
+            t.start();
+            latch.await();
+            System.out.println("H2 server started!");
+            System.out.println("----------------------------------");
+        }
     }
     
     public void stop() {

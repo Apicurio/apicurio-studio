@@ -29,7 +29,10 @@ import java.util.Set;
 /**
  * @author Ales Justin
  */
+@SuppressWarnings("deprecation")
 public class EventActionExternalizer implements AdvancedExternalizer<EventAction> {
+    private static final long serialVersionUID = -606136823538898704L;
+    
     private static final int ID = 1_000_042;
 
     @Override

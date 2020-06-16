@@ -22,7 +22,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: apicurio-configmap
-              key: keycloak-url
+              key: apicurio-db-connection-url
         - name: APICURIO_DB_DRIVER_NAME
           value: mysql
         - name: APICURIO_DB_INITIALIZE

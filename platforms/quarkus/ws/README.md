@@ -32,13 +32,17 @@ The application is now runnable using `java -jar target/apicurio-studio-ws-runne
 ##Runtime Configuration
 
 - In the *dev* mode, the application uses an in-memory H2 database`.
-- In the *prod* mode, you have to provide connection configuration for a PostgreSQL server as follows:
+- In the *prod* mode, you have to provide connection configuration for a database server as follows:
 
-Option|Command argument|Env. variable|
-|---|---|---|
-|Data Source URL|`-Dquarkus.datasource.url`|`APICURIO_DB_CONNECTION_URL`|
-|DS Username|`-Dquarkus.datasource.username`|`APICURIO_DB_USER_NAME`|
-|DS Password|`-Dquarkus.datasource.password`|`APICURIO_DB_PASSWORD`|
+Option|Command argument|Env. variable|Default|
+|---|---|---|---|
+|DS Driver|`-Dquarkus.datasource.db-kind`|`-----------------`|`postgresql`|
+|Data Source URL|`-Dquarkus.datasource.jdbc.url`|`APICURIO_DB_CONNECTION_URL`|`----`|
+|DS Username|`-Dquarkus.datasource.username`|`APICURIO_DB_USER_NAME`|`----`|
+|DS Password|`-Dquarkus.datasource.password`|`APICURIO_DB_PASSWORD`|`----`|
+
+Note that since in quarkus the database driver propery `db-kind` is a build time property, once you have compiled the project you won't be able to change it for example at docker-compose level. 
+
 
 To see additional options, visit:
  - [Data Source options](https://quarkus.io/guides/datasource-guide#configuration-reference) 

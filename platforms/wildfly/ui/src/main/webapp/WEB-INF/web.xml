@@ -94,7 +94,7 @@
 
   <servlet>
     <servlet-name>DownloadServlet</servlet-name>
-    <servlet-class>io.apicurio.studio.fe.servlet.servlets.DownloadServlet</servlet-class>
+    <servlet-class>io.apicurio.studio.fe.servlet.servlets.KeycloakDownloadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DownloadServlet</servlet-name>

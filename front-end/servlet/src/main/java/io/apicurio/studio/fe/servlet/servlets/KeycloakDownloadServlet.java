@@ -16,41 +16,25 @@
 
 package io.apicurio.studio.fe.servlet.servlets;
 
-import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.keycloak.KeycloakSecurityContext;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
- * Servlet used to download content (e.g. an API design) based on JWT Auth.
+ * Servlet used to download content (e.g. an API design) based on Keycloak auth.
  *
  * @author carles.arnal@redhat.com
  */
-public class JwtDownloadServlet extends DownloadServlet {
+public class KeycloakDownloadServlet extends DownloadServlet {
 
     private static final long serialVersionUID = 8432874125909707075L;
-    private static Logger logger = LoggerFactory.getLogger(JwtDownloadServlet.class);
 
     @Override
     protected void proxyUrlTo(String url, HttpServletRequest request, HttpServletResponse response) {
-        try {
 
-            JWTCallerPrincipal principal = (JWTCallerPrincipal) request.getUserPrincipal();
-
-            if (principal != null) {
-                proxyUrlWithToken(principal.getRawToken(), url, response);
-            } else {
-                throw new IllegalStateException("No user present at request");
-            }
-        } catch (IllegalStateException e) {
-            logger.error("Error proxying URL: " + url, e);
-            try {
-                response.sendError(500);
-            } catch (IOException e1) {
-            }
-        }
+        KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+        proxyUrlWithToken(session.getTokenString(), url, response);
     }
 }

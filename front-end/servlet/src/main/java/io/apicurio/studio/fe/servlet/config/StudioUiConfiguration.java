@@ -18,7 +18,7 @@ package io.apicurio.studio.fe.servlet.config;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.apicurio.studio.fe.servlet.servlets.DownloadServlet;
+import io.apicurio.studio.fe.servlet.servlets.KeycloakDownloadServlet;
 import io.apicurio.studio.shared.config.Configuration;
 
 /**
@@ -77,7 +77,7 @@ public class StudioUiConfiguration extends Configuration {
 
     /**
      * Returns true if the trust manager should be disabled when making server-server API calls
-     * to the Hub API.  This happens, for example, in the {@link DownloadServlet}.
+     * to the Hub API.  This happens, for example, in the {@link KeycloakDownloadServlet}.
      */
     public boolean isDisableHubApiTrustManager() {
         return "true".equals(getConfigurationProperty(HUB_API_DISABLE_API_TRUST_ENV, HUB_API_DISABLE_API_TRUST_SYSPROP, "true"));

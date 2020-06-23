@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    module: {{ .Values.api.name }}
+  name: {{ .Values.api.name }}
+spec:
+  ports:
+    - name: {{ .Values.api.port | quote }}
+      port: {{ .Values.api.port }}
+      targetPort: 8080
+  selector:
+    module: {{ .Values.api.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    module: {{ .Values.ui.name }}
+  name: {{ .Values.ui.name }}
+spec:
+  ports:
+    - name: {{ .Values.ui.port | quote }}
+      port: {{ .Values.ui.port }}
+      targetPort: 8080
+  selector:
+    module: {{ .Values.ui.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    module: {{ .Values.ws.name }}
+  name: {{ .Values.ws.name }}
+spec:
+  ports:
+    - name: {{ .Values.ws.port | quote }}
+      port: {{ .Values.ws.port }}
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    module: {{ .Values.ws.name }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    module: {{ .Values.database.name }}
+  name: {{ .Values.database.name }}
+spec:
+  ports:
+    - name: {{ .Values.database.port | quote }}
+      port: {{ .Values.database.port }}
+      targetPort: 3306
+  selector:
+    module: {{ .Values.database.name }}
+

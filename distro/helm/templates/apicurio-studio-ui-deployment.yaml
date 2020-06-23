@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: {{ .Values.ui.name }}
+  name: {{ .Values.ui.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      module: {{ .Values.ui.name }}
+  template:
+    metadata:
+      labels:
+        module: {{ .Values.ui.name }}
+    spec:
+      containers:
+        - env:
+            {{- if .Values.loggingEnabled }}
+            - name: APICURIO_LOGGING_LEVEL
+              value: debug
+            {{- end }}
+            - name: APICURIO_KC_AUTH_URL
+              value: {{ .Values.keycloak.url }}
+            - name: APICURIO_KC_REALM
+              value: {{ .Values.keycloak.realm }}
+            - name: APICURIO_KC_CLIENT_ID
+              value: {{ .Values.keycloak.client.id }}
+            - name: APICURIO_KC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-secret
+                  key: apicurio-kc-client-secret
+            - name: APICURIO_UI_FEATURE_MICROCKS
+              value: {{ .Values.ui.feature.microcks | quote}}
+            - name: APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE
+              value: {{ .Values.uiFeatureShareForEveryone | quote }}
+            - name: APICURIO_UI_LOGOUT_REDIRECT_URI
+              value: {{ .Values.ui.logout.redirect.uri }}
+            - name: APICURIO_UI_HUB_API_URL
+              value: {{ .Values.ui.hub.api.url }}
+            - name: APICURIO_UI_EDITING_URL
+              value: {{ .Values.ui.editing.url }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ .Values.ui.jvmArgs }}
+            - name: APICURIO_MICROCKS_API_URL
+              value: {{ .Values.microcks.api.url }}
+            - name: APICURIO_MICROCKS_CLIENT_ID
+              value: {{ .Values.microcks.client.id }}
+            - name: APICURIO_MICROCKS_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: apicurio-secret
+                  key: apicurio-microcks-client-secret
+          image: {{ .Values.ui.image }}
+          imagePullPolicy: {{ .Values.ui.imagePullPolicy }}
+          name: {{ .Values.ui.name }}
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always

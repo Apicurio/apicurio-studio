@@ -39,7 +39,7 @@ database:
   initialize: true
   driver: mysql
   type: mysql5
-  url: jdbc:mysql://apicuriodb:3306/apicuriodb
+  url: jdbc:mysql://apicurio-studio-db:3306/apicuriodb
   schema: apicuriodb
   #default passwords and user
   password: apicuriodb

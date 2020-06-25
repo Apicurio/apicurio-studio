@@ -9,7 +9,7 @@ metadata:
     module: {{ .Values.api.name }}
 spec:
   rules:
-    - host: localhost
+    - host: apicurio
       http:
         paths:
           - backend:
@@ -27,7 +27,7 @@ metadata:
     module: {{ .Values.ui.name }}
 spec:
   rules:
-    - host: localhost
+    - host: apicurio
       http:
         paths:
           - backend:
@@ -52,7 +52,7 @@ metadata:
     module: {{ .Values.ws.name }}
 spec:
   rules:
-    - host: localhost
+    - host: apicurio
       http:
         paths:
           - backend:

@@ -98,7 +98,7 @@
         <version.jandex-maven.plugin>1.0.8</version.jandex-maven.plugin>
 
         <!-- Dependency Versions -->
-        <version.com.fasterxml.jackson>2.11.0</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.11.1</version.com.fasterxml.jackson>
         <version.com.google.inject>4.1.0</version.com.google.inject>
         <version.com.graphql-java>15.0</version.com.graphql-java>
         <version.com.h2database>1.4.200</version.com.h2database>

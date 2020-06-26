@@ -6,7 +6,7 @@ data:
   keycloak-url:  http://KEYCLOAK_URL/auth
   apicurio-ui-logout-redirect-uri: /
   apicurio-ui-hub-api-url: http://APICURIO_URL/studio-api
-  apicurio-ui-editing-url: ws://APICURIO_URL/ws
+  apicurio-ui-editing-url: ws://APICURIO_WS_URL
   apicurio-microcks-api-url:  http://MICROCKS_URL/api
   apicurio-db-connection-url: jdbc:mysql://apicuriodb:3306/apicuriodb
   apicurio-kc-client-id: apicurio-studio

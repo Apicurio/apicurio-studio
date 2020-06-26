@@ -30,8 +30,8 @@ declare the variables in the following manner:
   apicurio-ui-logout-redirect-uri: /
   #set the Main-URL ending with /studio-api
   apicurio-ui-hub-api-url: http://my-apicurio-studio.com/studio-api
-  #set the Main URL ending with /ws
-  apicurio-ui-editing-url: ws://my-apicurio-studio.com/ws
+  #set the WS URL 
+  apicurio-ui-editing-url: ws://my-apicurio-ws-studio.com/
   #set your Mircocks URL ending with /api
   #if you do not use Microcks you can leave it empty
   apicurio-microcks-api-url:  http://my-microcks.com/api

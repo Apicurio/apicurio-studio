@@ -67,7 +67,7 @@
         <version.io.quarkus>1.5.2.Final</version.io.quarkus>
 
         <!-- Apicurio Data Models -->
-        <version.apicurio-data-models>1.1.2</version.apicurio-data-models>
+        <version.apicurio-data-models>1.1.4</version.apicurio-data-models>
         <version.apicurio-registry>1.2.2.Final</version.apicurio-registry>
 
         <!-- Apache Artemis Version -->

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: {{ .Values.ws.name }}
+  name: {{ .Values.ws.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      module: {{ .Values.ws.name }}
+  template:
+    metadata:
+      labels:
+        module: {{ .Values.ws.name }}
+    spec:
+      containers:
+        - env:
+          {{- if .Values.loggingEnabled }}
+          - name: APICURIO_LOGGING_LEVEL
+            value: debug
+          {{- end }}
+          - name: APICURIO_DB_CONNECTION_URL
+            value: {{ .Values.keycloak.url }}
+          - name: APICURIO_DB_DRIVER_NAME
+            value: {{ .Values.database.driver }}
+          - name: APICURIO_DB_INITIALIZE
+            value: {{ .Values.database.initialize | quote }}
+          - name: APICURIO_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: apicurio-secret
+                key: db-password
+          - name: APICURIO_DB_TYPE
+            value: {{ .Values.database.type }}
+          - name: APICURIO_DB_USER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: apicurio-secret
+                key: db-user
+          - name: JAVA_TOOL_OPTIONS
+            value: {{ .Values.ws.jvmArgs }}
+          image: {{ .Values.ws.image }}
+          imagePullPolicy: {{ .Values.ws.imagePullPolicy }}
+          name: {{ .Values.ws.name }}
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: apicurio
+version: Beta 2.46
+description: API design studio
+type: application
+keywords:
+  - api
+home: http://www.apicur.io/
+sources:
+  - https://github.com/Apicurio/apicurio-studio
+

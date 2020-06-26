@@ -1,0 +1,17 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get {{ .Release.Name }}
+
+Apicurio is available at {{ .Values.ui.hub.api.url }}
+
+Keycloak that is defined is available on {{ .Values.keycloak.url }}
+{{- if .Values.ui.feature.microcks }}
+Microks is enabled and available on {{ .Values.microcks.api.url }}
+{{- else }}
+Microks is disabled
+{{- end }}

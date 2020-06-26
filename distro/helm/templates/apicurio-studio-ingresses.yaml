@@ -1,0 +1,61 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{ .Values.api.name }}
+  annotations:
+    #if subpath needed uncomment line and add to path beneath in specs
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+    module: {{ .Values.api.name }}
+spec:
+  rules:
+    - host: apicurio
+      http:
+        paths:
+          - backend:
+              serviceName: {{ .Values.api.name }}
+              servicePort: {{ .Values.api.port }}
+            path: /studio-api/?(.*)
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{ .Values.ui.name }}
+  annotations:
+  #    ingress.kubernetes.io/rewrite-target: /
+  labels:
+    module: {{ .Values.ui.name }}
+spec:
+  rules:
+    - host: apicurio
+      http:
+        paths:
+          - backend:
+              serviceName: {{ .Values.ui.name }}
+              servicePort: {{ .Values.ui.port }}
+            path: /
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{ .Values.ws.name }}
+  annotations:
+    #    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    ingress.kubernetes.io/proxy-read-timeout: "3600"
+    ingress.kubernetes.io/proxy-send-timeout: "3600"
+    ingress.kubernetes.io/send-timeout: "3600"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+  labels:
+    module: {{ .Values.ws.name }}
+spec:
+  rules:
+    - host: apicurio
+      http:
+        paths:
+          - backend:
+              serviceName: {{ .Values.ws.name }}
+              servicePort: {{ .Values.ws.port }}
+            path: /ws

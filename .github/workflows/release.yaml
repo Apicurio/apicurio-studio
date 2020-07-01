@@ -34,7 +34,7 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Apicuio-Studio Code Checkout
+      - name: Apicurio Studio Code Checkout
         run: |
           mkdir studio
           cd studio
@@ -46,13 +46,13 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
-      - name: Apicuio Website Code Checkout
+      - name: Apicurio Website Code Checkout
         run: |
           mkdir website
           cd website
           git init
           git config --global user.name "apicurio-ci"
-          git config --global user.email "eric.wittmann+apicurio-ci@gmail.com"
+          git config --global user.email "apicurio.ci@gmail.com"
           git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apicurio/apicurio.github.io.git"
           git fetch
           git checkout master
@@ -167,11 +167,8 @@ jobs:
       - name: Updating Project Website for Release ${{steps.metadata.outputs.release-version}}
         run: |
           cd website
-          echo "********** Updating Release Version in _config.yaml **********"
-          sed -i "s/version:.*/version: ${{steps.metadata.outputs.release-version}}/g" _config.yml
-          
           echo "********** Downloading Latest Release JSON File **********"
-          cd _data
+          cd _data/studio
           rm latestRelease.json
           touch latestRelease.json && curl https://api.github.com/repos/apicurio/apicurio-studio/releases/latest > latestRelease.json
           
@@ -179,12 +176,12 @@ jobs:
           PUBLISHED_AT=$(cat responsefile | jq '.published_at' | sed 's/"//g')
           cp latestRelease.json releases/$PUBLISHED_AT.json
           
-          # settting up env variable to use in next step to force commit the file
+          # setting up env variable to use in next step to force commit the file
           echo "::set-env name=FILENAME::$PUBLISHED_AT" 
       - name: Commit Project Website Changes
         run: |
           cd website
           git add .
-          git add -f _data/releases/$FILENAME.json    #ignored due to .gitignore config
-          git commit -m "Automated Update For Apicurio-Studio Release Version: ${{steps.metadata.outputs.release-version}}"
+          git add -f _data/studio/releases/$FILENAME.json    #ignored due to .gitignore config
+          git commit -m "Automated Update For Apicurio Studio Release Version: ${{steps.metadata.outputs.release-version}}"
           git push

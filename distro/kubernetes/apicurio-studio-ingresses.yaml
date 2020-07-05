@@ -47,3 +47,4 @@ spec:
       - backend:
           serviceName: "apicurio-studio-ws"
           servicePort: 8092
+        path: /designs

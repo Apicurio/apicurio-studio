@@ -69,7 +69,7 @@ public class StudioConfigServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String ct = "application/json; charset=" + StandardCharsets.UTF_8;
+        String ct = "application/javascript; charset=" + StandardCharsets.UTF_8;
         response.setContentType(ct);
         JsonFactory f = new JsonFactory();
         try (JsonGenerator g = f.createGenerator(response.getOutputStream(), JsonEncoding.UTF8)) {

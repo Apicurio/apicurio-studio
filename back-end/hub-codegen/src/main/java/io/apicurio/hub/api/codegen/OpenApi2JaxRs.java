@@ -31,6 +31,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 
 import org.apache.commons.io.IOUtils;
@@ -626,7 +627,11 @@ public class OpenApi2JaxRs {
                 builder.append(capitalize(term));
             }
         }
-        return builder.toString();
+        String rval = builder.toString();
+        if (!SourceVersion.isName(rval)) {
+            rval = "_" + rval;
+        }
+        return rval;
     }
     
     private static String capitalize(String term) {

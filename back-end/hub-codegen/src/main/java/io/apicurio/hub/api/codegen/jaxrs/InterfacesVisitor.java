@@ -53,7 +53,7 @@ public class InterfacesVisitor extends CombinedVisitorAdapter {
         if (!p.startsWith("/")) {
             p = "/" + p;
         }
-        String[] split = p.split("/");
+        String[] split = p.split("[\\/\\-_]");
         if (ModelUtils.isDefined(split) && split.length > 1) {
             String firstSegment = split[1];
             if (ModelUtils.isDefined(firstSegment) && !NodeCompat.equals(firstSegment, "") && firstSegment.indexOf("{") == -1) {

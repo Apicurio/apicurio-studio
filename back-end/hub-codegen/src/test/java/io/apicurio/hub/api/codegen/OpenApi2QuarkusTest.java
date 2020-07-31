@@ -42,6 +42,14 @@ public class OpenApi2QuarkusTest {
     public void testGenerateFull() throws IOException {
         doFullTest("OpenApi2QuarkusTest/beer-api.json", false, "_expected-full/generated-api", false);
     }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2Quarkus#generate()}.
+     */
+    @Test
+    public void testGitHubApisFull() throws IOException {
+        doFullTest("OpenApi2QuarkusTest/github-apis-deref.json", false, "_expected-github/generated-api", false);
+    }
     
     /**
      * Shared test method.
@@ -58,8 +66,8 @@ public class OpenApi2QuarkusTest {
         ByteArrayOutputStream outputStream = generator.generate();
         
         if (debug) {
-            File tempFile = File.createTempFile("api", "zip");
-            FileUtils.writeByteArrayToFile(File.createTempFile("api", "zip"), outputStream.toByteArray());
+            File tempFile = File.createTempFile("api", ".zip");
+            FileUtils.writeByteArrayToFile(tempFile, outputStream.toByteArray());
             System.out.println("Generated ZIP (debug) can be found here: " + tempFile.getAbsolutePath());
         }
 

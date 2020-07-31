@@ -352,7 +352,7 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
             }
         }
         String ifacePath = "/";
-        if (!"Root".equals(interfaceName)) {
+        if (!"Root".equals(interfaceName) && !"RootResource".equals(interfaceName)) {
             ifacePath = "/" + path.split("/")[1];
         }
         CodegenJavaInterface cgInterface = new CodegenJavaInterface();
@@ -366,7 +366,7 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
 
     private String methodName(OasOperation operation) {
         if (operation.operationId != null && operation.operationId.length() > 0) {
-            return operation.operationId;
+            return this.operationIdToMethodName(operation.operationId);
         }
         if (operation.summary != null && operation.summary.length() > 0) {
             String[] nameSegments = operation.summary.split(" ");
@@ -381,6 +381,10 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
             }
         }
         return "generatedMethod" + this._methodCounter++;
+    }
+
+    private String operationIdToMethodName(String operationId) {
+        return operationId.replaceAll("[^a-zA-Z0-9_]", "_");
     }
 
     private String methodPath(OasOperation operation) {

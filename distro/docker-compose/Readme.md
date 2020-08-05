@@ -129,7 +129,7 @@ The Keycloak instance is already configured, you don't have to create the realms
 At the first start there are no default users added to Keycloak. Please navigate to:
 `http://YOUR_IP:8090`
 
-The default credentials for Keycloak are: `admin` and `admin_password`
+The default credentials for Keycloak are: `admin` and the password can be found in the previously generated `.env` file, under `KEYCLOAK_PASSWORD`.
 
 Select Apicurio realm and add a user to it. After this, you have to do this with Microcks too.
 

@@ -7,7 +7,7 @@ networks:
   main:
 services:
   mongo:
-    image: mongo:3.3.12
+    image: mongo:3.4.23
     container_name: microcks-mongo
     volumes:
       - "mongo_data2:/data/db"

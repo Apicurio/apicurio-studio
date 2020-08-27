@@ -17,6 +17,15 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           metadata-file-path: '.github/project.yaml'
+      - name: Verify Metadata
+        run: |
+          if [ -z "${{steps.metadata.outputs.release-version}}" ]
+          then
+            echo "Failed to load project metadata from project.yaml!"
+            exit 1
+          else
+            echo "Releasing Apicurio Studio version ${{steps.metadata.outputs.release-version}}"
+          fi
       - name: Set up Node.js v10
         uses: actions/setup-node@v1
         with:

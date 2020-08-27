@@ -894,7 +894,7 @@ public class DesignsResource implements IDesignsResource {
             String mockURL = null;
             String microcksURL = config.getMicrocksApiUrl();
             try {
-                mockURL = microcksURL.substring(0, microcksURL.indexOf("/api")) + "/#/services/"
+                mockURL = microcksURL.substring(0, microcksURL.lastIndexOf("/api")) + "/#/services/"
                       + URLEncoder.encode(serviceRef, "UTF-8");
             } catch (Exception e) {
                 logger.error("Failed to produce a valid mockURL", e);

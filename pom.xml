@@ -96,6 +96,7 @@
         <version.frontend-maven.plugin>1.10.0</version.frontend-maven.plugin>
         <version.scala-maven.plugin>4.4.0</version.scala-maven.plugin>
         <version.jandex-maven.plugin>1.0.8</version.jandex-maven.plugin>
+        <version.properties-maven-plugin>1.0.0</version.properties-maven-plugin>
 
         <!-- Dependency Versions -->
         <version.com.fasterxml.jackson>2.11.2</version.com.fasterxml.jackson>
@@ -579,6 +580,11 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>${version.nexus-staging-maven-plugin.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>${version.properties-maven-plugin}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

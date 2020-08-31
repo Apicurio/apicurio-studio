@@ -25,6 +25,7 @@ import io.apicurio.hub.core.storage.IRollupExecutor;
 import io.apicurio.registry.utils.IoUtil;
 import io.apicurio.registry.utils.kafka.AsyncProducer;
 import io.apicurio.registry.utils.kafka.ConsumerContainer;
+import io.apicurio.registry.utils.kafka.ConsumerSkipRecordsSerializationExceptionHandler;
 import io.apicurio.registry.utils.kafka.Oneof2;
 import io.apicurio.registry.utils.kafka.ProducerActions;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -93,16 +94,16 @@ public class KafkaEventsHandler extends AbstractEventsHandler {
             serde,
             configuration.getKafkaTopic(),
             configuration.getKafkaConsumers(),
-            Oneof2.first(this::consume)
+            Oneof2.first(this::consume),
+            new ConsumerSkipRecordsSerializationExceptionHandler()
         );
-        consumer.start();
     }
 
     public void close() {
         try {
             IoUtil.closeIgnore(producer);
-            if (consumer != null && consumer.isRunning()) {
-                consumer.stop();
+            if (consumer != null) {
+                consumer.close();
             }
         } finally {
             if (executorService != null) {

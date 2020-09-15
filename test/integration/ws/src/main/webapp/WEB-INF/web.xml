@@ -6,7 +6,7 @@
   <servlet>
     <servlet-name>StartupServlet</servlet-name>
     <servlet-class>io.apicurio.hub.editing.StartupServlet</servlet-class>
-    <load-on-startup>true</load-on-startup>
+    <load-on-startup>1</load-on-startup>
   </servlet>
 
 </web-app>

@@ -244,8 +244,8 @@ public class DesignsResourceTest {
         info.setData("Invalid Data");
         try {
             resource.importDesign(info);
-            Assert.fail("Excepted a ServerError here.");
-        } catch (ServerError se) {
+            Assert.fail("Expected a ServerError here.");
+        } catch (ApiValidationException se) {
             // OK!
         }
     }

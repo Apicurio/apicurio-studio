@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {Injectable} from "@angular/core";
-import {ApiDesignTemplate} from "../models/api-design-template.model";
+import { Injectable } from "@angular/core";
+import { ApiDesignTemplate } from "../models/api-design-template.model";
 
 
 /**
@@ -26,54 +26,60 @@ import {ApiDesignTemplate} from "../models/api-design-template.model";
 @Injectable()
 export class TemplateService {
 
-    private templates: ApiDesignTemplate[];
+	private templates: ApiDesignTemplate[];
 
-    constructor() {
-        this.templates = this.loadTemplates();
-    }
+	constructor() {
+		this.templates = this.loadTemplates();
+	}
 
-    private loadTemplates(): ApiDesignTemplate[] {
-        return [
-            {
-                type: "OpenAPI20",
-                name: "Simple API",
-                description: "Creates a very simple API with some basic settings that can be used as a starting point for your custom API.",
-                content: SIMPLE_20
-            },
-            {
-                type: "OpenAPI20",
-                name: "Pet Store Example",
-                description: "Creates a standard/famous Swagger 2.0 Pet Store API sample.  Can be found here: https://petstore.swagger.io/v2/swagger.json",
-                content: PET_STORE_20
-            },
-            {
-                type: "OpenAPI30",
-                name: "Pet Store Example",
-                description: "Creates a version of the classic Swagger Pet Store example but redesigned using OpenAPI 3!",
-                content: PET_STORE_30
-            },
-            {
-                type: "OpenAPI30",
-                name: "USPTO Dataset API",
-                description: "Creates an API using the USPTO Data Set API (DSAPI) as a basis.",
-                content: USPTO_30
-            }
-        ];
-    }
+	private loadTemplates(): ApiDesignTemplate[] {
+		return [
+			{
+				type: "OpenAPI20",
+				name: "Simple API",
+				description: "Creates a very simple API with some basic settings that can be used as a starting point for your custom API.",
+				content: SIMPLE_20
+			},
+			{
+				type: "OpenAPI20",
+				name: "Pet Store Example",
+				description: "Creates a standard/famous Swagger 2.0 Pet Store API sample.  Can be found here: https://petstore.swagger.io/v2/swagger.json",
+				content: PET_STORE_20
+			},
+			{
+				type: "OpenAPI30",
+				name: "Pet Store Example",
+				description: "Creates a version of the classic Swagger Pet Store example but redesigned using OpenAPI 3!",
+				content: PET_STORE_30
+			},
+			{
+				type: "OpenAPI30",
+				name: "USPTO Dataset API",
+				description: "Creates an API using the USPTO Data Set API (DSAPI) as a basis.",
+				content: USPTO_30
+			},
+			{
+				type: "AsyncAPI20",
+				name: "Signed-up Event API",
+				description: "Creates an API that send user signed events using the AsyncAPI 2.0 standard",
+				content: USER_SIGNEDUP_20
+			}
+		];
+	}
 
     /**
      * Gets a list of templates for the given spec version.
      * @param type
      */
-    public getTemplates(type: string): ApiDesignTemplate[] {
+	public getTemplates(type: string): ApiDesignTemplate[] {
 		let rval: ApiDesignTemplate[] = [];
-        this.templates.forEach( template => {
-            if (type === template.type) {
-                rval.push(template);
-            }
-        });
-        return rval;
-    }
+		this.templates.forEach(template => {
+			if (type === template.type) {
+				rval.push(template);
+			}
+		});
+		return rval;
+	}
 
 
 }
@@ -906,136 +912,136 @@ const PET_STORE_20 =
 
 
 const SIMPLE_20 = {
-    "swagger": "2.0",
-    "info": {
-        "title": "Simple API 2.0",
-        "description": "This is a simple 2.0 API definition.",
-        "license": {
-            "name": "Apache 2.0",
-            "url": "https://www.apache.org/licenses/LICENSE-2.0"
-        },
-        "version": "1.0.0"
-    },
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "paths": {
-        "/widgets": {
-            "get": {
-                "summary": "List All Widgets",
-                "description": "Gets a list of all `Widget` entities.",
-                "operationId": "getWidgets",
-                "responses": {
-                    "200": {
-                        "description": "Successful response - returns an array of `Widget` entities.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Widget"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create a Widget",
-                "description": "Creates a new instance of a `Widget`.",
-                "operationId": "createWidget",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "A new `Widget` to be created.",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Widget"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful response."
-                    }
-                }
-            }
-        },
-        "/widgets/{widgetId}": {
-            "get": {
-                "summary": "Get a Widget",
-                "description": "Gets the details of a single instance of a `Widget`.",
-                "operationId": "getWidget",
-                "responses": {
-                    "200": {
-                        "description": "Successful response - returns a single `Widget`.",
-                        "schema": {
-                            "$ref": "#/definitions/Widget"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update a Widget",
-                "description": "Updates an existing `Widget`.",
-                "operationId": "updateWidget",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "description": "Updated `Widget` information.",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/Widget"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete a Widget",
-                "description": "Deletes an existing `Widget`.",
-                "operationId": "deleteWidget",
-                "responses": {
-                    "204": {
-                        "description": "Successful response."
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "widgetId",
-                    "in": "path",
-                    "description": "A unique identifier for a `Widget`.",
-                    "required": true,
-                    "type": "string"
-                }
-            ]
-        }
-    },
-    "definitions": {
-        "Widget": {
-            "title": "Root Type for Widget",
-            "description": "A very simple, generic data type.",
-            "type": "object",
-            "properties": {
-                "name": {
-                    "description": "The name of the widget.",
-                    "type": "string"
-                },
-                "description": {
-                    "description": "The description of the widget.",
-                    "type": "string"
-                }
-            },
-            "example": "{\n    \"name\": \"My Widget\",\n    \"description\": \"Just a little widget for your review.\"\n}"
-        }
-    }
+	"swagger": "2.0",
+	"info": {
+		"title": "Simple API 2.0",
+		"description": "This is a simple 2.0 API definition.",
+		"license": {
+			"name": "Apache 2.0",
+			"url": "https://www.apache.org/licenses/LICENSE-2.0"
+		},
+		"version": "1.0.0"
+	},
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/widgets": {
+			"get": {
+				"summary": "List All Widgets",
+				"description": "Gets a list of all `Widget` entities.",
+				"operationId": "getWidgets",
+				"responses": {
+					"200": {
+						"description": "Successful response - returns an array of `Widget` entities.",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Widget"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create a Widget",
+				"description": "Creates a new instance of a `Widget`.",
+				"operationId": "createWidget",
+				"parameters": [
+					{
+						"name": "body",
+						"in": "body",
+						"description": "A new `Widget` to be created.",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Widget"
+						}
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Successful response."
+					}
+				}
+			}
+		},
+		"/widgets/{widgetId}": {
+			"get": {
+				"summary": "Get a Widget",
+				"description": "Gets the details of a single instance of a `Widget`.",
+				"operationId": "getWidget",
+				"responses": {
+					"200": {
+						"description": "Successful response - returns a single `Widget`.",
+						"schema": {
+							"$ref": "#/definitions/Widget"
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update a Widget",
+				"description": "Updates an existing `Widget`.",
+				"operationId": "updateWidget",
+				"parameters": [
+					{
+						"name": "body",
+						"in": "body",
+						"description": "Updated `Widget` information.",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Widget"
+						}
+					}
+				],
+				"responses": {
+					"202": {
+						"description": "Successful response."
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete a Widget",
+				"description": "Deletes an existing `Widget`.",
+				"operationId": "deleteWidget",
+				"responses": {
+					"204": {
+						"description": "Successful response."
+					}
+				}
+			},
+			"parameters": [
+				{
+					"name": "widgetId",
+					"in": "path",
+					"description": "A unique identifier for a `Widget`.",
+					"required": true,
+					"type": "string"
+				}
+			]
+		}
+	},
+	"definitions": {
+		"Widget": {
+			"title": "Root Type for Widget",
+			"description": "A very simple, generic data type.",
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "The name of the widget.",
+					"type": "string"
+				},
+				"description": {
+					"description": "The description of the widget.",
+					"type": "string"
+				}
+			},
+			"example": "{\n    \"name\": \"My Widget\",\n    \"description\": \"Just a little widget for your review.\"\n}"
+		}
+	}
 };
 
 
@@ -1348,254 +1354,325 @@ const PET_STORE_30 = {
 };
 
 const USPTO_30 = {
-    "openapi": "3.0.1",
-    "info": {
-        "title": "USPTO Data Set API",
-        "description": "The Data Set API (DSAPI) allows the public users to discover and search USPTO exported data sets. This is a generic API that allows USPTO users to make any CSV based data files searchable through API. With the help of GET call, it returns the list of data fields that are searchable. With the help of POST call, data can be fetched based on the filters on the field names. Please note that POST call is used to search the actual data. The reason for the POST call is that it allows users to specify any complex search criteria without worry about the GET size limitations as well as encoding of the input parameters.",
-        "contact": {
-            "name": "Open Data Portal",
-            "url": "https://developer.uspto.gov",
-            "email": "developer@uspto.gov"
-        },
-        "version": "1.0.0"
-    },
-    "servers": [
-        {
-            "url": "{scheme}://developer.uspto.gov/ds-api",
-            "variables": {
-                "scheme": {
-                    "enum": [
-                        "https",
-                        "http"
-                    ],
-                    "default": "https",
-                    "description": "The Data Set API is accessible via https and http"
-                }
-            }
-        }
-    ],
-    "paths": {
-        "/": {
-            "get": {
-                "tags": [
-                    "metadata"
-                ],
-                "summary": "List available data sets",
-                "operationId": "list-data-sets",
-                "responses": {
-                    "200": {
-                        "description": "Returns a list of data sets",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dataSetList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/{dataset}/{version}/fields": {
-            "get": {
-                "tags": [
-                    "metadata"
-                ],
-                "summary": "Provides the general information about the API and the list of fields that can be used to query the dataset.",
-                "description": "This GET API returns the list of all the searchable field names that are in the oa_citations. Please see the 'fields' attribute which returns an array of field names. Each field or a combination of fields can be searched using the syntax options shown below.",
-                "operationId": "list-searchable-fields",
-                "parameters": [
-                    {
-                        "name": "dataset",
-                        "in": "path",
-                        "description": "Name of the dataset.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "oa_citations"
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "description": "Version of the dataset.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "v1"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The dataset API for the given version is found and it is accessible to consume.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "The combination of dataset name and version is not found in the system or it is not published yet to be consumed by public.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/{dataset}/{version}/records": {
-            "post": {
-                "tags": [
-                    "search"
-                ],
-                "summary": "Provides search capability for the data set with the given search criteria.",
-                "description": "This API is based on Solr/Lucense Search. The data is indexed using SOLR. This GET API returns the list of all the searchable field names that are in the Solr Index. Please see the 'fields' attribute which returns an array of field names. Each field or a combination of fields can be searched using the Solr/Lucene Syntax. Please refer https://lucene.apache.org/core/3_6_2/queryparsersyntax.html#Overview for the query syntax. List of field names that are searchable can be determined using above GET api.",
-                "operationId": "perform-search",
-                "parameters": [
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "description": "Version of the dataset.",
-                        "required": true,
-                        "schema": {
-                            "default": "v1",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "dataset",
-                        "in": "path",
-                        "description": "Name of the dataset. In this case, the default value is oa_citations",
-                        "required": true,
-                        "schema": {
-                            "default": "oa_citations",
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/x-www-form-urlencoded": {
-                            "schema": {
-                                "required": [
-                                    "criteria"
-                                ],
-                                "type": "object",
-                                "properties": {
-                                    "criteria": {
-                                        "description": "Uses Lucene Query Syntax in the format of propertyName:value, propertyName:[num1 TO num2] and date range format: propertyName:[yyyyMMdd TO yyyyMMdd]. In the response please see the 'docs' element which has the list of record objects. Each record structure would consist of all the fields and their corresponding values.",
-                                        "default": "*:*",
-                                        "type": "string"
-                                    },
-                                    "start": {
-                                        "description": "Starting record number. Default value is 0.",
-                                        "default": 0,
-                                        "type": "integer"
-                                    },
-                                    "rows": {
-                                        "description": "Specify number of rows to be returned. If you run the search with default values, in the response you will see 'numFound' attribute which will tell the number of records available in the dataset.",
-                                        "default": 100,
-                                        "type": "integer"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                            "type": "object"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No matching record found for the given criteria."
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "dataSetList": {
-                "type": "object",
-                "properties": {
-                    "total": {
-                        "type": "integer"
-                    },
-                    "apis": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "apiKey": {
-                                    "description": "To be used as a dataset parameter value",
-                                    "type": "string"
-                                },
-                                "apiVersionNumber": {
-                                    "description": "To be used as a version parameter value",
-                                    "type": "string"
-                                },
-                                "apiUrl": {
-                                    "format": "uriref",
-                                    "description": "The URL describing the dataset's fields",
-                                    "type": "string"
-                                },
-                                "apiDocumentationUrl": {
-                                    "format": "uriref",
-                                    "description": "A URL to the API console for each API",
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "tags": [
-        {
-            "name": "metadata",
-            "description": "Find out about the data sets"
-        },
-        {
-            "name": "search",
-            "description": "Search a data set"
-        }
-    ]
+	"openapi": "3.0.1",
+	"info": {
+		"title": "USPTO Data Set API",
+		"description": "The Data Set API (DSAPI) allows the public users to discover and search USPTO exported data sets. This is a generic API that allows USPTO users to make any CSV based data files searchable through API. With the help of GET call, it returns the list of data fields that are searchable. With the help of POST call, data can be fetched based on the filters on the field names. Please note that POST call is used to search the actual data. The reason for the POST call is that it allows users to specify any complex search criteria without worry about the GET size limitations as well as encoding of the input parameters.",
+		"contact": {
+			"name": "Open Data Portal",
+			"url": "https://developer.uspto.gov",
+			"email": "developer@uspto.gov"
+		},
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "{scheme}://developer.uspto.gov/ds-api",
+			"variables": {
+				"scheme": {
+					"enum": [
+						"https",
+						"http"
+					],
+					"default": "https",
+					"description": "The Data Set API is accessible via https and http"
+				}
+			}
+		}
+	],
+	"paths": {
+		"/": {
+			"get": {
+				"tags": [
+					"metadata"
+				],
+				"summary": "List available data sets",
+				"operationId": "list-data-sets",
+				"responses": {
+					"200": {
+						"description": "Returns a list of data sets",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/dataSetList"
+								},
+								"example": {
+									"total": 2,
+									"apis": [
+										{
+											"apiKey": "oa_citations",
+											"apiVersionNumber": "v1",
+											"apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
+											"apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
+										},
+										{
+											"apiKey": "cancer_moonshot",
+											"apiVersionNumber": "v1",
+											"apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
+											"apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/{dataset}/{version}/fields": {
+			"get": {
+				"tags": [
+					"metadata"
+				],
+				"summary": "Provides the general information about the API and the list of fields that can be used to query the dataset.",
+				"description": "This GET API returns the list of all the searchable field names that are in the oa_citations. Please see the 'fields' attribute which returns an array of field names. Each field or a combination of fields can be searched using the syntax options shown below.",
+				"operationId": "list-searchable-fields",
+				"parameters": [
+					{
+						"name": "dataset",
+						"in": "path",
+						"description": "Name of the dataset.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "oa_citations"
+					},
+					{
+						"name": "version",
+						"in": "path",
+						"description": "Version of the dataset.",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "v1"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The dataset API for the given version is found and it is accessible to consume.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "The combination of dataset name and version is not found in the system or it is not published yet to be consumed by public.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/{dataset}/{version}/records": {
+			"post": {
+				"tags": [
+					"search"
+				],
+				"summary": "Provides search capability for the data set with the given search criteria.",
+				"description": "This API is based on Solr/Lucense Search. The data is indexed using SOLR. This GET API returns the list of all the searchable field names that are in the Solr Index. Please see the 'fields' attribute which returns an array of field names. Each field or a combination of fields can be searched using the Solr/Lucene Syntax. Please refer https://lucene.apache.org/core/3_6_2/queryparsersyntax.html#Overview for the query syntax. List of field names that are searchable can be determined using above GET api.",
+				"operationId": "perform-search",
+				"parameters": [
+					{
+						"name": "version",
+						"in": "path",
+						"description": "Version of the dataset.",
+						"required": true,
+						"schema": {
+							"default": "v1",
+							"type": "string"
+						}
+					},
+					{
+						"name": "dataset",
+						"in": "path",
+						"description": "Name of the dataset. In this case, the default value is oa_citations",
+						"required": true,
+						"schema": {
+							"default": "oa_citations",
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"required": [
+									"criteria"
+								],
+								"type": "object",
+								"properties": {
+									"criteria": {
+										"description": "Uses Lucene Query Syntax in the format of propertyName:value, propertyName:[num1 TO num2] and date range format: propertyName:[yyyyMMdd TO yyyyMMdd]. In the response please see the 'docs' element which has the list of record objects. Each record structure would consist of all the fields and their corresponding values.",
+										"default": "*:*",
+										"type": "string"
+									},
+									"start": {
+										"description": "Starting record number. Default value is 0.",
+										"default": 0,
+										"type": "integer"
+									},
+									"rows": {
+										"description": "Specify number of rows to be returned. If you run the search with default values, in the response you will see 'numFound' attribute which will tell the number of records available in the dataset.",
+										"default": 100,
+										"type": "integer"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"additionalProperties": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "No matching record found for the given criteria."
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"dataSetList": {
+				"type": "object",
+				"properties": {
+					"total": {
+						"type": "integer"
+					},
+					"apis": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"apiKey": {
+									"description": "To be used as a dataset parameter value",
+									"type": "string"
+								},
+								"apiVersionNumber": {
+									"description": "To be used as a version parameter value",
+									"type": "string"
+								},
+								"apiUrl": {
+									"format": "uriref",
+									"description": "The URL describing the dataset's fields",
+									"type": "string"
+								},
+								"apiDocumentationUrl": {
+									"format": "uriref",
+									"description": "A URL to the API console for each API",
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"tags": [
+		{
+			"name": "metadata",
+			"description": "Find out about the data sets"
+		},
+		{
+			"name": "search",
+			"description": "Search a data set"
+		}
+	]
 };
+
+const USER_SIGNEDUP_20 = {
+	"asyncapi": "2.0.0",
+	"id": "urn:io.asyncapi.example.user-signedup",
+	"info": {
+		"title": "User signed-up API",
+		"version": "0.1.0",
+		"description": "Sample AsyncAPI for user signedup events",
+		"license": {
+			"name": "Apache 2.0",
+			"url": "https://www.apache.org/licenses/LICENSE-2.0"
+		}
+	},
+	"servers": {
+		"development": {
+			"url": "broker.kafka.org:443",
+			"protocol": "kafka"
+		}
+	},
+	"defaultContentType": "application/json",
+	"channels": {
+		"user/signedup": {
+			"description": "The channel on which user signed up events may be consumed",
+			"subscribe": {
+				"summary": "Receive informations about user signed up",
+				"operationId": "receivedUserSIgnedUp",
+				"message": {
+					"description": "An event describing that a user just signed up.",
+					"traits": [
+						{
+							"$ref": "#/components/messageTraits/commonHeaders"
+						}
+					],
+					"payload": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"fullName": {
+								"type": "string"
+							},
+							"email": {
+								"type": "string",
+								"format": "email"
+							},
+							"age": {
+								"type": "integer",
+								"minimum": 18
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"messageTraits": {
+			"commonHeaders": {
+				"headers": {
+					"type": "object",
+					"properties": {
+						"my-app-header": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 100
+						}
+					}
+				}
+			}
+		}
+	}
+}

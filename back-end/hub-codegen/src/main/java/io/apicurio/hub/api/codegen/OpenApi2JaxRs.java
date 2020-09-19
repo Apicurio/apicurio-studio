@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
+import javax.ws.rs.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -84,7 +86,25 @@ import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 public class OpenApi2JaxRs {
 
     protected static ObjectMapper mapper = new ObjectMapper();
-    protected static Charset utf8 = Charset.forName("UTF-8");
+    protected static Charset utf8 = StandardCharsets.UTF_8;
+    protected static GenerationConfig config = new DefaultGenerationConfig() {
+        @Override
+        public boolean isUsePrimitives() {
+            return false;
+        }
+        @Override
+        public boolean isIncludeHashcodeAndEquals() {
+            return false;
+        }
+        @Override
+        public boolean isIncludeAdditionalProperties() {
+            return false;
+        }
+        @Override
+        public boolean isIncludeToString() {
+            return false;
+        }
+    };
 
     private String openApiDoc;
     protected transient Document document;
@@ -136,7 +156,7 @@ public class OpenApi2JaxRs {
      * @throws IOException
      */
     public void setOpenApiDocument(InputStream stream) throws IOException {
-        this.openApiDoc = IOUtils.toString(stream, Charset.forName("UTF-8"));
+        this.openApiDoc = IOUtils.toString(stream, utf8);
     }
     
     /**
@@ -344,19 +364,18 @@ public class OpenApi2JaxRs {
             methodBuilder.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
             // The @Path annotation.
             if (cgMethod.getPath() != null) {
-                methodBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Path"))
-                        .addMember("value", "$S", cgMethod.getPath()).build());
+                methodBuilder.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", cgMethod.getPath()).build());
             }
             // The @GET, @PUT, @POST, etc annotation
             methodBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", cgMethod.getMethod().toUpperCase())).build());
             // The @Produces annotation
             if (cgMethod.getProduces() != null && !cgMethod.getProduces().isEmpty()) {
-                methodBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Produces"))
+                methodBuilder.addAnnotation(AnnotationSpec.builder(Produces.class)
                         .addMember("value", "$L", toStringArrayLiteral(cgMethod.getProduces())).build());
             }
             // The @Consumes annotation
             if (cgMethod.getConsumes() != null && !cgMethod.getConsumes().isEmpty()) {
-                methodBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Consumes"))
+                methodBuilder.addAnnotation(AnnotationSpec.builder(Consumes.class)
                         .addMember("value", "$L", toStringArrayLiteral(cgMethod.getConsumes())).build());
             }
             // The method return type.
@@ -385,15 +404,15 @@ public class OpenApi2JaxRs {
                     com.squareup.javapoet.ParameterSpec.Builder paramBuilder = ParameterSpec.builder(paramType,
                             paramNameToJavaArgName(cgArgument.getName()));
                     if (cgArgument.getIn().equals("path")) {
-                        paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "PathParam"))
+                        paramBuilder.addAnnotation(AnnotationSpec.builder(PathParam.class)
                                 .addMember("value", "$S", cgArgument.getName()).build());
                     }
                     if (cgArgument.getIn().equals("query")) {
-                        paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "QueryParam"))
+                        paramBuilder.addAnnotation(AnnotationSpec.builder(QueryParam.class)
                                 .addMember("value", "$S", cgArgument.getName()).build());
                     }
                     if (cgArgument.getIn().equals("header")) {
-                        paramBuilder.addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "HeaderParam"))
+                        paramBuilder.addAnnotation(AnnotationSpec.builder(HeaderParam.class)
                                 .addMember("value", "$S", cgArgument.getName()).build());
                     }
                     methodBuilder.addParameter(paramBuilder.build());
@@ -453,7 +472,11 @@ public class OpenApi2JaxRs {
                 if (format.equals("int32")) {
                     coreType = required && !isList ? TypeName.INT : ClassName.get(Integer.class);
                 } else if (format.equals("int64")) {
-                    coreType = required && !isList ? TypeName.LONG : ClassName.get(Long.class);
+                    if(config.isUseLongIntegers()){
+                        coreType = required && !isList ? TypeName.LONG : ClassName.get(Long.class);
+                    }else{
+                        coreType = required && !isList ? TypeName.INT : ClassName.get(Integer.class);
+                    }
                 }
             }
         } else if (type.equals("number")) {
@@ -538,24 +561,6 @@ public class OpenApi2JaxRs {
      */
     private void generateJavaBean(CodegenJavaBean bean, CodegenInfo info, IndexedCodeWriter codeWriter) throws IOException {
         JCodeModel codeModel = new JCodeModel();
-        GenerationConfig config = new DefaultGenerationConfig() {
-            @Override
-            public boolean isUsePrimitives() {
-                return false;
-            }
-            @Override
-            public boolean isIncludeHashcodeAndEquals() {
-                return false;
-            }
-            @Override
-            public boolean isIncludeAdditionalProperties() {
-                return false;
-            }
-            @Override
-            public boolean isIncludeToString() {
-                return false;
-            }
-        };
 
         SchemaMapper schemaMapper = new SchemaMapper(
                 new JaxRsRuleFactory(config, new Jackson2Annotator(config), new SchemaStore() {

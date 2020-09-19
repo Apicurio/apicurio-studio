@@ -80,7 +80,7 @@ import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
 
 /**
  * Class used to generate a simple JAX-RS project from an OpenAPI document.
- * 
+ *
  * @author eric.wittmann@gmail.com
  */
 public class OpenApi2JaxRs {
@@ -92,14 +92,17 @@ public class OpenApi2JaxRs {
         public boolean isUsePrimitives() {
             return false;
         }
+
         @Override
         public boolean isIncludeHashcodeAndEquals() {
             return false;
         }
+
         @Override
         public boolean isIncludeAdditionalProperties() {
             return false;
         }
+
         @Override
         public boolean isIncludeToString() {
             return false;
@@ -110,7 +113,7 @@ public class OpenApi2JaxRs {
     protected transient Document document;
     protected JaxRsProjectSettings settings;
     private boolean updateOnly;
-    
+
     /**
      * Constructor.
      */
@@ -123,6 +126,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Configure the settings.
+     *
      * @param settings
      */
     public void setSettings(JaxRsProjectSettings settings) {
@@ -131,6 +135,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Sets the OpenAPI document.
+     *
      * @param content
      * @throws IOException
      */
@@ -140,6 +145,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Sets the OpenAPI document via a URL to the content.
+     *
      * @param url
      * @throws IOException
      */
@@ -148,20 +154,22 @@ public class OpenApi2JaxRs {
             this.setOpenApiDocument(is);
         }
     }
-    
+
     /**
      * Sets the OpenAPI document via an input stream.  The stream must be closed
      * by the caller.
+     *
      * @param stream
      * @throws IOException
      */
     public void setOpenApiDocument(InputStream stream) throws IOException {
         this.openApiDoc = IOUtils.toString(stream, utf8);
     }
-    
+
     /**
      * Generates a JaxRs project and streams the generated ZIP to the given
      * output stream.
+     *
      * @param output
      * @throws IOException
      */
@@ -180,7 +188,7 @@ public class OpenApi2JaxRs {
                 zos.write("Generation Log:\r\n\r\n".getBytes());
                 zos.write(log.toString().getBytes(utf8));
                 zos.write("\r\n\r\nServer Stack Trace:\r\n".getBytes());
-                
+
                 PrintWriter writer = new PrintWriter(zos);
                 e.printStackTrace(writer);
                 writer.flush();
@@ -192,6 +200,7 @@ public class OpenApi2JaxRs {
     /**
      * Generates all of the content for storage in the ZIP.  Responsible for generating all classes
      * and other resources that make up the generated project.
+     *
      * @param info
      * @param log
      * @param zipOutput
@@ -212,7 +221,7 @@ public class OpenApi2JaxRs {
         zipOutput.putNextEntry(new ZipEntry("src/main/resources/META-INF/openapi.json"));
         zipOutput.write(this.openApiDoc.getBytes(utf8));
         zipOutput.closeEntry();
-        
+
         if (!this.updateOnly) {
             String appFileName = javaPackageToZipPath(this.settings.javaPackage) + "JaxRsApplication.java";
             String jaxRsApp = generateJaxRsApplication();
@@ -223,7 +232,7 @@ public class OpenApi2JaxRs {
                 zipOutput.closeEntry();
             }
         }
-        
+
         // Generate the java beans from data types
         IndexedCodeWriter codeWriter = new IndexedCodeWriter();
         for (CodegenJavaBean bean : info.getBeans()) {
@@ -237,7 +246,7 @@ public class OpenApi2JaxRs {
             zipOutput.write(codeWriter.get(key).getBytes(utf8));
             zipOutput.closeEntry();
         }
-        
+
         // Generate the JAX-RS interfaces
         for (CodegenJavaInterface iface : info.getInterfaces()) {
             log.append("Generating Interface: " + iface.getPackage() + "." + iface.getName() + "\r\n");
@@ -250,9 +259,10 @@ public class OpenApi2JaxRs {
         }
 
     }
-    
+
     /**
      * Generate the JaxRs project.
+     *
      * @throws IOException
      */
     public ByteArrayOutputStream generate() throws IOException {
@@ -261,7 +271,7 @@ public class OpenApi2JaxRs {
             return output;
         }
     }
-    
+
     private String javaClassToZipPath(String javaClass) {
         return "src/main/java/" + javaClass.replace('.', '/') + ".java";
     }
@@ -272,20 +282,20 @@ public class OpenApi2JaxRs {
      */
     protected CodegenInfo getInfoFromApiDoc() throws IOException {
         document = Library.readDocumentFromJSONString(openApiDoc);
-        
+
         // First, figure out the breakdown of the interfaces.
         InterfacesVisitor iVisitor = new InterfacesVisitor();
         VisitorUtil.visitTree(document, iVisitor, TraverserDirection.down);
-        
+
         // Then generate the CodegenInfo object.
         OpenApi2CodegenVisitor cgVisitor = new OpenApi2CodegenVisitor(this.settings.javaPackage, iVisitor.getInterfaces());
         VisitorUtil.visitTree(document, cgVisitor, TraverserDirection.down);
-        
+
         // Now resolve any inline schemas/types
         CodegenInfo info = cgVisitor.getCodegenInfo();
-        info.getInterfaces().forEach( iface -> {
-            iface.getMethods().forEach( method -> {
-                method.getArguments().forEach( arg -> {
+        info.getInterfaces().forEach(iface -> {
+            iface.getMethods().forEach(method -> {
+                method.getArguments().forEach(arg -> {
                     String argTypeSig = arg.getTypeSignature();
                     CodegenJavaBean matchingBean = findMatchingBean(info, argTypeSig);
                     if (matchingBean != null) {
@@ -294,12 +304,13 @@ public class OpenApi2JaxRs {
                 });
             });
         });
-        
+
         return info;
     }
 
     /**
      * Find a bean that matches the schema signature.
+     *
      * @param info
      * @param typeSignature
      */
@@ -317,7 +328,8 @@ public class OpenApi2JaxRs {
 
     /**
      * Generates the pom.xml file.
-     * @param info 
+     *
+     * @param info
      */
     protected String generatePomXml(CodegenInfo info) throws IOException {
         String template = IOUtils.toString(getResource("pom.xml"), Charset.forName("UTF-8"));
@@ -347,6 +359,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Generates a Jax-rs interface from the given codegen information.
+     *
      * @param _interface
      */
     protected String generateJavaInterface(CodegenJavaInterface _interface) {
@@ -388,7 +401,7 @@ public class OpenApi2JaxRs {
                 }
                 methodBuilder.returns(returnType);
             }
-            
+
             // The method arguments.
             if (cgMethod.getArguments() != null && !cgMethod.getArguments().isEmpty()) {
                 for (CodegenJavaArgument cgArgument : cgMethod.getArguments()) {
@@ -418,29 +431,30 @@ public class OpenApi2JaxRs {
                     methodBuilder.addParameter(paramBuilder.build());
                 }
             }
-            
+
             // TODO:: error responses (4xx and 5xx)
             // Should errors be modeled in some way?  JAX-RS has a few ways to handle them.  I'm inclined to 
             // not generate anything in the interface for error responses.
-            
+
             // Javadoc
             if (cgMethod.getDescription() != null) {
                 methodBuilder.addJavadoc(cgMethod.getDescription());
                 methodBuilder.addJavadoc("\n");
             }
-            
+
             interfaceBuilder.addMethod(methodBuilder.build());
         }
-        
+
         TypeSpec jaxRsInterface = interfaceBuilder.build();
-        
+
         JavaFile javaFile = JavaFile.builder(_interface.getPackage(), jaxRsInterface).build();
         return javaFile.toString();
     }
 
     /**
-     * Generates the java type name for a collection (optional) and type.  Examples include list/string, 
+     * Generates the java type name for a collection (optional) and type.  Examples include list/string,
      * null/org.example.Bean, list/org.example.OtherBean, etc.
+     *
      * @param collection
      * @param type
      * @param format
@@ -454,7 +468,7 @@ public class OpenApi2JaxRs {
         if (required == null) {
             required = Boolean.FALSE;
         }
-        
+
         boolean isList = "list".equals(collection);
 
         TypeName coreType = null;
@@ -467,18 +481,13 @@ public class OpenApi2JaxRs {
                 // TODO handle byte, binary
             }
         } else if (type.equals("integer")) {
-            coreType = ClassName.get(Integer.class);
-            if (format != null) {
-                if (format.equals("int32")) {
-                    coreType = required && !isList ? TypeName.INT : ClassName.get(Integer.class);
-                } else if (format.equals("int64")) {
-                    if(config.isUseLongIntegers()){
-                        coreType = required && !isList ? TypeName.LONG : ClassName.get(Long.class);
-                    }else{
-                        coreType = required && !isList ? TypeName.INT : ClassName.get(Integer.class);
-                    }
-                }
+            if (config.isUseLongIntegers()) {
+                coreType = required && !isList && format != null ? TypeName.LONG : ClassName.get(Long.class);
+
+            } else {
+                coreType = required && !isList && format != null ? TypeName.INT : ClassName.get(Integer.class);
             }
+
         } else if (type.equals("number")) {
             coreType = ClassName.get(Number.class);
             if (format != null) {
@@ -497,11 +506,11 @@ public class OpenApi2JaxRs {
                 return defaultType;
             }
         }
-        
+
         if (collection == null) {
             return coreType;
         }
-        
+
         if ("list".equals(collection)) {
             return ParameterizedTypeName.get(ClassName.get(List.class), coreType);
         }
@@ -510,8 +519,9 @@ public class OpenApi2JaxRs {
     }
 
     /**
-     * Generates the reactive java type name for a collection (optional) and type.  Examples include list/string, 
+     * Generates the reactive java type name for a collection (optional) and type.  Examples include list/string,
      * null/org.example.Bean, list/org.example.OtherBean, etc.
+     *
      * @param collection
      * @param type
      * @param format
@@ -524,6 +534,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Converts a set of strings into an array literal format.
+     *
      * @param values
      */
     private static String toStringArrayLiteral(Set<String> values) {
@@ -552,10 +563,11 @@ public class OpenApi2JaxRs {
 
     /**
      * Generates a Java Bean class for the given bean info.  The bean info should
-     * have a name, package, and JSON Schema.  This information will be used to 
+     * have a name, package, and JSON Schema.  This information will be used to
      * generate a POJO.
+     *
      * @param bean
-     * @param info 
+     * @param info
      * @param codeWriter
      * @throws IOException
      */
@@ -589,7 +601,7 @@ public class OpenApi2JaxRs {
         schemaMapper.generate(codeModel, bean.getName(), bean.getPackage(), source);
         codeModel.build(codeWriter);
     }
-    
+
     protected URL getResource(String name) {
         return getClass().getResource(getResourceName(name));
     }
@@ -609,16 +621,16 @@ public class OpenApi2JaxRs {
     private static String javaPackageToZipPath(String javaPackage) {
         return "src/main/java/" + javaPackageToPath(javaPackage);
     }
-    
+
     private static String javaPackageToPath(String javaPackage) {
         return javaPackage.replaceAll("[^A-Za-z0-9.]", "").replace('.', '/') + "/";
     }
-    
+
     private static String paramNameToJavaArgName(String paramName) {
         if (paramName == null) {
             return null;
         }
-        String [] split = paramName.replaceAll("[^a-zA-Z0-9_]", "_").split("_");
+        String[] split = paramName.replaceAll("[^a-zA-Z0-9_]", "_").split("_");
         StringBuilder builder = new StringBuilder();
         boolean first = true;
         for (String term : split) {
@@ -638,14 +650,14 @@ public class OpenApi2JaxRs {
         }
         return rval;
     }
-    
+
     private static String capitalize(String term) {
         if (term.length() == 1) {
             return term.toUpperCase();
         }
         return term.substring(0, 1).toUpperCase() + term.substring(1);
     }
-    
+
     private static String decapitalize(String term) {
         if (term.length() == 1) {
             return term.toLowerCase();
@@ -659,7 +671,7 @@ public class OpenApi2JaxRs {
     public boolean isUpdateOnly() {
         return updateOnly;
     }
-    
+
     /**
      * @return the settings
      */
@@ -673,16 +685,16 @@ public class OpenApi2JaxRs {
     public void setUpdateOnly(boolean updateOnly) {
         this.updateOnly = updateOnly;
     }
-    
+
     public static class JaxRsRuleFactory extends RuleFactory {
-        
+
         /**
          * Constructor.
          */
         public JaxRsRuleFactory(GenerationConfig generationConfig, Annotator annotator, SchemaStore schemaStore) {
             super(generationConfig, annotator, schemaStore);
         }
-        
+
         /**
          * @see org.jsonschema2pojo.rules.RuleFactory#getEnumRule()
          */
@@ -694,6 +706,7 @@ public class OpenApi2JaxRs {
 
     /**
      * Represents some basic meta information about the project being generated.
+     *
      * @author eric.wittmann@gmail.com
      */
     public static class JaxRsProjectSettings {
@@ -702,15 +715,16 @@ public class OpenApi2JaxRs {
         public String groupId;
         public String artifactId;
         public String javaPackage;
-        
+
         /**
          * Constructor.
          */
         public JaxRsProjectSettings() {
         }
-        
+
         /**
          * Constructor.
+         *
          * @param groupId
          * @param artifactId
          * @param javaPackage
@@ -725,6 +739,7 @@ public class OpenApi2JaxRs {
 
         /**
          * Constructor.
+         *
          * @param codeOnly
          * @param reactive
          * @param groupId

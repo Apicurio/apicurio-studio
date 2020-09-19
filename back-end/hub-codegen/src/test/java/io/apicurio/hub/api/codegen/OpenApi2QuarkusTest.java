@@ -98,6 +98,9 @@ public class OpenApi2QuarkusTest {
                         System.out.println(actual);
                         System.out.println("-----");
                     }
+                    if(name.contains("OrgsResource")){
+                        System.out.println("aa");
+                    }
                     Assert.assertEquals("Expected vs. actual failed for entry: " + name, normalizeString(expected), normalizeString(actual));
                 }
                 zipEntry = zipInputStream.getNextEntry();

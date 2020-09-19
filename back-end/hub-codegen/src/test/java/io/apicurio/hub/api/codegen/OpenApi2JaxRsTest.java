@@ -117,8 +117,8 @@ public class OpenApi2JaxRsTest {
         ByteArrayOutputStream outputStream = generator.generate();
         
         if (debug) {
-            File tempFile = File.createTempFile("api", "zip");
-            FileUtils.writeByteArrayToFile(File.createTempFile("api", "zip"), outputStream.toByteArray());
+            File tempFile = File.createTempFile("api", ".zip");
+            FileUtils.writeByteArrayToFile(tempFile, outputStream.toByteArray());
             System.out.println("Generated ZIP (debug) can be found here: " + tempFile.getAbsolutePath());
         }
 

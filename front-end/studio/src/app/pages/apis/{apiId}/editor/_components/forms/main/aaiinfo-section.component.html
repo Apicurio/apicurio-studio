@@ -20,24 +20,14 @@
             <inline-markdown-editor [value]="description()" [labelClass]="'api-description api-item-description'" [formClass]="'api-description-editor-form'" [inputClass]="'api-item-editor api-description-editor api-description api-item-description'" [baseNode]="info()"
                 nodePath="description" [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-markdown-editor>
         </div>
-        <!-- Consumes and Produces (2.0 only) -->
-        <div *ngIf="document.is2xDocument()">
-            <!-- Consumes -->
-            <div class="section-field-label">
-                <validation-problem [model]="document" property="consumes" [shallow]="true"></validation-problem>
-                <span>Consumes (Inputs)</span>
-            </div>
-            <div class="section-field consumes">
-                <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'" [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]" [baseNode]="document" nodePath="consumes" (onChange)="onConsumesChange($event)"></inline-array-editor>
-            </div>
-            <!-- Produces -->
-            <div class="section-field-label">
-                <validation-problem [model]="document" property="produces" [shallow]="true"></validation-problem>
-                <span>Produces (Outputs)</span>
-            </div>
-            <div class="section-field produces">
-                <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'" [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]" [baseNode]="document" nodePath="produces" (onChange)="onProducesChange($event)"></inline-array-editor>
-            </div>
+        <!-- TermsOfService -->
+        <div class="section-field-label">
+            <validation-problem [model]="info()" property="termsOfService" [shallow]="true"></validation-problem>
+            <span>Terms of Service</span>
+        </div>
+        <div class="section-field termsOfService">
+            <pf-inline-text-editor [value]="termsOfService()" [labelClass]="'api-termsOfService'" [formClass]="'api-title-editor-form'" [inputClass]="'api-item-editor api-termsOfService-editor api-termsOfService api-item-termsOfService'" [baseNode]="info()" nodePath="termsOfService"
+                [noValueMessage]="'N/A'" (onChange)="onTermsOfServiceChange($event)"></pf-inline-text-editor>
         </div>
     </div>
 </section>

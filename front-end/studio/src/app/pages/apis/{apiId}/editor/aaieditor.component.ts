@@ -24,6 +24,7 @@ import {
     OnInit,
     Output,
     SimpleChanges,
+    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
@@ -42,6 +43,7 @@ import {
     OtEngine,
     ValidationProblem
 } from "apicurio-data-models";
+import {AsyncApiEditorMasterComponent} from "./_components/aaimaster.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
@@ -53,6 +55,7 @@ import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 import {AbstractApiEditorComponent} from "./editor.base";
+import {ComponentType} from "./_models/component-type.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
 
@@ -92,6 +95,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
 
+    @ViewChild("master") master: AsyncApiEditorMasterComponent;
+
+    formType: string;
+
     /**
      * Constructor.
      * @param selectionService
@@ -103,7 +110,9 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
-                private featuresService: FeaturesService, private collaboratorService: CollaboratorService) { super(); }
+                private featuresService: FeaturesService, private collaboratorService: CollaboratorService) {
+        super();
+    }
 
     /**
      * Called when the editor is initialized by angular.
@@ -426,6 +435,12 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return apiDef;
     }
 
+    /**
+     * Call this to select some content in the open document by the content's node path.  If highlight
+     * is true then the appropriate content section is also highlighted and scrolled into view.
+     * @param path
+     * @param highlight
+     */
     public select(path: string, highlight: boolean = true): void {
         // TODO what to do here?  ignore for now
     }
@@ -466,4 +481,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
     }
 
+    importComponent(type: ComponentType) {
+
+    }
 }

@@ -1,0 +1,52 @@
+<section type="license" label="LICENSE" contextHelp="Does your API have a license?  If it does, you can configure it here." collaborationNodePath="/info/license" [validationModels]="[licenseModel()]">
+    <span actions>
+        <icon-button (onClick)="deleteLicense()" [disabled]="!hasLicense()" [pullRight]="true" type="delete"
+                     [title]="'Delete the license information.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="!hasLicense()">
+            <span>No license has been set.</span>
+            <a (click)="setLicenseDialog.open()">Set license</a>
+        </signpost>
+
+        <div *ngIf="hasLicense() && license() === null" class="container-fluid license">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2><a href="{{ licenseUrl() }}" target="_blank">{{ licenseName() }}</a><span class="fa fa-fw fa-external-link"></span></h2>
+                    <p>You have configured a license that we are not familiar with. For information about the license, click the link above! Or else click the button below to choose a different license...</p>
+                    <button class="btn btn-sm btn-default" (click)="setLicenseDialog.open()">Change License</button>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="license() !== null" class="container-fluid license">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2><a href="{{ license().url }}" target="_blank">{{ license().name }}</a><span class="fa fa-fw fa-external-link"></span></h2>
+                    <p>{{ license().description }}</p>
+                    <button class="btn btn-sm btn-default" (click)="setLicenseDialog.open()">Change License</button>
+                    <a class="pull-right" href="{{ license().moreInfoUrl }}" target="_blank">View full {{ license().fullName }} »</a>
+                </div>
+                <div class="col-md-2">
+                    <h3>Permissions</h3>
+                    <ul class="permissions">
+                        <li *ngFor="let permission of license().permissions"><span title="{{ licenseService.permissionDescription(permission) }}">{{ licenseService.permissionName(permission) }}</span></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h3>Conditions</h3>
+                    <ul class="conditions">
+                        <li *ngFor="let condition of license().conditions"><span title="{{ licenseService.conditionDescription(condition) }}">{{ licenseService.conditionName(condition) }}</span></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <h3>Limitations</h3>
+                    <ul class="limitations">
+                        <li *ngFor="let limitation of license().limitations"><span title="{{ licenseService.limitationDescription(limitation) }}">{{ licenseService.limitationName(limitation) }}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<set-license-dialog #setLicenseDialog (onLicenseChosen)="setLicense($event)"></set-license-dialog>

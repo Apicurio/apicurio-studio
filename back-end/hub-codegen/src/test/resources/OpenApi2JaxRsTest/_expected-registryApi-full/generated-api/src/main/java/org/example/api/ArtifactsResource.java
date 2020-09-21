@@ -4,7 +4,6 @@ import io.apicurio.registry.types.ArtifactType;
 import io.apicurio.registry.types.RuleType;
 import java.io.InputStream;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.String;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -224,7 +223,7 @@ public interface ArtifactsResource {
   @Path("/{artifactId}/versions")
   @GET
   @Produces("application/json")
-  List<Long> listArtifactVersions(@PathParam("artifactId") String artifactId);
+  List<Integer> listArtifactVersions(@PathParam("artifactId") String artifactId);
 
   /**
    * Creates a new version of the artifact by uploading new content.  The configured rules for

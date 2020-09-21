@@ -33,11 +33,13 @@ import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/f
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
 import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
+import {AsyncApiEditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/aaimaster.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
 import {CloneResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
+import {AsyncApiMainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/aaimain-form.component";
 import {AddMediaTypeDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-media-type.component";
 import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example.component";
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
@@ -55,11 +57,14 @@ import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/
 import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/title-bar.component";
 import {EditorProblemDrawerComponent} from "./pages/apis/{apiId}/editor/_components/problem-drawer.component";
 import {InfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/info-section.component";
+import {AsyncApiInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aaiinfo-section.component";
 import {CommandService} from "./pages/apis/{apiId}/editor/_services/command.service";
 import {ValidationProblemComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-problem.component";
 import {ValidationAggregateComponent} from "./pages/apis/{apiId}/editor/_components/common/validation-aggregate.component";
 import {ContactSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/contact-section.component";
+import {AsyncApiContactSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aaicontact-section.component";
 import {LicenseSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/license-section.component";
+import {AsyncApiLicenseSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aailicense-section.component";
 import {TagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/tags-section.component";
 import {SecurityRequirementsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/security-requirements-section.component";
 import {SecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/security-schemes-section.component";
@@ -136,13 +141,13 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
-        EditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
+        EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
         AddResponseDialogComponent, CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
-        AddMediaTypeDialogComponent, MainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
+        AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
-        InfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
-        LicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
+        InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
+        AsyncApiContactSectionComponent, LicenseSectionComponent, AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,

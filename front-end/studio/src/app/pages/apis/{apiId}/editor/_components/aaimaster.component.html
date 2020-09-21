@@ -1,0 +1,34 @@
+<div class="editor-master">
+    <!-- Search - Used to Filter Channels and Data Type -->
+    <div class="editor-search">
+
+    </div>
+
+    <!-- Outline - Channels, Data Types, Traits -->
+    <div class="editor-outline">
+        <!-- Channels Section -->
+        <section type="channel" label="Channels" [counterItems]="channels()" [inForm]="false" collaborationNodePath="/channels" contextHelp="The core of any Async API is the set of channesl it exposes.  Each channels is of the form '/channel/to/resource' and can support either Publish or Subscribe operations.">
+            <!--
+            <span actions>
+                <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
+            </span>
+            -->
+            <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #channelList>
+                <signpost *ngIf="channels().length === 0">
+                    <span>No channels have been created.</span>
+                    <!-- <a (click)="addChannelDialog.open(document, '/')">Add a channel</a> -->
+                </signpost>
+
+                <div class="api-channel {{ channelClasses(channel) }}" *ngFor="let channel of channels()">
+                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Types Section -->
+        <!--
+        <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false" [collaborationNodePath]="definitionsPath()" contextHelp="It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+        </section>
+        -->
+    </div>
+</div>

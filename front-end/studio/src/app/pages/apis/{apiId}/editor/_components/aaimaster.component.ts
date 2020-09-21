@@ -93,10 +93,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * @param features
      */
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
-            selectionService: SelectionService, private commandService: CommandService,
-            private editors: EditorsService, private restResourceService: RestResourceService,
-            private features: FeaturesService) {
-    super(changeDetectorRef, documentService, selectionService);
+                selectionService: SelectionService, private commandService: CommandService,
+                private editors: EditorsService, private restResourceService: RestResourceService,
+                private features: FeaturesService) {
+        super(changeDetectorRef, documentService, selectionService);
     }
 
     public ngOnInit(): void {
@@ -177,6 +177,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         }
         let pi: any = this.document.channels.getPathItem(channelItem.getName());
         return pi === channelItem;
+    }
+
+    /**
+     * Called when the user selects a path from the master area.
+     * @param channel
+     */
+    public selectChannel(path: AaiChannelItem): void {
+        this.__selectionService.selectNode(path);
     }
 
     /**

@@ -13,14 +13,14 @@
                 <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
             </span>
             -->
-            <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #pathList>
+            <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #channelList>
                 <signpost *ngIf="channels().length === 0">
                     <span>No channels have been created.</span>
                     <!-- <a (click)="addChannelDialog.open(document, '/')">Add a channel</a> -->
                 </signpost>
 
                 <div class="api-channel {{ channelClasses(channel) }}" *ngFor="let channel of channels()">
-                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)" (contextmenu)="showChannelContextMenu($event, channel)"></div>
+                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)"></div>
                 </div>
             </div>
         </section>

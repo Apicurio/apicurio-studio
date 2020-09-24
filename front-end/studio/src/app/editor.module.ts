@@ -36,6 +36,7 @@ import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/mas
 import {AsyncApiEditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/aaimaster.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
 import {AddPathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-path.component";
+import {AddChannelDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-channel.component";
 import {AddResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-response.component";
 import {CloneResponseDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response.component";
 import {MainFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/main-form.component";
@@ -141,7 +142,7 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
         PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
         DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
-        EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, ParameterEditorComponent,
+        EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent,
         AddResponseDialogComponent, CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
         AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
         EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,

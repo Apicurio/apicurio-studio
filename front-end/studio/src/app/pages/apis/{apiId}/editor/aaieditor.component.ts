@@ -29,6 +29,7 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
+    AaiChannelItem,
     AaiDocument,
     CombinedVisitorAdapter, CommandFactory,
     DocumentType,
@@ -37,8 +38,8 @@ import {
     IValidationSeverityRegistry,
     Library,
     Node,
-    Oas30SchemaDefinition,
-    OasPathItem,
+    NodePath,
+    Aai20SchemaDefinition,
     OtCommand,
     OtEngine,
     ValidationProblem
@@ -49,7 +50,14 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
-import {EditorsService} from "./_services/editors.service";
+import {EditorsService, IEditorsProvider} from "./_services/editors.service";
+import {ServerEditorComponent} from "./_components/editors/server-editor.component";
+import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
+import {SecurityRequirementEditorComponent} from "./_components/editors/security-requirement-editor.component";
+import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.component";
+import {ParameterEditorComponent} from "./_components/editors/parameter-editor.component";
+import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
+import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
@@ -67,7 +75,7 @@ import * as YAML from 'js-yaml';
     styleUrls: ["aaieditor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class AsyncApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy {
+export class AsyncApiEditorComponent extends AbstractApiEditorComponent implements OnChanges, OnInit, OnDestroy, IEditorsProvider {
 
     @Input() api: ApiDefinition;
     @Input() embedded: boolean;
@@ -90,12 +98,17 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     sourceValue: string = "";
     sourceIsValid: boolean = true;
 
+    private currentSelection: NodePath;
+    private currentSelectionType: string;
+    private currentSelectionNode: Node;
     public validationErrors: ValidationProblem[] = [];
 
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
 
     @ViewChild("master") master: AsyncApiEditorMasterComponent;
+    @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
 
     formType: string;
 
@@ -151,12 +164,14 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             this.collaboratorService.reset();
             this.commandService.reset();
             this.documentService.reset();
+            this.editorsService.setProvider(this);
 
             this._document = null;
             this._otEngine = null;
             this._undoableCommandCount = 0;
             this._redoableCommandCount = 0;
-
+            this.formType = "main_20";
+            
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
@@ -379,7 +394,25 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     public onNodeSelected(path: string): void {
         console.info("[AsyncApiEditorComponent] Selection changed to path: %s", path);
 
+        this.updateFormDisplay(path);
+
         this.onSelectionChanged.emit(path);
+    }
+
+    /**
+     * Called to update which form is displayed (the details view).
+     * @param path
+     */
+    private updateFormDisplay(path: string): void {
+        let npath: NodePath = new NodePath(path);
+        
+        let visitor: FormSelectionVisitor = new FormSelectionVisitor("20");
+        npath.resolveWithVisitor(this.document(), visitor);
+
+        this.currentSelection = npath;
+        this.formType = visitor.formType();
+        this.currentSelectionNode = visitor.selection();
+        this.currentSelectionType = visitor.selectionType();
     }
 
     /**
@@ -398,6 +431,22 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
     }
 
+    /**
+     * Returns the currently selected definition.
+     * @return
+     */
+    public selectedDefinition(): Aai20SchemaDefinition {
+        if (this.currentSelectionType === "definition") {
+            return this.currentSelectionNode as Aai20SchemaDefinition;
+        } else {
+            return null;
+        }
+    }
+
+    public deselectDefinition(): void {
+        this.master.deselectDefinition();
+    }
+
     public preDocumentChange(): void {
         // Before changing the document, let's clear/reset the current selection
         this.selectionService.clearAllSelections();
@@ -409,6 +458,9 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
         // After changing the model, we should re-validate it
         this.validateModel();
+
+        // Update the form being displayed (this might change if the thing currently selected was deleted)
+        this.updateFormDisplay(this.selectionService.currentSelection());
 
         // Set the current state
         this.sourceOriginal = this.sourceValue;
@@ -481,7 +533,72 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
     }
 
+    // Implementation of IEditorsProvider ----------------------------------
+
+    public getServerEditor(): ServerEditorComponent {
+        return null;
+    }
+
+    public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
+        return null;
+    }
+
+    public getSecurityRequirementEditor(): SecurityRequirementEditorComponent {
+        return null;
+    }
+
+    public getDataTypeEditor(): DataTypeEditorComponent {
+        return this.dataTypeEditor;
+    }
+
+    public getResponseEditor(): ResponseEditorComponent {
+        return null;
+    }
+
+    public getParameterEditor(): ParameterEditorComponent {
+        return null;
+    }
+
+    public getPropertyEditor(): PropertyEditorComponent {
+        return this.propertyEditor;
+    }
+
     importComponent(type: ComponentType) {
 
+    }
+}
+
+/**
+ * Visitor used to determine what form should be displayed based on the selected node.
+ */
+export class FormSelectionVisitor extends CombinedVisitorAdapter {
+
+    public _selectionType: string = "main";
+    public _selectedNode: Node = null;
+
+    constructor(private version: string) {
+        super();
+    }
+
+    public selectionType(): string {
+        return this._selectionType;
+    }
+
+    public formType(): string {
+        return this._selectionType + "_" + this.version;
+    }
+
+    public selection(): Node {
+        return this._selectedNode;
+    }
+
+    public visitChannelItem(node: AaiChannelItem): void {
+        this._selectedNode = node;
+        this._selectionType = "channel";
+    }
+
+    public visitSchemaDefinition(node: Aai20SchemaDefinition): void {
+        this._selectedNode = node;
+        this._selectionType = "definition";
     }
 }

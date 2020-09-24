@@ -33,19 +33,28 @@ import {
     Library,
     Node,
     NodePath,
+    Oas20SchemaDefinition,
+    Oas30SchemaDefinition,
     AaiChannelItem,
     Aai20Document,
+    Aai20Components,
+    Aai20SchemaDefinition,
     TraverserDirection,
     VisitorUtil
 } from "apicurio-data-models";
+import {AddChannelDialogComponent} from "./dialogs/add-channel.component";
+import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindChannelItemsVisitor} from "../_visitors/channel-items.visitor";
+import {FindAaiSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
 import {EditorsService} from "../_services/editors.service";
+import {DataTypeData, DataTypeEditorComponent, IDataTypeEditorHandler} from "./editors/data-type-editor.component";
 import {RestResourceService} from "../_services/rest-resource.service";
 import {AbstractBaseComponent} from "./common/base-component";
 import {DocumentService} from "../_services/document.service";
+import {RenameEntityDialogComponent, RenameEntityEvent} from "./dialogs/rename-entity.component";
 import {KeypressUtils} from "../_util/keypress.util";
 import {ObjectUtils} from "apicurio-ts-core";
 import {FeaturesService} from "../_services/features.service";
@@ -79,8 +88,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         top: "0px"
     };
 
+    @ViewChild("addChannelDialog") addChannelDialog: AddChannelDialogComponent;
+
+    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+
     filterCriteria: string = null;
     _channels: AaiChannelItem[];
+    _defs: Aai20SchemaDefinition[];
 
     /**
      * C'tor.
@@ -104,13 +119,21 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     protected onDocumentChange(): void {
-
+        this._channels = null;
+        this._defs = null;
     }
 
     public onChannelsKeypress(event: KeyboardEvent): void {
         if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
             let channels: AaiChannelItem[] = this.channels();
             this.handleArrowKeypress(event, channels);
+        }
+    }
+
+    public onDefinitionsKeypress(event: KeyboardEvent): void {
+        if (KeypressUtils.isUpArrow(event) || KeypressUtils.isDownArrow(event)) {
+            let definitions: Aai20SchemaDefinition[] = this.definitions();
+            this.handleArrowKeypress(event, definitions);
         }
     }
 
@@ -165,6 +188,88 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the array of definitions, filtered by search criteria and sorted.
+     */
+    public definitions(): Aai20SchemaDefinition[] {
+        let viz: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(this.filterCriteria);
+        if (!this._defs) {
+            (this.document.components as Aai20Components).getSchemaDefinitions().forEach( definition => {
+                VisitorUtil.visitNode(definition, viz);
+            })
+            this._defs = viz.getSortedSchemaDefinitions();
+        }
+        return this._defs;
+    }
+
+    /**
+     * Gets a definition by its name.
+     * @param name
+     */
+    protected getDefinitionByName(name: string): Aai20SchemaDefinition {
+        return (this.document.components as Aai20Components).getSchemaDefinition(name);
+    }
+
+    public definitionsPath(): string {
+        return "/components/schemas";
+    }
+
+    /**
+     * Called to return the currently selected path (if one is selected).  If not, returns "/".
+     */
+    public getCurrentChannelSelection(): string {
+        let currentSelection: string = this.__selectionService.currentSelection();
+        let npath: NodePath = new NodePath(currentSelection);
+        let node: Node = npath.resolve(this.document);
+        let rval: string = "";
+        if (node && node["_path"]) {
+            rval = node["_path"] + "/";
+        } else if (node && node.parent() && node.parent()["_path"]) {
+            rval = node.parent()["_path"] + "/";
+        }
+        if (rval.endsWith("//")) {
+            rval = rval.substring(0, rval.length - 1);
+        }
+        return rval;
+    }
+
+     /**
+     * Called when the user fills out the Add Channel modal dialog and clicks Add.
+     * @param channel
+     */
+    public addChannel(channel: string): void {
+        let command: ICommand = CommandFactory.createNewChannelCommand(channel);
+        this.commandService.emit(command);
+        this.selectChannel(this.document.channels.get(channel) as AaiChannelItem);
+    }
+
+    /**
+     * Called when the user clicks "Rename Channel" in the context-menu for a channel.
+     */
+    public renameChannel(modalData?: any): void {
+        console.info("[AsyncApiEditorMasterComponent] Renaming path: ", modalData);
+        if (undefined === modalData || modalData === null) {
+            let channelItem: any = this.contextMenuSelection.resolve(this.document);
+            //this.renamePathDialog.open(this.document, pathItem);
+        } else {
+            let channel: AaiChannelItem = modalData.channel;
+            let oldName: string = channel.getName();
+            console.info("[AsyncApiEditorMasterComponent] Rename definition to: %s", modalData.name);
+            //let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
+            //his.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Delete Channel" in the context-menu for a channel.
+     */
+    public deleteChannel(): void {
+        let channelItem: AaiChannelItem = this.contextMenuSelection.resolve(this.document) as AaiChannelItem;
+        let command: ICommand = CommandFactory.createDeletePathCommand(channelItem.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
+    }
+
+    /**
      * Returns true if the given item is a valid channel in the current document.
      * @param channelItem
      */
@@ -180,11 +285,130 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user fills out the Add Definition modal dialog and clicks Add.
+     */
+    public addDefinition(data: DataTypeData): void {
+        console.info("[AsyncAPIEditorMasterComponent] Adding a definition: ", data);
+        let example: any = (data.example === "") ? null : data.example;
+        example = this.exampleAsObject(example);
+        let command: ICommand = CommandFactory.createNewSchemaDefinitionCommand(this.document.getDocumentType(),
+            data.name, example, data.description);
+        this.commandService.emit(command);
+        this.selectDefinition(this.getDefinitionByName(data.name));
+    }
+
+    /**
+     * Called when the user clicks "Clone Definition" in the context-menu for a definition.
+     */
+    public cloneDefinition(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            let schemaDef: any = this.contextMenuSelection.resolve(this.document);
+            this.cloneDefinitionDialog.open(this.document, schemaDef);
+        } else {
+            let definition: Node = modalData.definition;
+            console.info("[AsyncApiEditorMasterComponent] Clone definition: %s", modalData.name);
+            let cloneSrcObj: any = Library.writeNode(definition);
+            let command: ICommand = CommandFactory.createAddSchemaDefinitionCommand(this.document.getDocumentType(),
+                modalData.name, cloneSrcObj);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Rename Definition" in the context-menu for a schema definition.
+     */
+    public renameDefinition(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let schemaDef: Aai20SchemaDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = this.definitionName(schemaDef);
+            let definitionNames: string[] = [];
+            let master: AsyncApiEditorMasterComponent = this;
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitSchemaDefinition(node: Aai20SchemaDefinition): void {
+                    definitionNames.push(master.definitionName(node));
+                }
+            }, TraverserDirection.down);
+            this.renameDefinitionDialog.open(schemaDef, name, newName => {
+                return definitionNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let definition: Aai20SchemaDefinition = <any>event.entity;
+            let oldName: string = this.definitionName(definition);
+            console.info("[AsyncApiEditorMasterComponent] Rename definition to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameSchemaDefinitionCommand(this.document.getDocumentType(),
+                oldName, event.newName);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Converts a JSON formatted string example to an object.
+     * @param from
+     */
+    protected exampleAsObject(from: string): any {
+        try {
+            return JSON.parse(from);
+        } catch (e) {
+            return from;
+        }
+    }
+
+    /**
+     * Figures out the definition name.
+     * @param schemaDef
+     */
+    protected definitionName(schemaDef: Aai20SchemaDefinition): string {
+        return schemaDef.getName();
+    }
+
+    /**
+     * Returns true if the given schema definition is valid and contained within the
+     * current document.
+     * @param definition
+     * @return
+     */
+    protected isValidDefinition(definition: Aai20SchemaDefinition): boolean {
+        if (ObjectUtils.isNullOrUndefined(definition)) {
+            return false;
+        }
+        return this.definitions().indexOf(definition) !== -1;
+    }
+
+    /**
+     * Called when the user selects the main/default element from the master area.
+     */
+    public selectMain(): void {
+        this.__selectionService.selectRoot();
+    }
+
+    /**
      * Called when the user selects a path from the master area.
      * @param channel
      */
     public selectChannel(path: AaiChannelItem): void {
         this.__selectionService.selectNode(path);
+    }
+
+     /**
+     * Called to deselect the currently selected channel.
+     */
+    public deselectChannel(): void {
+        this.selectMain();
+    }
+
+    /**
+     * Called when the user selects a definition from the master area.
+     * @param def
+     */
+    public selectDefinition(def: Aai20SchemaDefinition): void {
+        this.__selectionService.selectNode(def);
+    }
+
+    /**
+     * Deselects the currently selected definition.
+     */
+    public deselectDefinition(): void {
+        this.selectMain();
     }
 
     /**
@@ -215,6 +439,56 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             return false;
         }
         return this.contextMenuSelection.contains(node);
+    }
+
+    /**
+     * Called when the user right-clicks on a path.
+     * @param event
+     * @param pathItem
+     */
+    public showChannelContextMenu(event: MouseEvent, channelItem: AaiChannelItem): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(channelItem);
+        this.contextMenuType = "channel";
+    }
+
+    /**
+     * Called when the user right-clicks on a data type.
+     * @param event
+     * @param definition
+     */
+    public showDefinitionContextMenu(event: MouseEvent, definition: Aai20SchemaDefinition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(definition);
+        this.contextMenuType = "definition";
+    }
+
+    /**
+     * Called when the user clicks somewhere in the document.  Used to close the context
+     * menu if it is open.
+     */
+    @HostListener("document:click", ["$event"])
+    public onDocumentClick(event: MouseEvent): void {
+        // For FireFox (especially macOS), suppress the right click event 
+        // to prevent it immediately closing the context menu just activated.
+        if (event && event.which === 3) { 
+            return; 
+        }
+        this.closeContextMenu();
+    }
+
+    /**
+     * Closes the context menu.
+     */
+    private closeContextMenu(): void {
+        this.contextMenuType = null;
+        this.contextMenuSelection = null;
     }
 
     /**
@@ -249,6 +523,33 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public channelClasses(node: AaiChannelItem): string {
         return this.entityClasses(node);
+    }
+
+    /**
+     * Returns the classes that should be applied to the schema definition in the master view.
+     * @param node
+     * @return
+     */
+    public definitionClasses(node: Node): string {
+        return this.entityClasses(node);
+    }
+
+    /**
+     * Opens the Add Definition Editor (full screen editor for adding a data type).
+     */
+    public openAddDefinitionEditor(): void {
+        let dtEditor: DataTypeEditorComponent = this.editors.getDataTypeEditor();
+        let handler: IDataTypeEditorHandler = {
+            onSave: (event) => {
+                this.addDefinition(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        dtEditor.open(handler, this.document);
+    }
+
+    importsEnabled(): boolean {
+        return this.features.getFeatures().componentImports;
     }
 }
 

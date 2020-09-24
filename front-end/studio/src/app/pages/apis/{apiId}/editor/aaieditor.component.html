@@ -1,12 +1,25 @@
 <div (window:keydown)="onGlobalKeyDown($event)" class="aai-editor">
 
-    <title-bar [document]="document()" [validationErrors]="validationErrors" [undoableCommandCount]="_undoableCommandCount" [redoableCommandCount]="_redoableCommandCount" (onUndoClick)="undoLastCommand()" (onRedoClick)="redoLastCommand()" (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
+    <title-bar [document]="document()" 
+               [validationErrors]="validationErrors" 
+               [undoableCommandCount]="_undoableCommandCount" 
+               [redoableCommandCount]="_redoableCommandCount" 
+               (onUndoClick)="undoLastCommand()" 
+               (onRedoClick)="redoLastCommand()" 
+               (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
 
     <aaimaster [document]="document()" (onImportComponent)="importComponent($event)" #master></aaimaster>
-    <div class="editor-detail">
-        <aaimain-form [document]="document()" class="editor-detail-form"></aaimain-form>
+    <div class="editor-detail" [ngSwitch]="formType">
+        <aaimain-form [document]="document()" class="editor-detail-form" 
+                         *ngSwitchCase="'main_20'"></aaimain-form>
+        <aaimain-form [document]="document()" class="editor-detail-form" 
+                         *ngSwitchCase="'channel_20'"></aaimain-form>
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         *ngSwitchCase="'definition_20'"></definition-form>
     </div>
 
+    <data-type-editor #dataTypeEditor></data-type-editor>
+    <property-editor #propertyEditor></property-editor>
     <!--
     <div class="editor-toolbar">
         <div class="title">Editing API: <em>{{ api.name }}</em></div>

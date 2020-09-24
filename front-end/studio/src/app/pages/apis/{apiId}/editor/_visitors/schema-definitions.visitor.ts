@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, CombinedVisitorAdapter} from "apicurio-data-models";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, Aai20SchemaDefinition, CombinedVisitorAdapter} from "apicurio-data-models";
 
 /**
  * Visitor used to find schema definitions.
@@ -58,6 +58,62 @@ export class FindSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
      * @param definition
      */
     public static definitionName(definition: Oas20SchemaDefinition|Oas30SchemaDefinition): string {
+        return definition.getName();
+    }
+
+    /**
+     * Returns true if the given name is accepted by the current filter criteria.
+     * @param name
+     */
+    private acceptThroughFilter(name: string): boolean {
+        //console.info("Accepting: %s through filter: %s", name, this.filterCriteria);
+        if (this.filterCriteria === null) {
+            return true;
+        }
+        return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+    }
+
+}
+
+export class FindAaiSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
+
+    schemaDefinitions: Aai20SchemaDefinition[] = [];
+
+    /**
+     * C'tor.
+     * @param filterCriteria
+     */
+    constructor(private filterCriteria: string) {
+        super();
+    }
+
+    /**
+     * Called when a schema definition is visited.
+     * @param node
+     */
+    visitSchemaDefinition(node: Aai20SchemaDefinition): void {
+        let name: string = FindAaiSchemaDefinitionsVisitor.definitionName(node);
+        if (this.acceptThroughFilter(name)) {
+            this.schemaDefinitions.push(node);
+        }
+    }
+
+    /**
+     * Sorts and returns the path items.
+     */
+    public getSortedSchemaDefinitions(): Aai20SchemaDefinition[] {
+        return this.schemaDefinitions.sort( (def1, def2) => {
+            let name1: string = FindAaiSchemaDefinitionsVisitor.definitionName(def1);
+            let name2: string = FindAaiSchemaDefinitionsVisitor.definitionName(def2);
+            return name1.localeCompare(name2);
+        });
+    }
+
+    /**
+     * Figures out the definition name regardless of the version of the model.
+     * @param definition
+     */
+    public static definitionName(definition: Aai20SchemaDefinition): string {
         return definition.getName();
     }
 

@@ -193,7 +193,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public definitions(): Aai20SchemaDefinition[] {
         let viz: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(this.filterCriteria);
         if (!this._defs) {
-            (this.document.components as Aai20Components).getSchemaDefinitions().forEach( definition => {
+            this.document.components.getSchemaDefinitions().forEach( definition => {
                 VisitorUtil.visitNode(definition, viz);
             })
             this._defs = viz.getSortedSchemaDefinitions();
@@ -206,7 +206,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * @param name
      */
     protected getDefinitionByName(name: string): Aai20SchemaDefinition {
-        return (this.document.components as Aai20Components).getSchemaDefinition(name);
+        return this.document.components.getSchemaDefinition(name) as Aai20SchemaDefinition;
     }
 
     public definitionsPath(): string {

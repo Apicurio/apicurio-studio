@@ -214,6 +214,16 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called whenever the user presses a key.
+     * @param event
+     */
+    public onGlobalKeyDown(event: KeyboardEvent): void {
+        if (KeypressUtils.isEscapeKey(event)) {
+            this.closeContextMenu();
+        }
+    }
+    
+    /**
      * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
     public getCurrentChannelSelection(): string {
@@ -257,6 +267,12 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             //let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
             //his.commandService.emit(command);
         }
+    }
+
+    /**
+     * Called when the user clicks "Clone Channel" in the context-menu for a channel.
+     */
+    public cloneChannel(): void {
     }
 
     /**
@@ -339,6 +355,12 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
                 oldName, event.newName);
             this.commandService.emit(command);
         }
+    }
+
+    /**
+     * Called when the user clicks "Delete Definition" in the context-menu for a schema definition.
+     */
+    public deleteDefinition(): void {
     }
 
     /**
@@ -550,6 +572,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
 
     importsEnabled(): boolean {
         return this.features.getFeatures().componentImports;
+    }
+
+    importDataTypes(): void {
+        this.onImportComponent.emit(ComponentType.schema);
     }
 }
 

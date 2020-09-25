@@ -20,11 +20,14 @@ import {ModalDirective} from "ngx-bootstrap";
 import {
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
+    Aai20SchemaDefinition,
     OasDocument,
+    AaiDocument,
+    DocumentType,
     TraverserDirection,
     VisitorUtil
 } from "apicurio-data-models";
-import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
+import {FindSchemaDefinitionsVisitor, FindAaiSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 
 @Component({
@@ -41,7 +44,7 @@ export class CloneDefinitionDialogComponent {
     private _isOpen: boolean = false;
 
     name: string = "";
-    private definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
+    private definition: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition;
 
     defs: string[] = [];
     defExists: boolean = false;
@@ -50,7 +53,7 @@ export class CloneDefinitionDialogComponent {
      * Called to open the dialog.
      * @param definition
      */
-    public open(document: OasDocument, definition: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+    public open(document: OasDocument | AaiDocument, definition: Oas20SchemaDefinition | Oas30SchemaDefinition |  Aai20SchemaDefinition): void {
         this._isOpen = true;
         this.definition = definition;
         this.name = "CloneOf" + definition.getName();
@@ -63,16 +66,30 @@ export class CloneDefinitionDialogComponent {
 
         this.defs = [];
         this.defExists = false;
-        let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(document);
-        definitions.forEach( definition => {
-            this.defs.push(FindSchemaDefinitionsVisitor.definitionName(definition));
-        });
+
+        if (document.getDocumentType() == DocumentType.asyncapi2) {
+            let definitions: Aai20SchemaDefinition[] = this.getAaiDefinitions(<AaiDocument> document);
+            definitions.forEach( definition => {
+                this.defs.push(FindAaiSchemaDefinitionsVisitor.definitionName(definition));
+            });
+        } else {
+            let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(<OasDocument> document);
+            definitions.forEach( definition => {
+                this.defs.push(FindSchemaDefinitionsVisitor.definitionName(definition));
+            });
+        }
     }
 
     private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let vizzy: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
         VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
         return vizzy.getSortedSchemaDefinitions()
+    }
+
+    private getAaiDefinitions(document: AaiDocument): (Aai20SchemaDefinition)[] {
+        let vizzy: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(null);
+        VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
+        return vizzy.getSortedSchemaDefinitions();
     }
 
     /**

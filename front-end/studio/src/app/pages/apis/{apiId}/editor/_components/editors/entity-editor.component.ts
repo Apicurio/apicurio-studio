@@ -18,10 +18,12 @@
 import {
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
+    Aai20SchemaDefinition,
     OasDocument,
+    AaiDocument,
     Node,
     OasOperation,
-    OasPathItem, IDefinition, OasSchema
+    OasPathItem, IDefinition, OasSchema, AaiSchema
 } from "apicurio-data-models";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../_util/keypress.util";
@@ -46,7 +48,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
     public _mode: string = "create";
 
     public handler: IEntityEditorHandler<T, E>;
-    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition;
+    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition;
     public entity: T;
 
     /**
@@ -56,7 +58,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
      * @param entity
      */
     public open(handler: IEntityEditorHandler<T, E>,
-                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition,
+                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition,
                 entity?: T): void {
         this.context = context;
         this.handler = handler;
@@ -165,7 +167,7 @@ export class EntityEditorComponent implements OnChanges {
 
     @Input() entityType: string = "unknown";
     @Input() heading: string = "Configure the Entity";
-    @Input() context: OasDocument | OasPathItem | OasOperation;
+    @Input() context: OasDocument | OasPathItem | OasOperation | AaiDocument;
     @Input() showRequiredFieldsMessage: boolean = false;
     @Input() valid: boolean = true;
     @Input() dirty: boolean = false;
@@ -195,7 +197,7 @@ export class EntityEditorComponent implements OnChanges {
      * Figures out what the context is based on what is passed to it.
      * @param context
      */
-    public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+    public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition | AaiDocument | Aai20SchemaDefinition): void {
         if (context instanceof OasOperation) {
             this.contextIs = "operation";
             this._expandedContext.operation = context as OasOperation;
@@ -207,10 +209,13 @@ export class EntityEditorComponent implements OnChanges {
             this._expandedContext.document = context.ownerDocument();
         } else if (context.ownerDocument() === context) {
             this.contextIs = "document";
-            this._expandedContext.document = context as OasDocument;
+            this._expandedContext.document = context as OasDocument | AaiDocument;
         } else if (context instanceof OasSchema) {
             this.contextIs = "dataType";
             this._expandedContext.dataType = context as Oas20SchemaDefinition | Oas30SchemaDefinition;
+        } else if (context instanceof AaiSchema) {
+            this.contextIs = "dataType";
+            this._expandedContext.dataType = context as Aai20SchemaDefinition;
         } else {
             console.warn("[EntityEditorComponent] Unknown/unexpected context: ", context);
         }
@@ -233,7 +238,7 @@ export class EntityEditorComponent implements OnChanges {
     /**
      * Gets the data type (if any).
      */
-    public dataType(): Oas20SchemaDefinition | Oas30SchemaDefinition {
+    public dataType(): Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition {
         return this._expandedContext.dataType;
     }
 

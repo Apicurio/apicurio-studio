@@ -1,4 +1,54 @@
 <div class="editor-master">
+    <!-- Channel Context Menu -->
+    <ul id="channel-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'channel'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameChannel()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneChannel()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteChannel()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Data Type Context Menu -->
+    <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameDefinition()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneDefinition()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteDefinition()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
     <!-- Search - Used to Filter Channels and Data Type -->
     <div class="editor-search">
 
@@ -7,28 +57,52 @@
     <!-- Outline - Channels, Data Types, Traits -->
     <div class="editor-outline">
         <!-- Channels Section -->
-        <section type="channel" label="Channels" [counterItems]="channels()" [inForm]="false" collaborationNodePath="/channels" contextHelp="The core of any Async API is the set of channesl it exposes.  Each channels is of the form '/channel/to/resource' and can support either Publish or Subscribe operations.">
-            <!--
+        <section type="channel" label="Channels" [counterItems]="channels()" [inForm]="false" 
+                    collaborationNodePath="/channels"
+                    contextHelp="The core of any Async API is the set of channesl it exposes. Each channels is of the form 'channel/to/resource' and can support either Publish or Subscribe operations.">
             <span actions>
                 <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
             </span>
-            -->
             <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #channelList>
                 <signpost *ngIf="channels().length === 0">
                     <span>No channels have been created.</span>
-                    <!-- <a (click)="addChannelDialog.open(document, '/')">Add a channel</a> -->
+                    <a (click)="addChannelDialog.open(document, '/')">Add a channel</a>
                 </signpost>
 
                 <div class="api-channel {{ channelClasses(channel) }}" *ngFor="let channel of channels()">
-                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)"></div>
+                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)"
+                        (contextmenu)="showChannelContextMenu($event, channel)"></div>
                 </div>
             </div>
         </section>
 
         <!-- Data Types Section -->
-        <!--
-        <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false" [collaborationNodePath]="definitionsPath()" contextHelp="It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+        <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false"
+                    [collaborationNodePath]="definitionsPath()"
+                    contextHelp="It is often necessary for many operations to publish/consumer the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+            <span actions>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
+            </span>
+            <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
+                <signpost *ngIf="definitions().length === 0">
+                    <span>No reusable types have been created.</span>
+                    <a (click)="openAddDefinitionEditor()">Add a data type</a>
+                </signpost>
+
+                <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
+                        (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
+            </div>
         </section>
-        -->
     </div>
+
+    <!-- Dialogs -->
+    <add-channel-dialog #addChannelDialog (onAdd)="addChannel($event)"></add-channel-dialog>
+    <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
+    <rename-entity-dialog #renameDefinitionDialog
+                          type="Data Type"
+                          title="Rename Data Type"
+                          warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. operation payload bodies)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          (onRename)="renameDefinition($event)"></rename-entity-dialog>
 </div>

@@ -19,13 +19,16 @@ import {Component} from "@angular/core";
 import {
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
+    Aai20SchemaDefinition,
     OasDocument,
+    AaiDocument,
+    DocumentType,
     TraverserDirection,
     VisitorUtil
 } from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";
-import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
+import {FindSchemaDefinitionsVisitor, FindAaiSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 
 export interface DataTypeData {
@@ -35,11 +38,11 @@ export interface DataTypeData {
     template: string;
 }
 
-export interface DataTypeEditorEvent extends EntityEditorEvent<Oas20SchemaDefinition | Oas30SchemaDefinition> {
+export interface DataTypeEditorEvent extends EntityEditorEvent<Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition> {
     data: DataTypeData;
 }
 
-export interface IDataTypeEditorHandler extends IEntityEditorHandler<Oas20SchemaDefinition | Oas30SchemaDefinition, DataTypeEditorEvent> {
+export interface IDataTypeEditorHandler extends IEntityEditorHandler<Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition, DataTypeEditorEvent> {
     onSave(event: DataTypeEditorEvent): void;
     onCancel(event: DataTypeEditorEvent): void;
 }
@@ -51,7 +54,7 @@ export interface IDataTypeEditorHandler extends IEntityEditorHandler<Oas20Schema
     templateUrl: "data-type-editor.component.html",
     styleUrls: ["data-type-editor.component.css"]
 })
-export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition | Oas30SchemaDefinition, DataTypeEditorEvent> {
+export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition, DataTypeEditorEvent> {
 
     protected exampleValid: boolean = true;
     protected exampleFormattable: boolean = false;
@@ -69,8 +72,13 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
     public doAfterOpen(): void {
         this.defs = [];
         this.defExists = false;
-        let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(<OasDocument> this.context.ownerDocument());
-        this.defs = definitions.map(definition => FindSchemaDefinitionsVisitor.definitionName(definition));
+        if (this.context.ownerDocument().getDocumentType() == DocumentType.asyncapi2) {
+            let definitions: Aai20SchemaDefinition[] = this.getAaiDefinitions(<AaiDocument> this.context.ownerDocument());
+            this.defs = definitions.map(definition => FindAaiSchemaDefinitionsVisitor.definitionName(definition));
+        } else {
+            let definitions: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = this.getDefinitions(<OasDocument> this.context.ownerDocument());
+            this.defs = definitions.map(definition => FindSchemaDefinitionsVisitor.definitionName(definition));
+        }
     }
 
     /**
@@ -170,7 +178,12 @@ export class DataTypeEditorComponent extends EntityEditor<Oas20SchemaDefinition 
     private getDefinitions(document: OasDocument): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let vizzy: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
         VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
-        return vizzy.getSortedSchemaDefinitions()
+        return vizzy.getSortedSchemaDefinitions();
     }
 
+    private getAaiDefinitions(document: AaiDocument): (Aai20SchemaDefinition)[] {
+        let vizzy: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(null);
+        VisitorUtil.visitTree(document, vizzy, TraverserDirection.down);
+        return vizzy.getSortedSchemaDefinitions();
+    }
 }

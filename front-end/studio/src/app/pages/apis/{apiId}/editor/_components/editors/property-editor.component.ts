@@ -21,11 +21,15 @@ import {
     Oas20SchemaDefinition,
     Oas30Schema,
     Oas30SchemaDefinition,
+    AaiSchema,
+    Aai20SchemaDefinition,
     OasDocument,
+    AaiDocument,
+    DocumentType,
     SimplifiedPropertyType,
     SimplifiedType,
     TraverserDirection,
-    VisitorUtil
+    VisitorUtil, Aai20Schema
 } from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {
@@ -33,10 +37,11 @@ import {
     DropDownOption,
     DropDownOptionValue as Value
 } from "../../../../../../components/common/drop-down.component";
-import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
+import {FindSchemaDefinitionsVisitor, FindAaiSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 import {ObjectUtils} from "apicurio-ts-core";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
 import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
+import Aai20PropertySchema = Aai20Schema.Aai20PropertySchema;
 
 export interface PropertyData {
     name: string;
@@ -44,11 +49,11 @@ export interface PropertyData {
     type: SimplifiedPropertyType;
 }
 
-export interface PropertyEditorEvent extends EntityEditorEvent<Oas20PropertySchema | Oas30PropertySchema> {
+export interface PropertyEditorEvent extends EntityEditorEvent<Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema> {
     data: PropertyData;
 }
 
-export interface IPropertyEditorHandler extends IEntityEditorHandler<Oas20PropertySchema | Oas30PropertySchema, PropertyEditorEvent> {
+export interface IPropertyEditorHandler extends IEntityEditorHandler<Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema, PropertyEditorEvent> {
     onSave(event: PropertyEditorEvent): void;
     onCancel(event: PropertyEditorEvent): void;
 }
@@ -61,7 +66,7 @@ export interface IPropertyEditorHandler extends IEntityEditorHandler<Oas20Proper
     styleUrls: ["property-editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | Oas30PropertySchema, PropertyEditorEvent> {
+export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema, PropertyEditorEvent> {
 
     props: string[] = [];
     propExists: boolean = false;
@@ -71,7 +76,7 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
     public doAfterOpen(): void {
         this.props = [];
         this.propExists = false;
-        let properties: (Oas20PropertySchema | Oas30PropertySchema)[] = this.getProps();
+        let properties: (Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema)[] = this.getProps();
         this.props = properties.map(p => p.getPropertyName());
     }
 
@@ -79,7 +84,7 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
      * Initializes the editor's data model from a provided entity (initialize the editor data model from an entity).
      * @prop entity
      */
-    public initializeModelFromEntity(entity: Oas20PropertySchema | Oas30PropertySchema): void {
+    public initializeModelFromEntity(entity: Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema): void {
         // Note: nothing to do here because properties aren't editable via the full screen editor.
     }
 
@@ -115,12 +120,12 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
     /**
      * Gets the array of properties for the current context.
      */
-    private getProps(): (Oas20PropertySchema | Oas30PropertySchema)[] {
-        let parent: Oas20SchemaDefinition | Oas30SchemaDefinition = this.context as Oas20SchemaDefinition | Oas30SchemaDefinition;
+    private getProps(): (Oas20PropertySchema | Oas30PropertySchema | Aai20PropertySchema)[] {
+        let parent: Oas20SchemaDefinition | Oas30SchemaDefinition |  Aai20SchemaDefinition = this.context as Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition;
         if (parent.properties) {
-            let props: (Oas20PropertySchema | Oas30PropertySchema)[] = [];
+            let props: (Oas20PropertySchema | Oas30PropertySchema |  Aai20PropertySchema)[] = [];
             Object.keys(parent.properties).forEach( pkey => {
-                props.push(parent.properties[pkey] as Oas20PropertySchema | Oas30PropertySchema);
+                props.push(parent.properties[pkey] as Oas20PropertySchema | Oas30PropertySchema |  Aai20PropertySchema);
             });
             return props;
         }
@@ -276,15 +281,24 @@ export class PropertyEditorComponent extends EntityEditor<Oas20PropertySchema | 
     }
 
     private addRefTypes(options: DropDownOption[]): void {
-        let doc: OasDocument = <OasDocument> this.context.ownerDocument();
         let refPrefix: string = "#/components/schemas/";
-        if (doc.is2xDocument()) {
-            refPrefix = "#/definitions/";
-        }
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition)[]
 
-        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
-        VisitorUtil.visitTree(doc, viz, TraverserDirection.down);
-        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        if (this.context.ownerDocument().getDocumentType() == DocumentType.asyncapi2) {
+            let doc: AaiDocument = <AaiDocument> this.context.ownerDocument();
+            let viz: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(null);
+            VisitorUtil.visitTree(doc, viz, TraverserDirection.down);
+            defs = viz.getSortedSchemaDefinitions();
+
+        } else {
+            let doc: OasDocument = <OasDocument> this.context.ownerDocument();
+            if (doc.is2xDocument()) {
+                refPrefix = "#/definitions/";
+            }
+            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+            VisitorUtil.visitTree(doc, viz, TraverserDirection.down);
+            defs = viz.getSortedSchemaDefinitions();
+        }
         if (defs.length > 0) {
             options.push(DIVIDER);
             defs.forEach(def => {

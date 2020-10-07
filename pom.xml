@@ -119,7 +119,7 @@
         <version.javax.enterprise>2.0</version.javax.enterprise>
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>
         <version.junit>4.13</version.junit>
-        <version.org.apache.httpcomponents>4.5.12</version.org.apache.httpcomponents>
+        <version.org.apache.httpcomponents>4.5.13</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.13</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.8.1</version.org.apache.commons.commons-pool2>
         <version.org.eclipse.mylyn.github>2.1.5</version.org.eclipse.mylyn.github>

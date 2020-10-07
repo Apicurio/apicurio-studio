@@ -70,8 +70,8 @@ public class PreviewServlet extends HttpServlet {
         String rid = req.getParameter("rid");
         
         logger.debug("Rendering document preview for API: {}", apiId);
-        
-        String specURL = "download?type=api&format=json&id=" + apiId;
+
+        String specURL = "download?type=api&format=json&dereference=true&id=" + apiId;
         logger.debug("Spec URL: {}", specURL);
         
         String content;

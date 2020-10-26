@@ -32,6 +32,11 @@ import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
+import {ChannelFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel-form.component";
+import {MessageTraitFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/messagetrait-form.component";
+import {MessageTraitItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/messagetrait-item.component";
+import {OperationTraitFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operationtrait-form.component";
+import {OperationTraitItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/operationtrait-item.component";
 import {EditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/master.component";
 import {AsyncApiEditorMasterComponent} from "./pages/apis/{apiId}/editor/_components/aaimaster.component";
 import {ApiEditorComponent} from "./pages/apis/{apiId}/editor/editor.component";
@@ -97,11 +102,15 @@ import {CounterComponent} from "./pages/apis/{apiId}/editor/_components/common/c
 import {InlineExampleEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-example-editor.component";
 import {DefinitionExampleSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/example-section.component";
 import {PathInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/info-section.component";
+import {ChannelInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/info-section.component";
 import {ParameterEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/property-editor.component";
 import {SchemaTypeEditorComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/schema-type-editor.component";
 import {OperationsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operations-section.component";
+import {ChannelOperationsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operations-section.component";
 import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/info-section.component";
+import {ChannelOperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/info-section.component";
+import {MessageSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/message-section.component";
 import {NoOperationComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/no-operation.component";
 import {SectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/section.component";
 import {RequestBodySectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/requestBody-section.component";
@@ -120,6 +129,8 @@ import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 import {CookieParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-params-section.component";
 import {CookieParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-param-row.component";
 import {ResponseEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/response-editor.component";
+import {OperationTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/operationtrait-editor.component";
+import {MessageTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/messagetrait-editor.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
 import {ResponseFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-form.component";
 import {CloneResponseDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-response-definition.component";
@@ -138,26 +149,30 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent, InlineMarkdownEditorComponent, OperationInfoSectionComponent,
-        SetLicenseDialogComponent, ClonePathDialogComponent, CloneDefinitionDialogComponent, ScopesInputComponent,
-        AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent, NoOperationComponent, ContentComponent,
-        PropertyRowComponent, PathFormComponent, QueryParamRowComponent, SectionComponent, RequestBodySectionComponent,
-        DefinitionItemComponent, DefinitionFormComponent, FormDataParamRowComponent, ResponseTab30Component,
-        EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent, AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent,
-        AddResponseDialogComponent, CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, ResponseTabComponent,
-        AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent, RenameEntityDialogComponent, AddExampleDialogComponent,
-        EditExampleDialogComponent, AddExample20DialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
-        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, SecurityRequirementEditorComponent,
-        InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent, ValidationAggregateComponent, ContactSectionComponent,
-        AsyncApiContactSectionComponent, LicenseSectionComponent, AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
+        ChannelOperationInfoSectionComponent, MessageSectionComponent, SetLicenseDialogComponent, ClonePathDialogComponent,
+        CloneDefinitionDialogComponent, ScopesInputComponent, AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent,
+        NoOperationComponent, ContentComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
+        MessageTraitFormComponent, MessageTraitItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
+        QueryParamRowComponent, SectionComponent, RequestBodySectionComponent, DefinitionItemComponent, DefinitionFormComponent,
+        FormDataParamRowComponent, ResponseTab30Component, EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent,
+        AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent, AddResponseDialogComponent,
+        CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, OperationTraitEditorComponent,
+        ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
+        RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
+        EditorTitleBarComponent, EditExample20DialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
+        ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
+        AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
         SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
-        HeaderParamsSectionComponent, OperationsSectionComponent, MediaTypeRowComponent, CollaboratorAggregateComponent,
-        CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent, ResponseEditorComponent,
-        ResponseFormComponent, CloneResponseDefinitionDialogComponent, AsyncApiEditorComponent, GraphQLEditorComponent,
-        PropertiesSectionComponent, InheritanceSchemasSectionComponent, SchemaRowComponent, AddSchemaDialogComponent
+        HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
+        CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
+        ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
+        AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
+        SchemaRowComponent, AddSchemaDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

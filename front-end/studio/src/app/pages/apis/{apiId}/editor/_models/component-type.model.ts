@@ -35,10 +35,12 @@ export function componentTypeToString(type: ComponentType): string {
             return "securityScheme";
         case ComponentType.link:
             return "link";
+        case ComponentType.messageTrait:
+            return "messageTrait";
     }
     return "n/a";
 }
 
 export enum ComponentType {
-    schema, response, parameter, header, requestBody, callback, example, securityScheme, link
+    schema, response, parameter, header, requestBody, callback, example, securityScheme, link, messageTrait
 }

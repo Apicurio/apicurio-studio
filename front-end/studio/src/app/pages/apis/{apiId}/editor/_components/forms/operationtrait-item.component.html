@@ -1,0 +1,5 @@
+<span class="icon fa fa-fw fa-cog"></span>
+<span class="name">{{ operationTraitName() }}</span>
+<span class="imported label label-info" *ngIf="isImported()">Imported</span>
+<collaborator-aggregate [nodePath]="asNodePath()"></collaborator-aggregate>
+<validation-aggregate [models]="[operationTrait]"></validation-aggregate>

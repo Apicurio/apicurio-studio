@@ -33,12 +33,12 @@ import {
     Library,
     Node,
     NodePath,
-    Oas20SchemaDefinition,
-    Oas30SchemaDefinition,
     AaiChannelItem,
     Aai20Document,
     Aai20Components,
     Aai20SchemaDefinition,
+    AaiMessageTraitDefinition,
+    AaiOperationTraitDefinition,
     TraverserDirection,
     VisitorUtil
 } from "apicurio-data-models";
@@ -46,6 +46,8 @@ import {AddChannelDialogComponent} from "./dialogs/add-channel.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindChannelItemsVisitor} from "../_visitors/channel-items.visitor";
 import {FindAaiSchemaDefinitionsVisitor} from "../_visitors/schema-definitions.visitor";
+import {FindMessageTraitDefinitionsVisitor} from "../_visitors/messagetrait-definitions.visitor";
+import {FindOperationTraitDefinitionsVisitor} from "../_visitors/operationtrait-definitions.visitor";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";
@@ -59,6 +61,8 @@ import {KeypressUtils} from "../_util/keypress.util";
 import {ObjectUtils} from "apicurio-ts-core";
 import {FeaturesService} from "../_services/features.service";
 import {ComponentType} from "../_models/component-type.model";
+import { IOperationTraitEditorHandler, OperationTraitData, OperationTraitEditorComponent } from "./editors/operationtrait-editor.component";
+import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorComponent } from "./editors/messagetrait-editor.component";
 
 
 /**
@@ -93,9 +97,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
 
+    @ViewChild("renameOperationTraitDialog") renameOperationTraitDialog: RenameEntityDialogComponent;
+    @ViewChild("renameMessageTraitDialog") renameMessageTraitDialog: RenameEntityDialogComponent;
+
     filterCriteria: string = null;
     _channels: AaiChannelItem[];
     _defs: Aai20SchemaDefinition[];
+    _opTraitsDefs: AaiOperationTraitDefinition[];
+    _msgTraitsDefs: AaiMessageTraitDefinition[];
 
     /**
      * C'tor.
@@ -121,6 +130,8 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     protected onDocumentChange(): void {
         this._channels = null;
         this._defs = null;
+        this._opTraitsDefs = null;
+        this._msgTraitsDefs = null;
     }
 
     public onChannelsKeypress(event: KeyboardEvent): void {
@@ -172,6 +183,22 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user searches in the master area.
+     * @param criteria
+     */
+    public filterAll(criteria: string): void {
+        console.info("[AsyncApiEditorMasterComponent] Filtering master items: %s", criteria);
+        this.filterCriteria = criteria;
+        if (this.filterCriteria !== null) {
+            this.filterCriteria = this.filterCriteria.toLowerCase();
+        }
+        this._channels = null;
+        this._defs = null;
+        this._opTraitsDefs = null;
+        this._msgTraitsDefs = null;
+    }
+
+    /**
      * Returns an array of paths that match the filter criteria and are sorted alphabetically.
      */
     public channels(): AaiChannelItem[] {
@@ -199,6 +226,34 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             this._defs = viz.getSortedSchemaDefinitions();
         }
         return this._defs;
+    }
+
+    /**
+     * Returns the array of operation trait definitions, filtered by search criteria and sorted.
+     */
+    public operationTraits(): AaiOperationTraitDefinition[] {
+        if (!this._opTraitsDefs) {
+            let viz: FindOperationTraitDefinitionsVisitor = new FindOperationTraitDefinitionsVisitor(this.filterCriteria);
+            this.document.components.getOperationTraitDefinitionsList().forEach( opTraitDef => {
+                VisitorUtil.visitNode(opTraitDef, viz);
+            })
+            this._opTraitsDefs = viz.getSortedOperationTraitDefinitions();
+        }
+        return this._opTraitsDefs;
+    }
+
+    /**
+     * Returns the array of message trait definitions, filtered by search criteria and sorted.
+     */
+    public messageTraits(): AaiMessageTraitDefinition[] {
+        if (!this._msgTraitsDefs) {
+            let viz: FindMessageTraitDefinitionsVisitor = new FindMessageTraitDefinitionsVisitor(this.filterCriteria);
+            this.document.components.getMessageTraitDefinitionsList().forEach( msgTraitDef => {
+                VisitorUtil.visitNode(msgTraitDef, viz);
+            })
+            this._msgTraitsDefs = viz.getSortedMessageTraitDefinitions();
+        }
+        return this._msgTraitsDefs;
     }
 
     /**
@@ -264,8 +319,8 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             let channel: AaiChannelItem = modalData.channel;
             let oldName: string = channel.getName();
             console.info("[AsyncApiEditorMasterComponent] Rename definition to: %s", modalData.name);
-            //let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
-            //his.commandService.emit(command);
+            let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
+            this.commandService.emit(command);
         }
     }
 
@@ -364,6 +419,88 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user fills out the Add Operation Trait page and clicks Add.
+     */
+    public addOperationTrait(trait: OperationTraitData): void {
+        console.info("[AsyncAPIEditorMasterComponent] Adding an operation trait: ", trait);
+        let command: ICommand = CommandFactory.createNewOperationTraitDefinitionCommand(trait.name, trait.description);
+        this.commandService.emit(command);
+        this.deselectOperationTrait();
+    }
+
+    /**
+     * Called when the user clicks "Rename OperationTrait" in the context-menu for a OperationTrait.
+     */
+    public renameOperationTrait(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let operationTrait: AaiOperationTraitDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = operationTrait.getName();
+            let operationTraitNames: string[] = [];
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitOperationTraitDefinition(node: AaiOperationTraitDefinition): void {
+                    operationTraitNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameMessageTraitDialog.open(operationTrait, name, newName => {
+                return operationTraitNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let operationTrait: AaiOperationTraitDefinition = <any>event.entity;
+            let oldName: string = operationTrait.getName();
+            console.info("[AsyncApiEditorMasterComponent] Rename operationTrait to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameOperationTraitDefinitionCommand(oldName, event.newName);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Delete Operation Trait" in the context-menu for a trait.
+     */
+    public deleteOperationTrait(): void {
+    }
+
+    /**
+     * Called when the user fills out the Add Message Trait page and clicks Add.
+     */
+    public addMessageTrait(trait: MessageTraitData): void {
+        console.info("[AsyncAPIEditorMasterComponent] Adding a message trait: ", trait);
+        let command: ICommand = CommandFactory.createNewMessageTraitDefinitionCommand(trait.name, trait.description);
+        this.commandService.emit(command);
+        this.deselectMessageTrait();
+    }
+
+    /**
+     * Called when the user clicks "Rename MessageTrait" in the context-menu for a MessageTrait.
+     */
+    public renameMessageTrait(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let messageTrait: AaiMessageTraitDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = messageTrait.getName();
+            let messageTraitNames: string[] = [];
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitMessageTraitDefinition(node: AaiMessageTraitDefinition): void {
+                    messageTraitNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameMessageTraitDialog.open(messageTrait, name, newName => {
+                return messageTraitNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let messageTrait: AaiMessageTraitDefinition = <any>event.entity;
+            let oldName: string = messageTrait.getName();
+            console.info("[AsyncApiEditorMasterComponent] Rename messageTrait to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameMessageTraitDefinitionCommand(oldName, event.newName);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Delete Message Trait" in the context-menu for a trait.
+     */
+    public deleteMessageTrait(): void {
+    }
+    
+    /**
      * Converts a JSON formatted string example to an object.
      * @param from
      */
@@ -404,11 +541,11 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
-     * Called when the user selects a path from the master area.
+     * Called when the user selects a channel from the master area.
      * @param channel
      */
-    public selectChannel(path: AaiChannelItem): void {
-        this.__selectionService.selectNode(path);
+    public selectChannel(channel: AaiChannelItem): void {
+        this.__selectionService.selectNode(channel);
     }
 
      /**
@@ -430,6 +567,36 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * Deselects the currently selected definition.
      */
     public deselectDefinition(): void {
+        this.selectMain();
+    }
+
+    /**
+     * Called when the user selects an operation trait definition from the master area.
+     * @param operationTraitDef
+     */
+    public selectOperationTrait(operationTraitDef: AaiOperationTraitDefinition): void {
+        this.__selectionService.selectNode(operationTraitDef);
+    }
+
+    /**
+     * Deselects the currently selected operation trait definition.
+     */
+    public deselectOperationTrait(): void {
+        this.selectMain();
+    }
+
+    /**
+     * Called when the user selects a message trait definition from the master area.
+     * @param messageTraitDef
+     */
+    public selectMessageTrait(messageTraitDef: AaiMessageTraitDefinition): void {
+        this.__selectionService.selectNode(messageTraitDef);
+    }
+
+    /**
+     * Deselects the currently selected message trait definition.
+     */
+    public deselectMessageTrait(): void {
         this.selectMain();
     }
 
@@ -489,6 +656,34 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         this.contextMenuPos.top = event.clientY + "px";
         this.contextMenuSelection = Library.createNodePath(definition);
         this.contextMenuType = "definition";
+    }
+
+    /**
+     * Called when the user right-clicks on an operation trait definition.
+     * @param event
+     * @param opTraitDef
+     */
+    public showOperationTraitContextMenu(event: MouseEvent, opTraitDef: AaiOperationTraitDefinition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(opTraitDef);
+        this.contextMenuType = "operationTrait";
+    }
+
+    /**
+     * Called when the user right-clicks on a message trait definition.
+     * @param event
+     * @param msgTraitDef
+     */
+    public showMessageTraitContextMenu(event: MouseEvent, msgTraitDef: AaiMessageTraitDefinition): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(msgTraitDef);
+        this.contextMenuType = "messageTrait";
     }
 
     /**
@@ -557,6 +752,24 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the classes that should be applied to the operation trait definition in the master view.
+     * @param node
+     * @return
+     */
+    public operationTraitClasses(node: Node): string {
+        return this.entityClasses(node);   
+    }
+
+    /**
+     * Returns the classes that should be applied to the message trait definition in the master view.
+     * @param node
+     * @return
+     */
+    public messageTraitClasses(node: Node): string {
+        return this.entityClasses(node);   
+    }
+
+    /**
      * Opens the Add Definition Editor (full screen editor for adding a data type).
      */
     public openAddDefinitionEditor(): void {
@@ -570,12 +783,44 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         dtEditor.open(handler, this.document);
     }
 
+    /**
+     * Opens the Add Operator Trait Editor (full screen editor for adding a data type).
+     */
+    public openAddOperationTraitEditor(): void {
+        let dtEditor: OperationTraitEditorComponent = this.editors.getOperationTraitEditor();
+        let handler: IOperationTraitEditorHandler = {
+            onSave: (event) => {
+               this.addOperationTrait(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        dtEditor.open(handler, this.document);
+    }
+
+    /**
+     * Opens the Add Message Trait Editor (full screen editor for adding a data type).
+     */
+    public openAddMessageTraitEditor(): void {
+        let dtEditor: MessageTraitEditorComponent = this.editors.getMessageTraitEditor();
+        let handler: IMessageTraitEditorHandler = {
+            onSave: (event) => {
+               this.addMessageTrait(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        dtEditor.open(handler, this.document);
+    }
+
     importsEnabled(): boolean {
         return this.features.getFeatures().componentImports;
     }
 
     importDataTypes(): void {
         this.onImportComponent.emit(ComponentType.schema);
+    }
+
+    importMessageTraits(): void {
+        this.onImportComponent.emit(ComponentType.messageTrait);
     }
 }
 

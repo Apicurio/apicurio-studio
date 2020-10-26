@@ -49,9 +49,47 @@
         </li>
     </ul>
 
+    <!-- Operation Trait Context Menu -->
+    <ul id="operationtrait-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'operationTrait'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameOperationTrait()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteOperationTrait()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Message Trait Context Menu -->
+    <ul id="messagetrait-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'messageTrait'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameMessageTrait()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteMessageTrait()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
     <!-- Search - Used to Filter Channels and Data Type -->
     <div class="editor-search">
-
+        <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
     </div>
 
     <!-- Outline - Channels, Data Types, Traits -->
@@ -59,7 +97,7 @@
         <!-- Channels Section -->
         <section type="channel" label="Channels" [counterItems]="channels()" [inForm]="false" 
                     collaborationNodePath="/channels"
-                    contextHelp="The core of any Async API is the set of channesl it exposes. Each channels is of the form 'channel/to/resource' and can support either Publish or Subscribe operations.">
+                    contextHelp="The core of any Async API is the set of channesl it exposes. Each channels is of the form 'channel' and can support either Publish or Subscribe operations.">
             <span actions>
                 <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
             </span>
@@ -79,7 +117,7 @@
         <!-- Data Types Section -->
         <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false"
                     [collaborationNodePath]="definitionsPath()"
-                    contextHelp="It is often necessary for many operations to publish/consumer the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+                    contextHelp="It is often necessary for many operations to publish/consume the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
             <span actions>
                 <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
                 <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
@@ -94,6 +132,50 @@
                         (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
             </div>
         </section>
+
+        <!-- Operation Traits Section -->
+        <section type="operationtrait" label="Operation Traits" [counterItems]="operationTraits()" [inForm]="false"
+                    collaborationNodePath="/components/operationTraits"
+                    contextHelp="Reusable operation properties (tags, bindings, ...) can be defined through Operation Traits.">
+            <span actions>
+                <icon-button (onClick)="openAddOperationTraitEditor()" [pullRight]="true" type="add" title="Create Operation Trait"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
+            </span>
+            <div body tabindex="0" class="operationtrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #opTraitList>
+                <signpost *ngIf="operationTraits().length === 0">
+                    <span>No operation traits have been created.</span>
+                    <a (click)="openAddOperationTraitEditor()">Add an operation trait</a>
+                </signpost>
+
+                <div class="api-operationtrait {{ operationTraitClasses(operationTrait) }}" *ngFor="let operationTrait of operationTraits()">
+                    <div class="api-operationtrait-item" operationtrait-item [operationTrait]="operationTrait"
+                        (click)="opTraitList.focus() ; selectOperationTrait(operationTrait)"
+                        (contextmenu)="showOperationTraitContextMenu($event, operationTrait)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Message Traits Section -->
+        <section type="messagetrait" label="Message Traits" [counterItems]="messageTraits()" [inForm]="false"
+                    collaborationNodePath="/components/messageTraits"
+                    contextHelp="Reusable message properties (headers, correlationId, contentType, ...) can be defined through Message Traits.">
+            <span actions>
+                <icon-button (onClick)="openAddMessageTraitEditor()" [pullRight]="true" type="add" title="Create Message Trait"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
+            </span>
+            <div body tabindex="0" class="messagetrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #msgTraitList>
+                <signpost *ngIf="messageTraits().length === 0">
+                    <span>No message traits have been created.</span>
+                    <a (click)="openAddMessageTraitEditor()">Add a message trait</a>
+                </signpost>
+
+                <div class="api-messagetrait {{ messageTraitClasses(messageTrait) }}" *ngFor="let messageTrait of messageTraits()">
+                    <div class="api-messagetrait-item" messagetrait-item [messageTrait]="messageTrait"
+                        (click)="msgTraitList.focus() ; selectMessageTrait(messageTrait)"
+                        (contextmenu)="showMessageTraitContextMenu($event, messageTrait)"></div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Dialogs -->
@@ -105,4 +187,11 @@
                           warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. operation payload bodies)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
                           (onRename)="renameDefinition($event)"></rename-entity-dialog>
+
+    <rename-entity-dialog #renameMessageTraitDialog
+                          type="Message Trait"
+                          title="Rename Message Trait"
+                          warning="Renaming a Message Trait Type will also update any references to the trait elsewhere in the API (e.g. operation payloads)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          (onRename)="renameMessageTrait($event)"></rename-entity-dialog>
 </div>

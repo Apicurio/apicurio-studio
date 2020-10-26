@@ -73,6 +73,8 @@ import {AbstractApiEditorComponent} from "./editor.base";
 import {ApiCatalogService} from "./_services/api-catalog.service";
 import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
+import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
+import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
 
 
 @Component({
@@ -629,6 +631,14 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
     public getPropertyEditor(): PropertyEditorComponent {
         return this.propertyEditor;
+    }
+
+    public getOperationTraitEditor(): OperationTraitEditorComponent {
+        return null;
+    }
+
+    public getMessageTraitEditor(): MessageTraitEditorComponent {
+        return null;
     }
 
     importComponent(type: ComponentType) {

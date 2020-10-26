@@ -1,0 +1,35 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="operationTrait" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define a New Operation Trait" [valid]="isValid() && nameInput.valid">
+
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>1. Enter Basic Information</h3>
+            <p class="explanation">
+                <span>
+                    Enter a name and description for the new operation trait.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label required" for="rsp_name">Name</label>
+                <div>
+                    <input name="name" type="text" id="rsp_name" class="form-control" required #nameInput="ngModel"
+                           [(ngModel)]="model.name" placeholder="Enter a unique operation trait name." pattern="[a-zA-Z0-9\.\-_]+"
+                           (ngModelChange)="traitExists = operationTraits.indexOf($event) != -1" autocomplete="off">
+                    <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <div class="form-error-message error" *ngIf="traitExists">Operation Trait named <strong>{{ model.name }}</strong> already exists.</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <div>
+                    <markdown-editor [(value)]="model.description" id="description"
+                                     [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc', width: '100%' }"></markdown-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</entity-editor>

@@ -94,13 +94,6 @@ export class OperationTraitFormComponent extends SourceFormComponent<AaiOperatio
         super.enableSourceMode();
     }
 
-    public changeTitle(newTitle: string): void {
-        console.info("[OperationTraitFormComponent] Changing message title to: ", newTitle);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.operationTrait,
-                "title", newTitle);
-        this.commandService.emit(command);
-    }
-
     public changeSummary(newSummary: string): void {
         console.info("[OperationTraitFormComponent] Changing message summary to: ", newSummary);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.operationTrait,

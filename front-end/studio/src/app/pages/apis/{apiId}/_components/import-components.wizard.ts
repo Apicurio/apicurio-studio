@@ -417,6 +417,8 @@ class ComponentFinder extends CombinedVisitorAdapter {
                 return "#/components/securitySchemes/";
             case ComponentType.link:
                 return "#/components/links/";
+            case ComponentType.messageTrait:
+                return "#/components/messageTraits";
         }
     }
 
@@ -428,6 +430,12 @@ class ComponentFinder extends CombinedVisitorAdapter {
 
     visitResponseDefinition(node: IDefinition): void {
         if (this.type == ComponentType.response) {
+            this.componentFound(node);
+        }
+    }
+
+    visitMessageTraitDefinition(node: IDefinition): void {
+        if (this.type == ComponentType.messageTrait) {
             this.componentFound(node);
         }
     }

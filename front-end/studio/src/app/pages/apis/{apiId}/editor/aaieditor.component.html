@@ -1,4 +1,4 @@
-<div (window:keydown)="onGlobalKeyDown($event)" class="aai-editor">
+<div (window:keydown)="onGlobalKeyDown($event)" class="aai-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
 
     <title-bar [document]="document()" 
                [validationErrors]="validationErrors" 
@@ -12,30 +12,19 @@
     <div class="editor-detail" [ngSwitch]="formType">
         <aaimain-form [document]="document()" class="editor-detail-form" 
                          *ngSwitchCase="'main_20'"></aaimain-form>
-        <aaimain-form [document]="document()" class="editor-detail-form" 
-                         *ngSwitchCase="'channel_20'"></aaimain-form>
+        <channel-form [channel]="selectedChannel()" class="editor-detail-form"
+                         *ngSwitchCase="'channel_20'"></channel-form>
         <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
                          *ngSwitchCase="'definition_20'"></definition-form>
+        <operationtrait-form [operationTrait]="selectedOperationTrait()" class="editor-detail-form"
+                         *ngSwitchCase="'operationTrait_20'"></operationtrait-form>
+        <messagetrait-form [messageTrait]="selectedMessageTrait()" class="editor-detail-form"
+                            *ngSwitchCase="'messageTrait_20'"></messagetrait-form>
     </div>
 
     <data-type-editor #dataTypeEditor></data-type-editor>
+    <operationtrait-editor #operationTraitEditor></operationtrait-editor>
+    <messagetrait-editor #messageTraitEditor></messagetrait-editor>
     <property-editor #propertyEditor></property-editor>
-    <!--
-    <div class="editor-toolbar">
-        <div class="title">Editing API: <em>{{ api.name }}</em></div>
-        <div class="actions">
-            <button [disabled]="!sourceIsValid || !isDirty()" (click)="saveSource()" class="btn btn-primary"><span class="pficon pficon-save"></span> Save Changes</button>
-            <button [disabled]="!isDirty()" (click)="revertSource()" class="btn btn-default"><span class="icon fa fa-ban"></span> Revert Changes</button>
-        </div>
-    </div>
 
-    <div class="editor-source">
-        <code-editor [theme]="sourceTheme()" #codeEditor
-                     [mode]="sourceMode()"
-                     [debounceTime]="300"
-                     [(text)]="sourceValue"
-                     (textChange)="validate()"
-                     [editorStyle]="{ position: 'absolute', top: '0', bottom: '0', right: '0', left: '0', fontSize: '15px' }"></code-editor>
-    </div>
-    -->
 </div>

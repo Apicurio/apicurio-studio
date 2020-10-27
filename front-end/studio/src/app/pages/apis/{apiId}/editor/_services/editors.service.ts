@@ -24,6 +24,8 @@ import {DataTypeEditorComponent} from "../_components/editors/data-type-editor.c
 import {ParameterEditorComponent} from "../_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "../_components/editors/property-editor.component";
 import {ResponseEditorComponent} from "../_components/editors/response-editor.component";
+import { OperationTraitEditorComponent } from "../_components/editors/operationtrait-editor.component";
+import { MessageTraitEditorComponent } from "../_components/editors/messagetrait-editor.component";
 
 export interface IEditorsProvider {
 
@@ -34,7 +36,8 @@ export interface IEditorsProvider {
     getResponseEditor(): ResponseEditorComponent;
     getParameterEditor(): ParameterEditorComponent;
     getPropertyEditor(): PropertyEditorComponent;
-
+    getOperationTraitEditor(): OperationTraitEditorComponent;
+    getMessageTraitEditor(): MessageTraitEditorComponent;
 }
 
 
@@ -83,4 +86,11 @@ export class EditorsService implements IEditorsProvider {
         return this.provider.getPropertyEditor();
     }
 
+    public getOperationTraitEditor(): OperationTraitEditorComponent {
+        return this.provider.getOperationTraitEditor();
+    }
+
+    public getMessageTraitEditor(): MessageTraitEditorComponent {
+        return this.provider.getMessageTraitEditor();
+    }
 }

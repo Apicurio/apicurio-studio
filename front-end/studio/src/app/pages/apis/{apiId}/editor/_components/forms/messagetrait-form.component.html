@@ -1,0 +1,93 @@
+<div class="detail-title">
+    <div messagetrait-item class="detail-label" [messageTrait]="messageTrait"></div>
+    <div class="detail-actions">
+
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+                <!-- Title -->
+                <div class="section-field-label">
+                    <validation-problem [model]="messageTrait" [shallow]="true" [property]="'title'"></validation-problem>
+                    <span>Title</span>
+                </div>
+                <div class="section-field title">
+                    <pf-inline-text-editor [value]="messageTrait.title" [noValueMessage]="'No title.'"
+                                            [labelClass]="'api-version'"
+                                            [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                            [baseNode]="messageTrait" nodePath="title"
+                                            (onChange)="changeTitle($event)"></pf-inline-text-editor>
+                </div>
+
+                <!-- Summary -->
+                <div class="section-field-label">
+                    <validation-problem [model]="messageTrait" [shallow]="true" [property]="'summary'"></validation-problem>
+                    <span>Summary</span>
+                </div>
+                <div class="section-field summary">
+                    <pf-inline-text-editor [value]="messageTrait.summary" [noValueMessage]="'No summary.'"
+                                            [labelClass]="'api-version'"
+                                            [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                            [baseNode]="messageTrait" nodePath="summary"
+                                            (onChange)="changeSummary($event)"></pf-inline-text-editor>
+                </div>
+
+                <!-- Description -->
+                <div class="section-field-label">
+                    <validation-problem [model]="messageTrait" [shallow]="true" [property]="'description'"></validation-problem>
+                    <span>Description</span>
+                </div>
+                <div class="section-field description">
+                    <inline-markdown-editor [value]="messageTrait.description" [noValueMessage]="'No description.'"
+                                            [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                            [inputClass]="'api-item-description'"
+                                            [formClass]="'api-description-editor-form'"
+                                            [baseNode]="messageTrait" nodePath="description"
+                                            (onChange)="changeDescription($event)"></inline-markdown-editor>
+                </div>
+
+                <!-- Tags -->
+                <div class="section-field-label">
+                    <validation-problem [model]="messageTrait" [shallow]="true" [property]="'tags'"></validation-problem>
+                    <span>Tags</span>
+                </div>
+                <div class="section-field tags">
+                    <inline-array-editor noValueMessage="No tags configured." [value]="messageTrait.tags" [items]="tagDefs()"
+                                        [baseNode]="messageTrait" nodepath="tags"
+                                        (onChange)="changeTags($event)"></inline-array-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

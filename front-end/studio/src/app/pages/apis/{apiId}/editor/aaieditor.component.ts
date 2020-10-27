@@ -40,6 +40,8 @@ import {
     Node,
     NodePath,
     Aai20SchemaDefinition,
+    AaiOperationTraitDefinition,
+    AaiMessageTraitDefinition,
     OtCommand,
     OtEngine,
     ValidationProblem
@@ -58,12 +60,15 @@ import {DataTypeEditorComponent} from "./_components/editors/data-type-editor.co
 import {ParameterEditorComponent} from "./_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "./_components/editors/property-editor.component";
 import {ResponseEditorComponent} from "./_components/editors/response-editor.component";
+import {OperationTraitEditorComponent} from "./_components/editors/operationtrait-editor.component";
+import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-editor.component";
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 import {AbstractApiEditorComponent} from "./editor.base";
 import {ComponentType} from "./_models/component-type.model";
+import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
 
@@ -81,6 +86,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
+    @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -93,6 +99,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     private _otEngine: OtEngine = null;
     _undoableCommandCount: number = 0;
     _redoableCommandCount: number = 0;
+
+    theme: string = "light";
 
     sourceOriginal: string = "";
     sourceValue: string = "";
@@ -108,6 +116,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     @ViewChild("master") master: AsyncApiEditorMasterComponent;
     @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("operationTraitEditor") operationTraitEditor: OperationTraitEditorComponent;
+    @ViewChild("messageTraitEditor") messageTraitEditor: MessageTraitEditorComponent;
     @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
 
     formType: string;
@@ -432,6 +442,18 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     }
 
     /**
+     * Returns the currently selected channel item.
+     * @return
+     */
+    public selectedChannel(): AaiChannelItem {
+        if (this.currentSelectionType === "channel") {
+            return this.currentSelectionNode as AaiChannelItem;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the currently selected definition.
      * @return
      */
@@ -445,6 +467,22 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     public deselectDefinition(): void {
         this.master.deselectDefinition();
+    }
+
+    public selectedOperationTrait(): AaiOperationTraitDefinition {
+        if (this.currentSelectionType === "operationTrait") {
+            return this.currentSelectionNode as AaiOperationTraitDefinition;
+        } else {
+            return null;
+        }
+    }
+
+    public selectedMessageTrait(): AaiMessageTraitDefinition {
+        if (this.currentSelectionType === "messageTrait") {
+            return this.currentSelectionNode as AaiMessageTraitDefinition;
+        } else {
+            return null;
+        }
     }
 
     public preDocumentChange(): void {
@@ -501,7 +539,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      * Called when the user clicks save.
      */
     public saveSource(): void {
-        console.info("[AsyncAPI Editor] Saving source code changes");
+        console.info("[AsyncApiEditorComponent] Saving source code changes");
         try {
             let doc: AaiDocument = this.document();
             let newJs: any = YAML.safeLoad(this.sourceValue);
@@ -509,7 +547,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             let command: ICommand = CommandFactory.createReplaceDocumentCommand(doc, newDoc);
             this.commandService.emit(command);
         } catch (e) {
-            console.warn("[AsyncAPI Editor] Error saving source changes: ", e);
+            console.warn("[AsyncApiEditorComponent] Error saving source changes: ", e);
         }
     }
 
@@ -517,7 +555,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      * Called when the user clicks revert.
      */
     public revertSource(): void {
-        console.info("[AsyncAPI Editor] Reverting source code changes");
+        console.info("[AsyncApiEditorComponent] Reverting source code changes");
         this.sourceValue = this.sourceOriginal;
     }
 
@@ -563,8 +601,46 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return this.propertyEditor;
     }
 
-    importComponent(type: ComponentType) {
+    public getOperationTraitEditor(): OperationTraitEditorComponent {
+        return this.operationTraitEditor;
+    }
 
+    public getMessageTraitEditor(): MessageTraitEditorComponent {
+        return this.messageTraitEditor;
+    }
+
+    importComponent(type: ComponentType) {
+        if (this.componentImporter) {
+            this.componentImporter(type).then(imports => {
+                let commands: ICommand[] = [];
+
+                imports.forEach(imp => {
+                    console.info("[AsyncApiEditorComponent] Importing component: ", imp.name);
+                    // TODO check for name collisions
+                    let name: string = imp.name;
+                    let fromRef: any = {$ref: imp.$ref};
+                    if (imp.type === ComponentType.schema) {
+                        commands.push(CommandFactory.createAddSchemaDefinitionCommand(this.document().getDocumentType(), name, fromRef));
+                    } else if (type === ComponentType.messageTrait) {
+                        //commands.push(CommandFactory.createAddResponseDefinitionCommand(this.document().getDocumentType(), name, fromRef));
+                    }
+                });
+
+                if (commands != null && commands.length == 1) {
+                    console.info("[AsyncApiEditorComponent] Importing a single component.");
+                    this.commandService.emit(commands[0]);
+                } else if (commands != null && commands.length > 1) {
+                    console.info("[AsyncApiEditorComponent] Importing multiple components. :: ", commands.length);
+                    let aggregateInfo: any = {
+                        type: type,
+                        numComponents: commands.length
+                    };
+                    this.commandService.emit(CommandFactory.createAggregateCommand("ImportedComponents", aggregateInfo, commands));
+                }
+            }).catch(error => {
+                // FIXME what to do if we get an error???
+            });
+        }
     }
 }
 
@@ -600,5 +676,15 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
     public visitSchemaDefinition(node: Aai20SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
+    }
+
+    public visitOperationTraitDefinition(node: AaiOperationTraitDefinition): void {
+        this._selectedNode = node;
+        this._selectionType = "operationTrait";
+    }
+
+    public visitMessageTraitDefinition(node: AaiMessageTraitDefinition): void {
+        this._selectedNode = node;
+        this._selectionType = "messageTrait";
     }
 }

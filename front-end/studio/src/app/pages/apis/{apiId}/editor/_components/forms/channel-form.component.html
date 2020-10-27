@@ -1,0 +1,48 @@
+<div class="detail-title">
+    <div path-item class="detail-label" [path]="channel.getName()"></div>
+    <div class="detail-actions">
+
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+                <!-- Info Section -->
+                <channel-info-section [channel]="channel"></channel-info-section>
+
+                <!-- Operations Section -->
+                <channel-operations-section [channel]="channel"></channel-operations-section>
+            </div>
+        </div>
+    </div>
+</div>

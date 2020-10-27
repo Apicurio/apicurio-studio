@@ -162,19 +162,6 @@
     display: flex;
 }
 
-.aai-editor .editor-master .editor-outline .api-response:hover {
-    background-color: #d1eaf7;
-}
-
-.aai-editor .editor-master .editor-outline .api-response.selected {
-    background-color: #a5d6ef;
-    border-left: 2px solid #39a5dc;
-}
-
-.aai-editor .editor-master .editor-outline .api-response>* {
-    margin-right: 4px;
-}
-
 .aai-editor .editor-detail .detail-title {
     border-bottom: 1px solid #ddd;
 }
@@ -914,8 +901,9 @@
 
 #channel-context-menu,
 #definition-context-menu,
-#operation-context-menu,
-#response-context-menu {
+#message-context-menu
+#operationtrait-context-menu,
+#messagetrait-context-menu {
     display: block;
     position: fixed;
 }

@@ -17,6 +17,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>${version.io.quarkus}</quarkus.platform.version>
+        <quarkus.profile>dev</quarkus.profile>
     </properties>
 
     <modules>

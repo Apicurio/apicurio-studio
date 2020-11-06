@@ -1,31 +1,23 @@
 name: Release Workflow
 on:
-  pull_request:
-    branches: [master]
-    types: [closed]
-    paths:
-      - '.github/project.yaml'
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Version being released'
+        required: true
+      snapshot-version:
+        description: 'Next snapshot version'
+        required: true
+      branch:
+        description: 'Branch to release from'
+        required: true
+        default: 'master'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.repository_owner == 'Apicurio'
     steps:
-      - name: Retrieve Project Metadata
-        uses: radcortez/project-metadata-action@master
-        id: metadata
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          metadata-file-path: '.github/project.yaml'
-      - name: Verify Metadata
-        run: |
-          if [ -z "${{steps.metadata.outputs.release-version}}" ]
-          then
-            echo "Failed to load project metadata from project.yaml!"
-            exit 1
-          else
-            echo "Releasing Apicurio Studio version ${{steps.metadata.outputs.release-version}}"
-          fi
       - name: Set up Node.js v10
         uses: actions/setup-node@v1
         with:
@@ -52,8 +44,8 @@ jobs:
           git config --global user.email "eric.wittmann+apicurio-ci@gmail.com"
           git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           git fetch
-          git checkout master
-          git branch --set-upstream-to=origin/master
+          git checkout ${{ github.event.inputs.branch}}
+          git branch --set-upstream-to=origin/${{ github.event.inputs.branch}}
           git pull
       - name: Apicurio Website Code Checkout
         run: |
@@ -67,14 +59,14 @@ jobs:
           git checkout master
           git branch --set-upstream-to=origin/master
           git pull
-      - name: Update Release Version ${{steps.metadata.outputs.release-version}} in pom.xml
-        run: cd studio && mvn versions:set -DnewVersion=${{steps.metadata.outputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Update Release Version ${{ github.event.inputs.release-version}} in pom.xml
+        run: cd studio && mvn versions:set -DnewVersion=${{ github.event.inputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Validating Apicurio Studio maven build
         run: cd studio && mvn clean install
-      - name: Update Release Version ${{steps.metadata.outputs.release-version}} in Package.json
+      - name: Update Release Version ${{ github.event.inputs.release-version}} in Package.json
         run: |
           cd studio/front-end/studio
-          sed -i "s/version.:.*/version\": \"${{steps.metadata.outputs.release-version}}\",/g" package.json
+          sed -i "s/version.:.*/version\": \"${{ github.event.inputs.release-version}}\",/g" package.json
           sed -i "s/.Final//g" package.json
           rm -rf dist*
           rm -rf node_modules
@@ -84,16 +76,16 @@ jobs:
           yarn install
           echo "**************** Validating Apicurio Studio UI build ****************"
           yarn run build
-      - name: Update Release Version ${{steps.metadata.outputs.release-version}} in OpenShift template(s)
+      - name: Update Release Version ${{ github.event.inputs.release-version}} in OpenShift template(s)
         run: |
           cd studio/distro/openshift
-          sed -i "s/latest-release/${{steps.metadata.outputs.release-version}}/g" apicurio-template.yml
-          sed -i "s/latest-release/${{steps.metadata.outputs.release-version}}/g" apicurio-standalone-template.yml
-      - name: Commit Changes for Release Version ${{steps.metadata.outputs.release-version}}
+          sed -i "s/latest-release/${{ github.event.inputs.release-version}}/g" apicurio-template.yml
+          sed -i "s/latest-release/${{ github.event.inputs.release-version}}/g" apicurio-standalone-template.yml
+      - name: Commit Changes for Release Version ${{ github.event.inputs.release-version}}
         run: |
           cd studio
           git add .
-          git commit -m "Automated commit for Release Version: ${{steps.metadata.outputs.release-version}}"
+          git commit -m "Automated commit for Release Version: ${{ github.event.inputs.release-version}}"
           git push     
       - name: Preparing Apicurio UI For Release
         run: |
@@ -110,16 +102,16 @@ jobs:
         run: |
           cd studio
           mkdir -p releases
-          cp distro/quickstart/target/apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip releases/.
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip
+          cp distro/quickstart/target/apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip releases/.
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Building Docker Images
         run: |
           cd studio
-          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{steps.metadata.outputs.release-version}}" --rm platforms/thorntail/api/
-          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{steps.metadata.outputs.release-version}}" --rm platforms/thorntail/ws/
-          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{steps.metadata.outputs.release-version}}" --rm platforms/thorntail/ui/
+          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/api/
+          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/ws/
+          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/ui/
       - name: Push The Tagged Docker Images
         run: |
           cd studio
@@ -129,25 +121,25 @@ jobs:
           docker push apicurio/apicurio-studio-api:latest-release
           docker push apicurio/apicurio-studio-ws:latest-release
           docker push apicurio/apicurio-studio-ui:latest-release
-          docker push apicurio/apicurio-studio-api:${{steps.metadata.outputs.release-version}}
-          docker push apicurio/apicurio-studio-ws:${{steps.metadata.outputs.release-version}}
-          docker push apicurio/apicurio-studio-ui:${{steps.metadata.outputs.release-version}}
+          docker push apicurio/apicurio-studio-api:${{ github.event.inputs.release-version}}
+          docker push apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version}}
+          docker push apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version}}
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{steps.metadata.outputs.release-version}} 
-          release_name: ${{steps.metadata.outputs.release-version}}
+          tag_name: ${{ github.event.inputs.release-version}} 
+          release_name: ${{ github.event.inputs.release-version}}
       - name: Upload Release Asset-1
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apicurio-studio/apicurio-studio/studio/releases/apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip
-          asset_name: apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip
+          asset_path: /home/runner/work/apicurio-studio/apicurio-studio/studio/releases/apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip
+          asset_name: apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip
           asset_content_type: application/zip
       - name: Upload Release Asset-2
         uses: actions/upload-release-asset@v1
@@ -155,25 +147,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url` 
-          asset_path: /home/runner/work/apicurio-studio/apicurio-studio/studio/releases/apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip.asc
-          asset_name: apicurio-studio-${{steps.metadata.outputs.release-version}}-quickstart.zip.asc
+          asset_path: /home/runner/work/apicurio-studio/apicurio-studio/studio/releases/apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip.asc
+          asset_name: apicurio-studio-${{ github.event.inputs.release-version}}-quickstart.zip.asc
           asset_content_type: application/zip
       - name: Generate Release Notes
         run: cd studio && gren release --token=${{ secrets.GITHUB_TOKEN }} --override --prefix=v  
-      - name: Update Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}} in pom.xml
-        run: cd studio && mvn versions:set -DnewVersion=${{steps.metadata.outputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
+      - name: Update Next Snapshot Version ${{ github.event.inputs.snapshot-version}} in pom.xml
+        run: cd studio && mvn versions:set -DnewVersion=${{ github.event.inputs.snapshot-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
       - name: Restoring 'latest-release' as the ImageStream version in the OpenShift template(s)"
         run: |
           cd studio/distro/openshift
-          sed -i "s/${{steps.metadata.outputs.release-version}}/latest-release/g" apicurio-template.yml
-          sed -i "s/${{steps.metadata.outputs.release-version}}/latest-release/g" apicurio-standalone-template.yml
-      - name: Commit Changes for Next Snapshot Version ${{steps.metadata.outputs.snapshot-version}}
+          sed -i "s/${{ github.event.inputs.release-version}}/latest-release/g" apicurio-template.yml
+          sed -i "s/${{ github.event.inputs.release-version}}/latest-release/g" apicurio-standalone-template.yml
+      - name: Commit Changes for Next Snapshot Version ${{ github.event.inputs.snapshot-version}}
         run: |
           cd studio
           git add .
-          git commit -m "Automated commit for Next Snapshot Version: ${{steps.metadata.outputs.snapshot-version}}"
+          git commit -m "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version}}"
           git push
-      - name: Updating Project Website for Release ${{steps.metadata.outputs.release-version}}
+      - name: Updating Project Website for Release ${{ github.event.inputs.release-version}}
         run: |
           cd website
           echo "********** Downloading Latest Release JSON File **********"
@@ -192,5 +184,5 @@ jobs:
           cd website
           git add .
           git add -f _data/studio/releases/$FILENAME.json    #ignored due to .gitignore config
-          git commit -m "Automated Update For Apicurio Studio Release Version: ${{steps.metadata.outputs.release-version}}"
+          git commit -m "Automated Update For Apicurio Studio Release Version: ${{ github.event.inputs.release-version}}"
           git push

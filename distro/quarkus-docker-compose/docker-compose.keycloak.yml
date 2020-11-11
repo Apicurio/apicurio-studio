@@ -1,0 +1,33 @@
+version: '3'
+
+volumes:
+  mysql2:
+
+services:
+  jboss-keycloak-mysql:
+    image: 'percona:5.7'
+    environment:
+      MYSQL_DATABASE: ${KC_MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${KC_MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${KC_MYSQL_USER}
+      MYSQL_PASSWORD: ${KC_MYSQL_PASSWORD}
+    volumes:
+      - 'mysql2:/var/lib/mysql'
+
+  jboss-keycloak:
+    image: 'as-keycloak'
+    build: ./keycloak
+    depends_on: [jboss-keycloak-mysql]
+    ports:
+      - '8090:8080'
+    volumes:
+      - ./config/keycloak:/microcks-keycloak-config
+    environment:
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_IMPORT: /microcks-keycloak-config/apicurio-realm.json,/microcks-keycloak-config/microcks-realm.json
+
+      DB_VENDOR: ${DB_VENDOR}
+      DB_ADDR: ${DB_ADDR}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}

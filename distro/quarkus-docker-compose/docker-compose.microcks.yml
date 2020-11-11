@@ -1,0 +1,36 @@
+version: '3'
+
+volumes:
+    mongo_data2: {}
+
+networks:
+  main:
+services:
+  mongo:
+    image: mongo:3.4.23
+    container_name: microcks-mongo
+    volumes:
+      - "mongo_data2:/data/db"
+
+  postman:
+    image: microcks/microcks-postman-runtime:latest
+    container_name: microcks-postman-runtime
+
+  microcks:
+    depends_on:
+      - mongo
+      - postman
+      - jboss-keycloak
+    image: microcks/microcks:latest
+    container_name: microcks
+    volumes:
+      - ./config:/deployments/config
+    ports:
+      - "8900:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${MR_SPRING_PROFILES_ACTIVE}
+      SPRING_DATA_MONGODB_URI: ${MR_SPRING_DATA_MONGODB_URI}
+      SPRING_DATA_MONGODB_DATABASE: ${MR_SPRING_DATA_MONGODB_DATABASE}
+      POSTMAN_RUNNER_URL: ${MR_POSTMAN_RUNNER_URL}
+      TEST_CALLBACK_URL: ${MR_TEST_CALLBACK_URL}
+      KEYCLOAK_URL: ${MR_KEYCLOAK_URL}

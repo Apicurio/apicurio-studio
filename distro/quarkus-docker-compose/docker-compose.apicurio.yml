@@ -1,16 +1,24 @@
 version: '3'
 
+volumes:
+  postgre_apicurio:
+
 services:
 
   apicurio-studio-db:
 
+  jboss-keycloak:
+
   apicurio-studio-ws:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
-    depends_on: [apicurio-studio-db]
+    depends_on:
+      - apicurio-studio-db
     ports:
       - '8092:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      QUARKUS_PROFILE: ${QUARKUS_PROFILE}
 
       APICURIO_HUB_STORAGE_JDBC_TYPE: ${APICURIO_DB_TYPE}
       APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
@@ -23,11 +31,17 @@ services:
 
   apicurio-studio-api:
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
-    depends_on: [apicurio-studio-db, apicurio-studio-ws]
+    restart: on-failure
+    depends_on:
+      - jboss-keycloak
+      - apicurio-studio-db
+      - apicurio-studio-ws
     ports:
       - '8091:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      QUARKUS_PROFILE: ${QUARKUS_PROFILE}
 
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
       APICURIO_KC_CLIENT_ID: ${API_APICURIO_KC_CLIENT_ID}
@@ -51,11 +65,17 @@ services:
 
   apicurio-studio-ui:
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
-    depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
+    restart: on-failure
+    depends_on:
+      - jboss-keycloak
+      - apicurio-studio-api
+      - apicurio-studio-ws
     ports:
       - '8093:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      QUARKUS_PROFILE: ${QUARKUS_PROFILE}
 
       APICURIO_KC_CLIENT_ID: ${APICURIO_UI_KC_CLIENT_ID}
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}

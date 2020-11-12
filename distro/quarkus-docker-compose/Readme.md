@@ -1,8 +1,8 @@
-# Docker-compose based installation
+# Docker-compose and Quarkus based installation
 
 ## Overview
 
-This setup contains a fully configured Apicurio-Studio package, already integrated with MySQL/Postgres, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
+This setup contains a fully configured Apicurio-Studio package, already integrated with Postgres, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
 
 Here is the port mapping:
 - 8090 for Keycloak
@@ -71,7 +71,7 @@ Note: make sure you use the external IP address of your host here.  `localhost` 
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
+After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest`.
 
 The passwords for DBs, KeyCloak, and the uuid of the microcks-service-account is generated dynamically with every run of the setup script.
 

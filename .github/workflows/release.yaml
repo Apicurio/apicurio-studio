@@ -112,18 +112,6 @@ jobs:
           docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/api/
           docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/ws/
           docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version}}" --rm platforms/thorntail/ui/
-      - name: Push The Tagged Docker Images
-        run: |
-          cd studio
-          docker push apicurio/apicurio-studio-api:latest
-          docker push apicurio/apicurio-studio-ws:latest
-          docker push apicurio/apicurio-studio-ui:latest
-          docker push apicurio/apicurio-studio-api:latest-release
-          docker push apicurio/apicurio-studio-ws:latest-release
-          docker push apicurio/apicurio-studio-ui:latest-release
-          docker push apicurio/apicurio-studio-api:${{ github.event.inputs.release-version}}
-          docker push apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version}}
-          docker push apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version}}
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
@@ -165,6 +153,18 @@ jobs:
           git add .
           git commit -m "Automated commit for Next Snapshot Version: ${{ github.event.inputs.snapshot-version}}"
           git push
+      - name: Push The Tagged Docker Images
+        run: |
+          cd studio
+          docker push apicurio/apicurio-studio-api:latest
+          docker push apicurio/apicurio-studio-ws:latest
+          docker push apicurio/apicurio-studio-ui:latest
+          docker push apicurio/apicurio-studio-api:latest-release
+          docker push apicurio/apicurio-studio-ws:latest-release
+          docker push apicurio/apicurio-studio-ui:latest-release
+          docker push apicurio/apicurio-studio-api:${{ github.event.inputs.release-version}}
+          docker push apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version}}
+          docker push apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version}}
       - name: Updating Project Website for Release ${{ github.event.inputs.release-version}}
         run: |
           cd website

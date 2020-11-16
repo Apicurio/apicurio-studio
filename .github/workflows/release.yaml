@@ -16,7 +16,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'Apicurio'
     steps:
       - name: Set up Node.js v10
         uses: actions/setup-node@v1

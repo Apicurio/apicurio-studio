@@ -39,7 +39,7 @@
       "enabled": true,
       "credentials" : [
         { "type" : "password",
-          "value" : "123" }
+          "value" : "admin" }
       ],
       "requiredActions": [
         "UPDATE_PASSWORD"

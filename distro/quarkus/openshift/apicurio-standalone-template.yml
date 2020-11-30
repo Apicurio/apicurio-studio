@@ -4,9 +4,9 @@ metadata:
   name: apicurio-studio-standalone
 message: |-
   Congratulations on deploying Apicurio Studio into OpenShift!
-  
+
   The following secret(s) have been created in your project:
-  
+
          SQL Username: ${GENERATED_DB_USER}
          SQL Password: ${GENERATED_DB_PASS}
          SQL Connection URL: postgresql://postgresql:5432/
@@ -19,7 +19,7 @@ message: |-
   In addition, you may want to configure Keycloak to your particular taste (for
   example you may want to enable social logins).  To configure Keycloak you
   can go here (and log in with the Keycloak username/password listed above):
-  
+
          Keycloak URL: https://${AUTH_ROUTE}/auth
 
 objects:
@@ -33,7 +33,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-api:latest-release
+          name: carnal/apicurio-studio-api-quarkus:latest
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -45,7 +45,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ws:latest-release
+          name: carnal/apicurio-studio-ws-quarkus:latest
         importPolicy:
           scheduled: true
 - apiVersion: v1
@@ -57,7 +57,7 @@ objects:
       - name: latest-release
         from:
           kind: DockerImage
-          name: apicurio/apicurio-studio-ui:latest-release
+          name: carnal/apicurio-studio-ui-quarkus:latest
         importPolicy:
           scheduled: true
 # Persistent volumes: Postgresql
@@ -306,7 +306,7 @@ objects:
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
              - name: APICURIO_KC_CLIENT_ID
-                 value: ${API_APICURIO_KC_CLIENT_ID}
+               value: ${API_APICURIO_KC_CLIENT_ID}
              - name: APICURIO_DB_DRIVER_NAME
                value: postgresql
              - name: APICURIO_DB_CONNECTION_URL
@@ -512,7 +512,7 @@ objects:
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
              - name: APICURIO_KC_CLIENT_ID
-                 value: ${UI_APICURIO_KC_CLIENT_ID}
+               value: ${UI_APICURIO_KC_CLIENT_ID}
              - name: APICURIO_UI_HUB_API_URL
                value: https://${API_ROUTE}
              - name: APICURIO_UI_EDITING_URL
@@ -669,7 +669,7 @@ parameters:
   description: The name of the client-id for the API component.
   value: apicurio-api
   required: true
-- name: APICURIO_UI_KC_CLIENT_ID
+- name: UI_APICURIO_KC_CLIENT_ID
   displayName: Keycloak Realm
   description: The name of the client-id for the UI component.
   value: apicurio-studio

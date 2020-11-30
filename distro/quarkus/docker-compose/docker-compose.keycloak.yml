@@ -16,7 +16,7 @@ services:
 
   jboss-keycloak:
     image: 'as-keycloak'
-    build: ./keycloak
+    build: keycloak
     depends_on: [jboss-keycloak-mysql]
     ports:
       - '8090:8080'

@@ -60,17 +60,7 @@ objects:
           name: apicurio/apicurio-studio-ui:latest-release
         importPolicy:
           scheduled: true
-# Persistent volumes: Keycloak and Postgresql
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: keycloak-data
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
+# Persistent volumes: Postgresql
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
@@ -312,14 +302,16 @@ objects:
             protocol: TCP
           env:
              - name: APICURIO_KC_AUTH_URL
-               value: https://${AUTH_ROUTE}/auth
+               value: https://${AUTH_ROUTE}/auth/realms/${KC_REALM}
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
+             - name: APICURIO_KC_CLIENT_ID
+                 value: ${API_APICURIO_KC_CLIENT_ID}
              - name: APICURIO_DB_DRIVER_NAME
                value: postgresql
              - name: APICURIO_DB_CONNECTION_URL
                value: jdbc:postgresql://postgresql:5432/${DB_NAME}
-             - name: APICURIO_DB_TYPE
+             - name: APICURIO_HUB_STORAGE_JDBC_TYPE
                value: postgresql9
              - name: APICURIO_DB_USER_NAME
                valueFrom:
@@ -419,7 +411,7 @@ objects:
                value: postgresql
              - name: APICURIO_DB_CONNECTION_URL
                value: jdbc:postgresql://postgresql:5432/${DB_NAME}
-             - name: APICURIO_DB_TYPE
+             - name: APICURIO_HUB_STORAGE_JDBC_TYPE
                value: postgresql9
              - name: APICURIO_DB_USER_NAME
                valueFrom:
@@ -516,9 +508,11 @@ objects:
             protocol: TCP
           env:
              - name: APICURIO_KC_AUTH_URL
-               value: https://${AUTH_ROUTE}/auth
+               value: https://${AUTH_ROUTE}/auth/realms/${KC_REALM}
              - name: APICURIO_KC_REALM
                value: ${KC_REALM}
+             - name: APICURIO_KC_CLIENT_ID
+                 value: ${UI_APICURIO_KC_CLIENT_ID}
              - name: APICURIO_UI_HUB_API_URL
                value: https://${API_ROUTE}
              - name: APICURIO_UI_EDITING_URL
@@ -669,6 +663,16 @@ parameters:
   displayName: Keycloak Realm
   description: The name of the Keycloak realm to use for authentication.
   value: apicurio
+  required: true
+- name: API_APICURIO_KC_CLIENT_ID
+  displayName: Keycloak Realm
+  description: The name of the client-id for the API component.
+  value: apicurio-api
+  required: true
+- name: APICURIO_UI_KC_CLIENT_ID
+  displayName: Keycloak Realm
+  description: The name of the client-id for the UI component.
+  value: apicurio-studio
   required: true
 - name: UI_JVM_MIN
   displayName: UI Min JVM Memory Limit

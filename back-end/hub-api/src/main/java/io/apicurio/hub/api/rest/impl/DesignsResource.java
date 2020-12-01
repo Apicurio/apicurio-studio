@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
@@ -115,6 +116,8 @@ import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.integrations.ApicurioEventType;
+import io.apicurio.hub.core.integrations.EventsService;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.hub.core.util.FormatUtils;
@@ -163,13 +166,16 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private BitbucketResourceResolver bitbucketResolver;
 
+    @Inject
+    private EventsService eventsService;
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
      */
     @Override
     public Collection<ApiDesign> listDesigns() throws ServerError {
         metrics.apiCall("/designs", "GET");
-        
+
         try {
             logger.debug("Listing API Designs");
             String user = this.security.getCurrentUser().getLogin();
@@ -343,7 +349,9 @@ public class DesignsResource implements IDesignsResource {
         } catch (StorageException e) {
             throw new ServerError(e);
         }
-        
+
+        eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design);
+
         return design;
     }
 
@@ -384,9 +392,11 @@ public class DesignsResource implements IDesignsResource {
             // Create the API Design in the database
             String designId = storage.createApiDesign(user, design, content);
             design.setId(designId);
-            
+
             metrics.apiCreate(type);
-            
+
+            eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design);
+
             return design;
         } catch (StorageException e) {
             throw new ServerError(e);
@@ -542,15 +552,19 @@ public class DesignsResource implements IDesignsResource {
     public void deleteDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Deleting an API Design with ID {}", designId);
         metrics.apiCall("/designs/{designId}", "DELETE");
-        
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             this.storage.deleteApiDesign(user, designId);
+            Map<String, String> data = new HashMap<>();
+            data.put("id", designId);
+            data.put("deletedBy", user);
+            eventsService.triggerEvent(ApicurioEventType.DESIGN_DELETED, data);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getContributors(java.lang.String)
      */

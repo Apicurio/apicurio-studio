@@ -103,6 +103,9 @@ public class HubConfiguration extends Configuration {
     private static final String INFINISPAN_TRANSPORT_ENV = "APICURIO_HUB_EDITING_SESSION_TRANSPORT_";
     private static final String INFINISPAN_TRANSPORT_SYSPROP = "apicurio.hub.editing.session.transport.";
 
+    private static final String WEBHOOKS_CONFIG_ENV = "APICURIO_HUB_INTEGRATIONS_HTTP_";
+    private static final String WEBHOOKS_CONFIG_SYSPROP = "apicurio.hub.integrations.http.";
+
     /**
      * @return the configured JDBC type (default: h2)
      */
@@ -286,5 +289,12 @@ public class HubConfiguration extends Configuration {
      */
     public Properties getInfinispanTransportProperties() {
         return getConfigurationProperties(INFINISPAN_TRANSPORT_ENV, INFINISPAN_TRANSPORT_SYSPROP, false);
+    }
+
+    /**
+     * @return Http integration events, a.k.a webhooks, configuration properties
+     */
+    public Properties getWebhooksConfiguration() {
+        return getConfigurationProperties(WEBHOOKS_CONFIG_ENV, WEBHOOKS_CONFIG_SYSPROP, false);
     }
 }

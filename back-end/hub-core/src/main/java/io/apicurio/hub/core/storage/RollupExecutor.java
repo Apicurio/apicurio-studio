@@ -23,6 +23,8 @@ import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.integrations.ApicurioEventType;
+import io.apicurio.hub.core.integrations.EventsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,8 @@ public class RollupExecutor implements IRollupExecutor {
     private IStorage storage;
     @Inject
     private OaiCommandExecutor oaiCommandExecutor;
+    @Inject
+    private EventsService eventsService;
 
     /**
      * @see io.apicurio.hub.core.storage.IRollupExecutor#rollupCommands(java.lang.String, java.lang.String)
@@ -85,9 +89,13 @@ public class RollupExecutor implements IRollupExecutor {
                 design.setTags(info.getTags());
                 dirty = true;
             }
-            if (dirty) {
-                logger.debug("API design {} meta-data changed, updating in storage.", designId);
-                storage.updateApiDesign(userId, design);
+            try {
+                if (dirty) {
+                    logger.debug("API design {} meta-data changed, updating in storage.", designId);
+                    storage.updateApiDesign(userId, design);
+                }
+            } finally {
+                eventsService.triggerEvent(ApicurioEventType.DESIGN_UPDATED, design);
             }
         } catch (Exception e) {
             // Not the end of the world if we fail to update the API's meta-data

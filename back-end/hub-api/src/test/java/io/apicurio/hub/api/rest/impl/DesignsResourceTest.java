@@ -66,6 +66,7 @@ import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.test.core.TestUtil;
 import test.io.apicurio.hub.api.MockEditingSessionManager;
+import test.io.apicurio.hub.api.MockEventsService;
 import test.io.apicurio.hub.api.MockGitHubService;
 import test.io.apicurio.hub.api.MockMetrics;
 import test.io.apicurio.hub.api.MockSecurityContext;
@@ -90,6 +91,7 @@ public class DesignsResourceTest {
     private GitLabResourceResolver gitLabResolver;
     private BitbucketResourceResolver bitbucketResolver;
     private MockMetrics metrics;
+    private MockEventsService eventsService;
 
     @Before
     public void setUp() {
@@ -104,6 +106,7 @@ public class DesignsResourceTest {
         gitHubResolver = new GitHubResourceResolver();
         gitLabResolver = new GitLabResourceResolver();
         bitbucketResolver = new BitbucketResourceResolver();
+        eventsService = new MockEventsService();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -128,8 +131,9 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "gitHubResolver", gitHubResolver);
         TestUtil.setPrivateField(resource, "gitLabResolver", gitLabResolver);
         TestUtil.setPrivateField(resource, "bitbucketResolver", bitbucketResolver);
+        TestUtil.setPrivateField(resource, "eventsService", eventsService);
     }
-    
+
     @After
     public void tearDown() throws Exception {
     }

@@ -350,7 +350,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
 
-        eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design.getId(), design);
+        eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design);
 
         return design;
     }
@@ -395,7 +395,7 @@ public class DesignsResource implements IDesignsResource {
 
             metrics.apiCreate(type);
 
-            eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design.getId(), design);
+            eventsService.triggerEvent(ApicurioEventType.DESIGN_CREATED, design);
 
             return design;
         } catch (StorageException e) {
@@ -559,7 +559,7 @@ public class DesignsResource implements IDesignsResource {
             Map<String, String> data = new HashMap<>();
             data.put("id", designId);
             data.put("deletedBy", user);
-            eventsService.triggerEvent(ApicurioEventType.DESIGN_DELETED, designId, data);
+            eventsService.triggerEvent(ApicurioEventType.DESIGN_DELETED, data);
         } catch (StorageException e) {
             throw new ServerError(e);
         }

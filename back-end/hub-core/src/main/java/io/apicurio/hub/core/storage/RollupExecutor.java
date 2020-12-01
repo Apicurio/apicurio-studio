@@ -95,7 +95,7 @@ public class RollupExecutor implements IRollupExecutor {
                     storage.updateApiDesign(userId, design);
                 }
             } finally {
-                eventsService.triggerEvent(ApicurioEventType.DESIGN_UPDATED, designId, design);
+                eventsService.triggerEvent(ApicurioEventType.DESIGN_UPDATED, design);
             }
         } catch (Exception e) {
             // Not the end of the world if we fail to update the API's meta-data

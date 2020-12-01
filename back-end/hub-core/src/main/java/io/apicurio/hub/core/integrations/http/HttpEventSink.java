@@ -18,6 +18,7 @@ package io.apicurio.hub.core.integrations.http;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.http.HttpResponse;
@@ -42,6 +43,13 @@ public class HttpEventSink implements EventSink {
     @Inject
     HttpSinksConfiguration configuration;
 
+    @PostConstruct
+    void init() {
+        if (isConfigured()) {
+            httpClient = HttpClientBuilder.create().build();
+        }
+    }
+
     @Override
     public String name() {
         return "http sink";
@@ -53,7 +61,7 @@ public class HttpEventSink implements EventSink {
     }
 
     @Override
-    public void handle(ApicurioEventType type, String designId, byte[] data) {
+    public void handle(ApicurioEventType type, byte[] data) {
 
         log.info("Firing event " + type);
 
@@ -75,7 +83,7 @@ public class HttpEventSink implements EventSink {
             request.addHeader("content-type", ContentType.APPLICATION_JSON.getMimeType());
             request.setEntity(new ByteArrayEntity(data, ContentType.APPLICATION_JSON));
             try {
-                HttpResponse response = getHttpClient().execute(request);
+                HttpResponse response = httpClient.execute(request);
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() > 299) {
                     log.warn("Http sink {} return status code {}", httpSink.getName(), response.getStatusLine().getStatusCode());
                 }
@@ -86,14 +94,6 @@ public class HttpEventSink implements EventSink {
         } catch (Exception e) {
             log.error("Error sending http event", e);
         }
-    }
-
-    private synchronized HttpClient getHttpClient() {
-
-        if (httpClient == null) {
-            httpClient = HttpClientBuilder.create().build();
-        }
-        return httpClient;
     }
 
 }

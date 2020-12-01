@@ -22,6 +22,6 @@ public interface EventsService {
 
     boolean isConfigured();
 
-    void triggerEvent(ApicurioEventType type, String designId, Object data);
+    void triggerEvent(ApicurioEventType type, Object data);
 
 }

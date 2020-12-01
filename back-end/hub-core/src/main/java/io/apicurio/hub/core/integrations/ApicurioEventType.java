@@ -20,14 +20,14 @@ package io.apicurio.hub.core.integrations;
  */
 public enum ApicurioEventType {
 
-    DESIGN_CREATED,
-    DESIGN_UPDATED,
-    DESIGN_DELETED;
+    DESIGN_CREATED("io.apicurio.hub.design-created"),
+    DESIGN_UPDATED("io.apicurio.hub.design-updated"),
+    DESIGN_DELETED("io.apicurio.hub.design-deleted");
 
     private String cloudEventType;
 
-    private ApicurioEventType() {
-        this.cloudEventType = "io.apicurio.hub."+this.name().toLowerCase().replace("_", "-");
+    private ApicurioEventType(String cloudEventType) {
+        this.cloudEventType = cloudEventType;
     }
 
     public String cloudEventType() {

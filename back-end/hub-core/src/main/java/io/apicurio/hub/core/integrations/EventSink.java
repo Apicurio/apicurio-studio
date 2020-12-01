@@ -9,7 +9,7 @@ public interface EventSink {
 
     boolean isConfigured();
 
-    void handle(ApicurioEventType type, String designId, byte[] data);
+    void handle(ApicurioEventType type, byte[] data);
 
 }
 

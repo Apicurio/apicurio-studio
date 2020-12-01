@@ -17,7 +17,6 @@ package io.apicurio.hub.core.integrations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -65,6 +64,8 @@ public class EventsServiceImpl implements EventsService {
         }
         if (configuredSinks) {
             executor = new ThreadPoolExecutor(1, 3, 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(Include.NON_NULL);
         }
     }
 
@@ -74,11 +75,11 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public void triggerEvent(ApicurioEventType type, String designId, Object data) {
+    public void triggerEvent(ApicurioEventType type, Object data) {
         if (configuredSinks && data != null) {
             byte[] buffer;
             try {
-                buffer = getMapper().writeValueAsBytes(data);
+                buffer = mapper.writeValueAsBytes(data);
             } catch (JsonProcessingException e) {
                 log.error("Error serializing event data", e);
                 return;
@@ -86,21 +87,13 @@ public class EventsServiceImpl implements EventsService {
             executor.submit(() -> {
                for (EventSink sink : subscriptions) {
                    try {
-                       sink.handle(type, designId, buffer);
+                       sink.handle(type, buffer);
                    } catch (Exception e) {
                        log.error("Error sending event in sink " + sink.name(), e);
                    }
                }
             });
         }
-    }
-
-    private synchronized ObjectMapper getMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(Include.NON_NULL);
-        }
-        return mapper;
     }
 
 }

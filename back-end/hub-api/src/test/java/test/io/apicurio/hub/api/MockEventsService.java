@@ -29,7 +29,7 @@ public class MockEventsService implements EventsService {
     }
 
     @Override
-    public void triggerEvent(ApicurioEventType type, String designId, Object data) {
+    public void triggerEvent(ApicurioEventType type, Object data) {
 
     }
 

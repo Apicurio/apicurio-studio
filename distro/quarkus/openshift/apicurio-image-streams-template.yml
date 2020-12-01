@@ -13,7 +13,7 @@ objects:
         - name: latest-release
           from:
             kind: DockerImage
-            name: apicurio/apicurio-studio-auth:latest-release
+            name: carnal/apicurio-studio-auth-quarkus:latest
           importPolicy:
             scheduled: true
   - apiVersion: v1

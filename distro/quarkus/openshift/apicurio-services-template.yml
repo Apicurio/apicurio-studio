@@ -7,19 +7,19 @@ objects:
   - apiVersion: v1
     kind: Service
     metadata:
-      name: postgresql
+      name: studio-postgresql
       creationTimestamp: null
       labels:
-        app: postgresql
+        app: studio-postgresql
         template: apicurio-studio
     spec:
       ports:
-        - name: postgresql
+        - name: studio-postgresql
           protocol: TCP
           port: 5432
           targetPort: 5432
       selector:
-        name: postgresql
+        name: studio-postgresql
       type: ClusterIP
       sessionAffinity: None
     status:

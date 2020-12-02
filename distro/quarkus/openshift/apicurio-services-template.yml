@@ -19,7 +19,7 @@ objects:
           port: 5432
           targetPort: 5432
       selector:
-        name: studio-postgresql
+        app: studio-postgresql
       type: ClusterIP
       sessionAffinity: None
     status:

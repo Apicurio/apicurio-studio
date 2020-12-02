@@ -163,7 +163,7 @@ objects:
                       name: apicurio-studio-auth
                       key: keycloak-password
                 - name: APICURIO_UI_URL
-                  value: https://${UI_ROUTE}
+                  value: http://${UI_ROUTE}
               resources:
                 limits:
                   cpu: ${AUTH_CPU_LIMIT}
@@ -245,7 +245,7 @@ objects:
                   protocol: TCP
               env:
                 - name: APICURIO_KC_AUTH_URL
-                  value: https://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
+                  value: http://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
                 - name: APICURIO_KC_REALM
                   value: ${KC_REALM}
                 - name: APICURIO_KC_CLIENT_ID
@@ -451,15 +451,15 @@ objects:
                   protocol: TCP
               env:
                 - name: APICURIO_KC_AUTH_URL
-                  value: https://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
+                  value: http://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
                 - name: APICURIO_KC_REALM
                   value: ${KC_REALM}
                 - name: APICURIO_KC_CLIENT_ID
                   value: ${UI_APICURIO_KC_CLIENT_ID}
                 - name: APICURIO_UI_HUB_API_URL
-                  value: https://${API_ROUTE}:8080
+                  value: http://${API_ROUTE}:8080
                 - name: APICURIO_UI_EDITING_URL
-                  value: wss://${WS_ROUTE}:8080
+                  value: ws://${WS_ROUTE}:8080
                 - name: APICURIO_UI_LOGOUT_REDIRECT_URI
                   value: /
                 - name: APICURIO_MIN_HEAP

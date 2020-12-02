@@ -17,9 +17,6 @@ objects:
         kind: Service
         name: apicurio-studio-auth
         weight: 100
-      tls:
-        termination: edge
-        insecureEdgeTerminationPolicy: Redirect
       wildcardPolicy: None
   - apiVersion: v1
     kind: Route
@@ -34,9 +31,6 @@ objects:
         kind: Service
         name: apicurio-studio-api
         weight: 100
-      tls:
-        termination: edge
-        insecureEdgeTerminationPolicy: Redirect
       wildcardPolicy: None
   - apiVersion: v1
     kind: Route
@@ -51,9 +45,6 @@ objects:
         kind: Service
         name: apicurio-studio-ws
         weight: 100
-      tls:
-        termination: edge
-        insecureEdgeTerminationPolicy: Redirect
       wildcardPolicy: None
   - apiVersion: v1
     kind: Route
@@ -68,7 +59,4 @@ objects:
         kind: Service
         name: apicurio-studio-ui
         weight: 100
-      tls:
-        termination: edge
-        insecureEdgeTerminationPolicy: Redirect
       wildcardPolicy: None

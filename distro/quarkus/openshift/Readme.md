@@ -41,3 +41,12 @@ A simple "reset" script is also included, it will remove the generated configura
 
 The Keycloak instance is already configured, you don't have to create the realms manually but you'll need to create the users.
 
+## Microcks configuration
+
+Note that Microcks isn't being provided with this distro. But, if you have a Microcks cluster configured and available, you can configure it easily with the following commans:
+
+```
+oc set env dc/apicurio-studio-api APICURIO_MICROCKS_API_URL=microcks_url
+oc set env dc/apicurio-studio-api APICURIO_MICROCKS_CLIENT_ID=microcks_client_id
+oc set env dc/apicurio-studio-api APICURIO_MICROCKS_CLIENT_SECRET=microcks_client_secret
+```

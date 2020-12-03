@@ -13,7 +13,7 @@ objects:
         - name: latest-release
           from:
             kind: DockerImage
-            name: apicurio/apicurio-studio-auth:latest
+            name: apicurio/apicurio-studio-auth-quarkus:latest
           importPolicy:
             scheduled: true
   - apiVersion: v1
@@ -25,7 +25,7 @@ objects:
         - name: latest-release
           from:
             kind: DockerImage
-            name: apicurio/apicurio-studio-api:latest
+            name: apicurio/apicurio-studio-api-quarkus:latest
           importPolicy:
             scheduled: true
   - apiVersion: v1
@@ -37,7 +37,7 @@ objects:
         - name: latest-release
           from:
             kind: DockerImage
-            name: apicurio/apicurio-studio-ws:latest
+            name: apicurio/apicurio-studio-ws-quarkus:latest
           importPolicy:
             scheduled: true
   - apiVersion: v1
@@ -49,6 +49,6 @@ objects:
         - name: latest-release
           from:
             kind: DockerImage
-            name: apicurio/apicurio-studio-ui:latest
+            name: apicurio/apicurio-studio-ui-quarkus:latest
           importPolicy:
             scheduled: true

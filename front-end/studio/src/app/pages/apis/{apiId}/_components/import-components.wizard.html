@@ -62,8 +62,10 @@
                             </p>
                             <ul class="review">
                                 <li *ngFor="let ic of componentsForReview()">
-                                    <span class="from">{{ ic.from.name }}</span>
-                                    <span> / </span>
+                                    <span *ngIf="ic.from">
+                                        <span class="from">{{ ic.from.name }}</span>
+                                        <span> / </span>
+                                    </span>
                                     <span class="component">{{ ic.name }}</span>
                                 </li>
                             </ul>

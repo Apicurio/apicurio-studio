@@ -321,7 +321,7 @@ export class ImportComponentsWizard {
                     value: component,
                     cells: [
                         { displayName: component.name },
-                        { displayName: component.from.name }
+                        { displayName: component.from ? component.from.name : "No parent resource" }
                     ]
                 };
             });

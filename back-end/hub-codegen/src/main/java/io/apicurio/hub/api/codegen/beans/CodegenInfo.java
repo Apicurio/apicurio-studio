@@ -29,6 +29,7 @@ public class CodegenInfo {
     private String version = "1.0.0";
     private List<CodegenJavaInterface> interfaces = new ArrayList<>();
     private List<CodegenJavaBean> beans = new ArrayList<>();
+    private String contextRoot;
     
     /**
      * Constructor.
@@ -104,6 +105,20 @@ public class CodegenInfo {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return the contextRoot
+     */
+    public String getContextRoot() {
+        return contextRoot;
+    }
+
+    /**
+     * @param contextRoot the contextRoot to set
+     */
+    public void setContextRoot(String contextRoot) {
+        this.contextRoot = contextRoot;
     }
     
 }

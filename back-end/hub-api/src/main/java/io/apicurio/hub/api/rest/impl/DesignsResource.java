@@ -1308,7 +1308,7 @@ public class DesignsResource implements IDesignsResource {
     /**
      * Generate and publish (to a git/source control system) a project.  This will 
      * generate a project from the OpenAPI document and then publish the result to
-     * a soruce control platform.
+     * a source control platform.
      * @param project
      * @param updateOnly
      * @return the URL of the published pull request
@@ -1318,7 +1318,10 @@ public class DesignsResource implements IDesignsResource {
         try {
             String content = this.getApiContent(project.getDesignId(), FormatType.JSON);
             
-            // TODO support other types besides JAX-RS
+            // Dereference the document so that we have everything we need in a single place
+            content = dereferencer.dereference(content);
+            
+            // Generate the type of project being requested.
             if (project.getType() == CodegenProjectType.thorntail) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
 

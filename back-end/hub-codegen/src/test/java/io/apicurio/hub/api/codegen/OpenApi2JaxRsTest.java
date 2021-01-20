@@ -94,6 +94,22 @@ public class OpenApi2JaxRsTest {
     }
 
     /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
+    public void testGenerateFull_ContextRoot() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/context-root.json", UpdateOnly.no, Reactive.no, "_expected-context-root/generated-api", false);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
+    public void testGenerateFull_SimpleType() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/simple-type.json", UpdateOnly.no, Reactive.no, "_expected-simple-type/generated-api", false);
+    }
+
+    /**
      * Shared test method.
      * @param apiDef
      * @param updateOnly

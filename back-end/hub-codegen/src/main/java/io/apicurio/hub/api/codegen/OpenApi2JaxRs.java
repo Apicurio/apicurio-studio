@@ -34,7 +34,12 @@ import java.util.zip.ZipOutputStream;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -65,8 +70,10 @@ import com.sun.codemodel.JType;
 
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
+import io.apicurio.datamodels.core.models.Extension;
 import io.apicurio.datamodels.core.util.VisitorUtil;
 import io.apicurio.datamodels.core.visitors.TraverserDirection;
+import io.apicurio.datamodels.openapi.models.OasDocument;
 import io.apicurio.hub.api.codegen.beans.CodegenInfo;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaArgument;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
@@ -76,6 +83,7 @@ import io.apicurio.hub.api.codegen.jaxrs.InterfacesVisitor;
 import io.apicurio.hub.api.codegen.jaxrs.OpenApi2CodegenVisitor;
 import io.apicurio.hub.api.codegen.util.CodegenUtil;
 import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
+import io.apicurio.hub.api.codegen.util.OpenApiDocumentPreProcessor;
 
 
 /**
@@ -250,7 +258,7 @@ public class OpenApi2JaxRs {
         // Generate the JAX-RS interfaces
         for (CodegenJavaInterface iface : info.getInterfaces()) {
             log.append("Generating Interface: " + iface.getPackage() + "." + iface.getName() + "\r\n");
-            String javaInterface = generateJavaInterface(iface);
+            String javaInterface = generateJavaInterface(info, iface);
             String javaInterfaceFileName = javaPackageToZipPath(iface.getPackage()) + iface.getName() + ".java";
             log.append("Adding to zip: " + javaInterfaceFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(javaInterfaceFileName));
@@ -282,8 +290,11 @@ public class OpenApi2JaxRs {
      */
     protected CodegenInfo getInfoFromApiDoc() throws IOException {
         document = Library.readDocumentFromJSONString(openApiDoc);
-
-        // First, figure out the breakdown of the interfaces.
+        
+        // Pre-process the document
+        document = preProcess(document);
+        
+        // Figure out the breakdown of the interfaces.
         InterfacesVisitor iVisitor = new InterfacesVisitor();
         VisitorUtil.visitTree(document, iVisitor, TraverserDirection.down);
 
@@ -304,8 +315,33 @@ public class OpenApi2JaxRs {
                 });
             });
         });
-
+        info.setContextRoot(getContextRoot(document));
         return info;
+    }
+
+    private String getContextRoot(Document document) {
+        OasDocument oaiDoc = (OasDocument) document;
+        if (oaiDoc.paths != null) {
+            Extension extension = oaiDoc.paths.getExtension("x-codegen-contextRoot");
+            if (extension != null && extension.value != null) {
+                return String.valueOf(extension.value);
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Pre-process the document to modify it in the following ways:
+     * 
+     * 1) Inline any re-usable simple-type schemas
+     * 2) Check for the "x-codegen-contextRoot" property in the Paths object and prepend its value to all paths
+     * 
+     * @param document
+     */
+    private Document preProcess(Document document) {
+        OpenApiDocumentPreProcessor preprocessor = new OpenApiDocumentPreProcessor();
+        preprocessor.process(document);
+        return document;
     }
 
     /**
@@ -359,16 +395,16 @@ public class OpenApi2JaxRs {
 
     /**
      * Generates a Jax-rs interface from the given codegen information.
-     *
+     * @param info
      * @param _interface
      */
-    protected String generateJavaInterface(CodegenJavaInterface _interface) {
+    protected String generateJavaInterface(CodegenInfo info, CodegenJavaInterface _interface) {
         // Create the JAX-RS interface spec itself.
         Builder interfaceBuilder = TypeSpec
                 .interfaceBuilder(ClassName.get(_interface.getPackage(), _interface.getName()));
+        String jaxRsPath = info.getContextRoot() + _interface.getPath();
         interfaceBuilder.addModifiers(Modifier.PUBLIC)
-                .addAnnotation(AnnotationSpec.builder(ClassName.get("javax.ws.rs", "Path"))
-                        .addMember("value", "$S", _interface.getPath()).build())
+                .addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", jaxRsPath).build())
                 .addJavadoc("A JAX-RS interface.  An implementation of this interface must be provided.\n");
 
         // Add specs for all the methods.
@@ -591,7 +627,6 @@ public class OpenApi2JaxRs {
                                 return schema;
                             }
                         }
-                        System.out.println("!!!!! :: " + beanClassname);
                         // TODO if we get here, we probably want to return an empty schema
                         return super.create(parent, path, refFragmentPathDelimiters);
                     }

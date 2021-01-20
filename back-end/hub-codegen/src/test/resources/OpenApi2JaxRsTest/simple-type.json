@@ -1,0 +1,63 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Simple Data Type Sample API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/widgets/{widgetId}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Returns the list of widgets."
+                    }
+                },
+                "operationId": "getWidgets",
+                "summary": "Get widgets"
+            },
+            "parameters": [
+                {
+                    "name": "widgetId",
+                    "schema": {
+                        "$ref": "#/components/schemas/MyId"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "MyId": {
+                "description": "",
+                "type": "string",
+                "example": "\"hello world\""
+            },
+            "SampleDataType": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "id": {
+                        "$ref": "#/components/schemas/MyId",
+                        "description": ""
+                    }
+                }
+            }
+        }
+    }
+}

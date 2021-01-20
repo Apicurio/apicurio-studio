@@ -1,0 +1,31 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Context Root Sample API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/widgets": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Returns the list of widgets."
+                    }
+                },
+                "operationId": "getWidgets",
+                "summary": "Get widgets"
+            }
+        },
+        "x-codegen-contextRoot": "/api/v3"
+    }
+}

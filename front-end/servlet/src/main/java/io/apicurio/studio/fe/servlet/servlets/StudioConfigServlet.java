@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import io.apicurio.studio.shared.beans.StudioConfigRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,9 @@ public class StudioConfigServlet extends HttpServlet {
             
             config.setUi(new StudioConfigUi());
             config.getUi().setUrl(this.uiConfig.getUiUrl());
+
+            config.setRegistry(new StudioConfigRegistry());
+            config.getRegistry().setUrl(uiConfig.getRegistryUrl());
             
             config.setFeatures(new StudioConfigFeatures());
             config.getFeatures().setMicrocks(uiConfig.isMicrocksEnabled());

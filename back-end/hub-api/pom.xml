@@ -40,6 +40,12 @@
             <artifactId>apicurio-data-models</artifactId>
         </dependency>
 
+        <!-- Apicurio Registry Types -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-common</artifactId>
+        </dependency>
+
         <!-- Third Party Libraries -->
         <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>

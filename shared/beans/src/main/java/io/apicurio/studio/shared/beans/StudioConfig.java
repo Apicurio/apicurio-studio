@@ -33,6 +33,7 @@ public class StudioConfig {
     private User user;
     private StudioConfigUi ui;
     private StudioConfigFeatures features;
+    private StudioConfigRegistry registry;
     
     /**
      * Constructor.
@@ -122,6 +123,20 @@ public class StudioConfig {
      */
     public void setUi(StudioConfigUi ui) {
         this.ui = ui;
+    }
+
+    /**
+     * @return the registry
+     */
+    public StudioConfigRegistry getRegistry() {
+        return registry;
+    }
+
+    /**
+     * @param registry the registry to set
+     */
+    public void setRegistry(StudioConfigRegistry registry) {
+        this.registry = registry;
     }
 
 }

@@ -77,6 +77,7 @@ import {DownloadDialogComponent} from "./pages/apis/{apiId}/_components/download
 import {ImportComponentsWizard} from "./pages/apis/{apiId}/_components/import-components.wizard";
 import {DataTableComponent} from "./components/common/data-table.component";
 import {LoadingComponent} from "./components/common/loading.component";
+import {ArtifactsService} from "./services/artifacts.service";
 
 @NgModule({
     imports: [
@@ -97,7 +98,7 @@ import {LoadingComponent} from "./components/common/loading.component";
         DataTableComponent, LoadingComponent
     ],
     providers: [
-        ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
+        ApisService, ArtifactsService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
         AuthenticationCanActivateGuard, ApiEditorPageGuard, CurrentUserService, TemplateService
     ],
     bootstrap: [AppComponent]

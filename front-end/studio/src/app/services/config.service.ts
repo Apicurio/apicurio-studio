@@ -31,6 +31,9 @@ let DEFAULT_CONFIG: any = {
     ui: {
         uiUrl: "http://localhost:8080/studio/"
     },
+    registry: {
+        registryUrl: "http://localhost:8080/registry/"
+    },
     features: {
         "microcks": true,
         "graphql": true,
@@ -145,6 +148,13 @@ export class ConfigService {
             return "";
         }
         return this.config.ui.url;
+    }
+
+    public registryUrl(): string {
+        if (!this.config.registry || !this.config.registry.url) {
+            return "";
+        }
+        return this.config.registry.url;
     }
 
     public isShareWithEveryoneEnabled(): boolean {

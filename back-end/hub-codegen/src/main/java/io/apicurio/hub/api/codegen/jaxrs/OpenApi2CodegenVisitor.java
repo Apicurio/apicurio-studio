@@ -129,8 +129,8 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
      */
     @Override
     public void visitPathItem(OasPathItem node) {
-        String p = node.getPath();
-        CodegenJavaInterface cgInterface = this.getOrCreateInterface(p);
+        String path = node.getPath();
+        CodegenJavaInterface cgInterface = this.getOrCreateInterface(path);
         this._currentInterface = cgInterface;
     }
 

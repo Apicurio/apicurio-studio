@@ -1,6 +1,7 @@
 
 package org.example.api.beans;
 
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "name",
     "mylong",
     "myint",
+    "mymap",
     "id"
 })
 public class SampleDataType {
@@ -24,7 +26,7 @@ public class SampleDataType {
      */
     @JsonProperty("name")
     @JsonPropertyDescription("")
-    private String name;
+    private java.lang.String name;
     /**
      * 
      */
@@ -37,18 +39,20 @@ public class SampleDataType {
     @JsonProperty("myint")
     @JsonPropertyDescription("")
     private Integer myint;
+    @JsonProperty("mymap")
+    private Map<String, String> mymap;
     /**
      * 
      */
     @JsonProperty("id")
     @JsonPropertyDescription("")
-    private String id;
+    private java.lang.String id;
 
     /**
      * 
      */
     @JsonProperty("name")
-    public String getName() {
+    public java.lang.String getName() {
         return name;
     }
 
@@ -56,7 +60,7 @@ public class SampleDataType {
      * 
      */
     @JsonProperty("name")
-    public void setName(String name) {
+    public void setName(java.lang.String name) {
         this.name = name;
     }
 
@@ -92,11 +96,21 @@ public class SampleDataType {
         this.myint = myint;
     }
 
+    @JsonProperty("mymap")
+    public Map<String, String> getMymap() {
+        return mymap;
+    }
+
+    @JsonProperty("mymap")
+    public void setMymap(Map<String, String> mymap) {
+        this.mymap = mymap;
+    }
+
     /**
      * 
      */
     @JsonProperty("id")
-    public String getId() {
+    public java.lang.String getId() {
         return id;
     }
 
@@ -104,7 +118,7 @@ public class SampleDataType {
      * 
      */
     @JsonProperty("id")
-    public void setId(String id) {
+    public void setId(java.lang.String id) {
         this.id = id;
     }
 

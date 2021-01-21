@@ -81,9 +81,9 @@ import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
 import io.apicurio.hub.api.codegen.jaxrs.InterfacesVisitor;
 import io.apicurio.hub.api.codegen.jaxrs.OpenApi2CodegenVisitor;
+import io.apicurio.hub.api.codegen.pre.OpenApiDocumentPreProcessor;
 import io.apicurio.hub.api.codegen.util.CodegenUtil;
 import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
-import io.apicurio.hub.api.codegen.util.OpenApiDocumentPreProcessor;
 
 
 /**
@@ -341,6 +341,11 @@ public class OpenApi2JaxRs {
     private Document preProcess(Document document) {
         OpenApiDocumentPreProcessor preprocessor = new OpenApiDocumentPreProcessor();
         preprocessor.process(document);
+        
+        System.out.println("--------------");
+        System.out.println(Library.writeDocumentToJSONString(document));
+        System.out.println("--------------");
+        
         return document;
     }
 

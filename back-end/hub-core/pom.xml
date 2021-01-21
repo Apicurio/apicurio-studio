@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
->
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.apicurio</groupId>
@@ -27,6 +26,13 @@
         <dependency>
             <groupId>io.apicurio</groupId>
             <artifactId>apicurio-data-models</artifactId>
+        </dependency>
+
+        <!-- Apicurio Registry Rest Client -->
+        <dependency>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-rest-client</artifactId>
+            <version>1.3.2.Final</version>
         </dependency>
 
         <!-- Kafka (from Registry) -->

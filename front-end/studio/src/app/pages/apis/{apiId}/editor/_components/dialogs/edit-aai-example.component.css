@@ -1,0 +1,10 @@
+.modal-body .example {
+  position: relative;
+}
+
+.modal-body .example .btn-generate {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}

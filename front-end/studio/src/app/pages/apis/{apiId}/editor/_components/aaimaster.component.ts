@@ -220,10 +220,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public definitions(): Aai20SchemaDefinition[] {
         let viz: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(this.filterCriteria);
         if (!this._defs) {
-            this.document.components.getSchemaDefinitions().forEach( definition => {
-                VisitorUtil.visitNode(definition, viz);
-            })
-            this._defs = viz.getSortedSchemaDefinitions();
+            if (this.document.components) {
+                this.document.components.getSchemaDefinitions().forEach( definition => {
+                    VisitorUtil.visitNode(definition, viz);
+                })
+                this._defs = viz.getSortedSchemaDefinitions();
+            } else {
+                this._defs = [];
+            }
         }
         return this._defs;
     }
@@ -233,11 +237,15 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public operationTraits(): AaiOperationTraitDefinition[] {
         if (!this._opTraitsDefs) {
-            let viz: FindOperationTraitDefinitionsVisitor = new FindOperationTraitDefinitionsVisitor(this.filterCriteria);
-            this.document.components.getOperationTraitDefinitionsList().forEach( opTraitDef => {
-                VisitorUtil.visitNode(opTraitDef, viz);
-            })
-            this._opTraitsDefs = viz.getSortedOperationTraitDefinitions();
+            if (this.document.components) {
+                let viz: FindOperationTraitDefinitionsVisitor = new FindOperationTraitDefinitionsVisitor(this.filterCriteria);
+                this.document.components.getOperationTraitDefinitionsList().forEach( opTraitDef => {
+                    VisitorUtil.visitNode(opTraitDef, viz);
+                })
+                this._opTraitsDefs = viz.getSortedOperationTraitDefinitions();
+            } else {
+                this._opTraitsDefs = [];
+            }
         }
         return this._opTraitsDefs;
     }
@@ -247,11 +255,15 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public messageTraits(): AaiMessageTraitDefinition[] {
         if (!this._msgTraitsDefs) {
-            let viz: FindMessageTraitDefinitionsVisitor = new FindMessageTraitDefinitionsVisitor(this.filterCriteria);
-            this.document.components.getMessageTraitDefinitionsList().forEach( msgTraitDef => {
-                VisitorUtil.visitNode(msgTraitDef, viz);
-            })
-            this._msgTraitsDefs = viz.getSortedMessageTraitDefinitions();
+            if (this.document.components) {
+                let viz: FindMessageTraitDefinitionsVisitor = new FindMessageTraitDefinitionsVisitor(this.filterCriteria);
+                this.document.components.getMessageTraitDefinitionsList().forEach( msgTraitDef => {
+                    VisitorUtil.visitNode(msgTraitDef, viz);
+                })
+                this._msgTraitsDefs = viz.getSortedMessageTraitDefinitions();
+            } else {
+                this._msgTraitsDefs = [];
+            }
         }
         return this._msgTraitsDefs;
     }
@@ -304,6 +316,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public addChannel(channel: string): void {
         let command: ICommand = CommandFactory.createNewChannelCommand(channel);
         this.commandService.emit(command);
+        console.log("this.document.channels: " + JSON.stringify(this.document.channels));
         this.selectChannel(this.document.channels.get(channel) as AaiChannelItem);
     }
 
@@ -335,7 +348,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public deleteChannel(): void {
         let channelItem: AaiChannelItem = this.contextMenuSelection.resolve(this.document) as AaiChannelItem;
-        let command: ICommand = CommandFactory.createDeletePathCommand(channelItem.getName());
+        let command: ICommand = CommandFactory.createDeleteChannelCommand(channelItem.getName());
         this.commandService.emit(command);
         this.closeContextMenu();
     }

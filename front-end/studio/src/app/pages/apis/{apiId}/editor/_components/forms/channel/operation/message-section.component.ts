@@ -34,6 +34,7 @@ import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {ModelUtils} from "../../../../_util/model.util";
+import {DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
 import {ObjectUtils} from "apicurio-ts-core";
 
 @Component({
@@ -47,6 +48,8 @@ import {ObjectUtils} from "apicurio-ts-core";
 export class MessageSectionComponent extends AbstractBaseComponent {
 
     @Input() operation: AaiOperation;
+
+    currentPart: string = 'payload';
 
     /**
      * C'tor.
@@ -93,6 +96,23 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         return !ObjectUtils.isNullOrUndefined((this.operation).message);
     }
 
+    public schemaFormatOptions() {
+        return [
+            new Value("application/vnd.aai.asyncapi;version=2.0.0", "application/vnd.aai.asyncapi;version=2.0.0"),
+            new Value("application/vnd.oai.openapi;version=3.0.0", "application/vnd.oai.openapi;version=3.0.0"),
+            new Value("application/application/schema+json;version=draft-07", "application/application/schema+json;version=draft-07"),
+            new Value("application/application/schema+yaml;version=draft-07", "application/application/schema+yaml;version=draft-07"),
+            new Value("application/vnd.apache.avro;version=1.9.0", "application/vnd.apache.avro;version=1.9.0")
+        ];
+    }
+
+    public isPartActive(part: string): boolean {
+        return this.currentPart === part;
+    }
+    public setActivePart(part: string): void {
+        this.currentPart = part;
+    }
+
     public changeName(newName: string): void {
         console.info("[MessageSectionComponent] Changing message name to: ", newName);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
@@ -100,10 +120,10 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         this.commandService.emit(command);
     }
 
-    public changeTitle(newTitel: string): void {
-        console.info("[MessageSectionComponent] Changing message title to: ", newTitel);
+    public changeTitle(newTitle: string): void {
+        console.info("[MessageSectionComponent] Changing message title to: ", newTitle);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
-                "title", newTitel);
+                "title", newTitle);
         this.commandService.emit(command);
     }
 
@@ -118,6 +138,20 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         console.info("[MessageSectionComponent] Changing message description to: ", newDescription);
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
                 "description", newDescription);
+        this.commandService.emit(command);
+    }
+
+    public changeContentType(newContentType: string): void {
+        console.info("[MessageSectionComponent] Changing message contentType to: ", newContentType);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+                "contentType", newContentType);
+        this.commandService.emit(command);
+    }
+
+    public changeSchemaFormat(newSchemaFormat: boolean): void {
+        console.info("[MessageSectionComponent] Changing message schemaFormat to: ", newSchemaFormat);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.message(),
+                "schemaFormat", newSchemaFormat);
         this.commandService.emit(command);
     }
 }

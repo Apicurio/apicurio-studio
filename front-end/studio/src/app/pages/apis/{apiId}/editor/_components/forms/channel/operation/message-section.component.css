@@ -1,0 +1,79 @@
+.message-section .section-body .parts-tabs {
+  display: flex;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.message-section .section-body .parts-tabs .tab {
+  position: relative;
+  padding: 5px 10px;
+  background-color: #efefef;
+  border: 1px solid transparent;
+  margin-right: 5px;
+}
+
+.message-section .section-body .parts-tabs .tab:hover {
+  background-color: #e4e4e4;
+}
+
+.message-section .section-body .parts-tabs .tab.active {
+  border-color: #ddd;
+  border-bottom: 1px solid transparent;
+  background-color: white;
+  margin-bottom: -1px;
+}
+
+.message-section .section-body .parts-tabs .tab.active:hover {}
+
+.message-section .section-body .parts-tabs .tab:first-child {
+  border-left: 1px solid transparent;
+}
+
+.message-section .section-body .parts-tabs .tab:first-child.active {
+  border-left: 1px solid #ddd;
+}
+
+.message-section .section-body .parts-tabs .tab>a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #666;
+}
+
+.message-section .section-body .parts-tabs .tab.active>a {
+  cursor: default;
+}
+
+.message-section .section-body .parts-tabs .tab.statusCode.success>a {
+  color: green;
+}
+
+.message-section .section-body .parts-tabs .tab.statusCode.redirect>a {
+  color: blue;
+}
+
+.message-section .section-body .parts-tabs .tab.statusCode.problem>a {
+  color: orange;
+}
+
+.message-section .section-body .parts-tabs .tab.statusCode.error>a {
+  color: red;
+}
+
+.message-section .section-body .parts-tabs .tab .validation-aggregate {
+  position: absolute;
+  right: -3px;
+  top: -7px;
+}
+
+.message-section .section-body .parts-tabs .actions {
+  flex-grow: 1;
+  text-align: right;
+  padding-right: 10px;
+  margin-top: 5px;
+}
+
+.message-section .section-body .parts-tab-content {
+  border: 1px solid #ddd;
+  background-color: white;
+  padding: 10px;
+}

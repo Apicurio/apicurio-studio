@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Library, Node, OasSchema, ReferenceUtil} from "apicurio-data-models";
+import {AaiSchema, Library, Node, OasSchema, ReferenceUtil} from "apicurio-data-models";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
 export class ModelUtils {
@@ -114,7 +114,7 @@ export class ModelUtils {
      * Generates an example from the given schema.
      * @param schema
      */
-    public static generateExampleFromSchema(schema: OasSchema): any {
+    public static generateExampleFromSchema(schema: OasSchema | AaiSchema): any {
         let generator: ExampleGenerator = new ExampleGenerator();
         return generator.generate(schema);
     }
@@ -126,7 +126,7 @@ export class ExampleGenerator {
 
     private refStack: any[] = [];
 
-    public generate(schema: OasSchema): any {
+    public generate(schema: OasSchema | AaiSchema): any {
         console.info("[ExampleGenerator] Generating example from schema of type: ", schema.type);
         let object: any;
         if (schema.$ref) {
@@ -147,7 +147,7 @@ export class ExampleGenerator {
         return object;
     }
 
-    private generateFromRef(schema: OasSchema): any {
+    private generateFromRef(schema: OasSchema | AaiSchema): any {
         if (this.refStack.indexOf(schema.$ref) !== -1) {
             return {};
         }
@@ -163,7 +163,7 @@ export class ExampleGenerator {
         }
     }
 
-    private generateObject(schema: OasSchema): any {
+    private generateObject(schema: OasSchema | AaiSchema): any {
         let object: any = {};
         if (schema.properties) {
             console.info("[ExampleGenerator] Schema has properties.");
@@ -176,7 +176,7 @@ export class ExampleGenerator {
         return object;
     }
 
-    private generateArray(schema: OasSchema): any {
+    private generateArray(schema: OasSchema | AaiSchema): any {
         let object: any[] = [];
         if (schema.items) {
             // Push two objects into the array...
@@ -193,11 +193,11 @@ export class ExampleGenerator {
         return simpleTypes.indexOf(type) !== -1;
     }
 
-    private isEnum(schema: OasSchema): boolean {
+    private isEnum(schema: OasSchema | AaiSchema ): boolean {
         return schema.enum_ && schema.enum_.length > 0;
     }
 
-    private generateEnumValue(schema: OasSchema): any {
+    private generateEnumValue(schema: OasSchema | AaiSchema): any {
         if (schema.enum_.length > 0) {
             return schema.enum_[Math.floor(Math.random()*schema.enum_.length)];
         }

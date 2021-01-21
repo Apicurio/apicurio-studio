@@ -1,0 +1,58 @@
+<!-- Add Example Dialog -->
+<div>
+    <div bsModal #addExampleModal="bs-modal" class="modal fade" id="addExampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="addExampleModalLabel" aria-hidden="true" *ngIf="isOpen()" [config]="{ backdrop: true }"
+         (onShown)="addExampleInput.focus()" (onHidden)="close()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="addExampleModalLabel">Add Example</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the new example name and payload value below and then click Add.</p>
+                    <form id="addexample-form" class="form-horizontal" #addExampleForm="ngForm" data-dismiss="modal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label required" for="exampleName">Name</label>
+                            <div class="col-sm-10">
+                                <input #addExampleInput name="exampleName" type="text" id="exampleName" class="form-control"
+                                       placeholder="Enter an Example Name" #name="ngModel"
+                                       required [(ngModel)]="model.name">
+                                <form-error-message [inputModel]="name" [type]="'required'">Name is required.</form-error-message>
+                            </div>
+                        </div>
+
+                        <div class="example">
+                            <label class="control-label required">Payload</label>
+                            <code-editor [theme]="valueEditorTheme()" #payloadCodeEditor
+                                         [mode]="valueEditorMode()"
+                                         [debounceTime]="150"
+                                         [(text)]="payloadValue"
+                                         [editorStyle]="{ position: 'relative', height: '200px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                            <button title="Generate example." class="btn btn-xs btn-default btn-generate" (click)="generatePayload()"
+                                    *ngIf="canGeneratePayloadExample()"><span class="fa fa-fw fa-code"></span> Generate</button>
+                        </div>
+                        <div class="example">
+                            <label class="control-label required">Headers</label>
+                            <code-editor [theme]="valueEditorTheme()" #headersCodeEditor
+                                         [mode]="valueEditorMode()"
+                                         [debounceTime]="150"
+                                         [(text)]="headersValue"
+                                         [editorStyle]="{ position: 'relative', height: '200px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                            <button title="Generate example." class="btn btn-xs btn-default btn-generate" (click)="generateHeaders()"
+                                    *ngIf="canGenerateHeadersExample()"><span class="fa fa-fw fa-code"></span> Generate</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="add()"
+                            [disabled]="!addExampleForm.form.valid || !hasValue()">Add</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

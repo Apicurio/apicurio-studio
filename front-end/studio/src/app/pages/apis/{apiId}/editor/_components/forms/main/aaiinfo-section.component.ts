@@ -102,7 +102,7 @@ export class AsyncApiInfoSectionComponent extends AbstractBaseComponent {
      */
     public onTermsOfServiceChange(newTermsOfService: string): void {
         console.info("[AsyncApiInfoSectionComponent] User changed the terms of service.");
-        //let command: ICommand = CommandFactory.createChangeTermsOfServiceCommand(newTermsOfService);
-        //this.commandService.emit(command);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.info(), "termsOfService", newTermsOfService);
+        this.commandService.emit(command);
     }
 }

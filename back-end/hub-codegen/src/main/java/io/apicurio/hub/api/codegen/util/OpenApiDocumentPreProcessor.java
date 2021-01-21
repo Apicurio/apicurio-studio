@@ -113,6 +113,8 @@ public class OpenApiDocumentPreProcessor extends OasVisitorAdapter implements IO
      */
     @Override
     public void visitSchema(Schema node) {
+        OasSchema schema = (OasSchema) node;
+
         LocalReferenceResolver resolver = new LocalReferenceResolver();
         if (node.$ref != null) {
             Node resolvedNode = resolver.resolveRef(node.$ref, node);
@@ -128,6 +130,11 @@ public class OpenApiDocumentPreProcessor extends OasVisitorAdapter implements IO
                     inlineSchema((Oas20Schema) node, schemaDef);
                     definitionsToRemove.add(schemaDef.getName());
                 }
+            }
+        } else {
+            // Switch from int64 format to utc-millisec so that jsonschema2pojo will generate a Long instead of an Integer
+            if ("integer".equals(schema.type) && "int64".equals(schema.format)) {
+                schema.format = "utc-millisec";
             }
         }
     }

@@ -52,6 +52,16 @@
                         "description": "",
                         "type": "string"
                     },
+                    "mylong": {
+                        "description": "",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "myint": {
+                        "description": "",
+                        "type": "integer",
+                        "format": "int32"
+                    },
                     "id": {
                         "$ref": "#/components/schemas/MyId",
                         "description": ""

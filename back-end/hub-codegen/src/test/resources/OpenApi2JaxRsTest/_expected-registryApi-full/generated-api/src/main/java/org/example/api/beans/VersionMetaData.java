@@ -32,7 +32,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("version")
-    private Integer version;
+    private Long version;
     @JsonProperty("name")
     private String name;
     @JsonProperty("description")
@@ -66,7 +66,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("version")
-    public Integer getVersion() {
+    public Long getVersion() {
         return version;
     }
 
@@ -76,7 +76,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("version")
-    public void setVersion(Integer version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 

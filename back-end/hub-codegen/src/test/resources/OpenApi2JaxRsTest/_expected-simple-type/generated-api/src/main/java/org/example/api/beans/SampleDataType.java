@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "name",
+    "mylong",
+    "myint",
     "id"
 })
 public class SampleDataType {
@@ -23,6 +25,18 @@ public class SampleDataType {
     @JsonProperty("name")
     @JsonPropertyDescription("")
     private String name;
+    /**
+     * 
+     */
+    @JsonProperty("mylong")
+    @JsonPropertyDescription("")
+    private Long mylong;
+    /**
+     * 
+     */
+    @JsonProperty("myint")
+    @JsonPropertyDescription("")
+    private Integer myint;
     /**
      * 
      */
@@ -44,6 +58,38 @@ public class SampleDataType {
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * 
+     */
+    @JsonProperty("mylong")
+    public Long getMylong() {
+        return mylong;
+    }
+
+    /**
+     * 
+     */
+    @JsonProperty("mylong")
+    public void setMylong(Long mylong) {
+        this.mylong = mylong;
+    }
+
+    /**
+     * 
+     */
+    @JsonProperty("myint")
+    public Integer getMyint() {
+        return myint;
+    }
+
+    /**
+     * 
+     */
+    @JsonProperty("myint")
+    public void setMyint(Integer myint) {
+        this.myint = myint;
     }
 
     /**

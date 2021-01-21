@@ -76,7 +76,7 @@ public class ArtifactMetaData {
      */
     @JsonProperty("version")
     @JsonPropertyDescription("")
-    private Integer version;
+    private Long version;
     /**
      * Artifact type enum.
      * (Required)
@@ -212,7 +212,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("version")
-    public Integer getVersion() {
+    public Long getVersion() {
         return version;
     }
 
@@ -222,7 +222,7 @@ public class ArtifactMetaData {
      * 
      */
     @JsonProperty("version")
-    public void setVersion(Integer version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 

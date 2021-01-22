@@ -38,9 +38,9 @@ spec:
           - name: APICURIO_UI_LOGOUT_REDIRECT_URI
             value: {{ .Values.ui.logout.redirect.uri }}
           - name: APICURIO_UI_HUB_API_URL
-            value: {{ .Values.ui.hub.api.url }}
+            value: {{ .Values.ui.hub.api.url | default (print "https://" .Values.ui.hostname "/studio-api")  }}
           - name: APICURIO_UI_EDITING_URL
-            value: {{ .Values.ui.editing.url }}
+            value: {{ .Values.ui.editing.url | default (print "wss://" .Values.ui.hostname "/ws")  }}
           - name: JAVA_TOOL_OPTIONS
             value: {{ .Values.ui.jvmArgs }}
           - name: APICURIO_MICROCKS_API_URL
@@ -57,4 +57,18 @@ spec:
           name: {{ .Values.ui.name }}
           ports:
             - containerPort: 8080
+          {{- if .Values.ui.extraVolumes }}
+          volumeMounts:
+            {{- range $volume := .Values.ui.extraVolumes }}
+            - mountPath: {{ $volume.mountPath | quote }}
+              name: {{ $volume.name | quote }}
+            {{- end }}
+          {{- end }}
       restartPolicy: Always
+      {{- if .Values.ui.extraVolumes }}
+      volumes:
+        {{- range $volume := .Values.ui.extraVolumes }}
+        - name: {{ $volume.name | quote }}
+          {{- $volume.volume | toYaml | nindent 10 }}
+        {{- end }}
+      {{- end }}

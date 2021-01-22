@@ -21,7 +21,7 @@ spec:
             value: debug
           {{- end }}
           - name: APICURIO_DB_CONNECTION_URL
-            value: {{ .Values.keycloak.url }}
+            value: {{ .Values.database.url }}
           - name: APICURIO_DB_DRIVER_NAME
             value: {{ .Values.database.driver }}
           - name: APICURIO_DB_INITIALIZE
@@ -47,4 +47,18 @@ spec:
           name: {{ .Values.ws.name }}
           ports:
             - containerPort: 8080
+          {{- if .Values.ws.extraVolumes }}
+          volumeMounts:
+            {{- range $volume := .Values.ws.extraVolumes }}
+            - mountPath: {{ $volume.mountPath | quote }}
+              name: {{ $volume.name | quote }}
+            {{- end }}
+          {{- end }}
       restartPolicy: Always
+      {{- if .Values.ws.extraVolumes }}
+      volumes:
+        {{- range $volume := .Values.ws.extraVolumes }}
+        - name: {{ $volume.name | quote }}
+          {{- $volume.volume | toYaml | nindent 10 }}
+        {{- end }}
+      {{- end }}

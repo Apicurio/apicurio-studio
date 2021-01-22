@@ -4,6 +4,7 @@ api:
   jvmArgs: -Djava.net.preferIPv4Stack=true
   port: 8091
   imagePullPolicy: IfNotPresent
+  extraVolumes: []
 
 ui:
   name: apicurio-studio-ui
@@ -11,16 +12,18 @@ ui:
   jvmArgs: -Djava.net.preferIPv4Stack=true
   port: 8093
   imagePullPolicy: IfNotPresent
+  hostname: APICURIO_URL
+  extraVolumes: []
   logout:
     redirect:
       uri: "/"
   hub:
     api:
       # url to hub api
-      url: http://APICURIO_URL/studio-api
+      url: null
   editing:
     # url to editing
-    url: ws://APICURIO_URL/ws
+    url: null
   feature:
     microcks: false
 
@@ -30,6 +33,7 @@ ws:
   jvmArgs: -Djava.net.preferIPv4Stack=true
   port: 8092
   imagePullPolicy: IfNotPresent
+  extraVolumes: []
 
 database:
   name: apicurio-studio-db
@@ -45,6 +49,7 @@ database:
   password: apicuriodb
   rootPassword: apicuriodb
   user: apicuriodb
+  extraVolumes: []
 
 uiFeatureShareForEveryone: true
 loggingEnabled: false

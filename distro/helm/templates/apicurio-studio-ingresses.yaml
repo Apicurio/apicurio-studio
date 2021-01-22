@@ -9,7 +9,7 @@ metadata:
     module: {{ .Values.api.name }}
 spec:
   rules:
-    - host: apicurio
+    - host: {{ .Values.ui.hostname }}
       http:
         paths:
           - backend:
@@ -27,7 +27,7 @@ metadata:
     module: {{ .Values.ui.name }}
 spec:
   rules:
-    - host: apicurio
+    - host: {{ .Values.ui.hostname }}
       http:
         paths:
           - backend:
@@ -48,14 +48,15 @@ metadata:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
   labels:
     module: {{ .Values.ws.name }}
 spec:
   rules:
-    - host: apicurio
+    - host: {{ .Values.ui.hostname }}
       http:
         paths:
           - backend:
               serviceName: {{ .Values.ws.name }}
               servicePort: {{ .Values.ws.port }}
-            path: /ws
+            path: /ws/?(.*)

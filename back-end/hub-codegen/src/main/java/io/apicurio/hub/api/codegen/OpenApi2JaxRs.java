@@ -341,11 +341,6 @@ public class OpenApi2JaxRs {
     private Document preProcess(Document document) {
         OpenApiDocumentPreProcessor preprocessor = new OpenApiDocumentPreProcessor();
         preprocessor.process(document);
-        
-        System.out.println("--------------");
-        System.out.println(Library.writeDocumentToJSONString(document));
-        System.out.println("--------------");
-        
         return document;
     }
 

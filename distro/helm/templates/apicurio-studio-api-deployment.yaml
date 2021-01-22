@@ -67,8 +67,18 @@ spec:
           imagePullPolicy: {{ .Values.api.imagePullPolicy }}
           ports:
             - containerPort: 8080
+          {{- if .Values.api.extraVolumes }}
+          volumeMounts:
+            {{- range $volume := .Values.api.extraVolumes }}
+            - mountPath: {{ $volume.mountPath | quote }}
+              name: {{ $volume.name | quote }}
+            {{- end }}
+          {{- end }}
       restartPolicy: Always
+      {{- if .Values.api.extraVolumes }}
       volumes:
-        - name: apicurio-secret
-          secret:
-            secretName: apicurio-secret
+        {{- range $volume := .Values.api.extraVolumes }}
+        - name: {{ $volume.name | quote }}
+          {{- $volume.volume | toYaml | nindent 10 }}
+        {{- end }}
+      {{- end }}

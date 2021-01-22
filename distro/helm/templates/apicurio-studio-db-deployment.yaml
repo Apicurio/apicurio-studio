@@ -17,10 +17,12 @@ spec:
         module: {{ .Values.database.name }}
     spec:
       containers:
-        - args:
+        - name: {{ .Values.database.name }}
+          args:
             - --default-authentication-plugin=mysql_native_password
             - --character-set-server=utf8mb4
             - --collation-server=utf8mb4_unicode_ci
+            - --ignore-db-dir=lost+found
           env:
             - name: MYSQL_DATABASE
               value: {{ .Values.database.schema }}
@@ -41,15 +43,21 @@ spec:
                   key: db-user
           image: {{ .Values.database.image }}
           imagePullPolicy: {{ .Values.database.imagePullPolicy }}
-          name: {{ .Values.database.name }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-apicurio
+            {{- range $volume := .Values.database.extraVolumes }}
+            - mountPath: {{ $volume.mountPath | quote }}
+              name: {{ $volume.name | quote }}
+            {{- end }}
       restartPolicy: Always
       volumes:
         - name: mysql-apicurio
           persistentVolumeClaim:
             claimName: apicuriodata
-        - name: apicurio-secret
-          secret:
-            secretName: apicurio-secret
+        {{- range $volume := .Values.database.extraVolumes }}
+        - name: {{ $volume.name | quote }}
+          {{- $volume.volume | toYaml | nindent 10 }}
+        {{- end }}
+      securityContext:
+        fsGroup: 999

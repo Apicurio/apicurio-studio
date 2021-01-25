@@ -136,7 +136,7 @@
         <version.org.postgresql>9.4.1212</version.org.postgresql>
         <version.org.slf4j>1.7.30</version.org.slf4j>
         <version.scala>2.13.4</version.scala>
-        <version.infinispan>12.0.0.Dev07</version.infinispan>
+        <version.infinispan>12.0.0.Final</version.infinispan>
     </properties>
 
     <dependencyManagement>

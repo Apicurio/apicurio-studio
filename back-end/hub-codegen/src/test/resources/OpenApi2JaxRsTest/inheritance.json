@@ -1,0 +1,79 @@
+{
+	"openapi": "3.0.2",
+	"info": {
+		"title": "Simple Data Type Sample API",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/widgets/{widgetId}": {
+			"get": {
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"description": "Returns the list of widgets."
+					}
+				},
+				"operationId": "getWidgets",
+				"summary": "Get widgets"
+			},
+			"parameters": [
+				{
+					"name": "widgetId",
+					"schema": {
+						"type": "string"
+					},
+					"in": "path",
+					"required": true
+				}
+			]
+		}
+	},
+	"components": {
+		"schemas": {
+			"LogConfiguration": {
+				"description": "",
+				"required": [
+					"level"
+				],
+				"type": "object",
+				"properties": {
+					"level": {
+					    "type": "string"
+					}
+				}
+			},
+			"NamedLogConfiguration": {
+				"description": "",
+				"type": "object",
+				"allOf": [
+					{
+						"required": [
+							"name"
+						],
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string"
+							},
+							"description": {
+							    "type": "number"
+							}
+						}
+					},
+					{
+						"$ref": "#/components/schemas/LogConfiguration"
+					}
+				]
+			}
+		}
+	}
+}

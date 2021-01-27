@@ -22,6 +22,8 @@ import io.apicurio.datamodels.core.visitors.IVisitor;
 import io.apicurio.datamodels.core.visitors.TraverserDirection;
 
 /**
+ * Used to preprocess an OpenAPI document in a variety of ways with the intent of making the
+ * result more conducive to generating the jax-rs and json schema code.
  * @author eric.wittmann@gmail.com
  */
 public class OpenApiDocumentPreProcessor {
@@ -30,7 +32,8 @@ public class OpenApiDocumentPreProcessor {
             new OpenApiLongSimpleTypeProcessor(),
             new OpenApiMapDataTypeProcessor(),
             new OpenApiTypeInliner(),
-            new OpenApiInlinedSchemaRemover()
+            new OpenApiInlinedSchemaRemover(),
+            new OpenApiAllOfProcessor()
     };
     
     /**

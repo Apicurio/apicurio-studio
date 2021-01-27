@@ -7,7 +7,7 @@ To learn more about the release, try:
   $ helm status {{ .Release.Name }}
   $ helm get {{ .Release.Name }}
 
-Apicurio is available at {{ .Values.ui.hub.api.url }}
+Apicurio is available at https://{{ .Values.ui.hostname }}
 
 Keycloak that is defined is available on {{ .Values.keycloak.url }}
 {{- if .Values.ui.feature.microcks }}

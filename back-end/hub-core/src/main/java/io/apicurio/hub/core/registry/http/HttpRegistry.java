@@ -29,7 +29,6 @@ public class HttpRegistry implements IRegistry {
     @Inject
     public HttpRegistry(HubConfiguration config) {
         this.registryRestClient = Optional.ofNullable(config.getRegistryUrl())
-                .map(url -> url.endsWith("/") ? url + "api" : url + "/api")
                 .map(RegistryRestClientFactory::create)
                 .orElse(null);
     }

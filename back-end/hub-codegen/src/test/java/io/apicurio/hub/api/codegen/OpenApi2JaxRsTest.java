@@ -72,6 +72,14 @@ public class OpenApi2JaxRsTest {
      * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
      */
     @Test
+    public void testGenerateFull_RegistryApiV2() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/registry-api-v2.json", UpdateOnly.yes, Reactive.no, "_expected-registry-api-v2/generated-api", false);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
     public void testGenerateUpdateOnly() throws IOException {
         doFullTest("OpenApi2JaxRsTest/beer-api.json", UpdateOnly.yes, Reactive.no, "_expected-full/generated-api", false);
     }

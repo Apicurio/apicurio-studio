@@ -58,7 +58,7 @@ public class OpenApiInlinedParameterRemover extends CombinedVisitorAdapter {
         if (inlinedExt == null) {
             return false;
         }
-        return "true".equals(inlinedExt.value);
+        return "true".equals(String.valueOf(inlinedExt.value));
     }
     
 }

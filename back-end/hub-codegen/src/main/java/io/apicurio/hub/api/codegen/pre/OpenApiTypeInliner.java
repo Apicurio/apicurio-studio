@@ -26,13 +26,10 @@ import io.apicurio.datamodels.core.models.common.IPropertySchema;
 import io.apicurio.datamodels.core.models.common.Schema;
 import io.apicurio.datamodels.core.util.LocalReferenceResolver;
 import io.apicurio.datamodels.openapi.models.OasSchema;
-import io.apicurio.datamodels.openapi.v2.models.Oas20Schema;
-import io.apicurio.datamodels.openapi.v2.models.Oas20SchemaDefinition;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Schema;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Schema.Oas30AnyOfSchema;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Schema.Oas30NotSchema;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Schema.Oas30OneOfSchema;
-import io.apicurio.datamodels.openapi.v3.models.Oas30SchemaDefinition;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -48,23 +45,14 @@ public class OpenApiTypeInliner extends CombinedVisitorAdapter {
 
         LocalReferenceResolver resolver = new LocalReferenceResolver();
         if (node.$ref != null) {
+            
             Node referencedSchemaDefNode = resolver.resolveRef(node.$ref, node);
             if (referencedSchemaDefNode != null) {
-                if (referencedSchemaDefNode instanceof Oas30SchemaDefinition) {
-                    Oas30SchemaDefinition schemaDef = (Oas30SchemaDefinition) referencedSchemaDefNode;
-                    if (isSimpleType(schemaDef)) {
-                        inlineSchema((Oas30Schema) node, schemaDef);
-                        markForRemoval(schemaDef);
-                    }
-                }
-                if (referencedSchemaDefNode instanceof Oas20SchemaDefinition) {
-                    Oas20SchemaDefinition schemaDef = (Oas20SchemaDefinition) referencedSchemaDefNode;
-                    if (isSimpleType(schemaDef)) {
-                        inlineSchema((Oas20Schema) node, schemaDef);
-                        markForRemoval(schemaDef);
-                    }
-                }
-                if (isInlineSchema((ExtensibleNode) referencedSchemaDefNode)) {
+                OasSchema referencedSchema = (OasSchema) referencedSchemaDefNode;
+                if (isSimpleType(referencedSchema)) {
+                    inlineSchema((Oas30Schema) node, referencedSchema);
+                    markForRemoval(referencedSchema);
+                } else if (isInlineSchema((ExtensibleNode) referencedSchemaDefNode)) {
                     inlineSchema(schema, (OasSchema) referencedSchemaDefNode);
                     markForRemoval((ExtensibleNode) referencedSchemaDefNode);
                 }
@@ -140,20 +128,7 @@ public class OpenApiTypeInliner extends CombinedVisitorAdapter {
      * Returns true if the given schema is a simple type (e.g. string, integer, etc).
      * @param schemaDef
      */
-    private boolean isSimpleType(Oas30SchemaDefinition schemaDef) {
-        if ("string".equals(schemaDef.type)) {
-            return schemaDef.enum_ == null;
-        } else {
-            return "integer".equals(schemaDef.type) || "number".equals(schemaDef.type) ||
-                    "boolean".equals(schemaDef.type);
-        }
-    }
-
-    /**
-     * Returns true if the given schema is a simple type (e.g. string, integer, etc).
-     * @param schemaDef
-     */
-    private boolean isSimpleType(Oas20SchemaDefinition schemaDef) {
+    private boolean isSimpleType(OasSchema schemaDef) {
         if ("string".equals(schemaDef.type)) {
             return schemaDef.enum_ == null;
         } else {
@@ -185,7 +160,7 @@ public class OpenApiTypeInliner extends CombinedVisitorAdapter {
         if (extension == null) {
             return false;
         }
-        return "true".equals(extension.value);
+        return "true".equals(String.valueOf(extension.value));
     }
 
     /**
@@ -194,7 +169,7 @@ public class OpenApiTypeInliner extends CombinedVisitorAdapter {
     private void markForRemoval(ExtensibleNode node) {
         Extension extension = node.createExtension();
         extension.name = "x-codegen-inlined";
-        extension.value = "true";
+        extension.value = Boolean.TRUE;
         node.addExtension(extension.name, extension);
     }
 

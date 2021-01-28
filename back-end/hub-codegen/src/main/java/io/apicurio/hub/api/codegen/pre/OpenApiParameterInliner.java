@@ -76,7 +76,7 @@ public class OpenApiParameterInliner extends CombinedVisitorAdapter {
     private void markForRemoval(ExtensibleNode node) {
         Extension extension = node.createExtension();
         extension.name = "x-codegen-inlined";
-        extension.value = "true";
+        extension.value = Boolean.TRUE;
         node.addExtension(extension.name, extension);
     }
 

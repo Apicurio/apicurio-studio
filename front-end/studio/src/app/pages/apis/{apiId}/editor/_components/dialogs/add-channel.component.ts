@@ -54,7 +54,7 @@ export class AddChannelDialogComponent {
                 this.addChannelModal.first.show();
             }
         });
-
+        
         this.channels = [];
         this.channelExists = false;
         if (document.channels) {

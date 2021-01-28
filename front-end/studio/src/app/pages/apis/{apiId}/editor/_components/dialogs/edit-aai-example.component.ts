@@ -61,12 +61,52 @@ export class EditAsyncApiExampleDialogComponent {
         valid: true
     };
 
-    get value() {
-        return this.model.value;
+    get payloadValue() {
+        return this.model.payloadValue;
     }
-    set value(value: string) {
-        this.setValueFormatFromValue(value);
-        this.model.value = value;
+    get headersValue() {
+        return this.model.headersValue;
+    }
+
+    set payloadValue(value: string) {
+        if (StringUtils.isJSON(value)) {
+            this.model.format = CodeEditorMode.JSON;
+            try {
+                JSON.parse(value);
+                this.model.valid = true;
+            } catch (e) {
+            }
+        } else if (StringUtils.isXml(value)) {
+            this.model.format = CodeEditorMode.XML;
+        } else {
+            this.model.format = CodeEditorMode.YAML;
+            try {
+                YAML.safeLoad(value);
+                this.model.valid = true;
+            } catch (e) {
+            }
+        }
+        this.model.payloadValue = value;
+    }
+    set headersValue(value: string) {
+        if (StringUtils.isJSON(value)) {
+            this.model.format = CodeEditorMode.JSON;
+            try {
+                JSON.parse(value);
+                this.model.valid = true;
+            } catch (e) {
+            }
+        } else if (StringUtils.isXml(value)) {
+            this.model.format = CodeEditorMode.XML;
+        } else {
+            this.model.format = CodeEditorMode.YAML;
+            try {
+                YAML.safeLoad(value);
+                this.model.valid = true;
+            } catch (e) {
+            }
+        }
+        this.model.headersValue = value;
     }
 
     /**

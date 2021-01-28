@@ -30,23 +30,15 @@ public class RegistryResource implements IRegistryResource {
     private IRegistry registry;
 
     @Override
-    public Collection<SearchedArtifact> listArtifacts() throws ServerError {
+    public Collection<SearchedArtifact> listArtifacts() {
         metrics.apiCall("/registry", "GET");
-        try {
-            return registry.listArtifacts();
-        } catch (IOException e) {
-            throw new ServerError(e);
-        }
+        return registry.listArtifacts();
     }
 
     @Override
-    public ArtifactMetaData getArtifact(String artifactId) throws ServerError, NotFoundException {
+    public ArtifactMetaData getArtifact(String artifactId) {
         metrics.apiCall("/registry/{artifactId}", "GET");
-        try {
-            return registry.getArtifactMetaData(artifactId);
-        } catch (IOException e) {
-            throw new ServerError(e);
-        }
+        return registry.getArtifactMetaData(artifactId);
     }
 
     @Override

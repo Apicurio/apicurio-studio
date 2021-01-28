@@ -39,9 +39,9 @@
                         <!-- Resources -->
                         <div class="wizard-pf-contents" *ngIf="currentPage === 'resources'">
                             <p>Choose one or more component source from the list below.</p>
-                            <data-table *ngIf="!loadingApis" [pageSize]="10" [columns]="apiColumns" [rows]="apiRows"
+                            <data-table *ngIf="!loadingResources" [pageSize]="10" [columns]="apiColumns" [rows]="apiRows"
                                         [(selectedValues)]="selectedResources" (onChange)="mustLoadComponents=true"></data-table>
-                            <p *ngIf="loadingApis">
+                            <p *ngIf="loadingResources">
                                 <loading message="Please wait, loading list of resources..."></loading>
                             </p>
                         </div>

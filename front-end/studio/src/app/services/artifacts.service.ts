@@ -47,7 +47,7 @@ export class ArtifactsService extends AbstractHubService {
      * @see ArtifactsService.getArtifacts
      */
     public getArtifacts(): Promise<Artifact[]> {
-        console.info("[ApisService] Getting all Artifacts");
+        console.info("[ArtifactsService] Getting all Artifacts");
 
         let listArtifactsUrl: string = this.endpoint("/registry");
         let options: any = this.options({ "Accept": "application/json" });

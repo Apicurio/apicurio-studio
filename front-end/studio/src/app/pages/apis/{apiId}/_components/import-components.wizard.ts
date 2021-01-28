@@ -49,14 +49,14 @@ export class ImportComponentsWizard {
     protected _isOpen: boolean = false;
 
     loading: boolean;
-    loadingApis: boolean;
+    loadingResources: boolean;
     loadingComponents: boolean;
     currentPage: string;
 
     type: ComponentType;
 
     private result: Promise<ImportedComponent[]>;
-    private allResources: (Api | Artifact)[]; // TODO are type unions a bad way to handle this?
+    private allResources: (Api | Artifact)[];
     selectedResources: (Api | Artifact)[];
     mustLoadComponents: boolean = false;
     private components: ImportedComponent[];
@@ -105,7 +105,7 @@ export class ImportComponentsWizard {
                 this.importComponentsModal.first.show();
             }
         });
-        this.loadingApis = true;
+        this.loadingResources = true;
         this.loading = true;
         this.currentPage = "resources";
 
@@ -118,17 +118,17 @@ export class ImportComponentsWizard {
 
         this.allResources = [];
         Promise.all(promises).then(allResources => {
-            console.debug("[ImportComponentsWizardComponent] APIs loaded.");
+            console.debug("[ImportComponentsWizardComponent] Resources loaded.");
             allResources.forEach(resourcePartition => this.allResources.push(...resourcePartition))
             this.apiRows = this.resourceTableRows();
             this.loading = false;
-            this.loadingApis = false;
+            this.loadingResources = false;
         }).catch(error => {
-            console.error("[ImportComponentsWizardComponent] Error getting APIs");
+            console.error("[ImportComponentsWizardComponent] Error getting resources");
             this.error = error;
-            this.errorMessage = "Error getting your APIs.";
+            this.errorMessage = "Error getting your resources.";
             this.loading = false;
-            this.loadingApis = false;
+            this.loadingResources = false;
         });
 
         this.result = new Promise<ImportedComponent[]>((resolve, reject) => {

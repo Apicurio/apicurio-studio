@@ -294,11 +294,6 @@ public class OpenApi2JaxRs {
         // Pre-process the document
         document = preProcess(document);
         
-        
-        System.out.println("---------------");
-        System.out.println(Library.writeDocumentToJSONString(document));
-        System.out.println("---------------");
-        
         // Figure out the breakdown of the interfaces.
         InterfacesVisitor iVisitor = new InterfacesVisitor();
         VisitorUtil.visitTree(document, iVisitor, TraverserDirection.down);

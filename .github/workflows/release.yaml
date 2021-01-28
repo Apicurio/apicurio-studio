@@ -112,6 +112,10 @@ jobs:
           docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/api/
           docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ws/
           docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ui/
+      - name: Fetch Latest Commit SHA For Apicurio Studio
+        run: |
+          cd studio
+          echo "latest_commit_sha=$(git log -n 1 --pretty=format:"%H")" >> $GITHUB_ENV
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
@@ -120,6 +124,7 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.release-version }} 
           release_name: ${{ github.event.inputs.release-version }}
+          commitish: ${{ env.latest_commit_sha }} # explicitly passing the commit hash so that the latest commit is tagged and released
       - name: Upload Release Asset-1
         uses: actions/upload-release-asset@v1
         env:

@@ -26,13 +26,15 @@ import io.apicurio.datamodels.core.visitors.TraverserDirection;
  * result more conducive to generating the jax-rs and json schema code.
  * @author eric.wittmann@gmail.com
  */
-public class OpenApiDocumentPreProcessor {
+public class DocumentPreProcessor {
     
     private static IVisitor [] processors = {
             new OpenApiLongSimpleTypeProcessor(),
             new OpenApiMapDataTypeProcessor(),
             new OpenApiTypeInliner(),
             new OpenApiInlinedSchemaRemover(),
+            new OpenApiParameterInliner(),
+            new OpenApiInlinedParameterRemover(),
             new OpenApiAllOfProcessor()
     };
     

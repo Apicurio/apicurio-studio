@@ -1,0 +1,2248 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "NZDAX",
+        "version": "2.4.0",
+        "contact": {
+            "name": "Adroit",
+            "url": "https://adroit.ph/ccxt-rest-contact-us/",
+            "email": "hello@adroit.ph"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://github.com/ccxt-rest/ccxt-rest/blob/master/LICENSE.txt"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/"
+        }
+    ],
+    "paths": {
+        "/exchanges": {
+            "get": {
+                "tags": [
+                    "Exchange Management API"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Exchange"
+                                    },
+                                    "example": [
+                                        "_1btcxe",
+                                        "acx",
+                                        "allcoin",
+                                        "anxpro",
+                                        "anybits",
+                                        "bcex",
+                                        "bequant",
+                                        "bibox",
+                                        "bigone",
+                                        "binance",
+                                        "binanceje",
+                                        "bit2c",
+                                        "bitbank",
+                                        "bitbay",
+                                        "bitfinex",
+                                        "bitfinex2",
+                                        "bitflyer",
+                                        "bitforex",
+                                        "bithumb",
+                                        "bitibu",
+                                        "bitkk",
+                                        "bitlish",
+                                        "bitmarket",
+                                        "bitmex",
+                                        "bitsane",
+                                        "bitso",
+                                        "bitstamp",
+                                        "bitstamp1",
+                                        "bittrex",
+                                        "bitz",
+                                        "bl3p",
+                                        "bleutrade",
+                                        "braziliex",
+                                        "btcalpha",
+                                        "btcbox",
+                                        "btcchina",
+                                        "btcexchange",
+                                        "btcmarkets",
+                                        "btctradeim",
+                                        "btctradeua",
+                                        "btcturk",
+                                        "buda",
+                                        "bxinth",
+                                        "ccex",
+                                        "cex",
+                                        "chbtc",
+                                        "chilebit",
+                                        "cobinhood",
+                                        "coinbase",
+                                        "coinbaseprime",
+                                        "coinbasepro",
+                                        "coincheck",
+                                        "coinegg",
+                                        "coinex",
+                                        "coinexchange",
+                                        "coinfalcon",
+                                        "coinfloor",
+                                        "coingi",
+                                        "coinmarketcap",
+                                        "coinmate",
+                                        "coinnest",
+                                        "coinone",
+                                        "coinspot",
+                                        "cointiger",
+                                        "coolcoin",
+                                        "coss",
+                                        "crex24",
+                                        "crypton",
+                                        "cryptopia",
+                                        "deribit",
+                                        "dsx",
+                                        "ethfinex",
+                                        "exmo",
+                                        "exx",
+                                        "fcoin",
+                                        "fcoinjp",
+                                        "flowbtc",
+                                        "foxbit",
+                                        "fybse",
+                                        "fybsg",
+                                        "gateio",
+                                        "gdax",
+                                        "gemini",
+                                        "getbtc",
+                                        "hadax",
+                                        "hitbtc",
+                                        "hitbtc2",
+                                        "huobipro",
+                                        "huobiru",
+                                        "ice3x",
+                                        "independentreserve",
+                                        "indodax",
+                                        "itbit",
+                                        "jubi",
+                                        "kkex",
+                                        "kraken",
+                                        "kucoin",
+                                        "kucoin2",
+                                        "kuna",
+                                        "lakebtc",
+                                        "lbank",
+                                        "liqui",
+                                        "liquid",
+                                        "livecoin",
+                                        "luno",
+                                        "lykke",
+                                        "mandala",
+                                        "mercado",
+                                        "mixcoins",
+                                        "negociecoins",
+                                        "nova",
+                                        "okcoincny",
+                                        "okcoinusd",
+                                        "okex",
+                                        "paymium",
+                                        "poloniex",
+                                        "quadrigacx",
+                                        "rightbtc",
+                                        "southxchange",
+                                        "stronghold",
+                                        "surbitcoin",
+                                        "theocean",
+                                        "therock",
+                                        "tidebit",
+                                        "tidex",
+                                        "uex",
+                                        "upbit",
+                                        "urdubit",
+                                        "vaultoro",
+                                        "vbtc",
+                                        "virwox",
+                                        "xbtce",
+                                        "yobit",
+                                        "zaif",
+                                        "zb"
+                                    ],
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    }
+                },
+                "operationId": "list",
+                "description": "List all support exchanges by this server",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}": {
+            "get": {
+                "tags": [
+                    "Authentication API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExchangeResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getConnection",
+                "description": "Retreives the current exchange connection details given the {exchangeName} and access token in the header",
+                "x-swagger-router-controller": "exchange"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "The exchange to create.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/exchangeConfig"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Authentication API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccessToken"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "503": {
+                        "description": "Support for exchange is currently broken"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "createPrivateConnection",
+                "description": "Creates a private connection to the exchange referenced in {exchangeName}",
+                "x-swagger-router-controller": "exchange"
+            },
+            "delete": {
+                "tags": [
+                    "Authentication API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExchangeResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deletePrivateConnection",
+                "description": "Delete the exchange connection referenced by access token in the header",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/markets": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MarketResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "markets",
+                "description": "Get the markets of the exchange referenced by the {exchangeName}.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/orderBook": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/requiredExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's order book to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderBookResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "orderBook",
+                "description": "Get the order book of the exchange referenced by the {exchangeName} and `?symbol=`. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/l2OrderBook": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/requiredExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's order book to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderBookResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "l2OrderBook",
+                "description": "Get the Level 2 Order Book of the exchange referenced by the {exchangeName} and `?symbol=`.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/trades": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/requiredExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "since",
+                        "description": "Retrieve the trades starting from 'since'",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's trades to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TradeResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "trades",
+                "description": "Get the trades of the exchange referenced by the {exchangeName} and `?symbol=`.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/ticker": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/requiredExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "exchangeSymbol",
+                        "description": "The symbol of the exchange's data to be retrieved. Possible values are any of symbols in GET:/exchange/{exchangeName}/markets",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TickerResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "ticker",
+                "description": "Get the ticker of the exchange referenced by the {exchangeName} and `?symbol=`.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/tickers": {
+            "get": {
+                "tags": [
+                    "Public Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TickerResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "tickers",
+                "description": "Get the tickers of the exchange referenced by the {exchangeName} and `?symbol=`.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/balances": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BalanceResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "balances",
+                "description": "Get the balances of the exchange referenced by the {exchangeName}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/orders": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "since",
+                        "description": "Retrieve the orders starting from 'since'",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's orders to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "fetchOrders",
+                "description": "Get the orders of the exchange referenced by the {exchangeName}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/orders/open": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "since",
+                        "description": "Retrieve the orders starting from 'since'",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's orders to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "fetchOpenOrders",
+                "description": "Get the open orders of the exchange referenced by the {exchangeName}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/orders/closed": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "since",
+                        "description": "Retrieve the orders starting from 'since'",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's orders to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "fetchClosedOrders",
+                "description": "Get the closed orders of the exchange referenced by the {exchangeName}.\n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/trades/mine": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "since",
+                        "description": "Retrieve the trades starting from 'since'",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "style": "form",
+                        "explode": true,
+                        "name": "limit",
+                        "description": "The limit of the exchange's trades to be retrieved.",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TradeResponse"
+                                    },
+                                    "x-content-type": "application/json"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "fetchMyTrades",
+                "description": "Get my trades of the exchange referenced by the {exchangeName}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/order": {
+            "post": {
+                "requestBody": {
+                    "description": "The order to place.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/orderPlacement"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "createOrder",
+                "description": "Create an order on the exchange referenced by the {exchangeName}",
+                "x-swagger-router-controller": "exchange"
+            }
+        },
+        "/exchange/{exchangeName}/order/{orderId}": {
+            "get": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderIdParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "fetchOrder",
+                "description": "Retrieves the information of an order on the exchange referenced by the {exchangeName} and {orderId}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            },
+            "delete": {
+                "tags": [
+                    "Private Data API"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/exchangeNameParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/orderIdParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/optionalExchangeSymbolParam"
+                    },
+                    {
+                        "name": "exchangeSpecificParams",
+                        "description": "Any exchange specific parameters you want to pass in",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResponse"
+                                }
+                            }
+                        },
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "If the exchange itself complained about the parameters passed"
+                    },
+                    "401": {
+                        "description": "If the exchange integration requires api key and secret for this function"
+                    },
+                    "403": {
+                        "description": "If the exchange integration had an authentication issue (most probably nonce error)"
+                    },
+                    "404": {
+                        "description": "Exchange with that name is NOT supported"
+                    },
+                    "500": {
+                        "description": "If an unexpected error occurred"
+                    },
+                    "501": {
+                        "description": "If the exchange integration does NOT support this function"
+                    },
+                    "504": {
+                        "description": "If the exchange itself could not be reached because of some network error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "cancelOrder",
+                "description": "Cancel an open order on the exchange referenced by the {exchangeName} and {orderId}. \n\n<br/> *Parameters listed here are common to all exchanges. But any other parameter passed would be forwarded as well into the exchange.*",
+                "x-swagger-router-controller": "exchange"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "OrderBookLevel": {
+                "required": [
+                    "price"
+                ],
+                "type": "object",
+                "properties": {
+                    "price": {
+                        "description": "The price being asked for. If this is a bid, then this is the amount the bidder is willing to buy. If this is a sell, then this is the amount the seller is willing to sell for.",
+                        "type": "number"
+                    },
+                    "amount": {
+                        "description": "The amount of units being sold.",
+                        "type": "number"
+                    }
+                }
+            },
+            "BalanceInfo": {
+                "required": [
+                    "currency",
+                    "free",
+                    "total",
+                    "used"
+                ],
+                "type": "object",
+                "properties": {
+                    "currency": {
+                        "description": "The currency at which this balance refers to",
+                        "type": "string"
+                    },
+                    "free": {
+                        "description": "The amount of currency that is free to used",
+                        "type": "number"
+                    },
+                    "used": {
+                        "description": "The amount of currency that is currently used",
+                        "type": "number"
+                    },
+                    "total": {
+                        "description": "The total amount of currency (free + used)",
+                        "type": "number"
+                    }
+                }
+            },
+            "MarketResponse": {
+                "required": [
+                    "base",
+                    "id",
+                    "info",
+                    "limits",
+                    "lot",
+                    "precision",
+                    "quote",
+                    "symbol"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for this market",
+                        "type": "string"
+                    },
+                    "symbol": {
+                        "description": "A unified way of referencing this Market. When a symbol parameter is needed in one of the APIs, this iis where you will get it.",
+                        "type": "string"
+                    },
+                    "base": {
+                        "description": "The base currency. Given 'BTC/USD', the base is 'BTC'",
+                        "type": "string"
+                    },
+                    "quote": {
+                        "description": "The quote currency. Given 'BTC/USD', the quote is 'USD'",
+                        "type": "string"
+                    },
+                    "info": {
+                        "description": "Raw market response gotten from the exchange site's API",
+                        "type": "object"
+                    },
+                    "lot": {
+                        "description": "When placing an order, its amount must be divisible by this lot value",
+                        "type": "number"
+                    },
+                    "limits": {
+                        "$ref": "#/components/schemas/Limits"
+                    },
+                    "precision": {
+                        "$ref": "#/components/schemas/Precision"
+                    }
+                }
+            },
+            "TradeResponse": {
+                "required": [
+                    "amount",
+                    "info",
+                    "price",
+                    "side",
+                    "symbol"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the exchange for this trade",
+                        "type": "string"
+                    },
+                    "info": {
+                        "description": "Raw trade response gotten from the exchange site's API",
+                        "type": "object"
+                    },
+                    "timestamp": {
+                        "format": "date-time",
+                        "description": "The timestamp of this trade",
+                        "type": "number"
+                    },
+                    "symbol": {
+                        "description": "The currency pair of this trade",
+                        "type": "string"
+                    },
+                    "side": {
+                        "$ref": "#/components/schemas/Side"
+                    },
+                    "price": {
+                        "description": "The price of this trade",
+                        "type": "number"
+                    },
+                    "amount": {
+                        "description": "The amount of this trade",
+                        "type": "number"
+                    }
+                }
+            },
+            "OrderResponse": {
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the exchange for this order",
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "description": "The timestamp of this order",
+                        "type": "number"
+                    },
+                    "datetime": {
+                        "format": "date-time",
+                        "description": "The datetime of this order",
+                        "type": "string"
+                    },
+                    "symbol": {
+                        "description": "The currency pair of this order",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/OrderType"
+                    },
+                    "side": {
+                        "$ref": "#/components/schemas/Side"
+                    },
+                    "price": {
+                        "description": "The price of this order",
+                        "type": "number"
+                    },
+                    "amount": {
+                        "description": "The amount of this order",
+                        "type": "number"
+                    },
+                    "cost": {
+                        "description": "The cost of this order (i.e. price x amount)",
+                        "type": "number"
+                    },
+                    "filled": {
+                        "description": "The amount of this order that is currently filled (i.e. this can be less than or equal to 'amount')",
+                        "type": "number"
+                    },
+                    "remaining": {
+                        "description": "The amount of this order that is still yet to be filled (i.e. this can be less than or equal to 'amount')",
+                        "type": "number"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/OrderStatus"
+                    },
+                    "info": {
+                        "description": "Raw order response gotten from the exchange site's API",
+                        "type": "object"
+                    }
+                }
+            },
+            "Side": {
+                "description": "Wether this is a bid or ask (i.e. buy or sell) order",
+                "enum": [
+                    "buy",
+                    "sell"
+                ],
+                "type": "string"
+            },
+            "Exchange": {
+                "enum": [
+                    "_1btcxe",
+                    "acx",
+                    "allcoin",
+                    "anxpro",
+                    "anybits",
+                    "bcex",
+                    "bequant",
+                    "bibox",
+                    "bigone",
+                    "binance",
+                    "binanceje",
+                    "bit2c",
+                    "bitbank",
+                    "bitbay",
+                    "bitfinex",
+                    "bitfinex2",
+                    "bitflyer",
+                    "bitforex",
+                    "bithumb",
+                    "bitibu",
+                    "bitkk",
+                    "bitlish",
+                    "bitmarket",
+                    "bitmex",
+                    "bitsane",
+                    "bitso",
+                    "bitstamp",
+                    "bitstamp1",
+                    "bittrex",
+                    "bitz",
+                    "bl3p",
+                    "bleutrade",
+                    "braziliex",
+                    "btcalpha",
+                    "btcbox",
+                    "btcchina",
+                    "btcexchange",
+                    "btcmarkets",
+                    "btctradeim",
+                    "btctradeua",
+                    "btcturk",
+                    "buda",
+                    "bxinth",
+                    "ccex",
+                    "cex",
+                    "chbtc",
+                    "chilebit",
+                    "cobinhood",
+                    "coinbase",
+                    "coinbaseprime",
+                    "coinbasepro",
+                    "coincheck",
+                    "coinegg",
+                    "coinex",
+                    "coinexchange",
+                    "coinfalcon",
+                    "coinfloor",
+                    "coingi",
+                    "coinmarketcap",
+                    "coinmate",
+                    "coinnest",
+                    "coinone",
+                    "coinspot",
+                    "cointiger",
+                    "coolcoin",
+                    "coss",
+                    "crex24",
+                    "crypton",
+                    "cryptopia",
+                    "deribit",
+                    "dsx",
+                    "ethfinex",
+                    "exmo",
+                    "exx",
+                    "fcoin",
+                    "fcoinjp",
+                    "flowbtc",
+                    "foxbit",
+                    "fybse",
+                    "fybsg",
+                    "gateio",
+                    "gdax",
+                    "gemini",
+                    "getbtc",
+                    "hadax",
+                    "hitbtc",
+                    "hitbtc2",
+                    "huobipro",
+                    "huobiru",
+                    "ice3x",
+                    "independentreserve",
+                    "indodax",
+                    "itbit",
+                    "jubi",
+                    "kkex",
+                    "kraken",
+                    "kucoin",
+                    "kucoin2",
+                    "kuna",
+                    "lakebtc",
+                    "lbank",
+                    "liqui",
+                    "liquid",
+                    "livecoin",
+                    "luno",
+                    "lykke",
+                    "mandala",
+                    "mercado",
+                    "mixcoins",
+                    "negociecoins",
+                    "nova",
+                    "okcoincny",
+                    "okcoinusd",
+                    "okex",
+                    "paymium",
+                    "poloniex",
+                    "quadrigacx",
+                    "rightbtc",
+                    "southxchange",
+                    "stronghold",
+                    "surbitcoin",
+                    "theocean",
+                    "therock",
+                    "tidebit",
+                    "tidex",
+                    "uex",
+                    "upbit",
+                    "urdubit",
+                    "vaultoro",
+                    "vbtc",
+                    "virwox",
+                    "xbtce",
+                    "yobit",
+                    "zaif",
+                    "zb"
+                ],
+                "type": "string"
+            },
+            "OrderBookResponse": {
+                "required": [
+                    "asks",
+                    "bids"
+                ],
+                "type": "object",
+                "properties": {
+                    "bids": {
+                        "description": "The publicly listed buy orders",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderBookLevel"
+                        }
+                    },
+                    "asks": {
+                        "description": "The publicly listed sell orders",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderBookLevel"
+                        }
+                    },
+                    "timestamp": {
+                        "description": "The timestamp associated for this order book",
+                        "type": "number"
+                    },
+                    "datetime": {
+                        "format": "date-time",
+                        "description": "The timestamp associated for this order book",
+                        "type": "string"
+                    }
+                }
+            },
+            "OrderStatus": {
+                "description": "The current status of this order",
+                "enum": [
+                    "open",
+                    "closed",
+                    "canceled",
+                    "canceling"
+                ],
+                "type": "string"
+            },
+            "OrderType": {
+                "description": "Whether this is a 'market' order or a 'limit' order",
+                "enum": [
+                    "market",
+                    "limit"
+                ],
+                "type": "string"
+            },
+            "Limits": {
+                "required": [
+                    "amount",
+                    "cost",
+                    "price"
+                ],
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "$ref": "#/components/schemas/Limit"
+                    },
+                    "price": {
+                        "$ref": "#/components/schemas/Limit"
+                    },
+                    "cost": {
+                        "$ref": "#/components/schemas/Limit"
+                    }
+                }
+            },
+            "BalanceResponse": {
+                "required": [
+                    "balances",
+                    "info"
+                ],
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "description": "Raw balance response gotten from the exchange site's API",
+                        "type": "object"
+                    },
+                    "balances": {
+                        "description": "List of balances per currency that you own",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BalanceInfo"
+                        }
+                    }
+                }
+            },
+            "Precision": {
+                "required": [
+                    "amount",
+                    "price"
+                ],
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "description": "The allowable precision of the amount when placing an order. For example, given 2, then an amount of 0.123 must be made either 0.12 (or 0.13)",
+                        "type": "number"
+                    },
+                    "price": {
+                        "description": "The allowable precision of the amount when placing an order. For example, given 2, then a price of 0.123 must be made either 0.12 (or 0.13)",
+                        "type": "number"
+                    }
+                }
+            },
+            "AccessToken": {
+                "required": [
+                    "token"
+                ],
+                "properties": {
+                    "token": {
+                        "description": "The JWT token that needs to be added into the 'Authorization' header with the 'Bearer ' prefix. For example, given a token of xyz, do a secured request with 'Authorization: Bearer xyz'",
+                        "type": "string"
+                    }
+                }
+            },
+            "ExchangeResponse": {
+                "required": [
+                    "id",
+                    "countries",
+                    "enableRateLimit",
+                    "name",
+                    "private"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The id of the exchange. When you created the exchange (via POST:/exchanges/{exhangeName}), the 'id' parameter there becomes the name here",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the exchange. ",
+                        "type": "string"
+                    },
+                    "private": {
+                        "description": "Whether this exchange is private (has apiKey) or public (no apiKey)",
+                        "type": "boolean"
+                    },
+                    "enableRateLimit": {
+                        "description": "Whether to enable the built in rate limiter or not. The built in rate limiter is an approximation of the actual exchange's limit. To have a more accurate rate limiting, set this to false and implement the rate limiter on your client",
+                        "default": true,
+                        "type": "boolean"
+                    },
+                    "countries": {
+                        "description": "The list of countries where this exchange is a member of",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "rateLimit": {
+                        "description": "A request rate limit in milliseconds. Specifies the required minimal delay between two consequent HTTP requests to the same exchange. If enableRateLimit is set to false, this would be ignored.",
+                        "type": "integer"
+                    },
+                    "twofa": {
+                        "description": "Whether to enable two factor authentication or not",
+                        "default": false,
+                        "type": "boolean"
+                    },
+                    "has": {
+                        "$ref": "#/components/schemas/ExchangeHasCapabilities"
+                    },
+                    "urls": {
+                        "description": "Collection of URLs this exchange has",
+                        "type": "object"
+                    }
+                }
+            },
+            "TickerResponse": {
+                "required": [
+                    "ask",
+                    "baseVolume",
+                    "bid",
+                    "close",
+                    "datetime",
+                    "high",
+                    "info",
+                    "last",
+                    "low",
+                    "quoteVolume",
+                    "symbol",
+                    "timestamp",
+                    "vwap"
+                ],
+                "type": "object",
+                "properties": {
+                    "symbol": {
+                        "description": "The currency pair of this tick",
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "description": "The timestamp of this tick",
+                        "type": "number"
+                    },
+                    "datetime": {
+                        "format": "date-time",
+                        "description": "The datetime of this tick",
+                        "type": "string"
+                    },
+                    "high": {
+                        "description": "The higest price of this tick",
+                        "type": "number"
+                    },
+                    "low": {
+                        "description": "The lowest price of this tick",
+                        "type": "number"
+                    },
+                    "bid": {
+                        "description": "The current bid price of this tick",
+                        "type": "number"
+                    },
+                    "ask": {
+                        "description": "The current ask price of this tick",
+                        "type": "number"
+                    },
+                    "vwap": {
+                        "description": "The volume weighted average price of this tick",
+                        "type": "number"
+                    },
+                    "close": {
+                        "description": "The closing price of this tick",
+                        "type": "number"
+                    },
+                    "last": {
+                        "description": "The last price of this tick",
+                        "type": "number"
+                    },
+                    "baseVolume": {
+                        "description": "The volume of the base currency of this tick",
+                        "type": "number"
+                    },
+                    "quoteVolume": {
+                        "description": "The volume of the quote currency of this tick",
+                        "type": "number"
+                    },
+                    "info": {
+                        "description": "Raw ticker response gotten from the exchange site's API",
+                        "type": "object"
+                    }
+                }
+            },
+            "Limit": {
+                "required": [
+                    "max",
+                    "min"
+                ],
+                "type": "object",
+                "properties": {
+                    "min": {
+                        "description": "The minimum allowable value",
+                        "type": "number"
+                    },
+                    "max": {
+                        "description": "The maximum allowable value",
+                        "type": "number"
+                    }
+                }
+            },
+            "ExchangeCapability": {
+                "enum": [
+                    "true",
+                    "false",
+                    "emulated"
+                ],
+                "type": "string"
+            },
+            "ExchangeHasCapabilities": {
+                "required": [
+                    "CORS",
+                    "cancelOrder",
+                    "cancelOrders",
+                    "createDepositAddress",
+                    "createLimitOrder",
+                    "createMarketOrder",
+                    "createOrder",
+                    "editOrder",
+                    "fetchBalance",
+                    "fetchBidsAsks",
+                    "fetchClosedOrders",
+                    "fetchCurrencies",
+                    "fetchDepositAddress",
+                    "fetchFundingFees",
+                    "fetchL2OrderBook",
+                    "fetchMarkets",
+                    "fetchMyTrades",
+                    "fetchOHLCV",
+                    "fetchOpenOrders",
+                    "fetchOrder",
+                    "fetchOrderBook",
+                    "fetchOrderBooks",
+                    "fetchOrders",
+                    "fetchTicker",
+                    "fetchTickers",
+                    "fetchTrades",
+                    "fetchTradingFees",
+                    "fetchTradingLimits",
+                    "privateAPI",
+                    "publicAPI",
+                    "withdraw"
+                ],
+                "type": "object",
+                "properties": {
+                    "CORS": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "publicAPI": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "privateAPI": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "cancelOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "cancelOrders": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "createDepositAddress": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "createOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "createMarketOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "createLimitOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "editOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchBalance": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchBidsAsks": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchClosedOrders": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchCurrencies": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchDepositAddress": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchFundingFees": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchL2OrderBook": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchMarkets": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchMyTrades": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOHLCV": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOpenOrders": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOrder": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOrderBook": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOrderBooks": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchOrders": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchTicker": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchTickers": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchTrades": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchTradingFees": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "fetchTradingLimits": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    },
+                    "withdraw": {
+                        "$ref": "#/components/schemas/ExchangeCapability"
+                    }
+                }
+            },
+            "exchangeConfig": {
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for this exchange. ",
+                        "type": "string"
+                    },
+                    "apiKey": {
+                        "description": "The API key you got from the exchange itself. This with the secret is what will allow you to access the exchange",
+                        "type": "string"
+                    },
+                    "secret": {
+                        "description": "The Secret key you got from the exchange itself. This with the apiKey is what will allow you to access the exchange",
+                        "type": "string"
+                    },
+                    "enableRateLimit": {
+                        "description": "Whether to enable the built in rate limiter or not. The built in rate limiter is an approximation of the actual exchange's limit. To have a more accurate rate limiting, set this to false and implement the rate limiter on your client",
+                        "default": true,
+                        "type": "boolean"
+                    }
+                }
+            },
+            "orderPlacement": {
+                "required": [
+                    "amount",
+                    "side",
+                    "symbol",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "symbol": {
+                        "description": "The currency pair (base/quote) of the order to be created",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/OrderType"
+                    },
+                    "side": {
+                        "$ref": "#/components/schemas/Side"
+                    },
+                    "amount": {
+                        "description": "The amount of currency pair's base that we want to buy or sell",
+                        "type": "number"
+                    },
+                    "price": {
+                        "description": "The buying price or the selling price in terms of the quote. Price is needed for market orders and ignored in limit orders",
+                        "type": "number"
+                    },
+                    "exchangeSpecificParams": {
+                        "description": "Exchange specific parameters",
+                        "type": "object"
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "orderIdParam": {
+                "style": "simple",
+                "explode": false,
+                "name": "orderId",
+                "description": "The id of the order. Possible values are any of the result of GET:/exchange/{exchangeName}/orders.",
+                "schema": {
+                    "type": "string"
+                },
+                "in": "path",
+                "required": true
+            },
+            "requiredExchangeSymbolParam": {
+                "style": "form",
+                "explode": true,
+                "name": "symbol",
+                "description": "The symbol of the exchange's data to be retrieved. Possible values are any of symbols in GET:/exchange/{exchangeName}/markets",
+                "schema": {
+                    "type": "string"
+                },
+                "in": "query",
+                "required": true
+            },
+            "optionalExchangeSymbolParam": {
+                "style": "form",
+                "explode": true,
+                "name": "symbol",
+                "description": "The symbol of the exchange's data to be retrieved. Possible values are any of symbols in GET:/exchange/{exchangeName}/markets",
+                "schema": {
+                    "type": "string"
+                },
+                "in": "query",
+                "required": false
+            },
+            "exchangeNameParam": {
+                "style": "simple",
+                "explode": false,
+                "name": "exchangeName",
+                "description": "The name of the exchange. Possible values are any of the result of GET:/exchanges.",
+                "schema": {
+                    "$ref": "#/components/schemas/Exchange"
+                },
+                "in": "path",
+                "required": true
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication API",
+            "description": "APIs that manage [creation](/#createPrivateConnection) / [deletion](/#deletePrivateConnection) / [retrieving](/#getone) of exchange connections. \n\nMost [Public Data APIs](/#ccxt-rest-public-data-api) by most exchanges can be used without providing the API Key and Secret. \n\nFor example, you get retrieve the market of binance by doing `GET:/exchange/binance/market` directly and would be able to get the markets of binance. \n\nBut some exchanges though would require you to use an API Key and Secret even when accessing their Public Data API. For  example, for cointiger, if you want to retrieve its market and you do `GET:/exchange/cointiger/market`, you will a `403` error (_i.e. meaning you were unauthorized to access it_). Thus, to use that api of continger, you would first have to provide your API Key and Secret to continger via `POST:/exchange/continger -d {\"id\":\"myCoinTiger\",\"apiKey\":\"My-COINTIGER-KEY\",\"secret\":\"s3cret\"}`. From there, you will get a response `{\"token\":\"xxx.yyy.zzz\"}`. That `\"xxx.yyy.zzz\"` would then what you will use to connect to coiniger - i.e. `GET:/exchange/cointiger/market -H \"Authorization: Bearer xxx.yyy.zzz\"` and this time, your request will push  through and would be able to get cointiger's market.\n\nFurthemore, all [Private Data APIs](/#ccxt-rest-private-data-api) of all exchanges would require API Key and Secret. Thus, although `GET:/exchange/binance/market` would work, doing `GET:/exchange/binance/balances` will not. You'd have to provide first binance your API Key and Secret like `POST:/exchange/binance -d {\"id\":\"myBinance\",\"apiKey\":\"binance-key\",\"secret\":\"s3cret\"}`, to get something like `{\"token\":\"aaa.bbb.ccc\"}`, which you can then use to execute  `GET:/exchange/binance/balances -H \"Authorization: Bearer aaa.bbb.ccc\"` which would finally get your balances."
+        },
+        {
+            "name": "Exchange Management API",
+            "description": "APIs for retrieving supported exchanges"
+        },
+        {
+            "name": "Public Data API",
+            "description": "APIs that retrieve public data (like ticker, order books, trades, etc)"
+        },
+        {
+            "name": "Private Data API",
+            "description": "APIs that retrieve private data (like your balances, your open orders, your closed orders, your trades, etc)"
+        },
+        {
+            "name": "Experimental API",
+            "description": "APIs that may be useful but are in experimental stage. Some of these APIs may potentially be removed in the future or be moved into one of the previous categories"
+        }
+    ]
+}

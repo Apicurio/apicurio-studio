@@ -118,6 +118,14 @@ public class OpenApi2JaxRsTest {
     }
 
     /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
+    public void testGenerateFull_NZDAX() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/nzdax.json", UpdateOnly.yes, Reactive.no, "_expected-nzdax/generated-api", false);
+    }
+
+    /**
      * Shared test method.
      * @param apiDef
      * @param updateOnly

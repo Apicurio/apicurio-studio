@@ -321,19 +321,20 @@ export class ImportComponentsWizard {
         this.components = [];
         console.debug("[ImportComponentsWizard] Loading components from %o resources.", this.selectedResources.length);
         let promises: Promise<ApiDefinition | ArtifactDefinition>[] = this.selectedResources.map(apiOrArtifact => {
-            // TODO find a better way to route the processing flow (instanceof does not work)
-            if (["OPENAPI", "ASYNCAPI", "JSON"].includes(apiOrArtifact.type)) {
+            if ("ARTIFACT" === apiOrArtifact.__resourceType) {
                 console.debug("[ImportComponentsWizard] Loading artifact definition for: ", apiOrArtifact.name);
                 return this.artifacts.getArtifactDefinition(apiOrArtifact.id).then(artifactDef => {
                     this.processLoadedArtifactDef(artifactDef);
                     return artifactDef;
                 });
-            } else {
+            } else if ("API" === apiOrArtifact.__resourceType) {
                 console.debug("[ImportComponentsWizard] Loading api definition for: ", apiOrArtifact.name);
                 return this.apis.getApiDefinition(apiOrArtifact.id).then(apiDef => {
                     this.processLoadedApiDef(apiDef);
                     return apiDef;
                 });
+            } else {
+                console.warn("[ImportComponentsWizard] Missing __resourceType field for resource named", apiOrArtifact.name);
             }
         });
         Promise.all(promises).then(() => {

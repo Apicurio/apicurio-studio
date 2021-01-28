@@ -396,6 +396,7 @@ export class ApisService extends AbstractHubService {
 
         console.info("[ApisService] Fetching API list: %s", listApisUrl);
         return this.httpGet<Api[]>(listApisUrl, options, (apis) => {
+            apis.forEach(api => api.__resourceType = "API")
             this.cachedApis = apis;
             return apis;
         });

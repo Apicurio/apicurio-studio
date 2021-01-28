@@ -25,6 +25,7 @@ export class Api {
     createdBy: string;
     tags: string[];
     type: string;
+    __resourceType: string;
 
     constructor() {
         this.id = "";
@@ -34,6 +35,7 @@ export class Api {
         this.createdBy = "";
         this.tags = null;
         this.type = "";
+        this.__resourceType = "API";
     }
 
 }
@@ -55,6 +57,7 @@ export class ApiDefinition extends Api {
         apiDef.description = api.description;
         apiDef.createdOn = api.createdOn;
         apiDef.createdBy = api.createdBy;
+        apiDef.__resourceType = api.__resourceType;
 
         return apiDef;
     }
@@ -81,6 +84,7 @@ export class EditableApiDefinition extends ApiDefinition {
         apiDef.createdOn = api.createdOn;
         apiDef.createdBy = api.createdBy;
         apiDef.type = api.type;
+        apiDef.__resourceType = api.__resourceType;
 
         return apiDef;
     }

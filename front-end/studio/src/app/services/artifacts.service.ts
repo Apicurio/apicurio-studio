@@ -54,6 +54,7 @@ export class ArtifactsService extends AbstractHubService {
 
         console.info("[ArtifactsService] Fetching Artifact list: %s", listArtifactsUrl);
         return this.httpGet<Artifact[]>(listArtifactsUrl, options, (artifacts) => {
+            artifacts.forEach(artifact => artifact.__resourceType = "ARTIFACT")
             this.cachedArtifacts = artifacts;
             return artifacts;
         });

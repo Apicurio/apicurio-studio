@@ -30,6 +30,7 @@ export class Artifact {
     createdBy: string;
     modifiedOn: Date;
     modifiedBy: string;
+    __resourceType: string;
 
     constructor() {
         this.id = "";
@@ -43,6 +44,7 @@ export class Artifact {
         this.createdBy = "";
         this.modifiedOn = new Date();
         this.modifiedBy = "";
+        this.__resourceType = "ARTIFACT";
     }
 
 }
@@ -69,6 +71,7 @@ export class ArtifactDefinition extends Artifact {
         artifactDefinition.createdBy = artifact.createdBy;
         artifactDefinition.modifiedOn = artifact.modifiedOn;
         artifactDefinition.modifiedBy = artifact.modifiedBy;
+        artifactDefinition.__resourceType = artifact.__resourceType;
 
         return artifactDefinition;
     }

@@ -52,7 +52,7 @@ export class PayloadTabComponent extends AbstractBaseComponent {
 
     @Input() message: AaiMessage;
 
-    protected model: SimplifiedType = null;
+    protected _model: SimplifiedType = null;
     protected editing: boolean = false;
     protected tab: string = "";
 
@@ -61,8 +61,11 @@ export class PayloadTabComponent extends AbstractBaseComponent {
             super(changeDetectorRef, documentService, selectionService);
     }
 
+    public model(): SimplifiedType {
+        return this._model;
+    }
     public updateModel(): void {
-        this.model = SimplifiedType.fromSchema(this.message.payload);
+        this._model = SimplifiedType.fromSchema(this.message.payload);
     }
     public document(): AaiDocument {
         return <AaiDocument> this.message.ownerDocument();
@@ -123,7 +126,7 @@ export class PayloadTabComponent extends AbstractBaseComponent {
 
         let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
         this.commandService.emit(command);
-        this.model = nt;
+        this._model = nt;
     }
 
     public schemaForExamplePayload(): Aai20Schema {

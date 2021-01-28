@@ -47,7 +47,7 @@ export class HeadersTabComponent extends AbstractBaseComponent {
 
     @Input() message: AaiMessage;
 
-    protected model: SimplifiedType = null;
+    protected _model: SimplifiedType = null;
     protected editing: boolean = false;
     protected tab: string = "";
 
@@ -56,6 +56,9 @@ export class HeadersTabComponent extends AbstractBaseComponent {
             super(changeDetectorRef, documentService, selectionService);
     }
 
+    public model(): SimplifiedType {
+        return this._model;
+    }
     public document(): AaiDocument {
         return <AaiDocument> this.message.ownerDocument();
     }
@@ -99,6 +102,6 @@ export class HeadersTabComponent extends AbstractBaseComponent {
         
         let command: ICommand = CommandFactory.createChangeHeadersRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
         this.commandService.emit(command);
-        this.model = nt;
+        this._model = nt;
     }
 }

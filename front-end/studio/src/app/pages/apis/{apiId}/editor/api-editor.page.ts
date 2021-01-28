@@ -32,6 +32,7 @@ import {
 } from "@angular/router";
 import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
+import {ArtifactsService} from "../../../../services/artifacts.service";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {DefaultSeverityRegistry, IValidationSeverityRegistry, Library, OtCommand} from "apicurio-data-models";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
@@ -222,13 +223,14 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param zone
      * @param http
      * @param apis
+     * @param artifacts
      * @param titleService
      * @param validationService
      * @param config
      */
     constructor(private router: Router, route: ActivatedRoute, private zone: NgZone, protected http: HttpClient,
-                private apis: ApisService, titleService: Title, private validationService: ValidationService,
-                private config: ConfigService) {
+                private apis: ApisService, private artifacts: ArtifactsService, titleService: Title,
+                private validationService: ValidationService, private config: ConfigService) {
         super(route, titleService);
         this.apiDefinition = new EditableApiDefinition();
         this.editorFeatures = new ApiEditorComponentFeatures();
@@ -276,7 +278,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     /**
      * Fetches external content on behalf of the editor.  This implementation should handle both
-     * external http(s) content as well as internal Apicurio Studio content.
+     * external http(s) content as well as internal Apicurio Studio content and Apicurio Registry artifacts.
      * @param externalRef
      */
     public fetchExternalContent = (externalRef: string): Promise<any> => {
@@ -286,6 +288,11 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
             return this.apis.getApiDefinition(designId).then( apiDef => {
                 return apiDef.spec;
             });
+        } else if (externalRef.startsWith("apicurio-registry:")) {
+            let artifactId: string = externalRef.substring(externalRef.indexOf(":") + 1, externalRef.indexOf("/"));
+            let fragmentPosition: number = externalRef.indexOf("#");
+            let artifactVersion: string = externalRef.substring(externalRef.indexOf("/") + 1, fragmentPosition > -1 ? fragmentPosition : externalRef.length);
+            return this.artifacts.getArtifactContentForVersion(artifactId, artifactVersion);
         } else if (externalRef.toLowerCase().startsWith("http") && this.httpFetchEnabled) {
             try {
                 let fetchUrl: string = `${ this.uiUrl }fetch?url=${ encodeURI(externalRef) }`;

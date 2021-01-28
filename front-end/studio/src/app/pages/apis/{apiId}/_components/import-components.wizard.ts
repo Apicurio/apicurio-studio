@@ -369,9 +369,9 @@ export class ImportComponentsWizard {
 
     private processLoadedArtifactDef(artifactDefinition: ArtifactDefinition): void {
         console.debug("[ImportComponentsWizard] Processing an Artifact def: ", artifactDefinition.name);
-        // TODO see details in loadComponents about the use of hardcoded registry types
-        if (artifactDefinition.type === "JSON") {
-            let $ref: string = `${ this.config.registryUrl() }/api/artifacts/${ artifactDefinition.id }/versions/${ artifactDefinition.version }#`;
+        // TODO handle the other registry types as well
+        if (this.type === ComponentType.schema && artifactDefinition.type === "JSON") {
+            let $ref: string = `apicurio-registry:${ artifactDefinition.id }/${ artifactDefinition.version }#`;
             this.components.push({
                 name: artifactDefinition.name,
                 $ref: $ref,
@@ -529,7 +529,7 @@ class ArtifactComponentFinder extends CombinedVisitorAdapter {
     }
 
     protected toImportedComponent(definition: IDefinition): ImportedComponent {
-        let $ref: string = `${this.registryUrl}/api/artifacts/${ this.artifactDefinition.id }/versions/${ this.artifactDefinition.version }${ this.getFragmentPrefix() + definition.getName() }`;
+        let $ref: string = `apicurio-registry:${ this.artifactDefinition.id }/${ this.artifactDefinition.version }${ this.getFragmentPrefix() + definition.getName() }`;
         let component: ImportedComponent = {
             name: definition.getName(),
             $ref: $ref,

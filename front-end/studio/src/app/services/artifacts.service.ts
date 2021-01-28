@@ -99,4 +99,18 @@ export class ArtifactsService extends AbstractHubService {
         });
     }
 
+    /**
+     * @see ArtifactsService.getArtifactContentForVersion
+     */
+    public getArtifactContentForVersion(artifactId: string, artifactVersion: string): Promise<any> {
+        let getContentUrl: string = this.endpoint("/registry/:artifactId/:artifactVersion/content", {
+            artifactId: artifactId,
+            artifactVersion: artifactVersion
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ArtifactsService] Getting Artifact content: %s", getContentUrl);
+        return this.httpGet<any>(getContentUrl, options);
+    }
+
 }

@@ -40,11 +40,14 @@ public class ContentDereferencer {
     private AbsoluteReferenceResolver absoluteResolver;
     @Inject
     private InternalReferenceResolver apicurioResolver;
+    @Inject
+    private RegistryReferenceResolver registryResolver;
 
     @PostConstruct
     void init() {
         Library.addReferenceResolver(apicurioResolver);
         Library.addReferenceResolver(absoluteResolver);
+        Library.addReferenceResolver(registryResolver);
     }
     
     /**

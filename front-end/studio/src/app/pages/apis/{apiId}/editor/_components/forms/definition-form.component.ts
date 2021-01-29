@@ -48,6 +48,7 @@ import {EditorsService} from "../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../components/common/drop-down.component";
 import {ApiCatalogService} from "../../_services/api-catalog.service";
+import {ConfigService} from "../../../../../../services/config.service";
 
 const INHERITANCE_TYPES: DropDownOption[] = [
     new Value("No inheritance", "none"),
@@ -102,7 +103,8 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
                        protected commandService: CommandService,
                        protected documentService: DocumentService,
                        private editors: EditorsService,
-                       private catalog: ApiCatalogService) {
+                       private catalog: ApiCatalogService,
+                       private config: ConfigService) {
         super(changeDetectorRef, selectionService, commandService, documentService);
     }
 
@@ -112,6 +114,14 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     isImported(): boolean {
         return this.definition.$ref && !this.definition.$ref.startsWith("#");
+    }
+
+    shouldRenderLink(): boolean {
+        if (this.definition.$ref.startsWith('apicurio-registry:')) {
+            let configValue = this.config.registryUiUrl();
+            return configValue && configValue !== '';
+        }
+        return true;
     }
 
     protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition {
@@ -267,6 +277,12 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
             let prefix: string = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
             prefix = prefix.substring(0, prefix.lastIndexOf('/'));
             return prefix + "/" + refId;
+        } else if (this.definition.$ref && this.definition.$ref.startsWith("apicurio-registry:")) {
+            let refId: string = this.getRefId();
+            let slashPosition = refId.indexOf("/");
+            let artifactId: string = refId.substring(0, slashPosition);
+            let artifactVersion: string = refId.substring(slashPosition + 1);
+            return `${(this.config.registryUiUrl())}/artifacts/${artifactId}/versions/${artifactVersion}`;
         } else {
             return this.definition.$ref;
         }

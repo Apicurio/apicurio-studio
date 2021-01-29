@@ -130,7 +130,8 @@
                          [validationShallow]="true">
                     <div body>
                         <span>This Data Type is an external reference to: </span>
-                        <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
+                        <em *ngIf="shouldRenderLink()"><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
+                        <em *ngIf="!shouldRenderLink()">{{ definition.$ref }}</em>
                     </div>
                 </section>
                 <!-- Reference Details -->

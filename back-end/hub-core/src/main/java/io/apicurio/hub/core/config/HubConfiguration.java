@@ -106,6 +106,9 @@ public class HubConfiguration extends Configuration {
     private static final String WEBHOOKS_CONFIG_ENV = "APICURIO_HUB_INTEGRATIONS_HTTP_";
     private static final String WEBHOOKS_CONFIG_SYSPROP = "apicurio.hub.integrations.http.";
 
+    private static final String REGISTRY_API_URL_ENV = "APICURIO_REGISTRY_API_URL";
+    private static final String REGISTRY_API_URL_SYSPROP = "apicurio.registry.api.url";
+
     /**
      * @return the configured JDBC type (default: h2)
      */
@@ -296,5 +299,12 @@ public class HubConfiguration extends Configuration {
      */
     public Properties getWebhooksConfiguration() {
         return getConfigurationProperties(WEBHOOKS_CONFIG_ENV, WEBHOOKS_CONFIG_SYSPROP, false);
+    }
+
+    /**
+     * @return the URL of the Apicurio Registry Instance's API.
+     */
+    public String getRegistryApiUrl() {
+        return getConfigurationProperty(REGISTRY_API_URL_ENV, REGISTRY_API_URL_SYSPROP, null);
     }
 }

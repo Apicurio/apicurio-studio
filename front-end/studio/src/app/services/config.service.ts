@@ -32,7 +32,7 @@ let DEFAULT_CONFIG: any = {
         uiUrl: "http://localhost:8080/studio/"
     },
     registry: {
-        registryUrl: "http://localhost:8080/registry/"
+        uiUrl: "http://localhost:8080/registry/ui"
     },
     features: {
         "microcks": true,
@@ -150,11 +150,11 @@ export class ConfigService {
         return this.config.ui.url;
     }
 
-    public registryUrl(): string {
-        if (!this.config.registry || !this.config.registry.url) {
+    public registryUiUrl(): string {
+        if (!this.config.registry || !this.config.registry.uiUrl) {
             return "";
         }
-        return this.config.registry.url;
+        return this.config.registry.uiUrl;
     }
 
     public isShareWithEveryoneEnabled(): boolean {

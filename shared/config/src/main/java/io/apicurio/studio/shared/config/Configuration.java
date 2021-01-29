@@ -35,9 +35,6 @@ public abstract class Configuration {
     private static final String KC_AUTH_REALM_ENV = "APICURIO_KC_AUTH_REALM";
     private static final String KC_AUTH_REALM_SYSPROP = "apicurio.kc.auth.realm";
 
-    private static final String REGISTRY_URL_ENV = "APICURIO_REGISTRY_URL";
-    private static final String REGISTRY_URL_SYSPROP = "apicurio.registry.url";
-
     /**
      * @return the configured Keycloak auth URL
      */
@@ -50,13 +47,6 @@ public abstract class Configuration {
      */
     public String getKeycloakRealm() {
         return getConfigurationProperty(KC_AUTH_REALM_ENV, KC_AUTH_REALM_SYSPROP, "apicurio");
-    }
-
-    /**
-     * @return the URL of the Apicurio Registry Instance.
-     */
-    public String getRegistryUrl() {
-        return getConfigurationProperty(REGISTRY_URL_ENV, REGISTRY_URL_SYSPROP, null);
     }
 
     /**

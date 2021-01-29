@@ -112,7 +112,7 @@ public class StudioConfigServlet extends HttpServlet {
             config.getUi().setUrl(this.uiConfig.getUiUrl());
 
             config.setRegistry(new StudioConfigRegistry());
-            config.getRegistry().setUrl(uiConfig.getRegistryUrl());
+            config.getRegistry().setUiUrl(uiConfig.getRegistryUiUrl());
             
             config.setFeatures(new StudioConfigFeatures());
             config.getFeatures().setMicrocks(uiConfig.isMicrocksEnabled());

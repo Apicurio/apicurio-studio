@@ -21,13 +21,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * @author eric.wittmann@gmail.com
+ * @author c.desc2@gmail.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
 public class StudioConfigRegistry {
 
-    private String url;
+    private String uiUrl;
 
     /**
      * Constructor.
@@ -38,15 +38,15 @@ public class StudioConfigRegistry {
     /**
      * @return the url
      */
-    public String getUrl() {
-        return url;
+    public String getUiUrl() {
+        return uiUrl;
     }
 
     /**
-     * @param url the url to set
+     * @param uiUrl the url to set
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUiUrl(String uiUrl) {
+        this.uiUrl = uiUrl;
     }
 
 }

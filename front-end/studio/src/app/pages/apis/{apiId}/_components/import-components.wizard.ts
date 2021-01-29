@@ -19,7 +19,6 @@ import {Component, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {ApisService} from "../../../../services/apis.service";
 import {ArtifactsService} from "../../../../services/artifacts.service";
-import {ConfigService} from "../../../../services/config.service";
 import {ImportedComponent} from "../editor/_models/imported-component.model";
 import {Api, ApiDefinition} from "../../../../models/api.model";
 import {Artifact, ArtifactDefinition} from "../../../../models/artifact.model";
@@ -80,8 +79,7 @@ export class ImportComponentsWizard {
      * @param config
      */
     constructor(private apis: ApisService,
-                private artifacts: ArtifactsService,
-                private config: ConfigService) {}
+                private artifacts: ArtifactsService) {}
 
     /**
      * Called to open the wizard.
@@ -110,11 +108,10 @@ export class ImportComponentsWizard {
         this.currentPage = "resources";
 
 
-        let promises: Promise<(Api|Artifact)[]>[] = [];
-        promises.push(this.apis.getApis());
-        if (this.config.registryUrl() !== "") {
-            promises.push(this.artifacts.getArtifacts());
-        }
+        let promises: Promise<(Api|Artifact)[]>[] = [
+            this.apis.getApis(),
+            this.artifacts.getArtifacts()
+        ];
 
         this.allResources = [];
         Promise.all(promises).then(allResources => {
@@ -401,9 +398,9 @@ export class ImportComponentsWizard {
     private getArtifactComponents(artifactDefinition: ArtifactDefinition, doc: Document): ImportedComponent[] {
         let finder: ArtifactComponentFinder;
         if (doc.getDocumentType() == DocumentType.openapi2) {
-            finder = new Oas20ArtifactComponentFinder(artifactDefinition, this.type, this.config.registryUrl());
+            finder = new Oas20ArtifactComponentFinder(artifactDefinition, this.type);
         } else {
-            finder = new ArtifactComponentFinder(artifactDefinition, this.type, this.config.registryUrl());
+            finder = new ArtifactComponentFinder(artifactDefinition, this.type);
         }
         Library.visitTree(doc, finder, TraverserDirection.down);
         return finder.foundComponents;
@@ -520,7 +517,7 @@ class ArtifactComponentFinder extends CombinedVisitorAdapter {
 
     public foundComponents: ImportedComponent[] = [];
 
-    constructor(protected artifactDefinition: ArtifactDefinition, protected type: ComponentType, protected registryUrl: string) {
+    constructor(protected artifactDefinition: ArtifactDefinition, protected type: ComponentType) {
         super();
     }
 
@@ -590,8 +587,8 @@ class ArtifactComponentFinder extends CombinedVisitorAdapter {
 }
 class Oas20ArtifactComponentFinder extends ArtifactComponentFinder {
 
-    constructor(artifactDefinition: ArtifactDefinition, type: ComponentType, registryUrl: string) {
-        super(artifactDefinition, type, registryUrl);
+    constructor(artifactDefinition: ArtifactDefinition, type: ComponentType) {
+        super(artifactDefinition, type);
     }
 
     protected getFragmentPrefix(): string {

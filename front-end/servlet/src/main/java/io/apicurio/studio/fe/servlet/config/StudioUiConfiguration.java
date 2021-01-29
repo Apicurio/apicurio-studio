@@ -54,6 +54,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String FEATURE_SHARE_WITH_EVERYONE_ENV = "APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE";
     private static final String FEATURE_SHARE_WITH_EVERYONE_SYSPROP = "apicurio-ui.feature.shareWithEveryone";
 
+    private static final String REGISTRY_UI_URL_ENV = "APICURIO_REGISTRY_UI_URL";
+    private static final String REGISTRY_UI_URL_SYSPROP = "apicurio.registry.ui.url";
+
     /**
      * Returns the URL of the Apicurio Hub API.
      */
@@ -117,6 +120,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public String getUiUrl() {
         return getConfigurationProperty(HUB_UI_URL_ENV, HUB_UI_URL_SYSPROP, null);
+    }
+
+    /**
+     * @return the URL of the Apicurio Registry Instance's UI.
+     */
+    public String getRegistryUiUrl() {
+        return getConfigurationProperty(REGISTRY_UI_URL_ENV, REGISTRY_UI_URL_SYSPROP, null);
     }
 
 }

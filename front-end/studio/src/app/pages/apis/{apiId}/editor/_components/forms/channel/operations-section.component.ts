@@ -127,16 +127,16 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
         }
 
         // Choose a tab based on the availability of actual operations.  I.e. if the path only has
-        // a "PUT" operation, then choose that one.
+        // a "SUBSCRIBE" operation, then choose that one.
         for (let operation of this._operations) {
-            //console.info("[OperationsSectionComponent] No operations selected, setting tab to: ", operation.getMethod());
-            //this.tab = operation.getMethod();
+            console.info("[ChannelOperationsSectionComponent] No operations selected, setting tab to: ", operation.getType());
+            this.tab = operation.getType();
             this.__changeDetectorRef.markForCheck();
             return;
         }
 
-        // If all else fails, just default to "GET"
-        this.tab = "get";
+        // If all else fails, just default to "SUBSCRIBE"
+        this.tab = "subscribe";
         this.__changeDetectorRef.markForCheck();
     }
 
@@ -193,20 +193,19 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
 
     public addOperation(): void {
         // Create the operation via a command.
-        //let command: ICommand = CommandFactory.createNewOperationCommand(this.path.getPath(), this.tab);
-        //this.commandService.emit(command);
-        // !!!
+        let command: ICommand = CommandFactory.createNewOperationCommand_Aai20(this.channel.getName(), this.tab);
+        this.commandService.emit(command);
         // And then select the new operation we just created.
-        //this.__selectionService.select(ModelUtils.nodeToPath(this.path) + "/" + this.tab);
+        this.__selectionService.select(ModelUtils.nodeToPath(this.channel) + "/" + this.tab);
     }
 
     public deleteOperation(operation: AaiOperation): void {
         if (!operation) {
             return;
         }
-        //let command: ICommand = CommandFactory.createDeleteOperationCommand(operation.getMethod(),
-        //    operation.parent() as OasPathItem);
-        //this.commandService.emit(command);
+        let command: ICommand = CommandFactory.createDeleteOperationCommand_Aai20(operation.getType(),
+            operation.parent() as AaiChannelItem);
+        this.commandService.emit(command);
     }
 
     public deleteAllOperations(): void {

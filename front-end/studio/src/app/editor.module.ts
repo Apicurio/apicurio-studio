@@ -51,6 +51,8 @@ import {AddExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components
 import {EditExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example.component";
 import {AddExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-example-20.component";
 import {EditExample20DialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-example-20.component";
+import {AddAsyncApiExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-aai-example.component";
+import {EditAsyncApiExampleDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/edit-aai-example.component";
 import {ProblemsService} from "./pages/apis/{apiId}/editor/_services/problems.service";
 import {SelectionService} from "./pages/apis/{apiId}/editor/_services/selection.service";
 import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.service";
@@ -111,6 +113,8 @@ import {ChannelOperationsSectionComponent} from "./pages/apis/{apiId}/editor/_co
 import {OperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/info-section.component";
 import {ChannelOperationInfoSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/info-section.component";
 import {MessageSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/message-section.component";
+import {PayloadTabComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/payload-tab.component";
+import {HeadersTabComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/headers-tab.component";
 import {NoOperationComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/no-operation.component";
 import {SectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/section.component";
 import {RequestBodySectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/requestBody-section.component";
@@ -149,7 +153,8 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
     declarations: [
         ValidationIconComponent, ServerUrlComponent, SearchComponent, SchemaTypeComponent, ResponseItemComponent,
         PathItemComponent, ContextHelpComponent, InlineMarkdownEditorComponent, OperationInfoSectionComponent,
-        ChannelOperationInfoSectionComponent, MessageSectionComponent, SetLicenseDialogComponent, ClonePathDialogComponent,
+        ChannelOperationInfoSectionComponent, MessageSectionComponent, PayloadTabComponent, HeadersTabComponent,
+        SetLicenseDialogComponent, ClonePathDialogComponent,
         CloneDefinitionDialogComponent, ScopesInputComponent, AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent,
         NoOperationComponent, ContentComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
         MessageTraitFormComponent, MessageTraitItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
@@ -159,7 +164,8 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, OperationTraitEditorComponent,
         ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
-        EditorTitleBarComponent, EditExample20DialogComponent, IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        AddAsyncApiExampleDialogComponent, EditAsyncApiExampleDialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
+        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
         SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
         ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
         AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,

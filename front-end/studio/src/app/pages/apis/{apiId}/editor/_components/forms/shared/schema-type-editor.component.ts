@@ -25,6 +25,8 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
+    Aai20SchemaDefinition,
+    AaiDocument, DocumentType,
     Node,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
@@ -38,7 +40,7 @@ import {
     DropDownOption,
     DropDownOptionValue as Value
 } from "../../../../../../../components/common/drop-down.component";
-import {FindSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
+import {FindSchemaDefinitionsVisitor, FindAaiSchemaDefinitionsVisitor} from "../../../_visitors/schema-definitions.visitor";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {CommandService} from "../../../_services/command.service";
@@ -59,7 +61,7 @@ import {ObjectUtils} from "apicurio-ts-core";
 })
 export class SchemaTypeEditorComponent extends AbstractBaseComponent {
 
-    @Input() document: OasDocument;
+    @Input() document: OasDocument | AaiDocument;
     @Input() value: SimplifiedType;
     @Input() typeLabel: string = "Type";
     @Input() validationModel: Node;
@@ -114,7 +116,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
          */
         options = [...options, ...this.getSchemaDefinitionsOptions()]
 
-        if(!this.isParameter && this.document.is2xDocument()) {
+        if(!this.isParameter && this.document.getDocumentType() === DocumentType.openapi2) {
             options = [...options, DIVIDER, new Value("File", "file")]
         }
 
@@ -153,7 +155,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
     private getSchemaDefinitionsOptions(): DropDownOption[] {
         let options: DropDownOption[] = [];
         let refPrefix: string = "#/components/schemas/";
-        if (this.document.is2xDocument()) {
+        if (this.document.getDocumentType() === DocumentType.openapi2) {
             refPrefix = "#/definitions/";
         }
 
@@ -176,10 +178,18 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
             return false;
         };
 
-        const filterCriteria: any = this.isParameter ? isSimpleType : null;
-        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(filterCriteria);
-        VisitorUtil.visitTree(this.document, viz, TraverserDirection.down);
-        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition)[];
+        if (this.document.getDocumentType() === DocumentType.openapi3 || this.document.getDocumentType() === DocumentType.openapi2) {
+            const filterCriteria: any = this.isParameter ? isSimpleType : null;
+            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(filterCriteria);
+            VisitorUtil.visitTree(this.document, viz, TraverserDirection.down);
+            defs = viz.getSortedSchemaDefinitions();
+        } else if (this.document.getDocumentType() === DocumentType.asyncapi2) {
+            let viz: FindAaiSchemaDefinitionsVisitor = new FindAaiSchemaDefinitionsVisitor(null);
+            VisitorUtil.visitTree(this.document, viz, TraverserDirection.down);
+            defs = viz.getSortedSchemaDefinitions();
+        }
+
         if (defs.length > 0) {
             options.push(DIVIDER);
             defs.forEach(def => {

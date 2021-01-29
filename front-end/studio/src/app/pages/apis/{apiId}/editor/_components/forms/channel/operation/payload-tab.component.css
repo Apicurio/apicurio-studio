@@ -1,0 +1,152 @@
+.payload {
+}
+.payload.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.payload .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.payload .header:hover {
+  background-color: #edf8ff;
+}
+.payload.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.payload .header .reference {
+  flex-basis: 22%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.payload .header .reference > span {
+  font-weight: 600;
+  color: #333;
+}
+.payload .header .reference > span.fa {
+  font-weight: normal;
+  margin-right: 3px;
+}
+.payload .header .reference .icon-override {
+  font-size: 16px;
+  font-weight: normal;
+  cursor: help;
+  margin-right: 3px;
+}
+
+.payload .header .type {
+  flex-basis: 38%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.payload .header .type:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.payload .header .examples {
+  flex-basis: 38%;
+}
+.payload .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.payload .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.payload .header .actions .btn-override {
+  position: absolute;
+  right: 5px;
+  top: 6px;
+}
+
+.payload .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.payload:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.payload .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.payload .body {
+  position: relative;
+  padding: 15px;
+}
+.payload .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.payload .body .mt-examples .form-label {
+  font-weight: 600;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.payload .problem-flex {
+  display: flex;
+}
+.payload .problem-flex .grow {
+  flex-grow: 1;
+}
+.payload .problem-flex > *:first-child {
+  margin-right: 7px;
+  margin-top: 2px;
+}
+
+.payload div.form-label {
+  margin-top: 15px;
+  font-weight: 600;
+}
+.payload .payload-reference div.form-label {
+  margin-top: 2px;
+}
+
+.payload .mt-examples table {
+  margin-bottom: 3px;
+}
+.payload .mt-examples table td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.payload .mt-examples table td.name {
+  width: 30%;
+}
+.payload .mt-examples table td.value {
+  width: 60%;
+}
+.payload .mt-examples table td.actions {
+  width: 10%;
+}
+
+.payload .mt-examples a {
+  cursor: pointer;
+}
+
+.payload .type > .fa,
+.payload .examples > .fa {
+  margin-right: 2px;
+}

@@ -6,19 +6,19 @@
     <div body>
         <div class="operation-tabs">
             <div class="tabs">
-                <div class="operation-tab publish-tab" [class.selected]="tab === 'publish'" [class.enabled]="isDefined('publish')" (click)="selectTab('publish')">
-                    <div class="tab-label">
-                        <collaborator-overlay [nodePath]="operationPath('publish')"></collaborator-overlay>
-                        <span>Publish</span>
-                    </div>
-                    <validation-aggregate [models]="[ channel.publish ]"></validation-aggregate>
-                </div>
                 <div class="operation-tab subscribe-tab" [class.selected]="tab === 'subscribe'" [class.enabled]="isDefined('subscribe')" (click)="selectTab('subscribe')">
                     <div class="tab-label">
                         <collaborator-overlay [nodePath]="operationPath('subscribe')"></collaborator-overlay>
                         <span>Subscribe</span>
                     </div>
                     <validation-aggregate [models]="[ channel.subscribe ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab publish-tab" [class.selected]="tab === 'publish'" [class.enabled]="isDefined('publish')" (click)="selectTab('publish')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('publish')"></collaborator-overlay>
+                        <span>Publish</span>
+                    </div>
+                    <validation-aggregate [models]="[ channel.publish ]"></validation-aggregate>
                 </div>
             </div>
             <div class="actions">

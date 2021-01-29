@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
+ * This interface defines the possible actions the Apicurio Studio can perform on a configured Apicurio Registry
+ * As of now, the Studio only gets artifacts and their related metadata / content
  * @author c.desc2@gmail.com
  */
 public interface IRegistry {

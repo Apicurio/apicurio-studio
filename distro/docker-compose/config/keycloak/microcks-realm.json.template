@@ -109,7 +109,7 @@
         "+"
       ],
       "redirectUris": [
-        "https://$HOST:8900/*"
+        "http://$HOST:8900/*"
       ],
       "fullScopeAllowed": false
     },

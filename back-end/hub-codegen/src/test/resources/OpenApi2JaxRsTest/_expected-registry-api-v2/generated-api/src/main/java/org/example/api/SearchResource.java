@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import org.example.api.beans.ArtifactSearchResults;
+import org.example.api.beans.SortBy;
 import org.example.api.beans.SortOrder;
 
 /**
@@ -27,7 +28,7 @@ public interface SearchResource {
   @Produces("application/json")
   ArtifactSearchResults searchArtifacts(@QueryParam("name") String name,
       @QueryParam("offset") Integer offset, @QueryParam("limit") Integer limit,
-      @QueryParam("order") SortOrder order, @QueryParam("orderby") String orderby,
+      @QueryParam("order") SortOrder order, @QueryParam("orderby") SortBy orderby,
       @QueryParam("labels") List<String> labels, @QueryParam("properties") List<String> properties,
       @QueryParam("description") String description,
       @QueryParam("artifactgroup") String artifactgroup);
@@ -43,5 +44,5 @@ public interface SearchResource {
   @Consumes("*/*")
   ArtifactSearchResults searchArtifactsByContent(@QueryParam("offset") Integer offset,
       @QueryParam("limit") Integer limit, @QueryParam("order") SortOrder order,
-      @QueryParam("orderby") String orderby, InputStream data);
+      @QueryParam("orderby") SortBy orderby, InputStream data);
 }

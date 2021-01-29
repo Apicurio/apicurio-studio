@@ -17,11 +17,12 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {
+    Aai20SchemaDefinition, AaiDocument, DocumentType,
     IOasParameterParent,
-    Oas20Parameter,
-    Oas30Parameter, OasParameter,
+    Oas20Parameter, Oas20SchemaDefinition,
+    Oas30Parameter, Oas30SchemaDefinition, OasDocument, OasParameter, ReferenceUtil,
     SimplifiedParameterType,
-    SimplifiedType
+    SimplifiedType, TraverserDirection, VisitorUtil
 } from "apicurio-data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {
@@ -30,6 +31,10 @@ import {
     DropDownOptionValue as Value
 } from "../../../../../../components/common/drop-down.component";
 import {ObjectUtils} from "apicurio-ts-core";
+import {
+    FindAaiSchemaDefinitionsVisitor,
+    FindSchemaDefinitionsVisitor
+} from "../../_visitors/schema-definitions.visitor";
 
 export interface ParameterData {
     name: string;
@@ -152,6 +157,7 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
             new Value("Boolean", "boolean"),
             new Value("Number", "number")
         ];
+        this.addRefTypes(options);
 
         return options;
     }
@@ -277,6 +283,50 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
         }
         if (this._paramType === "formData") {
             return "Define a New Form Data Parameter";
+        }
+    }
+
+    private addRefTypes(options: DropDownOption[]): void {
+        let refPrefix: string = "#/components/schemas/";
+        let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition)[];
+
+        const isSimpleType: (schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition, recursionDepth?: number) => boolean = (schemaDef, recursionDepth) => {
+            if (!recursionDepth) {
+                recursionDepth = 1;
+            }
+            if (schemaDef.type === "string" || schemaDef.type === "number" || schemaDef.type === "integer" || schemaDef.type === "boolean") {
+                return true;
+            }
+            if (recursionDepth < 5 && schemaDef.$ref !== null && ReferenceUtil.canResolveRef(schemaDef.$ref, schemaDef)) {
+                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = ReferenceUtil.resolveNodeRef(schemaDef);
+                return isSimpleType(resolvedSchemaDef, recursionDepth + 1);
+            }
+
+            // TODO if the SchemaDef is an **external** "$ref" we need to resolve it here and include it if the $ref points to a simple
+            // type schema.  This should use the API catalog to resolve the reference.
+
+            return false;
+        };
+
+        if (this.context.ownerDocument().getDocumentType() == DocumentType.asyncapi2) {
+            // TODO TBD on this - not sure what is appropriate for AsyncAPI documents
+        } else {
+            let doc: OasDocument = <OasDocument> this.context.ownerDocument();
+            if (doc.is2xDocument()) {
+                refPrefix = "#/definitions/";
+            }
+
+            let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(isSimpleType);
+            VisitorUtil.visitTree(doc, viz, TraverserDirection.down);
+            defs = viz.getSortedSchemaDefinitions();
+        }
+
+        if (defs.length > 0) {
+            options.push(DIVIDER);
+            defs.forEach(def => {
+                let defName: string = def.getName();
+                options.push(new Value(defName, refPrefix + defName));
+            });
         }
     }
 

@@ -45,7 +45,6 @@ public class OpenApiTypeInliner extends CombinedVisitorAdapter {
 
         LocalReferenceResolver resolver = new LocalReferenceResolver();
         if (node.$ref != null) {
-            
             Node referencedSchemaDefNode = resolver.resolveRef(node.$ref, node);
             if (referencedSchemaDefNode != null) {
                 OasSchema referencedSchema = (OasSchema) referencedSchemaDefNode;

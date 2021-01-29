@@ -28,7 +28,7 @@ import {
     Node,
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,
-    OasDocument,
+    OasDocument, ReferenceUtil,
     SimplifiedType,
     TraverserDirection,
     VisitorUtil
@@ -112,9 +112,9 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         /**
          * Add schema definitions to the dropdown menu
          */
-        if (!this.isParameter) {
-            options = [...options, ...this.getSchemaDefinitionsOptions()]
-        } else if(this.document.is2xDocument()) {
+        options = [...options, ...this.getSchemaDefinitionsOptions()]
+
+        if(!this.isParameter && this.document.is2xDocument()) {
             options = [...options, DIVIDER, new Value("File", "file")]
         }
 
@@ -157,7 +157,27 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
             refPrefix = "#/definitions/";
         }
 
-        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(null);
+        // Schema Def filter used when the type is a parameter
+        const isSimpleType: (schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition, recursionDepth?: number) => boolean = (schemaDef, recursionDepth) => {
+            if (!recursionDepth) {
+                recursionDepth = 1;
+            }
+            if (schemaDef.type === "string" || schemaDef.type === "number" || schemaDef.type === "integer" || schemaDef.type === "boolean") {
+                return true;
+            }
+            if (recursionDepth < 5 && schemaDef.$ref !== null && ReferenceUtil.canResolveRef(schemaDef.$ref, schemaDef)) {
+                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = ReferenceUtil.resolveNodeRef(schemaDef);
+                return isSimpleType(resolvedSchemaDef, recursionDepth + 1);
+            }
+
+            // TODO if the SchemaDef is an **external** "$ref" we need to resolve it here and include it if the $ref points to a simple
+            // type schema.  This should use the API catalog to resolve the reference.
+
+            return false;
+        };
+
+        const filterCriteria: any = this.isParameter ? isSimpleType : null;
+        let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(filterCriteria);
         VisitorUtil.visitTree(this.document, viz, TraverserDirection.down);
         let defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[] = viz.getSortedSchemaDefinitions();
         if (defs.length > 0) {

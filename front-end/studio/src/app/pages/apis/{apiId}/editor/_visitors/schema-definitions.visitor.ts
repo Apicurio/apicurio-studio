@@ -27,7 +27,7 @@ export class FindSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
      * C'tor.
      * @param filterCriteria
      */
-    constructor(private filterCriteria: string) {
+    constructor(private filterCriteria: string|((node:Oas20SchemaDefinition|Oas30SchemaDefinition) => boolean)) {
         super();
     }
 
@@ -36,8 +36,7 @@ export class FindSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
      * @param node
      */
     visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
-        let name: string = FindSchemaDefinitionsVisitor.definitionName(node);
-        if (this.acceptThroughFilter(name)) {
+        if (this.acceptThroughFilter(node)) {
             this.schemaDefinitions.push(node);
         }
     }
@@ -62,15 +61,20 @@ export class FindSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
     }
 
     /**
-     * Returns true if the given name is accepted by the current filter criteria.
-     * @param name
+     * Returns true if the given node is accepted by the current filter criteria.
+     * @param node
      */
-    private acceptThroughFilter(name: string): boolean {
+    private acceptThroughFilter(node: Oas20SchemaDefinition | Oas30SchemaDefinition): boolean {
         //console.info("Accepting: %s through filter: %s", name, this.filterCriteria);
         if (this.filterCriteria === null) {
             return true;
         }
-        return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+        const name: string = node.getName();
+        if (typeof this.filterCriteria == "string") {
+            return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+        } else {
+            return this.filterCriteria(node);
+        }
     }
 
 }
@@ -81,9 +85,9 @@ export class FindAaiSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
 
     /**
      * C'tor.
-     * @param filterCriteria
+     * @param filterCriteria can be a string or a function callback
      */
-    constructor(private filterCriteria: string) {
+    constructor(private filterCriteria: string|((node:Aai20SchemaDefinition) => boolean)) {
         super();
     }
 
@@ -92,8 +96,7 @@ export class FindAaiSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
      * @param node
      */
     visitSchemaDefinition(node: Aai20SchemaDefinition): void {
-        let name: string = FindAaiSchemaDefinitionsVisitor.definitionName(node);
-        if (this.acceptThroughFilter(name)) {
+        if (this.acceptThroughFilter(node)) {
             this.schemaDefinitions.push(node);
         }
     }
@@ -118,15 +121,20 @@ export class FindAaiSchemaDefinitionsVisitor extends CombinedVisitorAdapter {
     }
 
     /**
-     * Returns true if the given name is accepted by the current filter criteria.
-     * @param name
+     * Returns true if the given node is accepted by the current filter criteria.
+     * @param node
      */
-    private acceptThroughFilter(name: string): boolean {
+    private acceptThroughFilter(node: Aai20SchemaDefinition): boolean {
         //console.info("Accepting: %s through filter: %s", name, this.filterCriteria);
         if (this.filterCriteria === null) {
             return true;
         }
-        return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+        const name: string = node.getName();
+        if (typeof this.filterCriteria == "string") {
+            return name.toLowerCase().indexOf(this.filterCriteria) != -1;
+        } else {
+            return this.filterCriteria(node);
+        }
     }
 
 }

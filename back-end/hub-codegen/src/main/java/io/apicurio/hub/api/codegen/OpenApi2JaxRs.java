@@ -81,6 +81,7 @@ import io.apicurio.hub.api.codegen.beans.CodegenJavaInterface;
 import io.apicurio.hub.api.codegen.beans.CodegenJavaMethod;
 import io.apicurio.hub.api.codegen.jaxrs.InterfacesVisitor;
 import io.apicurio.hub.api.codegen.jaxrs.OpenApi2CodegenVisitor;
+import io.apicurio.hub.api.codegen.post.JavaBeanPostProcessor;
 import io.apicurio.hub.api.codegen.pre.DocumentPreProcessor;
 import io.apicurio.hub.api.codegen.util.CodegenUtil;
 import io.apicurio.hub.api.codegen.util.IndexedCodeWriter;
@@ -116,6 +117,7 @@ public class OpenApi2JaxRs {
             return false;
         }
     };
+    protected static JavaBeanPostProcessor postProcessor = new JavaBeanPostProcessor();
 
     private String openApiDoc;
     protected transient Document document;
@@ -247,11 +249,20 @@ public class OpenApi2JaxRs {
             log.append("Generating Bean: " + bean.getPackage() + "." + bean.getName() + "\r\n");
             generateJavaBean(bean, info, codeWriter);
         }
+        // Post-process generated java bean classes
+        for (String key : codeWriter.getKeys()) {
+            ByteArrayOutputStream beanData = codeWriter.get(key);
+            ByteArrayOutputStream processedBeanData = postProcessor.process(key, beanData);
+            if (beanData != processedBeanData) {
+                codeWriter.set(key, processedBeanData);
+            }
+        }
+        // Write all of the java beans classes to the ZIP file
         for (String key : codeWriter.getKeys()) {
             String javaClassFileName = javaClassToZipPath(key);
             log.append("Adding to zip: " + javaClassFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(javaClassFileName));
-            zipOutput.write(codeWriter.get(key).getBytes(utf8));
+            zipOutput.write(codeWriter.get(key).toByteArray());
             zipOutput.closeEntry();
         }
 
@@ -397,7 +408,7 @@ public class OpenApi2JaxRs {
                         .build())
                 .addJavadoc("The JAX-RS application.\n")
                 .build();
-        JavaFile javaFile = JavaFile.builder(this.settings.javaPackage, jaxRsApp).build();
+        JavaFile javaFile = JavaFile.builder(this.settings.javaPackage, jaxRsApp).skipJavaLangImports(true).build();
         return javaFile.toString();
     }
 
@@ -491,7 +502,7 @@ public class OpenApi2JaxRs {
 
         TypeSpec jaxRsInterface = interfaceBuilder.build();
 
-        JavaFile javaFile = JavaFile.builder(_interface.getPackage(), jaxRsInterface).build();
+        JavaFile javaFile = JavaFile.builder(_interface.getPackage(), jaxRsInterface).skipJavaLangImports(true).build();
         return javaFile.toString();
     }
 

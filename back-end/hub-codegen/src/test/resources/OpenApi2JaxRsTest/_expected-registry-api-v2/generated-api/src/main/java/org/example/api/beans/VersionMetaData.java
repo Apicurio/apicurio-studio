@@ -44,16 +44,16 @@ public class VersionMetaData {
     @JsonProperty("version")
     private Long version;
     @JsonProperty("name")
-    private java.lang.String name;
+    private String name;
     @JsonProperty("description")
-    private java.lang.String description;
+    private String description;
     /**
      * 
      * (Required)
      * 
      */
     @JsonProperty("createdBy")
-    private java.lang.String createdBy;
+    private String createdBy;
     /**
      * 
      * (Required)
@@ -97,13 +97,13 @@ public class VersionMetaData {
      */
     @JsonProperty("id")
     @JsonPropertyDescription("The ID of a single Artifact.")
-    private java.lang.String id;
+    private String id;
     /**
      * 
      */
     @JsonProperty("labels")
     @JsonPropertyDescription("")
-    private List<java.lang.String> labels = new ArrayList<java.lang.String>();
+    private List<String> labels = new ArrayList<String>();
     /**
      * User-defined name-value pairs. Name and value must be strings.
      * 
@@ -117,7 +117,7 @@ public class VersionMetaData {
      */
     @JsonProperty("groupId")
     @JsonPropertyDescription("An id of a single Artifact Group.")
-    private java.lang.String groupId;
+    private String groupId;
 
     /**
      * 
@@ -140,22 +140,22 @@ public class VersionMetaData {
     }
 
     @JsonProperty("name")
-    public java.lang.String getName() {
+    public String getName() {
         return name;
     }
 
     @JsonProperty("name")
-    public void setName(java.lang.String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     @JsonProperty("description")
-    public java.lang.String getDescription() {
+    public String getDescription() {
         return description;
     }
 
     @JsonProperty("description")
-    public void setDescription(java.lang.String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -165,7 +165,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("createdBy")
-    public java.lang.String getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
@@ -175,7 +175,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("createdBy")
-    public void setCreatedBy(java.lang.String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -275,7 +275,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("id")
-    public java.lang.String getId() {
+    public String getId() {
         return id;
     }
 
@@ -285,7 +285,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("id")
-    public void setId(java.lang.String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -293,7 +293,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("labels")
-    public List<java.lang.String> getLabels() {
+    public List<String> getLabels() {
         return labels;
     }
 
@@ -301,7 +301,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("labels")
-    public void setLabels(List<java.lang.String> labels) {
+    public void setLabels(List<String> labels) {
         this.labels = labels;
     }
 
@@ -328,7 +328,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("groupId")
-    public java.lang.String getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -337,7 +337,7 @@ public class VersionMetaData {
      * 
      */
     @JsonProperty("groupId")
-    public void setGroupId(java.lang.String groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 

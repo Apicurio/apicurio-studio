@@ -47,7 +47,7 @@ public class IndexedCodeWriter extends CodeWriter {
         String fullname = pkg.name() + "." + fileName;
         fullname = fullname.replace(".java", "");
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        this.index.put(fullname, stream);
+        this.set(fullname, stream);
         return stream;
     }
 
@@ -63,11 +63,20 @@ public class IndexedCodeWriter extends CodeWriter {
      * @param className
      * @throws IOException
      */
-    public String get(String className) throws IOException {
+    public ByteArrayOutputStream get(String className) throws IOException {
         if (this.index.containsKey(className)) {
-            return this.index.get(className).toString("UTF-8");
+            return this.index.get(className);
         }
         return null;
+    }
+    
+    /**
+     * Updates the index with the given content.
+     * @param className
+     * @param data
+     */
+    public void set(String className, ByteArrayOutputStream data) {
+        this.index.put(className, data);
     }
 
     /**

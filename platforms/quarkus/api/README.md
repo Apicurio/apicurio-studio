@@ -27,7 +27,7 @@ The application is now runnable using `java -jar target/apicurio-studio-api-runn
    e.g. a higher logging level.
    
 
-##Runtime Configuration
+## Runtime Configuration
 
 - In the *dev* mode, the application uses an in-memory H2 database`.
 - In the *prod* mode, you have to provide connection configuration for a database server as follows:

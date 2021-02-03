@@ -1,7 +1,6 @@
 package org.example.api;
 
 import java.io.InputStream;
-import java.lang.Integer;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

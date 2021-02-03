@@ -1,6 +1,5 @@
 package org.example.api;
 
-import java.lang.String;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

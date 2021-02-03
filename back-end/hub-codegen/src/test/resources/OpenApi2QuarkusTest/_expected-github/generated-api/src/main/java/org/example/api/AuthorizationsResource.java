@@ -1,8 +1,6 @@
 package org.example.api;
 
 import java.io.InputStream;
-import java.lang.Integer;
-import java.lang.String;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;

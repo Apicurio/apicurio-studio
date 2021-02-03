@@ -1,6 +1,5 @@
 package org.example.api;
 
-import java.lang.Integer;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

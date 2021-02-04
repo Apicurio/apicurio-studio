@@ -533,7 +533,10 @@ public class OpenApi2JaxRs {
                 if (format.equals("date") || format.equals("date-time")) {
                     coreType = ClassName.get(Date.class);
                 }
-                // TODO handle byte, binary
+                if (format.equals("binary") && collection == null) {
+                    coreType = defaultType;
+                }
+                // TODO handle byte
             }
         } else if (type.equals("integer")) {
             if (config.isUseLongIntegers()) {

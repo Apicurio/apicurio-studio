@@ -35,6 +35,7 @@ public class DocumentPreProcessor {
             new OpenApiInlinedSchemaRemover(),
             new OpenApiParameterInliner(),
             new OpenApiInlinedParameterRemover(),
+            new OpenApiResponseInliner(),
             new OpenApiAllOfProcessor()
     };
     

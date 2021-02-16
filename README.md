@@ -30,7 +30,7 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 
 ### Requirements
 - Maven 3.x
-- Java 8+
+- Java 8 or 11 (recommended)
 
 The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 ```bash

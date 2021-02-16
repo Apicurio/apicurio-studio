@@ -115,6 +115,7 @@
     },
     {
       "name": "microcks-serviceaccount",
+      "secret": "$SERVICE_CLIENT_SECRET",
       "enabled": true,
       "bearerOnly": false,
       "publicClient": false,

@@ -12,7 +12,7 @@ CREATE INDEX IDX_accounts_1 ON accounts(user_id);
 
 CREATE TABLE api_designs (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, description VARCHAR(1024), created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, tags VARCHAR(2048), api_type VARCHAR(255) NOT NULL);
 
-CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, type TINYINT NOT NULL, data MEDIUMTEXT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, reverted TINYINT DEFAULT 0 NOT NULL, modifed_on DATETIME);
+CREATE TABLE api_content (design_id BIGINT NOT NULL, version BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, type TINYINT NOT NULL, data MEDIUMTEXT NOT NULL, created_by VARCHAR(255) NOT NULL, created_on DATETIME NOT NULL, reverted TINYINT DEFAULT 0 NOT NULL, modified_on DATETIME);
 CREATE INDEX IDX_content_0 ON api_content(design_id, version);
 CREATE INDEX IDX_content_1 ON api_content(version);
 CREATE INDEX IDX_content_2 ON api_content(type);

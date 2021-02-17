@@ -50,6 +50,18 @@
                 "x-codegen-type": "StringMap",
                 "x-codegen-inline": "true"
             },
+            "MyQuarkusBean": {
+            	"type": "object",
+            	"properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+            	},
+            	"x-codegen-annotations": ["io.quarkus.runtime.annotations.RegisterForReflection"]
+            },
             "SampleDataType": {
                 "description": "",
                 "type": "object",

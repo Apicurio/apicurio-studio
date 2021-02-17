@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -250,19 +251,26 @@ public class OpenApi2JaxRs {
             generateJavaBean(bean, info, codeWriter);
         }
         // Post-process generated java bean classes
-        for (String key : codeWriter.getKeys()) {
-            ByteArrayOutputStream beanData = codeWriter.get(key);
-            ByteArrayOutputStream processedBeanData = postProcessor.process(key, beanData);
+        for (String className : codeWriter.keys()) {
+            ByteArrayOutputStream beanData = codeWriter.getContent(className);
+            List<String> annotations = new ArrayList<>();
+            annotations.addAll(info.getBeanAnnotations());
+            CodegenJavaBean bean = codeWriter.getBean(className);
+            if (bean != null && bean.getAnnotations() != null) {
+                annotations.addAll(bean.getAnnotations());
+            }
+            
+            ByteArrayOutputStream processedBeanData = postProcessor.process(className, annotations, beanData);
             if (beanData != processedBeanData) {
-                codeWriter.set(key, processedBeanData);
+                codeWriter.set(className, processedBeanData);
             }
         }
         // Write all of the java beans classes to the ZIP file
-        for (String key : codeWriter.getKeys()) {
+        for (String key : codeWriter.keys()) {
             String javaClassFileName = javaClassToZipPath(key);
             log.append("Adding to zip: " + javaClassFileName + "\r\n");
             zipOutput.putNextEntry(new ZipEntry(javaClassFileName));
-            zipOutput.write(codeWriter.get(key).toByteArray());
+            zipOutput.write(codeWriter.getContent(key).toByteArray());
             zipOutput.closeEntry();
         }
 
@@ -657,6 +665,9 @@ public class OpenApi2JaxRs {
         String source = mapper.writeValueAsString(bean.get$schema());
         schemaMapper.generate(codeModel, bean.getName(), bean.getPackage(), source);
         codeModel.build(codeWriter);
+        
+        String fqcn = bean.getPackage() + "." + bean.getName();
+        codeWriter.indexBean(fqcn, bean);
     }
 
     protected URL getResource(String name) {

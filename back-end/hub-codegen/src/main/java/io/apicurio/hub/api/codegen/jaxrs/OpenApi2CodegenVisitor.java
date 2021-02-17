@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.codegen.jaxrs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -110,6 +111,24 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         SchemaSigner signer = new SchemaSigner();
         Library.visitNode(node, signer);
         return signer.getSignature();
+    }
+    
+    /**
+     * @see io.apicurio.datamodels.combined.visitors.CombinedVisitorAdapter#visitDocument(io.apicurio.datamodels.core.models.Document)
+     */
+    @Override
+    public void visitDocument(Document node) {
+        // Extract some configuration from the "x-codegen" root extension property
+        processCodegenConfig(node.getExtension("x-codegen"));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processCodegenConfig(Extension extension) {
+        if (extension != null && extension.value instanceof Map) {
+            Map<String, Object> codegen = (Map<String, Object>) extension.value;
+            List<String> annotations = (List<String>) codegen.get("bean-annotations");
+            this.codegenInfo.setBeanAnnotations(annotations);
+        }
     }
 
     /**
@@ -337,8 +356,23 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         bean.setPackage(CodegenUtil.schemaToPackageName(schema, this.packageName + ".beans"));
         bean.set$schema((JsonNode) Library.writeNode((Node) schema));
         bean.setSignature(createSignature(schema));
+        bean.setAnnotations(annotations(schema.getExtension("x-codegen-annotations")));
 
         this.codegenInfo.getBeans().add(bean);
+    }
+
+    /**
+     * Extracts the additional annotations the bean should have added to it from the x-codegen-annotations 
+     * extension point.
+     * @param extension
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> annotations(Extension extension) {
+        if (extension != null && extension.value instanceof List) {
+            return (List<String>) extension.value;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private CodegenJavaInterface getOrCreateInterface(String path) {

@@ -121,6 +121,14 @@ public class OpenApi2JaxRsTest {
      * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
      */
     @Test
+    public void testGenerateFull_BeanAnnotations() throws IOException {
+        doFullTest("OpenApi2JaxRsTest/bean-annotations.json", UpdateOnly.no, Reactive.no, "_expected-bean-annotations/generated-api", false);
+    }
+
+    /**
+     * Test method for {@link io.apicurio.hub.api.codegen.OpenApi2JaxRs#generate()}.
+     */
+    @Test
     public void testGenerateFull_Inheritance() throws IOException {
         doFullTest("OpenApi2JaxRsTest/inheritance.json", UpdateOnly.yes, Reactive.no, "_expected-inheritance/generated-api", false);
     }

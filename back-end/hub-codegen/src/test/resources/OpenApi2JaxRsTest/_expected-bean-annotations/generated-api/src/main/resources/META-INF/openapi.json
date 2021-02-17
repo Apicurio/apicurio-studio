@@ -1,0 +1,59 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Simple Data Type Sample API",
+        "version": "1.0.0"
+    },
+    "paths": {
+    },
+    "components": {
+        "schemas": {
+        	"FooBean": {
+            	"type": "object",
+            	"properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    }
+            	}
+        	},
+            "MyQuarkusBean": {
+            	"type": "object",
+            	"properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+            	},
+            	"x-codegen-annotations": ["io.quarkus.runtime.annotations.RegisterForReflection"]
+            },
+            "SampleDataType": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "mylong": {
+                        "description": "",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "myint": {
+                        "description": "",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            }
+        }
+    },
+    "x-codegen": {
+    	"bean-annotations": [ "javax.enterprise.context.ApplicationScoped" ]
+    }
+}

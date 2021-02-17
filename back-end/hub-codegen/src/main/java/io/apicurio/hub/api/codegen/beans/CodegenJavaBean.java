@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.api.codegen.beans;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -27,6 +29,7 @@ public class CodegenJavaBean {
     private String name;
     private JsonNode $schema;
     private String signature;
+    private List<String> annotations;
     
     /**
      * Constructor.
@@ -88,6 +91,20 @@ public class CodegenJavaBean {
      */
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    /**
+     * @return the annotations
+     */
+    public List<String> getAnnotations() {
+        return annotations;
+    }
+
+    /**
+     * @param annotations the annotations to set
+     */
+    public void setAnnotations(List<String> annotations) {
+        this.annotations = annotations;
     }
 
 }

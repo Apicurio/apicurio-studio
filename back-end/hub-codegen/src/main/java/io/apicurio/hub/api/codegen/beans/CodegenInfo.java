@@ -30,6 +30,7 @@ public class CodegenInfo {
     private List<CodegenJavaInterface> interfaces = new ArrayList<>();
     private List<CodegenJavaBean> beans = new ArrayList<>();
     private String contextRoot;
+    private List<String> beanAnnotations = new ArrayList<>();;
     
     /**
      * Constructor.
@@ -119,6 +120,20 @@ public class CodegenInfo {
      */
     public void setContextRoot(String contextRoot) {
         this.contextRoot = contextRoot;
+    }
+
+    /**
+     * @return the beanAnnotations
+     */
+    public List<String> getBeanAnnotations() {
+        return beanAnnotations;
+    }
+
+    /**
+     * @param beanAnnotations the beanAnnotations to set
+     */
+    public void setBeanAnnotations(List<String> beanAnnotations) {
+        this.beanAnnotations = beanAnnotations;
     }
     
 }

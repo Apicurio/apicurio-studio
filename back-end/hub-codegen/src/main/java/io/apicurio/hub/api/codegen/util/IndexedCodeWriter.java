@@ -26,12 +26,15 @@ import java.util.Set;
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JPackage;
 
+import io.apicurio.hub.api.codegen.beans.CodegenJavaBean;
+
 /**
  * @author eric.wittmann@gmail.com
  */
 public class IndexedCodeWriter extends CodeWriter {
     
-    private Map<String, ByteArrayOutputStream> index = new HashMap<>();
+    private Map<String, ByteArrayOutputStream> contentIndex = new HashMap<>();
+    private Map<String, CodegenJavaBean> beanIndex = new HashMap<>();
     
     /**
      * Constructor.
@@ -59,13 +62,24 @@ public class IndexedCodeWriter extends CodeWriter {
     }
     
     /**
-     * Gets the content produced for a given filename.
+     * Gets the content produced for a given class name.
      * @param className
      * @throws IOException
      */
-    public ByteArrayOutputStream get(String className) throws IOException {
-        if (this.index.containsKey(className)) {
-            return this.index.get(className);
+    public ByteArrayOutputStream getContent(String className) throws IOException {
+        if (this.contentIndex.containsKey(className)) {
+            return this.contentIndex.get(className);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the bean for a given class name.
+     * @param className
+     */
+    public CodegenJavaBean getBean(String className) {
+        if (this.beanIndex.containsKey(className)) {
+            return this.beanIndex.get(className);
         }
         return null;
     }
@@ -76,14 +90,18 @@ public class IndexedCodeWriter extends CodeWriter {
      * @param data
      */
     public void set(String className, ByteArrayOutputStream data) {
-        this.index.put(className, data);
+        this.contentIndex.put(className, data);
     }
 
     /**
      * Gets the keys.
      */
-    public Set<String> getKeys() {
-        return this.index.keySet();
+    public Set<String> keys() {
+        return this.contentIndex.keySet();
+    }
+
+    public void indexBean(String beanClassname, CodegenJavaBean bean) {
+        this.beanIndex.put(beanClassname, bean);
     }
 
 }

@@ -67,25 +67,25 @@
                 "type": "object",
                 "properties": {
                     "name": {
-                        "description": "",
                         "type": "string"
                     },
                     "mylong": {
-                        "description": "",
                         "type": "integer",
                         "format": "int64"
                     },
                     "myint": {
-                        "description": "",
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "mydate": {
+                    	"type": "string",
+                    	"format": "date-time"
                     },
                     "mymap": {
                         "$ref": "#/components/schemas/MyMap"
                     },
                     "id": {
-                        "$ref": "#/components/schemas/MyId",
-                        "description": ""
+                        "$ref": "#/components/schemas/MyId"
                     }
                 }
             }

@@ -54,8 +54,8 @@ public class JavaBeanPostProcessor {
                 builder.append(annotation);
                 builder.append("\n");
             }
-            builder.append("public class ");
-            content = content.replace("public class ", builder.toString());
+            content = content.replace("public class ", builder.toString() + "public class ");
+            content = content.replace("public enum ", builder.toString() + "public enum ");
             modified = true;
         }
         

@@ -8,6 +8,15 @@
     },
     "components": {
         "schemas": {
+        	"EnumType": {
+			    "type": "string",
+			    "enum": [
+			        "OPTION1",
+			        "OPTION2",
+			        "OPTION3",
+			        "OPTION4"
+			    ]
+        	},
         	"FooBean": {
             	"type": "object",
             	"properties": {

@@ -177,10 +177,6 @@ jobs:
           cd _data/studio
           rm latestRelease.json
           touch latestRelease.json && curl https://api.github.com/repos/apicurio/apicurio-studio/releases/latest > latestRelease.json
-          
-          echo "********** Copying Latest Release JSON File **********"
-          PUBLISHED_AT=$(cat latestRelease.json | jq '.tag_name' | sed 's/"//g')
-          cp latestRelease.json releases/$PUBLISHED_AT.json
       - name: Commit Project Website Changes
         run: |
           cd website

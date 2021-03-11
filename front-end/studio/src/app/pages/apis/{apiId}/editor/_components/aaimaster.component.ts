@@ -335,7 +335,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public deleteChannel(): void {
         let channelItem: AaiChannelItem = this.contextMenuSelection.resolve(this.document) as AaiChannelItem;
-        let command: ICommand = CommandFactory.createDeletePathCommand(channelItem.getName());
+        let command: ICommand = CommandFactory.createDeleteChannelCommand(channelItem.getName());
         this.commandService.emit(command);
         this.closeContextMenu();
     }

@@ -404,7 +404,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 }
             }
             
-            if (group != null && group.equalsIgnoreCase(gitLabUsername)) {
+            if (group != null && group.equalsIgnoreCase(gitLabUserId)) {
                 // List all user projects
                 //////////////////////////////
                 Endpoint endpoint = pagedEndpoint("/api/v4/users/:user_id/projects", 1, DEFAULT_PAGE_SIZE).bind("user_id", gitLabUserId);

@@ -57,6 +57,7 @@ Apicurio Studio is open source, and we welcome anybody who wants to participate 
 Please follow [Setting your development environment](https://apicurio-studio.readme.io/docs/setting-up-a-development-environment) guide to setup your local machine for development.  The guide assumes the use of the Eclipse IDE for Java
 development (backend) but is not required - developers should be able to adapt the instructions to their particular
 environment.
+An additional way less dependent on eclipse is described in [this manual](DEV_MODE.md).
 
 If you want to fix a bug or make any changes, please [log an issue in GitHub](https://github.com/apicurio/apicurio-studio/issues) describing the bug
 or new feature. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates

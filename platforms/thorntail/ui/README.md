@@ -28,6 +28,7 @@ The following environment variables control configuration of the app:
 	APICURIO_LOGGING_LEVEL=INFO
 	APICURIO_UI_LOGOUT_REDIRECT_URI=/logout
 	APICURIO_UI_HUB_UI_URL=http://localhost:8080
+    APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP='([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+'
 	APICURIO_UI_HUB_API_URL=http://localhost:8090/
 	APICURIO_UI_EDITING_URL=http://localhost:8091/
 	APICURIO_UI_FEATURE_MICROCKS=false

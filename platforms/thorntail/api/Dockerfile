@@ -43,6 +43,7 @@ ENV APICURIO_MAX_HEAP=2048m
 ENV APICURIO_GITHUB_API_URL=
 ENV APICURIO_GITLAB_API_URL=
 ENV APICURIO_BITBUCKET_API_URL=
+ENV APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP='([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+'
 
 
 CMD java -jar /opt/apicurio/apicurio-studio-api-thorntail.jar \

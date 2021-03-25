@@ -54,6 +54,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String FEATURE_SHARE_WITH_EVERYONE_ENV = "APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE";
     private static final String FEATURE_SHARE_WITH_EVERYONE_SYSPROP = "apicurio-ui.feature.shareWithEveryone";
 
+    private static final String VALIDATION_CHANNELNAME_REGEXP_ENV= "APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP";
+    private static final String VALIDATION_CHANNELNAME_REGEXP_SYSPROP = "apicurio-ui.validation.channelName.regexp";
+
     /**
      * Returns the URL of the Apicurio Hub API.
      */
@@ -119,4 +122,10 @@ public class StudioUiConfiguration extends Configuration {
         return getConfigurationProperty(HUB_UI_URL_ENV, HUB_UI_URL_SYSPROP, null);
     }
 
+    /**
+     * @return the configured REGEXP CHANNEL
+     */
+    public String getAddChannelValidation() {
+        return getConfigurationProperty(VALIDATION_CHANNELNAME_REGEXP_ENV, VALIDATION_CHANNELNAME_REGEXP_SYSPROP, "([^{}\\/]*(\\{[a-zA-Z_][0-9a-zA-Z_]*\\})?)+");
+    }
 }

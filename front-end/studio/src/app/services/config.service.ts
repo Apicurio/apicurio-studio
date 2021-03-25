@@ -29,7 +29,8 @@ let DEFAULT_CONFIG: any = {
         editingUrl: "http://localhost:8080/api-editing",
     },
     ui: {
-        uiUrl: "http://localhost:8080/studio/"
+        uiUrl: "http://localhost:8080/studio/",
+        channelNameValidation: '([^{}\\/]*(\\{[a-zA-Z_][0-9a-zA-Z_]*\\})?)+',
     },
     features: {
         "microcks": true,
@@ -152,5 +153,12 @@ export class ConfigService {
             return false;
         }
         return this.config.features.shareWithEveryone;
+    }
+
+    public channelNameValidation() :string {
+        if (!this.config.ui.channelNameValidation || !this.config.ui.channelNameValidation) {
+            return "";
+        }
+        return this.config.ui.channelNameValidation;
     }
 }

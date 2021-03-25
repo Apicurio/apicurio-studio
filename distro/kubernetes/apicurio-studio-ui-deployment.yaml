@@ -66,6 +66,8 @@ spec:
               key: apicurio-ui-editing-url
         - name: JAVA_TOOL_OPTIONS
           value: -Djava.net.preferIPv4Stack=true
+        - name: APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP
+            value: '{([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+'
         - name: APICURIO_MICROCKS_API_URL
           valueFrom:
             configMapKeyRef:

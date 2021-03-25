@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label required" for="channel">Channel</label>
                         <div class="col-sm-10">
-                            <input #addChannelInput name="channel" type="text" id="channel" class="form-control" placeholder="Enter a Channel" pattern="([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+" required [(ngModel)]="channel" (ngModelChange)="validateChannel($event)" #thechannel="ngModel">
+                            <input #addChannelInput name="channel" type="text" id="channel" class="form-control" placeholder="Enter a Channel" pattern="{{channelValidation()}}" required [(ngModel)]="channel" (ngModelChange)="validateChannel($event)" #thechannel="ngModel">
                             <div class="form-error-message error" *ngIf="channelExists">Channel already exists.</div>
                             <form-error-message [inputModel]="thechannel" [type]="'pattern'" [alwaysOn]="true">Enter a valid channel.</form-error-message>
                             <form-error-message [inputModel]="thechannel" [type]="'required'">Channel is required.</form-error-message>

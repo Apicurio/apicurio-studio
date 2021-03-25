@@ -12,6 +12,7 @@ ui:
   jvmArgs: -Djava.net.preferIPv4Stack=true
   port: 8093
   imagePullPolicy: IfNotPresent
+  channelNameRegex: ([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+
   hostname: APICURIO_URL
   extraVolumes: []
   logout:

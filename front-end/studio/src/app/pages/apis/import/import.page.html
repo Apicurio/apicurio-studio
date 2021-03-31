@@ -1,7 +1,7 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
-        <li breadcrumb label="Import API" class="active"></li>
+        <li breadcrumb i18n-label label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb i18n-label label="Import API" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
@@ -11,26 +11,26 @@
             <importapi-form (onImportApi)="onImportApi($event)" [importing]="importing" #importApiForm></importapi-form>
             <div class="alert alert-warning" *ngIf="importError">
                 <span class="pficon pficon-warning-triangle-o"></span>
-                <strong>Error Importing API!</strong> We couldn't find the content you've asked us to import.  Please verify that
+                <strong i18n>Error Importing API!</strong> <ng-container i18n>We couldn't find the content you've asked us to import.  Please verify that
                 a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
-                have successfully linked your account(s) in <a routerLink="/settings/accounts">Settings</a>.
+                have successfully linked your account(s) in</ng-container> <a routerLink="/settings/accounts" i18n>Settings</a>.
             </div>
         </div>
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
-                <strong>What is this page?</strong>
-                <p style="line-height: 18px">
+                <strong i18n>What is this page?</strong>
+                <p style="line-height: 18px" i18n>
                     Hey there! Here you can import an existing API to the Studio by either giving us the OpenAPI document or
                     telling us where we can get it.
                 </p>
-                <p style="line-height: 18px; margin-top: 12px">
+                <p style="line-height: 18px; margin-top: 12px" i18n>
                     Choose from the following options:
                 </p>
                 <ul>
-                    <li>Import from Source Control URL</li>
-                    <li>Import raw content from URL</li>
-                    <li>Copy/Paste raw content directly</li>
+                    <li i18n>Import from Source Control URL</li>
+                    <li i18n>Import raw content from URL</li>
+                    <li i18n>Copy/Paste raw content directly</li>
                 </ul>
             </div>
         </div>

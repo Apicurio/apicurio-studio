@@ -7,17 +7,17 @@
         <div id="api-nav-item-dashboard" class="api-nav-item" [class.active]="isDashboardRoute()"
              [class.selected]="currentSubMenu === subMenuTypes.Dashboard" (click)="goToDashboard()">
             <span class="fa fa-fw fa-dashboard"></span>
-            <div>Dashboard</div>
+            <div i18n>Dashboard</div>
         </div>
         <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()"
              [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
             <span class="fa fa-fw fa-bolt"></span>
-            <div>APIs</div>
+            <div i18n>APIs</div>
         </div>
         <div id="api-nav-item-settings" class="api-nav-item" [class.active]="isSettingsRoute()"
              [class.selected]="currentSubMenu === subMenuTypes.Settings" (click)="toggleSubMenu(subMenuTypes.Settings)">
             <span class="fa fa-fw fa-cogs"></span>
-            <div>Settings</div>
+            <div i18n>Settings</div>
         </div>
         <div class="api-nav-item-filler">
         </div>
@@ -26,28 +26,28 @@
     <div id="api-vertical-nav-details" *ngIf="subMenuOut">
         <!-- APIs -->
         <div id="api-nav-detail-apis" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.APIs">
-            <h3>APIs</h3>
+            <h3 i18n>APIs</h3>
             <div class="action" [class.active]="isRouteActive('/apis', true)">
-                <a routerLink="/apis"><span class="fa fa-fw fa-list"></span><span>View All APIs</span></a>
+                <a routerLink="/apis"><span class="fa fa-fw fa-list"></span><span i18n>View All APIs</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/apis/create')">
-                <a routerLink="/apis/create"><span class="pficon pficon-add-circle-o"></span><span>Create New API</span></a>
+                <a routerLink="/apis/create"><span class="pficon pficon-add-circle-o"></span><span i18n>Create New API</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/apis/import')">
-                <a routerLink="/apis/import"><span class="pficon pficon-import"></span><span>Import API</span></a>
+                <a routerLink="/apis/import"><span class="pficon pficon-import"></span><span i18n>Import API</span></a>
             </div>
         </div>
         <!-- Settings -->
         <div id="api-nav-detail-settings" class="api-nav-detail-item" *ngIf="currentSubMenu === subMenuTypes.Settings">
-            <h3>Settings</h3>
+            <h3 i18n>Settings</h3>
             <div class="action" [class.active]="isRouteActive('/settings/profile')">
-                <a routerLink="/settings/profile"><span class="fa fa-fw fa-user"></span><span>User Profile</span></a>
+                <a routerLink="/settings/profile"><span class="fa fa-fw fa-user"></span><span i18n>User Profile</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/settings/accounts')">
-                <a routerLink="/settings/accounts"><span class="fa fa-fw fa-link"></span><span>Linked Accounts</span></a>
+                <a routerLink="/settings/accounts"><span class="fa fa-fw fa-link"></span><span i18n>Linked Accounts</span></a>
             </div>
             <div class="action" [class.active]="isRouteActive('/settings/validation')">
-                <a routerLink="/settings/validation"><span class="fa fa-fw fa-exclamation-triangle"></span><span>Validation</span></a>
+                <a routerLink="/settings/validation"><span class="fa fa-fw fa-exclamation-triangle"></span><span i18n>Validation</span></a>
             </div>
         </div>
     </div>
